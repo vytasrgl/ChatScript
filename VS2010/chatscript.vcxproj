@@ -11,64 +11,64 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\common.h" />
-    <ClInclude Include="..\src\constructCode.h" />
-    <ClInclude Include="..\src\csocket.h" />
-    <ClInclude Include="..\src\cs_ev.h" />
-    <ClInclude Include="..\src\dictionaryMore.h" />
-    <ClInclude Include="..\src\dictionarySystem.h" />
-    <ClInclude Include="..\src\english.h" />
-    <ClInclude Include="..\src\evserver.h" />
-    <ClInclude Include="..\src\factSystem.h" />
-    <ClInclude Include="..\src\jsmn.h" />
-    <ClInclude Include="..\src\os.h" />
-    <ClInclude Include="..\src\functionExecute.h" />
-    <ClInclude Include="..\src\infer.h" />
-    <ClInclude Include="..\src\mainSystem.h" />
-    <ClInclude Include="..\src\markSystem.h" />
-    <ClInclude Include="..\src\outputSystem.h" />
-    <ClInclude Include="..\src\patternSystem.h" />
-    <ClInclude Include="..\src\scriptCompile.h" />
-    <ClInclude Include="..\src\spellcheck.h" />
-    <ClInclude Include="..\src\systemVariables.h" />
-    <ClInclude Include="..\src\tagger.h" />
-    <ClInclude Include="..\src\testing.h" />
-    <ClInclude Include="..\src\textUtilities.h" />
-    <ClInclude Include="..\src\tokenSystem.h" />
-    <ClInclude Include="..\src\topicSystem.h" />
-    <ClInclude Include="..\src\userCache.h" />
-    <ClInclude Include="..\src\userSystem.h" />
-    <ClInclude Include="..\src\variableSystem.h" />
+    <ClInclude Include="..\SRC\common.h" />
+    <ClInclude Include="..\SRC\constructCode.h" />
+    <ClInclude Include="..\SRC\csocket.h" />
+    <ClInclude Include="..\SRC\cs_ev.h" />
+    <ClInclude Include="..\SRC\dictionaryMore.h" />
+    <ClInclude Include="..\SRC\dictionarySystem.h" />
+    <ClInclude Include="..\SRC\english.h" />
+    <ClInclude Include="..\SRC\evserver.h" />
+    <ClInclude Include="..\SRC\factSystem.h" />
+    <ClInclude Include="..\SRC\jsmn.h" />
+    <ClInclude Include="..\SRC\os.h" />
+    <ClInclude Include="..\SRC\functionExecute.h" />
+    <ClInclude Include="..\SRC\infer.h" />
+    <ClInclude Include="..\SRC\mainSystem.h" />
+    <ClInclude Include="..\SRC\markSystem.h" />
+    <ClInclude Include="..\SRC\outputSystem.h" />
+    <ClInclude Include="..\SRC\patternSystem.h" />
+    <ClInclude Include="..\SRC\scriptCompile.h" />
+    <ClInclude Include="..\SRC\spellcheck.h" />
+    <ClInclude Include="..\SRC\systemVariables.h" />
+    <ClInclude Include="..\SRC\tagger.h" />
+    <ClInclude Include="..\SRC\testing.h" />
+    <ClInclude Include="..\SRC\textUtilities.h" />
+    <ClInclude Include="..\SRC\tokenSystem.h" />
+    <ClInclude Include="..\SRC\topicSystem.h" />
+    <ClInclude Include="..\SRC\userCache.h" />
+    <ClInclude Include="..\SRC\userSystem.h" />
+    <ClInclude Include="..\SRC\variableSystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\constructCode.cpp" />
-    <ClCompile Include="..\src\csocket.cpp" />
-    <ClCompile Include="..\src\cs_ev.c" />
-    <ClCompile Include="..\src\dictionarySystem.cpp" />
-    <ClCompile Include="..\src\english.cpp" />
-    <ClCompile Include="..\src\englishtagger.cpp" />
-    <ClCompile Include="..\src\evserver.cpp" />
-    <ClCompile Include="..\src\factSystem.cpp" />
-    <ClCompile Include="..\src\jsmn.cpp" />
-    <ClCompile Include="..\src\os.cpp" />
-    <ClCompile Include="..\src\functionExecute.cpp" />
-    <ClCompile Include="..\src\infer.cpp" />
-    <ClCompile Include="..\src\mainSystem.cpp" />
-    <ClCompile Include="..\src\markSystem.cpp" />
-    <ClCompile Include="..\src\outputSystem.cpp" />
-    <ClCompile Include="..\src\patternSystem.cpp" />
-    <ClCompile Include="..\src\scriptCompile.cpp" />
-    <ClCompile Include="..\src\secure.cpp" />
-    <ClCompile Include="..\src\spellcheck.cpp" />
-    <ClCompile Include="..\src\systemVariables.cpp" />
-    <ClCompile Include="..\src\tagger.cpp" />
-    <ClCompile Include="..\src\testing.cpp" />
-    <ClCompile Include="..\src\textUtilities.cpp" />
-    <ClCompile Include="..\src\tokenSystem.cpp" />
-    <ClCompile Include="..\src\topicSystem.cpp" />
-    <ClCompile Include="..\src\userCache.cpp" />
-    <ClCompile Include="..\src\userSystem.cpp" />
-    <ClCompile Include="..\src\variableSystem.cpp" />
+    <ClCompile Include="..\SRC\constructCode.cpp" />
+    <ClCompile Include="..\SRC\csocket.cpp" />
+    <ClCompile Include="..\SRC\cs_ev.c" />
+    <ClCompile Include="..\SRC\dictionarySystem.cpp" />
+    <ClCompile Include="..\SRC\english.cpp" />
+    <ClCompile Include="..\SRC\englishtagger.cpp" />
+    <ClCompile Include="..\SRC\evserver.cpp" />
+    <ClCompile Include="..\SRC\factSystem.cpp" />
+    <ClCompile Include="..\SRC\jsmn.cpp" />
+    <ClCompile Include="..\SRC\os.cpp" />
+    <ClCompile Include="..\SRC\functionExecute.cpp" />
+    <ClCompile Include="..\SRC\infer.cpp" />
+    <ClCompile Include="..\SRC\mainSystem.cpp" />
+    <ClCompile Include="..\SRC\markSystem.cpp" />
+    <ClCompile Include="..\SRC\outputSystem.cpp" />
+    <ClCompile Include="..\SRC\patternSystem.cpp" />
+    <ClCompile Include="..\SRC\scriptCompile.cpp" />
+    <ClCompile Include="..\SRC\secure.cpp" />
+    <ClCompile Include="..\SRC\spellcheck.cpp" />
+    <ClCompile Include="..\SRC\systemVariables.cpp" />
+    <ClCompile Include="..\SRC\tagger.cpp" />
+    <ClCompile Include="..\SRC\testing.cpp" />
+    <ClCompile Include="..\SRC\textUtilities.cpp" />
+    <ClCompile Include="..\SRC\tokenSystem.cpp" />
+    <ClCompile Include="..\SRC\topicSystem.cpp" />
+    <ClCompile Include="..\SRC\userCache.cpp" />
+    <ClCompile Include="..\SRC\userSystem.cpp" />
+    <ClCompile Include="..\SRC\variableSystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0FE8431D-E404-4E5C-8CC5-D17DDD8430C0}</ProjectGuid>
@@ -80,7 +80,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -101,7 +101,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\..\</OutDir>
+    <OutDir>$(SolutionDir)\..\BINARIES</OutDir>
     <GenerateManifest>false</GenerateManifest>
     <IncludePath>c:\chatscript/privatesrc;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
     <LibraryPath>$(ProjectDir)..SRC/;../SRC/curl;$(LibraryPath)</LibraryPath>
@@ -109,8 +109,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>../</OutDir>
+    <OutDir>../BINARIES/</OutDir>
     <TargetName>ChatScript</TargetName>
+    <IncludePath>c:\chatscript/privatesrc;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <LibraryPath>$(ProjectDir)..SRC/;../SRC/curl;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -122,14 +125,14 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/J %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\lib\libev;..\src\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\libev;..\SRC\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ShowIncludes>false</ShowIncludes>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>..\$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>..\BINARIES\$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
     </Link>
@@ -152,6 +155,7 @@
       <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
       <MinimalRebuild>true</MinimalRebuild>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <AdditionalIncludeDirectories>..\lib\libev;..\SRC\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -159,7 +163,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <OutputFile>..\ChatScript.exe</OutputFile>
+      <OutputFile>..\BINARIES\ChatScript.exe</OutputFile>
       <AdditionalDependencies>ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

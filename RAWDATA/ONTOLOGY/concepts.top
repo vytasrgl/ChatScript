@@ -990,7 +990,7 @@ concept: ~length_words (foot inch length long m meter short wide width )
 concept: ~lethality_words (benign dangerous deadly destructive edible fatal harmless hazardous healing invulnerable killer murderous nonpoisonous nontoxic poisonous radioactive safe 
           toxic virulent )
 concept: ~lettercount ADJECTIVE ADJECTIVE_NORMAL (1-letter 2-letter 3-letter 4-letter 5-letter 6-letter 7-letter 8-letter 9-letter )
-concept: ~letters (a B c C d D E F G H I J k K l L m M N O P Q R S T u U v V w W x X Y Z )
+concept: ~letters ('a B c C d D E F G H 'I J k K l L m M N O P Q R S T u U v V w W x X Y Z )
 concept: ~library (~book library )
 concept: ~life_science (agriculture anatomy biochemistry bioengineering biology botany cytology ecology entomology forensics forestry genetics microbiology oceanography ornithology 
           physiology zoology )
@@ -1450,8 +1450,8 @@ concept: ~occupation_transport PROBABLE_NOUN (automotive_body_repairer automotiv
 concept: ~occupation_writer PROBABLE_NOUN (art_editor author biographer bookbinder copy_writer copywriter editor journalist librarian military_writer novelist photojournalist poet publisher 
           reporter science_fiction_writer screenwriter speechwriter sports_writer technical_illustrator technical_writer writer )
 concept: ~oldlist (ancient antique archaic first historical old original quaint second-hand start used vintage )
-concept: ~omnivore (aardvark badger bear bluejay catfish chicken chipmunk cockroach coyote crane dolphin emu flamingo fly fox goose hedgehog human hummingbird I lemur magpie crow mouse 
-          opossum oriole ostrich otter person pig raccoon rat raven roadrunner robin seagull shark skunk sloth squirrel starling swan wasp whale woodpecker yellow_jacket you )
+concept: ~omnivore (aardvark badger bear bluejay catfish chicken chipmunk cockroach coyote crane dolphin emu flamingo fly fox goose hedgehog human hummingbird 'I lemur magpie crow mouse 
+          opossum oriole ostrich otter person pig raccoon rat raven roadrunner robin seagull shark skunk sloth squirrel starling swan wasp whale woodpecker yellow_jacket 'you )
 concept: ~opinion (~opinion_verbs attitude_toward belief_about conviction feel_about impression_of notion_of opinion position_on sentiment slant_on stance_on stand_on standpoint take_on 
           think_about think_of think_to thought view viewpoint )
 concept: ~opinionset (~opinion approve attitude favor stand view view_on )
@@ -1995,7 +1995,7 @@ concept: ~videogame_software_companies NOUN NOUN_PROPER_SINGULAR (2K_Games 3DO A
           Capcom Coleco Crystal_Dynamics Disney_Interactive Eidos Electronic_Arts Enix GT_Interactive Hudson_Soft LucasArts Nintendo Radical Sega Telltale_Games Vivendi )
 concept: ~virtual_pets (Furby Hatchi Pou tamagochi virtual_pet )
 concept: ~vitamin (vitamin~1 )
-concept: ~vowels (a A e E i I o O u U y Y )
+concept: ~vowels ('a A e E i 'I o O u U y Y )
 concept: ~warm (hot warm )
 concept: ~warstuff (action~3 blockade electronic_warfare~1 encirclement~1 war war~2 )
 concept: ~water_drinks (glass_of_water tonic water )

@@ -79,7 +79,7 @@ static void fillAddr(const string &address, unsigned short port, sockaddr_in &ad
 }
 
 //   Socket Code
-#define MAKEWORDX(a, b)      ((unsigned short)(((BYTE)(((DWORD_PTR)(a)) & 0xff)) | ((unsigned short)((BYTE)(((DWORD_PTR)(b)) & 0xff))) << 8))
+#define MAKEWORDX(a, b)      ((unsigned short)(((BYTE)(((DWORD_PTR)(a)) & 0xff)) | (((unsigned short)((BYTE)(((DWORD_PTR)(b)) & 0xff))) << 8)))
 
 CSocket::CSocket(int type, int protocol) throw(SocketException) {
   #ifdef WIN32
@@ -894,7 +894,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		char* at = buffer; // where we read a string starting at
 		while (strs < 3) // read until you get 3 c strings... java sometimes sends 1 char, then the rest... tedious
 		{
-			unsigned int len1 = sock->recv(p, SERVERTRANSERSIZE-50); // leave ip address in front alone
+			int len1 = sock->recv(p, SERVERTRANSERSIZE-50); // leave ip address in front alone
 			len += len1; // total read in so far
 			if (len1 <= 0 || len >= (MAX_BUFFER_SIZE - 100))  // error or too big a transfer. we dont want it
 			{

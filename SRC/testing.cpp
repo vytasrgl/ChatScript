@@ -1320,7 +1320,7 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 	{
 		if (bufferIndex > 6) return;
 
-		if (!strnicmp(readBuffer,":trace",10))
+		if (!strnicmp(readBuffer,":trace",6))
 		{
 			trace = atoi(readBuffer+11);
 			continue;
@@ -1336,13 +1336,12 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 		char* topLevelRule = GetRule(topicID,TOPLEVELID(verifyRuleID));	// the top level rule (if a rejoinder)
 		char* rejoinderTop = NULL;
 		int rejoinderTopID = 0;
-		if (!rule) 
-			break;
+		if (!rule) break;
 		if (rule && rule != topLevelRule) // its a rejoinder, find the start of the rejoinder area
 		{
 			rejoinderTop = topLevelRule;  // the limit of backward checking
-			char* at = rule; // start at the given rejoinder
 			rejoinderTopID = verifyRuleID;
+			char* at = rule; // start at the given rejoinder
 			while (*at >= *rule && REJOINDERID(rejoinderTopID)) // stop if drop below our level or go to top level rule
 			{
 				at = RuleBefore(topicID,at);
@@ -1909,7 +1908,7 @@ static void C_PennFormat(char* file)
 	char outfile[MAX_WORD_SIZE];
 	sprintf(outfile,"REGRESS/PENNTAGS/%s.txt",word); // where output is
 
-	if (!strnicmp(file,"stanford",4)) stanfordParser = true; // sentences end with . or ! or ?
+	if (!strnicmp(file,"stanford",8)) stanfordParser = true; // sentences end with . or ! or ?
 	FILE* out = FopenUTF8Write(outfile);
 	if (!out) return;
 	WalkDirectory(indir,PennWrite,(uint64)out);
@@ -2059,8 +2058,8 @@ reloop:
 		char word[MAX_WORD_SIZE];
 		char* ptr = SkipWhitespace(readBuffer);
 		if (!*ptr || *ptr == '#') continue;
-		if (!strnicmp(ptr,":exit",5)) break;
-		if (!strnicmp(ptr,":include ",8))
+		if (!strnicmp(ptr,":exit ",6)) break;
+		if (!strnicmp(ptr,":include ",9))
 		{
 			if (oldin) 
 			{
@@ -2086,7 +2085,7 @@ reloop:
 		len = 0;
 		int matchedquote = 0;
 		bool first = true;
-		char* original = ptr;
+		char* originalPtr = ptr;
 		while (ptr && *ptr)
 		{
 			ptr = ReadCompiledWord(ptr,word);
@@ -2123,7 +2122,7 @@ reloop:
 			else if (*word1 == '\'' && word1[1] == '\'') 
 			{
 				if (first) 
-					Log(STDUSERLOG,"Closing quote at start: %d %s \r\n",currentFileLine,original);
+					Log(STDUSERLOG,"Closing quote at start: %d %s \r\n",currentFileLine,originalPtr);
 				strcat(at,"\""); // close quote
 				matchedquote |= 2;
 			}
@@ -2209,7 +2208,7 @@ reloop:
 retry:
 			unsigned int ok = right;
 			char* sep = strchr(tags[i],'|');
-			char* original = wordStarts[i];
+			char* originalWord = wordStarts[i];
 			if (sep) *sep = 0;
 			
 			if (bitCounts[i] != 1 && (tokenControl & DO_PARSE) == DO_PARSE  ) // did not solve even when parsed
@@ -2736,7 +2735,7 @@ static void C_VerifyPos(char* file)
 	while (ReadALine(readBuffer,in) >= 0)
 	{
 		char* ptr =  SkipWhitespace(readBuffer);
-		if (!strnicmp(ptr,"#END",3)) break;
+		if (!strnicmp(ptr,"#END",4)) break;
 		if (!*ptr || *ptr == '#') continue;
 		// debug command
 		if (*ptr == ':' && IsAlphaUTF8(ptr[1]))
@@ -3407,7 +3406,6 @@ static void C_WikiText(char* ptr)
 				bullet = false;
 				pendingtextclose = false;
 				table = 0;
-				text = false;
 				superscript = false;
 				subscript = false;
 				italic = false;
@@ -3856,7 +3854,6 @@ static void C_Build(char* input)
 		FILE* in = FopenUTF8Write(logFilename);
 		if (in) fclose(in);
 		Log(STDUSERLOG,"ChatScript Version %s  compiled %s\r\n",version,compileDate);
-
 		char word[MAX_WORD_SIZE];
 		sprintf(word,"files%s.txt",file);
 		if (file[len-1] == '0') buildId = BUILD0;
@@ -4099,8 +4096,6 @@ static void ShowConcepts(MEANING T)
 		//   immediate sets of this base
 		for  (unsigned int k = 1; k <= size; ++k)
 		{
-			if (index && k != index) continue; //   not all, just correct meaning
-
 			//   get meaningptr spot facts are stored (synset head)
 			if (!GetMeaningCount(E) ) T = MakeMeaning(E);	//   a generic since we have no meanings
 			else 
@@ -4114,8 +4109,6 @@ static void ShowConcepts(MEANING T)
 		//   up one wordnet hierarchy based on each meaning
 		for  (unsigned int k = 1; k <= size; ++k)
 		{
-			if (index && k != index) continue; //   not all, just correct meaning
-
 			//   get meaningptr spot facts are stored (synset head)
 			if (!GetMeaningCount(E) ) T = MakeMeaning(E);	//   a generic since we have no meanings
 			else 
@@ -4375,7 +4368,7 @@ static void C_Overlap(char* buffer)
 	}
 	buffer = ReadCompiledWord(buffer,set2);
 	WORDP D = FindWord(set2);
-	if (!E || E->word[0] != '~')
+	if (!D || D->word[0] != '~')
 	{
 		printf("no such set %s\r\n",set2);
 		return;
@@ -4491,7 +4484,6 @@ static bool DumpUpHierarchy(MEANING T,int depth)
 				//   walk wordnet hierarchy
 				WORDP P = Meaning2Word(parent);
 				Log(STDUSERLOG,"   ");
-				for (int j = 0; j < depth; ++j) Log(STDUSERLOG,"   "); 
 				Log(STDUSERLOG," is %s ",WriteMeaning(parent)); //   we show the immediate parent
 				char* gloss = GetGloss(P,Meaning2Index(parent));
 				if (gloss) Log(STDUSERLOG," %s ",gloss);
@@ -5558,7 +5550,7 @@ static void C_List(char* input)
 			if (D->internalBits & DEFINES)
 			{
 				Log(STDUSERLOG,"    %s ",D->word);
-				if ((setControl & (uint64) (1 << i))) Log(STDUSERLOG," SAVED ");
+				if ((setControl & (uint64) (1ull << i))) Log(STDUSERLOG," SAVED ");
 				Log(STDUSERLOG," %s\r\n",Meaning2Word(D->inferMark)->word);
 				D->internalBits ^= DEFINES;
 				D->inferMark = 0;
@@ -6134,9 +6126,11 @@ static void C_Trace(char* input)
 {
 	char word[MAX_WORD_SIZE];
 	unsigned int flags = trace;
-	if (!*input) ShowTrace(trace,true);
-	if (!*input) return;
-
+	if (!*input) 
+	{
+		ShowTrace(trace,true);
+		return;
+	}
 	ReadCompiledWord(input,word);
 	if (!stricmp(word,"none")) // turn off all topics and macros as well
 	{
@@ -6645,7 +6639,7 @@ static void DisplayTopic(char* name,int spelling)
 					if (canonical)
 					{
 						// if canonical is upper and entry is lower, dont show canonical
-						if (entry && canonical && IsUpperCase(*canonical->word) && !IsUpperCase(*entry->word)) {;}
+						if (entry && IsUpperCase(*canonical->word) && !IsUpperCase(*entry->word)) {;}
 						else if (!stricmp(canonical->word,"unknown-word")) {;}
 						else strcpy(word,canonical->word);
 					}
@@ -7342,10 +7336,12 @@ static void TrimIt(char* name,uint64 flag)
 	char prior[MAX_BUFFER_SIZE];
 	FILE* in = FopenReadWritten(name);
 	if (!in) return;
-	if ((++filesSeen % 1000) == 0) printf( ((filesSeen % 100000) == 0) ? (char*)"+\r\n" : (char*) "."); // mark progress thru files
+	char* format = ((filesSeen % 100000) == 0) ? (char*)"+\r\n" : (char*) ".";
+	if ((++filesSeen % 1000) == 0) printf(format); // mark progress thru files
 
 	bool header = false;
 	FILE* out = FopenUTF8WriteAppend("TMP/tmp.txt");
+	if (!out) return;
 	char file[MAX_WORD_SIZE];
 	*file = 0;
 	*prior = 0;
@@ -7392,15 +7388,15 @@ static void TrimIt(char* name,uint64 flag)
 		at = strchr(ptr,'(');
 		if (!at) continue;
 		*at++ = 0;
-		char* end = strchr(at,')');
+		char* end = strchr(at,')'); 
 		if (!end) continue;
-		*end = 0;
+		*end = 0; // terminate around topic removing )
+		char topic[MAX_WORD_SIZE];
+		at = ReadCompiledWord(at,topic);	
+	
 		char* ipp = strstr(ptr,"ip:");
 		if (ipp) ptr = ReadCompiledWord(ipp+3,ipp);
 
-		char topic[MAX_WORD_SIZE];
-		at = ReadCompiledWord(at,topic);	
-		
 		char volley[MAX_WORD_SIZE];
 		at = ReadCompiledWord(end+1,volley); 
 		char* input = SkipWhitespace(at); // now points to user input start
@@ -7602,7 +7598,7 @@ static void C_Trim(char* input) // create simple file of user chat from director
 		else sprintf(file,"%s/%s.txt",users,word);
 		input = ReadCompiledWord(input,word);
 	}
-	else if (strstr(word,".txt")) 
+	else if (strstr(word,".txt")) // is a full file name
 	{
 		*directory = 0;	
 		strcpy(file,word);

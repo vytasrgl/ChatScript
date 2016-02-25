@@ -21,21 +21,25 @@ unsigned char extendedascii2utf8[128] =
 	0,0xbc,0xa9,0xa2,0xa4,0xa0,0xa5, 0xa7,0xaa,0xab,	0xa8,0xaf,0xae,0xac,0x84,0x85,0x89,0xa6,0x86,0xb4,  
 	0xb6,0xb2,0xbb,0xb9,0xbf,0x96,0x9c,0xa2,0xa3,0xa5,	0x00,0xa1,0xad,0xb3,0xba,0xb1,0x91,
 };
+   const char* word;		//   word of a number
+    int value;				//   value of word
+	unsigned int length;	//   length of word
+	int realNumber;			// the type, one two are real, third is fraction
 
 NUMBERDECODE numberValues[] = { 
- {"zero",0,4,REALNUMBER}, {"zilch",0,5,0,false},
- {"one",1,3,REALNUMBER},{"first",1,5},{"once",1,4,0,false},{"ace",1,3,0,false},{"uno",1,3,0,false},
- {"two",2,3,REALNUMBER},{"second",2,6}, {"twice",2,5,0,false},{"couple",2,6,0,false},{"deuce",2,5,0,false}, {"pair",2,4,0,false}, {"half",2,4,FRACTION_NUMBER,false}, 
- {"three",3,5,REALNUMBER},{"third",3,5,REALNUMBER},{"triple",3,6,0,false},{"trey",3,4,0,false},{"several",3,7,0,false},
- {"four",4,4,REALNUMBER},{"quad",4,4,0,false},{"quartet",4,7,0,false},{"quarter",4,7,FRACTION_NUMBER,false},
- {"five",5,4,REALNUMBER},{"quintuplet",5,10,0,false},{"fifth",5,5,REALNUMBER},
+ {"zero",0,4,REALNUMBER}, {"zilch",0,5,0},
+ {"one",1,3,REALNUMBER},{"first",1,5},{"once",1,4,0},{"ace",1,3,0},{"uno",1,3,0},
+ {"two",2,3,REALNUMBER},{"second",2,6}, {"twice",2,5,0},{"couple",2,6,0},{"deuce",2,5,0}, {"pair",2,4,0}, {"half",2,4,FRACTION_NUMBER}, 
+ {"three",3,5,REALNUMBER},{"third",3,5,REALNUMBER},{"triple",3,6,0},{"trey",3,4,0},{"several",3,7,0},
+ {"four",4,4,REALNUMBER},{"quad",4,4,0},{"quartet",4,7,0},{"quarter",4,7,FRACTION_NUMBER},
+ {"five",5,4,REALNUMBER},{"quintuplet",5,10,0},{"fifth",5,5,REALNUMBER},
  {"six",6,3,REALNUMBER},
  {"seven",7,5,REALNUMBER}, 
- {"eight",8,5,REALNUMBER},{"eigh",8,4}, // because eighth strips the th
- {"nine",9,4,REALNUMBER}, {"nin",9,3}, //because ninth strips the th
+ {"eight",8,5,REALNUMBER},{"eigh",8,4,0}, // because eighth strips the th
+ {"nine",9,4,REALNUMBER}, {"nin",9,3,0}, //because ninth strips the th
  {"ten",10,3,REALNUMBER},
  {"eleven",11,6,REALNUMBER}, 
- {"twelve",12,6,REALNUMBER}, {"twelf",12,5},{"dozen",12,5,0,false},
+ {"twelve",12,6,REALNUMBER}, {"twelf",12,5,0},{"dozen",12,5,0},
  {"thirteen",13,8,REALNUMBER},
  {"fourteen",14,8,REALNUMBER},
  {"fifteen",15,7,REALNUMBER},
@@ -43,7 +47,7 @@ NUMBERDECODE numberValues[] = {
  {"seventeen",17,9,REALNUMBER},
  {"eighteen",18,8,REALNUMBER},
  {"nineteen",19,8,REALNUMBER},
- {"twenty",20,6,REALNUMBER},{"score",20,5},
+ {"twenty",20,6,REALNUMBER},{"score",20,5,0},
  {"thirty",30,6,REALNUMBER},
  {"forty",40,5,REALNUMBER},
  {"fifty",50,5,REALNUMBER},
@@ -52,7 +56,7 @@ NUMBERDECODE numberValues[] = {
  {"eighty",80,6,REALNUMBER},
  {"ninety",90,6,REALNUMBER},
  {"hundred",100,7,REALNUMBER},
- {"gross",144,5},
+ {"gross",144,5,0},
  {"thousand",1000,8,REALNUMBER},
  {"million",1000000,7,REALNUMBER},
  {"billion",1000000,7,REALNUMBER},
@@ -988,11 +992,22 @@ bool IsUrl(char* word, char* end)
             ++n;
         }
     }
-	if (!n) return false; // has none
+	if (n == 0) return false; // not possible
+	if (n > 0) // check for email
+	{
+		char* at = strchr(tmp,'@');
+		if (at) 
+		{
+			char* dot = strchr(at+2,'.'); // must have character after @ and before .
+			if (dot && IsAlphaUTF8(dot[1])) return true;
+		}
+	}
+	if (n < 3) return false; // has none or only 1 or 2
+	if (n < 3) return false; // has none or only 1 or 2
     if (n == 3) return true;  // exactly 3 a std url
 
 	//   check suffix since possible 4 part url:  www.amazon.co.uk OR 1 parter like amazon.com  or other --- also 2 dot urls including amazon.com and fireze.it
-    ptr = strrchr(tmp,'.'); // last period
+    ptr = strrchr(tmp,'.'); // last period - KNOWN to exist
 	if (IsAlphaUTF8(ptr[1]) && IsAlphaUTF8(ptr[2]) && !ptr[3]) return true;	 // country code at end?
 	if ((ptr-word) >= 3 && ptr && *(ptr-3) == 'c' && (*ptr-2) == 'o') return true; // another form of country code
 	++ptr;
@@ -1692,7 +1707,8 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 		{
 			if (quote) {}
 			else if (c == ' ') break;
-			if (c == '"') quote = !quote;
+			if (c == '"' && (ptr-start) > 1  && *(ptr-2) != '\\'  ) // not an internal escaped quote
+				quote = !quote;
 
 			if (special) // try to end a variable if not utf8 char or such
 			{

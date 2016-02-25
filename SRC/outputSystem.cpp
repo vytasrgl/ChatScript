@@ -175,7 +175,6 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 	if (*input == ':') // has been compiled by script compiler. safe to execute fully. actual string is "^:xxxxx" 
 	{
 		++input;
-		FunctionResult result;
  		Output(input,output,result,controls|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); // directly execute the content but no leading space
 		input[len] = c;
 		return;
@@ -243,7 +242,6 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 			
 			// go get value of reference and copy over
 			char* value = AllocateBuffer();
-			FunctionResult result;
 			ReadCommandArg(var,value,result);
 			output = AddFormatOutput(value, output,controls);
 			FreeBuffer();
@@ -294,7 +292,6 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		}
 		else if (*input == '^' && (IsAlphaUTF8(input[1]) ))
 		{
-			FunctionResult result;
 			char* at = var;
 			*at++ = *input++;
 			while (IsAlphaUTF8(*input) ) *at++ = *input++;
@@ -314,7 +311,6 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		}
 		else if (*input == '[')
 		{
-			FunctionResult result;
 			input = ProcessChoice(input,output,result,controls);   
 			output += strlen(output);
 		}
@@ -431,7 +427,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 			}
 			if (*(endptr-1) != '\\') break; // ignore literal \[
 		}
-        // choice can be simple: [ xxx ]  or conditional [ $var1 xxx] but avoid assignment [ $var1 = 10 xxx ] 
+        // choice can be simple: [ xxx ]  or conditional [ $var1 xxx] or conditional [!$var1 xx] but avoid assignment [ $var1 = 10 xxx ] 
 		char word[MAX_WORD_SIZE];
 		char* base = ptr + 1; // start of 1st token within choice
 		char* simpleOutput = ReadCompiledWord(base,word);
@@ -1072,7 +1068,6 @@ retry:
 			ptr = Output_AttachedPunctuation(word,ptr,  space, buffer, (buffer >= start) ? (controls | OUTPUT_ISOLATED_PERIOD)  : controls,result);
 			break;
 		}
-		// DROP THRU if not debug command
         default: //  text or C-Script
 			ptr = Output_Text(word, ptr, space, buffer, controls,result);
         }

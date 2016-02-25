@@ -255,7 +255,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 /////////////////////////////////////////////////////////////////////////////////
 
 // CANNOT REFERNCE ABOVE IN POS TAGGING RULES
-
+// See MARK_FLAGS for which system flags are exposed as concepts
 // end system flags -- THIS IS A REQUIRED MARKER FOR ABOVE ZONE
 
 // parse flags -- THIS IS A REQUIRED MARKER FOR BELOW ZONE   words marked ```value  

@@ -526,7 +526,7 @@ Allocations happen during volley processing as
 8. JSON reading
 */
 	len *= bytes; // this many units of this size
-	if (len == 0) len = strlen(word);
+	if (len == 0 && word) len = strlen(word);
 	if (word) ++len;	// null terminate string
 	size_t allocationSize = len;
 	if (bytes == 1 && dictionaryLocked && !compiling && !loading) 
@@ -573,7 +573,7 @@ Allocations happen during volley processing as
 		newword += ALLOCATESTRING_SIZE_SAFEMARKER;
 		allocationSize -= ALLOCATESTRING_SIZE_PREFIX + ALLOCATESTRING_SIZE_SAFEMARKER; // includes the end of string marker
 		if (ALLOCATESTRING_SIZE_PREFIX == 3)		*newword++ = (unsigned char)(allocationSize >> 16); 
-		*newword++ = (unsigned char)(allocationSize >> 8) && 0x000000ff;  
+		*newword++ = (unsigned char)(allocationSize >> 8) & 0x000000ff;  
 		*newword++ = (unsigned char) (allocationSize & 0x000000ff);
 	}
 	
@@ -709,7 +709,7 @@ WORDP FindWord(const char* word, int len,uint64 caseAllowed)
 	bool hasUTF8Characters;
 	uint64 fullhash = Hashit((unsigned char*) word,len,hasUpperCharacters,hasUTF8Characters); //   sets hasUpperCharacters and hasUTF8Characters 
 	unsigned int hash  = (fullhash % maxHashBuckets) + 1; // mod by the size of the table
-	if (caseAllowed & LOWERCASE_LOOKUP){;}
+	if (caseAllowed & LOWERCASE_LOOKUP){;} // stay in lower bucket regardless
 	else if (*word == '%' || *word == '$' || *word == '~'  || *word == '^') 
 	{
 		if (caseAllowed == UPPERCASE_LOOKUP) return NULL; // not allowed to find
@@ -721,29 +721,39 @@ WORDP FindWord(const char* word, int len,uint64 caseAllowed)
 
 	//   normal or fixed case bucket
 	WORDP D;
+	WORDP almost;
 	if (caseAllowed & (PRIMARY_CASE_ALLOWED|LOWERCASE_LOOKUP|UPPERCASE_LOOKUP))
 	{
+		almost = NULL;
 		D = dictionaryBase + hash;
 		while (D != dictionaryBase)
 		{
-			if (fullhash == D->hash && D->length == len)
+			if (fullhash == D->hash && D->length == len && !strnicmp(D->word,word,len)) // must use strn because word may be only part of param
 			{
-				if (!strnicmp(D->word,word,len)) return D;
+				if (caseAllowed == LOWERCASE_LOOKUP) return D; // incoming word MIGHT have uppercase letters but we will be in lower bucket
+				else if (hasUpperCharacters) // we are looking for uppercase or primary case and are in uppercase bucket
+				{
+					if (!strncmp(D->word,word,len)) return D; // exactly  what we want in upper case
+					else almost = D; // remember semi-match in upper case
+				}
+				else // if uppercase lookup, we are in uppercase bucket (input was lower case) else we are in lowercase bucket
+				{
+					return D; //  it is exactly what we want in lower case OR its an uppercase acceptable match
+				}
 			}
 			D = dictionaryBase + GETNEXTNODE(D);
 		}
+		if (almost) return almost;	// uppercase request we found in a different form only
 	}
 
-    //    alternate case bucket
+    //    alternate case bucket (checking opposite case)
 	if (caseAllowed & SECONDARY_CASE_ALLOWED) 
 	{
+		almost = NULL;
 		D = dictionaryBase + hash + ((hasUpperCharacters) ? -1 : 1);
 		while (D != dictionaryBase)
 		{
-			if (fullhash == D->hash && D->length == len)
-			{
-				if (!strnicmp(D->word,word,len)) return D;
-			}
+			if (fullhash == D->hash && D->length == len && !strnicmp(D->word,word,len)) return D; // they appear to match from opposite buckets
 			D = dictionaryBase + GETNEXTNODE(D);
 		}
 	}
@@ -811,17 +821,14 @@ WORDP StoreWord(char* word, uint64 properties)
 	}
 	WORDP base = dictionaryBase + hash;
 
-	//   locate spot existing entry goes
+	//   locate spot existing entry goes - we use different buckets for lower case and upper case forms
     WORDP D = base; 
 	while (D != dictionaryBase)
     {
- 		if (fullhash == D->hash && D->length == len)
+ 		if (fullhash == D->hash && D->length == len && !strcmp(D->word,word)) // find EXACT match
 		{
-			if (!strnicmp(D->word,word,len))
-			{
-				AddProperty(D,properties);
-				return D;
-			}
+			AddProperty(D,properties);
+			return D;
 		}
 		D = dictionaryBase + GETNEXTNODE(D);
     }  
@@ -1484,7 +1491,6 @@ static WORDP ReadBinaryEntry(FILE* in)
 			char* string = ReadString(0);
 			D->w.glosses[i] = String2Index(string) | (index << 24);
 		}
-		AddInternalFlag(D,HAS_GLOSS);
 	}
 	if (Read8(0) != '0')
 	{
@@ -1610,7 +1616,7 @@ void WriteDictionary(WORDP D,uint64 data)
 {
 	if (D->internalBits & DELETED_MARK) return;
 	if (*D->word == '$' && D->word[1]) return;	// var never and money never, but let $ punctuation through
-	RemoveInternalFlag(D,(unsigned int)(-1 ^ (UTF8|UPPERCASE_HASH|DEFINES|HAS_GLOSS)));  // keep only these
+	RemoveInternalFlag(D,(unsigned int)(-1 ^ (UTF8|UPPERCASE_HASH|DEFINES)));  // keep only these
 
 	// choose appropriate subfile
 	char c = GetLowercaseData(*D->word); 
@@ -1758,7 +1764,6 @@ void AddGloss(WORDP D,char* glossy,unsigned int index) // only a synset head can
 		memset(glosses,0,(count<<1) * sizeof(MEANING)); //   just to be purist
 		memcpy(glosses+1,D->w.glosses+1,oldCount * sizeof(MEANING));
 		D->w.glosses =  glosses;
-		AddInternalFlag(D,HAS_GLOSS);
 	}
 	*glosses = count;
 	glosses[count] = gloss;
@@ -1965,7 +1970,6 @@ bool ReadDictionary(char* file)
 				MEANING* glosses = (MEANING*) AllocateString(NULL,(glossCount+1), sizeof(MEANING),true); 
 				glosses[0] = glossCount;
 				D->w.glosses =  glosses;
-				AddInternalFlag(D,HAS_GLOSS);
 			}
 			for (unsigned int i = 1; i <= meaningCount; ++i) //   read each meaning
 			{
@@ -2131,7 +2135,7 @@ void ReadSubstitutes(char* name,unsigned int fileFlag, bool filegiven)
 		}
 		D = StoreWord(original,AS_IS); //   original word
 		AddInternalFlag(D,fileFlag|HAS_SUBSTITUTE);
-		RemoveInternalFlag(D,HAS_GLOSS); // no longer usable as that
+		D->w.glosses = NULL;
 		if (!(D->systemFlags & CONDITIONAL_IDIOM)) D->w.substitutes = NULL;
 		else printf("BAD Substitute conflicts with conditional idiom %s\r\n",D->word);
 		if (GetPlural(D))  SetPlural(D,0);
@@ -2185,7 +2189,7 @@ void ReadSubstitutes(char* name,unsigned int fileFlag, bool filegiven)
 			D = StoreWord(copy,0);
 			AddInternalFlag(D,fileFlag|HAS_SUBSTITUTE);
  			D->w.substitutes = S;
- 			RemoveInternalFlag(D,HAS_GLOSS); // no longer usable as that
+			D->w.glosses = NULL;
 			if (GetPlural(D)) SetPlural(D,0);
 			if (GetComparison(D)) SetComparison(D,0);
 			if (GetTense(D)) SetTense(D,0);
@@ -2257,7 +2261,7 @@ void ReadAbbreviations(char* name)
 void ReadQueryLabels(char* name)
 {
     char word[MAX_WORD_SIZE];
-    FILE* in = FopenStaticReadOnly(name); // LIVEDATA queries.txt
+    FILE* in = FopenStaticReadOnly(name); // LIVEDATA ~COMPANIESqueries.txt
     if (!in) return;
     while (ReadALine(readBuffer,in)  >= 0) 
     {
@@ -2732,7 +2736,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	uint64 oldtoken = tokenControl;
 	tokenControl |= STRICT_CASING;
 	WORDP D = Meaning2Word(M);
-	if (D && IS_NEW_WORD(D) && (*D->word != '~' && *D->word == '$'   && *D->word == '^')) D = 0;	// debugging may have forced this to store, its not in base system
+	if (D && IS_NEW_WORD(D) && (*D->word == '~' || *D->word == '$'   || *D->word == '^')) D = 0;	// debugging may have forced this to store, its not in base system
 	if (limit == 0) limit = 5; // default
 	if (D) 	Log(STDUSERLOG,"\r\n%s (%d):\r\n  Properties: ",name,Word2Index(D));
 	else Log(STDUSERLOG,"\r\n%s (unknown word):\r\n  Properties: ",name);

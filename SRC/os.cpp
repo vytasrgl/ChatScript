@@ -66,7 +66,7 @@ unsigned int oldRandIndex = 0;
 
 bool KeyReady()
 {
-	if (sourceFile) return true;
+	if (sourceFile && sourceFile != stdin) return true;
 #ifdef WIN32
 	return _kbhit() ? true : false;
 #else
@@ -121,7 +121,7 @@ void ResetBuffers()
 {
 	globalDepth = 0;
 	bufferIndex = baseBufferIndex;
-	memset(memDepth,0,256); 
+	memset(memDepth,0,511); 
 }
 
 void CloseBuffers()

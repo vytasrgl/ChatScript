@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.2";
+char* version = "6.2b";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -173,8 +173,10 @@ void CreateSystem()
 	char data[MAX_WORD_SIZE];
 #ifdef EVSERVER
 	sprintf(data,"EVSERVER ChatScript Version %s  %ld bit %s compiled %s\r\n",version,(long int)(sizeof(char*) * 8),os,compileDate);
+#elif DEBUG
+	sprintf(data,"ChatScript Debug Version %s  %ld bit %s compiled %s\r\n",version,(long int)(sizeof(char*) * 8),os,compileDate);
 #else
-	sprintf(data,"ChatScript Version %s  %ld bit %s compiled %s\r\n",version,(long int)(sizeof(char*) * 8),os,compileDate);
+	sprintf(data,"ChatScript Release Version %s  %ld bit %s compiled %s\r\n",version,(long int)(sizeof(char*) * 8),os,compileDate);
 #endif
 	if (server)  Log(SERVERLOG,"Server %s",data);
 	printf("%s",data);
@@ -531,16 +533,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	if (redo) autonumber = true;
 
 	// defaults where not specified
-	if (server)
-	{
-		if (userLog == LOGGING_NOT_SET) userLog = 1;	// default ON for user if unspecified
-		if (serverLog == LOGGING_NOT_SET) serverLog = 1; // default ON for server if unspecified
-	}
-	else
-	{
-		if (userLog == LOGGING_NOT_SET) userLog = 1;	// default ON for nonserver if unspecified
-		if (serverLog == LOGGING_NOT_SET) serverLog = 1; // default on for nonserver 
-	}
+	if (userLog == LOGGING_NOT_SET) userLog = 1;	// default ON for user if unspecified
+	if (serverLog == LOGGING_NOT_SET) serverLog = 1; // default ON for server if unspecified
 	
 	int oldserverlog = serverLog;
 	serverLog = true;
@@ -1202,8 +1196,8 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output)
 	// compute response and hide additional information after it about why
 	FinishVolley(mainInputBuffer,output,NULL); // use original input main buffer, so :user and :bot can cancel for a restart of concerasation
 	char* after = output + strlen(output) + 1;
-	*after++ = 0xfe; // positive termination
-	*after++ = 0xff; // positive termination for servers
+	*after++ = (char)0xfe; // positive termination
+	*after++ = (char)0xff; // positive termination for servers
 	ComputeWhy(after);
 	after += strlen(after) + 1;
 	strcpy(after,activeTopic); // currently the most interesting topic
@@ -1834,7 +1828,14 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 		{
 			int changed = 0;
 			if (wordCount != originalCount) changed = true;
-			for (unsigned int i = 1; i <= wordCount; ++i) if (original[i] != wordStarts[i]) changed = i;
+			for (unsigned int i = 1; i <= wordCount; ++i) 
+			{
+				if (original[i] != wordStarts[i]) 
+				{
+					changed = i;
+					break;
+				}
+			}
 			if (changed)
 			{
 				Log(STDUSERLOG,"Substituted (");
@@ -1988,6 +1989,14 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 #ifndef NOMAIN
 int main(int argc, char * argv[]) 
 {
+#ifdef WIN32
+	if (!SetCurrentDirectory("..")) // move from BINARIES to top level
+		myexit("unable to change up\r\n");
+#else
+	chdir("..");
+#endif
+
+
 	if (InitSystem(argc,argv)) myexit("failed to load memory\r\n");
     if (!server) MainLoop();
 #ifndef DISCARDSERVER

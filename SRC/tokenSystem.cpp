@@ -453,7 +453,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	if (*ptr == '.' && ptr[1] == '.' && ptr[2] == '.' && ptr[3] != '.') return ptr+3;
 	if (*ptr == '-' && ptr[1] == '-' && ptr[2] == '-') ptr[2] = ' ';	// change excess to space
 	if (*ptr == '-' && ptr[1] == '-' && (ptr[2] == ' ' || IsAlphaUTF8(ptr[2]) )) return ptr + 2; // the -- break
-	if (*ptr == ';' && ptr[1] != ')' && ptr[1] == '(') return ptr + 1; // semicolon not emoticon
+	if (*ptr == ';' && ptr[1] != ')' && ptr[1] != '(') return ptr + 1; // semicolon not emoticon
 	if (*ptr == ',' && ptr[1] != ':') return ptr + 1; // comma not emoticon
 
 	// Things that are normally separated as single character tokens
@@ -465,7 +465,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	}
 	else if (c == '\'' && next == '\'' && ptr[2] == '\'' && ptr[3] == '\'') return ptr + 4;	// '''' marker
 	else if (c == '\'' && next == '\'' && ptr[2] == '\'') return ptr + 3;	// ''' marker
-	else if (c == '\'' && next == '\'') return ptr + 2;	// '' marker
 	else if (c == '\'' && next == '\'') return ptr + 2;	// '' marker
 	else if (c == '&' && !(tokenControl & TOKEN_AS_IS))  //  we need to change this to "and"
 	{
@@ -561,6 +560,20 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		}
 
 		else return end;
+	}
+
+	// could it be email or web address?
+	char item[MAX_WORD_SIZE];
+	int mylen = end - ptr;
+	strncpy(item,ptr,mylen);
+	item[mylen] = 0;
+	char* atsign = strchr(item,'@'); // possible email?
+	if (atsign)
+	{
+		if (strchr(atsign+1,'.') && IsAlphaUTF8(item[mylen-1]) &&  IsAlphaUTF8(item[mylen-2])) // can be domain data
+		{
+			return end;
+		}
 	}
 
 	// possessive ending? swallow whole token like "K-9's"

@@ -637,7 +637,6 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	if (trace & TRACE_OUTPUT && CheckTopicTrace())
 	{
 		char* answer = AllocateBuffer();
-		FunctionResult result;
 		logUpdated = false;
 		if (*word == '$') strcpy(answer,GetUserVariable(word));
 		else if (*word == '_') strcpy(answer,wildcardOriginalText[GetWildcardID(word)]);

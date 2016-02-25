@@ -1377,7 +1377,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 			{
 				if (i == (int)startSentence) answer = true;
 				else if ( i == (int) (startSentence+1) && *wordStarts[startSentence] == '"') answer = true;
-				if (answer & !notflag && direction == -1) endwrap = true;	// allowed to test wrap around end
+				if (answer && !notflag && direction == -1) endwrap = true;	// allowed to test wrap around end
 			}
 			else if ( bits > 100 && (unsigned int)i == endSentence) 
 			{
@@ -1403,6 +1403,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 					if (posValues[at] & VERB_BITS) break; // someone else may get it
 				}
 			}
+			break;
 		case HASPROPERTY: // system properties of lower case (never care about upper case properties)
 			answer = (lcSysFlags[i] & bits) != 0; 
 			break;
@@ -2085,7 +2086,7 @@ static bool ApplyRulesToWord(unsigned int j,bool & changed)
 	return false;
 }
 
-static void SetIdiom(unsigned int at, unsigned end)
+static void SetIdiom(unsigned int at, unsigned int end)
 {
 	posValues[at] = IDIOM;
 	allOriginalWordBits[at] = IDIOM;
@@ -2259,11 +2260,9 @@ unsigned int ProcessIdiom(char* word, unsigned int i, unsigned int words,bool &c
 			case  'w' : // is it this word
 				{
 				char* end = strchr(script,'.');
-				*end = 0;
-				if (canonicalLower[at] && !strcmp(canonicalLower[at]->word,script)) valid = !invert;
-				else valid = !invert;
+				valid = !invert;
 				*end = '.';
-				script = end - 1;
+				script = end - 1; // BUGGY???
 				break;
 				}
 			case  '=' : // matched, set this pos unit or set all words
@@ -2977,8 +2976,7 @@ void MarkTags(unsigned int i)
 			// determiners are a kind of adjective- "how *much time do you like" but we dont want them marked
 			//	if (bit & DETERMINER_BITS) MarkFacts(MakeMeaning(Dadjective),start,stop);
 			
-			if (bit & NOUN && finalPosValues[i] & NOUN_SINGULAR) MarkFacts(posMeanings[j],start,stop); // NOUNS which have singular like "well" but could be infinitive, are listed as nouns but not infintive
-			else MarkFacts(posMeanings[j],start,stop);
+			MarkFacts(posMeanings[j],start,stop); // NOUNS which have singular like "well" but could be infinitive, are listed as nouns but not infintive
 			if (bit & NOUN_HUMAN) // impute additional meanings
 			{
 				if (bits & (NOUN_PROPER_SINGULAR|NOUN_PROPER_PLURAL)) 
@@ -3238,7 +3236,7 @@ static void ErasePhrase(unsigned int i)
 
 static void AddRoleLevel(unsigned int roles,unsigned int i)
 {
-	if (roleIndex == (MAX_CLAUSES-1)) return;	 // overflow
+	if (roleIndex >= (MAX_CLAUSES-1)) return;	 // overflow
 	needRoles[++roleIndex] = roles; 
 	subjectStack[roleIndex] = 0;
 	verbStack[roleIndex] = 0;
@@ -3605,8 +3603,7 @@ void SetRole(unsigned int i, uint64 role,bool revise,unsigned int currentVerb)
 	if (role & VERB2 && roleIndex > 1)  // conjunction copy of a verb might be at main level but copy an object/verb2 "let us stand *and *hear the crowd"
 	{
 		// assume clause subject met, unless implicide clause starter -- bug 
-		if (!(needRoles[roleIndex] & CLAUSE) && needRoles[roleIndex] & SUBJECT2) needRoles[roleIndex] &= -1 ^ SUBJECT2;
-		else needRoles[roleIndex] &= -1 ^ SUBJECT2;  /// BUG 
+		needRoles[roleIndex] &= -1 ^ SUBJECT2;
 	}
 	if (role & OBJECT2 && roles[i-1] & OBJECT_COMPLEMENT) SetRole(i-1,INDIRECTOBJECT2); // need to revise backward "I had the mechanic *check the car"
 	if (role & MAINOBJECT && roles[i-1] & OBJECT_COMPLEMENT) SetRole(i-1,MAININDIRECTOBJECT);
@@ -4427,7 +4424,7 @@ static bool FinishSentenceAdjust(bool resolved,bool & changed,unsigned int start
 				if ( phrases[i-1]  && !phrases[i] && posValues[i-1] & NOUN_GERUND) phrases[i] = phrases[i-1];
 				unsigned int prior = FindPriorVerb(i);
 				if (prior) crossReference[i] = (unsigned char)prior;
-				else if (!prior && i == startSentence && mainVerb) crossReference[i] = (unsigned char)mainVerb;
+				else if (i == startSentence && mainVerb) crossReference[i] = (unsigned char)mainVerb;
 			}
 		}
 
@@ -6581,7 +6578,7 @@ static unsigned int GuessAmbiguousNoun(unsigned int i, bool &changed)
 	if (posValues[i] & (NOUN_PROPER_SINGULAR|NOUN_PROPER_PLURAL|NOUN_PLURAL|NOUN_SINGULAR) && posValues[NextPos(i)] & ((VERB_BITS - VERB_INFINITIVE)|AUX_VERB) && needRoles[roleIndex] & (SUBJECT2|MAINSUBJECT) && needRoles[roleIndex] & (MAINVERB|VERB2))
 	{
 		unsigned int at = i;
-		while (++at <= endSentence && posValues[at] & !(VERB_BITS|AUX_VERB))
+		while (++at <= endSentence && !(posValues[at] & (VERB_BITS|AUX_VERB)))
 		{
 			if (posValues[at] & (COMMA | PREPOSITION | CONJUNCTION_SUBORDINATE | CONJUNCTION_COORDINATE)) break;
 		}
@@ -6690,7 +6687,7 @@ static unsigned int GuessAmbiguousVerb(unsigned int i, bool &changed)
 	if (posValues[i] & VERB_INFINITIVE && needRoles[roleIndex] & (MAINSUBJECT|OBJECT2|MAINOBJECT|SUBJECT2) &&
 		posValues[i] & (NOUN_INFINITIVE|NOUN_GERUND))
 	{
-		if (i == startSentence && posValues[i] & VERB_INFINITIVE && !(posValues[i] & PREPOSITION)) 
+		if (i == startSentence && !(posValues[i] & PREPOSITION)) 
 		{
 			// prove there is no other verb in sight
 			unsigned int at;
@@ -7532,7 +7529,7 @@ static unsigned int GuessAmbiguousAdverb(unsigned int i, bool &changed)
 	}
 
 	// if a timeword could be an adverb, make it so (if we wanted a noun by now it would be one)  "right *now we will go" but not "it flew *past me"
-	if (posValues[i] & ADVERB && originalLower[i] && originalLower[i]->systemFlags & TIMEWORD & !(posValues[i] & PREPOSITION))
+	if (posValues[i] & ADVERB && originalLower[i] && (originalLower[i]->systemFlags & TIMEWORD) && !(posValues[i] & PREPOSITION))
 	{
 		if (LimitValues(i, ADVERB," time word could be adverb, make it so",changed)) return GUESS_RETRY; // we have a verb, can supply verb now...
 	}
@@ -7940,7 +7937,7 @@ static unsigned int GuessAmbiguousPronoun(unsigned int i, bool &changed)
 static unsigned int GuessAmbiguousAux(unsigned int i, bool &changed)
 {
 	// we arent expecting anything, but a moment ago it was a phrase that could have been elevated to a clause...
-	if (roleIndex == MAINLEVEL && roleIndex == MAINLEVEL && !(needRoles[roleIndex] & (VERB2|MAINVERB)) && phrases[i-1])
+	if (roleIndex == MAINLEVEL && !(needRoles[roleIndex] & (VERB2|MAINVERB)) && phrases[i-1])
 	{
 		if (FlipPrepToConjunction(i,true,changed))
 		{
@@ -8962,7 +8959,7 @@ restart:
 						{
 							needRoles[roleIndex] |= roles[i-1];
 							SetRole(i-1,0);
-							LimitValues(i-1,allOriginalWordBits[i-1] & (NORMAL_NOUN_BITS - NOUN_INFINITIVE - NOUN_GERUND),"hitting 2 verbs, force prior to noun",changed);
+							LimitValues(i-1,allOriginalWordBits[i-1] & (NOUN_BITS - NOUN_INFINITIVE - NOUN_GERUND),"hitting 2 verbs, force prior to noun",changed);
 						}
 					}
 				}
@@ -9711,7 +9708,6 @@ restart:
 				}
 
 				// commas end some units like phrases, clauses and infinitives
-				if (commalist <= (int) i) commalist = 0;	// reset comma list for potential new sequence
 				commalist = FindCoordinate(i); // commalist is now the matching conjunction after last comma
 				if (commalist > 0) // treat this as coordinate conjunction (but skip over possible adj conjunct)
 				{

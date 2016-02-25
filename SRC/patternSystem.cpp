@@ -800,6 +800,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char kind, bool wil
 					matched = IsCurrentTopic(currentTopicID); // clearly we are executing rules from it but is the current topic interesting
 					break;
 				}
+				// drop thru for all other ~
 			default: //   ordinary words, concept/topic, numbers, : and ~ and | and & accelerator
 				matched = MatchTest(reverse,FindWord(word),(positionEnd < basicStart && firstMatched < 0) ? basicStart : positionEnd,NULL,NULL,
 					statusBits & QUOTE_BIT,uppercasematch,positionStart,positionEnd);
@@ -1043,11 +1044,6 @@ bool Match(char* ptr, unsigned int depth, int startposition, char kind, bool wil
         //   now verify position of match, NEXT is default for (type, not matter for others
         if (kind == '(') //   ALL must match in sequence
         {
-			if ((kind == '[' || kind == '{') && trace & TRACE_PATTERN  && CheckTopicTrace()) 
-			{
-				Log(STDUSERLOG,"%s+",word);
-			}
-
 			//   we failed, retry shifting the start if we can
 			if (!matched)
 			{

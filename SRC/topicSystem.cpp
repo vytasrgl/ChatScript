@@ -7,6 +7,7 @@ unsigned int numberOfTopics = 0;
 
 unsigned int numberOfTopicsInLayer[NUMBER_OF_LAYERS+1];
 topicBlock* topicBlockPtrs[NUMBER_OF_LAYERS+1];
+bool norejoinder = false;
 
 // current operating data
 bool shared = false;
@@ -937,6 +938,8 @@ void SetRejoinder(char* rule)
 
 FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 {
+	bool oldnorejoinder = norejoinder;
+	norejoinder = false;
 	unsigned int oldtrace = trace;
 	bool traceChanged = false;
 	if ( GetDebugRuleMark(currentTopicID,id))  
@@ -1005,7 +1008,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	}
 	
 	// set rejoinder if we didnt fail 
-	if (!(result & FAILCODES) && (madeResponse || responseHappened) && !planning) SetRejoinder(rule); // a response got made
+	if (!(result & FAILCODES) && !norejoinder && (madeResponse || responseHappened) && !planning) SetRejoinder(rule); // a response got made
 	if (outputRejoinderRuleID == BLOCKED_REJOINDER) outputRejoinderRuleID = NO_REJOINDER; // we called ^refine. He blocked us from rejoindering. We can clear it now.
 
 	if (planning) {;}
@@ -1014,6 +1017,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	respondLevel = 0; 
 	
 	if (traceChanged) trace = oldtrace;
+	norejoinder = oldnorejoinder;
     return result;
 }
 
@@ -1504,32 +1508,17 @@ bool ReadUserTopics()
 		ptr += 3;	// skip dy
 		ptr = ReadCompiledWord(ptr,word);
 		unsigned int lev0topics = atoi(word);
-		if (lev0topics != numberOfTopicsInLayer[0]) 
-		{
-			ReportBug("level0 inconsistent")
-			return false;
-		}
+		if (lev0topics != numberOfTopicsInLayer[0]) {} // things have changed. after :build there are a different number of topics.
 		ptr = ReadCompiledWord(ptr,word);
 		unsigned int lev1topics = atoi(word);
 		ReadCompiledWord(ptr,word);
-		if (lev1topics != numberOfTopicsInLayer[1]) 
-		{
-			ReportBug("level1 inconsistent")
-			return false;
-		}
+		if (lev1topics != numberOfTopicsInLayer[1]) {} // things have changed. after :build there are a different number of topics.
 		ptr = ReadCompiledWord(ptr,word);
 		unsigned int lev2topics = atoi(word);
 		ReadCompiledWord(ptr,word);
 		ptr = ReadCompiledWord(ptr,word);
-		if (*word != '0' || word[1]) // resume existing layer 2
-		{
-			LoadLayer(2,word,BUILD2);
-		}
-		if (lev2topics != numberOfTopicsInLayer[2]) 
-		{
-			ReportBug("level1 inconsistent")
-			return false;
-		}
+		if (*word != '0' || word[1]) LoadLayer(2,word,BUILD2); // resume existing layer 2
+		if (lev2topics != numberOfTopicsInLayer[2]) {}  // things have changed. after :build there are a different number of topics.
 	}
 
     //   pending stack
@@ -1977,7 +1966,7 @@ static void AddRecursiveProperty(WORDP D,uint64 type,bool buildingDictionary)
 	{
 		if (type & NOUN && !(D->properties & (NOUN_PROPER_SINGULAR|NOUN_SINGULAR|NOUN_PLURAL|NOUN_PROPER_PLURAL))) // infer case 
 		{
-			if (IsUpperCase(*D->word || IsUpperCase(D->word[1]) || IsUpperCase(D->word[2]))) AddProperty(D,NOUN_PROPER_SINGULAR);
+			if (IsUpperCase(*D->word) || IsUpperCase(D->word[1]) || IsUpperCase(D->word[2])) AddProperty(D,NOUN_PROPER_SINGULAR);
 			else AddProperty(D,NOUN_SINGULAR);
 		}
 		return;
@@ -2617,7 +2606,7 @@ int PushTopic(unsigned int topic) // -1 = failed  0 = unneeded  1 = pushed
 {
 	if (topic == currentTopicID) 
 	{
-		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,"Topic is already current\r\n");
+		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,"Topic %s is already current\r\n",GetTopicName(topic));
 		return 0;  // current topic
 	}
 	else if (!topic)
@@ -2626,11 +2615,10 @@ int PushTopic(unsigned int topic) // -1 = failed  0 = unneeded  1 = pushed
 		return -1;
 	}
 
-	// insure topic not already in progress
+	//  topic  already in progress? allow repeats since this is control flow
 	if (TopicInUse(topic) == -1)
 	{
-		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,"Topic is already pending\r\n");
-		return -1; // already here
+		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,"Topic %s is already pending, changed to current\r\n",GetTopicName(topic));
 	}
     topicStack[++topicIndex] = currentTopicID; // [1] will be 0 
     if (topicIndex >= MAX_TOPIC_STACK) 
@@ -2640,11 +2628,16 @@ int PushTopic(unsigned int topic) // -1 = failed  0 = unneeded  1 = pushed
         return -1;
     }
 	currentTopicID = topic; 
-    return 1;
+  	if (trace & TRACE_TOPIC) Log(STDUSERLOG,"Pushing Topic %s\r\n",GetTopicName(topic));
+	return 1;
 }
 
 void PopTopic()
 {
-	if (topicIndex) currentTopicID = topicStack[topicIndex--];
+	if (topicIndex) 
+	{
+ 		if (trace & TRACE_TOPIC) Log(STDUSERLOG,"Popping Topic %s\r\n",GetTopicName(currentTopicID));
+		currentTopicID = topicStack[topicIndex--];
+	}
 	else currentTopicID = 0;	// no topic now
 }

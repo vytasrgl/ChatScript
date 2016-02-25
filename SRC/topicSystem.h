@@ -69,7 +69,7 @@ extern bool ruleErased;
 	
 extern unsigned int duplicateCount;
 extern unsigned int xrefCount;
-
+extern bool norejoinder;
 extern unsigned int currentTopicID;
 extern char* currentRule;	
 extern int currentRuleID;

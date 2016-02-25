@@ -1861,7 +1861,6 @@ guttaral guttural
 gutteral guttural
 gwava guava
 gymnist gymnast
-h4wt sexy
 habaeus habeas
 habitants inhabitants
 Habsbourg Habsburg
@@ -2912,7 +2911,8 @@ picknick picnic
 pickyune picayune
 picnicing picnicking
 picturesk picturesque
-pijun pigeon pilon pylon
+pijun pigeon 
+pilon pylon
 pikled pickled
 pilgrimmage pilgrimage
 pilgrimmages pilgrimages

@@ -17,6 +17,7 @@
  <l8r_l8r ~emogoodbye
  ic I+see
  idc I+do+not+care
+ h4wt sexy
  idk I+do+not+know
  <lmao ~emolaugh
  <lmfao ~emolaugh

@@ -42,7 +42,6 @@ typedef struct NUMBERDECODE
     int value;				//   value of word
 	unsigned int length;	//   length of word
 	int realNumber;			// the type, one two are real, third is fraction
-	bool notPennNumber;		//  "pair" and such are normal numbers with no value to penn system
 } NUMBERDECODE;
 #define REALNUMBER 1
 

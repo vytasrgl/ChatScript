@@ -38,7 +38,7 @@
 #define QUERY_KIND				0x00000200		// is a query item (from LIVEDATA or query:)
 #define LABEL					QUERY_KIND		// transient scriptcompiler use
 #define RENAMED					QUERY_KIND		// _alpha name renames _number or @name renames @n
-#define HAS_GLOSS				0x00000400		// has gloss ptr (all normal words)	
+//		0x00000400		
 #define FN_NO_TRACE				0x00000800		// dont trace this function (on functions only)
 
 #define UTF8					0x00001000		// word has utf8 char in it (all normal words)
@@ -50,7 +50,7 @@
 #define INTERNAL_MARK			0x00010000		// transient marker for Intersect coding and Country testing in :trim
 #define FROM_FILE				INTERNAL_MARK	//  for scriptcompiler to tell stuff comes from FILE not DIRECTORY
 #define BEEN_HERE				0x00020000		// used in internal word searches that might recurse
-#define FAKE_NOCONCEPTLIST		0x00040000	// used on concepts declared NOCONCEPTLIST
+#define FAKE_NOCONCEPTLIST		0x00040000		// used on concepts declared NOCONCEPTLIST
 #define DELETED_MARK			0x00080000		// transient marker for  deleted words in dictionary build - they dont get written out - includes script table macros that are transient
 #define BUILD0					0x00100000		// comes from build0 data (marker on functions, concepts, topics)
 #define BUILD1					0x00200000		// comes from build1 data
@@ -112,7 +112,9 @@
 #define UPPERCASE_LOOKUP 8192
 
 #define NO_EXTENDED_WRITE_FLAGS ( PATTERN_WORD  )
-#define MARK_FLAGS (  TIMEWORD | ACTUAL_TIME | WEB_URL | LOCATIONWORD )
+
+// system flags revealed via concepts
+#define MARK_FLAGS (  TIMEWORD | ACTUAL_TIME | WEB_URL | LOCATIONWORD | PRONOUN_REFLEXIVE | NOUN_NODETERMINER | VERB_CONJUGATE3 | VERB_CONJUGATE2 | VERB_CONJUGATE1 ) // system bits we display as concepts
 
 // postag composites 
 #define PUNCTUATION_BITS	( COMMA | PAREN | PUNCTUATION | QUOTE | CURRENCY )
@@ -274,8 +276,7 @@ int GetWordValue(WORDP D);
 inline unsigned int GetMeaningCount(WORDP D) { return (D->meanings) ? GetMeaning(D,0) : 0;}
 inline unsigned int GetGlossCount(WORDP D) 
 {
-	if (D->internalBits & HAS_GLOSS)  return D->w.glosses[0];
-	return 0;
+	return (D->w.glosses && *D->word != '~' && *D->word != '^' && *D->word != '$' && !(D->internalBits & HAS_SUBSTITUTE) && !(D->systemFlags & CONDITIONAL_IDIOM))  ? D->w.glosses[0] : 0;
 }
 char* GetGloss(WORDP D, unsigned int index);
 unsigned int GetGlossIndex(WORDP D,unsigned int index);

@@ -351,7 +351,7 @@ static int MarkSetPath(MEANING M, unsigned int start, unsigned  int end, unsigne
 	WORDP D = Meaning2Word(M);
 	unsigned int index = Meaning2Index(M); // always 0 for a synset or set
 	// check for any repeated accesses of this synset or set or word
-	uint64 offset = 1 << index;
+	uint64 offset = 1ull << index;
 	uint64 tried = GetTried(D);
  	if (D->inferMark == inferMark) // been thru this word recently
 	{
@@ -968,6 +968,7 @@ void MarkAllImpliedWords()
 			CU = FindWord(original,0,UPPERCASE_LOOKUP);	// try to find an upper to go with it, in case we can use that, but not as a human name
 			if (OU){;} // it was originally uppercase or there is no lower case meaning
 			else if (CU && CU->properties & (NOUN_FIRSTNAME|NOUN_HUMAN)) CU = NULL;	// remove accidental names 
+			else if (CU && !CU->properties && !(CU->systemFlags & PATTERN_WORD)) CU = NULL; // there is no use for this (maybe only a sequence head)
 		}
 	
 		if (CL && CL == DunknownWord) // allow unknown proper names to be marked unknown

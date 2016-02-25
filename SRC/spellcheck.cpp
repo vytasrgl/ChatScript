@@ -42,7 +42,7 @@ static SUFFIX stems[] =
 void InitSpellCheck()
 {
 	memset(lengthLists,0,sizeof(MEANING) * 100);
-	WORDP D = dictionaryBase - 1;
+	WORDP D = dictionaryBase;
 	while (++D <= dictionaryFree)
 	{
 		if (!D->word || !IsAlphaUTF8(*D->word) || D->length >= 100 || strchr(D->word,'~') || strchr(D->word,'$') || strchr(D->word,'^')) continue; 
@@ -699,8 +699,8 @@ static char* StemSpell(char* word,unsigned int i)
         {
 			char* past = English_GetPastTense(best);
 			if (!past) return NULL;
-			size_t len = strlen(past);
-			if (past[len-1] == 'd') return past;
+			size_t pastlen = strlen(past);
+			if (past[pastlen-1] == 'd') return past;
 			ending = "ed";
         }
     }
@@ -711,10 +711,10 @@ static char* StemSpell(char* word,unsigned int i)
 		while ((suffix = stems[i].word))
 		{
 			uint64 kind = stems[i++].flags;
-			size_t len = strlen(suffix);
-			if (!strnicmp(word+len-len,suffix,len))
+			size_t suffixlen = strlen(suffix);
+			if (!strnicmp(word+len-suffixlen,suffix,suffixlen))
 			{
-				word1[len-len] = 0;
+				word1[len-suffixlen] = 0;
 				best = SpellFix(word1,0,kind); 
 				if (best) 
 				{

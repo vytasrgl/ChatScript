@@ -531,7 +531,7 @@
  <positively ~yes
  <possibly> ~emomaybe
  <precisely ~yes
- <probably > ~yes
+ <probably> ~yes
  <quit ~emogoodbye
  <really_? ~emosurprise
  <really> ~emoskeptic

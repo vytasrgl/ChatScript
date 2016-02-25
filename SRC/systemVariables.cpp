@@ -201,6 +201,7 @@ static char* Smonth(char* value)
 			if (systemValue[1] == 'a') return "1";
 			else if (systemValue[2] == 'n') return "6";
 			else if (systemValue[2] == 'l') return "7";
+			break;
 		case 'F': return "2";
 		case 'M': return (systemValue[2] != 'y') ? (char*)"3" : (char*)"5"; 
   		case 'A': return (systemValue[1] == 'p') ? (char*)"4" : (char*)"8";
@@ -225,6 +226,7 @@ static char* SmonthName(char* value)
 			if (systemValue[1] == 'a') return "January";
 			else if (systemValue[2] == 'n') return "June";
 			else if (systemValue[2] == 'l') return "July";
+			break;
 		case 'F': return "February";
 		case 'M': return (systemValue[2] != 'y') ? (char*)"March" : (char*)"May"; 
   		case 'A': return (systemValue[1] == 'p') ? (char*)"April" : (char*)"August";

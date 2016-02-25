@@ -118,7 +118,7 @@ outputmacro: ^Load_Cargo(^vehicle ^place ^resource ^quantity)
 
 	# want no more than we can carry
 	query(direct_sv  ^vehicle space ? 1)
-	if (@object == 0) {fail(RULE)} # no room for anything
+	if (@0object == 0) {fail(RULE)} # no room for anything
 	if ($$want > @0object) {$$want = @0object} # limit want to what is possible to carry
 	
 	$$spaceleft = @0object - $$want

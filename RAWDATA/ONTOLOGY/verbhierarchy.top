@@ -345,10 +345,10 @@ concept: ~moving_beyond (pass_by pass )
 concept: ~moving_escape (bolt depart disappear disembark escape evade exit flee leave retreat skedaddle slip_away vacate vamoose vanish withdraw )
 concept: ~moving_fast_land (barrel bound breeze canter careen carom charge chase dart dash gallop hasten hurry hurtle hustle jog lope race rocket 
           run rush scamper scoot scramble scram scurry speed sprint streak zoom )
-concept: ~moving_generic (ascend bounce bowl cavort climb coast continue cross cruise curve distance dog fit flit follow glide go_by guide head hop 
-          jump lay leap meander migrate move_onward navigate pedal place prance proceed pursue put rally ramble rise roam romp rove set shadow 
-          shove sidle skip skitter slow spiral squire stray sweep swerve tour trail traverse usher vault wander wend yaw zag zig-zag zigzag 
-          zig )
+concept: ~moving_generic (ascend~v bounce~v bowl~v cavort~v climb~v coast~v continue~v cross~v cruise~v curve~v distance~v dog~v fit~v flit~v follow~v glide~v go_by~v guide~v head~v hop~v 
+			jump~v lay~v leap~v meander~v migrate~v move_onward~v navigate~v pedal~v place~v prance~v proceed~v pursue~v put~v rally~v ramble~v rise~v roam~v romp~v rove~v set~v shadow~v 
+			shove~v sidle~v skip~v skitter~v slow~v spiral~v squire~v stray~v sweep~v swerve~v tour~v trail~v traverse~v usher~v vault~v wander~v wend~v yaw~v zag~v zig-zag~v zigzag~v 
+			zig~v )
 concept: ~moving_object (accompany convoy escort move pull push shove_along slide steer tow truck )
 concept: ~moving_slow_land (amble backpack burrow clamber climb crawl creep dodder drag drift file frolic gambol glide goose_step hike hobble inch 
           jog limp lumber lurch march_on march_onward march mosey parade perambulate plod prance promenade prowl pull push reel roll sashay saunter 

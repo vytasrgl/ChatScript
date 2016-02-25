@@ -374,13 +374,13 @@ void DumpSentence(unsigned int start,unsigned int end)
 
 	if (indirectobject) 
 	{
-		strcat(buffer,"  IndObj:");
+		strcat(buffer,"  IndirectObject:");
 		Describe(indirectobject,buffer);
 		strcat(buffer,"   ");
 	}
 
-	DescribeUnit(object,buffer, "  Obj:",0,0);
-	DescribeUnit(complement,buffer, "Compl:",0,0);
+	DescribeUnit(object,buffer, "  Object:",0,0);
+	DescribeUnit(complement,buffer, "Complement:",0,0);
 
 	if (clauses[start]){;}
 	else if (!stricmp(wordStarts[start],"when")) strcat(buffer,"(:when) ");
@@ -446,7 +446,7 @@ void DumpSentence(unsigned int start,unsigned int end)
 			if (!(clauses[j] & clauseid)) continue;
 			if (roles[j] & SUBJECT2)  
 			{
-				strcat(buffer,"  Subj:");
+				strcat(buffer,"  Subject:");
 				Describe(j,buffer); // the subject
 				strcat(buffer,"  ");
 			}
@@ -456,10 +456,10 @@ void DumpSentence(unsigned int start,unsigned int end)
 				Describe(j,buffer); // the verb
 				if (indirectObjectRef[j]) 
 				{
-					strcat(buffer,"  Indirect: ");
+					strcat(buffer,"  IndirectObject: ");
 					Describe(indirectObjectRef[j],buffer);
 				}
-				DescribeUnit(objectRef[j],buffer, "  Direct:",0,clauseid);
+				DescribeUnit(objectRef[j],buffer, "  DirectObject:",0,clauseid);
 				DescribeUnit(complementRef[j],buffer, "  Complement:",0,clauseid);
 			}
 		}

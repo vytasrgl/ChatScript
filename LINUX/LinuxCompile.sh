@@ -1,6 +1,6 @@
-g++ -funsigned-char src/*.cpp -O2  -DDISCARDDATABASE=1 -o LinuxChatScript -lpthread -lrt 2>>err.txt
+cd ../SRC/; make server
 
-!// -lpq  to add in postgresql -I /usr/include/postgresql/include and remove -DDISCARDDATABASE=1 
+!// or cd ../SRC/; make pgserver
 
 
 

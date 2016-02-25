@@ -129,8 +129,6 @@
  Loebners Loebner
  Loebner_'s Loebner
  <got_it> OK
-Dr Doctor
-Dr. Doctor
 <explain> why
 prof. professor
 
@@ -312,7 +310,7 @@ prof. professor
  A.M._in_the_morning a.m.
  a_bacteria a+bacterium
  a_bf a+boyfriend
- a_bolt_from_the_blue unexpected ue
+ a_bolt_from_the_blue unexpected
  a_consortia a+consortium
  a_criteria a+criterion
  a_dab_of some
@@ -388,7 +386,7 @@ prof. professor
  archeologists archaeologists
  archeology archaeology
  arent are+not
- armed_assault_and_holdup holdup holdup
+ armed_assault_and_holdup holdup 
  as_black_as_pitch black
  as_blind_as_a_bat blind
  as_busy_as_a_beaver busy

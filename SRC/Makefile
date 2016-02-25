@@ -1,35 +1,35 @@
-debugserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDDATABASE=1 
+debugserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDDATABASE=1 -DDEBUG
 debugserver: PGLOAD= -pthread
 debugserver: INCLUDEDIRS=-Ievserver
 debugserver: all
-debugserver: EXECUTABLE=ChatScriptDebug
+debugserver: EXECUTABLE=../BINARIES/ChatScriptDebug
 debugserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
 
-debugpgserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 
+debugpgserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1  -DDEBUG
 debugpgserver: PGLOAD= -lpq -pthread
 debugpgserver: INCLUDEDIRS=-Ievserver
 debugpgserver: all
-debugpgserver: EXECUTABLE=ChatScriptpgDebug
+debugpgserver: EXECUTABLE=../BINARIES/ChatScriptpgDebug
 debugpgserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
 
 server: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDDATABASE=1
 server: PGLOAD= -pthread
 server: INCLUDEDIRS=-Ievserver
 server: all
-server: EXECUTABLE=ChatScript
+server: EXECUTABLE=../BINARIES/ChatScript
 server: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
 standalone: DEFINES+=  -DDISCARDSERVER=1 -DDISCARDDATABASE=1 
 standalone: PGLOAD= -pthread
 standalone: INCLUDEDIRS=-Ievserver
 standalone: all
-standalone: EXECUTABLE=ChatScript
+standalone: EXECUTABLE=../BINARIES/ChatScript
 standalone: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
 pgserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 
 pgserver: PGLOAD= -lpq -pthread
 pgserver: all
-pgserver: EXECUTABLE=ChatScriptpg
+pgserver: EXECUTABLE=../BINARIES/ChatScriptpg
 pgserver: INCLUDEDIRS=-Ievserver -Ipostgres
 pgserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
@@ -60,7 +60,6 @@ clean:
 
 binary: $(OBJECTS)
 	$(CC) $(OBJECTS) $(LDFLAGS) $(DEFINES) $(INCLUDEDIRS) -o $(EXECUTABLE)
-	cp $(EXECUTABLE) ..
 
 .cpp.o:
 	$(CC) $(CFLAGS) $(DEFINES) $(INCLUDEDIRS) $< -o $@

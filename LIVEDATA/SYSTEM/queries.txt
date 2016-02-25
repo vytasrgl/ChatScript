@@ -385,7 +385,7 @@ QUERY: direct_findconcepts	"1sq 2ve 3'member.e: queue s: match v3 <3c" # walks u
 # 4. use subject side of facts
 # 5. if verb marked with 3, expand up using verbs marked with 3, saving memberships that are concepts
 
-direct_hierarchy	"1~stopHierarchy.e i1 n 2'member.t 3o<2e 4sq: queue : match !n <2 ~3 i1"
+QUERY: direct_hierarchy	"1~stopHierarchy.e i1 n 2'member.t 3o<2e 4sq: queue : match !n <2 ~3 i1"
 #e.g. ^query(direct_hierarchy _0 ? _1)   how are x and y similar.  we want the lowest intersection set. BUT NOT marked as NOCONCEPTLIST
 # 1. expand mark all elements of ~stophierarchy as ignore - dont q
 # 2. set ignore on all topic names

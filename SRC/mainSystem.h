@@ -88,6 +88,8 @@ typedef struct RESPONSE
 
 	UNDEFINED_FUNCTION  = 65536, //   potential function call has no definition so isnt
 	ENDCALL_BIT  =    131072,
+
+	NOREJOINDER = 262144,	// can be ored on
 };
 extern clock_t startTimeInfo;
 extern unsigned int outputLength;

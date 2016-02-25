@@ -841,8 +841,8 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		if (index >= 0) sprintf(word,"'^%d",index);
 	}
 
-	// break apart math on variables eg $value+2 
-	if (*word == '%' || *word == '%' || *word == '$')
+	// break apart math on variables eg $value+2 as a service to the user
+	if (*word == '%'  || *word == '$') // cannot use _ here as that will break memorization pattern tokens
 	{
 		char* at = word;
 		while (IsAlphaUTF8(*++at) );  // find end of initial word
@@ -1341,7 +1341,7 @@ static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[50][MAX_
 		char* op = arg2;
 		if (stricmp(op,"+") && stricmp(op,"plus") && stricmp(op,"add") && stricmp(op,"and") &&
 			stricmp(op,"sub") && stricmp(op,"minus") && stricmp(op,"subtract") && stricmp(op,"deduct") && stricmp(op,"-")  &&
-			stricmp(op,"x") && strnicmp(op,"times",4) && stricmp(op,"multiply") && stricmp(op,"*") &&
+			stricmp(op,"x") && stricmp(op,"times") && stricmp(op,"multiply") && stricmp(op,"*") &&
 			stricmp(op,"divide") && stricmp(op,"quotient") && stricmp(op,"/") &&
 			stricmp(op,"remainder") && stricmp(op,"modulo") && stricmp(op,"mod") && stricmp(op,"%") && stricmp(op,"random") &&
 			stricmp(op,"root") && stricmp(op,"square_root")   && stricmp(op,"power") && stricmp(op,"exponent") && *op != '^' && *op != '_' && *op != '$')  // last covers macro args and exponents
@@ -1541,14 +1541,14 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call)
 				}
 				ReadNextSystemToken(in,ptr,nextToken,false,true);
 
-				// argument is a function without its ^ ?
-				if (*word != '^' && *nextToken == '(') //   looks like a call, reformat it if it is
+				// argument is a function without its ^ ?  // but be wary of doing this in createfact, which can have nested facts
+				if (*word != '^' && *nextToken == '(' && stricmp(name,"^createfact")) //   looks like a call, reformat it if it is
 				{
-					char name[MAX_WORD_SIZE];
-					*name = '^';
-					MakeLowerCopy(name+1,word);	
-					WORDP D = FindWord(name,0,PRIMARY_CASE_ALLOWED);
-					if (D && D->internalBits & FUNCTION_NAME) strcpy(word,name); 
+					char fnname[MAX_WORD_SIZE];
+					*fnname = '^';
+					MakeLowerCopy(fnname+1,word);	
+					WORDP D = FindWord(fnname,0,PRIMARY_CASE_ALLOWED);
+					if (D && D->internalBits & FUNCTION_NAME) strcpy(word,fnname); 
 				}
 
 				if (*word == '^' && (*nextToken == '(' || IsDigit(word[1])))   //   function call or function var ref 
@@ -1679,7 +1679,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call)
 	//   now generate stuff as an output stream with its validation
 	int oldspell = spellCheck;
 	spellCheck = 0;
-	ReadOutput(hold,NULL,data,NULL,NULL,D);
+	ReadOutput(hold,NULL,data,NULL,NULL,D); // block implicit calls because createfact( xxx xxx ( )) looks like a call
 	spellCheck = oldspell;
 
 	patternContext = oldContext;
@@ -2422,7 +2422,7 @@ static char* ReadChoice(char* word, char* ptr, FILE* in, char* &data,char* rejoi
 		ptr = ReadNextSystemToken(in,ptr,word,false);
 	}
 	ptr = GatherChunk(ptr, in, choice,false); 
-	ReadOutput(choice,NULL,data,rejoinders);
+	ReadOutput(choice,NULL,data,rejoinders,false);
 	*data++ = ']';
 	*data++ = ' ';
 	*data = 0;
@@ -2604,7 +2604,7 @@ static char* ReadBody(char* word, char* ptr, FILE* in, char* &data,char* rejoind
 	bool oldContext = patternContext;
 	patternContext = false;
 	ptr = GatherChunk(ptr, in, body,true); 
-	ReadOutput(body+2,NULL,data,rejoinders); 
+	ReadOutput(body+2,NULL,data,rejoinders,false); 
 	patternContext = oldContext;
 	*data++ = '}'; //   body has no blank after it, done by higher level
 	FreeBuffer();
@@ -2666,11 +2666,10 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 		if (!strnicmp(patternInfo,"( pattern ",10))
 		{
 			patternContext = true;
-			ptr = ReadPattern(ptr,in,data,false,true); //   read ( for real in the paren for pattern
+			ReadPattern(ptr,in,data,false,true); //   read ( for real in the paren for pattern
 			patternContext = false;
 		}
-		else 
-			ptr = ReadIfTest(ptr, in, data); // starts by reading the ( and ends having read )
+		else ReadIfTest(ptr, in, data); // starts by reading the ( and ends having read )
 		Encode((unsigned int)(data-testbase),testbase);	// offset to after pattern
 	
 		// now done reading test, go onto body.
@@ -2921,7 +2920,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 			*data++ = ' ';
 			continue;
 		}
-		else if (*nextToken != '(')
+		else if (*nextToken != '(') // doesnt look like a function
 		{
 		}
 		else if (!stricmp(nakedWord,"if"))  // strip IF of ^
@@ -2936,7 +2935,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 			*data++ = ' ';
 			continue;
 		}
-		else if (*word != '^') //   looks like a call ... if its ALSO a normal word, presume it is not a call, like: I like (American) football
+		else if (*word != '^' && (!call || stricmp(call->word,"^createfact"))) //   looks like a call ... if its ALSO a normal word, presume it is not a call, like: I like (American) football
 		{
 			// be wary.. respond(foo) might have been text...  
 			// How does he TELL us its text? interpret normal word SPACE ( as not a function call?
@@ -3620,7 +3619,7 @@ static char* ReadKeyword(char* word,char* ptr,bool &notted, bool &quoted, MEANIN
 				char end = word[strlen(word)-1];
 				if (!IsAlphaUTF8OrDigit(end) && end != '"')  
 				{
-					if (end != '.' || strlen(word) > 6) WARNSCRIPT("last character of keyword %s is punctuation. Is this intended? %s\r\n",word)
+					if (end != '.' || strlen(word) > 6) WARNSCRIPT("last character of keyword %s is punctuation. Is this intended?\r\n",word)
 				}
 				M = ReadMeaning(word);
 				D = Meaning2Word(M);
@@ -3634,7 +3633,7 @@ static char* ReadKeyword(char* word,char* ptr,bool &notted, bool &quoted, MEANIN
 					CheckSetOrTopic(D->word);
 				}
 				else if ( ignoreSpell || !spellCheck || strchr(D->word,'_') || !D->word[1] || IsUpperCase(*D->word)) {;}	// ignore spelling issues, phrases, short words &&  proper names
-				else if (!(D->properties & PART_OF_SPEECH && !(D->systemFlags & (PATTERN_WORD))))
+				else if (!(D->properties & PART_OF_SPEECH) && !(D->systemFlags & PATTERN_WORD))
 				{
 					SpellCheckScriptWord(D->word,-1,false);
 					WriteKey(D->word);
@@ -3883,6 +3882,7 @@ static char* ReadRename(char* ptr, FILE* in,uint64 build)
 
 static char* ReadPlan(char* ptr, FILE* in,uint64 build)
 {
+	if (build == BUILD2) BADSCRIPT("Not allowed plans in layer 2 at present")
 	char planName[MAX_WORD_SIZE];
 	char baseName[MAX_WORD_SIZE];
 	*planName = 0;
@@ -4024,10 +4024,7 @@ static char* ReadPlan(char* ptr, FILE* in,uint64 build)
 	//   write how many plans were found (for when we preload during normal startups)
 	if (hasPlans == 0)
 	{
-		char filename[MAX_WORD_SIZE];
-		sprintf(filename,"TOPIC/plans%s.txt",baseName);
-		// init the plan output file
-		FILE* out = FopenUTF8Write(filename);
+		FILE* out = FopenUTF8Write(build == BUILD0 ? (char*)"TOPIC/plans0.txt" : (char*)"TOPIC/plans1.txt");
 		fprintf(out,"0     \r\n"); //   reserve 5-digit count for number of plans
 		fclose(out);
 	}
@@ -4424,7 +4421,7 @@ static void WriteConcepts(WORDP D, uint64 build)
 						unsigned int which = atoi(dict+1);
 						if (which) // given a meaning index, mark it
 						{
-							uint64 offset = 1 << which;
+							uint64 offset = 1ull << which;
 							SetTried(E,GetTried(E) | offset);	
 						}
 					}

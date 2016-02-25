@@ -1,3 +1,21 @@
+
+version 6.2b  2/24/2016
+1. Moved executables and DLLS to folder BINARIES. You must now run CS from there rather than top level.
+   CS changes current working directory up 1 level after starting.
+   Revise Cron jobs and shortcuts to the exe appropriately.
+
+version 6.2a  2/20/2016
+1. ^norejoinder()  makes this rule unable to set its rejoinder. 
+2. CS now allows multiple forms of uppercase words, e.g.,  ID and Id 
+3. Recently a major security hole in glibc, open source c library was announced and patched. CS uses glibc.
+   This build uses the new version. If you are running older versions of CS, there is some security risk and
+   you are advised to upgrade to this executable linux version, or apply sudo yum update to glibc (or equivalent
+   commands) and then rebuild your existing sources.
+4. optional 3rd argument to ^jsonpath(xx yy safe) tells it to return ugly data with doublequotes around it. Things with
+   embedded json data or whitespace need to be passed into jsonformat using safe data.
+
+
+
 version 6.2 2/14/2016
 1. documented existing assignment abilities:  @3 = @2  @3 -= @2  @3 += @2  @3 = $$factid
   @3 += $$factid  @3 -= $$factid

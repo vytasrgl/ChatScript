@@ -941,6 +941,7 @@ KEEP
 # FALSE: to infinitive cannot follow a noun - I like to play -- BUT That is a long way to come
 
 # prep then ? >  must be noun
+-1	IS PREPOSITION
 	INCLUDE * NOUN_BITS
 	STAY END
 KEEP

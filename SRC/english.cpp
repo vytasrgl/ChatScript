@@ -297,6 +297,14 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			return 0;
 		}
 	}
+	if (*original == '~' || *original == '$' || *original == '^' || *original == '%')
+	{
+		char copy[MAX_WORD_SIZE];
+		MakeLowerCopy(copy,original);
+		entry = canonical = StoreWord(copy);
+		sysflags = 0;
+		return 0;
+	}
 
 	if (*wordStarts[at-1] == '"') 
 	{
@@ -360,12 +368,13 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	}
 
 	WORDP ZZ = FindWord(original,0,LOWERCASE_LOOKUP);
-	if (!stricmp(original,"the") || !stricmp(original,"a") || !stricmp(original,"this") || !stricmp(original,"these") || !stricmp(original,"an")  ) // force lower case on these determiners regardless
+	if (!ZZ) {;}
+	else if (!stricmp(original,"the") || !stricmp(original,"a") || !stricmp(original,"this") || !stricmp(original,"these") || !stricmp(original,"an")  ) // force lower case on these determiners regardless
 	{
 		entry =  canonical = ZZ;
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (ZZ && ZZ->properties & (PRONOUN_SUBJECT|PRONOUN_OBJECT))
+	else if (ZZ->properties & (PRONOUN_SUBJECT|PRONOUN_OBJECT))
 	{
 		entry =  canonical = ZZ;
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
@@ -376,18 +385,18 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
 	else if (start != at && tokenControl & STRICT_CASING) {;} // believe all upper case items not at sentence start when using strict casing
-	else if (ZZ && ZZ->properties & (DETERMINER|PREPOSITION|PRONOUN_POSSESSIVE|PRONOUN_BITS|AUX_VERB) && !IsNumber(original)) // prep and determiner are ALWAYS considered lowercase for parsing (which happens later than proper name extraction)
+	else if (ZZ->properties & (DETERMINER|PREPOSITION|PRONOUN_POSSESSIVE|PRONOUN_BITS|AUX_VERB) && !IsNumber(original)) // prep and determiner are ALWAYS considered lowercase for parsing (which happens later than proper name extraction)
 	{
 		entry =  canonical = ZZ;
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 		if (ZZ->properties & (MORE_FORM|MOST_FORM)) canonical = NULL;	// we dont know yet
 	}
-	else if (ZZ && ZZ->properties & (DETERMINER_BITS|PREPOSITION|CONJUNCTION|AUX_VERB) && strcmp(original,"May") && (*wordStarts[at-1] == '-' || *wordStarts[at-1] == ':' || *wordStarts[at-1] == '"' || at == startSentence || !(STRICT_CASING  & tokenControl))) // not the month
+	else if (ZZ->properties & (DETERMINER_BITS|PREPOSITION|CONJUNCTION|AUX_VERB) && strcmp(original,"May") && (*wordStarts[at-1] == '-' || *wordStarts[at-1] == ':' || *wordStarts[at-1] == '"' || at == startSentence || !(STRICT_CASING  & tokenControl))) // not the month
 	{
 		entry =  canonical = ZZ; //force lower case on all determiners and such
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (at == start && ZZ && ZZ->properties & VERB_INFINITIVE && !entry) // upper case start has no meaning but could be imperative verb, be that
+	else if (at == start && ZZ->properties & VERB_INFINITIVE && !entry) // upper case start has no meaning but could be imperative verb, be that
 	{
 		entry = canonical = ZZ;
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
@@ -761,10 +770,9 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	}
 		
 	// use forced canonical?
-	if (!canonical)
+	if (!canonical && entry)
 	{
-		WORDP E = entry ? (entry) : StoreWord(original);
-		char* canon = GetCanonical(E);
+		char* canon = GetCanonical(entry);
 		if (canon) canonical = StoreWord(canon);
 	}
 	
@@ -1175,7 +1183,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	// fill in supplemental flags
 	if (properties & NOUN && !(properties & NOUN_BITS))
 	{
-		if (entry->internalBits & UPPERCASE_HASH) properties |= NOUN_PROPER_SINGULAR;
+		if (entry && entry->internalBits & UPPERCASE_HASH) properties |= NOUN_PROPER_SINGULAR;
 		else properties |= NOUN_SINGULAR;
 	}
 	if (canonical && entry) entry->systemFlags |= canonical->systemFlags & AGE_LEARNED; // copy age data across
@@ -1203,11 +1211,15 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		}
 
 		if (X) {;}	// probable proper name started
-		else if (firstTry && *original) // auto try for opposite case if we dont recognize the word
+		else if (firstTry && *original /*&& IsAlphaUTF8(*original) */) // auto try for opposite case if we dont recognize the word, and not concept or other non-words
 		{
 			char alternate[MAX_WORD_SIZE];
 			if (IsUpperCase(*original)) MakeLowerCopy(alternate,original);
-			else MakeUpperCopy(alternate,original);
+			else
+			{
+				strcpy(alternate,original);
+				alternate[0] = toUppercaseData[alternate[0]];
+			}
 			WORDP D1,D2;
 			uint64 flags1 = GetPosData(at,alternate,D1,D2,sysflags,cansysflags,false,nogenerate,start);
 			if (flags1) 
@@ -1350,7 +1362,11 @@ void English_SetSentenceTense(unsigned int start, unsigned int end)
 		unsigned int i;
 		for (i = startSentence; i <= endSentence; ++i) 
 		{
-			if (roles[i] & MAINSUBJECT) subjectFound = true;
+			if (roles[i] & MAINSUBJECT) 
+			{
+				subjectFound = true;
+				break;
+			}
 		}
 		if (subjectStack[MAINLEVEL] && subjectStack[MAINLEVEL] > verbStack[MAINLEVEL] && (allOriginalWordBits[startSentence] & QWORD || (allOriginalWordBits[startSentence] & PREPOSITION && allOriginalWordBits[startSentence+1] & QWORD)))  tokenFlags |= QUESTIONMARK; // qword + flipped order must be question (vs emphasis?)
 	
@@ -1702,8 +1718,7 @@ char* English_GetPresentParticiple(char* word)
     size_t len = strlen(buffer);
     char* inf = English_GetInfinitive(word,false);
     if (!inf) return 0;
-
-    if (buffer[len-1] == 'g' && buffer[len-2] == 'n' && buffer[len-3] == 'i' && (!inf || stricmp(inf,word))) return word;   //   ISNT participle though it has ing ending (unless its base is "ing", like "swing"
+    if (buffer[len-1] == 'g' && buffer[len-2] == 'n' && buffer[len-3] == 'i' && stricmp(inf,word)) return word;   //   ISNT participle though it has ing ending (unless its base is "ing", like "swing"
 
     //   check for multiword behavoir. Always change the 1st word only
     char* at =  strchr(word,'_'); 
