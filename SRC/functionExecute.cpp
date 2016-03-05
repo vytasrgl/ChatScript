@@ -495,7 +495,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				bool stripQuotes =  (argflags & ( 1 << j)) ? 1 : 0; // want to use quotes 
 				// arguments to user functions are not evaluated, they will be used, in place, in the function.
 				// EXCEPT evaluation of ^arguments must be immediate to maintain current context- both ^arg and ^"xxx" stuff
-				if (trace) ReadCompiledWord(ptr,argcopy); // for tracing
+				ReadCompiledWord(ptr,argcopy); // for tracing
 				ptr = ReadArgument(ptr,arg); //   ptr returns on next significant char
 				if (*arg == '"' && stripQuotes)
 				{
@@ -960,7 +960,7 @@ bool RuleTest(char* data) // see if pattern matches
 	bool uppercasem = false;
 	int matched = 0;
 	unsigned int positionStart,positionEnd;
-	bool answer =  Match(pattern+2,0,0,'(',true,gap,wildcardSelector,junk,junk,uppercasem,matched,positionStart,positionEnd); // start past the opening paren
+	bool answer =  Match(pattern+2,0,0,"(",true,gap,wildcardSelector,junk,junk,uppercasem,matched,positionStart,positionEnd); // start past the opening paren
 	return answer;
 }
 
@@ -3285,7 +3285,7 @@ FunctionResult MatchCode(char* buffer)
 	unsigned int wildcardSelector = 0;
 	wildcardIndex = 0;  //   reset wildcard allocation on top-level pattern match
 	unsigned int junk;
-    bool match = Match(base,0,0,'(',true,gap,wildcardSelector,junk,junk,uppercasem,matched,positionStart,positionEnd) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
+    bool match = Match(base,0,0,"(",true,gap,wildcardSelector,junk,junk,uppercasem,matched,positionStart,positionEnd) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
 	if (!match) return FAILRULE_BIT;
 	return NOPROBLEM_BIT;
 }
@@ -4414,11 +4414,12 @@ static FunctionResult PhraseCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
-static FunctionResult English_POSCode(char* buffer)
+static FunctionResult POSCode(char* buffer)
 {
 	char* arg1 = ARGUMENT(1);
 	char* arg2 = ARGUMENT(2);
 	char* arg3 = ARGUMENT(3);
+	char* arg4 = ARGUMENT(4);
 	if (!stricmp(arg1,"raw"))
 	{
 		int n = atoi(arg2);
@@ -4434,13 +4435,13 @@ static FunctionResult English_POSCode(char* buffer)
 		{
 			strcpy(arg1,"verb");
 			strcpy(arg3,"present_participle");
-			English_POSCode(buffer);
+			POSCode(buffer);
 		}
 		else if (pos & VERB_PAST_PARTICIPLE) 
 		{
 			strcpy(arg1,"verb");
 			strcpy(arg3,"past_participle");
-			English_POSCode(buffer);
+			POSCode(buffer);
 		}
 		else if (pos & VERB_PAST) 
 		{ 
@@ -4449,7 +4450,7 @@ static FunctionResult English_POSCode(char* buffer)
 			{
 				strcpy(arg1,"verb");
 				strcpy(arg3,"past");
-				English_POSCode(buffer);
+				POSCode(buffer);
 			}
 		}
 		else if (pos & VERB_PRESENT) 
@@ -4459,20 +4460,20 @@ static FunctionResult English_POSCode(char* buffer)
 			{
 				strcpy(arg1,"verb");
 				strcpy(arg3,"present");
-				English_POSCode(buffer);
+				POSCode(buffer);
 			}
 		}
 		else if (pos & VERB_PRESENT_3PS) 
 		{ 
 			strcpy(arg1,"verb");
 			strcpy(arg3,"present3ps");
-			English_POSCode(buffer);
+			POSCode(buffer);
 		}
 		else if (pos & NOUN_PLURAL || pos & NOUN_PROPER_PLURAL)
 		{
 			strcpy(arg1,"noun");
 			strcpy(arg3,"plural");
-			English_POSCode(buffer);
+			POSCode(buffer);
 		}
 		else if (pos & PLACE_NUMBER)
 		{
@@ -4490,25 +4491,25 @@ static FunctionResult English_POSCode(char* buffer)
 		{ 
 			strcpy(arg1,"adjective");
 			strcpy(arg3,"more");
-			English_POSCode(buffer);
+			POSCode(buffer);
 		}
 		else if (pos & MOST_FORM && pos & ADJECTIVE) 
 		{ 
 			strcpy(arg1,"adjective");
 			strcpy(arg3,"most");
-			English_POSCode(buffer);
+			POSCode(buffer);
 		}
 		else if (pos & MORE_FORM && pos & ADVERB) 
 		{ 
 			strcpy(arg1,"adverb");
 			strcpy(arg3,"more");
-			English_POSCode(buffer);
+			POSCode(buffer);
 		}
 		else if (pos & MOST_FORM && pos & ADVERB) 
 		{ 
 			strcpy(arg1,"adverb");
 			strcpy(arg3,"most");
-			English_POSCode(buffer);
+			POSCode(buffer);
 		}
 		else if (pos & PRONOUN_POSSESSIVE) 
 		{ 
@@ -4585,41 +4586,58 @@ static FunctionResult English_POSCode(char* buffer)
 		if (!arg2) return FAILRULE_BIT;
 		char word[MAX_WORD_SIZE];
 		MakeLowerCopy(word,arg2);
-		char* infin = English_GetInfinitive(word,true); 
+		char* infin = GetInfinitive(word,true); 
 		if (!infin) infin = word;
 		if (!stricmp(arg3,"present_participle")) 
 		{
-			char* use = English_GetPresentParticiple(word);
+			char* use = GetPresentParticiple(word);
 			if (!use) return FAILRULE_BIT;
 			strcpy(buffer,use);
 		}
 		else if (!stricmp(arg3,"past_participle")) 
 		{
-			char* use = English_GetPastParticiple(word);
+			char* use = GetPastParticiple(word);
 			if (!use) return FAILRULE_BIT;
 			strcpy(buffer,use);
 		}
 		else if (!stricmp(arg3,"infinitive")) 
 		{
-			char* verb = English_GetInfinitive(word,true);
+			char* verb = GetInfinitive(word,true);
 			if (!verb) return FAILRULE_BIT;
 			strcpy(buffer,verb);
 		}
 		else if (!stricmp(arg3,"past")) 
 		{
-			char* past = English_GetPastTense(infin);
+			char* past = GetPastTense(infin);
+			if (!stricmp(infin,"be"))
+			{
+				if (!stricmp(arg4,"I")) past = "was";
+				else  past = "were";
+			}
 			if (!past) return FAILRULE_BIT;
 			strcpy(buffer,past);
 		}
 		else if (!stricmp(arg3,"present3ps")) 
 		{
-			char* third = English_GetThirdPerson(infin);
+			char* third = GetThirdPerson(infin);
 			if (!third) return FAILRULE_BIT;
 			strcpy(buffer,third);
 		}
 		else if (!stricmp(arg3,"present")) 
 		{
-			char* third = English_GetPresent(infin);
+			char* third = GetPresent(infin);
+			if (!stricmp(infin,"be"))
+			{
+				if (!stricmp(arg4,"I")) third = "am";
+				else if (!stricmp(arg4,"you") || !stricmp(arg4,"we") || !stricmp(arg4,"they")) third = "are";
+				else  third = "is";
+			}
+			if (!stricmp(infin,"do"))
+			{
+				if (!stricmp(arg4,"I")) third = "do";
+				else if (!stricmp(arg4,"you") || !stricmp(arg4,"we") || !stricmp(arg4,"they")) third = "do";
+				else  third = "does";
+			}
 			if (!third) return FAILRULE_BIT;
 			strcpy(buffer,third);
 		}
@@ -4627,16 +4645,16 @@ static FunctionResult English_POSCode(char* buffer)
 		{
 			char* arg4 = ARGUMENT(4);
 			WORDP D = FindWord(arg4);
-			char* plural = English_GetPluralNoun(D);
+			char* plural = GetPluralNoun(D);
 			char* verb;
 			if (!plural || stricmp(plural,arg4)) // singular noun
 			{
-				verb = English_GetThirdPerson(arg2);
+				verb = GetThirdPerson(arg2);
 				if (verb)  strcpy(buffer,verb);
 			}
 			else // plural noun
 			{
-				verb = English_GetInfinitive(arg2,false);
+				verb = GetInfinitive(arg2,false);
 				if (verb) 
 				{
 					if (!stricmp(verb,"be")) strcpy(buffer,"are");
@@ -4648,7 +4666,7 @@ static FunctionResult English_POSCode(char* buffer)
 		if (IsUpperCase(ARGUMENT(2)[0])) *buffer = GetUppercaseData(*buffer);
 		return NOPROBLEM_BIT;
 	}
-	else if (!stricmp(arg1,"aux"))
+	else if (!stricmp(arg1,"aux")) // (aux do you)
 	{
 		if (!arg2) return FAILRULE_BIT;
 		char word[MAX_WORD_SIZE];
@@ -4709,13 +4727,13 @@ static FunctionResult English_POSCode(char* buffer)
 		char* adj = word; 
 		if (!stricmp(arg3,"more"))
 		{
-			char* more = English_GetAdjectiveMore(adj);
+			char* more = GetAdjectiveMore(adj);
 			if (!more) sprintf(buffer,"more %s",adj);
 			else strcpy(buffer,more);
 		}
 		else if (!stricmp(arg3,"most"))
 		{
-			char* most = English_GetAdjectiveMost(adj);
+			char* most = GetAdjectiveMost(adj);
 			if (!most) sprintf(buffer,"most %s",adj);
 			else strcpy(buffer,most);
 		}
@@ -4729,13 +4747,13 @@ static FunctionResult English_POSCode(char* buffer)
 		char* adv = word; 
 		if (!stricmp(arg3,"more"))
 		{
-			char* more = English_GetAdverbMore(adv);
+			char* more = GetAdverbMore(adv);
 			if (!more) sprintf(buffer,"more %s",adv);
 			else strcpy(buffer,more);
 		}
 		else if (!stricmp(arg3,"most"))
 		{
-			char* most = English_GetAdverbMost(adv);
+			char* most = GetAdverbMost(adv);
 			if (!most) sprintf(buffer,"most %s",adv);
 			else strcpy(buffer,most);
 		}
@@ -4777,7 +4795,7 @@ static FunctionResult English_POSCode(char* buffer)
 			return (D) ? NOPROBLEM_BIT : FAILRULE_BIT;
 		}
 
-		char* noun =  English_GetSingularNoun(arg2,true,false);
+		char* noun =  GetSingularNoun(arg2,true,false);
 		if (!noun) return NOPROBLEM_BIT;
 		if (!stricmp(arg3,"singular") || (atoi(arg3) == 1 && !strchr(arg3,'.')) || !stricmp(arg3,"-1") || !stricmp(arg3,"one")) // allow number 1 but not float
 		{
@@ -4787,7 +4805,7 @@ static FunctionResult English_POSCode(char* buffer)
 		else if (!stricmp(arg3,"plural") || IsDigit(arg3[0]) || (*arg3 == '-' && IsDigit(arg3[1])) ) // allow number non-one and negative 1
 		{
 			//   swallow the args. for now we KNOW they are wildcard references
-			char* plural = English_GetPluralNoun(StoreWord(noun));
+			char* plural = GetPluralNoun(StoreWord(noun));
 			if (!plural) return NOPROBLEM_BIT;
 			strcpy(buffer,plural);
 			return NOPROBLEM_BIT;
@@ -4795,7 +4813,7 @@ static FunctionResult English_POSCode(char* buffer)
 		else if (!stricmp(arg3,"irregular") ) // generate a response only if plural is irregular from base (given)
 		{
 			//   swallow the args. for now we KNOW they are wildcard references
-			char* plural = English_GetPluralNoun(StoreWord(noun));
+			char* plural = GetPluralNoun(StoreWord(noun));
 			if (!plural) return NOPROBLEM_BIT;
 			size_t len = strlen(noun);
 			if (strnicmp(plural,noun,len)) strcpy(buffer,plural); // show plural when base not in it
@@ -4805,7 +4823,7 @@ static FunctionResult English_POSCode(char* buffer)
 	else if (!stricmp(arg1,"determiner")) //   DETERMINER noun
 	{
 		size_t len = strlen(arg2);
-		if (arg2[len-1] == 'g' && arg2[len-2] == 'n' && arg2[len-3] == 'i' && English_GetInfinitive(arg2,false)) //   no determiner on gerund
+		if (arg2[len-1] == 'g' && arg2[len-2] == 'n' && arg2[len-3] == 'i' && GetInfinitive(arg2,false)) //   no determiner on gerund
 		{
 			strcpy(buffer,arg2);
 			return NOPROBLEM_BIT;
@@ -4825,7 +4843,7 @@ static FunctionResult English_POSCode(char* buffer)
 		}
 
 		//   if a plural word, use no determiner
-		char* s = English_GetSingularNoun(arg2,true,false);
+		char* s = GetSingularNoun(arg2,true,false);
 		if (!s || stricmp(arg2,s)) //   if has no singular or isnt same, assume we are plural and add the
 		{
 			sprintf(buffer,"the %s",arg2);
@@ -5652,6 +5670,7 @@ static FunctionResult LengthCode(char* buffer)
 		}
 		sprintf(buffer,"%d",count);
 	}
+	else if (!*word) strcpy(buffer,"0"); // NULL has 0 length (like a null value array)
 	else sprintf(buffer,"%d",(int)strlen(word)); // characters in word
 	return NOPROBLEM_BIT;
 }
@@ -5668,7 +5687,8 @@ static FunctionResult NextCode(char* buffer)
 		FunctionResult result;
 		ReadCommandArg(ptr,arg2,result,OUTPUT_NOTREALBUFFER|OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING,MAX_WORD_SIZE);
 	}
-
+	if (!stricmp(arg1,"LOOP"))  
+		return NEXTLOOP_BIT;
 	if (!stricmp(arg1,"FACT")) 
 	{
 		strcpy(ARGUMENT(1),arg2);
@@ -7844,7 +7864,11 @@ static FunctionResult JSONOpenCode(char* buffer)
 static FunctionResult ParseJson(char* buffer, char* message, size_t size)
 {
 	if (trace & TRACE_JSON) Log(STDUSERTABLOG, "JsonParse Call: %s", message);
-	if (size < 1) return FAILRULE_BIT; // nothing to parse
+	if (size < 1)
+	{
+		*buffer = 0;
+		return NOPROBLEM_BIT; // nothing to parse
+	}
 
 	jsmn_parser parser;
 	// First run it once to count the tokens
@@ -8261,7 +8285,7 @@ static FunctionResult JSONParseCode(char* buffer)
 	if (*data == '^') ++data; // skip opening functional marker
 	if (*data == '"') ++data; // skip opening quote
 	size_t len = strlen(data);
-	if (data[len-1] == '"') data[--len] = 0;
+	if (len && data[len-1] == '"') data[--len] = 0;
 	return ParseJson(buffer, data, len);
 }
 
@@ -8366,7 +8390,7 @@ static MEANING jsonValue(char* value, unsigned int& flags)
 	}
 	if (!IsDigit(*(at-1)) || decimal > 1) number = false;
 
-	if (*value == '"') 
+	if (*value == '"') // explicit string
 	{
 		flags |= JSON_STRING_VALUE;
 		size_t len = strlen(value);
@@ -8379,8 +8403,9 @@ static MEANING jsonValue(char* value, unsigned int& flags)
 	else if (!stricmp(value,"false"))  flags |= JSON_PRIMITIVE_VALUE;
 	else if (!stricmp(value,"null"))  flags |= JSON_PRIMITIVE_VALUE;
 	else if (number) flags |= JSON_PRIMITIVE_VALUE;
+	// else flags |= JSON_STRING_VALUE; // all others are also strings but without quotes
 
-	WORDP V = StoreWord(value); // new value
+	WORDP V = StoreWord(value,AS_IS); // new value
 	return MakeMeaning(V);
 }
 
@@ -8401,8 +8426,9 @@ static FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectke
 		++keyname;
 	}
 	WORDP keyvalue = StoreWord(keyname); // new key
+	char* val = ARGUMENT(index);
 	MEANING key = MakeMeaning(keyvalue);
-	MEANING value = jsonValue(ARGUMENT(index),flags);
+	MEANING value = jsonValue(val,flags);
 	CreateFact(MakeMeaning(D), key,value, flags);
 	return NOPROBLEM_BIT;
 }
@@ -8435,6 +8461,11 @@ static FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectval
 	WORDP O = FindWord(arrayname);
 	if (!O) return FAILRULE_BIT;
 
+	// get the field values
+	char arrayIndex[20];
+	char* val = ARGUMENT(index);
+	MEANING value = jsonValue(val,flags);
+	
 	// how many existing elements
 	FACT* F = GetSubjectHead(O);
 	int count = 0;
@@ -8443,11 +8474,10 @@ static FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectval
 		++count;
 		F = GetSubjectNext(F);
 	}
-
-	char arrayIndex[20];
 	sprintf(arrayIndex,"%d",count); // add at end
 	WORDP Idex = StoreWord(arrayIndex);
-	MEANING value = jsonValue(ARGUMENT(index),flags);
+
+	// create fact
 	CreateFact(MakeMeaning(O), MakeMeaning(Idex),value, flags);
 	return NOPROBLEM_BIT;
 }
@@ -8638,7 +8668,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{"^properties",PropertiesCode,1,0,"get property values of word"}, 
 	{"^intersectwords",IntersectWordsCode,VARIABLE_ARG_COUNT,0,"see if words in arg 1 are in arg2"},
 	{"^join",JoinCode,STREAM_ARG,0,"merge words into one"}, 
-	{"^pos",English_POSCode,VARIABLE_ARG_COUNT,0,"compute some part of speech value"},
+	{"^pos",POSCode,VARIABLE_ARG_COUNT,0,"compute some part of speech value"},
 	{"^removeinternalflag",RemoveInternalFlagCode,2,0,"Remove internal flag from word- currently only HAS_SUBSTITUTE"}, 
 	{"^removeproperty",RemovePropertyCode,STREAM_ARG,0,"remove value to dictionary entry properies or systemFlags or facts of factset properties"},
 	{"^rhyme",RhymeCode,1,0,"find a rhyming word"}, 

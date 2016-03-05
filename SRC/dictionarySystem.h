@@ -596,6 +596,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 // in tokencontrol, not tokenflags
 #define NO_PROPER_SPELLCHECK	0x0000008000000000ULL   
+#define NO_LOWERCASE_PROPER_MERGE	0x0000010000000000ULL   
 
 // these change from parsing
 #define SENTENCE_TOKENFLAGS  ( QUOTATION | COMMANDMARK | IMPLIED_YOU | FOREIGN_TOKENS | FAULTY_PARSE  | NOT_SENTENCE | PRESENT | PAST | FUTURE | PRESENT_PERFECT | CONTINUOUS | PERFECT | PASSIVE )
@@ -640,6 +641,7 @@ typedef void (*DICTIONARY_FUNCTION)(WORDP D, uint64 data);
 struct FACT;
 
 typedef unsigned int FACTOID; //   a fact index
+typedef unsigned int FACTOID_OR_MEANING;	// a fact or a meaning (same representation)
 
 typedef struct WORDENTRY //   a dictionary entry  - starred items are written to the dictionary
 {

@@ -293,7 +293,7 @@ unsigned int AddFact(unsigned int set, FACT* F) // fact added to factset
 	return count;
 }
 
-FACT* SpecialFact(MEANING verb, MEANING object,unsigned int flags)
+FACT* SpecialFact(FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned int flags)
 {
 	//   allocate a fact
 	if (++factFree == factEnd) 
@@ -361,7 +361,7 @@ void ResetFactSystem(FACT* locked)
 	}
 }
 
-FACT* FindFact(MEANING subject, MEANING verb, MEANING object, unsigned int properties)
+FACT* FindFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties)
 {
     FACT* F;
 	FACT* G;
@@ -413,7 +413,7 @@ FACT* FindFact(MEANING subject, MEANING verb, MEANING object, unsigned int prope
     return NULL;
 }
 
-FACT* CreateFact(MEANING subject, MEANING verb, MEANING object, unsigned int properties)
+FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties)
 {
 	currentFact = NULL; 
 	if (!subject || !object || !verb)
@@ -733,7 +733,7 @@ void WriteBinaryFacts(FILE* out,FACT* F) //   write out from here to end
     fclose(out);
 }
 	
-FACT* CreateFastFact(MEANING subject, MEANING verb, MEANING object, unsigned int properties)
+FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties)
 {
 	//   get correct field values
 	WORDP s = (properties & FACTSUBJECT) ? NULL : Meaning2Word(subject);
@@ -959,7 +959,7 @@ char* ReadField(char* ptr,char* field,char fieldkind, unsigned int& flags)
 {
 	if (*ptr == '(')
 	{
-		FACT* G = ReadFact(ptr);
+		FACT* G = ReadFact(ptr,(flags & FACTBUILD2) ? BUILD2 : 0);
 		if (fieldkind == 's') flags |= FACTSUBJECT;
 		else if (fieldkind == 'v') flags |= FACTVERB;
 		else if (fieldkind == 'o') flags |= FACTOBJECT;
@@ -985,7 +985,7 @@ char* ReadField(char* ptr,char* field,char fieldkind, unsigned int& flags)
 	return ptr; //   return at new token
 }
 
-FACT* ReadFact(char* &ptr)
+FACT* ReadFact(char* &ptr, uint64 build)
 {
 	char word[MAX_WORD_SIZE];
     MEANING subject = 0;
@@ -995,7 +995,7 @@ FACT* ReadFact(char* &ptr)
     ptr = ReadCompiledWord(ptr,word);
     if (*word == '0') return 0; 
 	unsigned int flags = 0;
-
+	if (build == BUILD2) flags |= FACTBUILD2;
 	char subjectname[MAX_WORD_SIZE];
 	ptr = ReadField(ptr,subjectname,'s',flags);
     char verbname[MAX_WORD_SIZE];
@@ -1088,7 +1088,7 @@ void ReadFacts(const char* name,uint64 build,bool user) //   a facts file may ha
         else 
 		{
 			char* ptr = readBuffer;
-			ReadFact(ptr); // will write on top of ptr... must not be readBuffer variable
+			FACT* F = ReadFact(ptr,build); // will write on top of ptr... must not be readBuffer variable
 		}
     }
    fclose(in);

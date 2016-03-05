@@ -960,6 +960,11 @@ static void WriteDictDetailsBeforeLayer(int layer)
 		}
 		fclose(out);
 	}
+	else 
+	{
+		printf("Unable to open TMP prebuild file\r\n");
+		Log(STDUSERLOG,"Unable to open TMP prebuild file\r\n");
+	}
 }
 
 static void ReadDictDetailsBeforeLayer(int layer)
@@ -2662,10 +2667,10 @@ char* FindCanonical(char* word, unsigned int i,bool notNew)
 	// before seeing if canoncial can come from verb, see if it is from a known noun.  "cavities" shouldnt create cavity as a verb
 	char* noun = NULL;
 	size_t len = strlen(word);
-	if (word[len-1] == 's') noun = English_GetSingularNoun(word,true,true); // do we already KNOW this as a an extension of a noun
+	if (word[len-1] == 's') noun = GetSingularNoun(word,true,true); // do we already KNOW this as a an extension of a noun
 
     //   VERB
-    char* verb = English_GetInfinitive(word,(noun) ? true : notNew);
+    char* verb = GetInfinitive(word,(noun) ? true : notNew);
     if (verb) 
     {
         WORDP V = FindWord(verb,0,controls);
@@ -2674,7 +2679,7 @@ char* FindCanonical(char* word, unsigned int i,bool notNew)
 	if (verb) return verb; //   we prefer verb base-- gerunds are nouns and verbs for which we want the verb
 
     //   NOUN
-    noun = English_GetSingularNoun(word,true,notNew);
+    noun = GetSingularNoun(word,true,notNew);
     if (noun) 
     {
         WORDP  N = FindWord(noun,0,controls);
@@ -2683,7 +2688,7 @@ char* FindCanonical(char* word, unsigned int i,bool notNew)
 	if (noun) return noun;
     
 	//   ADJECTIVE
-    char* adjective = English_GetAdjectiveBase(word,(noun) ? false : notNew);
+    char* adjective = GetAdjectiveBase(word,(noun) ? false : notNew);
     if (adjective) 
     {
         WORDP A = FindWord(adjective,0,controls);
@@ -2692,7 +2697,7 @@ char* FindCanonical(char* word, unsigned int i,bool notNew)
 	if (adjective) return adjective;
  
 	//   ADVERB
-    char* adverb = English_GetAdverbBase(word,(noun) ? false : notNew);
+    char* adverb = GetAdverbBase(word,(noun) ? false : notNew);
     if (adverb) 
     {
         WORDP A = FindWord(adverb,0,controls);

@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.2b";
+char* version = "6.2c";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -14,6 +14,7 @@ int timerLimit = 0;						// limit time per volley
 int timerCheckRate = 0;					// how often to check calls for time
 int volleyStartTime = 0;
 int timerCheckInstance = 0;
+char hostname[100];
 char users[100];
 char logs[100];
 char* authorizations = 0;	// for allowing debug commands
@@ -25,6 +26,8 @@ char* readBuffer;								// main scratch reading buffer (files, etc)
 bool readingDocument = false;
 bool redo = false; // retry backwards any amount
 bool oobExists = false;
+bool docstats = false;
+unsigned int docSentenceCount = 0;
 
 #define MAX_TRACED_FUNCTIONS 50
 static char tracedFunctions[MAX_TRACED_FUNCTIONS][100];
@@ -171,15 +174,20 @@ void CreateSystem()
 		baseBufferIndex = bufferIndex;
 	}
 	char data[MAX_WORD_SIZE];
+	char* kind;
 #ifdef EVSERVER
-	sprintf(data,"EVSERVER ChatScript Version %s  %ld bit %s compiled %s\r\n",version,(long int)(sizeof(char*) * 8),os,compileDate);
+	kind = "EVSERVER";
 #elif DEBUG
-	sprintf(data,"ChatScript Debug Version %s  %ld bit %s compiled %s\r\n",version,(long int)(sizeof(char*) * 8),os,compileDate);
+	kind = "Debug";
 #else
-	sprintf(data,"ChatScript Release Version %s  %ld bit %s compiled %s\r\n",version,(long int)(sizeof(char*) * 8),os,compileDate);
+	kind = "Release";
 #endif
-	if (server)  Log(SERVERLOG,"Server %s",data);
-	printf("%s",data);
+	sprintf(data,"ChatScript %s Version %s  %ld bit %s compiled %s",kind,version,(long int)(sizeof(char*) * 8),os,compileDate);
+	strcat(data," host=");
+	strcat(data,hostname);
+	if (server)  Log(SERVERLOG,"Server",data);
+	strcat(data,"\r\n");
+	printf("%s ",data);
 
 	int old = trace; // in case trace turned on by default
 	trace = 0;
@@ -368,6 +376,7 @@ void ReloadSystem()
 
 unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* readablePath, char* writeablePath, USERFILESYSTEM* userfiles)
 { // this work mostly only happens on first startup, not on a restart
+	strcpy(hostname,"local");
 	argc = argcx;
 	argv = argvx;
 	InitFileSystem(unchangedPath,readablePath,writeablePath);
@@ -603,11 +612,11 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	if (server)
 	{
 #ifndef EVSERVER
-		Log(SERVERLOG, "\r\n\r\n======== Began server %s compiled %s on port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,port,GetTimeInfo(),oldserverlog,userLog);
-		printf("\r\n\r\n======== Began server %s compiled %s on port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,port,GetTimeInfo(),oldserverlog,userLog);
+		Log(SERVERLOG, "\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(),oldserverlog,userLog);
+		printf("\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(),oldserverlog,userLog);
 #else
-		Log(SERVERLOG, "\r\n\r\n======== Began EV server %s compiled %s on port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,port,GetTimeInfo(),oldserverlog,userLog);
-		printf("\r\n\r\n======== Began EV server %s compiled %s on port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,port,GetTimeInfo(),oldserverlog,userLog);
+		Log(SERVERLOG, "\r\n\r\n======== Began EV server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(),oldserverlog,userLog);
+		printf("\r\n\r\n======== Began EV server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(),oldserverlog,userLog);
 #endif
 	}
 	serverLog = oldserverlog;
@@ -1795,7 +1804,7 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 			else if (O && O->properties & NOUN) {;}// we know this noun (like name James)
 			else
 			{
-				char* singular = English_GetSingularNoun(word,true,false);
+				char* singular = GetSingularNoun(word,true,false);
 				D = FindWord(singular);
 				if (D && stricmp(singular,word)) // singular exists different from plural, use lower case form
 				{
@@ -1989,13 +1998,17 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 #ifndef NOMAIN
 int main(int argc, char * argv[]) 
 {
+	FILE* in = FopenStaticReadOnly("SRC/dictionarySystem.h"); // SRC/dictionarySystem.h
+	if (!in) // if we are not at top level, try going up a level
+	{
 #ifdef WIN32
-	if (!SetCurrentDirectory("..")) // move from BINARIES to top level
-		myexit("unable to change up\r\n");
+		if (!SetCurrentDirectory("..")) // move from BINARIES to top level
+			myexit("unable to change up\r\n");
 #else
-	chdir("..");
+		chdir("..");
 #endif
-
+	}
+	else fclose(in); 
 
 	if (InitSystem(argc,argv)) myexit("failed to load memory\r\n");
     if (!server) MainLoop();

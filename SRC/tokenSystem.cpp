@@ -59,6 +59,7 @@ void DumpTokenControls(uint64 val)
 	if (val & DO_PROPERNAME_MERGE) Log(STDUSERLOG,"DO_PROPERNAME_MERGE ");
 	if (val & DO_DATE_MERGE) Log(STDUSERLOG,"DO_DATE_MERGE ");
 	if (val & NO_PROPER_SPELLCHECK) Log(STDUSERLOG,"NO_PROPER_SPELLCHECK ");
+	if (val & NO_LOWERCASE_PROPER_MERGE) Log(STDUSERLOG,"NO_LOWERCASE_PROPER_MERGE ");
 	if (val & DO_SPELLCHECK) Log(STDUSERLOG,"DO_SPELLCHECK ");
 	if (val & DO_INTERJECTION_SPLITTING) Log(STDUSERLOG,"DO_INTERJECTION_SPLITTING ");
 
@@ -652,10 +653,10 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				else if (next == '-' ) 
 					break; // the anyways-- break 
 			}
-			// number before common things?
-			if (IsDigit(*start) && IsDigit(*(ptr-1)))
+			// number before things? 8months
+			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(*ptr))
 			{
-				if (!strnicmp(ptr,"min",3) || !strnicmp(ptr,"hr",2) || !strnicmp(ptr,"sec",3) || !strnicmp(ptr,"yr",2)) return ptr;
+				return ptr;
 			}
 			if ( c == ']' || c == ')') break; //closers
 			if (c == '&') break; // must represent "and" 
@@ -1039,13 +1040,13 @@ static void HandleFirstWord() // Handle capitalization of starting word of sente
 	WORDP N;
 	char word[MAX_WORD_SIZE];
 	MakeLowerCopy(word,wordStarts[1]);
-	char* noun = English_GetSingularNoun(word,true,true);
+	char* noun = GetSingularNoun(word,true,true);
 	
 	if (D && !E && !IsUpperCase(*wordStarts[1]) && D->properties & NOUN_PROPER_SINGULAR)  wordStarts[1] = reuseAllocation(wordStarts[1],D->word); // have upper but not lower, use upper if not plural
 	else if (!IsUpperCase(*wordStarts[1])) return; // dont change what is already ok, dont want unnecessary trace output
 	else if (noun && !stricmp(word,noun)) wordStarts[1] = reuseAllocation(wordStarts[1],StoreWord(noun)->word); // lower case form is the singular form already - use that whether he gave us upper or lower
 	else if (E && E->properties & (CONJUNCTION|PRONOUN_BITS|PREPOSITION)) wordStarts[1] = reuseAllocation(wordStarts[1],E->word); // simple word lower case, use it
-	else if (E && E->properties & AUX_VERB && (N = FindWord(wordStarts[2])) && (N->properties & (PRONOUN_BITS | NOUN_BITS) || English_GetSingularNoun(wordStarts[2],true,false))) wordStarts[1] = reuseAllocation(wordStarts[1],E->word); // potential aux before obvious noun/pronoun, use lower case of it
+	else if (E && E->properties & AUX_VERB && (N = FindWord(wordStarts[2])) && (N->properties & (PRONOUN_BITS | NOUN_BITS) || GetSingularNoun(wordStarts[2],true,false))) wordStarts[1] = reuseAllocation(wordStarts[1],E->word); // potential aux before obvious noun/pronoun, use lower case of it
 
 	// see if multiple word (like composite name)
 	char* multi = strchr(wordStarts[1],'_');
@@ -1137,6 +1138,11 @@ void ProcessCompositeName()
 		}
 		WORDP Z = FindWord(word,0,UPPERCASE_LOOKUP);
 		if (IsUpperCase(*word) && Z && Z->systemFlags & NO_PROPER_MERGE)
+		{
+			if (start != UNINIT) i = FinishName(start,end,upperStart,kind,Z);
+			continue;
+		}
+		if (!IsUpperCase(*word) && FindWord(word) && tokenControl & NO_LOWERCASE_PROPER_MERGE) // dont allow lowercase words to merge into a title
 		{
 			if (start != UNINIT) i = FinishName(start,end,upperStart,kind,Z);
 			continue;
@@ -1671,7 +1677,7 @@ static WORDP ViableIdiom(char* text,unsigned int i,unsigned int n,unsigned int c
 		if (!part1 && P1 && P2 && P1->properties & PART_OF_SPEECH && P2->properties & PART_OF_SPEECH) 
 		{
 			// if there a noun this is plural of? like "square feet" where "square_foot" is the keyword
-			char* noun = English_GetSingularNoun(word->word,false,true);
+			char* noun = GetSingularNoun(word->word,false,true);
 			if (noun)
 			{
 				WORDP D1 = FindWord(noun);

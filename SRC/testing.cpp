@@ -9,7 +9,6 @@ static unsigned int filesSeen;
 static 	char directory[MAX_WORD_SIZE];
 static int itemcount = 0;
 static char* abstractBuffer;
-static bool docstats = false;
 static int longLines;
 static uint64 verifyToken;
 
@@ -839,6 +838,7 @@ static void ReadNextDocument(char* name,uint64 value) // ReadDocument(inBuffer,s
 		Log(STDUSERLOG,"No such document file: %s\r\n",name);
 		return;
 	}
+	docSentenceCount = 0;
 	readingDocument = true;
 	SetBaseMemory();
 	inputSentenceCount = 0;
@@ -1140,7 +1140,7 @@ static void C_TestPattern(char* input)
 	int whenmatched = 0;
 	SetContext(true);
 	unsigned int positionStart,positionEnd;
-	bool result =  Match(data+2,0,0,'(',true,gap,wildcardSelector,junk1,junk1,uppercasem,whenmatched,positionStart,positionEnd);
+	bool result =  Match(data+2,0,0,"(",true,gap,wildcardSelector,junk1,junk1,uppercasem,whenmatched,positionStart,positionEnd);
 	SetContext(false);
 	trace = oldtrace;
 	if (result) 
@@ -2859,7 +2859,7 @@ static void C_VerifySpell(char* file) // test spell checker against a file of en
 			continue;
 		}
 
-		char* fix = SpellFix(wrongWord,1,PART_OF_SPEECH); 
+		char* fix = SpellFix(wrongWord,1,PART_OF_SPEECH, 0); 
 		if (fix && !strcmp(fix,rightWord)) ++right;
 		else
 		{
@@ -6232,7 +6232,15 @@ static void C_Trace(char* input)
 		else if (*word == '^')
 		{
 			WORDP FN = FindWord(word);
-			if (FN) FN->internalBits ^= MACRO_TRACE;
+			if (FN) 
+			{
+				FN->internalBits ^= MACRO_TRACE;
+				if (!fromScript)
+				{
+					echo = true;
+					Log(STDUSERLOG," tracing %s %s\n",word, (FN->internalBits & MACRO_TRACE) ? "on" : "off");
+				}
+			}
 			else Log(STDUSERLOG,"No such function %s\r\n",word);
 		}
 		else if (*word == '~') // tracing a topic or rule by label

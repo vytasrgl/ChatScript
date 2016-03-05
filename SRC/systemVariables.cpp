@@ -338,6 +338,7 @@ static char* Sengine(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 	sprintf(systemValue,"Engine: %s",compileDate);
+	if (systemValue[12] == ' ') systemValue[12] = '0';
     return systemValue;
 }
 
@@ -407,7 +408,6 @@ static char* Sversion(char* value)
     return systemValue;
 }
 
-
 static char* Sfact(char* value)
 {
 	static char hold[50] = ".";
@@ -415,6 +415,18 @@ static char* Sfact(char* value)
 	if (*hold != '.') return hold;
 	sprintf(systemValue,"%d",Fact2Index(factFree));
     return systemValue;
+}
+
+static char* Shost(char* value)
+{
+	static char hold[50] = ".";
+	if (value) 
+	{
+		if (*value != '.') regression = *value != '0';
+		return strcpy(hold,value);
+	}
+	if (*hold != '.') return hold;
+	return hostname;
 }
 
 static char* Sregression(char* value)
@@ -886,6 +898,7 @@ SYSTEMVARIABLE sysvars[] =
 	{"%freeword",SfreeWord,"number of available unused words"}, 
 	{"%freefact",SfreeFact,"number of available unused facts"}, 
 	{"%regression",Sregression,"Boolean - is regression flag on"}, 
+	{"%host",Shost,"machine ip if a server, else local"}, 
 	{"%http_response",ShttpResponse,"http response code from last call to JsonOpen"}, 
 	{"%maxmatchvariables",SmaxMatchVariables,"highest number of legal _match variables"}, 
 	{"%maxfactsets",SmaxFactSets,"highest number of legal @factsets"}, 

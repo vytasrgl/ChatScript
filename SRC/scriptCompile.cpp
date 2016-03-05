@@ -1249,8 +1249,8 @@ static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[50][MAX_
 {
 	if (!stricmp(D->word,"^next"))
 	{	
-		if (stricmp(arg1,"RESPONDER") && stricmp(arg1,"REJOINDER") && stricmp(arg1,"RULE") && stricmp(arg1,"GAMBIT") && stricmp(arg1,"INPUT") && stricmp(arg1,"FACT")) 
-			BADSCRIPT("CALL- 62 1st argument to ^next must be FACT OR INPUT or RULE or GAMBIT or RESPONDER or REJOINDER - %s",arg1)
+		if (stricmp(arg1,"RESPONDER") && stricmp(arg1,"LOOP") && stricmp(arg1,"REJOINDER") && stricmp(arg1,"RULE") && stricmp(arg1,"GAMBIT") && stricmp(arg1,"INPUT") && stricmp(arg1,"FACT")) 
+			BADSCRIPT("CALL- 62 1st argument to ^next must be FACT OR LOOP OR INPUT or RULE or GAMBIT or RESPONDER or REJOINDER - %s",arg1)
 	}	
 	else if(!stricmp(D->word,"^keephistory"))
 	{
@@ -1734,10 +1734,10 @@ static void SpellCheckScriptWord(char* input,int startSeen,bool checkGrade)
 		uint64 flags = GetPosData(2,word,entry,canonical,sysflags,cansysflags,false,true,0);
 		// do we know a possible base for it
 		//char* canon = FindCanonical(word, 2,true);
-		//if (!canon) canon = English_GetSingularNoun(word,true,true);
-		//if (!canon) canon = English_GetInfinitive(word,true);
-		//if (!canon) canon = English_GetAdjectiveBase(word,false);
-		//if (!canon) canon = English_GetAdverbBase(word,false);
+		//if (!canon) canon = GetSingularNoun(word,true,true);
+		//if (!canon) canon = GetInfinitive(word,true);
+		//if (!canon) canon = GetAdjectiveBase(word,false);
+		//if (!canon) canon = GetAdverbBase(word,false);
 		if (!flags)
 		{
 			WORDP E = FindWord(word,0,SECONDARY_CASE_ALLOWED);
@@ -4455,11 +4455,7 @@ static void WriteDictionaryChange(FILE* dictout, uint64 build)
 	if ( build == BUILD0) in = FopenReadWritten("TMP/prebuild0.bin");
 	else if ( build == BUILD1) in = FopenReadWritten("TMP/prebuild1.bin");
 	else if ( build == BUILD2) in = FopenReadWritten("TMP/prebuild2.bin");
-	if (!in) 
-	{
-		ReportBug("prebuild bin not found")
-		myexit("Dictionary Change not determinable");
-	}
+	if (!in)  ReportBug("prebuild bin not found")
 	for (WORDP D = dictionaryBase+1; D < dictionaryFree; ++D) 
 	{
 		uint64 oldproperties = 0;

@@ -187,10 +187,10 @@ static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 	}
 
 	--F;  
- 	while (++F <= factFree)  
+ 	while (++F <= factFree)  // factfree is a valid fact
 	{
 		if (shared && !sharefile)  continue;
-		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT))) 
+		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT|FACTBUILD2))) 
 		{
 			WriteFact(F,true,ptr,false,true);
 			ptr += strlen(ptr);
@@ -224,7 +224,7 @@ static bool ReadUserFacts()
 		{
 			if (*readBuffer == '#') break;
 			char* ptr = readBuffer;
-			FACT* F = ReadFact(ptr);
+			FACT* F = ReadFact(ptr,0);
 			AddFact(setid,F);
 			if (trace & TRACE_USER) TraceFact(F);
         }
@@ -241,7 +241,7 @@ static bool ReadUserFacts()
 	{
 		if (*readBuffer == '#' && readBuffer[1] == ENDUNIT) break;
 		char* data = readBuffer;
-		if (*data == '(' && strchr(data,')')) ReadFact(data);
+		if (*data == '(' && strchr(data,')')) ReadFact(data,0);
 		else 
 		{
 			ReportBug("Bad user fact %s\r\n",readBuffer)
@@ -431,6 +431,7 @@ static bool ReadUserVariables()
 
 static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 {
+	char* start = ptr;
 	if (!timeturn15[1] && volleyCount >= 15 && responseIndex) sprintf(timeturn15,"%lu-%d%s",(unsigned long)curr,responseData[0].topic,responseData[0].id); // delimit time of turn 15 and location...
 	sprintf(ptr,"%s %s %s %s |\n",saveVersion,timeturn0,timePrior,timeturn15); 
 	ptr += strlen(ptr);

@@ -1746,7 +1746,14 @@ char* BalanceParen(char* ptr,bool within) // text starting with ((unless within 
 			++ptr;
 			continue;
 		}
-		int value = GetNestingData(*ptr);
+		int value = nestingData[(unsigned char)*ptr];
+		if (*ptr == '<' && ptr[1] == '<' && ptr[2] != '<') value = 1;
+		if (*ptr == '>' && ptr[1] == '>' && ptr[2] != '>') 
+		{
+			value = -1;
+			++ptr; // ignore 1st one
+		}
+
 		if (value && (paren += value) == 0) 
 		{
 			ptr += (ptr[1] && ptr[2]) ? 2 : 1; //   return on next token (skip paren + space) or  out of data (typically argument substitution)
@@ -2358,13 +2365,22 @@ bool ReadDocument(char* inBuffer,FILE* sourceFile)
 	}
 	if (readAhead >= 6)
 		Log(STDUSERLOG,"Heavy long line? %s\r\n",documentBuffer);
-	++inputSentenceCount;
 	if (autonumber) 
 	{
 		bool oldecho = echo;
 		echo = true;
 		Log(STDUSERLOG,"%d: %s\r\n",inputSentenceCount,inBuffer);
 		echo = oldecho;
+	}
+	else if (docstats)
+	{
+		if ((++docSentenceCount % 1000) == 0) 
+		{
+			bool oldecho = echo;
+			echo = true;
+			Log(STDUSERLOG,"%d: %s\r\n",docSentenceCount,inBuffer);
+			echo = oldecho;
+		}	
 	}
 	wasEmptyLine = false;
 	if (docOut) fprintf(docOut,"\r\n%s\r\n",inBuffer);

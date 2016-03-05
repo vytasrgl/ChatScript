@@ -89,8 +89,12 @@ typedef struct RESPONSE
 	UNDEFINED_FUNCTION  = 65536, //   potential function call has no definition so isnt
 	ENDCALL_BIT  =    131072,
 
+	NEXTLOOP_BIT = 262144,
+
 	NOREJOINDER = 262144,	// can be ored on
 };
+extern bool docstats;
+extern unsigned int docSentenceCount;
 extern clock_t startTimeInfo;
 extern unsigned int outputLength;
 extern bool readingDocument;
@@ -103,6 +107,7 @@ extern bool documentMode;
 extern unsigned int volleyCount;
 extern FILE* sourceFile;
 extern bool oobExists;
+extern char hostname[100];
 extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;

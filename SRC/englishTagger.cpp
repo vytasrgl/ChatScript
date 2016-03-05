@@ -236,18 +236,18 @@ static void SetCanonicalValue(unsigned int start,unsigned int end)
 		else if (canonicalLower[i] && canonicalLower[i]->properties & (NOUN_NUMBER|ADJECTIVE_NUMBER)); // dont change canonical numbers like December second
 		else if (allOriginalWordBits[i] & NOUN_GERUND) // because singing is a dict word, we might prefer noun over gerund. We shouldned
 		{
-			canonicalLower[i] = FindWord(English_GetInfinitive(original,false));
+			canonicalLower[i] = FindWord(GetInfinitive(original,false));
 		}
 		else if (pos & (VERB_BITS | NOUN_GERUND | NOUN_INFINITIVE|ADJECTIVE_PARTICIPLE) ) 
 		{
-			canonicalLower[i] = FindWord(English_GetInfinitive(original,false));
+			canonicalLower[i] = FindWord(GetInfinitive(original,false));
 		}
 		else if (pos & ADJECTIVE_NORMAL && !(D && D->properties & (MORE_FORM|MOST_FORM)))
 		{
 			canonicalLower[i] = originalLower[i]; // "his *fixed view should be adjective and not participle given it is an adjective- arbitrary
 			if (allOriginalWordBits[i] & ADJECTIVE_PARTICIPLE) 
 			{
-				char* verb = English_GetInfinitive(wordStarts[i],true);
+				char* verb = GetInfinitive(wordStarts[i],true);
 				if (verb) canonicalLower[i] = FindWord(verb);
 			}
 		}
@@ -270,17 +270,17 @@ static void SetCanonicalValue(unsigned int start,unsigned int end)
 			}
 			if (canonicalLower[i] && canonicalLower[i]->properties & (DETERMINER|NUMBER_BITS));
 			else if (IsAlphaUTF8(*original) &&  canonicalLower[i] && !strcmp(canonicalLower[i]->word,"unknown-word"));	// keep unknown-ness
- 			else if (pos & NOUN_BITS && !canonicalUpper[i]) canonicalLower[i] = FindWord(English_GetSingularNoun(original,false,true));
+ 			else if (pos & NOUN_BITS && !canonicalUpper[i]) canonicalLower[i] = FindWord(GetSingularNoun(original,false,true));
 		}
 		else if (pos & (ADJECTIVE_BITS - ADJECTIVE_PARTICIPLE - ADJECTIVE_NOUN) || (canonicalLower[i] && !stricmp(canonicalLower[i]->word,original))) 
 		{
 			if (canonicalLower[i] && canonicalLower[i]->properties & NUMBER_BITS);
-			else canonicalLower[i] = FindWord(English_GetAdjectiveBase(original,false));
+			else canonicalLower[i] = FindWord(GetAdjectiveBase(original,false));
 
 			// for adjectives that are verbs, like married, go canonical to the verb if adjective is unchanged
 			if (canonicalLower[i] && !strcmp(canonicalLower[i]->word,original))
 			{
-				char* infinitive = English_GetInfinitive(original,false);
+				char* infinitive = GetInfinitive(original,false);
 				if (infinitive) canonicalLower[i] = FindWord(infinitive);
 			}
 		}
@@ -288,16 +288,16 @@ static void SetCanonicalValue(unsigned int start,unsigned int end)
 		{
 			if (canonicalLower[i] && canonicalLower[i]->properties & NUMBER_BITS);
 			else if (IsUpperCase(*wordStarts[i]) && caseSignificant) {;}  //  upper case is intentional
-			else canonicalLower[i] = FindWord(English_GetAdjectiveBase(original,false));
+			else canonicalLower[i] = FindWord(GetAdjectiveBase(original,false));
 		}
 		else if (pos & ADVERB || (canonicalLower[i] && !stricmp(canonicalLower[i]->word,original))) 
 		{
 			if (canonicalLower[i] && canonicalLower[i]->properties & NUMBER_BITS);
-			else canonicalLower[i] = FindWord(English_GetAdverbBase(original,false));
+			else canonicalLower[i] = FindWord(GetAdverbBase(original,false));
 			// for adverbs that are adjectives, like faster, go canonical to the adjective if adverb is unchanged
 			if (canonicalLower[i] && !strcmp(canonicalLower[i]->word,original))
 			{
-				char* adjective = English_GetAdjectiveBase(original,false);
+				char* adjective = GetAdjectiveBase(original,false);
 				if (adjective) canonicalLower[i] = FindWord(adjective);
 			}
 		}
@@ -317,7 +317,7 @@ static void SetCanonicalValue(unsigned int start,unsigned int end)
 			char word[MAX_WORD_SIZE];
 			strcpy(word,original);
 			char* h = word + (hyphen-original);
-			char* verb = English_GetInfinitive(h+1,true);
+			char* verb = GetInfinitive(h+1,true);
 			if (verb) // 2nd half
 			{
 				strcpy(h+1,verb);
@@ -326,7 +326,7 @@ static void SetCanonicalValue(unsigned int start,unsigned int end)
 			else 
 			{
 				*h = 0;
-				verb = English_GetInfinitive(word,true);
+				verb = GetInfinitive(word,true);
 				if (verb)
 				{
 					strcpy(word,verb);
@@ -354,7 +354,7 @@ static void SetCanonicalValue(unsigned int start,unsigned int end)
 		else if (canonicalUpper[i]) wordCanonical[i] = canonicalUpper[i]->word;
 		else wordCanonical[i] = wordStarts[i];
 	}
-	English_SetSentenceTense(start,end);
+	SetSentenceTense(start,end);
 }
 
 static char* PosBits(uint64 bits, char* buff)
@@ -729,7 +729,7 @@ static void PerformPosTag(unsigned int start, unsigned int end)
 	}
 }
 
-void English_TagIt() // get the set of all possible tags. Parse if one can to reduce this set and determine word roles
+void TagIt() // get the set of all possible tags. Parse if one can to reduce this set and determine word roles
 {
 #ifndef DISCARDPARSER
 	roleIndex = 0; 
@@ -1286,7 +1286,7 @@ static unsigned int PriorPhrasalVerb(unsigned int particle,WORDP & D)
 
 	// not immediately after "you make a fuss *over me" and no noun after
 	// is it a particle phrase possible?
-	char* verb = English_GetInfinitive(wordStarts[at],false);
+	char* verb = GetInfinitive(wordStarts[at],false);
 	if (!verb) return 0;	
 	
 	// create full phrasal verb
@@ -1440,7 +1440,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		case NOTPOSSIBLEVERBPARTICLEPAIR:
 			if (posValues[i+1] == PARTICLE) //known particle
 			{
-				char* verb = English_GetInfinitive(wordStarts[i], true);
+				char* verb = GetInfinitive(wordStarts[i], true);
 				char word[MAX_WORD_SIZE];
 				if (verb)
 				{
@@ -1779,7 +1779,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 				if (ignoreWord[at]) continue;
 				if (posValues[at] & VERB_BITS)
 				{
-					char* verb = English_GetInfinitive(wordStarts[at], true);
+					char* verb = GetInfinitive(wordStarts[at], true);
 					char word[MAX_WORD_SIZE];
 					if (verb)
 					{
@@ -1797,7 +1797,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		}
 		case POSSIBLEPHRASAL:
 			{
-				char* verb = English_GetInfinitive(wordStarts[i-1], true);
+				char* verb = GetInfinitive(wordStarts[i-1], true);
 				char word[MAX_WORD_SIZE];
 				if (verb)
 				{
@@ -2429,7 +2429,7 @@ static void WordIdioms(bool &changed)
 		
 		if (posValues[i] & (VERB_BITS|NOUN_INFINITIVE|NOUN_GERUND|ADJECTIVE_PARTICIPLE)) // go for sequential phrasal verb
 		{
-			verb = English_GetInfinitive(base,true);
+			verb = GetInfinitive(base,true);
 			if (verb) base = verb;
 		}
 
@@ -2619,7 +2619,7 @@ retry:
 
 #ifndef DISCARDPARSER
 			bool modified = false;
-			English_ParseSentence(resolved,modified);
+			ParseSentence(resolved,modified);
 			parsed = true;
 			if (resolved) break; // we completed
 			else if (changed) ambiguous = 1; // force it to continue
@@ -2629,7 +2629,7 @@ retry:
 	}
 #ifndef DISCARDPARSER
 	bool modified = false;
-	if (!parsed)  English_ParseSentence(resolved,modified); 
+	if (!parsed)  ParseSentence(resolved,modified); 
 	if (modified && !resolved) goto retry;
 #endif
 	return resolved;
@@ -3748,9 +3748,9 @@ static bool ProcessReducedPassive(unsigned int verb1,bool allowObject,bool &chan
 	// or a past participle clause immediately after a noun --  the woman dressed in red
 	// Or past particple clause starting sentence (before subject)  Dressed in red the woman screamed.   OR  In the park dressed in red, the woman screamed
 	// OR -- the men driven by hunger ate first (directly known participle past)
-	char* base = English_GetInfinitive(wordStarts[verb1],false);
+	char* base = GetInfinitive(wordStarts[verb1],false);
 	if (!base) return false;
-	char* pastpart = English_GetPastParticiple(base);
+	char* pastpart = GetPastParticiple(base);
 	if (!pastpart) return false;
 	if (stricmp(pastpart,wordStarts[verb1])) return false;	// not a possible past particple
 
@@ -5368,7 +5368,7 @@ static void DecodeneedRoles(unsigned int x,char* buffer)
 WORDP GetPhrasalVerb(unsigned int i)
 {
 	char word[MAX_WORD_SIZE];
-	strcpy(word,English_GetInfinitive(wordStarts[i],true));
+	strcpy(word,GetInfinitive(wordStarts[i],true));
 	unsigned int at = phrasalVerb[i];
 	while (at != i)
 	{
@@ -9845,7 +9845,7 @@ restart:
 	return resolved;
 }
 
-void English_ParseSentence(bool &resolved,bool &changed)
+void ParseSentence(bool &resolved,bool &changed)
 {
 	if (!idiomed && ignoreRule == -1)
 	{

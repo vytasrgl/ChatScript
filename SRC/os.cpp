@@ -643,6 +643,7 @@ char* GetTimeInfo() //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm 
 	}
 	char *mytime = asctime (ptm);
     mytime[strlen(mytime)-1] = 0; //   remove newline
+	if (mytime[8] == ' ') mytime[8] = '0';
     return mytime;
 }
 

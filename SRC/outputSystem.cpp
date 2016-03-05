@@ -309,11 +309,6 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 			else *output++ = *input; // as is
 			++input;
 		}
-		else if (*input == '[')
-		{
-			input = ProcessChoice(input,output,result,controls);   
-			output += strlen(output);
-		}
 		else // ordinary character
 		{
 			*mainValue = *input++;

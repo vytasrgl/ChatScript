@@ -26,7 +26,7 @@ u: ( %input<%userfirstline )
 	sentiment  - shows sentiment analysis of successive inputs or of ":document" \n
 	reset - clears current mode \n
 	limit n  - sets n (default 500) as sentences to read before auto ^memoryfree() \n
-	- try one of them with ":document REGRESS/moby__dick.txt" \n
+	- try one of them with ":document REGRESS/moby__dick.txt stats" \n
 
 # on startup, do introduction
 u: (%length=0) fail(topic)

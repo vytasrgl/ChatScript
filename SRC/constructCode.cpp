@@ -179,7 +179,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			int whenmatched = 0;
 			++globalDepth; // indent pattern
 			bool failed = false;
-			if (!Match(ptr+10,0,start,'(',true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
+			if (!Match(ptr+10,0,start,"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
 			--globalDepth;
 			if (clearUnmarks) // remove transient global disables.
 			{
@@ -269,6 +269,7 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 		ChangeDepth(-1,"HandleLoop");
 		if (result1 & ENDCODES) 
 		{
+			if (result1 == NEXTLOOP_BIT) continue;
 			result = (FunctionResult)( (result1 & (ENDRULE_BIT | FAILRULE_BIT)) ? NOPROBLEM_BIT : (result1 & ENDCODES) );  // rule level terminates only the loop
 			if (result == FAILLOOP_BIT) result = FAILRULE_BIT; // propagate failure outside of loop
 			if (result == ENDLOOP_BIT) result = NOPROBLEM_BIT; // propagate ok outside of loop
@@ -340,7 +341,7 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,unsi
 			}
 			if (result != NOPROBLEM_BIT)
 			{
-				char* verb = English_GetInfinitive(val1,true);
+				char* verb = GetInfinitive(val1,true);
 				if (verb && stricmp(verb,val1))
 				{
 					D1 = FindWord(verb);
@@ -353,7 +354,7 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,unsi
 			}
 			if (result != NOPROBLEM_BIT)
 			{
-				char* noun = English_GetSingularNoun(val1,true,true);
+				char* noun = GetSingularNoun(val1,true,true);
 				if (noun && stricmp(noun,val1))
 				{
 					D1 = FindWord(noun);

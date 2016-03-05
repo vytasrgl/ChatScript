@@ -1,3 +1,13 @@
+version 6.2c  3/5/2016
+1. You no longer have to backslash [ in an active string. You can do ^"[$count]" with impunity.
+   That means that using [] [] notation to designate a choice of text is no longer effective inside
+   an active string"
+2.  ^Next(loop) will skip the rest of code in a loop and begin the next interation (NO MATTER how far
+   up the call chain the loop actually is)
+3. CS can now be run old-style (all executables at top level) or within BINARIES
+4. %host gives you the name of the currently running host.
+5. ^pos(verb be present/past XXX) optional 4th arg to verb form, names pronoun or noun used, so better handles irregular verbs
+6. $cs_language, if set to spanish, alters spellchecking for spanish
 
 version 6.2b  2/24/2016
 1. Moved executables and DLLS to folder BINARIES. You must now run CS from there rather than top level.

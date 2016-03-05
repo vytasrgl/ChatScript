@@ -20,13 +20,13 @@ typedef struct FACT
 {  
 	unsigned int flags;		
 
- 	FACTOID subjectHead;	
-	FACTOID verbHead;		
-	FACTOID objectHead;		
+ 	FACTOID_OR_MEANING subjectHead;	
+	FACTOID_OR_MEANING verbHead;		
+	FACTOID_OR_MEANING objectHead;		
 
-    FACTOID subjectNext;	
- 	FACTOID verbNext;		
-    FACTOID objectNext;  	
+    FACTOID_OR_MEANING subjectNext;	
+ 	FACTOID_OR_MEANING verbNext;		
+    FACTOID_OR_MEANING objectNext;  	
 
 	MEANING subject;		
 	MEANING verb;			
@@ -61,18 +61,18 @@ void ResetFactSystem(FACT* locked);
 void InitFactWords();
 
 // fact creation and destruction
-FACT* FindFact(MEANING subject, MEANING verb, MEANING object, unsigned int properties = 0);
-FACT* CreateFact(MEANING subject,MEANING verb, MEANING object,unsigned int properties = 0);
-FACT* CreateFastFact(MEANING subject, MEANING verb, MEANING object, unsigned int properties);
+FACT* FindFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties = 0);
+FACT* CreateFact(FACTOID_OR_MEANING subject,FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned int properties = 0);
+FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties);
 void KillFact(FACT* F);
-FACT* SpecialFact(MEANING verb, MEANING object,unsigned int flags);
+FACT* SpecialFact(FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned int flags);
 void FreeFact(FACT* F);
 char* GetSetEnd(char* x);
 
 // fact reading and writing
 char* ReadField(char* ptr,char* field,char fieldkind,unsigned int& flags);
 char* EatFact(char* ptr,unsigned int flags = 0,bool attribute = false);
-FACT* ReadFact(char* &ptr);
+FACT* ReadFact(char* &ptr,uint64 build);
 void ReadFacts(const char* name,uint64 zone,bool user = false);
 char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead = false,bool eol = false);
 void WriteFacts(FILE* out,FACT* from,int flags = 0);

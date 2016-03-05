@@ -849,6 +849,8 @@ void MarkAllImpliedWords()
     for (i = startSentence; i <= endSentence; ++i) //   mark that we have found this word, either in original or canonical form
     {
 		char* original =  wordStarts[i];
+		if (!*original)
+			continue;	// ignore this
 		if (!wordCanonical[i]) wordCanonical[i] = original; // in case failure below
 
 		if (showMark) Log(ECHOSTDUSERLOG,"\r\n");

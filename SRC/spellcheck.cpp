@@ -2,6 +2,9 @@
 
 #define LETTERMAX 40
 
+#define ENGLISH 0
+#define SPANISH 1
+
 static unsigned char letterIndexData[256] = 
 {
 	0,0,0,0,0,0,0,0,0,0,	0,0,0,0,0,0,0,0,0,0,
@@ -106,7 +109,7 @@ static int SplitWord(char* word)
 	return breakAt;
 }
 
-static char* SpellCheck(unsigned int i)
+static char* SpellCheck(unsigned int i, int language)
 {
     //   on entry we will have passed over words which are KnownWord (including bases) or isInitialWord (all initials)
     //   wordstarts from 1 ... wordCount is the incoming sentence words (original). We are processing the ith word here.
@@ -155,7 +158,7 @@ static char* SpellCheck(unsigned int i)
 	if (FindCanonical(word1,0,true) && !IsUpperCase(*word1)) return word1; // this is a different form of a canonical word so its ok
 
 	//   now use word spell checker 
-    char* d = SpellFix(word,i,PART_OF_SPEECH); 
+    char* d = SpellFix(word,i,PART_OF_SPEECH,language); 
     return (d) ? d : NULL;
 }
 
@@ -206,7 +209,7 @@ char* ProbableKnownWord(char* word)
 	expectedBase = 0;
 	if (ProbableAdverb(word,len,expectedBase) && expectedBase) return word;
 	// is it a verb form
-	char* verb = English_GetInfinitive(lower,false);
+	char* verb = GetInfinitive(lower,false);
 	if (verb) 
 	{
 		WORDP D =  StoreWord(lower,0); // verb form recognized
@@ -237,6 +240,10 @@ bool SpellCheckSentence()
 	WORDP D,E;
 	bool fixedSpell = false;
 	bool lowercase = false;
+	int language = ENGLISH;
+	char* lang = GetUserVariable("$cs_language");
+	if (lang && !stricmp(lang,"spanish")) language = SPANISH;
+	
 	// check for all uppercase
 	for (unsigned int i = FindOOBEnd(1) + 1; i <= wordCount; ++i) // skip start of sentence
 	{
@@ -448,7 +455,7 @@ bool SpellCheckSentence()
 
 		if (*word != '\'' && (!FindCanonical(word, i,true) || IsUpperCase(word[0]))) // dont check quoted or findable words unless they are capitalized
 		{
-			word = SpellCheck(i);
+			word = SpellCheck(i,language);
 
 			// dont spell check proper names to improper, if word before or after is lower case originally
 			if (word && i != 1 && originalCapState[i] && !IsUpperCase(*word))
@@ -474,7 +481,8 @@ bool SpellCheckSentence()
 	return fixedSpell;
 }
 
-unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char* inputSet, unsigned int min,unsigned char realWordLetterCounts[LETTERMAX])
+unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char* inputSet, unsigned int min,
+		unsigned char realWordLetterCounts[LETTERMAX], int language)
 {//   dictword has no underscores, inputSet is already lower case
     char dictw[MAX_WORD_SIZE];
     MakeLowerCopy(dictw,D->word);
@@ -585,8 +593,101 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 			//  2 in a row are bad, check for a substituted vowel sound
 			bool swap = false;
 			unsigned int oldval = val;
-			if (dictinfo[1] != inputSet[1])
+			if (dictinfo[1] != inputSet[1]) // do multicharacter transformations
 			{
+				if (language == SPANISH) // ch-x | qu-k | c-k | do-o | b-v | bue-w | vue-w | z-s | s-c | h- | y-i | y-ll | m-n  1st is valid
+				{
+					if (*inputSet == 'c' && *dictinfo == 'k') 
+					{
+						dictinfo += 1;
+						inputSet += 1;
+						continue;
+					}
+					if (*inputSet == 'b' && *dictinfo == 'v') 
+					{
+						dictinfo += 1;
+						inputSet += 1;
+						continue;
+					}
+					if (*inputSet == 'z' && *dictinfo == 's') 
+					{
+						dictinfo += 1;
+						inputSet += 1;
+						continue;
+					}
+					if (*inputSet == 's' && *dictinfo == 'c') 
+					{
+						dictinfo += 1;
+						inputSet += 1;
+						continue;
+					}
+					if (*inputSet == 'y' && *dictinfo == 'i') 
+					{
+						dictinfo += 1;
+						inputSet += 1;
+						continue;
+					}
+					if (*inputSet == 'm' && *dictinfo == 'n') 
+					{
+						dictinfo += 1;
+						inputSet += 1;
+						continue;
+					}
+					if (*dictinfo == 'h') 
+					{
+						dictinfo += 1;
+						continue;
+					}
+					if (*inputSet == 'x' && !strncmp(dictinfo,"ch",2)) 
+					{
+						dictinfo += 2;
+						inputSet += 1;
+						val -= (size < inputLen) ? 5 : 2;
+						if (size < 7) val -= 3;	
+						continue;
+					}
+					if (*inputSet == 'k' && !strncmp(dictinfo,"qu",2)) 
+					{
+						dictinfo += 2;
+						inputSet += 1;
+						val -= (size < inputLen) ? 5 : 2;
+						if (size < 7) val -= 3;	
+						continue;
+					}
+					if (*inputSet == 'o' && !strncmp(dictinfo,"do",2) && !inputSet[1] && !dictinfo[2]) // at end
+					{
+						dictinfo += 2;
+						inputSet += 1;
+						val -= (size < inputLen) ? 5 : 2;
+						if (size < 7) val -= 3;	
+						continue;
+					}
+					if (*inputSet == 'w' && !strncmp(dictinfo,"bue",3)) 
+					{
+						dictinfo += 3;
+						inputSet += 1;
+						val -= (size < inputLen) ? 5 : 2;
+						if (size < 7) val -= 3;	
+						continue;
+					}
+					if (*inputSet == 'w' && !strncmp(dictinfo,"vue",3)) 
+					{
+						dictinfo += 3;
+						inputSet += 1;
+						val -= (size < inputLen) ? 5 : 2;
+						if (size < 7) val -= 3;	
+						continue;
+					}
+					if (!strncmp(inputSet,"ll",2) && *dictinfo == 'y') 
+					{
+						dictinfo += 3;
+						inputSet += 1;
+						val -= (size < inputLen) ? 5 : 2;
+						if (size < 7) val -= 3;	
+						continue;
+					}
+				}
+
 				if (*inputSet == 't' && !strncmp(dictinfo,"ght",3)) 
 				{
                     dictinfo += 3;
@@ -688,16 +789,16 @@ static char* StemSpell(char* word,unsigned int i)
     else if (!strnicmp(word+len-3,"ing",3))
     {
         word1[len-3] = 0;
-        best = SpellFix(word1,0,VERB); 
-        if (best && FindWord(best,0,LOWERCASE_LOOKUP)) return English_GetPresentParticiple(best);
+        best = SpellFix(word1,0,VERB,ENGLISH); 
+        if (best && FindWord(best,0,LOWERCASE_LOOKUP)) return GetPresentParticiple(best);
 	}
     else if (!strnicmp(word+len-2,"ed",2))
     {
         word1[len-2] = 0;
-        best = SpellFix(word1,0,VERB); 
+        best = SpellFix(word1,0,VERB,ENGLISH); 
         if (best)
         {
-			char* past = English_GetPastTense(best);
+			char* past = GetPastTense(best);
 			if (!past) return NULL;
 			size_t pastlen = strlen(past);
 			if (past[pastlen-1] == 'd') return past;
@@ -715,7 +816,7 @@ static char* StemSpell(char* word,unsigned int i)
 			if (!strnicmp(word+len-suffixlen,suffix,suffixlen))
 			{
 				word1[len-suffixlen] = 0;
-				best = SpellFix(word1,0,kind); 
+				best = SpellFix(word1,0,kind,ENGLISH); 
 				if (best) 
 				{
 					ending = suffix;
@@ -727,11 +828,11 @@ static char* StemSpell(char* word,unsigned int i)
 	if (!ending && word[len-1] == 's')
     {
         word1[len-1] = 0;
-        best = SpellFix(word1,0,VERB|NOUN); 
+        best = SpellFix(word1,0,VERB|NOUN,ENGLISH); 
         if (best)
         {
 			WORDP F = FindWord(best,0,(tokenControl & ONLY_LOWERCASE) ?  PRIMARY_CASE_ALLOWED : STANDARD_LOOKUP);
-			if (F && F->properties & NOUN) return English_GetPluralNoun(F);
+			if (F && F->properties & NOUN) return GetPluralNoun(F);
 			ending = "s";
         }
    }
@@ -744,7 +845,7 @@ static char* StemSpell(char* word,unsigned int i)
    return NULL;
 }
 
-char* SpellFix(char* originalWord,unsigned int start,uint64 posflags)
+char* SpellFix(char* originalWord,unsigned int start,uint64 posflags,int language)
 {
     size_t len = strlen(originalWord);
 	if (len >= 100 || len == 0) return NULL;
@@ -814,7 +915,7 @@ char* SpellFix(char* originalWord,unsigned int start,uint64 posflags)
 			if (hasUnderscore && !under) continue;	 // require keep any underscore
 			if (!hasUnderscore && under) continue;	 // require not have any underscore
 			if (isUpper && !(D->internalBits & UPPERCASE_HASH) && start != 1) continue;	// dont spell check to lower a word in upper
-			unsigned int val = EditDistance(D, D->length, len, base+1,min,realWordLetterCounts);
+			unsigned int val = EditDistance(D, D->length, len, base+1,min,realWordLetterCounts,language);
 			if (val <= min) // as good or better
 			{
 				if (val < min)

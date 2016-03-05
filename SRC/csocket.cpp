@@ -74,6 +74,7 @@ static void fillAddr(const string &address, unsigned short port, sockaddr_in &ad
   addr.sin_family = AF_INET;       //   Internet address
   hostent *host;  //   Resolve name
   if ((host = gethostbyname(address.c_str())) == NULL)  throw SocketException("Failed to resolve name (gethostbyname())");
+  strcpy(hostname,host->h_name);
   addr.sin_addr.s_addr = *((unsigned long *) host->h_addr_list[0]);
   addr.sin_port = htons(port);     //   Assign port in network byte order
 }

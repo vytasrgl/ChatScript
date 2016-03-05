@@ -16,6 +16,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #endif
 
 bool SpellCheckSentence();
-char* SpellFix(char* word,unsigned int position,uint64 posflags);
+char* SpellFix(char* word,unsigned int position,uint64 posflags, int language);
 void InitSpellCheck();
 #endif

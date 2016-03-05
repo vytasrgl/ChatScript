@@ -1089,7 +1089,7 @@ retry:
 		unsigned int positionStart, positionEnd;
 		whenmatched = 0;
 		++globalDepth; // indent pattern
- 		if (start > wordCount || !Match(ptr+2,0,start,'(',true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAIL_MATCH;  // skip paren and blank, returns start as the location for retry if appropriate
+ 		if (start > wordCount || !Match(ptr+2,0,start,"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAIL_MATCH;  // skip paren and blank, returns start as the location for retry if appropriate
 		--globalDepth;
 		if (clearUnmarks) // remove transient global disables.
 		{
@@ -1876,9 +1876,9 @@ static void LoadTopicData(const char* name,uint64 build,int layer,bool plan)
 			return;
 		}
 		compiling = true;
-		unsigned int topic = FindTopicIDByName(name); // may preexist
+		unsigned int topic = FindTopicIDByName(name,true); // may preexist
 		compiling = false;
-		if (!topic) topic = ++currentTopicID;
+		if (!topic) topic = ++numberOfTopics;
 		else if (plan) myexit("duplicate plan name");
 		
 		topicBlock* block = TI(topic);
@@ -2194,11 +2194,9 @@ void InitKeywords(const char* name,uint64 build,bool buildDictionary,bool concep
 			}
 	
 			MEANING verb = (*word == '!') ? Mexclude : Mmember;
-			if (U & ONLY_NONE)
-			{
-				int xx = 0;
-			}
-			CreateFact(U,verb,T,(original) ? (FACTDUPLICATE|ORIGINAL_ONLY) : FACTDUPLICATE ); // script compiler will have removed duplicates if that was desired
+			int flags = (original) ? (FACTDUPLICATE|ORIGINAL_ONLY) : FACTDUPLICATE;
+			if (build == BUILD2) flags |= FACTBUILD2;
+			CreateFact(U,verb,T,flags ); // script compiler will have removed duplicates if that was desired
 		}
 		if (*word == ')') endseen = true; // end of keywords found. OTHERWISE we continue on next line
 	}
@@ -2414,10 +2412,12 @@ topicBlock* TI(int topicid)
 	
 FunctionResult LoadLayer(int layer,char* name,int build)
 {
-	if (layer == 2) ReturnToLayer(1,false);
-	
+	//  if (layer == 2) ReturnToLayer(1,false); // Warning - erases user facts and variables, etc. 
+	int originalTopicCount = numberOfTopics;
 	char filename[MAX_WORD_SIZE];
 	InitLayerMemory(name,layer);
+	int expectedTopicCount = numberOfTopics;
+	numberOfTopics = originalTopicCount;
 	sprintf(filename,"TOPIC/patternWords%s.txt",name );
 	ReadPatternData(filename);
 	sprintf(filename,"TOPIC/keywords%s.txt",name);
@@ -2432,6 +2432,12 @@ FunctionResult LoadLayer(int layer,char* name,int build)
 	LoadTopicData(filename,build,layer,false);
 	sprintf(filename,"TOPIC/plans%s.txt",name );
 	LoadTopicData(filename,build,layer,true);
+	if (numberOfTopics != expectedTopicCount)
+	{
+		int xx = 0;
+	}
+
+
 	sprintf(filename,"TOPIC/private%s.txt",name);
 	ReadSubstitutes(filename,DO_PRIVATE,true);
 	sprintf(filename,"TOPIC/canon%s.txt",name );

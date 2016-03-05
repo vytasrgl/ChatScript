@@ -105,11 +105,9 @@ extern unsigned char complementRef[MAX_SENTENCE_LENGTH];  // link from verb to a
 void MarkRoles(unsigned int i);
 #endif
 
-void English_TagIt();
-void English_ParseSentence(bool &resolved,bool &changed);
+void TagIt();
+void ParseSentence(bool &resolved,bool &changed);
 void DumpSentence(unsigned int start, unsigned int end);
 char* GetRole(uint64 role);
-
-#define TagIt() English_TagIt()
 
 #endif

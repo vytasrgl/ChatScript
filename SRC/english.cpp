@@ -460,7 +460,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				entry = StoreWord(original,properties);
 			}
 			else properties = entry->properties;
-			char* noun = English_GetSingularNoun(original,false,true);
+			char* noun = GetSingularNoun(original,false,true);
 			if (noun) canonical = FindWord(noun,0,UPPERCASE_LOOKUP);
 			if (!canonical) canonical = entry;
 			return properties;
@@ -755,7 +755,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			if (val & VERB) 
 			{
 				properties |= entry->properties & ( VERB_BITS | VERB); // like "once"
-				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = FindWord(English_GetInfinitive(original,false),0,LOWERCASE_LOOKUP);
+				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = FindWord(GetInfinitive(original,false),0,LOWERCASE_LOOKUP);
 			}
 			if (val & POSSESSIVE && tokenControl & TOKEN_AS_IS && !stricmp(original,"'s") && at > start) // internal expand of "it 's" and "What 's" and capitalization failures that contractions.txt wouldn't have handled 
 			{
@@ -782,12 +782,12 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		sysflags |= entry->systemFlags;
 		if (properties & VERB_PAST)
 		{
-			char* participle = English_GetPastParticiple(English_GetInfinitive(original,true));
+			char* participle = GetPastParticiple(GetInfinitive(original,true));
 			if (participle && !strcmp(participle,original)) properties |= VERB_PAST_PARTICIPLE; // wordnet exceptions doesnt bother to list both
 		}
 		if (properties & VERB_PAST_PARTICIPLE)
 		{
-			char* participle = English_GetPastParticiple(English_GetInfinitive(original,true));
+			char* participle = GetPastParticiple(GetInfinitive(original,true));
 			if (participle && !strcmp(participle,original)) properties |= NOUN_ADJECTIVE;
 		}
 		char* canon = GetCanonical(entry);
@@ -806,14 +806,14 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	{
 		char lower[MAX_WORD_SIZE];
 		MakeLowerCopy(lower,original);
-		char* verb =  English_GetInfinitive(lower,true); 
+		char* verb =  GetInfinitive(lower,true); 
 		if (verb)  // inifinitive will be different from original or we would already have found the word
 		{
 			known = true;
 			properties |= VERB | verbFormat;
 			if (verbFormat & (VERB_PAST|VERB_PAST_PARTICIPLE)) // possible shared form with participle
 			{
-				char* pastparticiple = English_GetPastParticiple(verb);
+				char* pastparticiple = GetPastParticiple(verb);
 				if (pastparticiple && !strcmp(pastparticiple,lower)) properties |= VERB_PAST_PARTICIPLE | NOUN_ADJECTIVE;
 			}
 			entry = StoreWord(lower,properties);
@@ -827,7 +827,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		MakeLowerCopy(lower,original);
 		if (original[len-1] == 's')
 		{
-			char* noun = English_GetSingularNoun(original,true,true);
+			char* noun = GetSingularNoun(original,true,true);
 			if (noun && strcmp(noun,original)) 
 			{
 				WORDP X = StoreWord(original,NOUN);
@@ -869,7 +869,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		MakeLowerCopy(lower,original);
 		if (lower[len-1] == 'r' && lower[len-2] == 'e' && !canonical) // if canonical its like "slaver" and should never be reduced
 		{
-			char* adjective = English_GetAdjectiveBase(lower,true);
+			char* adjective = GetAdjectiveBase(lower,true);
 			if (adjective && strcmp(adjective,lower)) 
 			{
 				WORDP D = StoreWord(lower,ADJECTIVE|ADJECTIVE_NORMAL|adjectiveFormat);
@@ -881,7 +881,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		}
 		else if (lower[len-1] == 't' && lower[len-2] == 's'  && lower[len-3] == 'e' && !canonical)
 		{
-			char* adjective = English_GetAdjectiveBase(lower,true);
+			char* adjective = GetAdjectiveBase(lower,true);
 			if (adjective && strcmp(adjective,lower)) 
 			{
 				WORDP D = StoreWord(lower,ADJECTIVE|ADJECTIVE_NORMAL|adjectiveFormat);
@@ -899,7 +899,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		MakeLowerCopy(lower,original);
 		if (lower[len-1] == 'r' && lower[len-2] == 'e'  && !canonical)
 		{
-			char* adverb = English_GetAdverbBase(lower,true);
+			char* adverb = GetAdverbBase(lower,true);
 			if (adverb && strcmp(adverb,lower)) 
 			{
 				WORDP D = StoreWord(original,ADVERB|adverbFormat);
@@ -911,7 +911,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		}
 		else if (lower[len-1] == 't' && lower[len-2] == 's'  && lower[len-3] == 'e'  && !canonical)
 		{
-			char* adverb = English_GetAdverbBase(lower,true);
+			char* adverb = GetAdverbBase(lower,true);
 			if (adverb && strcmp(adverb,lower)) 
 			{
 				WORDP D = StoreWord(lower,ADVERB|adverbFormat);
@@ -926,15 +926,15 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	// DETERMINE CANONICAL OF A KNOWN WORD
 	if (!canonical && !IS_NEW_WORD(entry)) // we dont know the word and didn't interpolate it from noun or verb advanced forms (cannot get canonical of word created this volley)
 	{
-		if (properties & (VERB|NOUN_GERUND)) canonical = FindWord(English_GetInfinitive(original,true),0,PRIMARY_CASE_ALLOWED); // verb or known gerund (ing) or noun plural (s) which might be a verb instead
+		if (properties & (VERB|NOUN_GERUND)) canonical = FindWord(GetInfinitive(original,true),0,PRIMARY_CASE_ALLOWED); // verb or known gerund (ing) or noun plural (s) which might be a verb instead
 		if (!canonical && properties & (MORE_FORM|MOST_FORM)) // get base form
 		{
-			canonical = FindWord(English_GetAdjectiveBase(original,true),0,PRIMARY_CASE_ALLOWED);
-			if (!canonical) canonical = FindWord(English_GetAdverbBase(original,true),0,PRIMARY_CASE_ALLOWED);
+			canonical = FindWord(GetAdjectiveBase(original,true),0,PRIMARY_CASE_ALLOWED);
+			if (!canonical) canonical = FindWord(GetAdverbBase(original,true),0,PRIMARY_CASE_ALLOWED);
 		}
 		if (!canonical && properties & NOUN) // EVEN if we do know it... flies is a singular and needs canonical for fly BUG
 		{
-			char* singular = English_GetSingularNoun(original,true,true);
+			char* singular = GetSingularNoun(original,true,true);
 			// even if it is a noun, if it ends in s and the root is also a noun, make it plural as well (e.g., rooms)
 			if (original[len-1] == 's' && singular && stricmp(singular,original)) 
 			{
@@ -944,7 +944,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			if (!canonical) canonical = FindWord(singular,0,PRIMARY_CASE_ALLOWED);
 		}
 
-		if (!canonical) canonical = FindWord(English_GetAdjectiveBase(original,true),0,PRIMARY_CASE_ALLOWED);
+		if (!canonical) canonical = FindWord(GetAdjectiveBase(original,true),0,PRIMARY_CASE_ALLOWED);
 
 		if (properties & (ADJECTIVE_NORMAL|ADVERB)) // some kind of known adjective or adverb
 		{
@@ -957,7 +957,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				WORDP X = FindWord(original,0,LOWERCASE_LOOKUP);
 				if (X && X->properties & ADJECTIVE_NORMAL) // front part is known adjective
 				{
-					adjective = English_GetAdjectiveBase(original,true); 
+					adjective = GetAdjectiveBase(original,true); 
 					if (adjective && strcmp(adjective,original)) // base is not the same
 					{
 						if (!canonical) 
@@ -970,7 +970,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				}
 				if (X && X->properties & ADVERB) // front part is known adverb
 				{
-					adverb = English_GetAdverbBase(original,true); 
+					adverb = GetAdverbBase(original,true); 
 					if (adverb && strcmp(adverb,original)) // base is not the same
 					{
 						if (!canonical)
@@ -991,11 +991,11 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		char* base = NULL;
 		if (entry->properties & (MORE_FORM|MOST_FORM))
 		{
-			if (entry->properties & ADJECTIVE) base = English_GetAdjectiveBase(entry->word,true);
-			else  base = English_GetAdverbBase(entry->word,true);
+			if (entry->properties & ADJECTIVE) base = GetAdjectiveBase(entry->word,true);
+			else  base = GetAdverbBase(entry->word,true);
 		}
-		else if (entry->properties & VERB) base = English_GetInfinitive(entry->word,true);
-		else if (entry->properties & NOUN) base = English_GetSingularNoun(entry->word,false,true);
+		else if (entry->properties & VERB) base = GetInfinitive(entry->word,true);
+		else if (entry->properties & NOUN) base = GetSingularNoun(entry->word,false,true);
 		canonical = (base) ? FindWord(base) : entry; 
 	}
 	
@@ -1009,7 +1009,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		// adjective made from counted singular noun:  6-month
 		if (Y && IsNumber(X->word,false))
 		{
-			if (Y->properties & NOUN && !stricmp(Y->word,English_GetSingularNoun(Y->word, false, true))) // number with singular noun cant be anything but adjective
+			if (Y->properties & NOUN && !stricmp(Y->word,GetSingularNoun(Y->word, false, true))) // number with singular noun cant be anything but adjective
 			{
 				properties |= ADJECTIVE_NORMAL;
 				canonical = entry = StoreWord(original,ADJECTIVE_NORMAL);
@@ -1025,7 +1025,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		}
 		else if (Y && Y->properties & ADJECTIVE_BITS && !(Y->properties & (NOUN_BITS|VERB_BITS))) // year-earlier
 		{
-			char* adjective = English_GetAdjectiveBase(Y->word,true);
+			char* adjective = GetAdjectiveBase(Y->word,true);
 			properties |= (Y->properties & (ADJECTIVE_NORMAL | ADVERB)) | adjectiveFormat;
 			canonical = entry = StoreWord(original,properties);
 			preknown = true;	// lie. we know it is only an adjective
@@ -1038,7 +1038,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			// process by know parts of speech or potential parts of speech
 		if (!(properties & NOUN)) // could it be a noun but not already known as a known (eg noun_gerund from verb)
 		{
-			char* noun = English_GetSingularNoun(original,true,true); 
+			char* noun = GetSingularNoun(original,true,true); 
 			if (noun) 
 			{
 				known = true;
@@ -1049,7 +1049,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		}
 		if (!(properties & ADJECTIVE) && !IsUpperCase(*original)) 
 		{
-			char* adjective = English_GetAdjectiveBase(original,true); 
+			char* adjective = GetAdjectiveBase(original,true); 
 			if (len > 4 && !adjective && hyphen  && hyphen != original && !strcmp(original+len-3,"ing")) // some kind of verb ing formation which can be adjective particple
 			{
 				*hyphen = 0;
@@ -1058,7 +1058,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				*hyphen = '-';
 				if (X && X->properties & ADJECTIVE_NORMAL)
 				{
-					adjective = English_GetAdjectiveBase(original,true); 
+					adjective = GetAdjectiveBase(original,true); 
 					if (adjective && strcmp(adjective,original)) // base is not the same
 					{
 						sprintf(word,"%s-%s",adjective,hyphen+1);
@@ -1068,7 +1068,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			}
 			if (!adjective && hyphen  && hyphen != original) // third-highest
 			{
-				adjective = English_GetAdjectiveBase(hyphen+1,true);
+				adjective = GetAdjectiveBase(hyphen+1,true);
 				if (adjective && strcmp(hyphen+1,adjective)) // base is not the same
 				{
 					char word[MAX_WORD_SIZE];
@@ -1088,11 +1088,11 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		}
 		if (!(properties & ADVERB) && !IsUpperCase(*original)) 
 		{
-			char* adverb = English_GetAdverbBase(original,true); 
+			char* adverb = GetAdverbBase(original,true); 
 			if (!canonical && adverb) canonical = FindWord(adverb,0,PRIMARY_CASE_ALLOWED);
 			if (!adverb && hyphen  && hyphen != original) 
 			{
-				adverb = English_GetAdverbBase(hyphen+1,true);
+				adverb = GetAdverbBase(hyphen+1,true);
 				if (adverb && strcmp(hyphen+1,adverb)) // base is not the same
 				{
 					char word[MAX_WORD_SIZE];
@@ -1115,10 +1115,10 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		{
 			WORDP X;
 			// co-author   could be noun with front stuff in addition
-			char* noun = English_GetSingularNoun(original,true,true);
+			char* noun = GetSingularNoun(original,true,true);
 			if (!noun) // since we actually know the base, we are not trying to interpolate
 			{
-				noun = English_GetSingularNoun(hyphen+1,true,true);
+				noun = GetSingularNoun(hyphen+1,true,true);
 				if (noun)
 				{
 					properties |= NOUN | nounFormat;
@@ -1136,7 +1136,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 					if (!canonical || !stricmp(canonical->word,original)) canonical = StoreWord(word,NOUN|NOUN_SINGULAR,sysflags);
 				}
 			}
-			char* verb = English_GetInfinitive(hyphen+1,true);
+			char* verb = GetInfinitive(hyphen+1,true);
 			if (verb)
 			{
 				X = FindWord(verb,0,PRIMARY_CASE_ALLOWED);
@@ -1333,7 +1333,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	return properties;
 }
 
-void English_SetSentenceTense(unsigned int start, unsigned int end)
+void SetSentenceTense(unsigned int start, unsigned int end)
 {
 	uint64 aux[25];
 	unsigned int auxIndex = 0;
@@ -1600,7 +1600,7 @@ static char* MakePastTense(char* original,WORDP D,bool participle)
 			WORDP X = FindWord(words[i]);
 			if (!X || !(X->properties & VERB)) continue;
 			char* inf;
-			inf = (participle) ? (char*) English_GetPastParticiple(words[i]) : (char*) English_GetPastTense(words[i]);
+			inf = (participle) ? (char*) GetPastParticiple(words[i]) : (char*) GetPastTense(words[i]);
 			if (!inf) continue;
 			*trial = 0;
 			char* at1 = trial;
@@ -1648,7 +1648,7 @@ static char* MakePastTense(char* original,WORDP D,bool participle)
     return buffer; 
 }
 
-char* English_GetPastTense(char* original)
+char* GetPastTense(char* original)
 {
  	if (!original || !*original || *original == '~') return NULL;
 	WORDP D = FindWord(original,0,LOWERCASE_LOOKUP);
@@ -1664,7 +1664,7 @@ char* English_GetPastTense(char* original)
 	return MakePastTense(original,D,false);
 }
 
-char* English_GetPresent(char* word)
+char* GetPresent(char* word)
 {
 	if (!word || !*word || *word == '~') return NULL;
 	if (*word == '-') ++word; // never start on a hyphen
@@ -1681,7 +1681,7 @@ char* English_GetPresent(char* word)
    return word; // same as base infinitive otherwise
 }
 
-char* English_GetPastParticiple(char* word)
+char* GetPastParticiple(char* word)
 {
 	if (!word || !*word || *word == '~') return NULL;
 	if (*word == '-') ++word; // never start on a hyphen
@@ -1698,7 +1698,7 @@ char* English_GetPastParticiple(char* word)
    return MakePastTense(word,D,true);
 }
 
-char* English_GetPresentParticiple(char* word)
+char* GetPresentParticiple(char* word)
 {
 	if (!word || !*word || *word == '~') return NULL;
 	if (*word == '-') ++word;	// never start on a hyphen  
@@ -1716,7 +1716,7 @@ char* English_GetPresentParticiple(char* word)
     
     strcpy(buffer,word);
     size_t len = strlen(buffer);
-    char* inf = English_GetInfinitive(word,false);
+    char* inf = GetInfinitive(word,false);
     if (!inf) return 0;
     if (buffer[len-1] == 'g' && buffer[len-2] == 'n' && buffer[len-3] == 'i' && stricmp(inf,word)) return word;   //   ISNT participle though it has ing ending (unless its base is "ing", like "swing"
 
@@ -1749,7 +1749,7 @@ char* English_GetPresentParticiple(char* word)
 			}
 			WORDP E = FindWord(words[i],0,LOWERCASE_LOOKUP);
 			if (!E || !(E->properties & VERB)) continue;
-			char* inf = English_GetPresentParticiple(words[i]); //   is this word an infinitive?
+			char* inf = GetPresentParticiple(words[i]); //   is this word an infinitive?
 			if (!inf) continue;
 			*trial = 0;
 			char* at = trial;
@@ -1796,7 +1796,7 @@ char* English_GetPresentParticiple(char* word)
    //   double consonant 
     else if (!IsVowel(buffer[len-1]) && IsVowel(buffer[len-2]) && (!IsVowel(buffer[len-3]) || (buffer[len-3] == 'u' && buffer[len-4] == 'q'))) //   qu sounds like consonant w
     {
-        char* base = English_GetInfinitive(word,false);
+        char* base = GetInfinitive(word,false);
         WORDP D = FindWord(base,0,LOWERCASE_LOOKUP);
         if (D && D->properties & VERB && GetTense(D) ) 
         {
@@ -1840,7 +1840,7 @@ uint64 ProbableVerb(char* original, unsigned int len)
 	{
 		WORDP X = FindWord(hyphen+1,0,PRIMARY_CASE_ALLOWED);
 		if (X && X->properties & VERB) return X->properties & (VERB_BITS|VERB);
-		char* verb = English_GetInfinitive(hyphen+1,false);
+		char* verb = GetInfinitive(hyphen+1,false);
 		if (verb) return VERB | verbFormat;
 		uint64 flags = ProbableVerb(hyphen+1,len - (hyphen-original+1));
 		if (flags) return flags;
@@ -1887,7 +1887,7 @@ static char* InferVerb(char* original, unsigned int len)
 	return NULL;
 }
 
-char* English_GetAdjectiveMore(char* word)
+char* GetAdjectiveMore(char* word)
 {
 	if (!word || !*word || *word == '~') return NULL;
 	size_t len = strlen(word);
@@ -1909,7 +1909,7 @@ char* English_GetAdjectiveMore(char* word)
 	return NULL;
 }
 
-char* English_GetAdjectiveMost(char* word)
+char* GetAdjectiveMost(char* word)
 {
  	if (!word || !*word || *word == '~') return NULL;
 	size_t len = strlen(word);
@@ -1931,7 +1931,7 @@ char* English_GetAdjectiveMost(char* word)
 	return NULL;
 }
 
-char* English_GetAdverbMore(char* word)
+char* GetAdverbMore(char* word)
 {
 	if (!word || !*word || *word == '~') return NULL;
     size_t len = strlen(word);
@@ -1953,7 +1953,7 @@ char* English_GetAdverbMore(char* word)
 	return NULL;
 }
 
-char* English_GetAdverbMost(char* word)
+char* GetAdverbMost(char* word)
 {
  	if (!word || !*word || *word == '~') return NULL;
     WORDP D = FindWord(word,0,LOWERCASE_LOOKUP);
@@ -1973,7 +1973,7 @@ char* English_GetAdverbMost(char* word)
 	return NULL;
 }
 
-char* English_GetThirdPerson(char* word)
+char* GetThirdPerson(char* word)
 {
  	if (!word || !*word || *word == '~') return NULL;
     size_t len = strlen(word);
@@ -2006,7 +2006,7 @@ char* English_GetThirdPerson(char* word)
 	return result;
 }
 
-char* English_GetInfinitive(char* word, bool nonew)
+char* GetInfinitive(char* word, bool nonew)
 {
 	if (!word || !*word || *word == '~') return NULL;
 	if (strchr(word,'/')) return NULL;  // not possible verb
@@ -2081,7 +2081,7 @@ char* English_GetInfinitive(char* word, bool nonew)
 		}
 		for (int i = 0; i < cnt; ++i)
 		{
-			char* inf = English_GetInfinitive(words[i],false); //   is this word an infinitive?
+			char* inf = GetInfinitive(words[i],false); //   is this word an infinitive?
 			if (!inf || !*inf) continue;
 			*trial = 0;
 			char* at = trial;
@@ -2275,7 +2275,7 @@ char* English_GetInfinitive(char* word, bool nonew)
 	return InferVerb(word,len);
 }
 
-char* English_GetPluralNoun(WORDP noun)
+char* GetPluralNoun(WORDP noun)
 {
 	if (!noun) return NULL;
     if (noun->properties & NOUN_PLURAL) return noun->word; 
@@ -2326,14 +2326,14 @@ static char* InferNoun(char* original,unsigned int len) // from suffix might it 
 	{
 		//Plurals of words that end in -f or -fe usually change the f sound to a v sound and add s or -es.
 		word[len-3] = 'f';
-		char* singular = English_GetSingularNoun(word,false,false);
+		char* singular = GetSingularNoun(word,false,false);
 		if (singular && !stricmp(singular,word)) 
 		{
 			nounFormat = NOUN_PLURAL;
 			return StoreWord(singular,NOUN|NOUN_SINGULAR)->word;
 		}
 		word[len-2] = 'e';
-		singular = English_GetSingularNoun(word,false,true);
+		singular = GetSingularNoun(word,false,true);
 		if (singular && !stricmp(singular,word)) 
 		{
 			nounFormat = NOUN_PLURAL;
@@ -2357,7 +2357,7 @@ static char* InferNoun(char* original,unsigned int len) // from suffix might it 
 	char* hypen = strchr(word+1,'-');
 	if ( hypen && len > 2)
 	{
-		char* stem = English_GetSingularNoun(word+1,true,false);
+		char* stem = GetSingularNoun(word+1,true,false);
 		if (stem && !stricmp(stem,word+1)) return StoreWord(word,NOUN|NOUN_SINGULAR)->word;
 		if (stem)
 		{
@@ -2433,7 +2433,7 @@ uint64 ProbableNoun(char* original,unsigned int len) // from suffix might it be 
 	return 0;
 }
 
-char* English_GetSingularNoun(char* word, bool initial, bool nonew)
+char* GetSingularNoun(char* word, bool initial, bool nonew)
 { 
  	if (!word || !*word || *word == '~') return NULL;
 	uint64 controls = PRIMARY_CASE_ALLOWED;
@@ -2490,21 +2490,21 @@ char* English_GetSingularNoun(char* word, bool initial, bool nonew)
 		strcpy(hold,word); // overlap?
 		strcpy(mod,hold);
 		mod[len-1] = 0;
-		char* singular = English_GetSingularNoun(mod,false,true);
+		char* singular = GetSingularNoun(mod,false,true);
 		nounFormat = (IsUpperCase(*word)) ? NOUN_PROPER_PLURAL : NOUN_PLURAL; // would fail on iPhones BUG
 		uint64 format = nounFormat; // would fail on iPhones BUG
 		if (singular) return singular; // take off s is correct
 		if (len > 3 && word[len-2] == 'e' && (word[len-3] == 'x' || word[len-3] == 's' || word[len-3] == 'h' || IsVowel(word[len-3]) )) // es is rarely addable (not from james) ,  tornado  and fish minus fox  allow it
 		{
 			mod[len-2] = 0;
-			singular = English_GetSingularNoun(mod,false,true);
+			singular = GetSingularNoun(mod,false,true);
 			nounFormat = format;
 			if (singular) return singular; // take off es is correct
 			//With words that end in a consonant and a y, you'll need to change the y to an i and add es
 			if (len > 4 && mod[len-3] == 'i' && !IsVowel(mod[len-4]))
 			{
 				mod[len-3] = 'y';
-				singular = English_GetSingularNoun(mod,false,true);
+				singular = GetSingularNoun(mod,false,true);
 				nounFormat = format;
 				if (singular) return singular; // take off ies is correct, change to y
 			}
@@ -2513,11 +2513,11 @@ char* English_GetSingularNoun(char* word, bool initial, bool nonew)
 			if (len > 4 && mod[len-3] == 'v')
 			{
 				mod[len-3] = 'f';
-				singular = English_GetSingularNoun(mod,false,true);
+				singular = GetSingularNoun(mod,false,true);
 				nounFormat = format;
 				if (singular) return singular; // take off ves is correct, change to f
 				mod[len-2] = 'e';
-				singular = English_GetSingularNoun(mod,false,true);
+				singular = GetSingularNoun(mod,false,true);
 				nounFormat = format;
 				if (singular) return singular; // take off ves is correct, change to fe
 			}
@@ -2676,7 +2676,7 @@ uint64 ProbableAdverb(char* original, unsigned int len,uint64& expectedBase) // 
 	return 0;
 }
 
-char* English_GetAdverbBase(char* word, bool nonew)
+char* GetAdverbBase(char* word, bool nonew)
 {
  	if (!word || !*word || *word == '~') return NULL;
 	uint64 controls = tokenControl & STRICT_CASING ? PRIMARY_CASE_ALLOWED : LOWERCASE_LOOKUP;
@@ -2954,7 +2954,7 @@ uint64 ProbableAdjective(char* original, unsigned int len,uint64 &expectedBase) 
 }
 
 
-char* English_GetAdjectiveBase(char* word, bool nonew)
+char* GetAdjectiveBase(char* word, bool nonew)
 {
  	if (!word || !*word || *word == '~') return NULL;
 	uint64 controls = tokenControl & STRICT_CASING ? PRIMARY_CASE_ALLOWED : LOWERCASE_LOOKUP;
@@ -2999,13 +2999,13 @@ char* English_GetAdjectiveBase(char* word, bool nonew)
         if (hyphen[2] == 'e' && hyphen[3] == 'r') //   lower-density?
         {
             strcpy(hyphen+2,althyphen+4); //   remove er
-            char* answer = English_GetAdjectiveBase(composite,false);
+            char* answer = GetAdjectiveBase(composite,false);
             if (answer) return answer;
         }
         if (hyphen[1] == 'e' && hyphen[2] == 's' && hyphen[3] == 't' ) //   lowest-density?
         {
             strcpy(hyphen+1,althyphen+4); //   remove est
-            char* answer = English_GetAdjectiveBase(composite,false);
+            char* answer = GetAdjectiveBase(composite,false);
             if (answer) return answer;
         }
     }
