@@ -28,7 +28,7 @@ void DefineSystemVariables()
 		if (sysvars[i].name[0] == '%') 
 		{
 			StoreWord((char*) sysvars[i].name)->x.topicIndex = (unsigned short) i;  // not a header
-			(*sysvars[i].address)("."); // force a reset-- testing calls this to reset after changes
+			(*sysvars[i].address)((char*)"."); // force a reset-- testing calls this to reset after changes
 		}
 	}
 }
@@ -39,7 +39,7 @@ char* SystemVariable(char* word,char* value)
 	unsigned int index = (D) ? D->x.topicIndex : 0;
 	if (!index) 
 	{
-		ReportBug("No system variable %s",word)
+		ReportBug((char*)"No system variable %s",word)
 		return "";
 	}
 	return (*sysvars[index].address)(value);
@@ -53,19 +53,19 @@ void DumpSystemVariables()
 		char* result = (sysvars[i].address) ? (*sysvars[i].address)(NULL) : (char*)""; // actual variable or header
 		if (!*result) 
 		{
-			if (strstr(sysvars[i].comment,"Boolean")) result = "null";
-			else if (strstr(sysvars[i].comment,"Numeric")) result = "0";
+			if (strstr(sysvars[i].comment,(char*)"Boolean")) result = "null";
+			else if (strstr(sysvars[i].comment,(char*)"Numeric")) result = "0";
 			else result = "null";
 		}
-		if (sysvars[i].address) Log(STDUSERLOG,"%s = %s - %s\r\n",sysvars[i].name, result,sysvars[i].comment);  // actual variable
-		else Log(STDUSERLOG,"%s\r\n",sysvars[i].name);  // header
+		if (sysvars[i].address) Log(STDUSERLOG,(char*)"%s = %s - %s\r\n",sysvars[i].name, result,sysvars[i].comment);  // actual variable
+		else Log(STDUSERLOG,(char*)"%s\r\n",sysvars[i].name);  // header
 	}
 }
 
 static char* AssignValue(char* hold, char* value)
 {
 	if (value[0] == value[1] && value[1] == '"') *value = 0;	// null string
-	else if (!stricmp(value,"NULL") ) *value = 0; 
+	else if (!stricmp(value,(char*)"NULL") ) *value = 0; 
 	strcpy(hold,value);
 	return hold;
 }
@@ -95,7 +95,7 @@ static char* SdayOfWeek(char* value)
     switch(systemValue[1])
     {
         case 'o': return "Monday";
-        case 'u': return (char*)((systemValue[0] == 'T') ? "Tuesday" : "Sunday");
+        case 'u': return (char*)((systemValue[0] == 'T') ? (char*)"Tuesday" : (char*)"Sunday");
         case 'e': return "Wednesday";
         case 'h': return "Thursday";
         case 'r': return "Friday";
@@ -134,9 +134,9 @@ static char* SFullTime(char* value)
 	uint64 curr = (uint64) time(0);
     if (regression) curr = 44444444; 
 #ifdef WIN32
-   sprintf(systemValue,"%I64d",curr); 
+   sprintf(systemValue,(char*)"%I64d",curr); 
 #else
-   sprintf(systemValue,"%lld",curr); 
+   sprintf(systemValue,(char*)"%lld",curr); 
 #endif
     return systemValue;
 }
@@ -254,7 +254,7 @@ static char* Svolleytime(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 	clock_t diff = ElapsedMilliseconds() - startTimeInfo;
-    sprintf(systemValue,"%u",(unsigned int)diff);
+    sprintf(systemValue,(char*)"%u",(unsigned int)diff);
     return systemValue;
 }
 
@@ -274,7 +274,7 @@ static char* Stimenumbers(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
     GetTimeInfo();
-	sprintf(systemValue,"%2.2d %2.2d %2.2d %d %d %d %d",ptm->tm_sec,ptm->tm_min, ptm->tm_hour, ptm->tm_wday, ptm->tm_mday, ptm->tm_mon, ptm->tm_year+1900); 
+	sprintf(systemValue,(char*)"%2.2d %2.2d %2.2d %d %d %d %d",ptm->tm_sec,ptm->tm_min, ptm->tm_hour, ptm->tm_wday, ptm->tm_mday, ptm->tm_mon, ptm->tm_year+1900); 
     return systemValue;
 }
 static char* SweekOfMonth(char* value)
@@ -283,7 +283,7 @@ static char* SweekOfMonth(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
     if (regression) return "1";
-	unsigned int n;
+	int n;
 	char* x = GetTimeInfo() + 8;
 	if (*x == ' ') ++x; // Mac uses space, pc uses 0 for 1 digit numbers 
     ReadInt(x,n);
@@ -306,7 +306,7 @@ static char* Srand(char* value) // 1 .. 100
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"%d",random(100)+1);
+	sprintf(systemValue,(char*)"%d",random(100)+1);
 	return systemValue;
 }
 
@@ -327,8 +327,8 @@ static char* Sscript(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (topicBlockPtrs[2]) sprintf(systemValue,"Script1: %s Script0: %s Script2: %s",timeStamp[1],timeStamp[0],timeStamp[2]);
-	else sprintf(systemValue,"Script1: %s Script0: %s",timeStamp[1],timeStamp[0]);
+	if (topicBlockPtrs[2]) sprintf(systemValue,(char*)"Script1: %s Script0: %s Script2: %s",timeStamp[1],timeStamp[0],timeStamp[2]);
+	else sprintf(systemValue,(char*)"Script1: %s Script0: %s",timeStamp[1],timeStamp[0]);
     return systemValue;
 }
 
@@ -337,7 +337,7 @@ static char* Sengine(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"Engine: %s",compileDate);
+	sprintf(systemValue,(char*)"Engine: %s",compileDate);
 	if (systemValue[12] == ' ') systemValue[12] = '0';
     return systemValue;
 }
@@ -357,15 +357,15 @@ static char* Sos(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 #ifdef WIN32
-	strcpy(systemValue,"windows");
+	strcpy(systemValue,(char*)"windows");
 #elif  MACH
-	strcpy(systemValue,"mac");
+	strcpy(systemValue,(char*)"mac");
 #elif IOS
-	strcpy(systemValue,"ios");
+	strcpy(systemValue,(char*)"ios");
 #elif  ANDROID
-	strcpy(systemValue,"android");
+	strcpy(systemValue,(char*)"android");
 #else 
-	strcpy(systemValue,"linux");
+	strcpy(systemValue,(char*)"linux");
 #endif
 
     return systemValue;
@@ -395,7 +395,7 @@ static char* Sdict(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"Dictionary: %s",dictionaryTimeStamp);
+	sprintf(systemValue,(char*)"Dictionary: %s",dictionaryTimeStamp);
     return systemValue;
 }
 
@@ -404,7 +404,7 @@ static char* Sversion(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"Version: %s",version);
+	sprintf(systemValue,(char*)"Version: %s",version);
     return systemValue;
 }
 
@@ -413,7 +413,7 @@ static char* Sfact(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"%d",Fact2Index(factFree));
+	sprintf(systemValue,(char*)"%d",Fact2Index(factFree));
     return systemValue;
 }
 
@@ -450,7 +450,7 @@ static char* ShttpResponse(char* value)
 		return strcpy(hold,value);
 	}
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"%d",(int)http_response);
+	sprintf(systemValue,(char*)"%d",(int)http_response);
     return systemValue;
 }
 
@@ -463,7 +463,7 @@ static char* SmaxMatchVariables(char* value)
 		return strcpy(hold,value);
 	}
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"%d",MAX_WILDCARDS);
+	sprintf(systemValue,(char*)"%d",MAX_WILDCARDS);
     return systemValue;
 }
 
@@ -476,7 +476,7 @@ static char* SmaxFactSets(char* value)
 		return strcpy(hold,value);
 	}
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"%d",MAX_FIND_SETS);
+	sprintf(systemValue,(char*)"%d",MAX_FIND_SETS);
     return systemValue;
 }
 
@@ -505,7 +505,7 @@ static char* SfreeText(char* value)
 	static char hold[50] = ".";
 	if (value) return strcpy(hold,value); // may not legall set on one's own
 	int nominalUsed = maxStringBytes - (stringBase - stringFree);
-	sprintf(hold,"%d",nominalUsed / 1000);
+	sprintf(hold,(char*)"%d",nominalUsed / 1000);
 	return hold;
 }
 
@@ -513,7 +513,7 @@ static char* SfreeWord(char* value)
 {
 	static char hold[50] = ".";
 	if (value) return strcpy(hold,value); // may not legall set on one's own
-	sprintf(hold,"%ld",((unsigned int)maxDictEntries)-(dictionaryFree-dictionaryBase));
+	sprintf(hold,(char*)"%ld",((unsigned int)maxDictEntries)-(dictionaryFree-dictionaryBase));
 	return hold;
 }
 
@@ -522,7 +522,7 @@ static char* SfreeFact(char* value)
 	static char hold[50] = ".";
 	if (value) return strcpy(hold,value); // may not legall set on one's own
 	if (*hold != '.') return hold;
-	sprintf(hold,"%ld",factEnd-factFree);
+	sprintf(hold,(char*)"%ld",factEnd-factFree);
 	return hold;
 }
 
@@ -532,7 +532,7 @@ static char* Srule(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 	if (currentTopicID == 0 || currentRuleID == -1) return "";
-	sprintf(systemValue,"%s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
+	sprintf(systemValue,(char*)"%s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
     return systemValue;
 }
 
@@ -543,7 +543,7 @@ static char* Sserver(char* value)
 	if (*hold != '.') return hold;
 	if (!server) return "";
 
-	sprintf(systemValue,"%d",port);
+	sprintf(systemValue,(char*)"%d",port);
 	return systemValue;
 }
 
@@ -571,7 +571,7 @@ static char* STrace(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 	if (!trace) return "0";
-	sprintf(systemValue,"%d",trace);
+	sprintf(systemValue,(char*)"%d",trace);
 	return systemValue;
 }
 
@@ -585,8 +585,8 @@ static char* Sforeign(char* value)
 	if (value) 
 	{
 		if (*value == '.') strcpy(hold,value);
-		else if (!stricmp(value,"1")) tokenFlags |= FOREIGN_TOKENS;
-		else if (!stricmp(value,"0")) tokenFlags &= -1 ^ FOREIGN_TOKENS;
+		else if (!stricmp(value,(char*)"1")) tokenFlags |= FOREIGN_TOKENS;
+		else if (!stricmp(value,(char*)"0")) tokenFlags &= -1 ^ FOREIGN_TOKENS;
 	}
 	if (*hold != '.') return hold;
 	return tokenFlags & FOREIGN_TOKENS ?  (char*)"1" : (char*)"";
@@ -601,7 +601,7 @@ static char* Sinput(char* value)
 		else strcpy(hold,value);
 	}
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"%d",volleyCount); 
+	sprintf(systemValue,(char*)"%d",volleyCount); 
 	return systemValue;
 }
 
@@ -610,7 +610,7 @@ static char* Slength(char* value)
 	static char hold[50] = ".";
 	if (value)  return AssignValue(hold,value);
 	if (*hold != '.') return hold;
- 	sprintf(systemValue,"%d",wordCount); 
+ 	sprintf(systemValue,(char*)"%d",wordCount); 
 	return systemValue;
 }
 
@@ -643,7 +643,7 @@ static char* SoriginalSentence(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    return inputCopy;
+    return rawSentenceCopy;
 }   
 static char* Sparsed(char* value) 
 {
@@ -667,8 +667,8 @@ static char* Squestion(char* value)
 	if (value) 
 	{
 		if (*value == '.') strcpy(hold,value);
-		else if (!stricmp(value,"1")) tokenFlags |= QUESTIONMARK;
-		else if (!stricmp(value,"0")) tokenFlags &= -1 ^ QUESTIONMARK;
+		else if (!stricmp(value,(char*)"1")) tokenFlags |= QUESTIONMARK;
+		else if (!stricmp(value,(char*)"0")) tokenFlags &= -1 ^ QUESTIONMARK;
 	}
 	if (*hold != '.') return hold;
     return tokenFlags & QUESTIONMARK ? (char*)"1" : (char*)"";
@@ -680,8 +680,8 @@ static char* Scommand(char* value)
 	if (value) 
 	{
 		if (*value == '.') strcpy(hold,value);
-		else if (!stricmp(value,"1")) tokenFlags |= COMMANDMARK;
-		else if (!stricmp(value,"0")) tokenFlags &= -1 ^ COMMANDMARK;
+		else if (!stricmp(value,(char*)"1")) tokenFlags |= COMMANDMARK;
+		else if (!stricmp(value,(char*)"0")) tokenFlags &= -1 ^ COMMANDMARK;
 	}
 	if (*hold != '.') return hold;
     return tokenFlags & COMMANDMARK ? (char*)"1" : (char*)"";
@@ -693,8 +693,8 @@ static char* Squotation(char* value)
 	if (value) 
 	{
 		if (*value == '.') strcpy(hold,value);
-		else if (!stricmp(value,"1")) tokenFlags |= QUOTATION;
-		else if (!stricmp(value,"0")) tokenFlags &= -1 ^ QUOTATION;
+		else if (!stricmp(value,(char*)"1")) tokenFlags |= QUOTATION;
+		else if (!stricmp(value,(char*)"0")) tokenFlags &= -1 ^ QUOTATION;
 	}
 	if (*hold != '.') return hold;
     return tokenFlags & QUOTATION ? (char*)"1" : (char*)"";
@@ -706,8 +706,8 @@ static char* Simpliedyou(char* value)
 	if (value) 
 	{
 		if (*value == '.') strcpy(hold,value);
-		else if (!stricmp(value,"1")) tokenFlags |= IMPLIED_YOU;
-		else if (!stricmp(value,"0")) tokenFlags &= -1 ^ IMPLIED_YOU;
+		else if (!stricmp(value,(char*)"1")) tokenFlags |= IMPLIED_YOU;
+		else if (!stricmp(value,(char*)"0")) tokenFlags &= -1 ^ IMPLIED_YOU;
 	}
 	if (*hold != '.') return hold;
     else return tokenFlags & IMPLIED_YOU ? (char*)"1" : (char*)"";
@@ -719,9 +719,9 @@ static char* Stense(char* value)
 	if (value) 
 	{
 		if (*value == '.') strcpy(hold,value);
-		else if (!stricmp(value,"past")) {tokenFlags &= -1 & (PRESENT|FUTURE); tokenFlags |= PAST;}
-		else if (!stricmp(value,"future")) {tokenFlags &= -1 & (PRESENT|PAST); tokenFlags |= FUTURE;}
-		else if (!stricmp(value,"present"))  {tokenFlags &= -1 & (FUTURE|PAST); tokenFlags |= PRESENT;}
+		else if (!stricmp(value,(char*)"past")) {tokenFlags &= -1 & (PRESENT|FUTURE); tokenFlags |= PAST;}
+		else if (!stricmp(value,(char*)"future")) {tokenFlags &= -1 & (PRESENT|PAST); tokenFlags |= FUTURE;}
+		else if (!stricmp(value,(char*)"present"))  {tokenFlags &= -1 & (FUTURE|PAST); tokenFlags |= PRESENT;}
 	}
 	if (*hold != '.') return hold;
 	else if (tokenFlags & PAST) return "past";
@@ -735,9 +735,9 @@ static char* StokenFlags(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 #ifdef WIN32
-	sprintf(systemValue,"%I64d",(long long int) tokenFlags); 
+	sprintf(systemValue,(char*)"%I64d",(long long int) tokenFlags); 
 #else
-	sprintf(systemValue,"%lld",(long long int) tokenFlags); 
+	sprintf(systemValue,(char*)"%lld",(long long int) tokenFlags); 
 #endif	
 
 	return systemValue;
@@ -748,7 +748,7 @@ static char* SuserFirstLine(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"%d",userFirstLine); 
+	sprintf(systemValue,(char*)"%d",userFirstLine); 
 	return systemValue;
 }
 
@@ -758,8 +758,8 @@ static char* SuserInput(char* value)
 	if (value) 
 	{
 		if (*value == '.') strcpy(hold,value);
-		else if (!stricmp(value,"1")) tokenFlags |= USERINPUT;
-		else if (!stricmp(value,"0")) tokenFlags &= -1 ^ USERINPUT;
+		else if (!stricmp(value,(char*)"1")) tokenFlags |= USERINPUT;
+		else if (!stricmp(value,(char*)"0")) tokenFlags &= -1 ^ USERINPUT;
 	}
 	if (*hold != '.') return hold;
 	return tokenFlags & USERINPUT ? (char*)"1" : (char*)"";
@@ -779,8 +779,8 @@ static char* Svoice(char* value)
 	if (value) 
 	{
 		if (*value == '.') strcpy(hold,value);
-		else if (!stricmp(value,"1")) tokenFlags |= PASSIVE;
-		else if (!stricmp(value,"0")) tokenFlags &= -1 ^ PASSIVE;
+		else if (!stricmp(value,(char*)"1")) tokenFlags |= PASSIVE;
+		else if (!stricmp(value,(char*)"0")) tokenFlags &= -1 ^ PASSIVE;
 	}
 	if (*hold != '.') return hold;
 	return (tokenFlags & PASSIVE) ? (char*)"passive" : (char*)"active";
@@ -810,7 +810,7 @@ static char* SinputRejoinder(char* value)
 	}
 	if (*hold != '.') return hold;
 	if (inputRejoinderTopic == NO_REJOINDER) return (char*)"";
-	sprintf(systemValue,"%s.%d.%d",GetTopicName(inputRejoinderTopic),TOPLEVELID(inputRejoinderRuleID),REJOINDERID(inputRejoinderRuleID)); 
+	sprintf(systemValue,(char*)"%s.%d.%d",GetTopicName(inputRejoinderTopic),TOPLEVELID(inputRejoinderRuleID),REJOINDERID(inputRejoinderRuleID)); 
 	return systemValue;
 }
 
@@ -853,7 +853,7 @@ static char* SoutputRejoinder(char* value)
 	}
 	if (*hold != '.') return hold;
 	if (outputRejoinderTopic == NO_REJOINDER) return (char*)"";
-	sprintf(systemValue,"%s.%d.%d",GetTopicName(outputRejoinderTopic),TOPLEVELID(outputRejoinderRuleID),REJOINDERID(outputRejoinderRuleID)); 
+	sprintf(systemValue,(char*)"%s.%d.%d",GetTopicName(outputRejoinderTopic),TOPLEVELID(outputRejoinderRuleID),REJOINDERID(outputRejoinderRuleID)); 
 	return systemValue;
 }
 
@@ -862,90 +862,90 @@ static char* Sresponse(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	sprintf(systemValue,"%d",responseIndex);
+	sprintf(systemValue,(char*)"%d",responseIndex);
 	return systemValue;
 }   
 
 SYSTEMVARIABLE sysvars[] =
 { 
-	{"",0,""},
+	{ (char*)"",0,(char*)""},
 
-	{"\r\n---- Time, Date, Number variables",0,""},
-	{"%date",Sdate,"Numeric day of the month"}, 
-	{"%day",SdayOfWeek,"Named day of the week"}, 
-	{"%daynumber",SdayNumberOfWeek,"Numeric day of week (0=sunday)"},  
-	{"%fulltime",SFullTime,"Numeric full time/date in seconds"}, 
-	{"%hour",Shour,"Numeric 2-digit current hour of day (00..23)"}, 
-	{"%leapyear",SleapYear,"Boolean - is it a leap year"}, 
-	{"%minute",Sminute,"Numeric 2-digit current minute"}, 
-	{"%month",Smonth,"Numeric month number (1..12)"},
-	{"%monthname",SmonthName,"Name of month"}, 
-	{"%rand",Srand,"Numeric random number (1..100)"}, 
-	{"%daylightsavings",Sdaylightsavings,"Boolean is daylight savings in effect"}, 
-	{"%second",Ssecond,"Numeric 2-digit current second"}, 
-	{"%time",Stime,"Current military time (e.g., 21:07)"}, 
-	{"%timenumbers",Stimenumbers,"numbers, separated by blanks, of sec,min,hr,dayinweek,dayinmonth,month,year"}, 
-	{"%week",SweekOfMonth,"Numeric week of month (1..5)"}, 
-	{"%volleytime",Svolleytime,"Numeric milliseconds since volley start"}, 
-	{"%year",Syear,"Numeric current 4-digit year"},
+	{ (char*)"\r\n---- Time, Date, Number variables",0,(char*)""},
+	{ (char*)"%date",Sdate,(char*)"Numeric day of the month"}, 
+	{ (char*)"%day",SdayOfWeek,(char*)"Named day of the week"}, 
+	{ (char*)"%daynumber",SdayNumberOfWeek,(char*)"Numeric day of week (0=sunday)"},  
+	{ (char*)"%fulltime",SFullTime,(char*)"Numeric full time/date in seconds"}, 
+	{ (char*)"%hour",Shour,(char*)"Numeric 2-digit current hour of day (00..23)"}, 
+	{ (char*)"%leapyear",SleapYear,(char*)"Boolean - is it a leap year"}, 
+	{ (char*)"%minute",Sminute,(char*)"Numeric 2-digit current minute"}, 
+	{ (char*)"%month",Smonth,(char*)"Numeric month number (1..12)"},
+	{ (char*)"%monthname",SmonthName,(char*)"Name of month"}, 
+	{ (char*)"%rand",Srand,(char*)"Numeric random number (1..100)"}, 
+	{ (char*)"%daylightsavings",Sdaylightsavings,(char*)"Boolean is daylight savings in effect"}, 
+	{ (char*)"%second",Ssecond,(char*)"Numeric 2-digit current second"}, 
+	{ (char*)"%time",Stime,(char*)"Current military time (e.g., 21:07)"}, 
+	{ (char*)"%timenumbers",Stimenumbers,(char*)"numbers, separated by blanks, of sec,min,hr,dayinweek,dayinmonth,month,year"}, 
+	{ (char*)"%week",SweekOfMonth,(char*)"Numeric week of month (1..5)"}, 
+	{ (char*)"%volleytime",Svolleytime,(char*)"Numeric milliseconds since volley start"}, 
+	{ (char*)"%year",Syear,(char*)"Numeric current 4-digit year"},
 	
-	{"\r\n---- System variables",0,""},
-	{"%all",Sall,"Boolean - is all flag on"}, 
-	{"%crosstalk",ScrossTalk,"cross bot/cross document variable storage"}, 
-	{"%document",Sdocument,"Boolean - is :document flag on"}, 
-	{"%fact",Sfact,"Most recent fact id"}, 
-	{"%freetext",SfreeText,"bytes of available text space"}, 
-	{"%freeword",SfreeWord,"number of available unused words"}, 
-	{"%freefact",SfreeFact,"number of available unused facts"}, 
-	{"%regression",Sregression,"Boolean - is regression flag on"}, 
-	{"%host",Shost,"machine ip if a server, else local"}, 
-	{"%http_response",ShttpResponse,"http response code from last call to JsonOpen"}, 
-	{"%maxmatchvariables",SmaxMatchVariables,"highest number of legal _match variables"}, 
-	{"%maxfactsets",SmaxFactSets,"highest number of legal @factsets"}, 
-	{"%rule",Srule,"Get a tag to current executing rule or null"}, 
-	{"%server",Sserver,"Port id of server or null if not server"}, 
-	{"%actualtopic",SactualTopic,"Current  topic executing (including system or nostay)"}, 
-	{"%topic",Stopic,"Current interesting topic executing (not system or nostay)"}, 
-	{"%trace",STrace,"Numeric value of trace flag"}, 
+	{ (char*)"\r\n---- System variables",0,(char*)""},
+	{ (char*)"%all",Sall,(char*)"Boolean - is all flag on"}, 
+	{ (char*)"%crosstalk",ScrossTalk,(char*)"cross bot/cross document variable storage"}, 
+	{ (char*)"%document",Sdocument,(char*)"Boolean - is :document flag on"}, 
+	{ (char*)"%fact",Sfact,(char*)"Most recent fact id"}, 
+	{ (char*)"%freetext",SfreeText,(char*)"bytes of available text space"}, 
+	{ (char*)"%freeword",SfreeWord,(char*)"number of available unused words"}, 
+	{ (char*)"%freefact",SfreeFact,(char*)"number of available unused facts"}, 
+	{ (char*)"%regression",Sregression,(char*)"Boolean - is regression flag on"}, 
+	{ (char*)"%host",Shost,(char*)"machine ip if a server, else local"}, 
+	{ (char*)"%http_response",ShttpResponse,(char*)"http response code from last call to JsonOpen"}, 
+	{ (char*)"%maxmatchvariables",SmaxMatchVariables,(char*)"highest number of legal _match variables"}, 
+	{ (char*)"%maxfactsets",SmaxFactSets,(char*)"highest number of legal @factsets"}, 
+	{ (char*)"%rule",Srule,(char*)"Get a tag to current executing rule or null"}, 
+	{ (char*)"%server",Sserver,(char*)"Port id of server or null if not server"}, 
+	{ (char*)"%actualtopic",SactualTopic,(char*)"Current  topic executing (including system or nostay)"}, 
+	{ (char*)"%topic",Stopic,(char*)"Current interesting topic executing (not system or nostay)"}, 
+	{ (char*)"%trace",STrace,(char*)"Numeric value of trace flag"}, 
 
-	{"\r\n---- Build variables",0,""},
-	{"%dict",Sdict,"String - when dictionary was built"}, 
-	{"%engine",Sengine,"String - when engine was compiled (date/time)"}, 
-	{"%os",Sos,"String - os involved: linux windows mac ios"}, 
-	{"%script",Sscript,"String - when build1 and build0 were compiled)"}, 
-	{"%version",Sversion,"String - engine version number"}, 
+	{ (char*)"\r\n---- Build variables",0,(char*)""},
+	{ (char*)"%dict",Sdict,(char*)"String - when dictionary was built"}, 
+	{ (char*)"%engine",Sengine,(char*)"String - when engine was compiled (date/time)"}, 
+	{ (char*)"%os",Sos,(char*)"String - os involved: linux windows mac ios"}, 
+	{ (char*)"%script",Sscript,(char*)"String - when build1 and build0 were compiled)"}, 
+	{ (char*)"%version",Sversion,(char*)"String - engine version number"}, 
 
-	{"\r\n---- Input variables",0,""},
-	{"%bot",Sbot,"String - bot in use"}, 
-	{"%command",Scommand,"Boolean - is the current input a command"},
-	{"%foreign",Sforeign,"Boolean - is the bulk of current input foreign words"},
-	{"%impliedyou",Simpliedyou,"Boolean - is the current input have you as an implied subject"},
-	{"%input",Sinput,"Numeric volley id of the current input"}, 
-	{"%ip",Sip,"String - ip address supplied"}, 
-	{"%length",Slength,"Numeric count of words of current input"}, 
-	{"%login",Suser,"String - user login name suppled - same as %user"}, 
-	{"%more",Smore,"Boolean - is there more input pending"}, 
-	{"%morequestion",SmoreQuestion,"Boolean - is there a ? in pending input"}, 
-	{"%originalinput",SoriginalInput,"returns the raw content of what user sent in"}, 
-	//{"%originalsentence",SoriginalSentence,"returns the raw content of the current sentence"}, 
-	{"%parsed",Sparsed,"Boolean - was current input successfully parsed"}, 
-	{"%question",Squestion,"Boolean - is the current input a question"},
-	{"%quotation",Squotation,"Boolean - is the current input a quotation"},
-	{"%sentence",Ssentence,"Boolean - does it seem like a sentence - has subject and verb or is command"}, 
-	{"%tense",Stense,"Tense of current input (present, past, future)"}, 
-	{"%tokenflags",StokenFlags,"Numeric value of all tokenflags"}, 
-	{"%user",Suser,"String - user login name suppled"}, 
-	{"%userfirstline",SuserFirstLine,"Numeric volley count at start of session"}, 
-	{"%userinput",SuserInput,"Boolean - is input coming from user"}, 
-	{"%revisedInput",SrevisedInput,"Boolean - is input coming from ^input"}, 
-	{"%voice",Svoice,"Voice of current input (active,passive)"}, 
+	{ (char*)"\r\n---- Input variables",0,(char*)""},
+	{ (char*)"%bot",Sbot,(char*)"String - bot in use"}, 
+	{ (char*)"%command",Scommand,(char*)"Boolean - is the current input a command"},
+	{ (char*)"%foreign",Sforeign,(char*)"Boolean - is the bulk of current input foreign words"},
+	{ (char*)"%impliedyou",Simpliedyou,(char*)"Boolean - is the current input have you as an implied subject"},
+	{ (char*)"%input",Sinput,(char*)"Numeric volley id of the current input"}, 
+	{ (char*)"%ip",Sip,(char*)"String - ip address supplied"}, 
+	{ (char*)"%length",Slength,(char*)"Numeric count of words of current input"}, 
+	{ (char*)"%login",Suser,(char*)"String - user login name suppled - same as %user"}, 
+	{ (char*)"%more",Smore,(char*)"Boolean - is there more input pending"}, 
+	{ (char*)"%morequestion",SmoreQuestion,(char*)"Boolean - is there a ? in pending input"}, 
+	{ (char*)"%originalinput",SoriginalInput,(char*)"returns the raw content of what user sent in"}, 
+	{ (char*)"%originalsentence",SoriginalSentence,(char*)"returns the raw content of the current sentence"}, 
+	{ (char*)"%parsed",Sparsed,(char*)"Boolean - was current input successfully parsed"}, 
+	{ (char*)"%question",Squestion,(char*)"Boolean - is the current input a question"},
+	{ (char*)"%quotation",Squotation,(char*)"Boolean - is the current input a quotation"},
+	{ (char*)"%sentence",Ssentence,(char*)"Boolean - does it seem like a sentence - has subject and verb or is command"}, 
+	{ (char*)"%tense",Stense,(char*)"Tense of current input (present, past, future)"}, 
+	{ (char*)"%tokenflags",StokenFlags,(char*)"Numeric value of all tokenflags"}, 
+	{ (char*)"%user",Suser,(char*)"String - user login name suppled"}, 
+	{ (char*)"%userfirstline",SuserFirstLine,(char*)"Numeric volley count at start of session"}, 
+	{ (char*)"%userinput",SuserInput,(char*)"Boolean - is input coming from user"}, 
+	{ (char*)"%revisedInput",SrevisedInput,(char*)"Boolean - is input coming from ^input"}, 
+	{ (char*)"%voice",Svoice,(char*)"Voice of current input (active,passive)"}, 
 
-	{"\r\n---- Output variables",0,""},
-	{"%inputrejoinder",SinputRejoinder,"if pending input rejoinder, this is the tag of it else null"},
-	{"%lastoutput",SlastOutput,"Last line of currently generated output or null"},
-	{"%lastquestion",SlastQuestion,"Boolean - did last output end in a ?"}, 
-	{"%outputrejoinder",SoutputRejoinder,"tag of current output rejoinder or null"}, 
-	{"%response",Sresponse,"Numeric count of responses generated for current volley"}, 
+	{ (char*)"\r\n---- Output variables",0,(char*)""},
+	{ (char*)"%inputrejoinder",SinputRejoinder,(char*)"if pending input rejoinder, this is the tag of it else null"},
+	{ (char*)"%lastoutput",SlastOutput,(char*)"Last line of currently generated output or null"},
+	{ (char*)"%lastquestion",SlastQuestion,(char*)"Boolean - did last output end in a ?"}, 
+	{ (char*)"%outputrejoinder",SoutputRejoinder,(char*)"tag of current output rejoinder or null"}, 
+	{ (char*)"%response",Sresponse,(char*)"Numeric count of responses generated for current volley"}, 
 	
-	{NULL,NULL,""},
+	{NULL,NULL,(char*)""},
 };

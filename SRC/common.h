@@ -236,5 +236,7 @@ using namespace std;
 #include "userCache.h"
 #include "userSystem.h"
 #include "variableSystem.h"
-
+#ifdef PRIVATE_CODE
+#include "privatesrc.h"
+#endif 
 #endif

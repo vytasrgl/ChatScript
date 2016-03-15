@@ -20,16 +20,16 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define NOTE_KEYWORDS 4 // track keywords used
 #define NO_SUBSTITUTE_WARNING 8 // dont warn about substitutions
 
-extern uint64 buildID; // build 0 or build 1
+extern unsigned int buildID; // build 0 or build 1
 extern bool compiling;
 extern bool patternContext;
 extern char* newBuffer;
 extern uint64 grade;
 extern char* lastDeprecation;
-extern uint64 buildId;
+extern unsigned int buildId;
 
 void ScriptError();
-void EraseTopicFiles(uint64 build,char* name);
+void EraseTopicFiles(unsigned int build,char* name);
 void InitScriptSystem();
 void SaveCanon(char* word, char* canon);
 
@@ -37,7 +37,7 @@ char* ReadDisplayOutput(char* ptr,char* buffer);
   
 #ifndef DISCARDSCRIPTCOMPILER
 
-void ReadTopicFiles(char* name,uint64 build, int spell);
+void ReadTopicFiles(char* name,unsigned int build, int spell);
 char* ReadPattern(char* ptr, FILE* in, char* &data,bool macro,bool ifstatement);
 char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* existingRead = NULL,WORDP call = NULL);
 char* CompileString(char* ptr);

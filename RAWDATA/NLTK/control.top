@@ -16,7 +16,6 @@ $cs_token =  #DO_ESSENTIALS | #DO_CONTRACTIONS    | #DO_PARSE  | #STRICT_CASING 
 
 topic: ~main_control system repeat ()	# executed for each user sentence of input
 u: ( %input<%userfirstline ) 
-	^keep()   
 	^memorymark()
 	$min = -1
 	Legal commands are: \n

@@ -13,272 +13,272 @@ typedef struct EndingInfo
 	
 EndingInfo noun2[] = 
 {
-	{"th",NOUN|NOUN_SINGULAR}, 
-	{"ar",NOUN|NOUN_SINGULAR}, 
-	{"ty",NOUN|NOUN_SINGULAR}, 
-	{"et",NOUN|NOUN_SINGULAR}, 
-	{"or",NOUN|NOUN_SINGULAR}, 
-	{"al",NOUN|NOUN_SINGULAR}, 
-	{"er",NOUN|NOUN_SINGULAR}, 
-	{"ee",NOUN|NOUN_SINGULAR}, 
-	{"id",NOUN|NOUN_SINGULAR}, 
-	{"cy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"th",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ar",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ty",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"et",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"or",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"al",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"er",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ee",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"id",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"cy",NOUN|NOUN_SINGULAR}, 
 	{0},
 };
 
 EndingInfo noun3[] = 
 {
-	{"ory",NOUN|NOUN_SINGULAR}, 
-	{"ant",NOUN|NOUN_SINGULAR}, 
-	{"eer",NOUN|NOUN_SINGULAR}, 
-	{"log",NOUN|NOUN_SINGULAR}, 
-	{"oma",NOUN|NOUN_SINGULAR}, 
-	{"dom",NOUN|NOUN_SINGULAR}, 
-	{"ard",NOUN|NOUN_SINGULAR}, 
-	{"ide",NOUN|NOUN_SINGULAR}, 
-	{"oma",NOUN|NOUN_SINGULAR}, 
-	{"ity",NOUN|NOUN_SINGULAR}, 
-	{"ist",NOUN|NOUN_SINGULAR}, 
-	{"ism",NOUN|NOUN_SINGULAR}, 
-	{"ing",NOUN|NOUN_SINGULAR}, 
-	{"gon",NOUN|NOUN_SINGULAR}, 
-	{"gam",NOUN|NOUN_SINGULAR}, 
-	{"ese",NOUN|NOUN_SINGULAR}, 
-	{"ure",NOUN|NOUN_SINGULAR}, 
-	{"acy",NOUN|NOUN_SINGULAR}, 
-	{"age",NOUN|NOUN_SINGULAR}, 
-	{"ade",NOUN|NOUN_SINGULAR}, 
-	{"ery",NOUN|NOUN_SINGULAR}, 
-	{"ary",NOUN|NOUN_SINGULAR}, 
-	{"let",NOUN|NOUN_SINGULAR}, 
-	{"ess",NOUN|NOUN_SINGULAR}, 
-	{"ice",NOUN|NOUN_SINGULAR}, 
-	{"ice",NOUN|NOUN_SINGULAR}, 
-	{"ine",NOUN|NOUN_SINGULAR}, 
-	{"ent",NOUN|NOUN_SINGULAR}, 
-	{"ion",NOUN|NOUN_SINGULAR}, 
-	{"oid",NOUN|NOUN_SINGULAR}, 
-	{"ite",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ory",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ant",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"eer",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"log",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"oma",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"dom",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ard",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ide",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"oma",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ity",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ist",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ism",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ing",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"gon",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"gam",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ese",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ure",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"acy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"age",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ade",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ery",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ary",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"let",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ess",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ice",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ice",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ine",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ent",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ion",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"oid",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ite",NOUN|NOUN_SINGULAR}, 
 	{0},
 };
 EndingInfo noun4[] = 
 {
-	{"tion",NOUN|NOUN_SINGULAR}, 
-	{"ment",NOUN|NOUN_SINGULAR}, 
-	{"emia",NOUN|NOUN_SINGULAR}, 
-	{"opsy",NOUN|NOUN_SINGULAR}, 
-	{"itis",NOUN|NOUN_SINGULAR}, 
-	{"opia",NOUN|NOUN_SINGULAR}, 
-	{"hood",NOUN|NOUN_SINGULAR}, 
-	{"ness",NOUN|NOUN_SINGULAR}, 
-	{"logy",NOUN|NOUN_SINGULAR}, 
-	{"ette",NOUN|NOUN_SINGULAR}, 
-	{"cide",NOUN|NOUN_SINGULAR}, 
-	{"sion",NOUN|NOUN_SINGULAR}, 
-	{"ling",NOUN|NOUN_SINGULAR}, 
-	{"cule",NOUN|NOUN_SINGULAR}, 
-	{"osis",NOUN|NOUN_SINGULAR}, 
-	{"esis",NOUN|NOUN_SINGULAR}, 
-	{"ware",NOUN|NOUN_SINGULAR}, 
-	{"tude",NOUN|NOUN_SINGULAR}, 
-	{"cian",NOUN|NOUN_SINGULAR}, 
-	{"ency",NOUN|NOUN_SINGULAR}, 
-	{"ence",NOUN|NOUN_SINGULAR}, 
-	{"ancy",NOUN|NOUN_SINGULAR}, 
-	{"ance",NOUN|NOUN_SINGULAR}, 
-	{"tome",NOUN|NOUN_SINGULAR}, 
-	{"tomy",NOUN|NOUN_SINGULAR}, 
-	{"crat",NOUN|NOUN_SINGULAR}, 
-	{"ship",NOUN|NOUN_SINGULAR}, 
-	{"pnea",NOUN|NOUN_SINGULAR}, 
-	{"path",NOUN|NOUN_SINGULAR}, 
-	{"gamy",NOUN|NOUN_SINGULAR}, 
-	{"onym",NOUN|NOUN_SINGULAR}, 
-	{"icle",NOUN|NOUN_SINGULAR}, 
-	{"wise",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"tion",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ment",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"emia",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"opsy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"itis",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"opia",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"hood",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ness",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"logy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ette",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"cide",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"sion",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ling",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"cule",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"osis",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"esis",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ware",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"tude",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"cian",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ency",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ence",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ancy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ance",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"tome",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"tomy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"crat",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ship",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"pnea",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"path",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"gamy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"onym",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"icle",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"wise",NOUN|NOUN_SINGULAR}, 
 	{0},
 };
 EndingInfo noun5[] = 
 {
-	{"cracy",NOUN|NOUN_SINGULAR}, 
-	{"scope",NOUN|NOUN_SINGULAR}, 
-	{"scopy",NOUN|NOUN_SINGULAR}, 
-	{"ocity",NOUN|NOUN_SINGULAR}, 
-	{"acity",NOUN|NOUN_SINGULAR}, 
-	{"loger",NOUN|NOUN_SINGULAR}, 
-	{"ation",NOUN|NOUN_SINGULAR}, 
-	{"arian",NOUN|NOUN_SINGULAR}, 
-	{"ology",NOUN|NOUN_SINGULAR}, 
-	{"algia",NOUN|NOUN_SINGULAR}, 
-	{"sophy",NOUN|NOUN_SINGULAR}, 
-	{"cycle",NOUN|NOUN_SINGULAR}, 
-	{"orium",NOUN|NOUN_SINGULAR}, 
-	{"arium",NOUN|NOUN_SINGULAR}, 
-	{"phone",NOUN|NOUN_SINGULAR}, 
-	{"iasis",NOUN|NOUN_SINGULAR}, 
-	{"pathy",NOUN|NOUN_SINGULAR}, 
-	{"phile",NOUN|NOUN_SINGULAR}, 
-	{"phyte",NOUN|NOUN_SINGULAR}, 
-	{"otomy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"cracy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"scope",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"scopy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ocity",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"acity",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"loger",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ation",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"arian",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ology",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"algia",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"sophy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"cycle",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"orium",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"arium",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"phone",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"iasis",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"pathy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"phile",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"phyte",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"otomy",NOUN|NOUN_SINGULAR}, 
 	{0},
 };
 EndingInfo noun6[] = 
 {
-	{"bility",NOUN|NOUN_SINGULAR}, 
-	{"script",NOUN|NOUN_SINGULAR}, 
-	{"phobia",NOUN|NOUN_SINGULAR}, 
-	{"iatric",NOUN|NOUN_SINGULAR}, 
-	{"logist",NOUN|NOUN_SINGULAR}, 
-	{"oholic",NOUN|NOUN_SINGULAR}, 
-	{"aholic",NOUN|NOUN_SINGULAR}, 
-	{"plegia",NOUN|NOUN_SINGULAR}, 
-	{"plegic",NOUN|NOUN_SINGULAR}, 
-	{"ostomy",NOUN|NOUN_SINGULAR}, 
-	{"ectomy",NOUN|NOUN_SINGULAR}, 
-	{"trophy",NOUN|NOUN_SINGULAR}, 
-	{"escent",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"bility",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"script",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"phobia",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"iatric",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"logist",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"oholic",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"aholic",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"plegia",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"plegic",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ostomy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ectomy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"trophy",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"escent",NOUN|NOUN_SINGULAR}, 
 	{0},
 };
 EndingInfo noun7[] = 
 {
-	{"escence",NOUN|NOUN_SINGULAR}, 
-	{"ization",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"escence",NOUN|NOUN_SINGULAR}, 
+	{ (char*)"ization",NOUN|NOUN_SINGULAR}, 
 	{0},
 };
 
 	
 EndingInfo verb5[] = 
 {
-	{"scribe",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"scribe",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
 	{0},
 };
 EndingInfo verb4[] = 
 {
-	{"sect",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"sect",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
 	{0},
 };
 EndingInfo verb3[] = 
 {
-	{"ise",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
-	{"ize",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
-	{"ify",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
-	{"ate",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"ise",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"ize",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"ify",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"ate",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
 	{0},
 };
 EndingInfo verb2[] = 
 {
-	{"en",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
-	{"er",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
-	{"fy",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"en",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"er",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
+	{ (char*)"fy",VERB|VERB_INFINITIVE|VERB_PRESENT}, 
 	{0},
 };
 
 EndingInfo adverb5[] = 
 {
-	{"wards",ADVERB,0}, 
+	{ (char*)"wards",ADVERB,0}, 
 	{0},
 };
 
 EndingInfo adverb4[] = 
 {
-	{"wise",ADVERB,0}, 
-	{"ward",ADVERB,0}, 
+	{ (char*)"wise",ADVERB,0}, 
+	{ (char*)"ward",ADVERB,0}, 
 	{0},
 };
 EndingInfo adverb3[] = 
 {
-	{"ily",ADVERB,0}, 
-	{"bly",ADVERB,0}, 
+	{ (char*)"ily",ADVERB,0}, 
+	{ (char*)"bly",ADVERB,0}, 
 	{0},
 };
 EndingInfo adverb2[] = 
 {
-	{"ly",ADVERB,0}, 
+	{ (char*)"ly",ADVERB,0}, 
 	{0},
 };
 
 
 EndingInfo adjective7[] = 
 {
-	{"iferous",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, // comprised of
+	{ (char*)"iferous",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, // comprised of
 	{0},
 };
 EndingInfo adjective6[] = 
 {
-	{"escent",ADJECTIVE|ADJECTIVE_NORMAL,0},
+	{ (char*)"escent",ADJECTIVE|ADJECTIVE_NORMAL,0},
 	{0},
 };
 EndingInfo adjective5[] = 
 {
-	{"ative",ADJECTIVE|ADJECTIVE_NORMAL,0}, // tending toward
-	{"esque",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN},
-	{"-free",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, 
-	{"gonal",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
-	{"gonic",ADJECTIVE|ADJECTIVE_NORMAL,0}, // angle
-	{"proof",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, 
-	{"sophic",ADJECTIVE|ADJECTIVE_NORMAL,0}, // knowledge
-	{"esque",ADJECTIVE|ADJECTIVE_NORMAL,0}, // in the style of
+	{ (char*)"ative",ADJECTIVE|ADJECTIVE_NORMAL,0}, // tending toward
+	{ (char*)"esque",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN},
+	{ (char*)"-free",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, 
+	{ (char*)"gonal",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
+	{ (char*)"gonic",ADJECTIVE|ADJECTIVE_NORMAL,0}, // angle
+	{ (char*)"proof",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, 
+	{ (char*)"sophic",ADJECTIVE|ADJECTIVE_NORMAL,0}, // knowledge
+	{ (char*)"esque",ADJECTIVE|ADJECTIVE_NORMAL,0}, // in the style of
 	{0},
 };
 EndingInfo adjective4[] = 
 {
-		{"less",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, // without
-		{"etic",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
-		{"_out",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
-		{"ular",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
-		{"uous",ADJECTIVE|ADJECTIVE_NORMAL,0}, // characterized by
-		{"ical",ADJECTIVE|ADJECTIVE_NORMAL,0}, // pertaining to
-		{"-off",ADJECTIVE|ADJECTIVE_NORMAL,0}, // capable of being
-		{"ious",ADJECTIVE|ADJECTIVE_NORMAL,0}, // characterized by
-		{"able",ADJECTIVE|ADJECTIVE_NORMAL,0,VERB}, // capable of being
-		{"ible",ADJECTIVE|ADJECTIVE_NORMAL,0,VERB}, // capable of being
-		{"like",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, // resembling
-		{"some",ADJECTIVE|ADJECTIVE_NORMAL,0}, // characterized by
-		{"ward",ADJECTIVE|ADJECTIVE_NORMAL,0}, // direction of
-		{"wise",ADJECTIVE|ADJECTIVE_NORMAL,0}, // direction of
+		{ (char*)"less",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, // without
+		{ (char*)"etic",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
+		{ (char*)"_out",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
+		{ (char*)"ular",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
+		{ (char*)"uous",ADJECTIVE|ADJECTIVE_NORMAL,0}, // characterized by
+		{ (char*)"ical",ADJECTIVE|ADJECTIVE_NORMAL,0}, // pertaining to
+		{ (char*)"-off",ADJECTIVE|ADJECTIVE_NORMAL,0}, // capable of being
+		{ (char*)"ious",ADJECTIVE|ADJECTIVE_NORMAL,0}, // characterized by
+		{ (char*)"able",ADJECTIVE|ADJECTIVE_NORMAL,0,VERB}, // capable of being
+		{ (char*)"ible",ADJECTIVE|ADJECTIVE_NORMAL,0,VERB}, // capable of being
+		{ (char*)"like",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, // resembling
+		{ (char*)"some",ADJECTIVE|ADJECTIVE_NORMAL,0}, // characterized by
+		{ (char*)"ward",ADJECTIVE|ADJECTIVE_NORMAL,0}, // direction of
+		{ (char*)"wise",ADJECTIVE|ADJECTIVE_NORMAL,0}, // direction of
 	{0},
 };
 EndingInfo adjective3[] = 
 {
-		{"ial",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
-		{"oid",ADJECTIVE|ADJECTIVE_NORMAL,0}, // shape of
-		{"ble",ADJECTIVE|ADJECTIVE_NORMAL,0}, // able to
-		{"ous",ADJECTIVE|ADJECTIVE_NORMAL,0}, // characterized by
-		{"ive",ADJECTIVE|ADJECTIVE_NORMAL,0}, // having the nature of
-		{"ate",ADJECTIVE|ADJECTIVE_NORMAL,0}, // quality of
-		{"ful",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, // quality of notable for
-		{"ese",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to a place
-		{"fic",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
-		{"ant",ADJECTIVE|ADJECTIVE_NORMAL,0}, // inclined to
-		{"ent",ADJECTIVE|ADJECTIVE_NORMAL,0}, // one who causes
-		{"ern",ADJECTIVE|ADJECTIVE_NORMAL,0}, // quality of
-		{"ian",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
-		{"ile",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
-		{"_to",ADJECTIVE|ADJECTIVE_PARTICIPLE,0}, // to
-		{"_of",ADJECTIVE|ADJECTIVE_PARTICIPLE,0}, // of
-		{"ing",ADJECTIVE|ADJECTIVE_PARTICIPLE,0},  // verb present participle as adjective  // BUG adjectiveFormat = ADJECTIVE_PARTICIPLE;
-		{"ied",ADJECTIVE|ADJECTIVE_PARTICIPLE,0}, // verb past participle as adjective
-		{"ine",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
-		{"ual",ADJECTIVE|ADJECTIVE_NORMAL,0}, // gradual
+		{ (char*)"ial",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
+		{ (char*)"oid",ADJECTIVE|ADJECTIVE_NORMAL,0}, // shape of
+		{ (char*)"ble",ADJECTIVE|ADJECTIVE_NORMAL,0}, // able to
+		{ (char*)"ous",ADJECTIVE|ADJECTIVE_NORMAL,0}, // characterized by
+		{ (char*)"ive",ADJECTIVE|ADJECTIVE_NORMAL,0}, // having the nature of
+		{ (char*)"ate",ADJECTIVE|ADJECTIVE_NORMAL,0}, // quality of
+		{ (char*)"ful",ADJECTIVE|ADJECTIVE_NORMAL,0,NOUN}, // quality of notable for
+		{ (char*)"ese",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to a place
+		{ (char*)"fic",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
+		{ (char*)"ant",ADJECTIVE|ADJECTIVE_NORMAL,0}, // inclined to
+		{ (char*)"ent",ADJECTIVE|ADJECTIVE_NORMAL,0}, // one who causes
+		{ (char*)"ern",ADJECTIVE|ADJECTIVE_NORMAL,0}, // quality of
+		{ (char*)"ian",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
+		{ (char*)"ile",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
+		{ (char*)"_to",ADJECTIVE|ADJECTIVE_PARTICIPLE,0}, // to
+		{ (char*)"_of",ADJECTIVE|ADJECTIVE_PARTICIPLE,0}, // of
+		{ (char*)"ing",ADJECTIVE|ADJECTIVE_PARTICIPLE,0},  // verb present participle as adjective  // BUG adjectiveFormat = ADJECTIVE_PARTICIPLE;
+		{ (char*)"ied",ADJECTIVE|ADJECTIVE_PARTICIPLE,0}, // verb past participle as adjective
+		{ (char*)"ine",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
+		{ (char*)"ual",ADJECTIVE|ADJECTIVE_NORMAL,0}, // gradual
 	{0},
 };
 EndingInfo adjective2[] = 
 {
-		{"ic",ADJECTIVE|ADJECTIVE_NORMAL,0},  // pertaining to
-		{"ar",ADJECTIVE|ADJECTIVE_NORMAL,0},  // relating to
-		{"ac",ADJECTIVE|ADJECTIVE_NORMAL,0},  // pertaining to
-		{"al",ADJECTIVE|ADJECTIVE_NORMAL,0},  // pertaining to
-		{"en",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
-		{"an",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
+		{ (char*)"ic",ADJECTIVE|ADJECTIVE_NORMAL,0},  // pertaining to
+		{ (char*)"ar",ADJECTIVE|ADJECTIVE_NORMAL,0},  // relating to
+		{ (char*)"ac",ADJECTIVE|ADJECTIVE_NORMAL,0},  // pertaining to
+		{ (char*)"al",ADJECTIVE|ADJECTIVE_NORMAL,0},  // pertaining to
+		{ (char*)"en",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
+		{ (char*)"an",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
 	{0},
 };
 EndingInfo adjective1[] = 
 {
-		{"y",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
+		{ (char*)"y",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
 	{0},
 };
 
-uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,uint64& sysflags,uint64 &cansysflags,bool firstTry,bool nogenerate,unsigned int start) // case sensitive, may add word to dictionary, will not augment flags of existing words
+uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& sysflags,uint64 &cansysflags,bool firstTry,bool nogenerate, int start) // case sensitive, may add word to dictionary, will not augment flags of existing words
 { // this is not allowed to write properties/systemflags/internalbits if the word is preexisting
 	if (start == 0) start = 1;
 
@@ -308,7 +308,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 
 	if (*wordStarts[at-1] == '"') 
 	{
-		unsigned int x = at-1;
+		int x = at-1;
 		while (--x >= start) if (*wordStarts[x] == '"') break;
 		if (*wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
 	}
@@ -317,8 +317,8 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	sysflags = cansysflags = 0;
 	canonical = 0;
 	if (at == 0) at = 1;
-	if (!wordStarts[at-1]) wordStarts[at-1] = reuseAllocation(wordStarts[at-1],""); // protection
-	if (!wordStarts[at+1]) wordStarts[at+1] = reuseAllocation(wordStarts[at+1],"");	// protection
+	if (!wordStarts[at-1]) wordStarts[at-1] = reuseAllocation(wordStarts[at-1],(char*)""); // protection
+	if (!wordStarts[at+1]) wordStarts[at+1] = reuseAllocation(wordStarts[at+1],(char*)"");	// protection
 
 	if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original)) MakeLowerCase(original);
 
@@ -339,7 +339,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	}
 	if (*original == '.')
 	{
-		if (!original[1] || !strcmp(original,"..."))  // periods we NORMALLY kill off  .   and ...
+		if (!original[1] || !strcmp(original,(char*)"..."))  // periods we NORMALLY kill off  .   and ...
 		{
 			entry = canonical = StoreWord(original,PUNCTUATION);
 			return PUNCTUATION;
@@ -362,14 +362,14 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 
 	if (*original == '@' && !original[1])
 	{
-		strcpy(original,"at");
+		strcpy(original,(char*)"at");
 		entry = canonical = FindWord(original,0,PRIMARY_CASE_ALLOWED);
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word); 
 	}
 
 	WORDP ZZ = FindWord(original,0,LOWERCASE_LOOKUP);
 	if (!ZZ) {;}
-	else if (!stricmp(original,"the") || !stricmp(original,"a") || !stricmp(original,"this") || !stricmp(original,"these") || !stricmp(original,"an")  ) // force lower case on these determiners regardless
+	else if (!stricmp(original,(char*)"the") || !stricmp(original,(char*)"a") || !stricmp(original,(char*)"this") || !stricmp(original,(char*)"these") || !stricmp(original,(char*)"an")  ) // force lower case on these determiners regardless
 	{
 		entry =  canonical = ZZ;
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
@@ -379,7 +379,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		entry =  canonical = ZZ;
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (!stricmp(original,"His") || !stricmp(original,"Then") || !stricmp(original,"Thus"))
+	else if (!stricmp(original,(char*)"His") || !stricmp(original,(char*)"Then") || !stricmp(original,(char*)"Thus"))
 	{
 		entry =  canonical = ZZ; //force lower case - dont want "His" as plural of HI nor thi's
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
@@ -391,7 +391,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 		if (ZZ->properties & (MORE_FORM|MOST_FORM)) canonical = NULL;	// we dont know yet
 	}
-	else if (ZZ->properties & (DETERMINER_BITS|PREPOSITION|CONJUNCTION|AUX_VERB) && strcmp(original,"May") && (*wordStarts[at-1] == '-' || *wordStarts[at-1] == ':' || *wordStarts[at-1] == '"' || at == startSentence || !(STRICT_CASING  & tokenControl))) // not the month
+	else if (ZZ->properties & (DETERMINER_BITS|PREPOSITION|CONJUNCTION|AUX_VERB) && strcmp(original,(char*)"May") && (*wordStarts[at-1] == '-' || *wordStarts[at-1] == ':' || *wordStarts[at-1] == '"' || at == startSentence || !(STRICT_CASING  & tokenControl))) // not the month
 	{
 		entry =  canonical = ZZ; //force lower case on all determiners and such
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
@@ -402,45 +402,45 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
 	
-	if (!stricmp(original,"yes") )
+	if (!stricmp(original,(char*)"yes") )
 	{
 		entry =  canonical = FindWord(original,0,LOWERCASE_LOOKUP); //force lower case pronoun, dont want "yes" to be Y's
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (!stricmp(original,"p.m") )
+	else if (!stricmp(original,(char*)"p.m") )
 	{
-		entry =  canonical = FindWord("p.m.",0,LOWERCASE_LOOKUP);
+		entry =  canonical = FindWord((char*)"p.m.",0,LOWERCASE_LOOKUP);
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (!stricmp(original,"a.m") )
+	else if (!stricmp(original,(char*)"a.m") )
 	{
-		entry =  canonical = FindWord("a.m.",0,LOWERCASE_LOOKUP);
+		entry =  canonical = FindWord((char*)"a.m.",0,LOWERCASE_LOOKUP);
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (!stricmp(original,"ca") &&  !stricmp(wordStarts[at+1],"not"))
+	else if (!stricmp(original,(char*)"ca") &&  !stricmp(wordStarts[at+1],(char*)"not"))
 	{
-		entry = canonical = FindWord("can",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
+		entry = canonical = FindWord((char*)"can",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (!stricmp(original,"wo") &&  !stricmp(wordStarts[at+1],"not"))
+	else if (!stricmp(original,(char*)"wo") &&  !stricmp(wordStarts[at+1],(char*)"not"))
 	{
-		entry = canonical = FindWord("will",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
+		entry = canonical = FindWord((char*)"will",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
 		cansysflags = sysflags = entry->systemFlags; // probably nothing here
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (!stricmp(original,"n'") )
+	else if (!stricmp(original,(char*)"n'") )
 	{
-		entry = canonical = FindWord("and",0,LOWERCASE_LOOKUP);
+		entry = canonical = FindWord((char*)"and",0,LOWERCASE_LOOKUP);
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (!stricmp(original,"'re") )
+	else if (!stricmp(original,(char*)"'re") )
 	{
-		entry = canonical = FindWord("are",0,LOWERCASE_LOOKUP);
+		entry = canonical = FindWord((char*)"are",0,LOWERCASE_LOOKUP);
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
-	else if (!stricmp(original,"'s") && (!stricmp(wordStarts[at-1],"there") || !stricmp(wordStarts[at-1],"it") || !stricmp(wordStarts[at-1],"who") || !stricmp(wordStarts[at-1],"what")  || !stricmp(wordStarts[at-1],"that") )) //there 's and it's  who's what's
+	else if (!stricmp(original,(char*)"'s") && (!stricmp(wordStarts[at-1],(char*)"there") || !stricmp(wordStarts[at-1],(char*)"it") || !stricmp(wordStarts[at-1],(char*)"who") || !stricmp(wordStarts[at-1],(char*)"what")  || !stricmp(wordStarts[at-1],(char*)"that") )) //there 's and it's  who's what's
 	{
-		entry = canonical = FindWord("is",0,LOWERCASE_LOOKUP);
+		entry = canonical = FindWord((char*)"is",0,LOWERCASE_LOOKUP);
 		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
 	}
 	size_t len = strlen(original);
@@ -510,10 +510,10 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		*word = 0;
 		// 4digit year 1990 and year range 1950s and 1950's
 		if (IsDigit(*original) && IsDigit(original[1])   && IsDigit(original[2]) && IsDigit(original[3])  &&
-			(!original[4] || (original[4] == 's' && !original[5]) || (original[4] == '\'' && original[5] == 's' && !original[6] ))) sprintf(word,"%d",atoi(original));
+			(!original[4] || (original[4] == 's' && !original[5]) || (original[4] == '\'' && original[5] == 's' && !original[6] ))) sprintf(word,(char*)"%d",atoi(original));
 		//  2digit year and range '40 and '40s
 		if (*original == '\'' && IsDigit(original[1]) && IsDigit(original[2]) &&
-			(!original[3] || (original[3] == 's' && !original[4]) || (original[3] == '\'' && original[4] == 's' && !original[5] ))) sprintf(word,"19%d",atoi(original+1));
+			(!original[3] || (original[3] == 's' && !original[4]) || (original[3] == '\'' && original[4] == 's' && !original[5] ))) sprintf(word,(char*)"19%d",atoi(original+1));
 		if (*word)
 		{
 			properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
@@ -594,7 +594,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				int y = atoi(fraction+1);
 				float val = (float)((float)x / (float)y);
 				val += basenumber;
-				sprintf(number,"%1.2f",val);
+				sprintf(number,(char*)"%1.2f",val);
 				properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
 				if (!entry) entry = StoreWord(original,properties);
 				canonical = FindWord(number,0,PRIMARY_CASE_ALLOWED);
@@ -622,7 +622,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		if (kind == PLACETYPE_NUMBER)
 		{
 			entry = StoreWord(original,properties);
-			sprintf(number,"%d",(int)Convert2Integer(original));
+			sprintf(number,(char*)"%d",(int)Convert2Integer(original));
 			sysflags |= ORDINAL;
 			properties = ADVERB|ADJECTIVE|ADJECTIVE_NUMBER|NOUN|NOUN_NUMBER| (baseflags & TAG_TEST); // place numbers all all potential adverbs:  "*first, he wept"  but not in front of an adjective or noun, only as verb effect
 		}
@@ -633,7 +633,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			int64 val1 = Convert2Integer(original);
 			int64 val2 = Convert2Integer(br+1);
 			float val = (float)((float)val1 / (float)val2);
-			sprintf(number,"%1.2f",val );
+			sprintf(number,(char*)"%1.2f",val );
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
 			*br = c;
 			entry = StoreWord(original,properties);
@@ -651,18 +651,18 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			if ((float)n == fn) 
 			{
 #ifdef WIN32
-				sprintf(number,"%I64d",n); 
+				sprintf(number,(char*)"%I64d",n); 
 #else
-				sprintf(number,"%lld",n); 
+				sprintf(number,(char*)"%lld",n); 
 #endif
 			}
-			else if (strchr(value,'.')) sprintf(number,"%1.2f",fn);
+			else if (strchr(value,'.')) sprintf(number,(char*)"%1.2f",fn);
 			else 
 			{
 #ifdef WIN32
-				sprintf(number,"%I64d",n); 
+				sprintf(number,(char*)"%I64d",n); 
 #else
-				sprintf(number,"%lld",n); 
+				sprintf(number,(char*)"%lld",n); 
 #endif
 			}
 			properties = NOUN|NOUN_NUMBER;
@@ -671,7 +671,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		{
 			int64 val = Convert2Integer(original);
 			float val1 = (float)1.0 / (float)val;
-			sprintf(number,"%f",val1);
+			sprintf(number,(char*)"%f",val1);
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER | (baseflags & (PREDETERMINER|DETERMINER));
 		}
 		else
@@ -687,7 +687,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 					else if (d == 'm' || d == 'M') val *= 1000000;
 					else if (d == 'B' || d == 'b' || d == 'G' || d == 'g') val *= 1000000000;
 				}
-				sprintf(number,"%1.2f",val);
+				sprintf(number,(char*)"%1.2f",val);
 			}
 			else 
 			{
@@ -695,14 +695,14 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				if (val < 1000000000 && val >  -1000000000)
 				{
 					int smallval = (int) val;
-					sprintf(number,"%d",smallval);
+					sprintf(number,(char*)"%d",smallval);
 				}
 				else
 				{
 #ifdef WIN32
-					sprintf(number,"%I64d",val);	
+					sprintf(number,(char*)"%I64d",val);	
 #else
-					sprintf(number,"%lld",val);	
+					sprintf(number,(char*)"%lld",val);	
 #endif
 				}
 			
@@ -746,7 +746,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			if (val & PRONOUN_BITS)  // in Penntags this is CD always but "no one is" is NN or PRP
 			{
 				properties |= entry->properties & PRONOUN_BITS;
-				//if (at > 1 && !stricmp(wordStarts[at-1],"no"))
+				//if (at > 1 && !stricmp(wordStarts[at-1],(char*)"no"))
 				//{
 					//properties |= val & PRONOUN_BITS; // like "one"
 					if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = entry;
@@ -757,10 +757,10 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				properties |= entry->properties & ( VERB_BITS | VERB); // like "once"
 				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = FindWord(GetInfinitive(original,false),0,LOWERCASE_LOOKUP);
 			}
-			if (val & POSSESSIVE && tokenControl & TOKEN_AS_IS && !stricmp(original,"'s") && at > start) // internal expand of "it 's" and "What 's" and capitalization failures that contractions.txt wouldn't have handled 
+			if (val & POSSESSIVE && tokenControl & TOKEN_AS_IS && !stricmp(original,(char*)"'s") && at > start) // internal expand of "it 's" and "What 's" and capitalization failures that contractions.txt wouldn't have handled 
 			{
 				properties |= AUX_BE | POSSESSIVE | VERB_PRESENT_3PS | VERB;
-				entry = FindWord("'s",0,PRIMARY_CASE_ALLOWED);
+				entry = FindWord((char*)"'s",0,PRIMARY_CASE_ALLOWED);
 			}
 		}
 		entry = StoreWord(original,properties,sysflags);
@@ -846,14 +846,14 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 					if (val < 1000000000 && val >  -1000000000)
 					{
 						int smallval = (int) val;
-						sprintf(number,"%d",smallval);
+						sprintf(number,(char*)"%d",smallval);
 					}
 					else
 					{
 		#ifdef WIN32
-						sprintf(number,"%I64d",val);	
+						sprintf(number,(char*)"%I64d",val);	
 		#else
-						sprintf(number,"%lld",val);	
+						sprintf(number,(char*)"%lld",val);	
 		#endif
 					}
 					properties = NOUN|NOUN_NUMBER;
@@ -962,7 +962,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 					{
 						if (!canonical) 
 						{
-							sprintf(word,"%s-%s",adjective,hyphen+1);
+							sprintf(word,(char*)"%s-%s",adjective,hyphen+1);
 							canonical = StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE);
 						}
 						properties |= adjectiveFormat;
@@ -975,7 +975,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 					{
 						if (!canonical)
 						{
-							sprintf(word,"%s-%s",adverb,hyphen+1);
+							sprintf(word,(char*)"%s-%s",adverb,hyphen+1);
 							canonical = StoreWord(word,ADVERB);
 						}
 						properties |= adverbFormat;
@@ -1017,7 +1017,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			}
 		}
 
-		if (X && X->properties & NOUN_BITS && !stricmp(hyphen+1,"like")) // front part is noun, "needle-like" becomes an adjective
+		if (X && X->properties & NOUN_BITS && !stricmp(hyphen+1,(char*)"like")) // front part is noun, "needle-like" becomes an adjective
 		{
 			properties |= ADJECTIVE_NORMAL;
 			canonical = entry = StoreWord(original,ADJECTIVE_NORMAL);
@@ -1025,7 +1025,6 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		}
 		else if (Y && Y->properties & ADJECTIVE_BITS && !(Y->properties & (NOUN_BITS|VERB_BITS))) // year-earlier
 		{
-			char* adjective = GetAdjectiveBase(Y->word,true);
 			properties |= (Y->properties & (ADJECTIVE_NORMAL | ADVERB)) | adjectiveFormat;
 			canonical = entry = StoreWord(original,properties);
 			preknown = true;	// lie. we know it is only an adjective
@@ -1050,7 +1049,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 		if (!(properties & ADJECTIVE) && !IsUpperCase(*original)) 
 		{
 			char* adjective = GetAdjectiveBase(original,true); 
-			if (len > 4 && !adjective && hyphen  && hyphen != original && !strcmp(original+len-3,"ing")) // some kind of verb ing formation which can be adjective particple
+			if (len > 4 && !adjective && hyphen  && hyphen != original && !strcmp(original+len-3,(char*)"ing")) // some kind of verb ing formation which can be adjective particple
 			{
 				*hyphen = 0;
 				char word[MAX_WORD_SIZE];
@@ -1061,7 +1060,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 					adjective = GetAdjectiveBase(original,true); 
 					if (adjective && strcmp(adjective,original)) // base is not the same
 					{
-						sprintf(word,"%s-%s",adjective,hyphen+1);
+						sprintf(word,(char*)"%s-%s",adjective,hyphen+1);
 						canonical = StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE);
 					}
 				}
@@ -1072,7 +1071,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				if (adjective && strcmp(hyphen+1,adjective)) // base is not the same
 				{
 					char word[MAX_WORD_SIZE];
-					sprintf(word,"%s-%s",original,adjective);
+					sprintf(word,(char*)"%s-%s",original,adjective);
 					canonical = StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE);
 					properties |= adjectiveFormat;
 				}
@@ -1096,7 +1095,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 				if (adverb && strcmp(hyphen+1,adverb)) // base is not the same
 				{
 					char word[MAX_WORD_SIZE];
-					sprintf(word,"%s-%s",original,adverb);
+					sprintf(word,(char*)"%s-%s",original,adverb);
 					canonical = StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE);
 					properties |= adverbFormat;
 				}
@@ -1163,9 +1162,9 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 					int64 n;
 					n = Convert2Integer((IsNumber(original) || IsDigit(*original)) ? original : (hyphen+1));
 					#ifdef WIN32
-					sprintf(word,"%I64d",n); 
+					sprintf(word,(char*)"%I64d",n); 
 #else
-					sprintf(word,"%lld",n); 
+					sprintf(word,(char*)"%lld",n); 
 #endif
 					*hyphen = '-';
 					properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
@@ -1276,7 +1275,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 			properties |= VERB | VERB_PRESENT | VERB_INFINITIVE |  ADJECTIVE | ADJECTIVE_NORMAL | ADVERB | ADVERB;
 			if (properties & VERB)
 			{
-				if (!strcmp(original+len-2,"ed")) properties |= VERB_PAST | VERB_PAST_PARTICIPLE;
+				if (!strcmp(original+len-2,(char*)"ed")) properties |= VERB_PAST | VERB_PAST_PARTICIPLE;
 				if (original[len-1] == 's') properties |= VERB_PRESENT_3PS;
 			}
 			uint64 expectedBase = 0;
@@ -1333,7 +1332,7 @@ uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,
 	return properties;
 }
 
-void SetSentenceTense(unsigned int start, unsigned int end)
+void SetSentenceTense(int start, int end)
 {
 	uint64 aux[25];
 	unsigned int auxIndex = 0;
@@ -1345,21 +1344,25 @@ void SetSentenceTense(unsigned int start, unsigned int end)
 	bool subjectFound = false;
 	if ((trace & TRACE_POS || prepareMode == POS_MODE) && CheckTopicTrace()) 
 	{
-		if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) Log(STDUSERLOG,"Not doing a parse.\r\n");
+		if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) Log(STDUSERLOG,(char*)"Not doing a parse.\r\n");
 	}
 
 	// assign sentence type
 	if (!verbStack[MAINLEVEL] || !(roles[verbStack[MAINLEVEL]] &  MAINVERB)) // FOUND no verb, not a sentence
 	{
-		if ((trace & TRACE_POS || prepareMode == POS_MODE) && CheckTopicTrace()) Log(STDUSERLOG,"Not a sentence\r\n");
+		if ((trace & TRACE_POS || prepareMode == POS_MODE) && CheckTopicTrace()) Log(STDUSERLOG,(char*)"Not a sentence\r\n");
 		if (tokenFlags & (QUESTIONMARK|EXCLAMATIONMARK)) {;}
 		else if (posValues[startSentence] & AUX_VERB) tokenFlags |= QUESTIONMARK;// its a question because AUX starts
-		else if (allOriginalWordBits[startSentence]  & QWORD && stricmp(wordStarts[startSentence],"how")) tokenFlags |= QUESTIONMARK; // not "how very american"
+		else if (allOriginalWordBits[startSentence]  & QWORD)
+		{
+			if (!stricmp(wordStarts[startSentence],(char*)"how") && endSentence != 1 && !(posValues[startSentence+1] & (AUX_VERB | VERB_BITS)));  // not "how very american you are"
+			else tokenFlags |= QUESTIONMARK; 
+		}
 		else if (allOriginalWordBits[startSentence] & PREPOSITION && allOriginalWordBits[startSentence+1] & QWORD) tokenFlags |= QUESTIONMARK;
 	}
 	else if (!(tokenFlags & (QUESTIONMARK|EXCLAMATIONMARK))) // see if question or statement if we dont know
 	{
-		unsigned int i;
+		int i;
 		for (i = startSentence; i <= endSentence; ++i) 
 		{
 			if (roles[i] & MAINSUBJECT) 
@@ -1391,7 +1394,7 @@ void SetSentenceTense(unsigned int start, unsigned int end)
 				}
 				else if (!subjectFound && !foundVerb) // its a question because AUX or VERB comes before MAINSUBJECT unless we have a command before
 				{
-					// EXCEPT for negative adverb starter: "never can I go home"
+					// EXCEPT for negative adverb starter: (char*)"never can I go home"
 					if (parseFlags[i-1] & NEGATIVE_ADVERB_STARTER) {;}
 					else
 					{
@@ -1405,25 +1408,25 @@ void SetSentenceTense(unsigned int start, unsigned int end)
 	}
 
 	// command?
-	unsigned int i;
+	int i;
 	for (i = start; i <= end; ++i)
     {
 		if (ignoreWord[i]) continue;
 		if (roles[i] & (MAINOBJECT|MAINSUBJECT|MAINVERB)) break; 
 	}
-	if (!stricmp(wordStarts[start],"why"))
+	if (!stricmp(wordStarts[start],(char*)"why"))
 	{
 		tokenFlags |= QUESTIONMARK; 
 		if (posValues[start+1] & VERB_INFINITIVE || posValues[start+2] & VERB_INFINITIVE) tokenFlags |= IMPLIED_YOU;
 	}
-	else if (!stricmp(wordStarts[start],"how") && !stricmp(wordStarts[start+1],"many")) tokenFlags |= QUESTIONMARK; 
+	else if (!stricmp(wordStarts[start],(char*)"how") && !stricmp(wordStarts[start+1],(char*)"many")) tokenFlags |= QUESTIONMARK; 
 	else if (posValues[start] & AUX_VERB && (!(posValues[start] & AUX_DO) || !(allOriginalWordBits[start] & AUX_VERB_PRESENT))){;} // not "didn't leave today." ommited subject
-	else if (roles[start] & MAINVERB && !stricmp(wordStarts[start],"assume")) tokenFlags |= COMMANDMARK|IMPLIED_YOU; // treat as sentence command
-	else if (roles[start] & MAINVERB && (!stricmp(wordStarts[start+1],"you") || subjectStack[MAINLEVEL])) tokenFlags |= QUESTIONMARK; 
+	else if (roles[start] & MAINVERB && !stricmp(wordStarts[start],(char*)"assume")) tokenFlags |= COMMANDMARK|IMPLIED_YOU; // treat as sentence command
+	else if (roles[start] & MAINVERB && (!stricmp(wordStarts[start+1],(char*)"you") || subjectStack[MAINLEVEL])) tokenFlags |= QUESTIONMARK; 
 	else if (roles[start] & MAINVERB && posValues[start] & VERB_INFINITIVE) tokenFlags |= COMMANDMARK|IMPLIED_YOU; 
 
 	// determine sentence tense when not past from verb using aux (may pick wrong aux)
-	for (unsigned int i = start; i <= end; ++i)
+	for (int i = start; i <= end; ++i)
     {
 		if (ignoreWord[i]) continue;
 		if (roles[i] & MAINSUBJECT) mainSubject = i;
@@ -1471,10 +1474,10 @@ void SetSentenceTense(unsigned int start, unsigned int end)
 			if (auxIndex > 20) break;
 		}
 	}
-	if (!stricmp(wordStarts[start],"what") && posValues[start] & DETERMINER_BITS) tokenFlags |= QUESTIONMARK; 
-	if (!auxIndex && canonicalLower[start] && !stricmp(canonicalLower[start]->word,"be") && !(tokenControl & NO_INFER_QUESTION)) tokenFlags |= QUESTIONMARK;  // are you a bank teller
+	if (!stricmp(wordStarts[start],(char*)"what") && posValues[start] & DETERMINER_BITS) tokenFlags |= QUESTIONMARK; 
+	if (!auxIndex && canonicalLower[start] && !stricmp(canonicalLower[start]->word,(char*)"be") && !(tokenControl & NO_INFER_QUESTION)) tokenFlags |= QUESTIONMARK;  // are you a bank teller
 	// How very american is NOT a question
-	if (canonicalLower[start] && !stricmp(canonicalLower[start]->word,"how") && (tokenFlags & PERIODMARK || !mainVerb)){;} // just believe them
+	if (canonicalLower[start] && !stricmp(canonicalLower[start]->word,(char*)"how") && (tokenFlags & PERIODMARK || !mainVerb)){;} // just believe them
 	else if ( canonicalLower[start] && canonicalLower[start]->properties & QWORD && canonicalLower[start+1] && canonicalLower[start+1]->properties & AUX_VERB  && !(tokenControl & NO_INFER_QUESTION))   tokenFlags |= QUESTIONMARK;  // what are you doing?  what will you do?
 	else if ( posValues[start] & PREPOSITION && canonicalLower[start+1] && canonicalLower[start+1]->properties & QWORD && canonicalLower[start+2] && canonicalLower[start+2]->properties & AUX_VERB  && !(tokenControl & NO_INFER_QUESTION))   tokenFlags |= QUESTIONMARK;  // what are you doing?  what will you do?
 
@@ -1516,7 +1519,7 @@ void SetSentenceTense(unsigned int start, unsigned int end)
 	if (auxIndex)
 	{
 		// special future "I am going to swim"
-		if (*aux & (VERB_PRESENT|VERB_PRESENT_3PS) && *aux & AUX_BE && auxIndex == 1 && mainverbTense == VERB_PRESENT_PARTICIPLE && !stricmp(wordStarts[mainVerb],"going") && posValues[mainVerb+1] == TO_INFINITIVE)  tokenFlags |= FUTURE;
+		if (*aux & (VERB_PRESENT|VERB_PRESENT_3PS) && *aux & AUX_BE && auxIndex == 1 && mainverbTense == VERB_PRESENT_PARTICIPLE && !stricmp(wordStarts[mainVerb],(char*)"going") && posValues[mainVerb+1] == TO_INFINITIVE)  tokenFlags |= FUTURE;
 		else if (aux[auxIndex-1] & AUX_HAVE && mainverbTense & VERB_PAST_PARTICIPLE) 
 		{
 			if (*aux & (VERB_PRESENT|VERB_PRESENT_3PS)) 
@@ -1529,7 +1532,7 @@ void SetSentenceTense(unsigned int start, unsigned int end)
 		else if (aux[auxIndex-1] & AUX_BE && mainverbTense & VERB_PRESENT_PARTICIPLE) tokenFlags |= CONTINUOUS; 
 
 		// compute passive
-		if ((aux[auxIndex-1] & AUX_BE || (canonicalLower[auxIndex-1] && !stricmp(canonicalLower[auxIndex-1]->word,"get"))) && mainverbTense & VERB_PAST_PARTICIPLE) // "he is lost" "he got lost"
+		if ((aux[auxIndex-1] & AUX_BE || (canonicalLower[auxIndex-1] && !stricmp(canonicalLower[auxIndex-1]->word,(char*)"get"))) && mainverbTense & VERB_PAST_PARTICIPLE) // "he is lost" "he got lost"
 		{
 			tokenFlags |= PASSIVE;
 			if (aux[auxIndex-1] & VERB_PRESENT_PARTICIPLE)  tokenFlags |= CONTINUOUS;	// being xxx
@@ -1596,7 +1599,7 @@ static char* MakePastTense(char* original,WORDP D,bool participle)
 				if (D->systemFlags & VERB_CONJUGATE2 && i != 1) continue;
 				if (D->systemFlags & VERB_CONJUGATE3 && i != 2) continue;
 			}
-			// even if not verb, we will interpolate: "slob_around" doesnt have slob as a verb - faff_about doesnt even have "faff" as a word
+			// even if not verb, we will interpolate: (char*)"slob_around" doesnt have slob as a verb - faff_about doesnt even have "faff" as a word
 			WORDP X = FindWord(words[i]);
 			if (!X || !(X->properties & VERB)) continue;
 			char* inf;
@@ -1627,7 +1630,7 @@ static char* MakePastTense(char* original,WORDP D,bool participle)
     strcpy(buffer,word);
     size_t len = strlen(buffer);
 	D = FindWord(word,len);
-    if (buffer[len-1] == 'e') strcat(buffer,"d");
+    if (buffer[len-1] == 'e') strcat(buffer,(char*)"d");
 	// double consonant often, but not for "fixed"
     else if (!IsVowel(buffer[len-1]) && buffer[len-1] != 'y'  && buffer[len-1] != 'x' && buffer[len-1] != 'w' && buffer[len-1] != 'h' && IsVowel(buffer[len-2]) && len > 2 && !IsVowel(buffer[len-3])) 
     {
@@ -1636,15 +1639,15 @@ static char* MakePastTense(char* original,WORDP D,bool participle)
         lets[1] = 0;
 		if (D && D->systemFlags & SPELLING_EXCEPTION) {;} // eg DONT double end in "develop" to developed
         else strcat(buffer,lets); 
-        strcat(buffer,"ed");
+        strcat(buffer,(char*)"ed");
     }
     else if (buffer[len-1] == 'y' && !IsVowel(buffer[len-2])) 
     {
         buffer[len-1] = 'i';
-        strcat(buffer,"ed");
+        strcat(buffer,(char*)"ed");
     }   
-    else if (buffer[len-1] == 'c' ) strcat(buffer,"ked");
-    else strcat(buffer,"ed");
+    else if (buffer[len-1] == 'c' ) strcat(buffer,(char*)"ked");
+    else strcat(buffer,(char*)"ed");
     return buffer; 
 }
 
@@ -1776,7 +1779,7 @@ char* GetPresentParticiple(char* word)
 
     strcpy(buffer,inf); //   get the real infinitive
 
-    if (!stricmp(buffer,"be"));
+    if (!stricmp(buffer,(char*)"be"));
     else if (buffer[len-1] == 'h' || buffer[len-1] == 'w' ||  buffer[len-1] == 'x' ||  buffer[len-1] == 'y'); //   no doubling w,x,y h, 
     else if (buffer[len-2] == 'i' && buffer[len-1] == 'e') //   ie goes to ying
     {
@@ -1810,12 +1813,12 @@ char* GetPresentParticiple(char* word)
                     if (IsVowel(D->word[len-3])) break; //   we ONLY want to see if a final consonant is doubled. other things would just confuse us
                     strcpy(buffer,D->word);
                     buffer[len-2] = 0;      //   drop ed
-                    strcat(buffer,"ing");   //   add ing
+                    strcat(buffer,(char*)"ing");   //   add ing
                     return buffer; 
                 }
                 D = GetTense(D); //   known irregular
             }
-            if (!n) ReportBug("verb loop") //   complain ONLY if we didnt find a past tense
+            if (!n) ReportBug((char*)"verb loop") //   complain ONLY if we didnt find a past tense
         }
 
         char lets[2];
@@ -1824,7 +1827,7 @@ char* GetPresentParticiple(char* word)
 		if (D && D->systemFlags & SPELLING_EXCEPTION) {;} // dont double
         else strcat(buffer,lets);    //   double consonant
     }
-    strcat(buffer,"ing");
+    strcat(buffer,(char*)"ing");
     return buffer; 
 }
 
@@ -1996,13 +1999,13 @@ char* GetThirdPerson(char* word)
 	strcpy(result,word);
 	if (word[len-1] == 'y')
 	{
-		if (!IsVowel(word[len-2])) strcpy(result+len-1,"ies");
-		else  strcpy(result+len,"s");
+		if (!IsVowel(word[len-2])) strcpy(result+len-1,(char*)"ies");
+		else  strcpy(result+len,(char*)"s");
 	}
-	else if (word[len-1] == 'h' && (word[len-2] == 's' || word[len-2] == 'c'))  strcpy(result+len,"es");
-	else if (word[len-1] == 'o' || word[len-1] == 'x' )  strcpy(result+len,"es");
-	else if (word[len-1] == 's' && word[len-2] == 's' )  strcpy(result+len,"es");
-	else strcat(result,"s");
+	else if (word[len-1] == 'h' && (word[len-2] == 's' || word[len-2] == 'c'))  strcpy(result+len,(char*)"es");
+	else if (word[len-1] == 'o' || word[len-1] == 'x' )  strcpy(result+len,(char*)"es");
+	else if (word[len-1] == 's' && word[len-2] == 's' )  strcpy(result+len,(char*)"es");
+	else strcat(result,(char*)"s");
 	return result;
 }
 
@@ -2157,7 +2160,7 @@ char* GetInfinitive(char* word, bool nonew)
 			}
 			else if (!IsVowel(prior2) && prior1 == 'i') // ied => y copied->copy
 			{
-				strcpy(wd+len-3,"y");
+				strcpy(wd+len-3,(char*)"y");
 			}
 			else if (!IsVowel(prior1) && IsVowel(prior2)) // Noted -> note 
 			{
@@ -2258,7 +2261,7 @@ char* GetInfinitive(char* word, bool nonew)
 			strcpy(wd,word);
 			if ( prior == 'e' && prior1 == 'i') // was toadies  from toady
 			{
-				strcpy(wd+len-3,"y");
+				strcpy(wd+len-3,(char*)"y");
 			}
 			else wd[len-1] = 0; // chop off tail s
 			return StoreWord(wd,VERB_PRESENT_3PS|VERB|NOUN|NOUN_SINGULAR)->word;
@@ -2287,19 +2290,19 @@ char* GetPluralNoun(WORDP noun)
 		unsigned int len = noun->length;
 		char end = noun->word[len-1];
 		char before = (len > 1) ? (noun->word[len-2]) : 0;
-		if (end == 's') sprintf(word,"%ses",noun->word); // glass -> glasses
-		else if (end == 'h' && (before == 'c' || before == 's')) sprintf(word,"%ses",noun->word); // witch -> witches
-		else if ( end == 'o' && !IsVowel(before)) sprintf(word,"%ses",noun->word); // hero -> heroes>
+		if (end == 's') sprintf(word,(char*)"%ses",noun->word); // glass -> glasses
+		else if (end == 'h' && (before == 'c' || before == 's')) sprintf(word,(char*)"%ses",noun->word); // witch -> witches
+		else if ( end == 'o' && !IsVowel(before)) sprintf(word,(char*)"%ses",noun->word); // hero -> heroes>
 		else if ( end == 'y' && !IsVowel(before)) // cherry -> cherries
 		{
-			if (IsUpperCase(*noun->word)) sprintf(word,"%ss",noun->word); // Germany->Germanys
+			if (IsUpperCase(*noun->word)) sprintf(word,(char*)"%ss",noun->word); // Germany->Germanys
 			else
 			{
 				strncpy(word,noun->word,len-1);
-				strcpy(word+len-1,"ies"); 
+				strcpy(word+len-1,(char*)"ies"); 
 			}
 		}
-		else sprintf(word,"%ss",noun->word);
+		else sprintf(word,(char*)"%ss",noun->word);
         return word;
     }
     return noun->word;
@@ -2314,7 +2317,7 @@ static char* InferNoun(char* original,unsigned int len) // from suffix might it 
 	uint64 flags = ProbableNoun(original,len);
 
 	// ings (plural of a gerund like paintings)
-	if (len > 6 && !stricmp(word+len-4,"ings"))
+	if (len > 6 && !stricmp(word+len-4,(char*)"ings"))
 	{
 		StoreWord(word,NOUN|NOUN_PLURAL);
 		word[len-1] = 0;
@@ -2322,7 +2325,7 @@ static char* InferNoun(char* original,unsigned int len) // from suffix might it 
 	}
 		
 	// ves (plural form)
-	if (len > 4 && !strcmp(word+len-3,"ves") && IsVowel(word[len-4])) // knife
+	if (len > 4 && !strcmp(word+len-3,(char*)"ves") && IsVowel(word[len-4])) // knife
 	{
 		//Plurals of words that end in -f or -fe usually change the f sound to a v sound and add s or -es.
 		word[len-3] = 'f';
@@ -2425,10 +2428,10 @@ uint64 ProbableNoun(char* original,unsigned int len) // from suffix might it be 
 	}
 
 	// ings (plural of a gerund like paintings)
-	if (len > 6 && !stricmp(word+len-4,"ings")) return NOUN|NOUN_SINGULAR;
+	if (len > 6 && !stricmp(word+len-4,(char*)"ings")) return NOUN|NOUN_SINGULAR;
 		
 	// ves (plural form)
-	if (len > 4 && !strcmp(word+len-3,"ves") && IsVowel(word[len-4])) return NOUN|NOUN_PLURAL; // knife
+	if (len > 4 && !strcmp(word+len-3,(char*)"ves") && IsVowel(word[len-4])) return NOUN|NOUN_PLURAL; // knife
 
 	return 0;
 }
@@ -2540,7 +2543,7 @@ static char* InferAdverb(char* original, unsigned int len) // might it be adverb
 	uint64 flags = ProbableAdverb(original,len,expectedBase);
 	
 	//est
-	if (len > 4 && !strcmp(word+len-3,"est"))
+	if (len > 4 && !strcmp(word+len-3,(char*)"est"))
 	{
 		adjectiveFormat = MOST_FORM;
 		WORDP E = StoreWord(word,ADVERB|MOST_FORM);
@@ -2557,7 +2560,7 @@ static char* InferAdverb(char* original, unsigned int len) // might it be adverb
 		return base->word;
 	}
 	//er
-	if (len > 4 && !strcmp(word+len-2,"er")  )
+	if (len > 4 && !strcmp(word+len-2,(char*)"er")  )
 	{
 		adjectiveFormat = MORE_FORM;
 		WORDP E = StoreWord(word,ADVERB|MORE_FORM);
@@ -2660,14 +2663,14 @@ uint64 ProbableAdverb(char* original, unsigned int len,uint64& expectedBase) // 
 	}
 
 	//est
-	if (len > 4 && !strcmp(word+len-3,"est")) 
+	if (len > 4 && !strcmp(word+len-3,(char*)"est")) 
 	{
 		WORDP X = FindWord(word,len-2);
 		if (X && X->properties & ADVERB) expectedBase = ADVERB;
 		return ADVERB;
 	}
 	//er
-	if (len > 4 && !strcmp(word+len-2,"er")  ) 
+	if (len > 4 && !strcmp(word+len-2,(char*)"er")  ) 
 	{
 		WORDP X = FindWord(word,len-2);
 		if (X && X->properties & ADVERB) expectedBase = ADVERB;
@@ -2762,7 +2765,7 @@ static char* InferAdjective(char* original, unsigned int len) // might it be adj
 	word[len] = 0;
 
 	// est -  comparative
-	if (len > 4 &&  !strcmp(word+len-3,"est")  )
+	if (len > 4 &&  !strcmp(word+len-3,(char*)"est")  )
 	{
 		adjectiveFormat = MOST_FORM;
 		WORDP E = StoreWord(word,ADJECTIVE|ADJECTIVE_NORMAL|MOST_FORM);
@@ -2783,7 +2786,7 @@ static char* InferAdjective(char* original, unsigned int len) // might it be adj
 	}
 
 	// er -  comparative
-	if (len >= 4 &&  !strcmp(word+len-2,"er")  )
+	if (len >= 4 &&  !strcmp(word+len-2,(char*)"er")  )
 	{
 		adjectiveFormat = MORE_FORM;
 		WORDP E = StoreWord(word,ADJECTIVE|ADJECTIVE_NORMAL|MORE_FORM);
@@ -2828,8 +2831,8 @@ uint64 ProbableAdjective(char* original, unsigned int len,uint64 &expectedBase) 
 		uint64 flags = ProbableVerb(hyphen+1,len - (hyphen-original+1));
 		if (flags) return flags;
 
-		if (!strcmp(hyphen,"-looking" )) return ADJECTIVE|ADJECTIVE_NORMAL; // good-looking gross-looking
-		if (!strcmp(hyphen,"-old" )) return ADJECTIVE|ADJECTIVE_NORMAL; // centuries-old
+		if (!strcmp(hyphen,(char*)"-looking" )) return ADJECTIVE|ADJECTIVE_NORMAL; // good-looking gross-looking
+		if (!strcmp(hyphen,(char*)"-old" )) return ADJECTIVE|ADJECTIVE_NORMAL; // centuries-old
 	}
 
 	int i;
@@ -2935,7 +2938,7 @@ uint64 ProbableAdjective(char* original, unsigned int len,uint64 &expectedBase) 
 	}
 
 	// est -  comparative
-	if (len >= 4 &&  !strcmp(word+len-3,"est")  ) 
+	if (len >= 4 &&  !strcmp(word+len-3,(char*)"est")  ) 
 	{
 		WORDP X = FindWord(word,len-1);
 		if (X && X->properties & ADJECTIVE_NORMAL) expectedBase = PROBABLE_ADJECTIVE;
@@ -2943,7 +2946,7 @@ uint64 ProbableAdjective(char* original, unsigned int len,uint64 &expectedBase) 
 	}
 
 	// er -  comparative
-	if (len >= 4 &&  !strcmp(word+len-2,"er")  ) 
+	if (len >= 4 &&  !strcmp(word+len-2,(char*)"er")  ) 
 	{
 		WORDP X = FindWord(word,len-1);
 		if (X && X->properties & ADJECTIVE_NORMAL) expectedBase = ADJECTIVE;

@@ -32,7 +32,7 @@ bool SafeCopy(char* output, char* word, bool space)
 	size_t len = strlen(word);
 	if (((output - currentOutputBase) + len ) > (currentOutputLimit - 200)) 
 	{
-		ReportBug("output buffer too big for copy %s\r\n",output) // buffer overflow
+		ReportBug((char*)"output buffer too big for copy %s\r\n",output) // buffer overflow
 		return false;
 	}
 	if (space) {*output++ = ' '; *output = 0;}
@@ -117,7 +117,7 @@ static char* AddFormatOutput(char* what, char* output,unsigned int controls)
 {
 	size_t len = strlen(what);
 	if ((output - currentOutputBase + len) > (currentOutputLimit - 50)) 
-		ReportBug("format string revision too big %s\r\n",output) // buffer overflow
+		ReportBug((char*)"format string revision too big %s\r\n",output) // buffer overflow
 	else
 	{
 		if (*what == '"' && what[len-1] == '"' && controls & OUTPUT_NOQUOTES) // strip quotes
@@ -287,7 +287,7 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 				ReformatString(tmp+2,output,result,controls);
 				output += strlen(output);
 			}
-			else if (!stricmp(tmp,"null")) {;} // value is to be ignored
+			else if (!stricmp(tmp,(char*)"null")) {;} // value is to be ignored
 			else output = AddFormatOutput(tmp, output,controls); 
 		}
 		else if (*input == '^' && (IsAlphaUTF8(input[1]) ))
@@ -317,7 +317,7 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		*output = 0;
 	}
 	*output = 0; // when failures, return the null string
-	if (trace & TRACE_OUTPUT) Log(STDUSERLOG," %s",start);
+	if (trace & TRACE_OUTPUT) Log(STDUSERLOG,(char*)" %s",start);
 }
 
 void StdNumber(char* word,char* buffer,int controls, bool space) // text numbers may have sign and decimal
@@ -381,9 +381,9 @@ char* StdIntOutput(int n)
 	static char answer[50];
 	*answer = 0;
 #ifdef WIN32
-	sprintf(buffer,"%I64d",(long long int) n); 
+	sprintf(buffer,(char*)"%I64d",(long long int) n); 
 #else
-	sprintf(buffer,"%lld",(long long int) n); 
+	sprintf(buffer,(char*)"%lld",(long long int) n); 
 #endif
 
 	StdNumber(buffer,answer,0);
@@ -395,7 +395,7 @@ char* StdFloatOutput(float n)
 	char buffer[50];
 	static char answer[50];
 	*answer = 0;
-	sprintf(buffer,"%1.2f",n);
+	sprintf(buffer,(char*)"%1.2f",n);
 	StdNumber(buffer,answer,0);
 	return answer;
 }
@@ -465,7 +465,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 		// is choice a repeat of something already said... if so try again
 		if (*buffer && HasAlreadySaid(buffer)) 
 		{
-			if (trace) Log(STDUSERLOG,"Choice %s already said\r\n",buffer);
+			if (trace) Log(STDUSERLOG,(char*)"Choice %s already said\r\n",buffer);
 			*buffer = 0;
 			choiceset[r] = choiceset[--count];
 		}
@@ -494,7 +494,7 @@ char* FreshOutput(char* ptr,char* buffer,FunctionResult &result,int controls,uns
 		{
 			strncpy(buffer,currentOutputBase,limit-1);
 			buffer[limit-1] = 0;
-			ReportBug("FreshOutput limit truncated: %s\r\n",buffer);
+			ReportBug((char*)"FreshOutput limit truncated: %s\r\n",buffer);
 		}
 		else strcpy(buffer,currentOutputBase);
 		FreeOutputBuffer();
@@ -538,16 +538,16 @@ static char* Output_Backslash(char* word, char* ptr, bool space,char* buffer, un
 	// handles any other backslashed item:  \help  means just put out the item without the backslash
 	if (word[1] == 'r' && !word[2]) 
 	{
-		strcpy(buffer,"\r");
+		strcpy(buffer,(char*)"\r");
 		return ptr;		
 	}
 	if (word[1] == 'n')  //   \n
 	{
 		CONDITIONAL_SPACE();
 #ifdef WIN32
-		strcpy(buffer,"\r\n");
+		strcpy(buffer,(char*)"\r\n");
 #else
-		strcpy(buffer,"\n");
+		strcpy(buffer,(char*)"\n");
 #endif
 		ptr -= strlen(word);
 		if (*ptr == 'n') --ptr;
@@ -555,7 +555,7 @@ static char* Output_Backslash(char* word, char* ptr, bool space,char* buffer, un
 	}
 	else if (word[1] == 't') // tab
 	{
-		strcpy(buffer,"\t");
+		strcpy(buffer,(char*)"\t");
 		ptr -= strlen(word);
 		if (*ptr == 't') --ptr;
 		ptr += 2;
@@ -605,8 +605,8 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 	}
 	else if (word[1] == '^') // if and loop
 	{
-		if (!strcmp(word,"^^if")) ptr = HandleIf(ptr,buffer,result);  
-		else if (!strcmp(word,"^^loop")) ptr = HandleLoop(ptr,buffer,result); 
+		if (!strcmp(word,(char*)"^^if")) ptr = HandleIf(ptr,buffer,result);  
+		else if (!strcmp(word,(char*)"^^loop")) ptr = HandleLoop(ptr,buffer,result); 
 		else if (!once && IsAssignmentOperator(ptr))  
 			ptr = PerformAssignment(word,ptr,result); //   =  or *= kind of construction
 		else if (!word[2]) strcpy(buffer,word); // "^^" exponent operator
@@ -621,7 +621,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 		}
 		else // ordinary function
 		{
-			if (*currentRuleOutputBase && (!strcmp(word,"^gambit") || !strcmp(word,"^respond") || !strcmp(word,"^reuse") || !strcmp(word,"^retry") || !strcmp(word,"^refine")  )) // leaving current rule
+			if (*currentRuleOutputBase && (!strcmp(word,(char*)"^gambit") || !strcmp(word,(char*)"^respond") || !strcmp(word,(char*)"^reuse") || !strcmp(word,(char*)"^retry") || !strcmp(word,(char*)"^refine")  )) // leaving current rule
 			{
 				if (!AddResponse(currentRuleOutputBase,responseControl)) result = FAILRULE_BIT;
 				buffer = currentRuleOutputBase;	
@@ -709,7 +709,7 @@ static char* Output_AtSign(char* word, char* ptr, bool space,char* buffer, unsig
 		else if (type == 'a' && impliedWild != ALREADY_HANDLED)
 		{
 			strcpy(ARGUMENT(1), word);
-			result = FLR(buffer,"l");
+			result = FLR(buffer,(char*)"l");
 			return ptr;
 		}
 		else 
@@ -721,7 +721,7 @@ static char* Output_AtSign(char* word, char* ptr, bool space,char* buffer, unsig
 		char buf[100];
 		if (flags) 
 		{
-			sprintf(buf,"%d",T);
+			sprintf(buf,(char*)"%d",T);
 			answer = buf;
 		}
 		else  answer = Meaning2Word(T)->word;
@@ -755,7 +755,7 @@ static char* Output_Quote(char* word, char* ptr, bool space,char* buffer, unsign
 	// handles possessive: 's
 	// handles original wildcard: '_2
 	// handles quoted variable: '$hello
-	if (word[1] == 's' && !word[2])	strcpy(buffer,"'s");	// possessive
+	if (word[1] == 's' && !word[2])	strcpy(buffer,(char*)"'s");	// possessive
 	else if (word[1] == '_')			// original wildcard
 	{
 		int index = GetWildcardID(word+1); //   which one
@@ -794,8 +794,8 @@ static char* Output_Quote(char* word, char* ptr, bool space,char* buffer, unsign
 
 static char* Output_String(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result)
 {
-	// handles function string: "^ .... "  which means go eval the contents of the string
-	// handles simple string: "this is a string"  which means just put it out (with or without quotes depending on controls)
+	// handles function string: (char*)"^ .... "  which means go eval the contents of the string
+	// handles simple string: (char*)"this is a string"  which means just put it out (with or without quotes depending on controls)
 	// handles compiled strings:  "^:xxx" which means formatting has already been performed (function arguments)
 	size_t len;
 	CONDITIONAL_SPACE();
@@ -1052,7 +1052,7 @@ retry:
 			currentRule = oldrule;
 			currentRuleID = oldruleid;
 			currentRuleTopic = oldruletopic;
-			if (quitting == true) myexit("quit requested from script");
+			if (quitting == true) myexit((char*)"quit requested from script");
 			if (FAILCOMMAND != answer) 
 			{
 				ptr = NULL;
@@ -1086,7 +1086,7 @@ retry:
 			{
 				buffer = start;  // debug stop
 			}
-			if (trace & (TRACE_OUTPUT|TRACE_MATCH) &&  !(controls &OUTPUT_SILENT)  && CheckTopicTrace()) Log(STDUSERLOG," =:: %s ",buffer);
+			if (trace & (TRACE_OUTPUT|TRACE_MATCH) &&  !(controls &OUTPUT_SILENT)  && CheckTopicTrace()) Log(STDUSERLOG,(char*)" =:: %s ",buffer);
 		}
 		//   update location and check for overflow
 		buffer += strlen(buffer);
@@ -1097,7 +1097,7 @@ retry:
 			char hold[100];
 			strncpy(hold,currentRule,50);
 			hold[50] = 0;
-			ReportBug("Output overflowed on rule %s\r\n",hold);
+			ReportBug((char*)"Output overflowed on rule %s\r\n",hold);
 		}
         if (size >= (currentOutputLimit-200) && !(result  & FAILCODES)) 
 		{

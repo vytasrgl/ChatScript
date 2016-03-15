@@ -72,8 +72,8 @@ char* GetSetEnd(char* x);
 // fact reading and writing
 char* ReadField(char* ptr,char* field,char fieldkind,unsigned int& flags);
 char* EatFact(char* ptr,unsigned int flags = 0,bool attribute = false);
-FACT* ReadFact(char* &ptr,uint64 build);
-void ReadFacts(const char* name,uint64 zone,bool user = false);
+FACT* ReadFact(char* &ptr,unsigned int build);
+void ReadFacts(const char* name,unsigned int build,bool user = false);
 char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead = false,bool eol = false);
 void WriteFacts(FILE* out,FACT* from,int flags = 0);
 bool ReadBinaryFacts(FILE* in);

@@ -19,8 +19,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define SAID_LIMIT 1000
 extern char chatbotSaid[MAX_USED+1][SAID_LIMIT+3]; // last n messages sent to user 
 extern char humanSaid[MAX_USED+1][SAID_LIMIT+3]; //   last n messages read from human
-extern unsigned int humanSaidIndex;
-extern unsigned int chatbotSaidIndex;
+extern int humanSaidIndex;
+extern int chatbotSaidIndex;
 extern char timeturn15[100];
 extern char ipAddress[50];
 extern char timeturn0[20];

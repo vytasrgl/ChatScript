@@ -25,13 +25,13 @@ extern unsigned int needRoles[MAX_CLAUSES];
 extern unsigned char subjectStack[MAX_CLAUSES];
 extern unsigned char verbStack[MAX_CLAUSES];
 extern char* usedTrace;
-extern unsigned int usedWordIndex;
+extern int usedWordIndex;
 extern uint64 usedType;
 
-void SetRole(unsigned int i, uint64 role, bool revise = false, unsigned int currentVerb = verbStack[roleIndex]);
+void SetRole( int i, uint64 role, bool revise = false,  int currentVerb = verbStack[roleIndex]);
 void DecodeTag(char* buffer, uint64 type, uint64 tie,uint64 originalbits);
 
-uint64 GetPosData(unsigned int at, char* original,WORDP &entry,WORDP &canonical,uint64 &sysflags,uint64 &cansysflags, bool firstTry = true,bool nogenerate = false,unsigned int start = 0);
+uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64 &sysflags,uint64 &cansysflags, bool firstTry = true,bool nogenerate = false,int start = 0);
 char* GetAdjectiveBase(char* word,bool nonew);
 char* GetAdverbBase(char* word,bool nonew);
 char* GetPastTense(char* word);
@@ -46,10 +46,10 @@ char* GetAdjectiveMore(char* word);
 char* GetAdjectiveMost(char* word);
 char* GetAdverbMore(char* word);
 char* GetAdverbMost(char* word);
-void SetSentenceTense(unsigned int start, unsigned int end);
+void SetSentenceTense(int start, int end);
 uint64 ProbableAdjective(char* original, unsigned int len,uint64& expectedBase);
 uint64 ProbableAdverb(char* original, unsigned int len,uint64& expectedBase);
 uint64 ProbableNoun(char* original,unsigned int len);
 uint64 ProbableVerb(char* original,unsigned int len);
-bool IsDeterminedNoun(unsigned int i,unsigned int& det);
+bool IsDeterminedNoun(int i,int& det);
 #endif

@@ -2,12 +2,17 @@
 
 #define MAX_NO_ERASE 300
 #define MAX_REPEATABLE 300
-#define TOPIC_LIMIT 10000								// max toplevel rules in a RANDOM topic
-unsigned int numberOfTopics = 0;
+#define TOPIC_LIMIT 10000			
 
-unsigned int numberOfTopicsInLayer[NUMBER_OF_LAYERS+1];
+#define PATTERN_UNWIND 1
+
+// max toplevel rules in a RANDOM topic
+int numberOfTopics = 0;
+
+int numberOfTopicsInLayer[NUMBER_OF_LAYERS+1];
 topicBlock* topicBlockPtrs[NUMBER_OF_LAYERS+1];
 bool norejoinder = false;
+char* unwindLayer2 = NULL;
 
 // current operating data
 bool shared = false;
@@ -18,9 +23,9 @@ static WORDP overlaps[MAX_OVERLAPS];
 static  int overlapCount  = 0;
 static bool cstopicsystem = false;
 
-static unsigned int oldNumberOfTopics;					// for creating/restoring dynamic topics
+static int oldNumberOfTopics;					// for creating/restoring dynamic topics
 
-unsigned int currentTopicID = 0;						// current topic id
+int currentTopicID = 0;						// current topic id
 char* currentRule = 0;									// current rule being procesed
 int currentRuleID = -1;									// current rule id
 int currentReuseID = -1;								// local invoking reuse
@@ -40,7 +45,7 @@ static char disableList[MAX_DISABLE_TRACK][200];
 static unsigned int disableIndex = 0;
 
 int sampleRule = 0;
-unsigned int sampleTopic = 0;
+int sampleTopic = 0;
 
 char timeStamp[NUMBER_OF_LAYERS][20];	// when build0 was compiled
 char numberTimeStamp[NUMBER_OF_LAYERS][20];	// when build0 was compiled
@@ -61,14 +66,14 @@ static char* repeatableSet[MAX_REPEATABLE];				// rules allowed to repeat output
 static unsigned int repeatableIndex;
 
 //   current flow of topic control stack
-unsigned int topicIndex = 0;
-unsigned int topicStack[MAX_TOPIC_STACK+1];
+int topicIndex = 0;
+int topicStack[MAX_TOPIC_STACK+1];
 
 //   pending topics
-unsigned int pendingTopicIndex = 0;
-unsigned int pendingTopicList[MAX_TOPIC_STACK+1];
-unsigned int originalPendingTopicList[MAX_TOPIC_STACK+1];
-unsigned int originalPendingTopicIndex = 0;
+int pendingTopicIndex = 0;
+int pendingTopicList[MAX_TOPIC_STACK+1];
+int originalPendingTopicList[MAX_TOPIC_STACK+1];
+int originalPendingTopicIndex = 0;
 
 // debug information
 bool stats = false;				// show how many rules were executed
@@ -149,7 +154,7 @@ void Encode(unsigned int val,char* &ptr,bool single)
 		return;
 	}
 
-	if (val > (USED_CODES*USED_CODES*USED_CODES)) ReportBug("Encode val too big")
+	if (val > (USED_CODES*USED_CODES*USED_CODES)) ReportBug((char*)"Encode val too big")
 	int digit1 = val / (USED_CODES*USED_CODES);
     ptr[0] = code[digit1];
 	val -= (digit1 * USED_CODES * USED_CODES);
@@ -194,19 +199,19 @@ uint64 FullDecode(char* data) // read end to front
 	return val;
 }
 
-void TraceSample(unsigned int topic, unsigned int ruleID,unsigned int how)
+void TraceSample(int topic, int ruleID,unsigned int how)
 {
 	FILE* in;
 	WORDP D = FindWord(GetTopicName(topic,true));
 	if (D)
 	{
 		char file[MAX_WORD_SIZE];
-		sprintf(file,"VERIFY/%s-b%c.txt",D->word+1, (D->internalBits & BUILD0) ? '0' : '1'); 
+		sprintf(file,(char*)"VERIFY/%s-b%c.txt",D->word+1, (D->internalBits & BUILD0) ? '0' : '1'); 
 		in = FopenReadOnly(file); // VERIFY folder
 		if (in) // we found the file, now find any verfiy if we can
 		{
 			char tag[MAX_WORD_SIZE];
-			sprintf(tag,"%s.%d.%d",GetTopicName(topic),TOPLEVELID(ruleID),REJOINDERID(ruleID));
+			sprintf(tag,(char*)"%s.%d.%d",GetTopicName(topic),TOPLEVELID(ruleID),REJOINDERID(ruleID));
 			char verify[MAX_WORD_SIZE];
 			while (ReadALine(verify,in) >= 0) // find matching verify
 			{
@@ -216,7 +221,7 @@ void TraceSample(unsigned int topic, unsigned int ruleID,unsigned int how)
 				{
 					char junk[MAX_WORD_SIZE];
 					ptr = ReadCompiledWord(ptr,junk); // skip the marker
-					Log(how,"  sample: #! %s",ptr);
+					Log(how,(char*)"  sample: #! %s",ptr);
 					break;
 				}
 			}
@@ -229,13 +234,13 @@ void TraceSample(unsigned int topic, unsigned int ruleID,unsigned int how)
 ///// TOPIC DATA ACCESSORS
 ///////////////////////////////////////////////////////
 
-char* GetTopicFile(unsigned int topic)
+char* GetTopicFile(int topic)
 {
 	topicBlock* block = TI(topic);
 	return block->topicSourceFileName;
 }
 
-char* RuleBefore(unsigned int topic,char* rule)
+char* RuleBefore(int topic,char* rule)
 {
 	char* start = GetTopicData(topic);
 	if (rule == start) return NULL;
@@ -255,7 +260,7 @@ static unsigned int ByteCount (unsigned char n)
     return count;  
  } 
 
-unsigned int TopicUsedCount(unsigned int topic)
+int TopicUsedCount(int topic)
 {
 	topicBlock* block = TI(topic);
  	int size = block->topicBytesRules;
@@ -266,30 +271,30 @@ unsigned int TopicUsedCount(unsigned int topic)
 	return count;
 }
 
-char*  DisplayTopicFlags(unsigned int topic)
+char*  DisplayTopicFlags(int topic)
 {
 	static char buffer[MAX_WORD_SIZE];
 	*buffer = 0;
 	unsigned int flags = GetTopicFlags(topic);
-	if (flags) strcat(buffer,"Flags: ");
-	if (flags & TOPIC_SYSTEM) strcat(buffer,"SYSTEM ");
-	if (flags & TOPIC_KEEP) strcat(buffer,"KEEP ");
-	if (flags & TOPIC_REPEAT) strcat(buffer,"REPEAT ");
-	if (flags & TOPIC_RANDOM) strcat(buffer,"RANDOM ");
-	if (flags & TOPIC_NOSTAY) strcat(buffer,"NOSTAY ");
-	if (flags & TOPIC_PRIORITY) strcat(buffer,"PRIORITY ");
-	if (flags & TOPIC_LOWPRIORITY) strcat(buffer,"LOWPRIORITY ");
-	if (flags & TOPIC_NOBLOCKING) strcat(buffer,"NOBLOCKING ");
-	if (flags & TOPIC_NOSAMPLES) strcat(buffer,"NOSAMPLES ");
-	if (flags & TOPIC_NOPATTERNS) strcat(buffer,"NOPATTERNS ");
-	if (flags & TOPIC_NOGAMBITS) strcat(buffer,"NOGAMBITS ");
-	if (flags & TOPIC_NOKEYS) strcat(buffer,"NOKEYS ");
-	if (flags & TOPIC_BLOCKED) strcat(buffer,"BLOCKED ");
-	if (flags & TOPIC_SHARE) strcat(buffer,"SHARE ");
+	if (flags) strcat(buffer,(char*)"Flags: ");
+	if (flags & TOPIC_SYSTEM) strcat(buffer,(char*)"SYSTEM ");
+	if (flags & TOPIC_KEEP) strcat(buffer,(char*)"KEEP ");
+	if (flags & TOPIC_REPEAT) strcat(buffer,(char*)"REPEAT ");
+	if (flags & TOPIC_RANDOM) strcat(buffer,(char*)"RANDOM ");
+	if (flags & TOPIC_NOSTAY) strcat(buffer,(char*)"NOSTAY ");
+	if (flags & TOPIC_PRIORITY) strcat(buffer,(char*)"PRIORITY ");
+	if (flags & TOPIC_LOWPRIORITY) strcat(buffer,(char*)"LOWPRIORITY ");
+	if (flags & TOPIC_NOBLOCKING) strcat(buffer,(char*)"NOBLOCKING ");
+	if (flags & TOPIC_NOSAMPLES) strcat(buffer,(char*)"NOSAMPLES ");
+	if (flags & TOPIC_NOPATTERNS) strcat(buffer,(char*)"NOPATTERNS ");
+	if (flags & TOPIC_NOGAMBITS) strcat(buffer,(char*)"NOGAMBITS ");
+	if (flags & TOPIC_NOKEYS) strcat(buffer,(char*)"NOKEYS ");
+	if (flags & TOPIC_BLOCKED) strcat(buffer,(char*)"BLOCKED ");
+	if (flags & TOPIC_SHARE) strcat(buffer,(char*)"SHARE ");
 	return buffer;
 }
 
-bool BlockedBotAccess(unsigned int topic)
+bool BlockedBotAccess(int topic)
 {
 	if (!topic || topic > numberOfTopics) return true;
 	topicBlock* block = TI(topic);
@@ -297,7 +302,7 @@ bool BlockedBotAccess(unsigned int topic)
 	return (block->topicRestriction && !strstr(block->topicRestriction,computerIDwSpace));
 }
 
-char* GetRuleTag(unsigned int& topic,int& id,char* tag)
+char* GetRuleTag(int& topic,int& id,char* tag)
 {
 	// tag is topic.number.number or mearerly topic.number
 	char* dot = strchr(tag,'.');
@@ -313,7 +318,7 @@ char* GetRuleTag(unsigned int& topic,int& id,char* tag)
 	return GetRule(topic,id);
 }
 
-char* GetLabelledRule(unsigned int& topic, char* label,char* notdisabled,bool &fulllabel, bool& crosstopic,int& id, unsigned int baseTopic)
+char* GetLabelledRule(int& topic, char* label,char* notdisabled,bool &fulllabel, bool& crosstopic,int& id, int baseTopic)
 {
 	// ~ means current rule
 	// 0 means current top rule (a would be current a rule above us)
@@ -349,7 +354,7 @@ char* GetLabelledRule(unsigned int& topic, char* label,char* notdisabled,bool &f
 	return FindNextLabel(topic,label, GetTopicData(topic),id,!*notdisabled);
 }
 
-char* GetVerify(char* tag,unsigned int &topicid, int &id) //  ~topic.#.#=LABEL<~topic.#.#  is a maximally complete why
+char* GetVerify(char* tag,int &topicid, int &id) //  ~topic.#.#=LABEL<~topic.#.#  is a maximally complete why
 {
 	topicid = 0;
 	id = -1;
@@ -365,7 +370,7 @@ char* GetVerify(char* tag,unsigned int &topicid, int &id) //  ~topic.#.#=LABEL<~
 	WORDP D = FindWord(topicname);
 	if (!D) return "";
 
-	sprintf(file,"VERIFY/%s-b%c.txt",topicname+1, (D->internalBits & BUILD0) ? '0' : '1'); 
+	sprintf(file,(char*)"VERIFY/%s-b%c.txt",topicname+1, (D->internalBits & BUILD0) ? '0' : '1'); 
 	topicid = FindTopicIDByName(topicname,true);
 	
 	*dot = '.';
@@ -398,7 +403,7 @@ char* GetVerify(char* tag,unsigned int &topicid, int &id) //  ~topic.#.#=LABEL<~
 }
 
 
-char* GetRule(unsigned int topic, int id)
+char* GetRule(int topic, int id)
 {
     if (!topic || topic > numberOfTopics || id < 0) return NULL;
 	topicBlock* block = TI(topic);
@@ -420,16 +425,16 @@ char* GetRule(unsigned int topic, int id)
 	return rule;
 }
 
-void AddTopicFlag(unsigned int topic,unsigned int flag)
+void AddTopicFlag(int topic,unsigned int flag)
 {
     if (topic > numberOfTopics || !topic) 
-		ReportBug("AddTopicFlag flags topic id %d out of range\r\n",topic)
+		ReportBug((char*)"AddTopicFlag flags topic id %d out of range\r\n",topic)
     else TI(topic)->topicFlags |= flag;
 }
 
-void RemoveTopicFlag(unsigned int topic,unsigned int flag)
+void RemoveTopicFlag(int topic,unsigned int flag)
 {
-    if (topic > numberOfTopics || !topic) ReportBug("RemoveTopicFlag flags topic %d out of range\r\n",topic)
+    if (topic > numberOfTopics || !topic) ReportBug((char*)"RemoveTopicFlag flags topic %d out of range\r\n",topic)
     else 
 	{
 		TI(topic)->topicFlags &= -1 ^ flag;
@@ -437,7 +442,7 @@ void RemoveTopicFlag(unsigned int topic,unsigned int flag)
 	}
 }
 
-char* GetTopicName(unsigned int topic,bool actual)
+char* GetTopicName(int topic,bool actual)
 {
 	topicBlock* block = TI(topic);
 	if (!topic || !block->topicName) return "";
@@ -461,19 +466,19 @@ static char* RuleTypeName(char type)
 	return name;
 }
 
-void SetTopicData(unsigned int topic,char* data)
+void SetTopicData(int topic,char* data)
 {
-    if (topic > numberOfTopics) ReportBug("SetTopicData id %d out of range\r\n",topic)
+    if (topic > numberOfTopics) ReportBug((char*)"SetTopicData id %d out of range\r\n",topic)
 	else TI(topic)->topicScript= data; 
 }
 
-char* GetTopicData(unsigned int topic)
+char* GetTopicData(int topic)
 {
 	topicBlock* block = TI(topic);
     if (!topic || !block->topicScript) return NULL;
     if (topic > numberOfTopics)
     {
-        ReportBug("GetTopicData flags id %d out of range",topic)
+        ReportBug((char*)"GetTopicData flags id %d out of range",topic)
         return 0;
     }
     char* data = block->topicScript; //   predefined topic or user private topic
@@ -496,10 +501,10 @@ unsigned int FindTopicIDByName(char* name,bool exact)
 	duplicateCount = 0;
 	while (D && D->internalBits & TOPIC) 
 	{
-		unsigned int topic = D->x.topicIndex;
+		int topic = D->x.topicIndex;
 		if (!topic) 
 		{
-			if (!compiling) ReportBug("Missing topic index for %s\r\n",D->word)
+			if (!compiling) ReportBug((char*)"Missing topic index for %s\r\n",D->word)
 			break;
 		}
 		topicBlock* block = TI(topic);
@@ -507,15 +512,15 @@ unsigned int FindTopicIDByName(char* name,bool exact)
 
 		// replicant topics for different bots
 		++duplicateCount;
-		sprintf(tmpWord,"%s%c%d",word,DUPLICATETOPICSEPARATOR,duplicateCount);
+		sprintf(tmpWord,(char*)"%s%c%d",word,DUPLICATETOPICSEPARATOR,duplicateCount);
 		D = FindWord(tmpWord);
 	}
 	return 0;
 }
 
-void UndoErase(char* ptr,unsigned int topic,unsigned int id)
+void UndoErase(char* ptr,int topic,int id)
 {
-    if (trace & TRACE_TOPIC && CheckTopicTrace())  Log(STDUSERLOG,"Undoing erase %s\r\n",ShowRule(ptr));
+    if (trace & TRACE_TOPIC && CheckTopicTrace())  Log(STDUSERLOG,(char*)"Undoing erase %s\r\n",ShowRule(ptr));
 	ClearRuleDisableMark(topic,id);
 }
 
@@ -527,8 +532,8 @@ char* FindNextRule(signed char level, char* ptr, int& id)
 	if (offset == 0) return NULL; // end of the line
     if (ptr[1] != ':') 
 	{
-		if (buildID)  BADSCRIPT("TOPIC-10 In topic %s missing colon for responder %s - look at prior responder for bug",GetTopicName(currentTopicID) ,ShowRule(ptr))
-		ReportBug("not ptr start of responder %d %s %s - killing data",currentTopicID, GetTopicName(currentTopicID) ,tmpWord)
+		if (buildID)  BADSCRIPT((char*)"TOPIC-10 In topic %s missing colon for responder %s - look at prior responder for bug",GetTopicName(currentTopicID) ,ShowRule(ptr))
+		ReportBug((char*)"not ptr start of responder %d %s %s - killing data",currentTopicID, GetTopicName(currentTopicID) ,tmpWord)
 		TI(currentTopicID)->topicScript = 0; // kill off data
 		return NULL;
 	}
@@ -544,8 +549,8 @@ char* FindNextRule(signed char level, char* ptr, int& id)
 			char word[MAX_WORD_SIZE];
 			strncpy(word,ptr,50);
 			word[50] = 0;
-			if (buildID) BADSCRIPT("TOPIC-11 Bad layout starting %s %c %s",word,level,start)
-			ReportBug("Bad layout bug1 %c The rule just before here may be faulty %s",level,start)
+			if (buildID) BADSCRIPT((char*)"TOPIC-11 Bad layout starting %s %c %s",word,level,start)
+			ReportBug((char*)"Bad layout bug1 %c The rule just before here may be faulty %s",level,start)
 			return NULL;
 		}
         if (TopLevelRule(ptr)) break; // found next top level
@@ -600,7 +605,7 @@ bool Rejoinder(char* word)
 	return (*word >= 'a' && *word <= 'q') ? true : false;
 }
 
-int HasGambits(unsigned int topic) // check each gambit to find a usable one (may or may not match by pattern)
+int HasGambits(int topic) // check each gambit to find a usable one (may or may not match by pattern)
 {
 	if (BlockedBotAccess(topic) || GetTopicFlags(topic) & TOPIC_SYSTEM) return -1; 
 	
@@ -631,14 +636,14 @@ char* ShowRule(char* rule,bool concise)
 	char* ruleAfterLabel = GetLabel(rule,label);
 	strncpy(word,ruleAfterLabel,(concise) ? 40 : 90);
 	word[(concise) ? 40 : 90] = 0;
-	if ((int)strlen(word) >= ((concise) ? 40 : 90)) strcat(word,"...   ");
+	if ((int)strlen(word) >= ((concise) ? 40 : 90)) strcat(word,(char*)"...   ");
 	char* at = strchr(word,ENDUNIT);
 	if (at) *at = 0; // truncate at end
 
 	CleanOutput(word);
 
 	strcat(result,label);
-	strcat(result," ");
+	strcat(result,(char*)" ");
 	strcat(result,word);
 	return result;
 }
@@ -702,7 +707,7 @@ char* GetLabel(char* rule,char* label)
 	return rule;
 }
 
-char* FindNextLabel(unsigned int topic,char* label, char* ptr, int &id,bool alwaysAllowed)
+char* FindNextLabel(int topic,char* label, char* ptr, int &id,bool alwaysAllowed)
 { // id starts at 0 or a given id to resume hunting from
 	// Alwaysallowed (0=false, 1= true, 2 = rejoinder) would be true coming from enable or disable, for example, because we want to find the
 	// label in order to tamper with its availablbilty. 
@@ -724,19 +729,19 @@ char* FindNextLabel(unsigned int topic,char* label, char* ptr, int &id,bool alwa
 	return NULL;
 }
 
-int GetTopicFlags(unsigned int topic)
+int GetTopicFlags(int topic)
 {
 	return (!topic || topic > numberOfTopics) ? 0 : TI(topic)->topicFlags;
 }
 
-void SetTopicDebugMark(unsigned int topic,unsigned int value)
+void SetTopicDebugMark(int topic,unsigned int value)
 {
 	if (!topic || topic > numberOfTopics) return;
 	topicBlock* block = TI(topic);
 	block->topicDebug = value;
 }
 
-void SetDebugRuleMark(unsigned int topic,unsigned int id)
+void SetDebugRuleMark(int topic,unsigned int id)
 {
 	if (!topic || topic > numberOfTopics) return;
 	topicBlock* block = TI(topic);
@@ -749,7 +754,7 @@ void SetDebugRuleMark(unsigned int topic,unsigned int id)
 	*testByte ^= (unsigned char) (0x80 >> bitOffset);
 }
 
-static bool GetDebugRuleMark(unsigned int topic,unsigned int id) //   has this top level responder been marked for debug
+static bool GetDebugRuleMark(int topic,unsigned int id) //   has this top level responder been marked for debug
 {
 	if (!topic || topic > numberOfTopics) return false;
 	topicBlock* block = TI(topic);
@@ -769,7 +774,7 @@ void FlushDisabled()
 	{
 		char* at = strchr(disableList[i],'.');
 		*at = 0;
-		unsigned int topic = FindTopicIDByName(disableList[i],true);
+		int topic = FindTopicIDByName(disableList[i],true);
 		unsigned int id = atoi(at+1);
 		at = strchr(at+1,'.');
 		id |= MAKE_REJOINDERID(atoi(at+1));
@@ -779,7 +784,7 @@ void FlushDisabled()
 	ruleErased = false;
 }
 
-bool SetRuleDisableMark(unsigned int topic, unsigned int id)
+bool SetRuleDisableMark(int topic, int id)
 {
 	if (!topic || topic > numberOfTopics) return false;
 	topicBlock* block = TI(topic);
@@ -797,15 +802,15 @@ bool SetRuleDisableMark(unsigned int topic, unsigned int id)
 		if (++disableIndex == MAX_DISABLE_TRACK)
 		{
 			--disableIndex;
-			ReportBug("Exceeding disableIndex");
+			ReportBug((char*)"Exceeding disableIndex");
 		}
-		sprintf(disableList[disableIndex],"%s.%d.%d",GetTopicName(topic),TOPLEVELID(id),REJOINDERID(id));
+		sprintf(disableList[disableIndex],(char*)"%s.%d.%d",GetTopicName(topic),TOPLEVELID(id),REJOINDERID(id));
 		return true;
 	}
 	else return false;	// was already set
 }
 
-void ClearRuleDisableMark(unsigned int topic,unsigned int id)
+void ClearRuleDisableMark(int topic,int id)
 {
 	if (!topic || topic > numberOfTopics) return;
 	topicBlock* block = TI(topic);
@@ -819,11 +824,11 @@ void ClearRuleDisableMark(unsigned int topic,unsigned int id)
 	AddTopicFlag(topic,TOPIC_USED); 
 }
 
-bool UsableRule(unsigned int topic,unsigned int id) // is this rule used up
+bool UsableRule(int topic,int id) // is this rule used up
 {
 	if (!topic || topic > numberOfTopics) return false;
 	topicBlock* block = TI(topic);
-	if (id == (unsigned int) currentRuleID && topic == (unsigned int) currentRuleTopic) return false;	// cannot use the current rule from the current rule
+	if (id == currentRuleID && topic == currentRuleTopic) return false;	// cannot use the current rule from the current rule
 	id = TOPLEVELID(id);
 	unsigned int byteOffset = id / 8; 
 	if (byteOffset >= block->topicBytesRules) return false; // bad index
@@ -891,7 +896,7 @@ void SetErase(bool force)
  	if (SetRuleDisableMark(currentTopicID,currentRuleID))
 	{
 		ruleErased = true;
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,"**erasing %s  %s\r\n",GetTopicName(currentTopicID),ShowRule(currentRule));
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"**erasing %s  %s\r\n",GetTopicName(currentTopicID),ShowRule(currentRule));
 	}
 }
 
@@ -930,7 +935,7 @@ void SetRejoinder(char* rule)
 
     if (ptr && *ptr == level) //   will be on the level we want
     {
-        if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,"  **set rejoinder at %s\r\n",ShowRule(ptr));
+        if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"  **set rejoinder at %s\r\n",ShowRule(ptr));
         outputRejoinderRuleID = rejoinderID; 
  	    outputRejoinderTopic = currentTopicID;
     }
@@ -957,7 +962,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	bool old = IsCurrentTopic(currentTopicID);
 	AddPendingTopic(currentTopicID); // make it pending for now...more code will be thinking they are in this topic
 
-	unsigned int startingIndex = responseIndex;
+	int startingIndex = responseIndex;
 	bool oldErase = ruleErased; // allow underling gambits to erase themselves. If they do, we dont have to.
 	ruleErased = false;
 	Output(ptr,buffer,result);
@@ -1027,9 +1032,9 @@ FunctionResult DoOutput(char* buffer,char* rule, unsigned int id)
 	// do output of rule
 	PushOutputBuffers();
 	currentRuleOutputBase = buffer;
-	ChangeDepth(1,"testRule");
+	ChangeDepth(1,(char*)"testRule");
 	result = ProcessRuleOutput(rule,currentRuleID,buffer);
-	ChangeDepth(-1,"testRule");
+	ChangeDepth(-1,(char*)"testRule");
 	PopOutputBuffers();
 	return result;
 }
@@ -1051,10 +1056,10 @@ FunctionResult TestRule(int ruleID,char* rule,char* buffer)
 		traceChanged = true;
 	}
 	++ruleCount;
-	unsigned int start = 0;
-	unsigned int oldstart = 0;
-	unsigned int end = 0;
-	unsigned int limit = 100; 
+	int start = 0;
+	int oldstart = 0;
+	int end = 0;
+	int limit = 100; 
 
 retry:
 	FunctionResult result = NOPROBLEM_BIT;
@@ -1075,9 +1080,9 @@ retry:
 			char pattern[MAX_WORD_SIZE];
 			GetPattern(rule,NULL,pattern);
 			CleanOutput(pattern);
-			Log(STDUSERLOG,"       pattern: %s",pattern);
+			Log(STDUSERLOG,(char*)"       pattern: %s",pattern);
 		}
-		Log(STDUSERLOG,"\r\n");
+		Log(STDUSERLOG,(char*)"\r\n");
 	}
 	int whenmatched;
 	if (*ptr == '(') // pattern requirement
@@ -1086,39 +1091,39 @@ retry:
 		unsigned int gap = 0;
 		wildcardIndex = 0;
 		bool uppercasem = false;
-		unsigned int positionStart, positionEnd;
+		int positionStart, positionEnd;
 		whenmatched = 0;
 		++globalDepth; // indent pattern
- 		if (start > wordCount || !Match(ptr+2,0,start,"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAIL_MATCH;  // skip paren and blank, returns start as the location for retry if appropriate
+ 		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
 		--globalDepth;
 		if (clearUnmarks) // remove transient global disables.
 		{
 			clearUnmarks = false;
-			for (unsigned int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
+			for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
 		}
 	}
 	
 	if (trace & TRACE_LABEL && *label && !(trace & TRACE_PATTERN)  && CheckTopicTrace())
 	{
-		if (result == NOPROBLEM_BIT) Log(STDUSERTABLOG,"  **  Match: %s\r\n",ShowRule(rule));
-		else Log(STDUSERTABLOG,"  **fail: %s\r\n",ShowRule(rule));
+		if (result == NOPROBLEM_BIT) Log(STDUSERTABLOG,(char*)"  **  Match: %s\r\n",ShowRule(rule));
+		else Log(STDUSERTABLOG,(char*)"  **fail: %s\r\n",ShowRule(rule));
 	}
 	if (result == NOPROBLEM_BIT) // generate output
 	{
 		if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() ) //   display the entire matching responder and maybe wildcard bindings
 		{
 			if (!(trace & (TRACE_PATTERN|TRACE_SAMPLE))) Log(STDUSERTABLOG, "Try %s",ShowRule(rule)); 
-			Log(STDUSERTABLOG,"  **  Match: %s",ShowRule(rule)); //   show abstract result we will apply
+			Log(STDUSERTABLOG,(char*)"  **  Match: %s",ShowRule(rule)); //   show abstract result we will apply
 			if (wildcardIndex)
 			{
-				Log(STDUSERTABLOG,"  Wildcards: ");
-				for (unsigned int i = 0; i < wildcardIndex; ++i)
+				Log(STDUSERTABLOG,(char*)"  Wildcards: ");
+				for (int i = 0; i < wildcardIndex; ++i)
 				{
-					if (*wildcardOriginalText[i]) Log(STDUSERLOG,"_%d=%s / %s   ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
-					else Log(STDUSERLOG,"_%d=  ",i);
+					if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s   ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
+					else Log(STDUSERLOG,(char*)"_%d=  ",i);
 				}
 			}
-			Log(STDUSERLOG,"\r\n");
+			Log(STDUSERLOG,(char*)"\r\n");
 		}
 		if (sampleTopic && sampleTopic == currentTopicID && sampleRule == ruleID) // sample testing wants to find this rule got hit
 		{
@@ -1136,7 +1141,7 @@ retry:
 				char word[MAX_WORD_SIZE];
 				strncpy(word,rule,40);
 				word[40] = 0;
-				ReportBug("Exceeeded retry rule limit on rule %s", word);
+				ReportBug((char*)"Exceeeded retry rule limit on rule %s", word);
 				result = FAILRULE_BIT;
 				goto exit;
 			}
@@ -1160,17 +1165,17 @@ exit:
 	return result; 
 }
 
-static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,unsigned int topic,char* rule) 
+static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,int topic,char* rule) 
 {
 	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE)  && CheckTopicTrace()) 
-		id = Log(STDUSERTABLOG,"\r\n\r\nTopic: %s linear %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
+		id = Log(STDUSERTABLOG,(char*)"\r\n\r\nTopic: %s linear %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
 	char* base = GetTopicData(currentTopicID);  
 	int ruleID = 0;
 	topicBlock* block = TI(currentTopicID);
 	unsigned int* map = (type == STATEMENT || type == QUESTION || type == STATEMENT_QUESTION) ? block->responderTag : block->gambitTag;
 	ruleID = *map;
     FunctionResult result = NOPROBLEM_BIT;
-	unsigned int oldResponseIndex = responseIndex;
+	int oldResponseIndex = responseIndex;
 	unsigned int* indices =  TI(currentTopicID)->ruleOffset;
 	while (ruleID != NOMORERULES) //   find all choices-- layout is like "t: xxx () yyy"  or   "u: () yyy"  or   "t: this is text" -- there is only 1 space before useful label or data
 	{
@@ -1180,16 +1185,15 @@ static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,u
 		{
 			if (trace & (TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) 
 			{
-				Log(STDUSERTABLOG,"try %c%d.%d: linear used up  ",*ptr,TOPLEVELID(ruleID),REJOINDERID(ruleID));
+				Log(STDUSERTABLOG,(char*)"try %c%d.%d: linear used up  ",*ptr,TOPLEVELID(ruleID),REJOINDERID(ruleID));
 				if (trace & TRACE_SAMPLE && !TopLevelGambit(ptr) && CheckTopicTrace()) TraceSample(currentTopicID,ruleID);// show the sample as well as the pattern
-				Log(STDUSERLOG,"\r\n");
+				Log(STDUSERLOG,(char*)"\r\n");
 			}
 		}
 		else if (rule && ptr < rule) {;} // ignore rule until zone hit
 		else if (type == GAMBIT || (*ptr == type || *ptr == STATEMENT_QUESTION)) // is this the next unit we want to consider?
 		{
 			result = TestRule(ruleID,ptr,buffer);
-			if (result == FAIL_MATCH) result = FAILRULE_BIT;
 			if (result & (FAILRULE_BIT | ENDRULE_BIT)) oldResponseIndex = responseIndex; // update in case he issued answer AND claimed failure
  			else if (result & ENDCODES || responseIndex > oldResponseIndex) break; // wants to end or got answer
 		}
@@ -1202,7 +1206,7 @@ static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,u
 
 static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 {
-	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) id = Log(STDUSERTABLOG,"\r\n\r\nTopic: %s random %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
+	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) id = Log(STDUSERTABLOG,(char*)"\r\n\r\nTopic: %s random %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
 	char* base = GetTopicData(currentTopicID);  
 	topicBlock* block = TI(currentTopicID);
 	unsigned int ruleID = 0;
@@ -1220,9 +1224,9 @@ static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 		{
 			if (trace & (TRACE_PATTERN|TRACE_SAMPLE)  && CheckTopicTrace()) 
 			{
-				Log(STDUSERTABLOG,"try %c%d.%d: random used up   ",*ptr,TOPLEVELID(ruleID),REJOINDERID(ruleID));
+				Log(STDUSERTABLOG,(char*)"try %c%d.%d: random used up   ",*ptr,TOPLEVELID(ruleID),REJOINDERID(ruleID));
 				if (trace & TRACE_SAMPLE && !TopLevelGambit(ptr) && CheckTopicTrace()) TraceSample(currentTopicID,ruleID);// show the sample as well as the pattern
-				Log(STDUSERLOG,"\r\n");
+				Log(STDUSERLOG,(char*)"\r\n");
 			}
 		}
 		else if (type == GAMBIT || (*ptr == type || *ptr == STATEMENT_QUESTION))
@@ -1230,7 +1234,7 @@ static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 			idResponder[index] = ruleID;
 			if (++index > TOPIC_LIMIT-1)
 			{
-               ReportBug("Too many random choices for topic")
+               ReportBug((char*)"Too many random choices for topic")
                break; 
 			}
         }
@@ -1238,14 +1242,14 @@ static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
    }
 
  	FunctionResult result = NOPROBLEM_BIT;
-	unsigned int oldResponseIndex = responseIndex;
+	int oldResponseIndex = responseIndex;
 	//   we need to preserve the ACTUAL ordering information so we have access to the responseID.
     while (index)
     {
         int n = random(index);
 		int rule = idResponder[n];
         result = TestRule(rule,block->ruleOffset[rule]+base,buffer);
-		if (result == FAIL_MATCH) result = FAILRULE_BIT;
+		if (result == FAILMATCH_BIT) result = FAILRULE_BIT;
 		if (result & (FAILRULE_BIT | ENDRULE_BIT)) oldResponseIndex = responseIndex; // update in case added response AND declared failure
  		else if (result & ENDCODES || responseIndex > oldResponseIndex) break;
         idResponder[n] =  idResponder[--index] ; // erase choice and reset loop index
@@ -1258,14 +1262,14 @@ static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 
 static FunctionResult FindRandomGambitContinuation(char type, char* buffer, unsigned int& id)
 {
-	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) id = Log(STDUSERTABLOG,"\r\n\r\nTopic: %s random %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
+	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) id = Log(STDUSERTABLOG,(char*)"\r\n\r\nTopic: %s random %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
 	char* base = GetTopicData(currentTopicID);  
 	topicBlock* block = TI(currentTopicID);
 	unsigned  int* rulemap = block->gambitTag;	// looking for gambits
 	int gambitID = *rulemap;
 
 	FunctionResult result = NOPROBLEM_BIT;
-	unsigned int oldResponseIndex = responseIndex;
+	int oldResponseIndex = responseIndex;
 	bool available = false;
 	bool tried = false;
  	while (gambitID != NOMORERULES)
@@ -1273,7 +1277,7 @@ static FunctionResult FindRandomGambitContinuation(char type, char* buffer, unsi
 		char* ptr = base + block->ruleOffset[gambitID];
 		if (!UsableRule(currentTopicID,gambitID))
 		{
-			if (trace & (TRACE_PATTERN|TRACE_SAMPLE)  && CheckTopicTrace()) Log(STDUSERTABLOG,"try %c%d.%d: randomcontinuation used up\r\n",*ptr,TOPLEVELID(gambitID),REJOINDERID(gambitID));
+			if (trace & (TRACE_PATTERN|TRACE_SAMPLE)  && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"try %c%d.%d: randomcontinuation used up\r\n",*ptr,TOPLEVELID(gambitID),REJOINDERID(gambitID));
 			if (*ptr == RANDOM_GAMBIT) available = true; //   we are allowed to use gambits part of this subtopic
 		}
 		else if (*ptr == GAMBIT) 
@@ -1282,7 +1286,7 @@ static FunctionResult FindRandomGambitContinuation(char type, char* buffer, unsi
 			{
 				result = TestRule(gambitID,ptr,buffer);
 				tried = true;
-				if (result == FAIL_MATCH) result = FAILRULE_BIT;
+				if (result == FAILMATCH_BIT) result = FAILRULE_BIT;
 				if (result & (FAILRULE_BIT | ENDRULE_BIT)) oldResponseIndex = responseIndex; // update in case he added response AND claimed failure
  				else if (result & ENDCODES || responseIndex > oldResponseIndex) break;
 			}
@@ -1342,15 +1346,15 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	if (!active) active = (tokenFlags & QUESTIONMARK)  ? QUESTION : STATEMENT;
     FunctionResult result = RETRYTOPIC_BIT;
 	unsigned oldTopic = currentTopicID;
-	ChangeDepth(1,"PerformTopic");
+	ChangeDepth(1,(char*)"PerformTopic");
 	char* topicName = GetTopicName(currentTopicID);
 	unsigned int limit = 30;
 	unsigned int oldtrace = EstablishTopicTrace();
 	char value[100];
-	WORDP D = FindWord("^cs_topic_enter");
+	WORDP D = FindWord((char*)"^cs_topic_enter");
 	if (D && !cstopicsystem)  
 	{
-		sprintf(value,"( %s %c )",topicName,active);
+		sprintf(value,(char*)"( %s %c )",topicName,active);
 		cstopicsystem = true;
 		Callback(D,value); 
 		cstopicsystem = false;
@@ -1364,17 +1368,17 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 		if (result & (FAILRULE_BIT | FAILTOPIC_BIT | FAILSENTENCE_BIT | RETRYSENTENCE_BIT | RETRYTOPIC_BIT|RETRYINPUT_BIT)) topicIndex = tindex; 
 		//   or remove topics we matched on so we become the new master path
 	}
-	if (!limit) ReportBug("Exceeeded retry topic limit");
+	if (!limit) ReportBug((char*)"Exceeded retry topic limit");
 	result = (FunctionResult)(result & (-1 ^ ENDTOPIC_BIT)); // dont propogate 
 	if (result & FAILTOPIC_BIT) result = FAILRULE_BIT; // downgrade
 	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) 
-		id = Log(STDUSERTABLOG,"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
+		id = Log(STDUSERTABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
 	
-	ChangeDepth(-1,"PerformTopic");
-	WORDP E = FindWord("^cs_topic_exit");
+	ChangeDepth(-1,(char*)"PerformTopic");
+	WORDP E = FindWord((char*)"^cs_topic_exit");
 	if (E && !cstopicsystem) 
 	{
-		sprintf(value,"( %s %s )",topicName, ResultCode(result));
+		sprintf(value,(char*)"( %s %s )",topicName, ResultCode(result));
 		cstopicsystem = true;
 		Callback(E,value); 
 		cstopicsystem = false;
@@ -1392,32 +1396,32 @@ char* WriteUserTopics(char* ptr,bool sharefile)
 { 
     char word[MAX_WORD_SIZE];
     //   dump current topics list and current rejoinder
-    unsigned int id;
+    int id;
 
      //   current location in topic system -- written by NAME, so topic data can be added (if change existing topics, must kill off lastquestion)
     *word = 0;
-	if (!*buildStamp[2]) strcpy(buildStamp[2],"0"); // none
+	if (!*buildStamp[2]) strcpy(buildStamp[2],(char*)"0"); // none
 
-	if (outputRejoinderTopic == NO_REJOINDER) sprintf(ptr,"%d %d 0 DY %d %d %d %s # start, input#, no rejoinder, #0topics, #1topics, layer2\r\n",userFirstLine,volleyCount
+	if (outputRejoinderTopic == NO_REJOINDER) sprintf(ptr,(char*)"%d %d 0 DY %d %d %d %s # start, input#, no rejoinder, #0topics, #1topics, layer2\r\n",userFirstLine,volleyCount
 		, numberOfTopicsInLayer[0], numberOfTopicsInLayer[1], numberOfTopicsInLayer[2], buildStamp[2]);
 	else 
 	{
-		sprintf(ptr,"%d %d %s ",userFirstLine,volleyCount,GetTopicName(outputRejoinderTopic));
+		sprintf(ptr,(char*)"%d %d %s ",userFirstLine,volleyCount,GetTopicName(outputRejoinderTopic));
 		ptr += strlen(ptr);
 		ptr = FullEncode(outputRejoinderRuleID,ptr); 
 		ptr = FullEncode(TI(outputRejoinderTopic)->topicChecksum,ptr);
-		sprintf(ptr," DY %d %d %d %s # start, input#, rejoindertopic,rejoinderid (%s),checksum\r\n",
+		sprintf(ptr,(char*)" DY %d %d %d %s # start, input#, rejoindertopic,rejoinderid (%s),checksum\r\n",
 			numberOfTopicsInLayer[0], numberOfTopicsInLayer[1], numberOfTopicsInLayer[2], buildStamp[2],ShowRule(GetRule(outputRejoinderTopic,outputRejoinderRuleID)));
 	}
 	ptr += strlen(ptr);
-    if (topicIndex)  ReportBug("topic system failed to clear out topic stack\r\n")
+    if (topicIndex)  ReportBug((char*)"topic system failed to clear out topic stack\r\n")
    
 	for (id = 0; id < pendingTopicIndex; ++id) 
 	{
-		sprintf(ptr,"%s ",GetTopicName(pendingTopicList[id])); 
+		sprintf(ptr,(char*)"%s ",GetTopicName(pendingTopicList[id])); 
 		ptr += strlen(ptr);
 	}
-	sprintf(ptr,"#pending\r\n");
+	sprintf(ptr,(char*)"#pending\r\n");
 	ptr += strlen(ptr);
  
     //   write out dirty topics
@@ -1444,9 +1448,9 @@ char* WriteUserTopics(char* ptr,bool sharefile)
 		{
 			//   now write out data- if topic is not eraseable, it wont change, but used flags MIGHT (allowing access to topic)
  			char c = (flags & TOPIC_BLOCKED) ? '-' : '+';
-			sprintf(ptr,"%s %c",name,c);
+			sprintf(ptr,(char*)"%s %c",name,c);
 			ptr += strlen(ptr);
-			sprintf(ptr," %d ",(test == size) ? 0 : size);
+			sprintf(ptr,(char*)" %d ",(test == size) ? 0 : size);
 			ptr += strlen(ptr);
 			if (test != size) // some used bits exist
 			{
@@ -1456,7 +1460,7 @@ char* WriteUserTopics(char* ptr,bool sharefile)
 				{
 					--size;
 					unsigned char value = *bits++;
-					sprintf(ptr,"%c%c",((value >> 4) & 0x0f) + 'a',(value & 0x0f) + 'a');
+					sprintf(ptr,(char*)"%c%c",((value >> 4) & 0x0f) + 'a',(value & 0x0f) + 'a');
 					ptr += strlen(ptr);
 				}
 				*ptr++ = ' ';
@@ -1467,13 +1471,13 @@ char* WriteUserTopics(char* ptr,bool sharefile)
 			ptr = FullEncode(block->topicLastGambitted,ptr);
 			ptr = FullEncode(block->topicLastRespondered,ptr);
 			ptr = FullEncode(block->topicLastRejoindered,ptr);
-			strcpy(ptr,"\r\n");
+			strcpy(ptr,(char*)"\r\n");
 			ptr += 2;
 			ptr =  OverflowProtect(ptr);
 			if (!ptr) return NULL;
 		}
     }
-	strcpy(ptr,"#`end topics\r\n"); 
+	strcpy(ptr,(char*)"#`end topics\r\n"); 
 	ptr += strlen(ptr);
 	return ptr;
 }
@@ -1496,9 +1500,9 @@ bool ReadUserTopics()
 		ptr = ReadCompiledWord(ptr,word); //  rejoinder location
 		inputRejoinderRuleID = ((int)FullDecode(word)); 
 		// prove topic didnt change (in case of system topic or one we didnt write out)
-		unsigned int checksum;
+		int checksum;
 		ptr = ReadCompiledWord(ptr,word); 
-		checksum = (unsigned int) FullDecode(word); // topic checksum
+		checksum = (int) FullDecode(word); // topic checksum
 		if (!inputRejoinderTopic) inputRejoinderTopic = inputRejoinderRuleID = NO_REJOINDER;  // topic changed
 		if (checksum != TI(inputRejoinderTopic)->topicChecksum && TI(inputRejoinderTopic)->topicChecksum && !(GetTopicFlags(inputRejoinderTopic) & TOPIC_SAFE)) inputRejoinderTopic = inputRejoinderRuleID = NO_REJOINDER;  // topic changed
 	}
@@ -1507,14 +1511,14 @@ bool ReadUserTopics()
 	{
 		ptr += 3;	// skip dy
 		ptr = ReadCompiledWord(ptr,word);
-		unsigned int lev0topics = atoi(word);
+		int lev0topics = atoi(word);
 		if (lev0topics != numberOfTopicsInLayer[0]) {} // things have changed. after :build there are a different number of topics.
 		ptr = ReadCompiledWord(ptr,word);
-		unsigned int lev1topics = atoi(word);
+		int lev1topics = atoi(word);
 		ReadCompiledWord(ptr,word);
 		if (lev1topics != numberOfTopicsInLayer[1]) {} // things have changed. after :build there are a different number of topics.
 		ptr = ReadCompiledWord(ptr,word);
-		unsigned int lev2topics = atoi(word);
+		int lev2topics = atoi(word);
 		ReadCompiledWord(ptr,word);
 		ptr = ReadCompiledWord(ptr,word);
 		if (*word != '0' || word[1]) LoadLayer(2,word,BUILD2); // resume existing layer 2
@@ -1529,7 +1533,7 @@ bool ReadUserTopics()
     {
         ptr = ReadCompiledWord(ptr,word); //   topic name
 		if (*word == '#') break; //   comment ends it
-        unsigned int id = FindTopicIDByName(word,true); 
+        int id = FindTopicIDByName(word,true); 
         if (id) 
 		{
 			if (id <= numberOfTopicsInLayer[2])
@@ -1551,7 +1555,7 @@ bool ReadUserTopics()
         at = ReadCompiledWord(at,topicName);
 		WORDP D = FindWord(topicName);			
 		if (!D || !(D->internalBits & TOPIC)) continue; // should never fail unless topic disappears from a refresh
-		unsigned int id = D->x.topicIndex;
+		int id = D->x.topicIndex;
 		if (!id) continue;	//   no longer exists
 		if (id > numberOfTopicsInLayer[1] && badLayer1) continue;	// not paged in?
 
@@ -1559,17 +1563,17 @@ bool ReadUserTopics()
 		at = ReadCompiledWord(at,word); //   blocked status (+ ok - blocked) and maybe safe topic status
 		if (*word == '-') block->topicFlags |= TOPIC_BLOCKED|TOPIC_USED; // want to keep writing it out as blocked
 		bool safe = (block->topicFlags & TOPIC_SAFE) ? true : false; // implies safe checksum
-		unsigned int bytes;
+		int bytes;
 		at = ReadInt(at,bytes); // 0 means use default values otherwise we have used bits to read in
 		if (bytes)
 		{
 			char sum[MAX_WORD_SIZE];
 			at = ReadCompiledWord(at,sum);
-			unsigned int checksum = (unsigned int)FullDecode(sum);
+			int checksum = (int)FullDecode(sum);
 			if (safe) checksum = 0;	// this is a safe update
 			// a topic checksum of 0 implies it was changed manually, and set to 0 because  it was a minor edit.
 			block->topicFlags |= TOPIC_USED; 
-			unsigned int size = block->topicBytesRules; // how many bytes of data in memory
+			int size = (int) block->topicBytesRules; // how many bytes of data in memory
 			bool ignore = false;
 			if ((block->topicChecksum && checksum != block->topicChecksum) || size < bytes) ignore = true; // topic changed or has shrunk = discard our data
 			unsigned char* bits = block->topicUsed;
@@ -1579,7 +1583,7 @@ bool ReadUserTopics()
 				if (!ignore) *bits++ = ((*at -'a') << 4) + (at[1] - 'a'); 
 				at += 2;
 			}
-			if (!ignore && (unsigned int)((bits - startbits)) != size) ReportBug("Bad updating on topic %s %d %d actual vs %d wanted  %s\r\n",GetTopicName(id), id,(unsigned int)((bits - startbits)),size,readBuffer)
+			if (!ignore && (int)((bits - startbits)) != size) ReportBug((char*)"Bad updating on topic %s %d %d actual vs %d wanted  %s\r\n",GetTopicName(id), id,(unsigned int)((bits - startbits)),size,readBuffer)
 			char val[MAX_WORD_SIZE];
 			at = ReadCompiledWord(at+1,val); // skip over the blank that ended the prior loop
 			block->topicLastGambitted = (unsigned int)FullDecode(val); // gambits
@@ -1589,9 +1593,9 @@ bool ReadUserTopics()
 			block->topicLastRejoindered = (unsigned int)FullDecode(val); // rejoinders
 		}
     }
-	if (strcmp(readBuffer,"#`end topics")) 
+	if (strcmp(readBuffer,(char*)"#`end topics")) 
 	{
-		ReportBug("Bad file layout")
+		ReportBug((char*)"Bad file layout")
 		return false;
 	}
 
@@ -1611,7 +1615,7 @@ void ResetTopicSystem(bool safe)
 	disableIndex = 0;
 	if (!safe) pendingTopicIndex = 0;
 	ruleErased = false;	
-	for (unsigned int i = 1; i <= numberOfTopics; ++i) 
+	for (int i = 1; i <= numberOfTopics; ++i) 
 	{
 		if (!*GetTopicName(i)) continue;
 		topicBlock* block = TI(i);
@@ -1627,10 +1631,10 @@ void ResetTopicSystem(bool safe)
 
 void ResetTopics()
 {
-	for (unsigned int i = 1; i <= numberOfTopics; ++i) ResetTopic(i);
+	for (int i = 1; i <= numberOfTopics; ++i) ResetTopic(i);
 }
 
- void ResetTopic(unsigned int topic)
+ void ResetTopic(int topic)
 {
 	if (!topic || topic > numberOfTopics) return;
 	topicBlock* block = TI(topic);
@@ -1644,7 +1648,7 @@ void ResetTopics()
 	}
 }
  
-static WORDP AllocateTopicMemory( unsigned int topic, char* name, uint64 flags, unsigned int topLevelRules, unsigned int gambitCount)
+static WORDP AllocateTopicMemory( int topic, char* name, uint64 flags, unsigned int topLevelRules, unsigned int gambitCount)
 {
 	topicBlock* block = TI(topic);
 	block->ruleOffset =  (unsigned int*)AllocateString(NULL,(1+topLevelRules), sizeof(int));		// how to find rule n
@@ -1680,7 +1684,7 @@ static WORDP AllocateTopicMemory( unsigned int topic, char* name, uint64 flags, 
 		if (i == topLevelRules) break;
 		ptr = FindNextRule(NEXTTOPLEVEL,ptr,id);
 	}
-	if (gambitIndex != gambitCount)		ReportBug("Gambits in  %s don't match count. maybe T: instead of t: ?\r\n",name)
+	if (gambitIndex != gambitCount)		ReportBug((char*)"Gambits in  %s don't match count. maybe T: instead of t: ?\r\n",name)
 	block->gambitTag[gambitIndex] = NOMORERULES;
 	block->responderTag[responderIndex] = NOMORERULES;
 	block->ruleOffset[i] = NOMORERULES; 
@@ -1694,29 +1698,29 @@ unsigned int ReadTopicFlags(char* ptr)
 	{
 		char word[MAX_WORD_SIZE];
 		ptr = ReadCompiledWord(ptr,word);
-		if (!strnicmp(word,"bot=",4)) // bot restriction on the topic
+		if (!strnicmp(word,(char*)"bot=",4)) // bot restriction on the topic
 		{
 		}
-		else if (!stricmp(word,"deprioritize")) flags |= TOPIC_LOWPRIORITY; 
-		else if (!stricmp(word,"noblocking")) flags |= TOPIC_NOBLOCKING; 
- 		else if (!stricmp(word,"nopatterns")) flags |= TOPIC_NOPATTERNS; 
- 		else if (!stricmp(word,"nogambits")) flags |= TOPIC_NOGAMBITS; 
- 		else if (!stricmp(word,"nosamples")) flags |= TOPIC_NOSAMPLES; 
- 		else if (!stricmp(word,"nokeys") || !stricmp(word,"nokeywords")  )  flags |= TOPIC_NOKEYS; 
-        else if (!stricmp(word,"keep")) flags |= TOPIC_KEEP; 
- 		else if (!stricmp(word,"norandom")) flags &= -1 ^TOPIC_RANDOM;
-		else if (!stricmp(word,"normal")) flags &= -1 ^TOPIC_PRIORITY;
-		else if (!stricmp(word,"norepeat")) flags &= -1 ^TOPIC_REPEAT;
-		else if (!stricmp(word,"nostay")) flags |= TOPIC_NOSTAY;
-		else if (!stricmp(word,"priority"))  flags |= TOPIC_PRIORITY; 
-		else if (!stricmp(word,"random")) flags |= TOPIC_RANDOM;
-		else if (!stricmp(word,"repeat")) flags |= TOPIC_REPEAT; 
-		else if (!stricmp(word,"safe")) flags |= -1 ^TOPIC_SAFE;
-		else if (!stricmp(word,"share")) flags |= TOPIC_SHARE;
-		else if (!stricmp(word,"stay")) flags &= -1 ^TOPIC_NOSTAY;
-		else if (!stricmp(word,"erase")) flags &= -1 ^TOPIC_KEEP;
-		else if (!stricmp(word,"system")) flags |= TOPIC_SYSTEM | TOPIC_KEEP | TOPIC_NOSTAY;
-		else if (!stricmp(word,"user")){;}
+		else if (!stricmp(word,(char*)"deprioritize")) flags |= TOPIC_LOWPRIORITY; 
+		else if (!stricmp(word,(char*)"noblocking")) flags |= TOPIC_NOBLOCKING; 
+ 		else if (!stricmp(word,(char*)"nopatterns")) flags |= TOPIC_NOPATTERNS; 
+ 		else if (!stricmp(word,(char*)"nogambits")) flags |= TOPIC_NOGAMBITS; 
+ 		else if (!stricmp(word,(char*)"nosamples")) flags |= TOPIC_NOSAMPLES; 
+ 		else if (!stricmp(word,(char*)"nokeys") || !stricmp(word,(char*)"nokeywords")  )  flags |= TOPIC_NOKEYS; 
+        else if (!stricmp(word,(char*)"keep")) flags |= TOPIC_KEEP; 
+ 		else if (!stricmp(word,(char*)"norandom")) flags &= -1 ^TOPIC_RANDOM;
+		else if (!stricmp(word,(char*)"normal")) flags &= -1 ^TOPIC_PRIORITY;
+		else if (!stricmp(word,(char*)"norepeat")) flags &= -1 ^TOPIC_REPEAT;
+		else if (!stricmp(word,(char*)"nostay")) flags |= TOPIC_NOSTAY;
+		else if (!stricmp(word,(char*)"priority"))  flags |= TOPIC_PRIORITY; 
+		else if (!stricmp(word,(char*)"random")) flags |= TOPIC_RANDOM;
+		else if (!stricmp(word,(char*)"repeat")) flags |= TOPIC_REPEAT; 
+		else if (!stricmp(word,(char*)"safe")) flags |= -1 ^TOPIC_SAFE;
+		else if (!stricmp(word,(char*)"share")) flags |= TOPIC_SHARE;
+		else if (!stricmp(word,(char*)"stay")) flags &= -1 ^TOPIC_NOSTAY;
+		else if (!stricmp(word,(char*)"erase")) flags &= -1 ^TOPIC_KEEP;
+		else if (!stricmp(word,(char*)"system")) flags |= TOPIC_SYSTEM | TOPIC_KEEP | TOPIC_NOSTAY;
+		else if (!stricmp(word,(char*)"user")){;}
 	}
 	return flags;
 }
@@ -1741,7 +1745,7 @@ void CreateFakeTopics(char* data) // ExtraTopic can be used to test this, naming
 	MEANING MtopicName = 0;
 	while (ALWAYS)
 	{
-		if (stricmp(word,"topic:")) return;	// bad information or end of system, ignore it
+		if (stricmp(word,(char*)"topic:")) return;	// bad information or end of system, ignore it
 		data = ReadCompiledWord(data,word); // topic name
 		WORDP D = FindWord(word);
 
@@ -1763,15 +1767,15 @@ void CreateFakeTopics(char* data) // ExtraTopic can be used to test this, naming
 		MtopicName = MakeMeaning(StoreWord(word));
 	
 		data = ReadCompiledWord(data,word); // flags
-		if (stricmp(word,"flags:")) return;
+		if (stricmp(word,(char*)"flags:")) return;
 
-		char* bot = strstr(data,"Bot:");
+		char* bot = strstr(data,(char*)"Bot:");
 		if (!bot) return;
 		unsigned int flags = ReadTopicFlags(data);
 
 		/// bot + 4 thru to end is bot description
 		char restriction[MAX_WORD_SIZE];
-		char* keywords = strstr(bot,"Keywords:");
+		char* keywords = strstr(bot,(char*)"Keywords:");
 		*keywords = 0;
 		data = bot + 4;
 		strcpy(restriction,data);
@@ -1779,7 +1783,7 @@ void CreateFakeTopics(char* data) // ExtraTopic can be used to test this, naming
 		while (ALWAYS)
 		{
 			data = ReadCompiledWord(data,word);
-			if (!stricmp(word,"rules:")) break; // end of keywords
+			if (!stricmp(word,(char*)"rules:")) break; // end of keywords
 			CreateFact(MakeMeaning(StoreWord(word)),Mmember,MtopicName,FACTTRANSIENT);
 		}
 		*keywords = 'K';
@@ -1792,7 +1796,7 @@ void CreateFakeTopics(char* data) // ExtraTopic can be used to test this, naming
 		char* ruledata = topicData + JUMP_OFFSET;
 		unsigned int gambitCount = 0;
 		unsigned int topLevelRules = 0;
-		char* endrules = strstr(ruledata,"`000 x");
+		char* endrules = strstr(ruledata,(char*)"`000 x");
 		if (!endrules) return;
 
 		endrules[5] = 0;
@@ -1817,7 +1821,7 @@ void CreateFakeTopics(char* data) // ExtraTopic can be used to test this, naming
 	}
 }
 
-static void LoadTopicData(const char* name,uint64 build,int layer,bool plan)
+static void LoadTopicData(const char* name,unsigned int build,int layer,bool plan)
 {
 	FILE* in = FopenReadOnly(name); // TOPIC folder
 	if (!in) return;
@@ -1846,44 +1850,44 @@ static void LoadTopicData(const char* name,uint64 build,int layer,bool plan)
 		char name[MAX_WORD_SIZE];
 		ptr = ReadCompiledWord(readBuffer,name); // eat TOPIC: 
 		if (!*name) break;
-		if (!plan && stricmp(name,"topic:"))
+		if (!plan && stricmp(name,(char*)"topic:"))
 		{
-			ReportBug("bad topic alignment %s\r\n",name)
-			myexit("bad topic alignment");
+			ReportBug((char*)"bad topic alignment %s\r\n",name)
+			myexit((char*)"bad topic alignment");
 		}
-		if (plan && stricmp(name,"plan:"))
+		if (plan && stricmp(name,(char*)"plan:"))
 		{
-			ReportBug("bad plan alignment %s\r\n",name)
-			myexit("bad plan alignment");
+			ReportBug((char*)"bad plan alignment %s\r\n",name)
+			myexit((char*)"bad plan alignment");
 		}
 		ptr = ReadCompiledWord(ptr,name);
 		if (!topicBlockPtrs[0] || !topicBlockPtrs[0]->topicName)
 		{
 			if (build == BUILD0) 
 			{
-				EraseTopicFiles(BUILD0,"0");
-				printf("\r\n>>>  TOPICS directory bad. Contents erased. :build 0 again.\r\n\r\n");
+				EraseTopicFiles(BUILD0,(char*)"0");
+				printf((char*)"\r\n>>>  TOPICS directory bad. Contents erased. :build 0 again.\r\n\r\n");
 			}
 			else if (build == BUILD1) 
 			{
-				printf("\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 1 again.\r\n\r\n");
-				EraseTopicFiles(BUILD1,"1");
+				printf((char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 1 again.\r\n\r\n");
+				EraseTopicFiles(BUILD1,(char*)"1");
 			}
 			else if (build == BUILD2) 
 			{
-				printf("\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 2 again.\r\n\r\n");
+				printf((char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 2 again.\r\n\r\n");
 			}
 			return;
 		}
 		compiling = true;
-		unsigned int topic = FindTopicIDByName(name,true); // may preexist
+		int topic = FindTopicIDByName(name,true); // may preexist
 		compiling = false;
 		if (!topic) topic = ++numberOfTopics;
-		else if (plan) myexit("duplicate plan name");
+		else if (plan) myexit((char*)"duplicate plan name");
 		
 		topicBlock* block = TI(topic);
-		unsigned int topLevelRules = 0;
-		unsigned int gambitCount = 0;
+		int topLevelRules = 0;
+		int gambitCount = 0;
 		char argCount[MAX_WORD_SIZE];
 
 		if (plan)
@@ -1899,16 +1903,16 @@ static void LoadTopicData(const char* name,uint64 build,int layer,bool plan)
  			ptr = ReadInt(ptr,topLevelRules);
 			ptr = ReadInt(ptr,gambitCount); 
 		}
-		unsigned int datalen;
+		int datalen;
 		ptr = ReadInt(ptr,datalen);
 
 		char* space = AllocateString(0,datalen); // no closing null, just \r\n
 		char* copy = space;
-		unsigned int didread = fread(copy,1,datalen-2,in); // not yet read \r\n 
+		int didread = (int)fread(copy,1,datalen-2,in); // not yet read \r\n 
 		copy[datalen-2] = 0;
 		if (didread != (datalen - 2))
 		{
-			ReportBug("failed to read all of topic/plan %s read: %d wanted: %d \r\n",name,didread,datalen)
+			ReportBug((char*)"failed to read all of topic/plan %s read: %d wanted: %d \r\n",name,didread,datalen)
 			break;
 		}
 		// read \r\n or \n carefully, since windows and linux do things differently
@@ -1916,8 +1920,8 @@ static void LoadTopicData(const char* name,uint64 build,int layer,bool plan)
 		didread = fread(&c,1,1,in); // \n or \r\n
 		if (c != '\r' && c != '\n') 
 		{
-			ReportBug("failed to end topic/plan %s properly\r\n",name)
-			myexit("failed to end topic/plan properly");
+			ReportBug((char*)"failed to end topic/plan %s properly\r\n",name)
+			myexit((char*)"failed to end topic/plan properly");
 		}
 		block->topicSourceFileName = AllocateString(ptr); // name of file topic came from
 
@@ -1927,7 +1931,7 @@ static void LoadTopicData(const char* name,uint64 build,int layer,bool plan)
 		*start = ' '; //  kill start "
 		*(ptr-2) = ' '; // kill close "
 		*(ptr-1) = 0;	//   end bot restriction - double space after botname
-		block->topicRestriction = ( strstr(start," all ")) ? NULL : start;
+		block->topicRestriction = ( strstr(start,(char*)" all ")) ? NULL : start;
 
 		SetTopicData(topic,ptr);
 		if (!plan) AllocateTopicMemory(topic, name, build|CONCEPT|TOPIC, topLevelRules,gambitCount);
@@ -1940,24 +1944,55 @@ static void LoadTopicData(const char* name,uint64 build,int layer,bool plan)
 	fclose(in);
 }
 
-static void ReadPatternData(const char* name)
+static void ReadPatternData(const char* name,unsigned int build)
 {
     FILE* in = FopenReadOnly(name); // TOPIC folder
     char word[MAX_WORD_SIZE];
 	if (!in) return;
 	currentFileLine = 0;
+	WORDP base = dictionaryFree;
+	WORDP D;
 	while (ReadALine(readBuffer,in) >= 0) 
 	{
 		ReadCompiledWord(readBuffer,word); //   skip over double quote or QUOTE
 		if (!*word) continue;
-        if (*word == '"') StoreWord(JoinWords(BurstWord(word),false),0,PATTERN_WORD); 
-		else if (*word == '\'')   StoreWord(word+1,0,PATTERN_WORD); 
-        else  StoreWord(word,0,PATTERN_WORD);
+		char* name;
+        if (*word == '"') name = JoinWords(BurstWord(word),false); 
+		else if (*word == '\'')  name = word+1;
+        else name = word;
+		WORDP old = FindWord(name);
+		if (old && (old->systemFlags & PATTERN_WORD)) old = NULL;	// old is not changing value at all
+		else if (build != BUILD2) old = NULL; // only protect from a layer 2 load
+		D = StoreWord(name,0,PATTERN_WORD);
+		// if old was not previously pattern word and it is now, we will have to unwind on unload. If new word, word gets unwound automatically
+		if (old)
+		{
+			int* protect = (int*) AllocateString(NULL,3,4); // link + entry to refresh back to NOT pattern word
+			protect[0] = String2Index(unwindLayer2);
+			protect[1] = Word2Index(old);
+			protect[2] = PATTERN_UNWIND;
+			unwindLayer2 = (char*) protect;
+		}
     }
     fclose(in);
 }
 
-static void AddRecursiveProperty(WORDP D,uint64 type,bool buildingDictionary)
+void UnwindLayer2Protect()
+{
+	int* protect = (int*)unwindLayer2;
+	while (protect)
+	{
+		if (protect[2] == PATTERN_UNWIND)
+		{
+			WORDP D = Index2Word(protect[2]);			// old dict entry from earlier layer
+			D->systemFlags &= -1L ^ PATTERN_WORD;		// layer2 added this flag, take it away
+			protect = (int*) Index2String(protect[0]);
+		}
+	}
+	unwindLayer2 = NULL;
+}
+
+static void AddRecursiveProperty(WORDP D,uint64 type,bool buildingDictionary,unsigned int build)
 {
 	if (D->internalBits & DELETED_MARK  && !(D->internalBits & TOPIC)) RemoveInternalFlag(D,DELETED_MARK);
 	AddProperty(D,type);
@@ -1976,12 +2011,12 @@ static void AddRecursiveProperty(WORDP D,uint64 type,bool buildingDictionary)
 	FACT* F = GetObjectNondeadHead(D);
 	while (F)
 	{
-		AddRecursiveProperty(Meaning2Word(F->subject),type,buildingDictionary);
+		AddRecursiveProperty(Meaning2Word(F->subject),type,buildingDictionary,build);
 		F = GetObjectNondeadNext(F);
 	}
 }
 
-static void AddRecursiveRequired(WORDP D,WORDP set,uint64 type,bool buildingDictionary)
+static void AddRecursiveRequired(WORDP D,WORDP set,uint64 type,bool buildingDictionary,unsigned int build)
 {
 	if (*D->word != '~')  
 	{
@@ -2006,11 +2041,11 @@ static void AddRecursiveRequired(WORDP D,WORDP set,uint64 type,bool buildingDict
 	FACT* F = GetObjectNondeadHead(D);
 	while (F)
 	{
-		AddRecursiveRequired(Meaning2Word(F->subject),D,type,buildingDictionary);
+		AddRecursiveRequired(Meaning2Word(F->subject),D,type,buildingDictionary,build);
 		F = GetObjectNondeadNext(F);
 	}
 }
-static void AddRecursiveFlag(WORDP D,uint64 type,bool buildingDictionary)
+static void AddRecursiveFlag(WORDP D,uint64 type,bool buildingDictionary,unsigned int build)
 {
 	AddSystemFlag(D,type);
 	if (buildingDictionary) AddSystemFlag(D,MARKED_WORD);
@@ -2020,12 +2055,12 @@ static void AddRecursiveFlag(WORDP D,uint64 type,bool buildingDictionary)
 	FACT* F = GetObjectNondeadHead(D);
 	while (F)
 	{
-		AddRecursiveFlag(Meaning2Word(F->subject),type,buildingDictionary); // but may NOT have been defined yet!!!
+		AddRecursiveFlag(Meaning2Word(F->subject),type,buildingDictionary,build); // but may NOT have been defined yet!!!
 		F = GetObjectNondeadNext(F);
 	}
 }
 
-void InitKeywords(const char* name,uint64 build,bool buildDictionary,bool concept)
+void InitKeywords(const char* name,unsigned int build,bool buildDictionary,bool concept)
 { 
 	FILE* in = FopenReadOnly(name); //  TOPICS keywords files
 	if (!in) return;
@@ -2070,7 +2105,7 @@ void InitKeywords(const char* name,uint64 build,bool buildDictionary,bool concep
 			while (*ptr != '(' && *ptr != '"')
 			{
 				ptr = ReadCompiledWord(ptr,word);
-				if (!stricmp(word,"UPPERCASE_MATCH"))
+				if (!stricmp(word,(char*)"UPPERCASE_MATCH"))
 				{
 					AddInternalFlag(set,UPPERCASE_MATCH);
 					continue;
@@ -2189,7 +2224,7 @@ void InitKeywords(const char* name,uint64 build,bool buildDictionary,bool concep
 					holdparse[holdindex] = parse;
 					holdrequired[holdindex] = required;
 					++holdindex;
-					if (holdindex >= 10000) myexit("Too much concept recursion in keywordinit");
+					if (holdindex >= 10000) myexit((char*)"Too much concept recursion in keywordinit");
 				}
 			}
 	
@@ -2205,21 +2240,17 @@ void InitKeywords(const char* name,uint64 build,bool buildDictionary,bool concep
 		WORDP D = holdset[holdindex];
 		type = holdprop[holdindex];
 		sys = holdsys[holdindex];
-		if (sys & ONLY_NONE)
-		{
-			int xx = 0;
-		}
 		parse = holdparse[holdindex];
 		required = holdrequired[holdindex];
 		if (type) 
 		{
 			NextInferMark();
-			AddRecursiveProperty(D,type,buildDictionary);
+			AddRecursiveProperty(D,type,buildDictionary,build);
 		}
 		if (sys) 
 		{
 			NextInferMark();
-			AddRecursiveFlag(D,sys,buildDictionary);
+			AddRecursiveFlag(D,sys,buildDictionary,build);
 		}
 		if (parse) 
 		{
@@ -2229,13 +2260,13 @@ void InitKeywords(const char* name,uint64 build,bool buildDictionary,bool concep
 		if (required)
 		{
 			NextInferMark();
-			AddRecursiveRequired(D,D,required,buildDictionary);
+			AddRecursiveRequired(D,D,required,buildDictionary,build);
 		}
 	}
 	fclose(in);
 }
 
-static void InitMacros(const char* name,uint64 build)
+static void InitMacros(const char* name,unsigned int build)
 {
 	FILE* in = FopenReadOnly(name); // TOPICS macros
 	if (!in) return;
@@ -2253,7 +2284,7 @@ static void InitMacros(const char* name,uint64 build)
 		else if (*tmpWord == 'O') AddInternalFlag(D,IS_OUTPUT_MACRO); 
 		else if (*tmpWord == 'P') AddInternalFlag(D,IS_PATTERN_MACRO); 
 		else if (*tmpWord == 'D') AddInternalFlag(D,IS_PATTERN_MACRO|IS_OUTPUT_MACRO);
-		unsigned int val;
+		int val;
 		ptr = ReadInt(ptr,val); 
 		D->x.macroFlags = (unsigned short) val; // controls on text string as KEEP_QUOTE or not 
 		ptr = ReadCompiledWord(ptr,tmpWord); // skip over readable arg count, has arg count embedded also
@@ -2262,7 +2293,7 @@ static void InitMacros(const char* name,uint64 build)
 	fclose(in);
 }
 
-void AddContext(unsigned int topic, char* label)
+void AddContext(int topic, char* label)
 {
 	strcpy(labelContext[contextIndex],label);
 	topicContext[contextIndex] = (unsigned short) topic;
@@ -2276,16 +2307,17 @@ void SetContext(bool val)
 	contextResult = val;
 }
 
-unsigned int InContext(unsigned int topic, char* label)
+unsigned int InContext(int topic, char* label)
 {
-	if (contextResult) return true; // testing override
+	if (contextResult) return 1; // testing override
 	int i = contextIndex;
 	while (--i != (int)contextIndex)
 	{
 		if (i < 0) i = MAX_RECENT;
 		if (topicContext[i] == 0) break;	// has no context
-		if ((int)inputContext[i] <= ((int)volleyCount - 5)) break; //  not close ( last volley == -1 -2 -3 -4 
-		if (topic == topicContext[i] && !stricmp(labelContext[i],label)) return inputContext[i];
+		int delay = volleyCount - inputContext[i];
+		if (delay >= 5) break; //  not close have 5 volleys since 
+		if (topic == topicContext[i] && !stricmp(labelContext[i],label)) return delay;
 	}
 	return 0;
 }
@@ -2296,17 +2328,17 @@ char* WriteUserContext(char* ptr,bool sharefile )
 
 	// write out recent context
 	int i = contextIndex;
-	sprintf(ptr,"#context ");
+	sprintf(ptr,(char*)"#context ");
 	ptr += strlen(ptr);
 	while (--i != (int)contextIndex)
 	{
 		if (i < 0) i = MAX_RECENT;
 		if (topicContext[i] == 0) break;
 		if ((int)inputContext[i] <= ((int)volleyCount - 5)) break; //  not close 
-		sprintf(ptr,"%s %d %s ", GetTopicName(topicContext[i]),inputContext[i],labelContext[i]);
+		sprintf(ptr,(char*)"%s %d %s ", GetTopicName(topicContext[i]),inputContext[i],labelContext[i]);
 		ptr += strlen(ptr);
 	}
-	strcpy(ptr,"\r\n");
+	strcpy(ptr,(char*)"\r\n");
 	memset(topicContext,0,sizeof(topicContext));
 	contextIndex = 0;
 	return ptr + strlen(ptr);
@@ -2318,7 +2350,7 @@ bool ReadUserContext()
     ReadALine(readBuffer, 0); 
 	char* ptr = readBuffer;
 	ptr = ReadCompiledWord(ptr,word);
-	if (stricmp(word,"#context")) return false; // cant handle it
+	if (stricmp(word,(char*)"#context")) return false; // cant handle it
 	memset(topicContext,0,sizeof(topicContext));
 	contextIndex = 0;
 	while (ptr && *ptr)
@@ -2337,10 +2369,10 @@ bool ReadUserContext()
 
 static void InitLayerMemory(char* name, int layer)
 {
-	unsigned int total;
-	unsigned int counter = 0;
+	int total;
+	int counter = 0;
 	char filename[MAX_WORD_SIZE];
-	sprintf(filename,"TOPIC/script%s.txt",name);
+	sprintf(filename,(char*)"TOPIC/script%s.txt",name);
 	FILE* in = FopenReadOnly(filename); // TOPICS
 	if (in)
 	{
@@ -2349,7 +2381,7 @@ static void InitLayerMemory(char* name, int layer)
 		fclose(in);
 		counter += total;
 	}
-	sprintf(filename,"TOPIC/plans%s.txt",name);
+	sprintf(filename,(char*)"TOPIC/plans%s.txt",name);
 	in = FopenReadOnly(filename); 
 	if (in)
 	{
@@ -2361,11 +2393,11 @@ static void InitLayerMemory(char* name, int layer)
 	int priorTopicCount = (layer) ? numberOfTopicsInLayer[layer - 1] : 0;
 	numberOfTopics = numberOfTopicsInLayer[layer] = priorTopicCount + counter;
 	topicBlockPtrs[layer] = (topicBlock*) AllocateString(NULL,counter+1,sizeof(topicBlock),true); // reserved space for each topic to have its data
-	for (unsigned int i = priorTopicCount + 1; i <= numberOfTopics; ++i) TI(i)->topicName = "";
+	for (int i = priorTopicCount + 1; i <= numberOfTopics; ++i) TI(i)->topicName = "";
 	if (layer == 0)  TI(0)->topicName = "";
 }
 
-static void AddRecursiveMember(WORDP D, WORDP set)
+static void AddRecursiveMember(WORDP D, WORDP set,unsigned int build)
 {
 	if (*D->word != '~')
 	{
@@ -2381,13 +2413,14 @@ static void AddRecursiveMember(WORDP D, WORDP set)
 	FACT* F = GetObjectNondeadHead(D);
 	while (F)
 	{
-		AddRecursiveMember(Meaning2Word(F->subject),set);
+		AddRecursiveMember(Meaning2Word(F->subject),set,build);
 		F = GetObjectNondeadNext(F);
 	}
 }
 
-static void IndirectMembers(WORDP D, uint64 pattern)
+static void IndirectMembers(WORDP D, uint64 buildx)
 { // we want to recursively get members of this concept, but waited til now for any subset concepts to have been defined
+	unsigned int build = (unsigned int) buildx;
 	if (D->systemFlags & DELAYED_RECURSIVE_DIRECT_MEMBER) // this set should acquire all its indirect members now
 	{
 		D->systemFlags ^= DELAYED_RECURSIVE_DIRECT_MEMBER;
@@ -2396,7 +2429,7 @@ static void IndirectMembers(WORDP D, uint64 pattern)
 		FACT* F = GetObjectNondeadHead(D);
 		while (F)
 		{
-			if (F->verb == Mmember) AddRecursiveMember(Meaning2Word(F->subject),D);
+			if (F->verb == Mmember) AddRecursiveMember(Meaning2Word(F->subject),D,build);
 			F = GetObjectNondeadNext(F);
 		}
 	}
@@ -2410,7 +2443,7 @@ topicBlock* TI(int topicid)
 	return NULL;
 }
 	
-FunctionResult LoadLayer(int layer,char* name,int build)
+FunctionResult LoadLayer(int layer,char* name,unsigned int build)
 {
 	//  if (layer == 2) ReturnToLayer(1,false); // Warning - erases user facts and variables, etc. 
 	int originalTopicCount = numberOfTopics;
@@ -2418,42 +2451,37 @@ FunctionResult LoadLayer(int layer,char* name,int build)
 	InitLayerMemory(name,layer);
 	int expectedTopicCount = numberOfTopics;
 	numberOfTopics = originalTopicCount;
-	sprintf(filename,"TOPIC/patternWords%s.txt",name );
-	ReadPatternData(filename);
-	sprintf(filename,"TOPIC/keywords%s.txt",name);
+	sprintf(filename,(char*)"TOPIC/patternWords%s.txt",name );
+	ReadPatternData(filename,build); // sets the PATTERN_WORD flag on a dictionary entry
+	sprintf(filename,(char*)"TOPIC/keywords%s.txt",name);
 	InitKeywords(filename,build);
-	sprintf(filename,"TOPIC/macros%s.txt",name);
+	sprintf(filename,(char*)"TOPIC/macros%s.txt",name);
 	InitMacros(filename,build);
-	sprintf(filename,"TOPIC/dict%s.txt",name);
+	sprintf(filename,(char*)"TOPIC/dict%s.txt",name);
 	ReadFacts(filename,build);
-	sprintf(filename,"TOPIC/facts%s.txt",name );
+	sprintf(filename,(char*)"TOPIC/facts%s.txt",name );
 	ReadFacts(filename,build);
-	sprintf(filename,"TOPIC/script%s.txt",name);
+	sprintf(filename,(char*)"TOPIC/script%s.txt",name);
 	LoadTopicData(filename,build,layer,false);
-	sprintf(filename,"TOPIC/plans%s.txt",name );
+	sprintf(filename,(char*)"TOPIC/plans%s.txt",name );
 	LoadTopicData(filename,build,layer,true);
-	if (numberOfTopics != expectedTopicCount)
-	{
-		int xx = 0;
-	}
 
-
-	sprintf(filename,"TOPIC/private%s.txt",name);
+	sprintf(filename,(char*)"TOPIC/private%s.txt",name);
 	ReadSubstitutes(filename,DO_PRIVATE,true);
-	sprintf(filename,"TOPIC/canon%s.txt",name );
+	sprintf(filename,(char*)"TOPIC/canon%s.txt",name );
 	ReadCanonicals(filename);
-	WalkDictionary(IndirectMembers,0); // having read in all concepts, handled delayed word marks
+	WalkDictionary(IndirectMembers,build); // having read in all concepts, handled delayed word marks
 	
 	if (layer != 2)
 	{
 		char data[MAX_WORD_SIZE];
-		sprintf(data,"Build%s:  dict=%ld  fact=%ld  stext=%ld %s %s\r\n",name,
+		sprintf(data,(char*)"Build%s:  dict=%ld  fact=%ld  stext=%ld %s %s\r\n",name,
 			(long int)(dictionaryFree-dictionaryPreBuild[layer]),
 			(long int)(factFree-factsPreBuild[layer]),
 			(long int)(stringsPreBuild[layer]-stringFree),
 			timeStamp[layer],buildStamp[layer]);
 		if (server)  Log(SERVERLOG, "%s",data);
-		else printf("%s",data);
+		else printf((char*)"%s",data);
 	}
 	
 	LockLayer(layer);
@@ -2470,16 +2498,16 @@ void LoadTopicSystem() // reload all topic data
 	currentTopicID = 0;
 	ClearBotVariables();
 	
-	printf("WordNet: dict=%ld  fact=%ld  stext=%ld %s\r\n",(long int)(dictionaryFree-dictionaryBase),(long int)(factFree-factBase),(long int)(stringBase-stringFree),dictionaryTimeStamp);
+	printf((char*)"WordNet: dict=%ld  fact=%ld  stext=%ld %s\r\n",(long int)(dictionaryFree-dictionaryBase),(long int)(factFree-factBase),(long int)(stringBase-stringFree),dictionaryTimeStamp);
 
-	LoadLayer(0,"0",BUILD0);
+	LoadLayer(0,(char*)"0",BUILD0);
 	ReturnToLayer(0,true); // unlock it to add stuff
 	ReadLivePosData(); // any needed concepts must have been defined by now in level 0 (assumed). Not done in level1
 	LockLayer(0);
-	LoadLayer(1,"1",BUILD1);
-	Callback(FindWord("^csboot"),"()"); // do before world is locked
+	LoadLayer(1,(char*)"1",BUILD1);
+	Callback(FindWord((char*)"^csboot"),(char*)"()"); // do before world is locked
 	NoteBotVariables(); // convert user variables read into bot variables
-	// StoreWord("$cs_randindex",0);	// so it is before the freeze WHY!!  cant write on it then
+	// StoreWord((char*)"$cs_randindex",0);	// so it is before the freeze WHY!!  cant write on it then
 }
 
 
@@ -2494,7 +2522,7 @@ char* ShowPendingTopics()
 	char* ptr = word;
 	for (int i = pendingTopicIndex-1; i >= 0; --i)
 	{
-		sprintf(ptr,"%s ",GetTopicName(pendingTopicList[i])); 
+		sprintf(ptr,(char*)"%s ",GetTopicName(pendingTopicList[i])); 
 		ptr += strlen(ptr);
 	}
 	return word;
@@ -2502,7 +2530,7 @@ char* ShowPendingTopics()
 
 void GetActiveTopicName(char* buffer)
 {
-	unsigned int topic = currentTopicID;
+	int topic = currentTopicID;
 	*buffer = 0;
 
 	// the real current topic might be the control topic or a user topic
@@ -2526,7 +2554,7 @@ void GetActiveTopicName(char* buffer)
 	}
 }
 
-void AddPendingTopic(unsigned int topic)
+void AddPendingTopic(int topic)
 {	//   these are topics we want to return to
 	//   topics added THIS turn are most pending in first stored order
 	//   topics added previously should retain their old order 
@@ -2547,18 +2575,18 @@ void AddPendingTopic(unsigned int topic)
 	bool removed = RemovePendingTopic(topic);	//   remove any old reference
 	pendingTopicList[pendingTopicIndex++] = topic;
 	if (pendingTopicIndex >= MAX_TOPIC_STACK) memmove(&pendingTopicList[0],&pendingTopicList[1],sizeof(int) * --pendingTopicIndex);
-	if (trace & TRACE_OUTPUT && !removed && CheckTopicTrace()) Log(STDUSERLOG,"Adding pending topic %s\r\n",GetTopicName(topic));
+	if (trace & TRACE_OUTPUT && !removed && CheckTopicTrace()) Log(STDUSERLOG,(char*)"Adding pending topic %s\r\n",GetTopicName(topic));
 }
 
 void PendingTopics(int set)
 {
 	SET_FACTSET_COUNT(set,0);
-	for (unsigned int i = 0; i < pendingTopicIndex; ++i) AddFact(set,CreateFact(MakeMeaning(FindWord(GetTopicName(pendingTopicList[i]))),Mpending,MakeMeaning(StoreWord(i)),FACTTRANSIENT));  // (~topic pending 3) 
+	for (int i = 0; i < pendingTopicIndex; ++i) AddFact(set,CreateFact(MakeMeaning(FindWord(GetTopicName(pendingTopicList[i]))),Mpending,MakeMeaning(StoreWord(i)),FACTTRANSIENT));  // (~topic pending 3) 
 }
 
-bool IsCurrentTopic(unsigned int topic) // see if topic is an already pending one, not current
+bool IsCurrentTopic(int topic) // see if topic is an already pending one, not current
 {
-	for (unsigned int i = 0; i < pendingTopicIndex; ++i) 
+	for (int i = 0; i < pendingTopicIndex; ++i) 
 	{
 		if (pendingTopicList[i] == topic) 
 			return true;
@@ -2571,9 +2599,9 @@ void ClearPendingTopics()
 	 pendingTopicIndex = 0;
 }
 
-bool RemovePendingTopic(unsigned int topic)
+bool RemovePendingTopic(int topic)
 {
-	for (unsigned int i = 0; i < pendingTopicIndex; ++i)
+	for (int i = 0; i < pendingTopicIndex; ++i)
 	{
 		if (pendingTopicList[i] == topic)
 		{
@@ -2595,12 +2623,12 @@ unsigned int GetPendingTopicUnchanged()
 /// EXECUTING CODE TOPICS
 ///////////////////////////////////////////////////////////
 
-int TopicInUse(unsigned int topic)
+int TopicInUse(int topic)
 {
 	if (topic == currentTopicID) return -1;
 	
 	// insure topic not already in progress
-	for (unsigned int i = 1; i <= topicIndex; ++i) 
+	for (int i = 1; i <= topicIndex; ++i) 
 	{
 		if (topicStack[i] == topic) return -1; // already here
 	}
@@ -2608,33 +2636,33 @@ int TopicInUse(unsigned int topic)
 	return 0;
 }
 
-int PushTopic(unsigned int topic) // -1 = failed  0 = unneeded  1 = pushed 
+int PushTopic(int topic) // -1 = failed  0 = unneeded  1 = pushed 
 {
 	if (topic == currentTopicID) 
 	{
-		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,"Topic %s is already current\r\n",GetTopicName(topic));
+		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,(char*)"Topic %s is already current\r\n",GetTopicName(topic));
 		return 0;  // current topic
 	}
 	else if (!topic)
 	{
-		ReportBug("PushTopic topic missing")
+		ReportBug((char*)"PushTopic topic missing")
 		return -1;
 	}
 
 	//  topic  already in progress? allow repeats since this is control flow
 	if (TopicInUse(topic) == -1)
 	{
-		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,"Topic %s is already pending, changed to current\r\n",GetTopicName(topic));
+		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,(char*)"Topic %s is already pending, changed to current\r\n",GetTopicName(topic));
 	}
     topicStack[++topicIndex] = currentTopicID; // [1] will be 0 
     if (topicIndex >= MAX_TOPIC_STACK) 
     {
 		--topicIndex;
-        ReportBug("PusTopic overflow")
+        ReportBug((char*)"PusTopic overflow")
         return -1;
     }
 	currentTopicID = topic; 
-  	if (trace & TRACE_TOPIC) Log(STDUSERLOG,"Pushing Topic %s\r\n",GetTopicName(topic));
+  	if (trace & TRACE_TOPIC) Log(STDUSERLOG,(char*)"Pushing Topic %s\r\n",GetTopicName(topic));
 	return 1;
 }
 
@@ -2642,7 +2670,7 @@ void PopTopic()
 {
 	if (topicIndex) 
 	{
- 		if (trace & TRACE_TOPIC) Log(STDUSERLOG,"Popping Topic %s\r\n",GetTopicName(currentTopicID));
+ 		if (trace & TRACE_TOPIC) Log(STDUSERLOG,(char*)"Popping Topic %s\r\n",GetTopicName(currentTopicID));
 		currentTopicID = topicStack[topicIndex--];
 	}
 	else currentTopicID = 0;	// no topic now

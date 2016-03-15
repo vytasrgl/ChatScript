@@ -28,11 +28,11 @@ char* OverflowProtect(char* ptr)
 {
 	if (!overflowBuffer && (unsigned int) (ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) 
 	{
-		ReportBug("User File %s too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)userCacheSize,OVERFLOW_SAFETY_MARGIN) // too big
-		printf("User File %s too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)userCacheSize,OVERFLOW_SAFETY_MARGIN); // too big
+		ReportBug((char*)"User File %s too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)userCacheSize,OVERFLOW_SAFETY_MARGIN) // too big
+		printf((char*)"User File %s too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)userCacheSize,OVERFLOW_SAFETY_MARGIN); // too big
 		safespace = userCacheSize * 2;
 		if (safespace < 200000) safespace = 200000;
-		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,"Allocating overflow write for %s\r\n",userDataBase);
+		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"Allocating overflow write for %s\r\n",userDataBase);
 		overflowBuffer = (char*) malloc(safespace);
 		if (!overflowBuffer) return NULL;	// cannot protect
 		memmove(overflowBuffer,userDataBase,(ptr-userDataBase));
@@ -41,8 +41,8 @@ char* OverflowProtect(char* ptr)
 	}
 	else if (overflowBuffer && (unsigned int) (ptr - userDataBase) >= (safespace  - OVERFLOW_SAFETY_MARGIN )) 
 	{
-		ReportBug("User File %s way too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)safespace,OVERFLOW_SAFETY_MARGIN) // too big
-		printf("User File %s way too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)safespace,OVERFLOW_SAFETY_MARGIN); // too big
+		ReportBug((char*)"User File %s way too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)safespace,OVERFLOW_SAFETY_MARGIN) // too big
+		printf((char*)"User File %s way too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)safespace,OVERFLOW_SAFETY_MARGIN); // too big
 		return NULL; // just cannot write it
 	}
 	return ptr;
@@ -53,9 +53,9 @@ void InitCache(unsigned int dictStringSize)
 	cacheBase = (char*) malloc(dictStringSize + userTopicStoreSize + userTableSize );
 	if (!cacheBase)
 	{
-		printf("Out of  memory space for dictionary w user cache %d %d %d %d\r\n",dictStringSize,userTopicStoreSize,userTableSize,MAX_ENTRIES);
-		ReportBug("Cannot allocate memory space for dictionary %ld\r\n",(long int)(dictStringSize + userTopicStoreSize))
-		myexit("out of memory space for dictionary to allocate");
+		printf((char*)"Out of  memory space for dictionary w user cache %d %d %d %d\r\n",dictStringSize,userTopicStoreSize,userTableSize,MAX_ENTRIES);
+		ReportBug((char*)"Cannot allocate memory space for dictionary %ld\r\n",(long int)(dictStringSize + userTopicStoreSize))
+		myexit((char*)"out of memory space for dictionary to allocate");
 	}
 	cacheIndex = (unsigned int*) (cacheBase + userTopicStoreSize); // linked list for caches - each entry is [3] wide 0=prior 1=next 2=TIMESTAMP
 	char* ptr = cacheBase;
@@ -93,13 +93,13 @@ static void WriteCache(unsigned int which,size_t size)
 	if (!out) // see if we can create the directory (assuming its missing)
 	{
 		char call[MAX_WORD_SIZE];
-		sprintf(call,"mkdir %s",users);
+		sprintf(call,(char*)"mkdir %s",users);
 		system(call);
 		out = userFileSystem.userCreate(ptr);
 
 		if (!out) 
 		{
-			ReportBug("cannot open user state file %s to write\r\n",ptr)
+			ReportBug((char*)"cannot open user state file %s to write\r\n",ptr)
 			return;
 		}
 	}
@@ -132,7 +132,7 @@ static void WriteCache(unsigned int which,size_t size)
 
 	userFileSystem.userWrite(ptr,1,size,out);
 	userFileSystem.userClose(out);
-	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,"write out %s cache (%d)\r\n",ptr,which);
+	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"write out %s cache (%d)\r\n",ptr,which);
 
 	cacheIndex[TIMESTAMP(which)] &= 0x00ffffff;	// clear volley count since last written but keep time info
 	if ( overflowBuffer) OverflowRelease();
@@ -228,7 +228,7 @@ char* FindUserCache(char* word)
 char* GetFileRead(char* user,char* computer)
 {
 	char word[MAX_WORD_SIZE];
-	sprintf(word,"%s/%stopic_%s_%s.txt",users,GetUserPath(loginID),user,computer);
+	sprintf(word,(char*)"%s/%stopic_%s_%s.txt",users,GetUserPath(loginID),user,computer);
 	char* buffer = FindUserCache(word); // sets currentCache and makes it first if non-zero return -  will either find but not assign if not found
 	if (buffer) return buffer;
 
@@ -275,15 +275,15 @@ char* GetFileRead(char* user,char* computer)
 				else if (actualSize < 200000) safespace = 2000000;
 				else 
 				{
-					ReportBug("Overflow read buffer unexpectedly huge\r\n");
+					ReportBug((char*)"Overflow read buffer unexpectedly huge\r\n");
 					userFileSystem.userClose(in);
 					return NULL;
 				}
-				if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,"Allocating overflow read for %s\r\n",word);
+				if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"Allocating overflow read for %s\r\n",word);
 				overflowBuffer = buffer = (char*) malloc(safespace);
 				if (!overflowBuffer) // couldnt malloc
 				{
-					ReportBug("Could not allocate overflow read buffer\r\n");
+					ReportBug((char*)"Could not allocate overflow read buffer\r\n");
 					userFileSystem.userClose(in);
 					return NULL;
 				}
@@ -295,7 +295,7 @@ char* GetFileRead(char* user,char* computer)
 			if (readit != actualSize) *buffer = 0; // read failure
 		}
 		userFileSystem.userClose(in);
-		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,"read in %s cache (%d)\r\n",word,currentCache);
+		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"read in %s cache (%d)\r\n",word,currentCache);
 	}
 	return buffer;
 }

@@ -1,7 +1,7 @@
 
-TOPIC: ~childhood (child childhood kid little memory young younger history run_away)
+TOPIC: ~childhood (child childhood kid little memory young younger history "run away")
 #!x  This topic is a sample of a simple topic, with good indentation style.
-#!x  It is well commented with annotations for :abstractt and :verify.
+#!x  It is well commented with annotations for :abstract and :verify.
 
 t: Did you run away from home when you were little? 
 
@@ -29,12 +29,12 @@ t: What scared you as a kid?
 
     #! spiders scared me
     a: ( ~insects ) Are you afraid of all insects? 
+	
+    #! snakes
+    a: ( snake ) You and Indiana Jones. Snakes would rather slither off than attack you. Just don't surprise them. 
 
     #! tigers
     a: ( ~animals ) Big animals are scary. Tiny ones are not, except to some girls. 
-
-    #! snakes
-    a: ( snakes ) You and Indiana Jones. Snakes would rather slither off than attack you. Just don't surprise them. 
 
     #! I had nightmares
     a: ( [ dream nightmare ] ) Do you still have bad dreams now? 

@@ -312,7 +312,7 @@ void Write24(unsigned int val, FILE* out);
 // utilities
 void ReadWordsOf(char* file,uint64 mark);
 void WalkDictionary(DICTIONARY_FUNCTION func,uint64 data = 0);
-char* FindCanonical(char* word, unsigned int i, bool nonew = false);
+char* FindCanonical(char* word, int i, bool nonew = false);
 void VerifyEntries(WORDP D,uint64 junk);
 void NoteLanguage();
 

@@ -103,11 +103,11 @@ void JumpBack()
 void myexit(char* msg)
 {	
 	char name[MAX_WORD_SIZE];
-	sprintf(name,"%s/exitlog.txt",logs);
+	sprintf(name,(char*)"%s/exitlog.txt",logs);
 	FILE* in = FopenUTF8WriteAppend(name);
 	if (in) 
 	{
-		fprintf(in,"%s - called myexit\r\n",msg);
+		fprintf(in,(char*)"%s - called myexit\r\n",msg);
 		fclose(in);
 	}
 	exit(0);
@@ -138,14 +138,14 @@ void CloseBuffers()
 char* AllocateBuffer()
 {// CANNOT USE LOG INSIDE HERE, AS LOG ALLOCATES A BUFFER
 	char* buffer = buffers + (maxBufferSize * bufferIndex); 
-	if (showmem) Log(STDUSERLOG,"BUff alloc %d\r\n",bufferIndex);
+	if (showmem) Log(STDUSERLOG,(char*)"BUff alloc %d\r\n",bufferIndex);
 	if (++bufferIndex >= maxBufferLimit ) // want more than nominally allowed
 	{
 		if (bufferIndex > (maxBufferLimit+2) || overflowIndex > 20) 
 		{
 			char word[MAX_WORD_SIZE];
-			sprintf(word,"Corrupt bufferIndex %d or overflowIndex %d\r\n",bufferIndex,overflowIndex);
-			Log(STDUSERLOG,"%s\r\n",word);
+			sprintf(word,(char*)"Corrupt bufferIndex %d or overflowIndex %d\r\n",bufferIndex,overflowIndex);
+			Log(STDUSERLOG,(char*)"%s\r\n",word);
 			myexit(word);
 		}
 		--bufferIndex;
@@ -156,12 +156,12 @@ char* AllocateBuffer()
 			overflowBuffers[overflowLimit] = (char*) malloc(maxBufferSize);
 			if (!overflowBuffers[overflowLimit]) 
 			{
-				Log(STDUSERLOG,"out of buffers\r\n");
-				myexit("out of buffers");
+				Log(STDUSERLOG,(char*)"out of buffers\r\n");
+				myexit((char*)"out of buffers");
 			}
 			overflowLimit++;
-			if (overflowLimit >= MAX_OVERFLOW_BUFFERS) myexit("Out of overflow buffers\r\n");
-			Log(STDUSERLOG,"Allocated extra buffer %d\r\n",overflowLimit);
+			if (overflowLimit >= MAX_OVERFLOW_BUFFERS) myexit((char*)"Out of overflow buffers\r\n");
+			Log(STDUSERLOG,(char*)"Allocated extra buffer %d\r\n",overflowLimit);
 		}
 		buffer = overflowBuffers[overflowIndex++];
 	}
@@ -180,8 +180,8 @@ void FreeBuffer()
 {
 	if (overflowIndex) --overflowIndex; // keep the dynamically allocated memory for now.
 	else if (bufferIndex)  --bufferIndex; 
-	else ReportBug("Buffer allocation underflow")
-	if (showmem) Log(STDUSERLOG,"Buffer free %d\r\n",bufferIndex);
+	else ReportBug((char*)"Buffer allocation underflow")
+	if (showmem) Log(STDUSERLOG,(char*)"Buffer free %d\r\n",bufferIndex);
 }
 
 /////////////////////////////////////////////////////////
@@ -206,7 +206,7 @@ int MakeDirectory(char* directory)
 #ifdef WIN32
 	char word[MAX_WORD_SIZE];
 	char* path = _getcwd(word,MAX_WORD_SIZE);
-	strcat(word,"/");
+	strcat(word,(char*)"/");
 	strcat(word,directory);
     if( _access( path, 0 ) == 0 ){ // does directory exist, yes
         struct stat status;
@@ -235,7 +235,7 @@ void C_Directories(char* x)
 	if (bytes >= 0) 
 	{
 		word[bytes] = 0;
-		Log(STDUSERLOG,"execution path: %s\r\n",word);
+		Log(STDUSERLOG,(char*)"execution path: %s\r\n",word);
 	}
 
 #ifdef WIN32
@@ -245,11 +245,11 @@ void C_Directories(char* x)
     #include <unistd.h>
     #define GetCurrentDir getcwd
 #endif
-	if (GetCurrentDir(word, MAX_WORD_SIZE)) Log(STDUSERLOG,"current directory path: %s\r\n",word);
+	if (GetCurrentDir(word, MAX_WORD_SIZE)) Log(STDUSERLOG,(char*)"current directory path: %s\r\n",word);
 
-	Log(STDUSERLOG,"readPath: %s\r\n",readPath);
-	Log(STDUSERLOG,"writeablePath: %s\r\n",writePath);
-	Log(STDUSERLOG,"untouchedPath: %s\r\n",staticPath);
+	Log(STDUSERLOG,(char*)"readPath: %s\r\n",readPath);
+	Log(STDUSERLOG,(char*)"writeablePath: %s\r\n",writePath);
+	Log(STDUSERLOG,(char*)"untouchedPath: %s\r\n",staticPath);
 }
 
 void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath)
@@ -279,24 +279,24 @@ FILE* FopenStaticReadOnly(const char* name) // static data file read path, never
 {
 	StartFile(name);
 	char path[MAX_WORD_SIZE];
-	if (*readPath) sprintf(path,"%s/%s",staticPath,name);
+	if (*readPath) sprintf(path,(char*)"%s/%s",staticPath,name);
 	else strcpy(path,name);
-	return fopen(path,"rb");
+	return fopen(path,(char*)"rb");
 }
 
 FILE* FopenReadOnly(const char* name) // read-only potentially changed data file read path (TOPIC)
 {
 	StartFile(name);
 	char path[MAX_WORD_SIZE];
-	if (*readPath) sprintf(path,"%s/%s",readPath,name);
+	if (*readPath) sprintf(path,(char*)"%s/%s",readPath,name);
 	else strcpy(path,name);
-	return fopen(path,"rb");
+	return fopen(path,(char*)"rb");
 }
 
 FILE* FopenReadNormal(char* name) // normal C read unrelated to special paths
 {
 	StartFile(name);
-	return fopen(name,"rb");
+	return fopen(name,(char*)"rb");
 }
 
 size_t FileSize(FILE* in)
@@ -310,11 +310,11 @@ size_t FileSize(FILE* in)
 FILE* FopenBinaryWrite(const char* name) // writeable file path
 {
 	char path[MAX_WORD_SIZE];
-	if (*writePath) sprintf(path,"%s/%s",writePath,name);
+	if (*writePath) sprintf(path,(char*)"%s/%s",writePath,name);
 	else strcpy(path,name);
-	FILE* out = fopen(path,"wb");
+	FILE* out = fopen(path,(char*)"wb");
 	if (out == NULL && !inLog) 
-		ReportBug("Error opening binary write file %s: %s\n",path,strerror(errno));
+		ReportBug((char*)"Error opening binary write file %s: %s\n",path,strerror(errno));
 	return out;
 }
 
@@ -322,18 +322,18 @@ FILE* FopenReadWritten(const char* name) // read from files that have been writt
 {
 	StartFile(name);
 	char path[MAX_WORD_SIZE];
-	if (*writePath) sprintf(path,"%s/%s",writePath,name);
+	if (*writePath) sprintf(path,(char*)"%s/%s",writePath,name);
 	else strcpy(path,name);
-	return fopen(path,"rb");
+	return fopen(path,(char*)"rb");
 }
 
 FILE* FopenUTF8Write(const char* filename) // insure file has BOM for UTF8
 {
 	char path[MAX_WORD_SIZE];
-	if (*writePath) sprintf(path,"%s/%s",writePath,filename);
+	if (*writePath) sprintf(path,(char*)"%s/%s",writePath,filename);
 	else strcpy(path,filename);
 
-	FILE* out = fopen(path,"wb");
+	FILE* out = fopen(path,(char*)"wb");
 	if (out) // mark file as UTF8 
 	{
 		unsigned char bom[3];
@@ -342,17 +342,17 @@ FILE* FopenUTF8Write(const char* filename) // insure file has BOM for UTF8
 		bom[2] = 0xBF;
 		fwrite(bom,1,3,out);
 	}
-	else ReportBug("Error opening utf8 write file %s: %s\n",path,strerror(errno));
+	else ReportBug((char*)"Error opening utf8 write file %s: %s\n",path,strerror(errno));
 	return out;
 }
 
 FILE* FopenUTF8WriteAppend(const char* filename,const char* flags) 
 {
 	char path[MAX_WORD_SIZE];
-	if (*writePath) sprintf(path,"%s/%s",writePath,filename);
+	if (*writePath) sprintf(path,(char*)"%s/%s",writePath,filename);
 	else strcpy(path,filename);
 
-	FILE* in = fopen(path,"rb"); // see if file already exists
+	FILE* in = fopen(path,(char*)"rb"); // see if file already exists
 	if (in) fclose(in);
 	FILE* out = fopen(path,flags);
 	if (out && !in) // mark file as UTF8 if new
@@ -364,7 +364,7 @@ FILE* FopenUTF8WriteAppend(const char* filename,const char* flags)
 		fwrite(bom,1,3,out);
 	}
 	else if (!out && !inLog) 
-		ReportBug("Error opening utf8writeappend file %s: %s\n",path,strerror(errno));
+		ReportBug((char*)"Error opening utf8writeappend file %s: %s\n",path,strerror(errno));
 	return out;
 }
 
@@ -374,7 +374,7 @@ int getdir (string dir, vector<string> &files)
     DIR *dp;
     struct dirent *dirp;
     if((dp  = opendir(dir.c_str())) == NULL) {
- 		ReportBug("No such directory %s\n",strerror(errno));
+ 		ReportBug((char*)"No such directory %s\n",strerror(errno));
 		return errno;
     }
     while ((dirp = readdir(dp)) != NULL) files.push_back(string(dirp->d_name));
@@ -389,7 +389,7 @@ void WalkDirectory(char* directory,FILEWALK function, uint64 flags)
 	char fulldir[MAX_WORD_SIZE];
 	size_t len = strlen(directory);
 	if (directory[len-1] == '/') directory[len-1] = 0;	// remove the / since we add it 
-	if (*readPath) sprintf(fulldir,"%s/%s",staticPath,directory);
+	if (*readPath) sprintf(fulldir,(char*)"%s/%s",staticPath,directory);
 	else strcpy(fulldir,directory);
 
 #ifdef WIN32 // do all files in src directory
@@ -403,33 +403,33 @@ void WalkDirectory(char* directory,FILEWALK function, uint64 flags)
 	  // copy the string to a buffer, then append '\*' to the 
 	  // directory name.
 	strcpy(DirSpec,fulldir);
-	strcat(DirSpec,"/*");
+	strcat(DirSpec,(char*)"/*");
 	// Find the first file in the directory.
 	hFind = FindFirstFile(DirSpec, &FindFileData);
 
 	if (hFind == INVALID_HANDLE_VALUE) 
 	{
-		ReportBug("No such directory %s: %s\n",DirSpec);
+		ReportBug((char*)"No such directory %s: %s\n",DirSpec);
 		return;
 	} 
 	else 
 	{
-		if (FindFileData.cFileName[0] != '.' && stricmp(FindFileData.cFileName,"bugs.txt"))
+		if (FindFileData.cFileName[0] != '.' && stricmp(FindFileData.cFileName,(char*)"bugs.txt"))
 		{
-			sprintf(name,"%s/%s",directory,FindFileData.cFileName);
+			sprintf(name,(char*)"%s/%s",directory,FindFileData.cFileName);
 			(*function)(name,flags);
 		}
 		while (FindNextFile(hFind, &FindFileData) != 0) 
 		{
-			if (FindFileData.cFileName[0] == '.' || !stricmp(FindFileData.cFileName,"bugs.txt")) continue;
-			sprintf(name,"%s/%s",directory,FindFileData.cFileName);
+			if (FindFileData.cFileName[0] == '.' || !stricmp(FindFileData.cFileName,(char*)"bugs.txt")) continue;
+			sprintf(name,(char*)"%s/%s",directory,FindFileData.cFileName);
 			(*function)(name,flags);
 		}
 		dwError = GetLastError();
 		FindClose(hFind);
 		if (dwError != ERROR_NO_MORE_FILES) 
 		{
-			ReportBug("FindNextFile error. Error is %u.\n", dwError);
+			ReportBug((char*)"FindNextFile error. Error is %u.\n", dwError);
 			return;
 		}
 	}
@@ -441,9 +441,9 @@ void WalkDirectory(char* directory,FILEWALK function, uint64 flags)
 	for (unsigned int i = 0;i < files.size();i++) 
 	{
 		const char* file = files[i].c_str();
-		if (*file != '.' && stricmp(file,"bugs.txt")) 
+		if (*file != '.' && stricmp(file,(char*)"bugs.txt")) 
 		{
-			sprintf(name,"%s/%s",directory,file);
+			sprintf(name,(char*)"%s/%s",directory,file);
 			(*function)(name,flags);
 		}
      }
@@ -478,7 +478,7 @@ static int MakePath(const string &rootDir, const string &path)
     size_t previous = 0;
     for (size_t next = path.find('/'); next != string::npos; previous = next + 1, next = path.find('/', next + 1)) 
 	{
-        pathToCreate.append("/");
+        pathToCreate.append((char*)"/");
         pathToCreate.append(path.substr(previous, next - previous));
 #ifdef WIN32
         if (_mkdir(pathToCreate.c_str()) == -1 && errno != EEXIST) return 0;
@@ -520,7 +520,7 @@ char* GetTimeInfo() //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm 
     if (regression) curr = 44444444; 
 	ptm = localtime (&curr);
 
-	char* utcoffset = GetUserVariable("$cs_utcoffset");
+	char* utcoffset = GetUserVariable((char*)"$cs_utcoffset");
 	if (*utcoffset) // report relative time
 	{
 		ptm = gmtime (&curr); // UTC time reference structure
@@ -546,7 +546,7 @@ char* GetTimeInfo() //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm 
 		char* colon = strchr(utcoffset,':'); // is there a minutes offset?
 		if (colon)
 		{
-			offset = atoi(colon+1) * sign; // minutes offset
+			offset = atoi(colon+1) * sign; // minutes offset same sign
 			ptm->tm_min += offset;
 			colon = strchr(colon+1,':');
 			if (colon) // seconds offset
@@ -601,7 +601,6 @@ char* GetTimeInfo() //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm 
 		else if (ptm->tm_yday >= 365 && !leap ) ptm->tm_yday -= 365; // day of year overflow  0-365  
 		else if (ptm->tm_yday >= 366) ptm->tm_yday -= 366; // day of year leap overflow  0-365  
 
-		int daysInMonth = 30;
 		if (ptm->tm_mday <= 0) // day of month underflow  1-31  
 		{
 			ptm->tm_mon -= 1;
@@ -824,23 +823,23 @@ void ChangeDepth(int value,char* where)
 	{
 		if (memDepth[globalDepth] != bufferIndex)
 		{
-			ReportBug("depth %d not closing bufferindex correctly at %s\r\n",globalDepth,where);
+			ReportBug((char*)"depth %d not closing bufferindex correctly at %s\r\n",globalDepth,where);
 			memDepth[globalDepth] = 0;
 		}
 		globalDepth += value;
-		if (showDepth) Log(STDUSERLOG,"-depth after %s %d\r\n", where, globalDepth);
+		if (showDepth) Log(STDUSERLOG,(char*)"-depth after %s %d\r\n", where, globalDepth);
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDUSERLOG,"+depth before %s %d\r\n", where, globalDepth);
+		if (showDepth) Log(STDUSERLOG,(char*)"+depth before %s %d\r\n", where, globalDepth);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 	}
-	if (globalDepth < 0) {ReportBug("bad global depth in %s",where); globalDepth = 0;}
+	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
 	if (globalDepth >= 511)
 	{
-		ReportBug("globaldepth too deep at %s\r\n",where);
-		myexit("global depth failure\r\n");
+		ReportBug((char*)"globaldepth too deep at %s\r\n",where);
+		myexit((char*)"global depth failure\r\n");
 	}
 }
 
@@ -875,7 +874,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	if (channel == id) //   join result code onto intial description
 	{
 		channel = 1;
-		strcpy(at,"    ");
+		strcpy(at,(char*)"    ");
 		at += 4;
 	}
 	//   any channel above 1000 is same as 101
@@ -923,62 +922,62 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
         if (*ptr == '%')
         {
 			++ptr;
-            if (*ptr== 'c') sprintf(at,"%c",(char) va_arg(ap,int)); // char
-            else if (*ptr== 'd') sprintf(at,"%d",va_arg(ap,int)); // int %d
+            if (*ptr== 'c') sprintf(at,(char*)"%c",(char) va_arg(ap,int)); // char
+            else if (*ptr== 'd') sprintf(at,(char*)"%d",va_arg(ap,int)); // int %d
             else if (*ptr== 'I') //   I64
             {
 #ifdef WIN32
-				sprintf(at,"%I64d",va_arg(ap,uint64));
+				sprintf(at,(char*)"%I64d",va_arg(ap,uint64));
 #else
-				sprintf(at,"%lld",va_arg(ap,uint64)); 
+				sprintf(at,(char*)"%lld",va_arg(ap,uint64)); 
 #endif
 				ptr += 2; 
             }
             else if (*ptr== 'l' && ptr[1] == 'd') // ld
             {
-                sprintf(at,"%ld",va_arg(ap,long int));
+                sprintf(at,(char*)"%ld",va_arg(ap,long int));
 				++ptr; 
             }
             else if (*ptr== 'l' && ptr[1] == 'l') // lld
             {
 #ifdef WIN32
-				sprintf(at,"%I64d",va_arg(ap,long long int)); 
+				sprintf(at,(char*)"%I64d",va_arg(ap,long long int)); 
 #else
-				sprintf(at,"%lld",va_arg(ap,long long int)); 
+				sprintf(at,(char*)"%lld",va_arg(ap,long long int)); 
 #endif
 				ptr += 2;
             }
-            else if (*ptr == 'p') sprintf(at,"%p",va_arg(ap,char*)); // ptr
+            else if (*ptr == 'p') sprintf(at,(char*)"%p",va_arg(ap,char*)); // ptr
             else if (*ptr == 'f') 
 			{
 				float f = (float)va_arg(ap,double);
-				sprintf(at,"%f",f); // float
+				sprintf(at,(char*)"%f",f); // float
 			}
             else if (*ptr == 's') // string
             {
                 s = va_arg(ap,char*);
-				if (s) sprintf(at,"%s",s);
+				if (s) sprintf(at,(char*)"%s",s);
             }
-            else if (*ptr == 'x') sprintf(at,"%x",(unsigned int)va_arg(ap,unsigned int)); // hex 
+            else if (*ptr == 'x') sprintf(at,(char*)"%x",(unsigned int)va_arg(ap,unsigned int)); // hex 
  			else if (IsDigit(*ptr)) // int %2d
             {
 				i = va_arg(ap,int);
 				unsigned int precision = atoi(ptr);
 				while (*ptr && *ptr != 'd') ++ptr;
-				if (precision == 2) sprintf(at,"%2d",i);
-				else if (precision == 3) sprintf(at,"%3d",i);
-				else if (precision == 4) sprintf(at,"%4d",i);
-				else if (precision == 5) sprintf(at,"%5d",i);
-				else if (precision == 6) sprintf(at,"%6d",i);
-				else sprintf(at," Bad int precision %d ",precision);
+				if (precision == 2) sprintf(at,(char*)"%2d",i);
+				else if (precision == 3) sprintf(at,(char*)"%3d",i);
+				else if (precision == 4) sprintf(at,(char*)"%4d",i);
+				else if (precision == 5) sprintf(at,(char*)"%5d",i);
+				else if (precision == 6) sprintf(at,(char*)"%6d",i);
+				else sprintf(at,(char*)" Bad int precision %d ",precision);
             }
             else
             {
-                sprintf(at,"unknown format ");
+                sprintf(at,(char*)"unknown format ");
 				ptr = 0;
             }
         }
-        else  sprintf(at,"%c",*ptr);
+        else  sprintf(at,(char*)"%c",*ptr);
 
         at += strlen(at);
 		if (!ptr) break;
@@ -1000,7 +999,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		AddWarning(logmainbuffer);
 		pendingWarning = false;
 	}
-	else if (!strnicmp(logmainbuffer,"*** Warning",11)) 
+	else if (!strnicmp(logmainbuffer,(char*)"*** Warning",11)) 
 		pendingWarning = true;// replicate for easy dump later
 	
 	if (pendingError)
@@ -1008,7 +1007,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		AddError(logmainbuffer);
 		pendingError= false;
 	}
-	else if (!strnicmp(logmainbuffer,"*** Error",9)) 
+	else if (!strnicmp(logmainbuffer,(char*)"*** Error",9)) 
 		pendingError = true;// replicate for easy dump later
 
 #ifndef DISCARDSERVER
@@ -1021,25 +1020,25 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	{
 		bugLog = true;
 		char name[MAX_WORD_SIZE];
-		sprintf(name,"%s/bugs.txt",logs);
+		sprintf(name,(char*)"%s/bugs.txt",logs);
 		FILE* bug = FopenUTF8WriteAppend(name);
 		char located[MAX_WORD_SIZE];
 		*located = 0;
-		if (currentTopicID && currentRule) sprintf(located,"%s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
+		if (currentTopicID && currentRule) sprintf(located,(char*)"%s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
 		if (bug) //   write to a bugs file
 		{
-			if (*currentFilename) fprintf(bug,"   in %s at %d: %s\r\n",currentFilename,currentFileLine,readBuffer);
-			if (channel == BUGLOG && *currentInput) fprintf(bug,"input:%d %s %s caller:%s callee:%s in sentence: %s at %s\r\n",volleyCount,GetTimeInfo(),logmainbuffer,loginID,computerID,currentInput,located);
+			if (*currentFilename) fprintf(bug,(char*)"   in %s at %d: %s\r\n",currentFilename,currentFileLine,readBuffer);
+			if (channel == BUGLOG && *currentInput) fprintf(bug,(char*)"input:%d %s %s caller:%s callee:%s in sentence: %s at %s\r\n",volleyCount,GetTimeInfo(),logmainbuffer,loginID,computerID,currentInput,located);
 			fwrite(logmainbuffer,1,bufLen,bug);
 			fclose(bug);
 
 		}
 		if ((echo||localecho) && !silent && !server)
 		{
-			if (*currentFilename) fprintf(stdout,"\r\n   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(stdout,"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(),currentInput);
+			if (*currentFilename) fprintf(stdout,(char*)"\r\n   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
+			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(),currentInput);
 		}
-		strcat(logmainbuffer,"\r\n");	//   end it
+		strcat(logmainbuffer,(char*)"\r\n");	//   end it
 		channel = STDUSERLOG;	//   use normal logging as well
 	}
 
@@ -1065,10 +1064,10 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
  		if (!out) // see if we can create the directory (assuming its missing)
 		{
 			char call[MAX_WORD_SIZE];
-			sprintf(call,"mkdir %s",users);
+			sprintf(call,(char*)"mkdir %s",users);
 			system(call);
 			out = userFileSystem.userCreate(logFilename);
-			if (!out && !inLog) ReportBug("unable to create user logfile %s",logFilename);
+			if (!out && !inLog) ReportBug((char*)"unable to create user logfile %s",logFilename);
 		}
 	}
     else 
@@ -1077,7 +1076,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
  		if (!out) // see if we can create the directory (assuming its missing)
 		{
 			char call[MAX_WORD_SIZE];
-			sprintf(call,"mkdir %s",logs);
+			sprintf(call,(char*)"mkdir %s",logs);
 			system(call);
 			out = userFileSystem.userCreate(serverLogfileName);
 		}
@@ -1089,11 +1088,11 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		{
 			fwrite(logmainbuffer,1,bufLen,out);
 			if (!bugLog);
- 			else if (*currentFilename) fprintf(out,"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(out,"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(),currentInput);
+ 			else if (*currentFilename) fprintf(out,(char*)"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
+			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(),currentInput);
 		}
 		fclose(out);
-		if (channel == SERVERLOG && echoServer)  printf("%s",logmainbuffer);
+		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logmainbuffer);
     }
 	
 #ifndef DISCARDSERVER

@@ -1,5 +1,5 @@
 ﻿ ~childhood.0.0 #!x This topic is a sample of a simple topic, with good indentation style.
- ~childhood.0.0 #!x It is well commented with annotations for :abstractt and :verify.
+ ~childhood.0.0 #!x It is well commented with annotations for :abstract and :verify.
      ~childhood.0.1 #! sure
      ~childhood.0.2 #! never
      ~childhood.2.1 #! I was scared of the dark
@@ -7,8 +7,8 @@
      ~childhood.2.3 #! the boogie man
      ~childhood.2.4 #! I feared dragons
      ~childhood.2.5 #! spiders scared me
-     ~childhood.2.6 #! tigers
-     ~childhood.2.7 #! snakes
+     ~childhood.2.6 #! snakes
+     ~childhood.2.7 #! tigers
      ~childhood.2.8 #! I had nightmares
      ~childhood.2.9 #! yes
      ~childhood.2.10 #! no 

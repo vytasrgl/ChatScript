@@ -16,26 +16,26 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #define SEQUENCE_LIMIT 5		// max number of words in a row to hit on as an entry
 #define MAX_XREF_SENTENCE 32	// number of places a word can hit to in sentence * 2 = 64 bytes
-extern unsigned int maxRefSentence;
+extern int maxRefSentence;
 
 extern char respondLevel;
 extern char unmarked[MAX_SENTENCE_LENGTH];
 extern bool showMark;
 extern unsigned int concepts[MAX_SENTENCE_LENGTH]; 
-extern unsigned int topics[MAX_SENTENCE_LENGTH]; 
+extern int topics[MAX_SENTENCE_LENGTH]; 
 
 void VerifyWhere();
 MEANING* GetTemps(WORDP D);
-unsigned int GetNextSpot(WORDP D,int start,unsigned int& startx,unsigned int& endx,bool reverse = false);
-unsigned int GetIthSpot(WORDP D,unsigned int i,unsigned int& start,unsigned int& end);
-void MarkWordHit(WORDP D, unsigned int start,unsigned int end);
-void MarkFacts(MEANING M,unsigned int start,unsigned int end,bool canonical = false, bool sequence = false);
-void RemoveMatchValue(WORDP D, unsigned int position);
+unsigned int GetNextSpot(WORDP D,int start,int& startx,int& endx,bool reverse = false);
+unsigned int GetIthSpot(WORDP D,int i,int& start,int& end);
+void MarkWordHit(WORDP D,  int start,int end);
+void MarkFacts(MEANING M,int start,int end,bool canonical = false, bool sequence = false);
+void RemoveMatchValue(WORDP D, int position);
 void MarkAllImpliedWords();
 void ClearWhereInSentence();
 void ClearTemps();
 void AllocateWhereInSentence(WORDP D);
 void SetTried(WORDP D,uint64 bits);
 uint64 GetTried(WORDP D);
-char* DumpAnalysis(unsigned int start, unsigned int end, uint64 posValues[MAX_SENTENCE_LENGTH],const char* label,bool original,bool roles);
+char* DumpAnalysis(int start, int end, uint64 posValues[MAX_SENTENCE_LENGTH],const char* label,bool original,bool roles);
 #endif

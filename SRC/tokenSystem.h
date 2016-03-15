@@ -21,21 +21,21 @@ extern uint64 tokenFlags;
 extern char* wordStarts[MAX_SENTENCE_LENGTH];
 extern bool capState[MAX_SENTENCE_LENGTH];	
 extern bool originalCapState[MAX_SENTENCE_LENGTH];	
-extern unsigned int wordCount;	
+extern int wordCount;	
 extern int inputNest;
-
+void ReplaceWords(int i, int oldlength,int newlength,char** tokens);
 int BurstWord(char* word, int contractionStyle = 0);
 char* GetBurstWord(unsigned int n);
 char* JoinWords(unsigned int n,bool output = false);
 
-char* Tokenize(char* input,unsigned int& count,char** words,bool all = false, bool nomodify = false);
+char* Tokenize(char* input,int& count,char** words,bool all = false, bool nomodify = false);
 int ValidPeriodToken(char* start, char* end, char next,char next2);
 
 void ProcessSubstitutes();
 void ProcessCompositeNumber();
 void ProcessCompositeDate();
-void ProcessCompositeName();
-bool DateZone(unsigned int i, int& start, int& end);
+void ProperNameMerge();
+bool DateZone(int i, int& start, int& end);
 unsigned int TransformCount(char* dictword, unsigned int inputLen, char* inputSet, uint64 min);
 void ResetTokenSystem();
 void DumpTokenControls(uint64 val);

@@ -53,8 +53,6 @@
  hrs hours
  secs seconds
  mins minutes
-
- Hawaii  Hawai'i
  Apr April
  video_game videogame
  tv TV

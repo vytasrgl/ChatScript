@@ -144,7 +144,7 @@ struct Client_t
     {
         if (this->requestValid)
         {
-            ReportBug("recv called although we got whole request, should process it first")
+            ReportBug((char*)"recv called although we got whole request, should process it first")
             return -1;
         }
 
@@ -312,7 +312,7 @@ static void evsrv_child_died(EV_P_ ev_child *w, int revents) {
 int evsrv_init(const string &interfaceKind, int port, char* arg) {
     if (srv_socket_g != -1) 
 	{
-        ReportBug("evserver: server already initialized\n")
+        ReportBug((char*)"evserver: server already initialized\n")
         return -1;
     }
     if (arg) {
@@ -346,7 +346,7 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
                     }
                 }
             } 
-			else  ReportBug("Invalid argument to evserver: '%s'\n", command.c_str());
+			else  ReportBug((char*)"Invalid argument to evserver: '%s'\n", command.c_str());
 
             if (e) 
 			{
@@ -453,13 +453,13 @@ int evsrv_run()
 {
     if (!l_g) 
 	{
-        ReportBug("evsrv_run() called with no ev loop initialized\n")
-        printf("no ev loop initialized, nothing to do\n");
+        ReportBug((char*)"evsrv_run() called with no ev loop initialized\n")
+        printf((char*)"no ev loop initialized, nothing to do\n");
         return -1;
     }
     if (parent_g) Log(SERVERLOG, "evserver: parent ready (pid = %d), fork=%d\n", getpid(), no_children_g);
 	else Log(SERVERLOG, "  evserver: child ready (pid = %d)\n", getpid());
-	printf("EVServer ready: %s\r\n",serverLogfileName);
+	printf((char*)"EVServer ready: %s\r\n",serverLogfileName);
     while (true) ev_run(l_g, 0);
     return 1;
 }

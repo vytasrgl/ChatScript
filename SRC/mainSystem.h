@@ -20,7 +20,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 typedef struct RESPONSE
 {
     unsigned int responseInputIndex;                        // which input sentence does this stem from?
-	unsigned int topic;										// topic of rule
+	int topic;										// topic of rule
 	char id[24];											// .100.30
  	char relayid[24];										// 324.100.30 topic and rule doing relay
 	char response[OUTPUT_BUFFER_SIZE];						// answer sentences, 1 or more per input line
@@ -82,7 +82,7 @@ typedef struct RESPONSE
 	FAILINPUT_BIT  = 2048,
 	RETRYINPUT_BIT = 4096,
 
-	FAIL_MATCH  = 8192,			// transient result of TestRule, converts to FAILRULE_BIT
+	FAILMATCH_BIT  = 8192,			// transient result of TestRule, converts to FAILRULE_BIT
 	FAILLOOP_BIT  = 16384,
 	ENDLOOP_BIT  = 32768,
 
@@ -93,6 +93,9 @@ typedef struct RESPONSE
 
 	NOREJOINDER = 262144,	// can be ored on
 };
+ 
+extern unsigned int derivationIndex[256];
+extern char* derivationSentence[MAX_SENTENCE_LENGTH];
 extern bool docstats;
 extern unsigned int docSentenceCount;
 extern clock_t startTimeInfo;
@@ -102,7 +105,7 @@ extern bool callback;
 extern char inputCopy[MAX_BUFFER_SIZE]; 
 extern unsigned char responseOrder[MAX_RESPONSE_SENTENCES+1];
 extern RESPONSE responseData[MAX_RESPONSE_SENTENCES+1];
-extern unsigned int responseIndex;
+extern int responseIndex;
 extern bool documentMode;
 extern unsigned int volleyCount;
 extern FILE* sourceFile;
@@ -117,9 +120,10 @@ extern unsigned int choiceCount;
 extern bool redo;
 extern bool commandLineCompile;
 extern int inputCounter,totalCounter;
-extern unsigned int inputSentenceCount;  
+extern int inputSentenceCount;  
 extern char* extraTopicData;
 extern char* postProcessing;
+extern char rawSentenceCopy[MAX_BUFFER_SIZE];
 extern char* authorizations;
 extern uint64 tokenControl;
 extern unsigned int responseControl;
@@ -189,7 +193,7 @@ extern "C" __declspec(dllexport) unsigned int InitSystem(int argc, char * argv[]
 #else
 unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL);
 #endif
-unsigned int FindOOBEnd(unsigned int start);
+int FindOOBEnd(int start);
 void InitStandalone();
 void CreateSystem();
 void ReloadSystem();

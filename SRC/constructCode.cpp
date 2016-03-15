@@ -14,7 +14,7 @@ static void TestIf(char* ptr,FunctionResult& result)
 	char* word1 = AllocateBuffer();
 	char* word2 = AllocateBuffer();
 	char op[MAX_WORD_SIZE];
-	unsigned int id;
+	int id;
 	impliedIf = 1;
 resume:
 	ptr = ReadCompiledWord(ptr,word1);	//   the var or whatever
@@ -32,16 +32,16 @@ resume:
 	{
 		call = true;
 		ptr -= strlen(word1) + 3; //   back up so output can see the fn name and space
-		ChangeDepth(1,"TestIf");
+		ChangeDepth(1,(char*)"TestIf");
 		ptr = FreshOutput(ptr,word2,result,OUTPUT_ONCE|OUTPUT_KEEPSET); // word2 hold output value // skip past closing paren
 		if (result & SUCCESSCODES) result = NOPROBLEM_BIT;	// legal way to terminate the piece with success at any  level
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 		{
-			if (result & ENDCODES) id = Log(STDUSERTABLOG,"If %c%s ",(invert) ? '!' : ' ',word1);
-			else if (*word1 == '1' && word1[1] == 0) id = Log(STDUSERTABLOG,"else ");
-			else id = Log(STDUSERTABLOG,"if %c%s ",(invert) ? '!' : ' ',word1);
+			if (result & ENDCODES) id = Log(STDUSERTABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
+			else if (*word1 == '1' && word1[1] == 0) id = Log(STDUSERTABLOG,(char*)"else ");
+			else id = Log(STDUSERTABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
 		}
-		ChangeDepth(-1,"TestIf");
+		ChangeDepth(-1,(char*)"TestIf");
 		ptr = ReadCompiledWord(ptr,op); // find out what happens next after function call
 		if (!result && IsComparison(*op)) // didnt fail and followed by a relationship op, move output as though it was the variable
 		{
@@ -49,7 +49,7 @@ resume:
 			 call = false;	// proceed normally
 		}
 		else if (result != NOPROBLEM_BIT) {;} // failed
-		else if (!stricmp(word2,"0") || !stricmp(word2,"null") ) result = FAILRULE_BIT;	// treat 0 or null as failure along with actual failures
+		else if (!stricmp(word2,(char*)"0") || !stricmp(word2,(char*)"null") ) result = FAILRULE_BIT;	// treat 0 or null as failure along with actual failures
 	}
 		
 	if (call){;} // call happened
@@ -87,13 +87,13 @@ resume:
 			{
 				if (!*found) 
 				{
-					if (invert) id = Log(STDUSERTABLOG,"If !%s (null) ",word1);
-					else id = Log(STDUSERTABLOG,"If %s (null) ",word1);
+					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (null) ",word1);
+					else id = Log(STDUSERTABLOG,(char*)"If %s (null) ",word1);
 				}
 				else 
 				{
-					if (invert) id = Log(STDUSERTABLOG,"If !%s (%s) ",word1,found);
-					else id = Log(STDUSERTABLOG,"If %s (%s) ",word1,found);
+					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (%s) ",word1,found);
+					else id = Log(STDUSERTABLOG,(char*)"If %s (%s) ",word1,found);
 				}
 			}
 			if (!*found) result = FAILRULE_BIT;
@@ -103,9 +103,9 @@ resume:
 		{
 			if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 			{
-				if (result & ENDCODES) id = Log(STDUSERTABLOG,"If %c%s ",(invert) ? '!' : ' ',word1);
-				else if (*word1 == '1' && word1[1] == 0) id = Log(STDUSERTABLOG,"else ");
-				else id = Log(STDUSERTABLOG,"if %c%s ",(invert) ? '!' : ' ',word1);
+				if (result & ENDCODES) id = Log(STDUSERTABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
+				else if (*word1 == '1' && word1[1] == 0) id = Log(STDUSERTABLOG,(char*)"else ");
+				else id = Log(STDUSERTABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
 			}
 			ptr -= strlen(word1) + 3; //   back up to process the word and space
 			ptr = FreshOutput(ptr,word2,result,OUTPUT_ONCE|OUTPUT_KEEPSET) + 2; //   returns on the closer and we skip to accel
@@ -117,32 +117,32 @@ resume:
 	{
 		if (!(result & ENDCODES)) 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG," AND ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" AND ");
 			goto resume;
 			//   If he fails (result is one of ENDCODES), we fail
 		}
 		else 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG," ... ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" ... ");
 		}
 	}
 	else if (*op == 'o') //  OR
 	{
 		if (!(result & ENDCODES)) 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG," ... ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" ... ");
 			result = NOPROBLEM_BIT;
 		}
 		else 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG," OR ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" OR ");
 			goto resume;
 		}
 	}
 
 	FreeBuffer();
 	FreeBuffer();
-	if (trace & TRACE_OUTPUT &&  (result & ENDCODES) && CheckTopicTrace()) Log(id,"%s\r\n", "FAIL-if");
+	if (trace & TRACE_OUTPUT &&  (result & ENDCODES) && CheckTopicTrace()) Log(id,(char*)"%s\r\n", "FAIL-if");
 	impliedIf = ALREADY_HANDLED;
 }
 
@@ -167,40 +167,40 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 		}
 
 		//   Perform TEST condition
-		if (!strnicmp(ptr,"( pattern ",10)) // pattern if
+		if (!strnicmp(ptr,(char*)"( pattern ",10)) // pattern if
 		{
-			unsigned int start = 0;
-			unsigned int end = 0;
+			int start = 0;
+			int end = 0;
 			unsigned int wildcardSelector = 0;
 			unsigned int gap = 0;
 			wildcardIndex = 0;
 			bool uppercasem = false;
-			unsigned int positionStart, positionEnd;
+			int positionStart, positionEnd;
 			int whenmatched = 0;
 			++globalDepth; // indent pattern
 			bool failed = false;
-			if (!Match(ptr+10,0,start,"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
+			if (!Match(ptr+10,0,start,(char*)"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
 			--globalDepth;
 			if (clearUnmarks) // remove transient global disables.
 			{
 				clearUnmarks = false;
-				for (unsigned int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
+				for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
 			}
 			if (!failed) 
 			{
 				if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() ) //   display the entire matching responder and maybe wildcard bindings
 				{
-					Log(STDUSERTABLOG,"  **  Match: ");
+					Log(STDUSERTABLOG,(char*)"  **  Match: ");
 					if (wildcardIndex)
 					{
-						Log(STDUSERTABLOG,"  Wildcards: ");
-						for (unsigned int i = 0; i < wildcardIndex; ++i)
+						Log(STDUSERTABLOG,(char*)"  Wildcards: (");
+						for (int i = 0; i < wildcardIndex; ++i)
 						{
-							if (*wildcardOriginalText[i]) Log(STDUSERLOG,"_%d=%s / %s   ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
-							else Log(STDUSERLOG,"_%d=  ",i);
+							if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s   ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
+							else Log(STDUSERLOG,(char*)"_%d=  ",i);
 						}
 					}
-					Log(STDUSERLOG,"\r\n");
+					Log(STDUSERLOG,(char*)"\r\n");
 				}
 			}
 			result = (failed) ? FAILRULE_BIT : NOPROBLEM_BIT;
@@ -211,12 +211,12 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 		//   perform SUCCESS branch and then end if
 		if (!(result & ENDCODES)) //   IF test success - we choose this branch
 		{
-			ChangeDepth(1,"HandleIf");
-			ChangeDepth(1,"HandleIf");
+			ChangeDepth(1,(char*)"HandleIf");
+			ChangeDepth(1,(char*)"HandleIf");
 			ptr = Output(ptr+5,buffer,result); //   skip accelerator-3 and space and { and space - returns on next useful token
-			ChangeDepth(-1,"HandleIf");
+			ChangeDepth(-1,(char*)"HandleIf");
 			ptr += Decode(ptr);	//   offset to end of if entirely
-			ChangeDepth(-1,"HandleIf");
+			ChangeDepth(-1,(char*)"HandleIf");
 			break;
 		}
 		else 
@@ -224,7 +224,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 	
 		//   On fail, move to next test
 		ptr += Decode(ptr);
-		if (strncmp(ptr,"else ",5))  break; //   not an ELSE, the IF is over. 
+		if (strncmp(ptr,(char*)"else ",5))  break; //   not an ELSE, the IF is over. 
 		ptr += 5; //   skip over ELSE space, aiming at the (of the condition
 	}
 	return ptr;
@@ -254,19 +254,19 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 	++withinLoop;
 
 	ptr += 5;	//   skip jump + space + { + space
-	char* value = GetUserVariable("$cs_looplimit");
+	char* value = GetUserVariable((char*)"$cs_looplimit");
 	int limit = atoi(value);
 	if (limit == 0) limit = 1000;
 
 	if (counter > limit || counter < 0) counter = limit; //   LIMITED
 	while (counter-- > 0)
 	{
-		ChangeDepth(1,"HandleLoop");
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,"loop (%d)\r\n",counter+1);
+		ChangeDepth(1,(char*)"HandleLoop");
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"loop (%d)\r\n",counter+1);
 		FunctionResult result1;
 		Output(ptr,buffer,result1,OUTPUT_LOOP);
 		buffer += strlen(buffer);
-		ChangeDepth(-1,"HandleLoop");
+		ChangeDepth(-1,(char*)"HandleLoop");
 		if (result1 & ENDCODES) 
 		{
 			if (result1 == NEXTLOOP_BIT) continue;
@@ -276,14 +276,14 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 			break;//   potential failure if didnt add anything to buffer
 		}
 	}
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,"end of loop\r\n");
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"end of loop\r\n");
 	--withinLoop;
 
 	currentIterator = oldIterator;
 	return endofloop;
 }  
 
-FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,unsigned int& id, char* word1val, char* word2val)
+FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int& id, char* word1val, char* word2val)
 { //   word1 and word2 are RAW, ready to be evaluated.
 	*word1val = 0;
 	*word2val = 0;
@@ -299,8 +299,8 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,unsi
 	val1Result = result;
 	if (word2 && *word2) FreshOutput(word2,val2,result,OUTPUT_ONCE|OUTPUT_KEEPSET|OUTPUT_NOCOMMANUMBER); // 2nd arg
 	result = FAILRULE_BIT;
-	if (!stricmp(val1,"null") ) *val1 = 0;
-	if (!stricmp(val2,"null") ) *val2 = 0;
+	if (!stricmp(val1,(char*)"null") ) *val1 = 0;
+	if (!stricmp(val2,(char*)"null") ) *val2 = 0;
 	if (!op)
 	{
 		if (val1Result & ENDCODES); //   explicitly failed
@@ -316,7 +316,7 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,unsi
 			D = FindWord(val2);
 			if (index && D)
 			{
-				unsigned int junk;
+				int junk;
 				if (GetNextSpot(D,index-1,junk,junk) == index) result = NOPROBLEM_BIT; // otherwise failed and we would have known
 			}
 			if (result == FAILRULE_BIT && !index) // laborious match try now
@@ -371,8 +371,8 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,unsi
 	else //   boolean tests
 	{
 		// convert null to numeric operator for < or >  -- but not for equality
-		if (!*val1 && IsDigit(*val2) && IsNumber(val2) && (*op == '<' || *op == '>')) strcpy(val1,"0");
-		else if (!*val2 && IsDigit(*val1) && IsNumber(val1) && (*op == '<' || *op == '>')) strcpy(val2,"0");
+		if (!*val1 && IsDigit(*val2) && IsNumber(val2) && (*op == '<' || *op == '>')) strcpy(val1,(char*)"0");
+		else if (!*val2 && IsDigit(*val1) && IsNumber(val1) && (*op == '<' || *op == '>')) strcpy(val2,(char*)"0");
 
 		if (!IsDigitWord(val1,true) || !IsDigitWord(val2,true)) //   non-numeric string compare - bug, can be confused if digit starts text string
 		{
@@ -437,7 +437,7 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,unsi
 				else if (strcmp(val1,val2)) result = FAILRULE_BIT;
 				else result = NOPROBLEM_BIT;
 				if (*op == '!') result =  (result == NOPROBLEM_BIT) ? FAILRULE_BIT : NOPROBLEM_BIT;
-				else if (*op != '=') ReportBug("Op not implemented for comma numbers %s",op)
+				else if (*op != '=') ReportBug((char*)"Op not implemented for comma numbers %s",op)
 			}
 			else if (*op == '=') result =  (v1 == v2) ? NOPROBLEM_BIT : FAILRULE_BIT;
 			else if (*op == '<') 
@@ -463,30 +463,30 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,unsi
 		if (*op == '&') 
 		{
 #ifdef WIN32
-			sprintf(x,"0x%016I64x",v1);
-			sprintf(y,"0x%016I64x",v2);
+			sprintf(x,(char*)"0x%016I64x",v1);
+			sprintf(y,(char*)"0x%016I64x",v2);
 #else
-			sprintf(x,"0x%016llx",v1);
-			sprintf(y,"0x%016llx",v2); 
+			sprintf(x,(char*)"0x%016llx",v1);
+			sprintf(y,(char*)"0x%016llx",v2); 
 #endif		
 		}
 		if (!stricmp(word1,val1)) 
 		{
-			if (*word1) Log(STDUSERTABLOG,"if %s %s ",(*x) ? x : word1,op); // no need to show value
-			else Log(STDUSERTABLOG,"if null %s ",op);
+			if (*word1) Log(STDUSERTABLOG,(char*)"if %s %s ",(*x) ? x : word1,op); // no need to show value
+			else Log(STDUSERTABLOG,(char*)"if null %s ",op);
 		}
-		else if (!*val1) Log(STDUSERTABLOG,"if  %s (null) %s ",word1,op);
-		else if (*op == '&')  Log(STDUSERTABLOG,"if  %s (%s) %s ",word1,x,op);
-		else Log(STDUSERTABLOG,"if  %s (%s) %s ",word1,val1,op);
+		else if (!*val1) Log(STDUSERTABLOG,(char*)"if  %s (null) %s ",word1,op);
+		else if (*op == '&')  Log(STDUSERTABLOG,(char*)"if  %s (%s) %s ",word1,x,op);
+		else Log(STDUSERTABLOG,(char*)"if  %s (%s) %s ",word1,val1,op);
 
 		if (!strcmp(word2,val2)) 
 		{
-			if (*val2) id = Log(STDUSERLOG," %s ",(*y) ? y : word2); // no need to show value
-			else id = Log(STDUSERLOG," null "); 
+			if (*val2) id = Log(STDUSERLOG,(char*)" %s ",(*y) ? y : word2); // no need to show value
+			else id = Log(STDUSERLOG,(char*)" null "); 
 		}
-		else if (!*val2)  id = Log(STDUSERLOG," %s (null) ",word2);
-		else if (*op == '&') id = Log(STDUSERLOG," %s (%s) ",word2,y);
-		else id = Log(STDUSERLOG," %s (%s) ",word2,val2);
+		else if (!*val2)  id = Log(STDUSERLOG,(char*)" %s (null) ",word2);
+		else if (*op == '&') id = Log(STDUSERLOG,(char*)" %s (%s) ",word2,y);
+		else id = Log(STDUSERLOG,(char*)" %s (%s) ",word2,val2);
 	}
 	else if (trace & TRACE_PATTERN && !output && CheckTopicTrace()) 
 	{

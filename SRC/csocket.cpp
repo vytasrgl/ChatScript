@@ -60,7 +60,7 @@ char serverIP[100];
 SocketException::SocketException(const string &message, bool inclSysMsg)
   throw() : userMessage(message) {
   if (inclSysMsg) {
-    userMessage.append(": ");
+    userMessage.append((char*)": ");
     userMessage.append(strerror(errno));
   }
 }
@@ -73,7 +73,7 @@ static void fillAddr(const string &address, unsigned short port, sockaddr_in &ad
   memset(&addr, 0, sizeof(addr));  //   Zero out address structure
   addr.sin_family = AF_INET;       //   Internet address
   hostent *host;  //   Resolve name
-  if ((host = gethostbyname(address.c_str())) == NULL)  throw SocketException("Failed to resolve name (gethostbyname())");
+  if ((host = gethostbyname(address.c_str())) == NULL)  throw SocketException((char*)"Failed to resolve name (gethostbyname())");
   strcpy(hostname,host->h_name);
   addr.sin_addr.s_addr = *((unsigned long *) host->h_addr_list[0]);
   addr.sin_port = htons(port);     //   Assign port in network byte order
@@ -84,11 +84,11 @@ static void fillAddr(const string &address, unsigned short port, sockaddr_in &ad
 
 CSocket::CSocket(int type, int protocol) throw(SocketException) {
   #ifdef WIN32
-	if (InitWinsock() == FAILRULE_BIT)  throw SocketException("Unable to load WinSock DLL");  //   Load WinSock DLL
+	if (InitWinsock() == FAILRULE_BIT)  throw SocketException((char*)"Unable to load WinSock DLL");  //   Load WinSock DLL
   #endif
 
   //   Make a new socket
-  if ((sockDesc = socket(PF_INET, type, protocol)) < 0)  throw SocketException("Socket creation failed (socket())", true);
+  if ((sockDesc = socket(PF_INET, type, protocol)) < 0)  throw SocketException((char*)"Socket creation failed (socket())", true);
 }
 
 CSocket::CSocket(int sockDesc) {this->sockDesc = sockDesc;}
@@ -105,20 +105,20 @@ CSocket::~CSocket() {
 string CSocket::getLocalAddress() throw(SocketException) {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
-  if (getsockname(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0)  throw SocketException("Fetch of local address failed (getsockname())", true);
+  if (getsockname(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0)  throw SocketException((char*)"Fetch of local address failed (getsockname())", true);
   return inet_ntoa(addr.sin_addr);
 }
 
 unsigned short CSocket::getLocalPort() throw(SocketException) {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
-  if (getsockname(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0)  throw SocketException("Fetch of local port failed (getsockname())", true);
+  if (getsockname(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0)  throw SocketException((char*)"Fetch of local port failed (getsockname())", true);
   return ntohs(addr.sin_port);
 }
 
 void CSocket::setLocalPort(unsigned short localPort) throw(SocketException) {
 #ifdef WIN32
-	if (InitWinsock() == FAILRULE_BIT) throw SocketException("Unable to load WinSock DLL");
+	if (InitWinsock() == FAILRULE_BIT) throw SocketException((char*)"Unable to load WinSock DLL");
 #endif
 
 	int on = 1;
@@ -135,7 +135,7 @@ void CSocket::setLocalPort(unsigned short localPort) throw(SocketException) {
 	localAddr.sin_family = AF_INET;
 	localAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	localAddr.sin_port = htons(localPort);
-	if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) throw SocketException("Set of local port failed (bind())", true);
+	if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) throw SocketException((char*)"Set of local port failed (bind())", true);
 }
 
 void CSocket::setLocalAddressAndPort(const string &localAddress,
@@ -150,12 +150,12 @@ void CSocket::setLocalAddressAndPort(const string &localAddress,
 #else
 	setsockopt(sockDesc, SOL_SOCKET, SO_REUSEADDR, (void*) &off, sizeof(on));
 #endif
-	if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0)  throw SocketException("Set of local address and port failed (bind())", true);
+	if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0)  throw SocketException((char*)"Set of local address and port failed (bind())", true);
 }
 
 void CSocket::cleanUp() throw(SocketException) {
   #ifdef WIN32
-    if (WSACleanup() != 0)  throw SocketException("WSACleanup() failed");
+    if (WSACleanup() != 0)  throw SocketException((char*)"WSACleanup() failed");
   #endif
 }
 
@@ -180,30 +180,30 @@ void CommunicatingSocket::connect(const string &foreignAddress,unsigned short fo
   fillAddr(foreignAddress, foreignPort, destAddr);
 
   //   Try to connect to the given port
-  if (::connect(sockDesc, (sockaddr *) &destAddr, sizeof(destAddr)) < 0)   throw SocketException("Connect failed (connect())", true);
+  if (::connect(sockDesc, (sockaddr *) &destAddr, sizeof(destAddr)) < 0)   throw SocketException((char*)"Connect failed (connect())", true);
 }
 
 void CommunicatingSocket::send(const void *buffer, int bufferLen) throw(SocketException) {
-  if (::send(sockDesc, (raw_type *) buffer, bufferLen, 0) < 0)  throw SocketException("Send failed (send())", true);
+  if (::send(sockDesc, (raw_type *) buffer, bufferLen, 0) < 0)  throw SocketException((char*)"Send failed (send())", true);
 }
 
 int CommunicatingSocket::recv(void *buffer, int bufferLen) throw(SocketException) {
   int rtn;
-  if ((rtn = ::recv(sockDesc, (raw_type *) buffer, bufferLen, 0)) < 0)  throw SocketException("Received failed (recv())", true);
+  if ((rtn = ::recv(sockDesc, (raw_type *) buffer, bufferLen, 0)) < 0)  throw SocketException((char*)"Received failed (recv())", true);
   return rtn;
 }
 
 string CommunicatingSocket::getForeignAddress()  throw(SocketException) {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
-  if (getpeername(sockDesc, (sockaddr *) &addr,(socklen_t *) &addr_len) < 0)  throw SocketException("Fetch of foreign address failed (getpeername())", true);
+  if (getpeername(sockDesc, (sockaddr *) &addr,(socklen_t *) &addr_len) < 0)  throw SocketException((char*)"Fetch of foreign address failed (getpeername())", true);
   return inet_ntoa(addr.sin_addr);
 }
 
 unsigned short CommunicatingSocket::getForeignPort() throw(SocketException) {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
-  if (getpeername(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0)  throw SocketException("Fetch of foreign port failed (getpeername())", true);
+  if (getpeername(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0)  throw SocketException((char*)"Fetch of foreign port failed (getpeername())", true);
   return ntohs(addr.sin_port);
 }
 
@@ -233,12 +233,12 @@ TCPServerSocket::TCPServerSocket(const string &localAddress, unsigned short loca
 
 TCPSocket *TCPServerSocket::accept() throw(SocketException) {
   int newConnSD;
-  if ((newConnSD = ::accept(sockDesc, NULL, 0)) < 0)  throw SocketException("Accept failed (accept())", true);
+  if ((newConnSD = ::accept(sockDesc, NULL, 0)) < 0)  throw SocketException((char*)"Accept failed (accept())", true);
   return new TCPSocket(newConnSD);
 }
 
 void TCPServerSocket::setListen(int queueLen) throw(SocketException) {
-  if (listen(sockDesc, queueLen) < 0)  throw SocketException("Set listening socket failed (listen())", true);
+  if (listen(sockDesc, queueLen) < 0)  throw SocketException((char*)"Set listening socket failed (listen())", true);
 }
 
 #endif
@@ -248,28 +248,26 @@ void TCPServerSocket::setListen(int queueLen) throw(SocketException) {
 void Client(char* login)// test client for a server
 {
 	char word[MAX_WORD_SIZE];
-	printf("\r\n\r\n** Client launched\r\n");
+	printf((char*)"\r\n\r\n** Client launched\r\n");
 	char* data = AllocateBuffer(); // 80K limit
 	FILE* source = stdin;
 
-	bool clientStart = false;
 	char* from = login;
 	char input[MAX_WORD_SIZE];
 	*input = false;
 	if (*from == '*') // let user go first.
 	{
-		clientStart = true;
 		++from;
-		printf("\r\ninput:    ");
+		printf((char*)"\r\ninput:    ");
 		ReadALine(input,source);
 	}
 
 restart: // start with user
-	if (!strncmp(input,":source ",8)) {
+	if (!strncmp(input,(char*)":source ",8)) {
 		data = AllocateString(0,100000,1,0);
 		char file[MAX_WORD_SIZE];
 		ReadCompiledWord(input+8,file);
-		FILE* source = fopen(file,"rb");
+		FILE* source = fopen(file,(char*)"rb");
 		ReadALine(input,source,100000 - 10);
 	}
 
@@ -281,7 +279,7 @@ restart: // start with user
 		bot = separator + 1;
 	}
 	else bot = from + strlen(from);	// just a 0
-	sprintf(logFilename,"log-%s.txt",from);
+	sprintf(logFilename,(char*)"log-%s.txt",from);
 
 	// message to server is 3 strings-   username, botname, null (start conversation) or message
 	char* ptr = data;
@@ -298,7 +296,7 @@ restart: // start with user
 			size_t len = (ptr-data) + 1 + strlen(ptr);
 			TCPSocket *sock = new TCPSocket(serverIP, (unsigned short)port);
 			sock->send(data, len );
-			printf("Sent data to port %d\r\n",port);
+			printf((char*)"Sent data to port %d\r\n",port);
 
 			int bytesReceived = 1;              // Bytes read on each recv()
 			int totalBytesReceived = 0;         // Total bytes read
@@ -309,27 +307,27 @@ restart: // start with user
 				bytesReceived = sock->recv(base, MAX_WORD_SIZE);
 				totalBytesReceived += bytesReceived;
 				base += bytesReceived;
-				printf("Received %d bytes\r\n",bytesReceived);
+				printf((char*)"Received %d bytes\r\n",bytesReceived);
 				if (totalBytesReceived > 2 && ptr[totalBytesReceived-3] == 0 && ptr[totalBytesReceived-2] == 0xfe && ptr[totalBytesReceived-1] == 0xff) break; // positive confirmation was enabled
 			}
 			delete(sock);
 			*base = 0;
 
 			// chatbot replies this
-			Log(STDUSERLOG,"%s",ptr);
+			Log(STDUSERLOG,(char*)"%s",ptr);
 
 			// we say that  until :exit
-			printf("\r\n>    ");
+			printf((char*)"\r\n>    ");
 			ReadALine(ptr,source);
-			strcat(ptr," "); // never send empty line
-			if (!strnicmp(SkipWhitespace(ptr),":quit",5)) break;
-			if (!strnicmp(SkipWhitespace(ptr),":restart",8)) 
+			strcat(ptr,(char*)" "); // never send empty line
+			if (!strnicmp(SkipWhitespace(ptr),(char*)":quit",5)) break;
+			if (!strnicmp(SkipWhitespace(ptr),(char*)":restart",8)) 
 			{
 				// send restart on to server...
 				size_t len = (ptr-data) + 1 + strlen(ptr);
 				TCPSocket *sock = new TCPSocket(serverIP, (unsigned short)port);
 				sock->send(data, len );
-				printf(":restart sent data to port %d\r\n",port);
+				printf((char*)":restart sent data to port %d\r\n",port);
 
 				int bytesReceived = 1;              // Bytes read on each recv()
 				int totalBytesReceived = 0;         // Total bytes read
@@ -340,21 +338,21 @@ restart: // start with user
 					bytesReceived = sock->recv(base, MAX_WORD_SIZE);
 					totalBytesReceived += bytesReceived;
 					base += bytesReceived;
-					printf("Received %d bytes\r\n",bytesReceived);
+					printf((char*)"Received %d bytes\r\n",bytesReceived);
 					if (totalBytesReceived > 2 && ptr[totalBytesReceived-3] == 0 && ptr[totalBytesReceived-2] == 0xfe && ptr[totalBytesReceived-1] == 0xff) break; // positive confirmation was enabled
 				}
 				delete(sock);
 				*base = 0;
-				Log(STDUSERLOG,"%s",ptr); 	// chatbot replies this
+				Log(STDUSERLOG,(char*)"%s",ptr); 	// chatbot replies this
 
-				printf("\r\nEnter client user name: ");
+				printf((char*)"\r\nEnter client user name: ");
 				ReadALine(word,source);
-				printf("\r\n");
+				printf((char*)"\r\n");
 				from = word;
 				goto restart;
 			}
 		}
-		catch(SocketException e) { myexit("failed to connect to server\r\n");}
+		catch(SocketException e) { myexit((char*)"failed to connect to server\r\n");}
 	}
 }
 #endif
@@ -419,16 +417,16 @@ void CloseServer() {
 
 void* RegressLoad(void* junk)// test load for a server
 {
-	FILE* in = FopenReadOnly("REGRESS/bigregress.txt");
+	FILE* in = FopenReadOnly((char*)"REGRESS/bigregress.txt");
 	if (!in) return 0;
 	
 	char buffer[8000];
-	printf("\r\n\r\n** Load %d launched\r\n",++loadid);
+	printf((char*)"\r\n\r\n** Load %d launched\r\n",++loadid);
 	char data[MAX_WORD_SIZE];
 	char from[100];
-	sprintf(from,"%d",loadid);
+	sprintf(from,(char*)"%d",loadid);
 	char* bot = "";
-	sprintf(logFilename,"log-%s.txt",from);
+	sprintf(logFilename,(char*)"log-%s.txt",from);
 	unsigned int msg = 0;
 	unsigned int volleys = 0;
 	unsigned int longVolleys = 0;
@@ -485,16 +483,16 @@ void* RegressLoad(void* junk)// test load for a server
 			if (diff > 5000) ++ xlongVolleys;
 			currentCycleTime += diff;
 			// chatbot replies this
-		//	printf("real:%d avg:%d max:%d volley:%d 2slong:%d 5slong:%d %s => %s\r\n",diff,avgTime,maxTime,volleys,longVolleys,xlongVolleys,ptr,base);
+		//	printf((char*)"real:%d avg:%d max:%d volley:%d 2slong:%d 5slong:%d %s => %s\r\n",diff,avgTime,maxTime,volleys,longVolleys,xlongVolleys,ptr,base);
 		}
-		catch(SocketException e) { myexit("failed to connect to server\r\n");}
+		catch(SocketException e) { myexit((char*)"failed to connect to server\r\n");}
 		if (++counter == 100) 
 		{
 			counter = 0;
 			cycleTime = currentCycleTime;
 			currentCycleTime = 0;
 			avgTime = cycleTime / 100;
-			printf("From: %s avg:%d max:%d volley:%d 2slong:%d 5slong:%d\r\n",from,avgTime,maxTime,volleys,longVolleys,xlongVolleys);
+			printf((char*)"From: %s avg:%d max:%d volley:%d 2slong:%d 5slong:%d\r\n",from,avgTime,maxTime,volleys,longVolleys,xlongVolleys);
 		}
 		else msg++;
 	}
@@ -509,8 +507,8 @@ void LogChat(clock_t starttime,char* user,char* bot,char* IP, int turn,char* inp
 	char* why = output + strlen(output) + 3; //skip terminator + 2 ctrl z end marker
 	char* activeTopic = why + strlen(why) + 1;
 	clock_t endtime = ElapsedMilliseconds(); 
-	if (*input) Log(SERVERLOG,"Respond: user:%s bot:%s ip:%s (%s) %d %s  ==> %s  When:%s %dms %s\n", user,bot,IP,activeTopic,turn,input,Purify(output),date,(int)(endtime - starttime),why);
-	else Log(SERVERLOG,"Start: user:%s bot:%s ip:%s (%s) %d ==> %s  When:%s %dms Version:%s Build0:%s Build1:%s %s\n", user,bot,IP,activeTopic,turn,Purify(output),date,(int)(endtime - starttime),version,timeStamp[0],timeStamp[1],why);
+	if (*input) Log(SERVERLOG,(char*)"Respond: user:%s bot:%s ip:%s (%s) %d %s  ==> %s  When:%s %dms %s\n", user,bot,IP,activeTopic,turn,input,Purify(output),date,(int)(endtime - starttime),why);
+	else Log(SERVERLOG,(char*)"Start: user:%s bot:%s ip:%s (%s) %d ==> %s  When:%s %dms Version:%s Build0:%s Build1:%s %s\n", user,bot,IP,activeTopic,turn,Purify(output),date,(int)(endtime - starttime),version,timeStamp[0],timeStamp[1],why);
 }
 
 #ifndef EVSERVER
@@ -521,12 +519,12 @@ static void Crash()
     if (delay > 180) errorCount = 0; //   3 minutes delay is fine
     lastCrash = now;
     ++errorCount;
-	if (errorCount > 6) myexit("too many crashes in a row"); //   too many crashes in a row, let it reboot from scratch
+	if (errorCount > 6) myexit((char*)"too many crashes in a row"); //   too many crashes in a row, let it reboot from scratch
 #ifndef WIN32
 	//   clear chat thread if it crashed
 	if (chatThread == pthread_self()) 
     {
-		if (!chatbotExists ) myexit("chatbot server doesn't exist anymore");
+		if (!chatbotExists ) myexit((char*)"chatbot server doesn't exist anymore");
         chatbotExists = false;
         chatWanted = false;
         pthread_mutex_unlock(&chatLock); 
@@ -623,11 +621,11 @@ static void LaunchClient(void* junk) // accepts incoming connections from users 
 		 {
 			case EAGAIN: 
 			  x = sysconf( _SC_THREAD_THREADS_MAX );
-			  printf("create thread failed EAGAIN limit: %d \r\n",(int)x);   
+			  printf((char*)"create thread failed EAGAIN limit: %d \r\n",(int)x);   
 			  break;
-			case EPERM:  printf("create thread failed EPERM \r\n");   break;
-			case EINVAL:  printf("create thread failed EINVAL \r\n");   break;
-			default:  printf("create thread failed default \r\n");   break;
+			case EPERM:  printf((char*)"create thread failed EPERM \r\n");   break;
+			case EINVAL:  printf((char*)"create thread failed EINVAL \r\n");   break;
+			default:  printf((char*)"create thread failed default \r\n");   break;
 		 }
 	 }
 }
@@ -700,9 +698,9 @@ void InternetServer()  //LINUX
         void* status; 
         pthread_join(chatThread, &status); 
         if (!status) break; //   chatbot thread exit (0= requested exit - other means it crashed
-		Log(SERVERLOG,"Spawning new chatserver\r\n");
+		Log(SERVERLOG,(char*)"Spawning new chatserver\r\n");
      }
-	myexit("end of internet server");
+	myexit((char*)"end of internet server");
 }
 #endif  // end LINUX
 
@@ -837,8 +835,8 @@ static void* AcceptSockets(void*) // accepts incoming connections from users
             TCPSocket *sock = serverSocket->accept();
 			LaunchClient((void*)sock);
          }
-	} catch (SocketException &e) {printf("accept busy\r\n"); ReportBug("***Accept busy\r\n")}
-    myexit("end of internet server");
+	} catch (SocketException &e) {printf((char*)"accept busy\r\n"); ReportBug((char*)"***Accept busy\r\n")}
+    myexit((char*)"end of internet server");
 	return NULL;
 }
 
@@ -853,7 +851,7 @@ static void* Done(TCPSocket * sock,char* memory)
 			sock->send(output, len);
 		}
 	}
-	catch(...) {ReportBug("sending failed\r\n");}
+	catch(...) {ReportBug((char*)"sending failed\r\n");}
 	delete sock;
 	free(memory);
 	return NULL;
@@ -877,7 +875,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		buffer += strlen(buffer) + 1;				// use this space after IP for messaging
     } catch (SocketException e)
 	{ 
-		ReportBug("Socket errx") cerr << "Unable to get port" << endl;
+		ReportBug((char*)"Socket errx") cerr << "Unable to get port" << endl;
 		return Done(sock,memory);
 	}
 
@@ -901,18 +899,18 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 			{
 				if (len1 < 0) 
 				{
-					ReportBug("TCP recv from %s returned error: %d\n", sock->getForeignAddress().c_str(), errno);
-					Log(SERVERLOG,"TCP recv from %s returned error: %d\n", sock->getForeignAddress().c_str(), errno);
+					ReportBug((char*)"TCP recv from %s returned error: %d\n", sock->getForeignAddress().c_str(), errno);
+					Log(SERVERLOG,(char*)"TCP recv from %s returned error: %d\n", sock->getForeignAddress().c_str(), errno);
 				}
 				else if ( len >= MAX_BUFFER_SIZE)
 				{
-					ReportBug("Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
-					Log(SERVERLOG,"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
+					ReportBug((char*)"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
+					Log(SERVERLOG,(char*)"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
 				}
 				else 
 				{
-					ReportBug("TCP %s closed connection prematurely\n", sock->getForeignAddress().c_str());
-					Log(SERVERLOG,"TCP %s closed connection prematurely\n", sock->getForeignAddress().c_str());
+					ReportBug((char*)"TCP %s closed connection prematurely\n", sock->getForeignAddress().c_str());
+					Log(SERVERLOG,(char*)"TCP %s closed connection prematurely\n", sock->getForeignAddress().c_str());
 				}
 				delete sock;
 				free(memory);
@@ -941,12 +939,12 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		{
 			if (*bot == '1' && bot[1] == 0) // echo test to prove server running (generates no log traces)
 			{
-				strcpy(output,"1");
+				strcpy(output,(char*)"1");
 				return Done(sock,memory);
 			}
 
-			//ReportBug("%s %s bot: %s msg: %s  NO USER ID \r\n",IP,GetTimeInfo()+SKIPWEEKDAY,bot,msg)
-			strcpy(output,"[you have no user id]\r\n"); 
+			//ReportBug((char*)"%s %s bot: %s msg: %s  NO USER ID \r\n",IP,GetTimeInfo()+SKIPWEEKDAY,bot,msg)
+			strcpy(output,(char*)"[you have no user id]\r\n"); 
 			return Done(sock,memory);
 		}
 
@@ -964,13 +962,13 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 			output[2] = 0xfe; //ctrl markers
 			output[3] = 0xff;
 			output[4] = 0;	
-			Log(STDUSERLOG,"Timeout waiting for service: %s  =>  %s\r\n",msg,output);
+			Log(STDUSERLOG,(char*)"Timeout waiting for service: %s  =>  %s\r\n",msg,output);
 			return Done(sock,memory);
 		}
 
 	  } catch (...)  
 	  {
-			ReportBug("***%s client presocket failed %s\r\n",IP,GetTimeInfo()+SKIPWEEKDAY)
+			ReportBug((char*)"***%s client presocket failed %s\r\n",IP,GetTimeInfo()+SKIPWEEKDAY)
  			return Done(sock,memory);
 	  }
 
@@ -989,7 +987,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
         success = ClientWaitForServer(memory+sizeof(int),msg,endWait);
 		if (!success) 
 		{
-			strcpy(output," ");
+			strcpy(output,(char*)" ");
 			output[4] = 0; // hidden why data after positive end markers
 		}
 		size_t len = strlen(output);
@@ -997,8 +995,8 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		if (serverctrlz) len += 3; // send end marker for positive confirmation of completion
 		sock->send(output, len);
 } catch (...)  {
-		printf("client socket fail\r\n");
-		ReportBug("***%s client socket failed %s \r\n",IP,GetTimeInfo()+SKIPWEEKDAY)}
+		printf((char*)"client socket fail\r\n");
+		ReportBug((char*)"***%s client socket failed %s \r\n",IP,GetTimeInfo()+SKIPWEEKDAY)}
 
 	delete sock;
 
@@ -1037,8 +1035,8 @@ void StallTest(bool startTest,char* label)
 	{
 		clock_t now = ElapsedMilliseconds();
 		if ((now-start) > 40) 
-			printf("%d %s\r\n",(unsigned int)(now-start),label);
-		//else printf("ok %d %s\r\n",now-start,label);
+			printf((char*)"%d %s\r\n",(unsigned int)(now-start),label);
+		//else printf((char*)"ok %d %s\r\n",now-start,label);
 	}
 }
 
@@ -1050,12 +1048,12 @@ static void* MainChatbotServer()
 
 	if (setjmp(scriptJump[SERVER_RECOVERY])) // crashes come back to here
 	{
-		printf("***Server exception\r\n");
-		ReportBug("***Server exception\r\n")
+		printf((char*)"***Server exception\r\n");
+		ReportBug((char*)"***Server exception\r\n")
 #ifdef WIN32
-		char* bad = GetUserVariable("$cs_crashmsg");
+		char* bad = GetUserVariable((char*)"$cs_crashmsg");
 		if (*bad) strcpy(ourMainOutputBuffer,bad);
-		else strcpy(ourMainOutputBuffer,"Hey, sorry. I forgot what I was thinking about.");
+		else strcpy(ourMainOutputBuffer,(char*)"Hey, sorry. I forgot what I was thinking about.");
 		ServerTransferDataToClient();
 #endif
 		ResetBuffers(); //   in the event of a trapped bug, return here, we will still own the chatlock
@@ -1063,8 +1061,8 @@ static void* MainChatbotServer()
     chatbotExists = true;   //  if a client can get the chatlock now, he will be happy
 	bool oldserverlog = serverLog;
 	serverLog = true;
-	Log(SERVERLOG,"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
-	printf("Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
+	Log(SERVERLOG,(char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
+	printf((char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
 	serverLog = oldserverlog;
 #ifdef WIN32
  _try { // catch crashes in windows
@@ -1093,16 +1091,16 @@ static void* MainChatbotServer()
 		strcpy(bot,ptr);
 		ptr += strlen(ptr) + 1; // ptr to message
 		size_t test = strlen(ptr);
-		if (test >= (MAX_BUFFER_SIZE - 100)) strcpy(ourMainInputBuffer,"too much data");
+		if (test >= (MAX_BUFFER_SIZE - 100)) strcpy(ourMainInputBuffer,(char*)"too much data");
 		else strcpy(ourMainInputBuffer,ptr); // xfer user message to our incoming feed
 		echo = false;
-		if (serverPreLog) Log(SERVERLOG,"ServerPre: %s (%s) %s\r\n",user,bot,ourMainInputBuffer);
+		if (serverPreLog) Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s\r\n",user,bot,ourMainInputBuffer);
 
 		*((int*) clientBuffer) = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
 		ServerTransferDataToClient();
 	}
 #ifdef WIN32
-		}_except (true) {ReportBug("Server exception\r\n") Crash();}
+		}_except (true) {ReportBug((char*)"Server exception\r\n") Crash();}
 #endif
 	return NULL;
 }

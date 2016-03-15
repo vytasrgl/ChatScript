@@ -67,7 +67,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 // kinds of adjectives
 #define ADJECTIVE_NORMAL		0x0000000000004000ULL	// "friendly" // "friendlier" // "friendliest"
 #define ADJECTIVE_NUMBER		0x0000000000002000ULL 	// the five dogs, the 5 dogs, and the fifth dog
-#define ADJECTIVE_NOUN			0x0000000000001000ULL 	// noun used as an adjective in front of another ("bank clerk") "attributive noun"
+#define ADJECTIVE_NOUN			0x0000000000001000ULL 	// noun used as an adjective in front of another ((char*)"bank clerk") "attributive noun"
 #define ADJECTIVE_PARTICIPLE	0x0000000000000800ULL 	// verb participle used as an adjective (before or after noun) the "walking" dead  or  the "walked" dog
 #define ADJECTIVE_BITS ( ADJECTIVE_NOUN | ADJECTIVE_NORMAL | ADJECTIVE_PARTICIPLE | ADJECTIVE_NUMBER )
 
@@ -78,7 +78,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define TO_INFINITIVE	 		0x0000000000000080ULL 	// attaches to NOUN_INFINITIVE
 
 // kinds of nouns
-#define NOUN_ADJECTIVE			0x0000000000000040ULL 	// adjective used as a noun - "the rich"   implied people as noun  -- also past verb: "the *dispossessed are fun"
+#define NOUN_ADJECTIVE			0x0000000000000040ULL 	// adjective used as a noun - "the rich"   implied people as noun  -- also past verb: (char*)"the *dispossessed are fun"
 #define NOUN_SINGULAR			0x0000000000000020ULL	// Pennbank: NN
 #define NOUN_PLURAL				0x0000000000000010ULL	// Pennbank: NNS
 #define NOUN_PROPER_SINGULAR	0x0000000000000008ULL	//   A proper noun that is NOT a noun is a TITLE like Mr.
@@ -182,7 +182,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define VERB_DIRECTOBJECT 			0x0000000000020000ULL	 
 #define VERB_TAKES_GERUND			0x0000000000040000ULL	// "keep on" singing
 #define VERB_TAKES_ADJECTIVE		0x0000000000080000ULL	//  be seem etc (copular/linking verb) links adjectives and adjective participles to subjects
-#define VERB_TAKES_INDIRECT_THEN_TOINFINITIVE	0x0000000000100000ULL    // proto 24  --  verbs taking to infinitive after object: "Somebody ----s somebody to INFINITIVE"  "I advise you *to go" + ~TO_INFINITIVE_OBJECT_verbs
+#define VERB_TAKES_INDIRECT_THEN_TOINFINITIVE	0x0000000000100000ULL    // proto 24  --  verbs taking to infinitive after object: (char*)"Somebody ----s somebody to INFINITIVE"  "I advise you *to go" + ~TO_INFINITIVE_OBJECT_verbs
 #define VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE	0x0000000000200000ULL 	// proto 25  -  verbs that take direct infinitive after object  "Somebody ----s somebody INFINITIVE"  "i heard her sing"  + ~causal_directobject_infinitive_verbs
 #define VERB_TAKES_TOINFINITIVE					0x0000000000400000ULL    // proto 28 "Somebody ----s to INFINITIVE"   "we agreed to plan" -- when seen no indirect object
 #define VERB_TAKES_VERBINFINITIVE				0x0000000000800000ULL 	// proto 32, 35 "Somebody ----s INFINITIVE"   "Something ----s INFINITIVE"  -- when seen no indirect object  "you *dare call my lawyer"
@@ -300,58 +300,59 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 // flags on facts  FACT FLAGS
 
-#define USER_FLAG1			0x00001000
-#define USER_FLAG2			0x00002000
-#define USER_FLAG3			0x00004000
-#define USER_FLAG4			0x00008000
-#define USER_FLAG5			0x00010000
-#define USER_FLAG6			0x00020000
-#define USER_FLAG7			0x00040000
-#define USER_FLAGS			0x000EF000 
-#define SYSTEM_FLAGS		0xFFF80FFF // system used top 17 bits and bottom 12
-
-#define FACTBUILD2			0x00080000
-
-#define JSON_PRIMITIVE_VALUE 0x00001000 // on object side of triple
-#define JSON_STRING_VALUE 0x00002000 // on object side of triple
-#define JSON_OBJECT_VALUE 0x00004000 // on object side of triple
-#define JSON_ARRAY_VALUE 0x00008000 // on object side of triple
-#define JSON_OBJECT_FACT 0x00010000 // on subject side of triple
-#define JSON_ARRAY_FACT 0x00020000 // on subject side of triple
-#define JSON_FLAGS ( JSON_PRIMITIVE_VALUE | JSON_STRING_VALUE | JSON_OBJECT_VALUE | JSON_ARRAY_VALUE | JSON_OBJECT_FACT | JSON_ARRAY_FACT )
-
-// FACT FLAGS 
+#define FACTATTRIBUTE	    0x10000000  // fact is an attribute fact, object can vary while subject/verb should be fixed 
 
 // transient flags
-#define MARKED_FACT         0x00000800  //   TRANSIENT : used during inferencing sometimes to see if fact is marked, also in user save to avoid repeated save
+#define MARKED_FACT         0x08000000  //   TRANSIENT : used during inferencing sometimes to see if fact is marked, also in user save to avoid repeated save
 #define ITERATOR_FACT		MARKED_FACT	// used by iterator
-#define MARKED_FACT2        0x00000400  //   TRANSIENT: used during inferencing sometimes to see if 2ndary fact is marked
-#define FACTDEAD			0x00000200  //   has been killed off
-#define FACTTRANSIENT       0x00000100  //   save only with a set, not with a user or base system
+#define MARKED_FACT2        0x04000000  //   TRANSIENT: used during inferencing sometimes to see if 2ndary fact is marked
+#define FACTDEAD			0x02000000   //   has been killed off
+#define FACTTRANSIENT		0x01000000   //   save only with a set, not with a user or base system
+
+// normal flags
+#define FACTSHARED	        0x00800000
+#define ORIGINAL_ONLY       0x00400000  //  dont match on canonicals
+#define FACTBUILD2			0x00200000 
+#define FACTBUILD1	        0x00100000  // fact created during build 1 (for concepts)
+
+// user flags
+#define USER_FLAG4			0x00080000
+#define USER_FLAG3			0x00040000
+#define USER_FLAG2			0x00020000
+#define USER_FLAG1			0x00010000
+
+#define USER_FLAGS			0x000F0000 
+#define SYSTEM_FLAGS		0xFFF0FFFF // system used top 17 bits and bottom 12
+// unused 0x00004000 0x00008000
+#define JSON_OBJECT_FACT	0x00002000 // on subject side of triple
+#define JSON_ARRAY_FACT		0x00001000	// on subject side of triple
+
+#define JSON_ARRAY_VALUE	0x00000800  // on object side of triple
+#define JSON_OBJECT_VALUE	0x00000400  // on object side of triple
+#define JSON_STRING_VALUE	0x00000200 // on object side of triple
+#define JSON_PRIMITIVE_VALUE 0x00000100 // on object side of triple
+#define JSON_FLAGS ( JSON_PRIMITIVE_VALUE | JSON_STRING_VALUE | JSON_OBJECT_VALUE | JSON_ARRAY_VALUE | JSON_OBJECT_FACT | JSON_ARRAY_FACT )
 
 // permanent flags
 #define FACTSUBJECT         0x00000080  //   index is - relative number to fact 
 #define FACTVERB			0x00000040	//   is 1st in its bucket (transient flag for read/WriteBinary) which MIRRORS DICT BUCKETHEADER flag: 
 #define FACTOBJECT		    0x00000020  //   does not apply to canonical forms of words, only the original form - for classes and sets, means dont chase the set
-#define FACTDUPLICATE		0x00000010	//   allow repeats of this face
-
-#define FACTATTRIBUTE	    0x00000008  // fact is an attribute fact, object can vary while subject/verb should be fixed 
-#define FACTBUILD1	        0x00000004  // fact created during build 1 (for concepts)
-#define FACTSHARED	        0x00000002 
-#define ORIGINAL_ONLY       0x00000001  //  dont match on canonicals
-
+#define FACTDUPLICATE		0x00000010	//   allow repeats of this fact
 
 // pos tagger roles and states on roles[] && needRoles[] (32 bit limit)
 // needRoles values can be composed of multiple choices. roles are exactly one choice
-#define MAINSUBJECT				0x00000001			// noun roles like Mainsubject etc are ordered lowest first for pronoun IT priority
-#define MAINVERB				0x00000002
-#define MAININDIRECTOBJECT		0x00000004 
-#define MAINOBJECT				0x00000008
+#define MAINOBJECT			0x00000008
+#define MAININDIRECTOBJECT	0x00000004 
+#define MAINVERB			0x00000002
+#define MAINSUBJECT			0x00000001			// noun roles like Mainsubject etc are ordered lowest first for pronoun IT priority
 
-#define SUBJECT2				0x00000010
-#define VERB2					0x00000020
-#define INDIRECTOBJECT2			0x00000040 
-#define OBJECT2					0x00000080
+// end of fact flags
+
+
+#define SUBJECT2			0x00000010
+#define VERB2				0x00000020
+#define INDIRECTOBJECT2		0x00000040 
+#define OBJECT2				0x00000080
 
 #define CLAUSE 					0x00000100 	
 #define VERBAL 					0x00000200	 

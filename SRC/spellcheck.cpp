@@ -24,6 +24,7 @@ static unsigned char letterIndexData[256] =
 };
 
 static MEANING lengthLists[100];		// lists of valid words by length
+bool fixedSpell = false;
 
 typedef struct SUFFIX
 {
@@ -33,12 +34,12 @@ typedef struct SUFFIX
 
 static SUFFIX stems[] = 
 {
-	{"less",NOUN},
-	{"ness",ADJECTIVE|NOUN},
-	{"est",ADJECTIVE},
-	{"en",ADJECTIVE},
-	{"er",ADJECTIVE},
-	{"ly",ADJECTIVE},
+	{ (char*)"less",NOUN},
+	{ (char*)"ness",ADJECTIVE|NOUN},
+	{ (char*)"est",ADJECTIVE},
+	{ (char*)"en",ADJECTIVE},
+	{ (char*)"er",ADJECTIVE},
+	{ (char*)"ly",ADJECTIVE},
 	{0},
 };
 
@@ -109,7 +110,7 @@ static int SplitWord(char* word)
 	return breakAt;
 }
 
-static char* SpellCheck(unsigned int i, int language)
+static char* SpellCheck( int i, int language)
 {
     //   on entry we will have passed over words which are KnownWord (including bases) or isInitialWord (all initials)
     //   wordstarts from 1 ... wordCount is the incoming sentence words (original). We are processing the ith word here.
@@ -124,10 +125,13 @@ static char* SpellCheck(unsigned int i, int language)
     int breakAt = SplitWord(word);
     if (breakAt > 0)//   we found a split, insert 2nd word into word stream
     {
-        ++wordCount;
-		memmove(wordStarts+i+1,wordStarts+i,sizeof(char*) * (wordCount-i)); // open up a slot for a new word
-        wordStarts[i+1] = reuseAllocation(wordStarts[i+1],wordStarts[i]+breakAt); // set this to the second word (shared from within 1st word)
-        return FindWord(wordStarts[i],breakAt,PRIMARY_CASE_ALLOWED)->word; //   1st word gets replaced, we added valid word after
+		char* tokens[3];
+		WORDP D = FindWord(word,breakAt,PRIMARY_CASE_ALLOWED);
+		tokens[1] = D->word;
+		tokens[2] = word+breakAt;
+		ReplaceWords(i,1,2,tokens);
+		fixedSpell = true;
+		return NULL;
     }
 
 	// now imagine partial runtogetherness, like "talkab out fingers"
@@ -139,8 +143,13 @@ static char* SpellCheck(unsigned int i, int language)
 		breakAt = SplitWord(tmp);
 		if (breakAt > 0) // replace words with the dual pair
 		{
-			wordStarts[i+1] = reuseAllocation(wordStarts[i+1],StoreWord(tmp+breakAt)->word); // set this to the second word (shared from within 1st word)
-			return FindWord(tmp,breakAt,PRIMARY_CASE_ALLOWED)->word; // 1st word gets replaced, we added valid word after
+			char* tokens[3];
+			WORDP D = FindWord(tmp,breakAt,PRIMARY_CASE_ALLOWED);
+			tokens[1] = D->word;
+			tokens[2] = tmp+breakAt;
+			ReplaceWords(i,1,2,tokens);
+			fixedSpell = true;
+			return NULL;
 		}
 	}
 
@@ -238,18 +247,18 @@ char* ProbableKnownWord(char* word)
 bool SpellCheckSentence()
 {
 	WORDP D,E;
-	bool fixedSpell = false;
+	fixedSpell = false;
 	bool lowercase = false;
 	int language = ENGLISH;
-	char* lang = GetUserVariable("$cs_language");
-	if (lang && !stricmp(lang,"spanish")) language = SPANISH;
+	char* lang = GetUserVariable((char*)"$cs_language");
+	if (lang && !stricmp(lang,(char*)"spanish")) language = SPANISH;
 	
 	// check for all uppercase
-	for (unsigned int i = FindOOBEnd(1) + 1; i <= wordCount; ++i) // skip start of sentence
+	for (int i = FindOOBEnd(1) + 1; i <= wordCount; ++i) // skip start of sentence
 	{
 		char* word = wordStarts[i];
 		size_t len = strlen(word);
-		for (unsigned int j = 0; j < len; ++j) 
+		for (int j = 0; j < (int)len; ++j) 
 		{
 			if (IsLowerCase(word[j])) 
 			{
@@ -260,15 +269,15 @@ bool SpellCheckSentence()
 	}
 	if (!lowercase && wordCount > 2) // must have several words in uppercase
 	{
-		for (unsigned int i = FindOOBEnd(1); i <= wordCount; ++i)
+		for (int i = FindOOBEnd(1); i <= wordCount; ++i)
 		{
 			char* word = wordStarts[i];
 			MakeLowerCase(word);
 		}
 	}
 
-	unsigned int startWord = FindOOBEnd(1);
-	for (unsigned int i = startWord; i <= wordCount; ++i)
+	int startWord = FindOOBEnd(1);
+	for (int i = startWord; i <= wordCount; ++i)
 	{
 		char* word = wordStarts[i];
 		if (!word || !word[1] || *word == '"' ) continue; // illegal or single char or quoted thingy 
@@ -293,12 +302,10 @@ bool SpellCheckSentence()
 		char* p = word -1;
 		unsigned char c;
 		char* hyphen = 0;
-		char* under = 0;
 		while ((c = *++p) != 0)
 		{ 
 			++len;
 			if (c == '-') hyphen = p; // note is hyphenated - use trailing
-			else if (c == '_') under = p; // note is underscored - use trailing
 		}
 		if (len == 0 || GetTemperatureLetter(word)) continue;	// bad ignore utf word or llegal length - also no composite words
 		if (c && c != '@' && c != '.') // illegal word character
@@ -361,7 +368,7 @@ bool SpellCheckSentence()
 			strcpy(join,word);
 			if (!D || !(D->properties & PART_OF_SPEECH) ) // merge these two, except "going to" or wordnet composites of normal words  // merge as a compound word
 			{
-				strcat(join,"_");
+				strcat(join,(char*)"_");
 				strcat(join,wordStarts[i+1]);
 				D = FindWord(join,0,(tokenControl & ONLY_LOWERCASE) ?  PRIMARY_CASE_ALLOWED : STANDARD_LOOKUP);
 			}
@@ -372,9 +379,10 @@ bool SpellCheckSentence()
 				WORDP P2 = FindWord(wordStarts[i+1],0,LOWERCASE_LOOKUP);
 				if (!P1 || !P2 || !(P1->properties & PART_OF_SPEECH) || !(P2->properties & PART_OF_SPEECH)) 
 				{
-					memmove(wordStarts+i+1,wordStarts+i+2,sizeof(char*) * (wordCount - i - 1));
-					wordStarts[i] = reuseAllocation(wordStarts[i],D->word);
-					--wordCount;
+					char* tokens[2];
+					tokens[1] = D->word;
+					ReplaceWords(i,2,1,tokens);
+					fixedSpell = true;
 					continue;
 				}
 			}
@@ -384,21 +392,23 @@ bool SpellCheckSentence()
 		char* slash = strchr(word,'/');
 		if (slash && slash != word && slash[1]) //   break apart word/word
 		{
-			*slash = 0;
 			if ((wordCount + 2 ) >= REAL_SENTENCE_LIMIT) continue;	// no room
-			wordCount += 2;
-			memmove(wordStarts+i+3,wordStarts+i+1,(wordCount-i)*sizeof(char*)); 
+			*slash = 0;
 			D = StoreWord(word);
+			*slash = '/';
 			E = StoreWord(slash+1);
-			wordStarts[i] = reuseAllocation(wordStarts[i],D->word);
-			wordStarts[i+1] = reuseAllocation(wordStarts[i+1],"/");
-			wordStarts[i+2] = reuseAllocation(wordStarts[i+1],E->word);
+			char* tokens[4];
+			tokens[1] = D->word;
+			tokens[2] = "/";
+			tokens[3] = E->word;
+			ReplaceWords(i,1,3,tokens);
+			fixedSpell = true;
 			--i;
 			continue;
 		}
 
 		// see if hypenated word should be separate or joined (ignore obvious adjective suffix)
-		if (hyphen &&  !stricmp(hyphen,"-like"))
+		if (hyphen &&  !stricmp(hyphen,(char*)"-like"))
 		{
 			StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE); // accept it as a word
 			continue;
@@ -406,46 +416,55 @@ bool SpellCheckSentence()
 		else if (hyphen && (hyphen-word) > 1)
 		{
 			char test[MAX_WORD_SIZE];
-			*hyphen = 0;
+			char first[MAX_WORD_SIZE];
 
 			// test for split
+			*hyphen = 0;
 			strcpy(test,hyphen+1);
+			strcpy(first,word);
+			*hyphen = '-';
+
 			WORDP E = FindWord(test,0,LOWERCASE_LOOKUP);
-			WORDP D = FindWord(word,0,LOWERCASE_LOOKUP);
-			if (*word == 0) wordStarts[i] = AllocateString(wordStarts[i] + 1); // -pieces  want to lose the leading hypen  (2-pieces)
+			WORDP D = FindWord(first,0,LOWERCASE_LOOKUP);
+			if (*first == 0) 
+			{
+				wordStarts[i] = AllocateString(wordStarts[i] + 1); // -pieces  want to lose the leading hypen  (2-pieces)
+				fixedSpell = true;
+			}
 			else if (D && E) //   1st word gets replaced, we added another word after
 			{
 				if ((wordCount + 1 ) >= REAL_SENTENCE_LIMIT) continue;	// no room
-				++wordCount;
-				memmove(wordStarts+i+2,wordStarts+i+1,(wordCount-i)*sizeof(char*)); // make room for new word
-				wordStarts[i] = reuseAllocation(wordStarts[i],D->word);
-				wordStarts[i+1] = reuseAllocation(wordStarts[i+1],E->word);
+				char* tokens[3];
+				tokens[1] = D->word;
+				tokens[2] = E->word;
+				ReplaceWords(i,1,2,tokens);
+				fixedSpell = true;
 				--i;
 			}
-			else if (!stricmp(test,"old") || !stricmp(test,"olds")) //   break apart 5-year-old
+			else if (!stricmp(test,(char*)"old") || !stricmp(test,(char*)"olds")) //   break apart 5-year-old
 			{
 				if ((wordCount + 1 ) >= REAL_SENTENCE_LIMIT) continue;	// no room
-				++wordCount;
-				memmove(wordStarts+i+2,wordStarts+i+1,(wordCount-i)*sizeof(char*)); 
-				D = StoreWord(word);
+				D = StoreWord(first);
 				E = StoreWord(test);
-				wordStarts[i] = reuseAllocation(wordStarts[i],D->word);
-				wordStarts[i+1] = reuseAllocation(wordStarts[i+1],E->word);
+				char* tokens[3];
+				tokens[1] = D->word;
+				tokens[2] = E->word;
+				ReplaceWords(i,1,2,tokens);
+				fixedSpell = true;
 				--i;
 			}
 			else // remove hyphen entirely?
 			{
-				strcpy(test,word);
+				strcpy(test,first);
 				strcat(test,hyphen+1);
 				D = FindWord(test,0,(tokenControl & ONLY_LOWERCASE) ?  PRIMARY_CASE_ALLOWED : STANDARD_LOOKUP);
-				*hyphen = '-';
 				if (D) 
 				{
-					wordStarts[i] = reuseAllocation(wordStarts[i],D->word);
+					wordStarts[i] = D->word;
+					fixedSpell = true;
 					--i;
 				}
 			}
-			fixedSpell = true;
 			continue; // ignore hypenated errors that we couldnt solve, because no one mistypes a hypen
 		}
 		
@@ -472,7 +491,7 @@ bool SpellCheckSentence()
 			}
 			if (word) 
 			{
-				wordStarts[i] = reuseAllocation(wordStarts[i],word);
+				wordStarts[i] = StoreWord(word)->word;
 				fixedSpell = true;
 				continue;
 			}
@@ -638,7 +657,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						dictinfo += 1;
 						continue;
 					}
-					if (*inputSet == 'x' && !strncmp(dictinfo,"ch",2)) 
+					if (*inputSet == 'x' && !strncmp(dictinfo,(char*)"ch",2)) 
 					{
 						dictinfo += 2;
 						inputSet += 1;
@@ -646,7 +665,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						if (size < 7) val -= 3;	
 						continue;
 					}
-					if (*inputSet == 'k' && !strncmp(dictinfo,"qu",2)) 
+					if (*inputSet == 'k' && !strncmp(dictinfo,(char*)"qu",2)) 
 					{
 						dictinfo += 2;
 						inputSet += 1;
@@ -654,7 +673,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						if (size < 7) val -= 3;	
 						continue;
 					}
-					if (*inputSet == 'o' && !strncmp(dictinfo,"do",2) && !inputSet[1] && !dictinfo[2]) // at end
+					if (*inputSet == 'o' && !strncmp(dictinfo,(char*)"do",2) && !inputSet[1] && !dictinfo[2]) // at end
 					{
 						dictinfo += 2;
 						inputSet += 1;
@@ -662,7 +681,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						if (size < 7) val -= 3;	
 						continue;
 					}
-					if (*inputSet == 'w' && !strncmp(dictinfo,"bue",3)) 
+					if (*inputSet == 'w' && !strncmp(dictinfo,(char*)"bue",3)) 
 					{
 						dictinfo += 3;
 						inputSet += 1;
@@ -670,7 +689,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						if (size < 7) val -= 3;	
 						continue;
 					}
-					if (*inputSet == 'w' && !strncmp(dictinfo,"vue",3)) 
+					if (*inputSet == 'w' && !strncmp(dictinfo,(char*)"vue",3)) 
 					{
 						dictinfo += 3;
 						inputSet += 1;
@@ -678,7 +697,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						if (size < 7) val -= 3;	
 						continue;
 					}
-					if (!strncmp(inputSet,"ll",2) && *dictinfo == 'y') 
+					if (!strncmp(inputSet,(char*)"ll",2) && *dictinfo == 'y') 
 					{
 						dictinfo += 3;
 						inputSet += 1;
@@ -688,51 +707,51 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 					}
 				}
 
-				if (*inputSet == 't' && !strncmp(dictinfo,"ght",3)) 
+				if (*inputSet == 't' && !strncmp(dictinfo,(char*)"ght",3)) 
 				{
                     dictinfo += 3;
                     inputSet += 1;
                     val += 5;  
 				}
-				else if (!strncmp(inputSet,"ci",2) && !strncmp(dictinfo,"cki",3)) 
+				else if (!strncmp(inputSet,(char*)"ci",2) && !strncmp(dictinfo,(char*)"cki",3)) 
 				{
                     dictinfo += 3;
                     inputSet += 2;
                     val += 5;
 				}
-				else if (*(dictinfo-1) == 'a' && !strcmp(dictinfo,"ir") && !strcmp(inputSet,"re")) // prepair prepare as terminal sound
+				else if (*(dictinfo-1) == 'a' && !strcmp(dictinfo,(char*)"ir") && !strcmp(inputSet,(char*)"re")) // prepair prepare as terminal sound
 				{
                     dictinfo += 2;
                     inputSet += 2;
                     val += 3;
 				}
-				else if (!strncmp(inputSet,"ous",3) && !strncmp(dictinfo,"eous",4)) 
+				else if (!strncmp(inputSet,(char*)"ous",3) && !strncmp(dictinfo,(char*)"eous",4)) 
 				{
                     dictinfo += 4;
                     inputSet += 3;
                     val += 5; 
                }
-              else if (!strncmp(inputSet,"of",2) && !strncmp(dictinfo,"oph",3)) 
+              else if (!strncmp(inputSet,(char*)"of",2) && !strncmp(dictinfo,(char*)"oph",3)) 
                {
                     dictinfo += 3;
                     inputSet += 2;
                     val += 5; 
                }
-             else if (*dictinfo == 'x' && !strncmp(inputSet,"cks",3)) 
+             else if (*dictinfo == 'x' && !strncmp(inputSet,(char*)"cks",3)) 
                {
                     dictinfo += 1;
                     inputSet += 3;
                     val += 5; 
                }
-               else if (*inputSet == 'k' && !strncmp(dictinfo,"qu",2)) 
+               else if (*inputSet == 'k' && !strncmp(dictinfo,(char*)"qu",2)) 
                {
                     dictinfo += 2;
                     inputSet += 1;
                     val += 5;  
                }
 			   if (oldval != val){;} // swallowed a multiple letter sound change
-               else if (!strncmp(dictinfo,"able",4) && !strncmp(inputSet,"ible",4)) swap = true;
-               else if (!strncmp(dictinfo,"ible",4) && !strncmp(inputSet,"able",4)) swap = true;
+               else if (!strncmp(dictinfo,(char*)"able",4) && !strncmp(inputSet,(char*)"ible",4)) swap = true;
+               else if (!strncmp(dictinfo,(char*)"ible",4) && !strncmp(inputSet,(char*)"able",4)) swap = true;
                else if (*dictinfo == 'a' && dictinfo[1] == 'y'     && *inputSet == 'e' && inputSet[1] == 'i') swap = true;
                else if (*dictinfo == 'e' && dictinfo[1] == 'a'     && *inputSet == 'e' && inputSet[1] == 'e') swap = true;
                else if (*dictinfo == 'e' && dictinfo[1] == 'e'     && *inputSet == 'e' && inputSet[1] == 'a') swap = true;
@@ -786,13 +805,13 @@ static char* StemSpell(char* word,unsigned int i)
     
 	//   suffixes
 	if (len < 5){;} // too small to have a suffix we care about (suffix == 2 at min)
-    else if (!strnicmp(word+len-3,"ing",3))
+    else if (!strnicmp(word+len-3,(char*)"ing",3))
     {
         word1[len-3] = 0;
         best = SpellFix(word1,0,VERB,ENGLISH); 
         if (best && FindWord(best,0,LOWERCASE_LOOKUP)) return GetPresentParticiple(best);
 	}
-    else if (!strnicmp(word+len-2,"ed",2))
+    else if (!strnicmp(word+len-2,(char*)"ed",2))
     {
         word1[len-2] = 0;
         best = SpellFix(word1,0,VERB,ENGLISH); 
@@ -845,7 +864,7 @@ static char* StemSpell(char* word,unsigned int i)
    return NULL;
 }
 
-char* SpellFix(char* originalWord,unsigned int start,uint64 posflags,int language)
+char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 {
     size_t len = strlen(originalWord);
 	if (len >= 100 || len == 0) return NULL;
@@ -855,7 +874,7 @@ char* SpellFix(char* originalWord,unsigned int start,uint64 posflags,int languag
 	bool hasUnderscore = (strchr(originalWord,'_')) ? true : false;
 	bool isUpper = IsUpperCase(originalWord[0]);
 	if (IsUpperCase(originalWord[1])) isUpper = false;	// not if all caps
-	if (trace == TRACE_SPELLING) Log(STDUSERLOG,"Spell: %s\r\n",originalWord);
+	if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"Spell: %s\r\n",originalWord);
 
 	char word[MAX_WORD_SIZE];
 	MakeLowerCopy(word,originalWord);
@@ -879,7 +898,7 @@ char* SpellFix(char* originalWord,unsigned int start,uint64 posflags,int languag
     unsigned int min = 30;
 	unsigned char realWordLetterCounts[LETTERMAX];
 	memset(realWordLetterCounts,0,LETTERMAX); 
-	for (unsigned int  i = 0; i < len; ++i)  ++realWordLetterCounts[(unsigned char)letterIndexData[(unsigned char)word[i]]]; // compute number of each kind of character
+	for (int  i = 0; i < (int)len; ++i)  ++realWordLetterCounts[(unsigned char)letterIndexData[(unsigned char)word[i]]]; // compute number of each kind of character
 	
 	uint64  pos = PART_OF_SPEECH;  // all pos allowed
     WORDP D;
@@ -904,7 +923,7 @@ char* SpellFix(char* originalWord,unsigned int start,uint64 posflags,int languag
 	for (unsigned int i = 0; i < 3; ++i)
 	{
 		MEANING offset = lengthLists[len + range[i]];
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,"\r\n  Begin offset %d\r\n",i);
+		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"\r\n  Begin offset %d\r\n",i);
 		while (offset)
 		{
 			D = Meaning2Word(offset);
@@ -920,11 +939,11 @@ char* SpellFix(char* originalWord,unsigned int start,uint64 posflags,int languag
 			{
 				if (val < min)
 				{
-					if (trace == TRACE_SPELLING) Log(STDUSERLOG,"    Better: %s against %s value: %d\r\n",D->word,originalWord,val);
+					if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Better: %s against %s value: %d\r\n",D->word,originalWord,val);
 					index = 0;
 					min = val;
 				}
-				else if ( val == min && trace == TRACE_SPELLING) Log(STDUSERLOG,"    Equal: %s against %s value: %d\r\n",D->word,originalWord,val);
+				else if ( val == min && trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Equal: %s against %s value: %d\r\n",D->word,originalWord,val);
 
 				if (!(D->internalBits & BEEN_HERE)) 
 				{
@@ -965,7 +984,7 @@ char* SpellFix(char* originalWord,unsigned int start,uint64 posflags,int languag
 	for (unsigned int j = 0; j < index; ++j) RemoveInternalFlag(choices[j],BEEN_HERE);
     if (index == 1) 
 	{
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,"    Single best spell: %s\r\n",choices[0]->word);
+		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Single best spell: %s\r\n",choices[0]->word);
 		return choices[0]->word;	// pick the one
 	}
     for (unsigned int j = 0; j < index; ++j) 
@@ -982,7 +1001,7 @@ char* SpellFix(char* originalWord,unsigned int start,uint64 posflags,int languag
     }
 	if (bestGuessindex) 
 	{
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,"    Pick spell: %s\r\n",bestGuess[0]->word);
+		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Pick spell: %s\r\n",bestGuess[0]->word);
 		return bestGuess[0]->word; 
 	}
 	return NULL;

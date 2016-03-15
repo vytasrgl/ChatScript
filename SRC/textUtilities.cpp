@@ -1,13 +1,16 @@
 #include "common.h"
 
-unsigned int startSentence;
-unsigned int endSentence;
+int startSentence;
+int endSentence;
 
 FILE* docOut = NULL;
 bool showBadUTF = false;			// log bad utf8 characer words
 static bool blockComment = false;
 bool singleSource = false;			// in ReadDocument treat each line as an independent sentence
 bool newline = false;
+int docSampleRate = 0;
+int docSample = 0;
+int docVolleyStartTime = 0;
 
 char tmpWord[MAX_WORD_SIZE];					// globally visible scratch word
 char* userRecordSourceBuffer = 0;				// input source for reading is this text stream of user file
@@ -27,39 +30,39 @@ unsigned char extendedascii2utf8[128] =
 	int realNumber;			// the type, one two are real, third is fraction
 
 NUMBERDECODE numberValues[] = { 
- {"zero",0,4,REALNUMBER}, {"zilch",0,5,0},
- {"one",1,3,REALNUMBER},{"first",1,5},{"once",1,4,0},{"ace",1,3,0},{"uno",1,3,0},
- {"two",2,3,REALNUMBER},{"second",2,6}, {"twice",2,5,0},{"couple",2,6,0},{"deuce",2,5,0}, {"pair",2,4,0}, {"half",2,4,FRACTION_NUMBER}, 
- {"three",3,5,REALNUMBER},{"third",3,5,REALNUMBER},{"triple",3,6,0},{"trey",3,4,0},{"several",3,7,0},
- {"four",4,4,REALNUMBER},{"quad",4,4,0},{"quartet",4,7,0},{"quarter",4,7,FRACTION_NUMBER},
- {"five",5,4,REALNUMBER},{"quintuplet",5,10,0},{"fifth",5,5,REALNUMBER},
- {"six",6,3,REALNUMBER},
- {"seven",7,5,REALNUMBER}, 
- {"eight",8,5,REALNUMBER},{"eigh",8,4,0}, // because eighth strips the th
- {"nine",9,4,REALNUMBER}, {"nin",9,3,0}, //because ninth strips the th
- {"ten",10,3,REALNUMBER},
- {"eleven",11,6,REALNUMBER}, 
- {"twelve",12,6,REALNUMBER}, {"twelf",12,5,0},{"dozen",12,5,0},
- {"thirteen",13,8,REALNUMBER},
- {"fourteen",14,8,REALNUMBER},
- {"fifteen",15,7,REALNUMBER},
- {"sixteen",16,7,REALNUMBER},
- {"seventeen",17,9,REALNUMBER},
- {"eighteen",18,8,REALNUMBER},
- {"nineteen",19,8,REALNUMBER},
- {"twenty",20,6,REALNUMBER},{"score",20,5,0},
- {"thirty",30,6,REALNUMBER},
- {"forty",40,5,REALNUMBER},
- {"fifty",50,5,REALNUMBER},
- {"sixty",60,5,REALNUMBER},
- {"seventy",70,7,REALNUMBER},
- {"eighty",80,6,REALNUMBER},
- {"ninety",90,6,REALNUMBER},
- {"hundred",100,7,REALNUMBER},
- {"gross",144,5,0},
- {"thousand",1000,8,REALNUMBER},
- {"million",1000000,7,REALNUMBER},
- {"billion",1000000,7,REALNUMBER},
+ { (char*)"zero",0,4,REALNUMBER}, { (char*)"zilch",0,5,0},
+ { (char*)"one",1,3,REALNUMBER},{ (char*)"first",1,5},{ (char*)"once",1,4,0},{ (char*)"ace",1,3,0},{ (char*)"uno",1,3,0},
+ { (char*)"two",2,3,REALNUMBER},{ (char*)"second",2,6}, { (char*)"twice",2,5,0},{ (char*)"couple",2,6,0},{ (char*)"deuce",2,5,0}, { (char*)"pair",2,4,0}, { (char*)"half",2,4,FRACTION_NUMBER}, 
+ { (char*)"three",3,5,REALNUMBER},{ (char*)"third",3,5,REALNUMBER},{ (char*)"triple",3,6,0},{ (char*)"trey",3,4,0},{ (char*)"several",3,7,0},
+ { (char*)"four",4,4,REALNUMBER},{ (char*)"quad",4,4,0},{ (char*)"quartet",4,7,0},{ (char*)"quarter",4,7,FRACTION_NUMBER},
+ { (char*)"five",5,4,REALNUMBER},{ (char*)"quintuplet",5,10,0},{ (char*)"fifth",5,5,REALNUMBER},
+ { (char*)"six",6,3,REALNUMBER},
+ { (char*)"seven",7,5,REALNUMBER}, 
+ { (char*)"eight",8,5,REALNUMBER},{ (char*)"eigh",8,4,0}, // because eighth strips the th
+ { (char*)"nine",9,4,REALNUMBER}, { (char*)"nin",9,3,0}, //because ninth strips the th
+ { (char*)"ten",10,3,REALNUMBER},
+ { (char*)"eleven",11,6,REALNUMBER}, 
+ { (char*)"twelve",12,6,REALNUMBER}, { (char*)"twelf",12,5,0},{ (char*)"dozen",12,5,0},
+ { (char*)"thirteen",13,8,REALNUMBER},
+ { (char*)"fourteen",14,8,REALNUMBER},
+ { (char*)"fifteen",15,7,REALNUMBER},
+ { (char*)"sixteen",16,7,REALNUMBER},
+ { (char*)"seventeen",17,9,REALNUMBER},
+ { (char*)"eighteen",18,8,REALNUMBER},
+ { (char*)"nineteen",19,8,REALNUMBER},
+ { (char*)"twenty",20,6,REALNUMBER},{ (char*)"score",20,5,0},
+ { (char*)"thirty",30,6,REALNUMBER},
+ { (char*)"forty",40,5,REALNUMBER},
+ { (char*)"fifty",50,5,REALNUMBER},
+ { (char*)"sixty",60,5,REALNUMBER},
+ { (char*)"seventy",70,7,REALNUMBER},
+ { (char*)"eighty",80,6,REALNUMBER},
+ { (char*)"ninety",90,6,REALNUMBER},
+ { (char*)"hundred",100,7,REALNUMBER},
+ { (char*)"gross",144,5,0},
+ { (char*)"thousand",1000,8,REALNUMBER},
+ { (char*)"million",1000000,7,REALNUMBER},
+ { (char*)"billion",1000000,7,REALNUMBER},
 };
 
 char toHex[16] = {
@@ -301,7 +304,7 @@ void AcquireDefines(char* fileName)
 	FILE* in = FopenStaticReadOnly(fileName); // SRC/dictionarySystem.h
 	if (!in) 
 	{
-		printf("Unable to read dictionarySystem.h\r\n");
+		printf((char*)"Unable to read dictionarySystem.h\r\n");
 		return;
 	}
 	char label[MAX_WORD_SIZE];
@@ -319,23 +322,23 @@ void AcquireDefines(char* fileName)
 	{
 		uint64 result = NOPROBLEM_BIT;
         int64 value;
-		if (!strnicmp(readBuffer,"// system flags",15))  // end of property flags seen
+		if (!strnicmp(readBuffer,(char*)"// system flags",15))  // end of property flags seen
 		{
 			word[1] = ENDUNIT; // system flag words have `` in front
 			offset = 2;
 		}
-		else if (!strnicmp(readBuffer,"// end system flags",19))  // end of system flags seen
+		else if (!strnicmp(readBuffer,(char*)"// end system flags",19))  // end of system flags seen
 		{
 			offset = 1;
 			endsystem = true;
 		}
-		else if (!strnicmp(readBuffer,"// parse flags",14))  // start of parse flags seen
+		else if (!strnicmp(readBuffer,(char*)"// parse flags",14))  // start of parse flags seen
 		{
 			word[1] = ENDUNIT; // parse flag words have ``` in front
 			word[2] = ENDUNIT; // parse flag words have ``` in front
 			offset = 3;
 		}
-		else if (!strnicmp(readBuffer,"// end parse flags",18))  // end of parse flags seen
+		else if (!strnicmp(readBuffer,(char*)"// end parse flags",18))  // end of parse flags seen
 		{
 			word[1] = ENDUNIT; // misc flag words have ```` in front and do not xref from number to word
 			word[2] = ENDUNIT; // misc flag words have ```` in front
@@ -344,7 +347,7 @@ void AcquireDefines(char* fileName)
 		}
 
 		char* ptr = ReadCompiledWord(readBuffer,word+offset);
-		if (stricmp(word+offset,"#define")) continue;
+		if (stricmp(word+offset,(char*)"#define")) continue;
 
 		//   accept lines line #define NAME 0x...
 		ptr = ReadCompiledWord(ptr,word+offset); //   the #define name 
@@ -390,7 +393,7 @@ void AcquireDefines(char* fileName)
 	            if (!value)  value = FindMiscValueByName(label);
 	            if (!value)  value = FindParseValueByName(label);
 				buildDictionary = olddict;
-				if (!value)  ReportBug("missing modifier value for %s\r\n",label)
+				if (!value)  ReportBug((char*)"missing modifier value for %s\r\n",label)
                 if (orop) result |= value;
                 else if (shiftop) result <<= value;
 				else if (plusop) result += value;
@@ -406,9 +409,9 @@ void AcquireDefines(char* fileName)
 		AddInternalFlag(D,DEFINES);
 
 #ifdef WIN32
-		sprintf(word+offset,"%I64d",result);
+		sprintf(word+offset,(char*)"%I64d",result);
 #else
-		sprintf(word+offset,"%lld",result); 
+		sprintf(word+offset,(char*)"%lld",result); 
 #endif
 		if (!endsystem) // cross ref from number to value only for properties and system flags for decoding bits back to words for marking
 		{
@@ -427,8 +430,8 @@ void AcquirePosMeanings()
 	uint64 bit = START_BIT;
 	char name[MAX_WORD_SIZE];
 	*name = '~';
-	MEANING pos = MakeMeaning(StoreWord("~pos"));
-	MEANING sys = MakeMeaning(StoreWord("~sys"));
+	MEANING pos = MakeMeaning(StoreWord((char*)"~pos"));
+	MEANING sys = MakeMeaning(StoreWord((char*)"~sys"));
 	for (int i = 63; i >= 0; --i) // properties get named concepts
 	{
 		char* word = FindNameByValue(bit);
@@ -449,77 +452,77 @@ void AcquirePosMeanings()
 		
 		bit >>= 1;
 	}
-	MEANING M = MakeMeaning(BUILDCONCEPT("~aux_verb"));
+	MEANING M = MakeMeaning(BUILDCONCEPT((char*)"~aux_verb"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~aux_verb_future")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~aux_verb_past")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~aux_verb_present")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~aux_be")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~aux_have")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~aux_do")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_future")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_past")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_present")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_be")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_have")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_do")),Mmember,M);
 
-	M = MakeMeaning(BUILDCONCEPT("~aux_verb_tenses"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~aux_verb_tenses"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~aux_verb_future")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~aux_verb_past")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~aux_verb_present")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_future")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_past")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_present")),Mmember,M);
 	
-	M = MakeMeaning(BUILDCONCEPT("~conjunction"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~conjunction"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~conjunction_subordinate")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~conjunction_coordinate")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~conjunction_subordinate")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~conjunction_coordinate")),Mmember,M);
 
-	M = MakeMeaning(BUILDCONCEPT("~determiner_bits"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~determiner_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~determiner")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~predeterminer")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~determiner")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~predeterminer")),Mmember,M);
 		
-	M = MakeMeaning(BUILDCONCEPT("~possessive_bits"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~possessive_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~possessive")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~pronoun_possessive")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~possessive")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~pronoun_possessive")),Mmember,M);
 
-	M = MakeMeaning(BUILDCONCEPT("~noun_bits"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~noun_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~noun_singular")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_plural")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_proper_singular")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_proper_plural")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_number")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_adjective")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_gerund")),Mmember,M);
-	// CreateFact(MakeMeaning(FindWord("~noun_infinitive")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_singular")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_plural")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_proper_singular")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_proper_plural")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_number")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_adjective")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_gerund")),Mmember,M);
+	// CreateFact(MakeMeaning(FindWord((char*)"~noun_infinitive")),Mmember,M);
 	
-	M = MakeMeaning(BUILDCONCEPT("~normal_noun_bits"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~normal_noun_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~noun_singular")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_plural")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_proper_singular")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~noun_proper_plural")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_singular")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_plural")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_proper_singular")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~noun_proper_plural")),Mmember,M);
 
-	M = MakeMeaning(BUILDCONCEPT("~pronoun_bits"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~pronoun_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~pronoun_subject")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~pronoun_object")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~pronoun_subject")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~pronoun_object")),Mmember,M);
 
-	M = MakeMeaning(BUILDCONCEPT("~verb_bits"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~verb_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~verb_infinitive")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~verb_present")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~verb_present_3ps")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~verb_past")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~verb_past_participle")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~verb_present_participle")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~verb_infinitive")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~verb_present")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~verb_present_3ps")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~verb_past")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~verb_past_participle")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~verb_present_participle")),Mmember,M);
 
-	M = MakeMeaning(BUILDCONCEPT("~punctuation"));
+	M = MakeMeaning(BUILDCONCEPT((char*)"~punctuation"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord("~paren")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~comma")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~punctuation")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~quote")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord("~currency")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~paren")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~comma")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~punctuation")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~quote")),Mmember,M);
+	CreateFact(MakeMeaning(FindWord((char*)"~currency")),Mmember,M);
 
-	MEANING role = MakeMeaning(BUILDCONCEPT("~grammar_role"));
+	MEANING role = MakeMeaning(BUILDCONCEPT((char*)"~grammar_role"));
 	unsigned int i = 0;
 	char* ptr;
 	while ((ptr = roleSets[i++]) != 0) 
@@ -545,9 +548,9 @@ char* FindNameByValue(uint64 val) // works for invertable pos bits only
 	char word[MAX_WORD_SIZE];
 	word[0] = ENDUNIT;
 #ifdef WIN32
-	sprintf(word+1,"%I64d",val);
+	sprintf(word+1,(char*)"%I64d",val);
 #else
-	sprintf(word+1,"%lld",val); 
+	sprintf(word+1,(char*)"%lld",val); 
 #endif
 	WORDP D = FindWord(word);
 	if (!D || !(D->internalBits & DEFINES)) return 0;
@@ -566,7 +569,7 @@ uint64 FindSystemValueByName(char* name)
 	if (!D || !(D->internalBits & DEFINES)) 
 	{
 		if (buildDictionary) 
-			ReportBug("Failed to find system value %s",name);
+			ReportBug((char*)"Failed to find system value %s",name);
 		return 0;
 	}
 	return D->properties;
@@ -578,9 +581,9 @@ char* FindSystemNameByValue(uint64 val) // works for invertable system bits only
 	word[0] = ENDUNIT;
 	word[1] = ENDUNIT;
 #ifdef WIN32
-	sprintf(word+2,"%I64d",val);
+	sprintf(word+2,(char*)"%I64d",val);
 #else
-	sprintf(word+2,"%lld",val); 
+	sprintf(word+2,(char*)"%lld",val); 
 #endif
 	WORDP D = FindWord(word);
 	if (!D || !(D->internalBits & DEFINES)) return 0;
@@ -594,9 +597,9 @@ char* FindParseNameByValue(uint64 val)
 	word[1] = ENDUNIT;
 	word[2] = ENDUNIT;
 #ifdef WIN32
-	sprintf(word+3,"%I64d",val);
+	sprintf(word+3,(char*)"%I64d",val);
 #else
-	sprintf(word+3,"%lld",val); 
+	sprintf(word+3,(char*)"%lld",val); 
 #endif
 	WORDP D = FindWord(word);
 	if (!D || !(D->internalBits & DEFINES)) return 0;
@@ -614,7 +617,7 @@ uint64 FindParseValueByName(char* name)
 	WORDP D = FindWord(word);
 	if (!D || !(D->internalBits & DEFINES)) 
 	{
-		if (buildDictionary) ReportBug("Failed to find parse value %s",name);
+		if (buildDictionary) ReportBug((char*)"Failed to find parse value %s",name);
 		return 0;
 	}
 	return D->properties;
@@ -632,7 +635,7 @@ uint64 FindMiscValueByName(char* name)
 	WORDP D = FindWord(word);
 	if (!D || !(D->internalBits & DEFINES)) 
 	{
-		if (buildDictionary) ReportBug("Failed to find misc value %s",name);
+		if (buildDictionary) ReportBug((char*)"Failed to find misc value %s",name);
 		return 0;
 	}
 	return D->properties;
@@ -718,7 +721,7 @@ char* GetCurrency(char* ptr,char* &number) // does this point to a currency toke
 		number = ptr+2; 
 		return ptr;
 	}
-	else if (!strnicmp(ptr,"yen",3) || !strnicmp(ptr,"eur",3) ||  !strnicmp(ptr,"inr",3) ||!strnicmp(ptr,"usd",3) || !strnicmp(ptr,"gbp",3) || !strnicmp(ptr,"cny",3)) 
+	else if (!strnicmp(ptr,(char*)"yen",3) || !strnicmp(ptr,(char*)"eur",3) ||  !strnicmp(ptr,(char*)"inr",3) ||!strnicmp(ptr,(char*)"usd",3) || !strnicmp(ptr,(char*)"gbp",3) || !strnicmp(ptr,(char*)"cny",3)) 
 	{
 		number = ptr + 3;
 		return ptr;
@@ -729,7 +732,7 @@ char* GetCurrency(char* ptr,char* &number) // does this point to a currency toke
 		char* at = ptr;
 		while (IsDigit(*at) || *at == '.') ++at; // get end of number
 		if (*at == '$' ||   (*at == 0xe2 && at[1] == 0x82 && at[2] == 0xac)  || *at == 0xc2 || (*at == 0xc3 && at[1] == 0xb1 ) 
-			|| !strnicmp(at,"yen",3) || !strnicmp(at,"inr",3) || !strnicmp(at,"eur",3) || !strnicmp(at,"usd",3) || !strnicmp(at,"gbp",3) || !strnicmp(at,"cny",3)) // currency suffix
+			|| !strnicmp(at,(char*)"yen",3) || !strnicmp(at,(char*)"inr",3) || !strnicmp(at,(char*)"eur",3) || !strnicmp(at,(char*)"usd",3) || !strnicmp(at,(char*)"gbp",3) || !strnicmp(at,(char*)"cny",3)) // currency suffix
 		{
 			number = ptr;
 			return at;
@@ -864,7 +867,7 @@ unsigned int IsNumber(char* word,bool placeAllowed) // simple digit number or wo
 		*hyphen = 0;
         int64 piece1 = Convert2Integer(word);      
 		*hyphen = c;
-		if (piece1 == NOT_A_NUMBER && stricmp(word,"zero") && *word != '0') {;}
+		if (piece1 == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') {;}
 		else if (IsPlaceNumber(hyphen+1)) return FRACTION_NUMBER;
 	}
 
@@ -890,20 +893,20 @@ bool IsPlaceNumber(char* word) // place number and fraction numbers
 	if (len < 3) return false; // min is 1st
 	
 	// word place numbers
-	if (len > 4 && !strcmp(word+len-5,"first") ) return true;
-	else if (len > 5 && !strcmp(word+len-6,"second") ) return true;
-	else if (len > 4 && !strcmp(word+len-4,"half") ) return true;
-	else if (len > 4 && !strcmp(word+len-5,"third") ) return true;
-	else if (len > 4 && !strcmp(word+len-5,"fifth") ) return true;
-	else if (len > 5 && !strcmp(word+len-6,"thirds") ) return true;
- 	else if (len > 6 && !strcmp(word+len-7,"quarter") ) return true;
- 	else if (len > 7 && !strcmp(word+len-8,"quarters") ) return true;
+	if (len > 4 && !strcmp(word+len-5,(char*)"first") ) return true;
+	else if (len > 5 && !strcmp(word+len-6,(char*)"second") ) return true;
+	else if (len > 4 && !strcmp(word+len-4,(char*)"half") ) return true;
+	else if (len > 4 && !strcmp(word+len-5,(char*)"third") ) return true;
+	else if (len > 4 && !strcmp(word+len-5,(char*)"fifth") ) return true;
+	else if (len > 5 && !strcmp(word+len-6,(char*)"thirds") ) return true;
+ 	else if (len > 6 && !strcmp(word+len-7,(char*)"quarter") ) return true;
+ 	else if (len > 7 && !strcmp(word+len-8,(char*)"quarters") ) return true;
 
 	// does it have proper endings?
 	if (word[len-2] == 's' && word[len-1] == 't') {;}  // 1st
 	else if (word[len-2] == 'n' && word[len-1] == 'd') // 2nd
 	{
-		if (!stricmp(word,"thousand")) return false;	// 2nd but not thousand
+		if (!stricmp(word,(char*)"thousand")) return false;	// 2nd but not thousand
 	} 
 	else if (word[len-1] == 'd') // 3rd
 	{
@@ -971,9 +974,9 @@ bool IsNumericDate(char* word,char* end) // 01.02.2009 or 1.02.2009 or 1.2.2009
 }
 
 bool IsUrl(char* word, char* end)
-{ //     if (!strnicmp(t+1,"co.",3)) //   jump to accepting country
+{ //     if (!strnicmp(t+1,(char*)"co.",3)) //   jump to accepting country
           
-    if (!strnicmp("www.",word,4) || !strnicmp("http",word,4) || !strnicmp("ftp:",word,4)) return true; // classic urls
+    if (!strnicmp((char*)"www.",word,4) || !strnicmp((char*)"http",word,4) || !strnicmp((char*)"ftp:",word,4)) return true; // classic urls
 	size_t len = strlen(word);
 	if (len > 200) return false;
     char tmp[MAX_WORD_SIZE];
@@ -1011,7 +1014,7 @@ bool IsUrl(char* word, char* end)
 	if (IsAlphaUTF8(ptr[1]) && IsAlphaUTF8(ptr[2]) && !ptr[3]) return true;	 // country code at end?
 	if ((ptr-word) >= 3 && ptr && *(ptr-3) == 'c' && (*ptr-2) == 'o') return true; // another form of country code
 	++ptr;
-	return (!strnicmp(ptr,"com",3) || !strnicmp(ptr,"net",3) || !strnicmp(ptr,"org",3) || !strnicmp(ptr,"edu",3) || !strnicmp(ptr,"biz",3) || !strnicmp(ptr,"gov",3) || !strnicmp(ptr,"mil",3)); // common suffixes
+	return (!strnicmp(ptr,(char*)"com",3) || !strnicmp(ptr,(char*)"net",3) || !strnicmp(ptr,(char*)"org",3) || !strnicmp(ptr,(char*)"edu",3) || !strnicmp(ptr,(char*)"biz",3) || !strnicmp(ptr,(char*)"gov",3) || !strnicmp(ptr,(char*)"mil",3)); // common suffixes
 }
 
 unsigned int IsMadeOfInitials(char * word,char* end) 
@@ -1061,8 +1064,8 @@ char* ReadFlags(char* ptr,uint64& flags,bool &bad, bool &response)
 	{
 		char word[MAX_WORD_SIZE];
 		ptr = ReadCompiledWord(ptr,word);
-		if (!strnicmp(word,"RESPONSE_",9)) response = true; // saw a response flag
-		if (IsDigit(*word)) ReadInt64(word,(int64&)flags);
+		if (!strnicmp(word,(char*)"RESPONSE_",9)) response = true; // saw a response flag
+		if (IsDigit(*word) || *word == 'x') ReadInt64(word,(int64&)flags);
 		else
 		{
 			flags = FindValueByName(word);
@@ -1108,7 +1111,7 @@ char* ReadFlags(char* ptr,uint64& flags,bool &bad, bool &response)
 	return  (!flags) ? start : ptr; 
 }
 
-char* ReadInt(char* ptr, unsigned int &value)
+char* ReadInt(char* ptr, int &value)
 {
 	ptr = SkipWhitespace(ptr);
     value = 0;
@@ -1117,7 +1120,7 @@ char* ReadInt(char* ptr, unsigned int &value)
 	{
 		uint64 val;
 		ptr = ReadHex(ptr,val);
-		value = (unsigned int)val;
+		value = (int)val;
 		return ptr;
 	}
 	char* original = ptr;
@@ -1135,7 +1138,7 @@ char* ReadInt(char* ptr, unsigned int &value)
          if (IsDigit(*ptr)) value += *ptr - '0';
          else 
          {
-             ReportBug("bad number %s\r\n",original)
+             ReportBug((char*)"bad number %s\r\n",original)
              while (*++ptr  && *ptr != ' ');
              value = 0;
              return ptr;
@@ -1158,7 +1161,8 @@ char* ReadInt64(char* ptr, int64 &spot)
 	ptr = SkipWhitespace(ptr);
     spot = 0;
     if (!ptr || !*ptr) return ptr;
-    if (*ptr == '0' && (ptr[1]== 'x' || ptr[1] == 'X')) return ReadHex(ptr,(uint64&)spot);
+    if (*ptr ==  'x' ) return ReadHex(ptr,(uint64&)spot);
+	if (*ptr == '0' && (ptr[1]== 'x' || ptr[1] == 'X')) return ReadHex(ptr,(uint64&)spot);
 	char* original = ptr;
      int sign = 1;
      if (*ptr == '-')
@@ -1174,7 +1178,7 @@ char* ReadInt64(char* ptr, int64 &spot)
          if (IsDigit(*ptr)) spot += *ptr - '0';
          else 
          {
-             ReportBug("bad number1 %s\r\n",original)
+             ReportBug((char*)"bad number1 %s\r\n",original)
              while (*++ptr  && *ptr != ' ');
              spot = 0;
              return ptr;
@@ -1189,7 +1193,8 @@ char* ReadHex(char* ptr, uint64 & value)
 	ptr = SkipWhitespace(ptr);
     value = 0;
     if (!ptr || !*ptr) return ptr;
-    if (ptr[1] == 'x' || ptr[1] == 'X') ptr += 2; // skip 0x
+	if (ptr[0] == 'x') ++ptr; // skip x
+    else if (ptr[1] == 'x' || ptr[1] == 'X') ptr += 2; // skip 0x
     --ptr;
 	while (*++ptr)
     {
@@ -1538,7 +1543,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		}
 	}
 	if (hasbadutf && showBadUTF && !server)  
-		Log(STDUSERLOG,"Bad UTF-8 %s at %d in %s\r\n",start,currentFileLine,currentFilename);
+		Log(STDUSERLOG,(char*)"Bad UTF-8 %s at %d in %s\r\n",start,currentFileLine,currentFilename);
 	return (buffer - start);
 }
 
@@ -1591,8 +1596,8 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 			*buffer = 0;
 			return ptr;
 		}
-		if (!n) Log(STDUSERLOG,"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
-		else Log(STDUSERLOG,"bad double-quoting?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
+		if (!n) Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
+		else Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
 		return NULL;	// no closing quote... refuse
 	}
 
@@ -1984,11 +1989,11 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
     char* word = copy+1;
 
 	// remove place suffixes
-	if (len > 3 && !stricmp(word+len-3,"ies")) // twenties?
+	if (len > 3 && !stricmp(word+len-3,(char*)"ies")) // twenties?
 	{
 		char xtra[MAX_WORD_SIZE];
 		strcpy(xtra,word);
-		strcpy(xtra+len-3,"y");
+		strcpy(xtra+len-3,(char*)"y");
 		size_t len1 = strlen(xtra);
 		for (unsigned int i = 0; i < sizeof(numberValues)/sizeof(NUMBERDECODE); ++i)
 		{
@@ -2026,10 +2031,10 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	unsigned int oldlen = len;
 	// remove 
     if (len < 3); // cannot have suffix
-    else if (word[len-2] == 's' && word[len-1] == 't' && !strstr(word,"first")) word[len -= 2] = 0; // 1st 
-    else if (word[len-2] == 'n' && word[len-1] == 'd' && !strstr(word,"second") && !strstr(word,"thousand")) word[len -= 2] = 0; // 2nd but not second or thousandf"
-    else if (word[len-2] == 'r' && word[len-1] == 'd' && !strstr(word,"third")) word[len -= 2] = 0; // 3rd 
-	else if (word[len-2] == 't' && word[len-1] == 'h' && !strstr(word,"fifth")) //  excluding the word "fifth" which is not derived from five
+    else if (word[len-2] == 's' && word[len-1] == 't' && !strstr(word,(char*)"first")) word[len -= 2] = 0; // 1st 
+    else if (word[len-2] == 'n' && word[len-1] == 'd' && !strstr(word,(char*)"second") && !strstr(word,(char*)"thousand")) word[len -= 2] = 0; // 2nd but not second or thousandf"
+    else if (word[len-2] == 'r' && word[len-1] == 'd' && !strstr(word,(char*)"third")) word[len -= 2] = 0; // 3rd 
+	else if (word[len-2] == 't' && word[len-1] == 'h' && !strstr(word,(char*)"fifth")) //  excluding the word "fifth" which is not derived from five
 	{
 		word[len -= 2] = 0; 
 		if (word[len-1] == 'e' && word[len-2] == 'i') // twentieth and its ilk
@@ -2080,12 +2085,12 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 
 	// decode powers of ten names on 2nd pieces
     long billion = 0;
-    char* found = strstr(word,"billion"); // eight-billion 
+    char* found = strstr(word,(char*)"billion"); // eight-billion 
     if (found && *(found-1) == '-') // is 2nd piece
     {
         *(found-1) = 0;
         billion = (int)Convert2Integer(word);
-        if (billion == NOT_A_NUMBER && stricmp(word,"zero") && *word != '0') return NOT_A_NUMBER;
+        if (billion == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') return NOT_A_NUMBER;
         word = found + 7;
         if (*word == '-' || *word == '_') ++word; // has another hypen after it
     }
@@ -2093,12 +2098,12 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	hyphen = strchr(word,'-'); 
 	if (!hyphen) hyphen = strchr(word,'_'); // alternate form of separation
     long million = 0;
-    found = strstr(word,"million");
+    found = strstr(word,(char*)"million");
     if (found && *(found-1) == '-')
     {
         *(found-1) = 0;
         million = (int)Convert2Integer(word); 
-        if (million == NOT_A_NUMBER && stricmp(word,"zero") && *word != '0') return NOT_A_NUMBER;
+        if (million == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') return NOT_A_NUMBER;
         word = found + 7;
         if (*word == '-' || *word == '_') ++word; // has another hypen after it
     }
@@ -2106,12 +2111,12 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	hyphen = strchr(word,'-'); 
 	if (!hyphen) hyphen = strchr(word,'_'); // alternate form of separation
 	long thousand = 0;
-    found = strstr(word,"thousand");
+    found = strstr(word,(char*)"thousand");
     if (found && *(found-1) == '-')
     {
         *(found-1) = 0;
         thousand = (int)Convert2Integer(word);
-        if (thousand == NOT_A_NUMBER && stricmp(word,"zero") && *word != '0') return NOT_A_NUMBER;
+        if (thousand == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') return NOT_A_NUMBER;
         word = found + 8;
 		if (*word == '-' || *word == '_') ++word; // has another hypen after it
     }    
@@ -2119,12 +2124,12 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	hyphen = strchr(word,'-'); 
 	if (!hyphen) hyphen = strchr(word,'_'); // alternate form of separation
     long hundred = 0;
-    found = strstr(word,"hundred");  
+    found = strstr(word,(char*)"hundred");  
     if (found && *(found-1) == '-') // do we have four-hundred
     {
         *(found-1) = 0;
         hundred = (int) Convert2Integer(word);
-        if (hundred == NOT_A_NUMBER && stricmp(word,"zero") && *word != '0') return NOT_A_NUMBER;
+        if (hundred == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') return NOT_A_NUMBER;
         word = found + 7;
  		if (*word == '-' || *word == '_') ++word; // has another hypen after it
     }  
@@ -2139,7 +2144,7 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 		{
             if (!strcmp(word,number)) return NOT_A_NUMBER;  // never decoded anything so far
             int64 n = Convert2Integer(word);
-            if (n == NOT_A_NUMBER && stricmp(word,"zero") && *word != '0') return NOT_A_NUMBER;
+            if (n == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') return NOT_A_NUMBER;
             value += n; // handled LAST piece
             break;
         }
@@ -2152,10 +2157,10 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
         if (next) *next = 0; 
 
         int64 piece1 = Convert2Integer(word);      
-        if (piece1 == NOT_A_NUMBER && stricmp(word,"zero") && *word != '0') return NOT_A_NUMBER;
+        if (piece1 == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') return NOT_A_NUMBER;
 
         int64 piece2 = Convert2Integer(hyphen);   
-        if (piece2 == NOT_A_NUMBER && stricmp(hyphen,"0")) return NOT_A_NUMBER;
+        if (piece2 == NOT_A_NUMBER && stricmp(hyphen,(char*)"0")) return NOT_A_NUMBER;
 
         int64 subpiece = 0;
 		if (piece1 > piece2 && piece2 < 10) subpiece = piece1 + piece2; // can be larger-smaller (like twenty one) 
@@ -2219,7 +2224,7 @@ void UpcaseStarters(char* ptr) //   take a multiword phrase with _ and try to ca
     while (*++ptr)
     {
         if (!IsLowerCase(*++ptr) || *ptr != '_') continue; //   word separator
-		if (!strnicmp(ptr,"the_",4) || !strnicmp(ptr,"of_",3) || !strnicmp(ptr,"in_",3) || !strnicmp(ptr,"and_",4)) continue;
+		if (!strnicmp(ptr,(char*)"the_",4) || !strnicmp(ptr,(char*)"of_",3) || !strnicmp(ptr,(char*)"in_",3) || !strnicmp(ptr,(char*)"and_",4)) continue;
 		*ptr -= 'a' - 'A';
     }
 }
@@ -2229,6 +2234,7 @@ char* documentBuffer = 0;
 bool ReadDocument(char* inBuffer,FILE* sourceFile)
 {
 	static bool wasEmptyLine = false;
+RETRY: // for sampling loopback
 	*inBuffer = 0;
 	if (!*documentBuffer || singleSource) 
 	{
@@ -2243,13 +2249,13 @@ bool ReadDocument(char* inBuffer,FILE* sourceFile)
 			{
 				if (wasEmptyLine) continue;	// ignore additional empty line
 				wasEmptyLine = true;
-				if (docOut) fprintf(docOut,"\r\n%s\r\n",inBuffer);
+				if (docOut) fprintf(docOut,(char*)"\r\n%s\r\n",inBuffer);
 				return true; // no content, just null line or all white space
 			}
 
 			if (*documentBuffer == ':' && IsAlphaUTF8(documentBuffer[1]))
 			{
-				if (!stricmp(documentBuffer,":exit") || !stricmp(documentBuffer,":quit"))
+				if (!stricmp(documentBuffer,(char*)":exit") || !stricmp(documentBuffer,(char*)":quit"))
 				{
 					wasEmptyLine = false;
 					return false;	
@@ -2262,7 +2268,7 @@ bool ReadDocument(char* inBuffer,FILE* sourceFile)
 	{
 		*documentBuffer = 0;
 		wasEmptyLine = true;
-		if (docOut) fprintf(docOut,"\r\n%s\r\n",inBuffer);
+		if (docOut) fprintf(docOut,(char*)"\r\n%s\r\n",inBuffer);
 		return true;
 	}
 
@@ -2363,13 +2369,21 @@ bool ReadDocument(char* inBuffer,FILE* sourceFile)
 			}
 		}
 	}
+
+	// skim the file
+	if (docSampleRate)
+	{
+		if (--docSample != 0) goto RETRY;	// decline to process
+		docSample = docSampleRate;
+	}
+
 	if (readAhead >= 6)
-		Log(STDUSERLOG,"Heavy long line? %s\r\n",documentBuffer);
+		Log(STDUSERLOG,(char*)"Heavy long line? %s\r\n",documentBuffer);
 	if (autonumber) 
 	{
 		bool oldecho = echo;
 		echo = true;
-		Log(STDUSERLOG,"%d: %s\r\n",inputSentenceCount,inBuffer);
+		Log(STDUSERLOG,(char*)"%d: %s\r\n",inputSentenceCount,inBuffer);
 		echo = oldecho;
 	}
 	else if (docstats)
@@ -2378,12 +2392,12 @@ bool ReadDocument(char* inBuffer,FILE* sourceFile)
 		{
 			bool oldecho = echo;
 			echo = true;
-			Log(STDUSERLOG,"%d: %s\r\n",docSentenceCount,inBuffer);
+			Log(STDUSERLOG,(char*)"%d: %s\r\n",docSentenceCount,inBuffer);
 			echo = oldecho;
 		}	
 	}
 	wasEmptyLine = false;
-	if (docOut) fprintf(docOut,"\r\n%s\r\n",inBuffer);
+	if (docOut) fprintf(docOut,(char*)"\r\n%s\r\n",inBuffer);
 
 	return true;
 }

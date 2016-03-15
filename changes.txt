@@ -1,3 +1,10 @@
+version 2.6d 3/14/2016
+1. ^substitute 1st arg can now be "insensitive", meaning character search and case insensivive. Or you can
+provide a string like "word insensitive" to pass 2 arguments.
+2. %originalSentence will give you the raw user input for the current sentence (after tokenization)
+3. ^original(_0) will give you the original text of the user that this match derives from (see docs for more details)
+
+
 version 6.2c  3/5/2016
 1. You no longer have to backslash [ in an active string. You can do ^"[$count]" with impunity.
    That means that using [] [] notation to designate a choice of text is no longer effective inside

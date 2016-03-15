@@ -7,7 +7,7 @@ unsigned int knownWords;
 unsigned int tagRuleCount = 0;
 uint64* tags = NULL;
 char** comments = NULL;
-static char* Describe(unsigned int i,char* buffer);
+static char* Describe(int i,char* buffer);
 
 char* wordCanonical[MAX_SENTENCE_LENGTH]; //   chosen canonical form
 WORDP originalLower[MAX_SENTENCE_LENGTH];
@@ -24,14 +24,14 @@ unsigned int parseFlags[MAX_SENTENCE_LENGTH];
 static unsigned char describeVerbal[100];
 static unsigned char describePhrase[100];
 static unsigned char describeClause[100];
-static unsigned  int describedVerbals;
-static unsigned  int describedPhrases;
-static unsigned  int describedClauses;
+static int describedVerbals;
+static int describedPhrases;
+static int describedClauses;
 
 // dynamic cumulative data across assignroles calls
-unsigned int phrases[MAX_SENTENCE_LENGTH];
-unsigned int clauses[MAX_SENTENCE_LENGTH];
-unsigned int verbals[MAX_SENTENCE_LENGTH];
+int phrases[MAX_SENTENCE_LENGTH];
+int clauses[MAX_SENTENCE_LENGTH];
+int verbals[MAX_SENTENCE_LENGTH];
 unsigned char ignoreWord[MAX_SENTENCE_LENGTH];
 unsigned char coordinates[MAX_SENTENCE_LENGTH]; // for conjunctions
 unsigned char crossReference[MAX_SENTENCE_LENGTH]; // object back to spawner,  particle back to verb
@@ -54,16 +54,16 @@ char* GetNounPhrase(int i,const char* avoid)
 #ifndef DISCARDPARSER
 	if (clauses[i-1] != clauses[i]) // noun is a clause
 	{
-		unsigned int clause = clauses[i];
-		unsigned int at = i-1;
+		int clause = clauses[i];
+		int at = i-1;
 		while (clauses[++at] & clause)
 		{
 			char* word = wordStarts[at];							
 			if (tokenFlags & USERINPUT) strcat(buffer,word);		
-			else if (!stricmp(word,"my")) strcat(buffer,"your");	
-			else if (!stricmp(word,"your")) strcat(buffer,"my");	
+			else if (!stricmp(word,(char*)"my")) strcat(buffer,(char*)"your");	
+			else if (!stricmp(word,(char*)"your")) strcat(buffer,(char*)"my");	
 			else strcat(buffer,word);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 		size_t len = strlen(buffer);
 		buffer[len-1] = 0;
@@ -72,16 +72,16 @@ char* GetNounPhrase(int i,const char* avoid)
 
 	if (posValues[i+1] & (NOUN_INFINITIVE|NOUN_GERUND)) // noun is a verbal 
 	{
-		unsigned int verbal = verbals[i];
-		unsigned int at = i-1;
+		int verbal = verbals[i];
+		int at = i-1;
 		while (verbals[++at] & verbal)
 		{
 			char* word = wordStarts[at];							
 			if (tokenFlags & USERINPUT) strcat(buffer,word);		
-			else if (!stricmp(word,"my")) strcat(buffer,"your");	
-			else if (!stricmp(word,"your")) strcat(buffer,"my");	
+			else if (!stricmp(word,(char*)"my")) strcat(buffer,(char*)"your");	
+			else if (!stricmp(word,(char*)"your")) strcat(buffer,(char*)"my");	
 			else strcat(buffer,word);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 		size_t len = strlen(buffer);
 		buffer[len-1] = 0;
@@ -101,7 +101,7 @@ char* GetNounPhrase(int i,const char* avoid)
 		if (posValues[start] & COMMA && !(posValues[start-1] & ADJECTIVE_BITS)) break; // NOT like:  the big, red, tall human
 		if (posValues[start] & CONJUNCTION_COORDINATE)
 		{
-			if ( canonicalLower[start] && strcmp(canonicalLower[start]->word,"and")) break;	// not "and"
+			if ( canonicalLower[start] && strcmp(canonicalLower[start]->word,(char*)"and")) break;	// not "and"
 			if (!(posValues[start-1] & (ADJECTIVE_BITS|COMMA))) break;	// NOT like:  the big, red, and very tall human
 			if (posValues[start-1] & COMMA && !(posValues[start-2] & ADJECTIVE_BITS)) break;	// NOT like:  the big, red, and very tall human
 		}
@@ -110,8 +110,8 @@ char* GetNounPhrase(int i,const char* avoid)
 
 		WORDP canon = canonicalLower[start];
 		WORDP orig = originalLower[start];
-		if (orig && (!strcmp("here",orig->word) || !strcmp("there",orig->word))) break;
-		//if (orig && (!strcmp("this",orig->word) || !strcmp("that",orig->word) || !strcmp("these",orig->word) || !strcmp("those",orig->word))) break;
+		if (orig && (!strcmp((char*)"here",orig->word) || !strcmp((char*)"there",orig->word))) break;
+		//if (orig && (!strcmp((char*)"this",orig->word) || !strcmp((char*)"that",orig->word) || !strcmp((char*)"these",orig->word) || !strcmp((char*)"those",orig->word))) break;
 		if (canon && canon->properties & PRONOUN_BITS && !strcmp(canon->word,avoid)) break; // avoid recursive pronoun expansions... like "their teeth"
 		if (posValues[start] & NOUN_PROPER_SINGULAR) break; // proper singular blocks appostive 
 	}
@@ -121,16 +121,16 @@ char* GetNounPhrase(int i,const char* avoid)
 	{
 		char* word = wordStarts[start];							
 		if (tokenFlags & USERINPUT) strcat(buffer,word);		
-		else if (!stricmp(word,"my")) strcat(buffer,"your");	
-		else if (!stricmp(word,"your")) strcat(buffer,"my");	
+		else if (!stricmp(word,(char*)"my")) strcat(buffer,(char*)"your");	
+		else if (!stricmp(word,(char*)"your")) strcat(buffer,(char*)"my");	
 		else strcat(buffer,word);
-		if (start != i) strcat(buffer," ");
+		if (start != i) strcat(buffer,(char*)" ");
 	}
 #endif
 	return buffer;
 }
 
-static char* DescribeComponent(unsigned int i,char* buffer,char* open, char* close) // verbal or phrase or clause
+static char* DescribeComponent(int i,char* buffer,char* open, char* close) // verbal or phrase or clause
 {
 	strcat(buffer,open);
 	Describe(i,buffer);
@@ -138,159 +138,159 @@ static char* DescribeComponent(unsigned int i,char* buffer,char* open, char* clo
 	return buffer;
 }
 
-static char* Describe(unsigned int i,char* buffer)
+static char* Describe(int i,char* buffer)
 {
 	// before
-	unsigned int currentPhrase = phrases[i] & (-1 ^ phrases[i-1]); // only the new bit
+	int currentPhrase = phrases[i] & (-1 ^ phrases[i-1]); // only the new bit
 	if (!currentPhrase) currentPhrase = phrases[i];
-	unsigned int currentVerbal = verbals[i] & (-1 ^ verbals[i-1]); // only the new bit
+	int currentVerbal = verbals[i] & (-1 ^ verbals[i-1]); // only the new bit
 	if (!currentVerbal) currentVerbal = verbals[i];
-	unsigned int currentClause = clauses[i] & (-1 ^ clauses[i-1]); // only the new bit
+	int currentClause = clauses[i] & (-1 ^ clauses[i-1]); // only the new bit
 	if (!currentClause) currentClause = clauses[i];
 	bool found = false;
 	char word[MAX_WORD_SIZE];
-	for (unsigned int j = 1; j < i; ++j) // find things before
+	for (int j = 1; j < i; ++j) // find things before
 	{
 		if (ignoreWord[j]) continue;
 		if (crossReference[j] == i && posValues[j] & IDIOM)
 		{
 			strcat(buffer,wordStarts[j]);
-			strcat(buffer,"_");
+			strcat(buffer,(char*)"_");
 		}
 		else if (crossReference[j] == i && phrases[j] ^ currentPhrase)
 		{
-			if (!found) strcat(buffer," [");
-			else  strcat(buffer," ");
+			if (!found) strcat(buffer,(char*)" [");
+			else  strcat(buffer,(char*)" ");
 			found = true;
 			++describedPhrases;
 			describePhrase[describedPhrases] = (unsigned char)j;
-			sprintf(word,"p%d",describedPhrases);
+			sprintf(word,(char*)"p%d",describedPhrases);
 			strcat(buffer,word);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 		else if (crossReference[j] == i && verbals[j] ^ currentVerbal)
 		{
-			if (!found) strcat(buffer," [");
-			else  strcat(buffer," ");
+			if (!found) strcat(buffer,(char*)" [");
+			else  strcat(buffer,(char*)" ");
 			found = true;
 			++describedVerbals;
 			describeVerbal[describedVerbals] =  (unsigned char)j;
-			sprintf(word,"v%d",describedVerbals);
+			sprintf(word,(char*)"v%d",describedVerbals);
 			strcat(buffer,word);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 		else if (crossReference[j] == i && clauses[j] ^ currentClause)
 		{
-			if (!found) strcat(buffer," [");
-			else  strcat(buffer," ");
+			if (!found) strcat(buffer,(char*)" [");
+			else  strcat(buffer,(char*)" ");
 			found = true;
 			++describedClauses;
 			describeClause[describedClauses] =  (unsigned char)j;
-			sprintf(word,"c%d",describedClauses);
+			sprintf(word,(char*)"c%d",describedClauses);
 			strcat(buffer,word);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 		else if (crossReference[j] == i && !(roles[j] & (MAINSUBJECT|MAINOBJECT|MAININDIRECTOBJECT)))
 		{
 			if (roles[j] & OBJECT_COMPLEMENT && posValues[j] & NOUN_BITS && !phrases[j] && !clauses[j] && !verbals[j]) continue;
-			if (!found) strcat(buffer," [");
-			else  strcat(buffer," ");
+			if (!found) strcat(buffer,(char*)" [");
+			else  strcat(buffer,(char*)" ");
 			found = true;
 			if (posValues[j] != TO_INFINITIVE) Describe(j,buffer);
-			else strcat(buffer,"to");
+			else strcat(buffer,(char*)"to");
 		}
 	}
 	if (found) 
 	{
 		char* end = buffer + strlen(buffer) - 1;
 		if (*end == ' ') *end = 0;
-		strcat(buffer,"]");
+		strcat(buffer,(char*)"]");
 	}
 	found = false;
-	if (!(posValues[i-1] & IDIOM)) strcat(buffer," ");
+	if (!(posValues[i-1] & IDIOM)) strcat(buffer,(char*)" ");
 
 	// the word
 	strcat(buffer,wordStarts[i]);
-	if (*wordStarts[i] == '"') strcat(buffer,"...\""); // show omitted quotation
+	if (*wordStarts[i] == '"') strcat(buffer,(char*)"...\""); // show omitted quotation
 
 	// after
-	for (unsigned int j = i+1; j <= wordCount; ++j) // find things after
+	for (int j = i+1; j <= wordCount; ++j) // find things after
 	{
 		if (ignoreWord[j]) continue;
 		if (crossReference[j] == i && posValues[j] & PARTICLE)
 		{
-			strcat(buffer,"_");
+			strcat(buffer,(char*)"_");
 			strcat(buffer,wordStarts[j]);
 		}
 		else if (crossReference[j] == i && phrases[j] ^ currentPhrase)
 		{
-			if (!found) strcat(buffer," [");
-			else  strcat(buffer," ");
+			if (!found) strcat(buffer,(char*)" [");
+			else  strcat(buffer,(char*)" ");
 			found = true;
 			++describedPhrases;
 			describePhrase[describedPhrases] =  (unsigned char)j;
-			sprintf(word,"p%d",describedPhrases);
+			sprintf(word,(char*)"p%d",describedPhrases);
 			strcat(buffer,word);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 		else if (crossReference[j] == i && verbals[j] ^ currentVerbal)
 		{
-			if (!found) strcat(buffer," [");
-			else  strcat(buffer," ");
+			if (!found) strcat(buffer,(char*)" [");
+			else  strcat(buffer,(char*)" ");
 			found = true;
 			++describedVerbals;
 			describeVerbal[describedVerbals] =  (unsigned char)j;
-			sprintf(word,"v%d",describedVerbals);
+			sprintf(word,(char*)"v%d",describedVerbals);
 			strcat(buffer,word);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 		else if (crossReference[j] == i && clauses[j] ^ currentClause)
 		{
-			if (!found) strcat(buffer," [");
-			else  strcat(buffer," ");
+			if (!found) strcat(buffer,(char*)" [");
+			else  strcat(buffer,(char*)" ");
 			found = true;
 			++describedClauses;
 			describeClause[describedClauses] =  (unsigned char)j;
-			sprintf(word,"c%d",describedClauses);
+			sprintf(word,(char*)"c%d",describedClauses);
 			strcat(buffer,word);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 		else if (currentPhrase && phrases[j] == currentPhrase && roles[j] & OBJECT2 && crossReference[j] == i)
 		{
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 			Describe(j,buffer);
 		}
 		else if (posValues[i] & TO_INFINITIVE && posValues[j] & (NOUN_INFINITIVE|VERB_INFINITIVE))
 		{
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 			Describe(j,buffer);
 		}
 		else if (crossReference[j] == i && !(roles[j] & (MAINSUBJECT|MAINOBJECT|MAININDIRECTOBJECT)))
 		{
 			if (roles[j] & OBJECT_COMPLEMENT && posValues[j] & NOUN_BITS && !phrases[j] && !clauses[j] && !verbals[j]) continue;
-			if (!found && !(posValues[i] & PREPOSITION)) strcat(buffer," [");
+			if (!found && !(posValues[i] & PREPOSITION)) strcat(buffer,(char*)" [");
 			found = true;
 			Describe(j,buffer);
-			strcat(buffer," ");
+			strcat(buffer,(char*)" ");
 		}
 	}
 	if (found) 
 	{
 		char* end = buffer + strlen(buffer) - 1;
 		if (*end == ' ') *end = 0;
-		strcat(buffer,"] ");
+		strcat(buffer,(char*)"] ");
 	}
 
 	if (coordinates[i] > i) // conjoined
 	{
-		strcat(buffer," + " );
+		strcat(buffer,(char*)" + " );
 		Describe(coordinates[i],buffer);
 	}
 
 	return buffer;
 }
 
-void DescribeUnit(unsigned int i, char* buffer, char* msg,unsigned int verbal, unsigned int clause)
+static void DescribeUnit( int i, char* buffer, char* msg,int verbal, int clause)
 {
 	char word[MAX_WORD_SIZE];
 	if (i) // adjective object or causal infinitive
@@ -300,27 +300,27 @@ void DescribeUnit(unsigned int i, char* buffer, char* msg,unsigned int verbal, u
 		{
 			++describedVerbals;
 			describeVerbal[describedVerbals] =  (unsigned char)i;
-			sprintf(word,"v%d",describedVerbals);
+			sprintf(word,(char*)"v%d",describedVerbals);
 			strcat(buffer,word);
 		}
 		else if (clauses[i] != clause)
 		{
 			++describedClauses;
 			describeClause[describedClauses] =  (unsigned char)i;
-			sprintf(word,"c%d",describedClauses);
+			sprintf(word,(char*)"c%d",describedClauses);
 			strcat(buffer,word);
 		}
 		else Describe(i,buffer);
-		strcat(buffer," ");
+		strcat(buffer,(char*)" ");
 	}
 }
 
-void DumpSentence(unsigned int start,unsigned int end)
+void DumpSentence(int start,int end)
 {
 #ifndef DISCARDPARSER
-	unsigned int to = end;
-	unsigned int subject = 0, verb = 0, indirectobject = 0, object = 0,complement = 0;
-	unsigned int i;
+	int to = end;
+	int subject = 0, verb = 0, indirectobject = 0, object = 0,complement = 0;
+	int i;
 	bool notFound = false;
 	char word[MAX_WORD_SIZE];
 	describedVerbals = 0;
@@ -335,7 +335,7 @@ void DumpSentence(unsigned int start,unsigned int end)
 		if (roles[i] & OBJECT_COMPLEMENT && posValues[i] & NOUN_BITS && !complement) complement = i;
 		if (roles[i] & OBJECT_COMPLEMENT && posValues[i] & (ADJECTIVE_BITS|VERB_INFINITIVE|NOUN_INFINITIVE) && !complement) complement = i;
 		if (roles[i] & SUBJECT_COMPLEMENT && !complement) complement = i;
-		if (!stricmp(wordStarts[i],"not")) notFound = true;
+		if (!stricmp(wordStarts[i],(char*)"not")) notFound = true;
 		if (roles[i] & SENTENCE_END) 
 		{
 			to = i;
@@ -348,83 +348,83 @@ void DumpSentence(unsigned int start,unsigned int end)
 		}
 	}
 	char* buffer = AllocateBuffer();
-	strcat(buffer,"  MainSentence: ");
+	strcat(buffer,(char*)"  MainSentence: ");
 
 	for (i = start; i <= to; ++i)
 	{
 		if (roles[i] & ADDRESS)
 		{
 			Describe(i,buffer);
-			strcat(buffer," :  ");
+			strcat(buffer,(char*)" :  ");
 		}
 	}
 	
 	if (subject) DescribeUnit(subject,buffer, "Subj:",0,0);
-	else if (tokenFlags& IMPLIED_YOU) 	strcat(buffer,"YOU   ");
+	else if (tokenFlags& IMPLIED_YOU) 	strcat(buffer,(char*)"YOU   ");
 	
 	if (verb) 
 	{
 		object = objectRef[verb];
 		indirectobject = indirectObjectRef[verb];
-		strcat(buffer,"  Verb:");
-		if (notFound) strcat(buffer,"(NOT!) ");
+		strcat(buffer,(char*)"  Verb:");
+		if (notFound) strcat(buffer,(char*)"(NOT!) ");
 		Describe(verb,buffer);
-		strcat(buffer,"   ");
+		strcat(buffer,(char*)"   ");
 	}
 
 	if (indirectobject) 
 	{
-		strcat(buffer,"  IndirectObject:");
+		strcat(buffer,(char*)"  IndirectObject:");
 		Describe(indirectobject,buffer);
-		strcat(buffer,"   ");
+		strcat(buffer,(char*)"   ");
 	}
 
 	DescribeUnit(object,buffer, "  Object:",0,0);
 	DescribeUnit(complement,buffer, "Complement:",0,0);
 
 	if (clauses[start]){;}
-	else if (!stricmp(wordStarts[start],"when")) strcat(buffer,"(:when) ");
-	else if (!stricmp(wordStarts[start],"where")) strcat(buffer,"(:where) ");
-	else if (!stricmp(wordStarts[start],"why")) strcat(buffer,"(:why) ");
-	else if (!stricmp(wordStarts[start],"who") && subject != 1 && object != 1) strcat(buffer,"(:who) ");
-	else if (!stricmp(wordStarts[start],"what") && subject != 1 && object != 1) strcat(buffer,"(:what) ");
-	else if (!stricmp(wordStarts[start],"how")) strcat(buffer,"(:how) ");
+	else if (!stricmp(wordStarts[start],(char*)"when")) strcat(buffer,(char*)"(:when) ");
+	else if (!stricmp(wordStarts[start],(char*)"where")) strcat(buffer,(char*)"(:where) ");
+	else if (!stricmp(wordStarts[start],(char*)"why")) strcat(buffer,(char*)"(:why) ");
+	else if (!stricmp(wordStarts[start],(char*)"who") && subject != 1 && object != 1) strcat(buffer,(char*)"(:who) ");
+	else if (!stricmp(wordStarts[start],(char*)"what") && subject != 1 && object != 1) strcat(buffer,(char*)"(:what) ");
+	else if (!stricmp(wordStarts[start],(char*)"how")) strcat(buffer,(char*)"(:how) ");
 
-	if (tokenFlags & QUESTIONMARK)  strcat(buffer,"? ");
+	if (tokenFlags & QUESTIONMARK)  strcat(buffer,(char*)"? (char*)");
 
-	if (tokenFlags & PAST) strcat(buffer," PAST ");
-	else if (tokenFlags & FUTURE) strcat(buffer," FUTURE ");
-	else if (tokenFlags & PRESENT) strcat(buffer," PRESENT ");
+	if (tokenFlags & PAST) strcat(buffer,(char*)" PAST ");
+	else if (tokenFlags & FUTURE) strcat(buffer,(char*)" FUTURE ");
+	else if (tokenFlags & PRESENT) strcat(buffer,(char*)" PRESENT ");
 
-	if (tokenFlags & PERFECT) strcat(buffer,"PERFECT ");
-	if (tokenFlags & CONTINUOUS) strcat(buffer,"CONTINUOUS ");
+	if (tokenFlags & PERFECT) strcat(buffer,(char*)"PERFECT ");
+	if (tokenFlags & CONTINUOUS) strcat(buffer,(char*)"CONTINUOUS ");
 
-	if (tokenFlags & PASSIVE) strcat(buffer," PASSIVE ");
-	strcat(buffer,"\n");
-	for (unsigned int i = 1; i <= describedPhrases; ++i)
+	if (tokenFlags & PASSIVE) strcat(buffer,(char*)" PASSIVE ");
+	strcat(buffer,(char*)"\n");
+	for (int i = 1; i <= describedPhrases; ++i)
 	{
-		sprintf(word,"Phrase %d :",i);
+		sprintf(word,(char*)"Phrase %d :",i);
 		strcat(buffer,word);
 		Describe(describePhrase[i],buffer);
-		strcat(buffer,"\n");
+		strcat(buffer,(char*)"\n");
 	}
-	for (unsigned int i = 1; i <= describedVerbals; ++i)
+	for (int i = 1; i <= describedVerbals; ++i)
 	{
-		sprintf(word,"Verbal %d: ",i);
+		sprintf(word,(char*)"Verbal %d: (",i);
 		strcat(buffer,word);
-		unsigned int verbal = describeVerbal[i]; 
-		unsigned int verbalid = verbals[verbal] & (-1 ^ verbals[verbal-1]);
+		int verbal = describeVerbal[i]; 
+		int verbalid = verbals[verbal] & (-1 ^ verbals[verbal-1]);
 		if (!verbalid) verbalid = verbals[verbal];
-		for (unsigned int j = i; j <= endSentence; ++j)
+		for (int j = i; j <= endSentence; ++j)
 		{
 			if (!(verbals[j] & verbalid)) continue;
 			if (roles[j] & VERB2) 
 			{
-				strcat(buffer,"  Verb:");
+				strcat(buffer,(char*)"  Verb:");
 				Describe(j,buffer); // the verb
 				if (indirectObjectRef[j]) 
 				{
-					strcat(buffer,"  Indirect: ");
+					strcat(buffer,(char*)"  Indirect: ");
 					Describe(indirectObjectRef[j],buffer);
 				}
 				DescribeUnit(objectRef[j],buffer, "  Direct:",verbalid,0);
@@ -432,87 +432,87 @@ void DumpSentence(unsigned int start,unsigned int end)
 				break;
 			}
 		}
-		strcat(buffer,"\n");
+		strcat(buffer,(char*)"\n");
 	}
-	for (unsigned int i = 1; i <= describedClauses; ++i)
+	for (int i = 1; i <= describedClauses; ++i)
 	{
-		sprintf(word,"Clause %d %s : ",i,wordStarts[describeClause[i]]);
+		sprintf(word,(char*)"Clause %d %s : (char*)",i,wordStarts[describeClause[i]]);
 		strcat(buffer,word);
-		unsigned int clause = describeClause[i];
-		unsigned int clauseid = clauses[clause] & (-1 ^ clauses[clause-1]);
+		int clause = describeClause[i];
+		int clauseid = clauses[clause] & (-1 ^ clauses[clause-1]);
 		if (!clauseid) clauseid = clauses[clause];
-		for (unsigned int j = i; j <= endSentence; ++j)
+		for (int j = i; j <= endSentence; ++j)
 		{
 			if (!(clauses[j] & clauseid)) continue;
 			if (roles[j] & SUBJECT2)  
 			{
-				strcat(buffer,"  Subject:");
+				strcat(buffer,(char*)"  Subject:");
 				Describe(j,buffer); // the subject
-				strcat(buffer,"  ");
+				strcat(buffer,(char*)"  ");
 			}
 			if (roles[j] & VERB2)  
 			{
-				strcat(buffer,"  Verb:");
+				strcat(buffer,(char*)"  Verb:");
 				Describe(j,buffer); // the verb
 				if (indirectObjectRef[j]) 
 				{
-					strcat(buffer,"  IndirectObject: ");
+					strcat(buffer,(char*)"  IndirectObject: (char*)");
 					Describe(indirectObjectRef[j],buffer);
 				}
 				DescribeUnit(objectRef[j],buffer, "  DirectObject:",0,clauseid);
 				DescribeUnit(complementRef[j],buffer, "  Complement:",0,clauseid);
 			}
 		}
-		strcat(buffer,"\n");
+		strcat(buffer,(char*)"\n");
 	}
 
-	for (unsigned int i = start; i <= to; ++i) // show phrases
+	for (int i = start; i <= to; ++i) // show phrases
 	{
 		if (ignoreWord[i]) continue;
 		if (i >= to) continue; // ignore
 		if (coordinates[i] && posValues[i] & CONJUNCTION_COORDINATE)
 		{
-			strcat(buffer,"\r\n Coordinate ");
+			strcat(buffer,(char*)"\r\n Coordinate ");
 			uint64 crole = roles[i] & CONJUNCT_KINDS;
-			if (crole == CONJUNCT_NOUN) strcat(buffer,"Noun: ");
-			else if (crole == CONJUNCT_VERB) strcat(buffer,"Verb: ");
-			else if (crole == CONJUNCT_ADJECTIVE) strcat(buffer,"Adjective: ");
-			else if (crole == CONJUNCT_ADVERB) strcat(buffer,"Adverb: ");
-			else if (crole == CONJUNCT_PHRASE) strcat(buffer,"Phrase: ");
-			else strcat(buffer,"Sentence: ");
+			if (crole == CONJUNCT_NOUN) strcat(buffer,(char*)"Noun: ");
+			else if (crole == CONJUNCT_VERB) strcat(buffer,(char*)"Verb: ");
+			else if (crole == CONJUNCT_ADJECTIVE) strcat(buffer,(char*)"Adjective: ");
+			else if (crole == CONJUNCT_ADVERB) strcat(buffer,(char*)"Adverb: ");
+			else if (crole == CONJUNCT_PHRASE) strcat(buffer,(char*)"Phrase: ");
+			else strcat(buffer,(char*)"Sentence: ");
 			strcat(buffer,wordStarts[i]);
-			strcat(buffer," (");
+			strcat(buffer,(char*)" ((char*)");
 			if (coordinates[i] && coordinates[coordinates[i]])
 			{
 				strcat(buffer,wordStarts[coordinates[coordinates[i]]]); // the before
-				strcat(buffer,"/");
+				strcat(buffer,(char*)"/");
 				strcat(buffer,wordStarts[coordinates[i]]); // the after
 			}
-			strcat(buffer,") ");
+			strcat(buffer,(char*)") ");
 		}
 	}
 
-	for (unsigned int i = start; i <= to; ++i) // show phrases
+	for (int i = start; i <= to; ++i) // show phrases
 	{
 		if (ignoreWord[i]) continue;
 		if ( phrases[i] && phrases[i] != phrases[i-1] && (i != wordCount || phrases[wordCount] != phrases[1])) 
 		{
-			if (posValues[i] & (NOUN_BITS|PRONOUN_BITS)) strcat(buffer,"\r\n  Absolute Phrase: ");
-			//else if (posValues[i] & (ADJECTIVE_BITS|ADVERB)) strcat(buffer,"\r\n  Time Phrase: ");
+			if (posValues[i] & (NOUN_BITS|PRONOUN_BITS)) strcat(buffer,(char*)"\r\n  Absolute Phrase: ");
+			//else if (posValues[i] & (ADJECTIVE_BITS|ADVERB)) strcat(buffer,(char*)"\r\n  Time Phrase: ");
 			else continue;
 			if (i == 1 && phrases[wordCount] == phrases[1]) 
 			{
-				DescribeComponent(wordCount,buffer,"{","}"); // wrapped?
-				strcat(buffer," ");
+				DescribeComponent(wordCount,buffer,(char*)"{ (char*)",(char*)"}"); // wrapped?
+				strcat(buffer,(char*)" ");
 			}
-			DescribeComponent(i,buffer,"{","}"); // wrapped?
-			strcat(buffer," ");
+			DescribeComponent(i,buffer,(char*)"{ (char*)",(char*)"}"); // wrapped?
+			strcat(buffer,(char*)" ");
 		}
 
-		if (roles[i] & TAGQUESTION) strcat(buffer," TAGQUESTION ");
+		if (roles[i] & TAGQUESTION) strcat(buffer,(char*)" TAGQUESTION ");
 	}
 
-	Log(STDUSERLOG,"%s\r\n",buffer);
+	Log(STDUSERLOG,(char*)"%s\r\n",buffer);
 
 	FreeBuffer();
 	if (to < end) DumpSentence(to+1,end); // show next piece
@@ -521,13 +521,13 @@ void DumpSentence(unsigned int start,unsigned int end)
  
 char* roleSets[] = 
 {
-	"~mainsubject","~mainverb","~mainobject","~mainindirectobject",
-	"~whenunit","~whereunit","~howunit","~whyunit",
-	"~subject2","~verb2","~object2","~indirectobject2","~byobject2","~ofobject2",
-	"~appositive","~adverbial","~adjectival",
-	"~subjectcomplement","~objectcomplement","~address","~postnominal_adjective","adjective_complement","omitted_time_prep","omitted_of_prep",
-	"~comma_phrase","tagquestion","~absolute_phrase","~omitted_subject_verb","~reflexive","~DISTANCE_NOUN_MODIFY_ADVERB","~DISTANCE_NOUN_MODIFY_ADJECTIVE","~TIME_NOUN_MODIFY_ADVERB","~TIME_NOUN_MODIFY_ADJECTIVE",
-	"~conjunct_noun","~conjunct_verb","~conjunct_adjective","conjunct_adverb","conjunct_phrase","conjunct_clause","conjunct_sentence",
+	(char*)"~mainsubject",(char*)"~mainverb",(char*)"~mainobject",(char*)"~mainindirectobject",
+	(char*)"~whenunit",(char*)"~whereunit",(char*)"~howunit",(char*)"~whyunit",
+	(char*)"~subject2",(char*)"~verb2",(char*)"~object2",(char*)"~indirectobject2",(char*)"~byobject2",(char*)"~ofobject2",
+	(char*)"~appositive",(char*)"~adverbial",(char*)"~adjectival",
+	(char*)"~subjectcomplement",(char*)"~objectcomplement",(char*)"~address",(char*)"~postnominal_adjective",(char*)"adjective_complement",(char*)"omitted_time_prep",(char*)"omitted_of_prep",
+	(char*)"~comma_phrase",(char*)"tagquestion",(char*)"~absolute_phrase",(char*)"~omitted_subject_verb",(char*)"~reflexive",(char*)"~DISTANCE_NOUN_MODIFY_ADVERB",(char*)"~DISTANCE_NOUN_MODIFY_ADJECTIVE",(char*)"~TIME_NOUN_MODIFY_ADVERB",(char*)"~TIME_NOUN_MODIFY_ADJECTIVE",
+	(char*)"~conjunct_noun",(char*)"~conjunct_verb",(char*)"~conjunct_adjective",(char*)"conjunct_adverb",(char*)"conjunct_phrase",(char*)"conjunct_clause",(char*)"conjunct_sentence",
 	NULL
 };
 	
@@ -547,7 +547,7 @@ char* GetRole(uint64 role)
 	if ((role & ADVERBIALTYPE)   == HOWUNIT) strcat(answer, "HOWUNIT "); // how and in what manner
 	if ((role & ADVERBIALTYPE)   == WHYUNIT) strcat(answer, "WHYUNIT ");
 
-	if (role & MAINSUBJECT) strcat(answer,"MAINSUBJECT ");
+	if (role & MAINSUBJECT) strcat(answer,(char*)"MAINSUBJECT ");
 	if (role & MAINVERB) strcat(answer, "MAINVERB ");
 	if (role & MAINOBJECT) strcat(answer, "MAINOBJECT ");
 	if (role & MAININDIRECTOBJECT) strcat(answer,  "MAININDIRECTOBJECT ");

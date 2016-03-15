@@ -77,7 +77,8 @@ extern bool singleSource;
 extern bool echoDocument;
 extern char* documentBuffer;
 extern char toHex[16];
-
+extern int docSampleRate, docSample;
+extern int docVolleyStartTime;
 #define IsPunctuation(c) (punctuation[(unsigned char)c])
 #define IsRealPunctuation(c) (realPunctuation[(unsigned char)c])
 #define GetLowercaseData(c) (toLowercaseData[(unsigned char)c])
@@ -113,8 +114,8 @@ void CloseTextUtilities();
 char* Purify(char* msg);
 void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine);
 size_t OutputLimit(unsigned char* data);
-extern unsigned int startSentence;
-extern unsigned int endSentence;
+extern int startSentence;
+extern int endSentence;
 
 // boolean style tests
 bool IsArithmeticOperator(char* word);
@@ -150,7 +151,7 @@ bool ReadDocument(char* inBuffer,FILE* sourceFile);
 // reading functions
 char* ReadFlags(char* ptr,uint64& flags,bool &bad, bool &response);
 char* ReadHex(char* ptr, uint64 & value);
-char* ReadInt(char* ptr, unsigned int & value);
+char* ReadInt(char* ptr, int & value);
 char* ReadInt64(char* ptr, int64 & w);
 int64 atoi64(char* ptr );
 char* ReadQuote(char* ptr, char* buffer,bool backslash = false, bool noblank = true);
