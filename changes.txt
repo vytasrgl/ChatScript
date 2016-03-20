@@ -1,4 +1,6 @@
-version 2.6d 3/14/2016
+version 6.2e 3/20
+
+version 6.2d 3/14/2016
 1. ^substitute 1st arg can now be "insensitive", meaning character search and case insensivive. Or you can
 provide a string like "word insensitive" to pass 2 arguments.
 2. %originalSentence will give you the raw user input for the current sentence (after tokenization)

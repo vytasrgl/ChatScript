@@ -973,7 +973,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
             }
             else
             {
-                sprintf(at,(char*)"unknown format ");
+                sprintf(at,(char*)"%s",(char*)"unknown format ");
 				ptr = 0;
             }
         }

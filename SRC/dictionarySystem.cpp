@@ -246,7 +246,7 @@ char* UseDictionaryFile(char* name)
 {
 	static char junk[100];
 	if (*mini) sprintf(junk,(char*)"DICT/%s",mini);
-	else if (!*language) sprintf(junk,(char*)"DICT");
+	else if (!*language) sprintf(junk,(char*)"%s",(char*)"DICT");
 	else if (!name) sprintf(junk,(char*)"DICT/%s",language);
 	else sprintf(junk,(char*)"DICT/%s",language);
 	if (name && *name) 
@@ -358,7 +358,7 @@ void BuildDictionary(char* label)
 	if (miniDict) StoreWord((char*)"minidict"); // mark it as a mini dictionary
 
 	// dictionary has been built now
-	printf((char*)"Dumping dictionary\r\n");
+	printf((char*)"%s",(char*)"Dumping dictionary\r\n");
 	ClearDictionaryFiles();
 	WalkDictionary(WriteDictionary);
 #ifndef DISCARDDICTIONARYBUILD
@@ -962,7 +962,7 @@ static void WriteDictDetailsBeforeLayer(int layer)
 	}
 	else 
 	{
-		printf((char*)"Unable to open TMP prebuild file\r\n");
+		printf((char*)"%s",(char*)"Unable to open TMP prebuild file\r\n");
 		Log(STDUSERLOG,(char*)"Unable to open TMP prebuild file\r\n");
 	}
 }
@@ -1555,11 +1555,11 @@ void WriteDictionaryFlags(WORDP D, FILE* out)
 			{
 				if (!posdefault)
 				{
-					if (D->systemFlags & NOUN) fprintf(out,(char*)"posdefault:NOUN ");
-					if (D->systemFlags & VERB) fprintf(out,(char*)"posdefault:VERB "); 
-					if (D->systemFlags & ADJECTIVE) fprintf(out,(char*)"posdefault:ADJECTIVE "); 
-					if (D->systemFlags & ADVERB) fprintf(out,(char*)"posdefault:ADVERB "); 
-					if (D->systemFlags & PREPOSITION) fprintf(out,(char*)"posdefault:PREPOSITION ");
+					if (D->systemFlags & NOUN) fprintf(out,(char*)"%s",(char*)"posdefault:NOUN ");
+					if (D->systemFlags & VERB) fprintf(out,(char*)"%s",(char*)"posdefault:VERB "); 
+					if (D->systemFlags & ADJECTIVE) fprintf(out,(char*)"%s",(char*)"posdefault:ADJECTIVE "); 
+					if (D->systemFlags & ADVERB) fprintf(out,(char*)"%s",(char*)"posdefault:ADVERB "); 
+					if (D->systemFlags & PREPOSITION) fprintf(out,(char*)"%s",(char*)"posdefault:PREPOSITION ");
 					posdefault = true;
 				}
 			}
@@ -1569,10 +1569,10 @@ void WriteDictionaryFlags(WORDP D, FILE* out)
 				{
 					agedefault = true;
 					uint64 age = D->systemFlags & AGE_LEARNED;
-					if (age == KINDERGARTEN) fprintf(out,(char*)"KINDERGARTEN ");
-					else if (age == GRADE1_2) fprintf(out,(char*)"GRADE1_2 ");
-					else if (age == GRADE3_4) fprintf(out,(char*)"GRADE3_4 ");
-					else if (age == GRADE5_6) fprintf(out,(char*)"GRADE5_6 ");
+					if (age == KINDERGARTEN) fprintf(out,(char*)"%s",(char*)"KINDERGARTEN ");
+					else if (age == GRADE1_2) fprintf(out,(char*)"%s",(char*)"GRADE1_2 ");
+					else if (age == GRADE3_4) fprintf(out,(char*)"%s",(char*)"GRADE3_4 ");
+					else if (age == GRADE5_6) fprintf(out,(char*)"%s",(char*)"GRADE5_6 ");
 				}
 			}
 			else label = FindSystemNameByValue(bit);
@@ -1631,7 +1631,7 @@ void WriteDictionary(WORDP D,uint64 data)
 	char c = GetLowercaseData(*D->word); 
 	char name[40];
 	if (IsDigit(c)) sprintf(name,(char*)"%c.txt",c); //   main real dictionary
-    else if (!IsLowerCase(c)) sprintf(name,(char*)"other.txt"); //   main real dictionary
+    else if (!IsLowerCase(c)) sprintf(name,(char*)"%s",(char*)"other.txt"); //   main real dictionary
     else sprintf(name,(char*)"%c.txt",c);//   main real dictionary
     FILE* out = FopenUTF8WriteAppend(UseDictionaryFile(name));
 	if (!out) 
@@ -1658,7 +1658,7 @@ void WriteDictionary(WORDP D,uint64 data)
 	WriteDictionaryFlags(D,out);
 	if (D->systemFlags & CONDITIONAL_IDIOM) 
 		fprintf(out,(char*)" poscondition=%s ",D->w.conditionalIdiom);
- 	fprintf(out,(char*)") ");
+ 	fprintf(out,(char*)"%s",(char*)") ");
 
 	//   these must have valuable ->properties on them
 	WriteDictionaryReference((char*)"conjugate",GetTense(D),out);
@@ -1667,7 +1667,7 @@ void WriteDictionary(WORDP D,uint64 data)
 
 	//   show the meanings, with illustrative gloss
 		
-	fprintf(out,(char*)"\r\n");
+	fprintf(out,(char*)"%s",(char*)"\r\n");
 	//   now dump the meanings and their glosses
 	for (unsigned int i = 1; i <= count; ++i)
 	{

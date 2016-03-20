@@ -1254,6 +1254,7 @@ concept: ~military_man (military_man )
 concept: ~milk (milk~1 milk~2 )
 concept: ~milk_drinks (~milk cream~2 half-and-half~1 milk_shake milk~2 yogurt~1 )
 concept: ~minerals (mineral~1 )
+concept: ~INDOOR_ACTIVITIES ( gallery hobby museum theater ~arts )
 concept: ~minor_outdoor_activities (~water_sports archery backpack badminton bird_watching birding camping caving climbing cycling fencing glide golf hang_gliding hike horseback horseshoes 
           hunt paintball skate skateboard ski snowboard spelunk tennis track walk )
 concept: ~misc_websites NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR (Amazon.com eBay Encyclopedia_Dramatica Google_Maps IRC MapQuest match.com Netflix Thesaurus.com Ticketmaster Weather.com 

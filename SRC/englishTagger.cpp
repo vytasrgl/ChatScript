@@ -1380,8 +1380,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 			}
 			else if ( bits > 100 && i == endSentence) 
 			{
-				if (i == endSentence) answer = true;
-				else if ( i == (endSentence-1) && *wordStarts[endSentence] == '"') answer = true;
+				answer = true;
 				if (answer && !notflag && direction == 1) endwrap = true;	// allowed to test wrap around end
 			}
 			break;
@@ -5745,7 +5744,6 @@ retry:
 				if (posValues[i] & PRONOUN_OBJECT)  ForceValues(i,PRONOUN_SUBJECT,(char*)"Forcing subject pronoun",changed);
 				SetRole(oldsubject,OBJECT2,true);
 				if (posValues[oldsubject] & PRONOUN_SUBJECT)  ForceValues(oldsubject,PRONOUN_OBJECT,(char*)"Forcing object pronoun",changed);
-				directObject = 0;
 			}
 			// existential there  "There is no one working with Albert"
 			else if (allOriginalWordBits[oldsubject] & THERE_EXISTENTIAL && allOriginalWordBits[auxVerbStack[MAINLEVEL]] & AUX_BE )
@@ -5753,7 +5751,6 @@ retry:
 				SetRole(oldsubject,0,true);
 				SetRole(i,MAINSUBJECT,true);
 				if (posValues[i] & PRONOUN_OBJECT)  ForceValues(i,PRONOUN_SUBJECT,(char*)"Forcing subject pronoun from existential there",changed);
-				directObject = 0;
 			}
 			else if (flip) 
 			{
@@ -5812,7 +5809,7 @@ retry:
 	}		
 	else if (roleIndex == MAINLEVEL && needRoles[roleIndex] == 0 && IsLegalAddress(i) && !coordinates[i]) SetRole(i,ADDRESS);
 	// simple superfluous noun immediately follows simple noun used as object, presume he was adjective_noun
-	else if (!subject && !directObject && roles[i-1] & OBJECT2 && posValues[i-1] & NOUN_SINGULAR && posValues[i] & (NOUN_SINGULAR|NOUN_PLURAL))
+	else if (roles[i-1] & OBJECT2 && posValues[i-1] & NOUN_SINGULAR && posValues[i] & (NOUN_SINGULAR|NOUN_PLURAL))
 	{
 		roles[i] = OBJECT2; // direct object assign, no level associated any more probably
 		roles[i-1] = 0;

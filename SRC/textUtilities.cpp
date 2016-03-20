@@ -304,7 +304,7 @@ void AcquireDefines(char* fileName)
 	FILE* in = FopenStaticReadOnly(fileName); // SRC/dictionarySystem.h
 	if (!in) 
 	{
-		printf((char*)"Unable to read dictionarySystem.h\r\n");
+		printf((char*)"%s",(char*)"Unable to read dictionarySystem.h\r\n");
 		return;
 	}
 	char label[MAX_WORD_SIZE];
@@ -947,7 +947,7 @@ bool IsNumericDate(char* word,char* end) // 01.02.2009 or 1.02.2009 or 1.2.2009
 	int counter = 0;
 	int piece = 0;
 	int size[100];
-	memset(size,0,5*sizeof(int));
+	memset(size,0,5 * sizeof(int));
 	--word;
 	while (++word < end) 
 	{
@@ -1006,11 +1006,11 @@ bool IsUrl(char* word, char* end)
 		}
 	}
 	if (n < 3) return false; // has none or only 1 or 2
-	if (n < 3) return false; // has none or only 1 or 2
     if (n == 3) return true;  // exactly 3 a std url
 
 	//   check suffix since possible 4 part url:  www.amazon.co.uk OR 1 parter like amazon.com  or other --- also 2 dot urls including amazon.com and fireze.it
     ptr = strrchr(tmp,'.'); // last period - KNOWN to exist
+	if (!ptr) return false;	// stops compiler warning
 	if (IsAlphaUTF8(ptr[1]) && IsAlphaUTF8(ptr[2]) && !ptr[3]) return true;	 // country code at end?
 	if ((ptr-word) >= 3 && ptr && *(ptr-3) == 'c' && (*ptr-2) == 'o') return true; // another form of country code
 	++ptr;

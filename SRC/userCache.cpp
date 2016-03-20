@@ -309,6 +309,7 @@ void Cache(char* buffer, size_t size) // save into cache
 {
 	if (!buffer) // ran out of room
 	{
+		ReportBug("User write failed, too big");
 		OverflowRelease();
 		return;
 	}

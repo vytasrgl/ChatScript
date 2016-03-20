@@ -508,7 +508,7 @@ static void MemorizeRegress(char* input)
 
 			if (!end)
 			{
-				fprintf(out,(char*)"  verify2: \r\n");
+				fprintf(out,(char*)"%s",(char*)"  verify2: \r\n");
 				continue;
 			}
 
@@ -563,6 +563,7 @@ static void VerifyRegress(char* file)
 	unsigned int volley = 0;
 	char myBuffer[MAX_BUFFER_SIZE];
 	regression = REGRESS_REGRESSION;
+	char* holdmain = mainOutputBuffer;
 	while (ReadALine(myBuffer,in) >= 0 ) // read regression file
 	{
 		//Start: user:fd bot:rose rand:553 volley:0 topic:~hello input:  output: Good morning.  
@@ -783,6 +784,7 @@ static void VerifyRegress(char* file)
 	userLog = olduserlog;
 	fclose(in);
 	echo = oldecho;
+	mainOutputBuffer = holdmain;
 	prepareMode = NO_MODE;
 	regression = NO_REGRESSION;
 	// shall we revise the regression file?
@@ -791,7 +793,7 @@ static void VerifyRegress(char* file)
 			
 	if (changed || modified || minorchange)
 	{
-		printf((char*)"\nRegression has changed. Do you want to update regression to the current results? Only \"yes\" will do so: ");
+		printf((char*)"%s",(char*)"\nRegression has changed. Do you want to update regression to the current results? Only \"yes\" will do so: ");
 		ReadALine(readBuffer,stdin);
 		if (!stricmp(readBuffer,(char*)"yes"))
 		{
@@ -800,7 +802,7 @@ static void VerifyRegress(char* file)
 			MemorizeRegress(fdo);
 		}
 	}
-	else printf((char*)"Regression passed.\r\n");
+	else printf((char*)"%s",(char*)"Regression passed.\r\n");
 }
 
 static void C_Regress(char* input)
@@ -1345,7 +1347,6 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 		if (!rule) break;
 		if (rule && rule != topLevelRule) // its a rejoinder, find the start of the rejoinder area
 		{
-			rejoinderTop = topLevelRule;  // the limit of backward checking
 			rejoinderTopID = verifyRuleID;
 			char* at = rule; // start at the given rejoinder
 			while (*at >= *rule && REJOINDERID(rejoinderTopID)) // stop if drop below our level or go to top level rule
@@ -3014,10 +3015,9 @@ static bool FlushEmbedded(char* & ptr,char* ref,char* notref,unsigned int &contr
 		else break; // unknown close
 	}
 
-	while ((start = strstr(ptr,ref))) // starter coverage exists in input but has no end for it
+	if ((start = strstr(ptr,ref)) != NULL) // starter coverage exists in input but has no end for it
 	{
 		// has start not closed must wait but may have useful stuff before it! 
-		++control; // pending
 		if (ptr != start) // useful stuff before it?
 		{
 			*start = 0;
@@ -3767,7 +3767,7 @@ static void C_WikiText(char* ptr)
 			}
 			if (bullet) // drop the bullet now that we found text
 			{
-				fprintf(out,(char*)"    [*] ");
+				fprintf(out,(char*)"%s",(char*)"    [*] ");
 				paragraph = false;
 				bullet = false;
 			}
@@ -3867,6 +3867,7 @@ static void C_Build(char* input)
 		else buildId = BUILD1; // global so SaveCanon can work
 		ReadTopicFiles(word,buildId,spell); 
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
+		ClearPendingTopics(); // flush in case topic ids change or go away
 		CreateSystem();
 		systemReset = (reset) ? 2 : 1;
 	}
@@ -3896,15 +3897,15 @@ static void C_Restart(char* input)
 	InitStandalone();
 	if (!server)
 	{
-		printf((char*)"\r\nEnter user name: ");
+		printf("%s",(char*)"\r\nEnter user name: ");
 		ReadALine(mainInputBuffer,stdin);
-		printf((char*)"\r\n");
+		printf("%s",(char*)"\r\n");
 		if (*mainInputBuffer == '*') // let human go first
 		{
 			memmove(mainInputBuffer,mainInputBuffer+1,strlen(mainInputBuffer));
-			printf((char*)"\r\nEnter starting input: ");
+			printf("%s",(char*)"\r\nEnter starting input: ");
 			ReadALine(initialInput,stdin);
-			printf((char*)"\r\n");
+			printf("%s",(char*)"\r\n");
 		}
 		echo = false;
 		PerformChat(mainInputBuffer,computerID,initialInput,callerIP,mainOutputBuffer);
@@ -5015,13 +5016,13 @@ static void C_TopicDump(char* input)
 		// dump keywords
 		WORDP D = FindWord(name);
 		FACT* F = GetObjectNondeadHead(MakeMeaning(D));
-		fprintf(out,(char*)"Keywords: ");
+		fprintf(out,(char*)"%s",(char*)"Keywords: ");
 		while (F)
 		{
 			if (F->verb == Mmember) fprintf(out,(char*)"%s ",Meaning2Word(F->subject)->word);
 			F = GetObjectNondeadNext(F);
 		}
-		fprintf(out,(char*)" Rules: \r\n");
+		fprintf(out,(char*)"%s",(char*)" Rules: \r\n");
 		// dump rules
 		char* data = GetTopicData(i);
 		int id = 0;
@@ -5033,7 +5034,7 @@ static void C_TopicDump(char* input)
 			*end = '`';
 			data = FindNextRule(NEXTRULE,data,id);
 		}
-		fprintf(out,(char*)"000 x\r\n"); // end of topic
+		fprintf(out,(char*)"%s",(char*)"000 x\r\n"); // end of topic
 	}
 	fclose(out);
 	Log(STDUSERLOG,(char*)"Done.\r\n");
@@ -5706,6 +5707,38 @@ static void C_Facts(char* input)
 	}
 }
 
+static char* WriteFactFlags(FACT* F)
+{
+	char* buffer = AllocateBuffer();
+	if (F->flags & FACTATTRIBUTE) strcat(buffer,"FACTATTRIBUTE ");
+	if (F->flags & MARKED_FACT) strcat(buffer,"MARKED_FACT ");
+	if (F->flags & ITERATOR_FACT) strcat(buffer,"ITERATOR_FACT ");
+	if (F->flags & MARKED_FACT2) strcat(buffer,"MARKED_FACT2 ");
+	if (F->flags & FACTDEAD) strcat(buffer,"FACTDEAD ");
+	if (F->flags & FACTTRANSIENT) strcat(buffer,"FACTTRANSIENT ");
+	if (F->flags & FACTSHARED) strcat(buffer,"FACTSHARED ");
+	if (F->flags & ORIGINAL_ONLY) strcat(buffer,"ORIGINAL_ONLY ");
+	if (F->flags & FACTBUILD2) strcat(buffer,"FACTBUILD2 ");
+	if (F->flags & FACTBUILD1) strcat(buffer,"FACTBUILD1 ");
+	if (F->flags & USER_FLAG4) strcat(buffer,"USER_FLAG4 ");
+	if (F->flags & USER_FLAG3) strcat(buffer,"USER_FLAG3 ");
+	if (F->flags & USER_FLAG2) strcat(buffer,"USER_FLAG2 ");
+	if (F->flags & USER_FLAG1) strcat(buffer,"USER_FLAG1 ");
+	// unused 0x00004000 0x00008000
+	if (F->flags & JSON_OBJECT_FACT) strcat(buffer,"JSON_OBJECT_FACT ");
+	if (F->flags & JSON_ARRAY_FACT) strcat(buffer,"JSON_ARRAY_FACT ");
+	if (F->flags & JSON_ARRAY_VALUE) strcat(buffer,"JSON_ARRAY_VALUE ");
+	if (F->flags & JSON_OBJECT_VALUE) strcat(buffer,"JSON_OBJECT_VALUE ");
+	if (F->flags & JSON_STRING_VALUE) strcat(buffer,"JSON_STRING_VALUE ");
+	if (F->flags & JSON_PRIMITIVE_VALUE) strcat(buffer,"JSON_PRIMITIVE_VALUE ");
+	if (F->flags & FACTSUBJECT) strcat(buffer,"FACTSUBJECT ");
+	if (F->flags & FACTVERB) strcat(buffer,"FACTVERB ");
+	if (F->flags & FACTOBJECT) strcat(buffer,"FACTOBJECT ");
+	if (F->flags & FACTDUPLICATE) strcat(buffer,"FACTDUPLICATE ");
+	FreeBuffer();
+	return buffer;
+}
+	
 static void C_UserFacts(char* input)
 {
 	if (!factLocked) return; // no user facts yet
@@ -5720,7 +5753,7 @@ static void C_UserFacts(char* input)
         for (unsigned int j = 1; j <= count; ++j)
 		{
 			char* fact = WriteFact(factSet[i][j],false,buffer,false,false);
-			Log(STDUSERLOG, "%s  # %d\r\n",fact, Fact2Index(factSet[i][j]));
+			Log(STDUSERLOG, "%s  # %d %s\r\n",fact, Fact2Index(factSet[i][j]),WriteFactFlags(factSet[i][j]));
 		}
     }
 	FreeBuffer();
@@ -5731,7 +5764,7 @@ static void C_UserFacts(char* input)
 		char word[MAX_WORD_SIZE];
 		++count;
 		char* fact = WriteFact(F,false,word,false,false);
-		Log(STDUSERLOG,(char*)"%s  # %d\r\n",fact,Fact2Index(F));
+		Log(STDUSERLOG,(char*)"%s  # %d %s\r\n",fact,Fact2Index(F), WriteFactFlags(F));
 	}
 	Log(STDUSERLOG,(char*)"user facts: %d\r\n",count);
 }
@@ -6354,7 +6387,7 @@ static void C_ExtraTopic(char* input) // topicdump will create a file in TMP/tmp
 	FILE* in = fopen((char*)"TMP/tmp.txt",(char*)"rb");
 	if (!in) 
 	{
-		printf((char*)"missing TMP/tmp.txt\r\n");
+		printf("%s",(char*)"missing TMP/tmp.txt\r\n");
 		return;
 	}
 	fseek (in, 0, SEEK_END);
@@ -6366,7 +6399,7 @@ static void C_ExtraTopic(char* input) // topicdump will create a file in TMP/tmp
 	while(ReadALine(at,in,size) >= 0) {at += strlen(at);} // join all lines
 	// clearly end the topic data
 	strcpy(at,(char*)"``");
-	printf((char*)"Extra topic read\r\n");
+	printf("%s",(char*)"Extra topic read\r\n");
 }
 
 static void C_Clean(char* word) // remove CR for LINUX
@@ -6745,7 +6778,7 @@ static void DisplayTopic(char* name,int spelling)
 				
 				if (multipleOutput) for (unsigned int j = 0; j < (indent + (level * 2) + 4); ++j) 
 				{
-					sprintf(outputPtr,(char*)"  ");
+					sprintf(outputPtr,(char*)"%s",(char*)"  ");
 					outputPtr += 2;
 				}
 				if (*word == '^' && word[1] == '^') memmove(word,word+1,strlen(word));	// ^^if and ^^loop make normal user written
@@ -6969,14 +7002,6 @@ static void DisplayTopic(char* name,int spelling)
 			{
 				headit = true;
 				longLines++;
-			}
-		}
-		else if (!*buffer && !lineLimit && !(spelling & ABSTRACT_SET_MEMBER) && !(spelling & ABSTRACT_SPELL) && !(spelling & ABSTRACT_PRETTY)) // nothing to show but we want to see anything
-		{
-			if (!(spelling & ABSTRACT_NOCODE) )
-			{
-				strcpy(buffer,(char*)" { code }");
-				headit = true;
 			}
 		}
 		else headit = true;
@@ -7351,7 +7376,7 @@ static void TrimIt(char* name,uint64 flag)
 	FILE* in = FopenReadWritten(name);
 	if (!in) return;
 	char* format = ((filesSeen % 100000) == 0) ? (char*)"+\r\n" : (char*) ".";
-	if ((++filesSeen % 1000) == 0) printf(format); // mark progress thru files
+	if ((++filesSeen % 1000) == 0) printf("%s",format); // mark progress thru files
 
 	bool header = false;
 	FILE* out = FopenUTF8WriteAppend((char*)"TMP/tmp.txt");
@@ -7406,7 +7431,7 @@ static void TrimIt(char* name,uint64 flag)
 		if (!end) continue;
 		*end = 0; // terminate around topic removing )
 		char topic[MAX_WORD_SIZE];
-		at = ReadCompiledWord(at,topic);	
+		ReadCompiledWord(at,topic);	
 	
 		char* ipp = strstr(ptr,(char*)"ip:");
 		if (ipp) ptr = ReadCompiledWord(ipp+3,ipp);
@@ -7503,7 +7528,7 @@ static void TrimIt(char* name,uint64 flag)
 						if (updatedVerify) *verify = 0;  // CANCEL not a reuse - have NO verify at all
 						reuseRule = 0;
 					}
-					else rule = GetRule(topicidx,id);	// THIS RULE GETS SHOWN
+	//				else rule = GetRule(topicidx,id);	// THIS RULE GETS SHOWN
 				}
 
 				rule =  (reuseRule) ?  reuseRule : GetRule(topicidx,id); // show the rule whose pattern matched
@@ -7513,7 +7538,7 @@ static void TrimIt(char* name,uint64 flag)
 				else rule = "-";
 				if (!*pattern) strcpy(pattern,(char*)"()"); // gambits for example
 				if (start) start = false;
-				else fprintf(out,(char*)"    ");
+				else fprintf(out,(char*)"%s",(char*)"    ");
 				fprintf(out,(char*)"%s|\"%s\"|%c: %s|%s|%s\r\n",tag,verify,*rule,pattern,input,atOutput); //  showing both as pair, user first, with tag of response and verify input reference
 				if (separation) atOutput = separation + 1; // next output
 			}
@@ -7593,7 +7618,7 @@ static void TrimIt(char* name,uint64 flag)
 		strcpy(prior,output); // what bot said previously
 	}
     fclose(in);
-    if (out) fclose(out);
+    fclose(out);
 	Log(STDUSERLOG,(char*)"Trim %s complete\r\n",name);
 }
 
@@ -7650,7 +7675,7 @@ static void C_Trim(char* input) // create simple file of user chat from director
 
 	if (!*file) WalkDirectory(directory,TrimIt,flag);
 	else TrimIt(file,flag);
-	printf((char*)"\r\n");
+	printf("%s",(char*)"\r\n");
 }
 
 CommandInfo commandSet[] = // NEW

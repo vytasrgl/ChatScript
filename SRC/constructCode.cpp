@@ -65,15 +65,17 @@ resume:
 	{
 		if (*word1 == '%' || *word1 == '_' || *word1 == '$' || *word1 == '@' || *word1 == '?' || *word1 == '^')
 		{
+			char remap[MAX_WORD_SIZE];
+			strcpy(remap,word1); // for tracing
+			if (*word1 == '^' && IsDigit(word1[1])) // simple function var, remap it
+			{
+				strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]); 
+			}
 			char* found;
 			if (*word1 == '%') found = SystemVariable(word1,NULL);
 			else if (*word1 == '_') found = wildcardCanonicalText[GetWildcardID(word1)];
 			else if (*word1 == '$') found = GetUserVariable(word1);
 			else if (*word1 == '?') found = (tokenFlags & QUESTIONMARK) ? (char*) "1" : (char*) "";
-			else if (*word1 == '^' && IsDigit(word1[1])) // function var
-			{
-				found = callArgumentList[atoi(word1+1)+fnVarBase]; 
-			}
 			else if (*word1 == '^' && word1[1] == '$') // indirect var
 			{
 				found = GetUserVariable(word1+1);
@@ -82,18 +84,23 @@ resume:
 			else if (*word1 == '^' && word1[1] == '^' && IsDigit(word1[2])) found = ""; // indirect function var 
 			else if (*word1 == '^' && word1[1] == '_') found = ""; // indirect var
 			else if (*word1 == '^' && word1[1] == '\'' && word1[2] == '_') found = ""; // indirect var
-			else found =  FACTSET_COUNT(GetSetID(word1)) ? (char*) "1" : (char*) "";
+			else if (*word1 == '@') found =  FACTSET_COUNT(GetSetID(word1)) ? (char*) "1" : (char*) "";
+			else found = word1;
+
 			if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 			{
+				char label[MAX_WORD_SIZE];
+				strcpy(label,word1);
+				if (*remap == '^') sprintf(label,"%s->%s",remap,word1);
 				if (!*found) 
 				{
-					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (null) ",word1);
-					else id = Log(STDUSERTABLOG,(char*)"If %s (null) ",word1);
+					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (null) ",label);
+					else id = Log(STDUSERTABLOG,(char*)"If %s (null) ",label);
 				}
 				else 
 				{
-					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (%s) ",word1,found);
-					else id = Log(STDUSERTABLOG,(char*)"If %s (%s) ",word1,found);
+					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (%s) ",label,found);
+					else id = Log(STDUSERTABLOG,(char*)"If %s (%s) ",label,found);
 				}
 			}
 			if (!*found) result = FAILRULE_BIT;

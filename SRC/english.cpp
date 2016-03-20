@@ -306,13 +306,13 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		return 0;
 	}
 
-	if (*wordStarts[at-1] == '"') 
+	if (wordStarts[at-1] && *wordStarts[at-1] == '"') 
 	{
 		int x = at-1;
 		while (--x >= start) if (*wordStarts[x] == '"') break;
 		if (*wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
 	}
-	if (*wordStarts[start] == '"' || *wordStarts[start] == '(') ++start; // skip over any quotes or paren starter -- consider next thing a starter
+	if (wordStarts[start] && (*wordStarts[start] == '"' || *wordStarts[start] == '(')) ++start; // skip over any quotes or paren starter -- consider next thing a starter
 	uint64 properties = 0;
 	sysflags = cansysflags = 0;
 	canonical = 0;

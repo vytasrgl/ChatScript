@@ -460,11 +460,9 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	int setToWild = impliedWild; // what he originally requested
 	bool otherassign = (*word != '@') && (*word != '_');
 
-	if (*word == '^' && word[1] != '^') // function variable must be changed to actual value. can never replace a function variable binding  --- CHANGED nowadays are allowed to write on the function binding itself (done with ^^ref)
+	if (*word == '^' && IsDigit(word[1])) // function variable must be changed to actual value. can never replace a function variable binding  --- CHANGED nowadays are allowed to write on the function binding itself (done with ^^ref)
 	{
-		ReadShortCommandArg(word,word1,result,OUTPUT_NOTREALBUFFER|ASSIGNMENT);
-		if (result & ENDCODES) goto exit; // failed
-		strcpy(word,word1);
+		strcpy(word,callArgumentList[atoi(word+1) + fnVarBase]); 
 	}
 
 	// Get assignment operator

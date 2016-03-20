@@ -147,7 +147,7 @@ static char* SpellCheck( int i, int language)
 			WORDP D = FindWord(tmp,breakAt,PRIMARY_CASE_ALLOWED);
 			tokens[1] = D->word;
 			tokens[2] = tmp+breakAt;
-			ReplaceWords(i,1,2,tokens);
+			ReplaceWords(i,2,2,tokens);
 			fixedSpell = true;
 			return NULL;
 		}
@@ -182,8 +182,8 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
-		// are there facts using this word?
-		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
+		// are there facts using this word? -- issue with facts because on seeing input second time, having made facts of original, we see original
+//		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
 	
 	char lower[MAX_WORD_SIZE];
@@ -196,7 +196,7 @@ char* ProbableKnownWord(char* word)
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
 		// are there facts using this word?
-		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
+//		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
 
 	// do we know the word in upper case?
@@ -209,7 +209,7 @@ char* ProbableKnownWord(char* word)
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
 		// are there facts using this word?
-		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
+//		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
 
 	// interpolate to lower case words 

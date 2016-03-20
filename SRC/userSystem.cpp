@@ -171,7 +171,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 			ptr =  OverflowProtect(ptr);
 			if (!ptr) return NULL;
 		}
-		sprintf(ptr,(char*)"#end set\n"); 
+		sprintf(ptr,(char*)"%s",(char*)"#end set\n"); 
 		ptr += strlen(ptr);
      }
 	strcpy(ptr,(char*)"#`end fact sets\r\n");
@@ -566,7 +566,7 @@ void ReadUserData() // passed  buffer with file content (where feasible)
 	ResetUserChat();
 	if (!ReadFileData(computerID))// read user file, if any, or get it from cache
 	{
-		printf((char*)"User data file inconsistent\r\n");
+		printf((char*)"%s",(char*)"User data file inconsistent\r\n");
 		ReportBug((char*)"User data file inconsistent\r\n");
 	}
 	if (shared) ReadFileData((char*)"share");  // read shared file, if any, or get it from cache

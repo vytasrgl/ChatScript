@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.2d";
+char* version = "6.2e";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -168,7 +168,7 @@ void CreateSystem()
 		buffers = (char*) malloc(total); // have it around already for messages
 		if (!buffers)
 		{
-			printf((char*)"cannot allocate buffer space");
+			printf((char*)"%s",(char*)"cannot allocate buffer space");
 			exit(1);
 		}
 		bufferIndex = 0;
@@ -192,7 +192,7 @@ void CreateSystem()
 	strcat(data,hostname);
 	if (server)  Log(SERVERLOG,(char*)"Server",data);
 	strcat(data,(char*)"\r\n");
-	printf((char*)"%s ",data);
+	printf((char*)"%s",data);
 
 	int old = trace; // in case trace turned on by default
 	trace = 0;
@@ -337,17 +337,17 @@ void CreateSystem()
 	}
 #endif
 #ifdef DISCARDDICTIONARYBUILD
-	printf((char*)"    Dictionary building disabled.\r\n");
+	printf((char*)"%s",(char*)"    Dictionary building disabled.\r\n");
 #endif
 #ifdef DISCARDJSON
-	printf((char*)"    JSON access disabled.\r\n");
+	printf((char*)"%s",(char*)"    JSON access disabled.\r\n");
 #endif
 
 #ifdef DISCARDDATABASE
 	if(server) Log(SERVERLOG,(char*)"    Postgres disabled.\r\n");
-	else printf((char*)"    Postgres disabled.\r\n");
+	else printf((char*)"%s",(char*)"    Postgres disabled.\r\n");
 #endif
-	printf((char*)"\r\n");
+	printf((char*)"%s",(char*)"\r\n");
 	loading = false;
 }
 
@@ -425,7 +425,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	buffers = (char*) malloc(total); // have it around already for messages
 	if (!buffers)
 	{
-		printf((char*)"cannot allocate buffer space");
+		printf((char*)"%s",(char*)"cannot allocate buffer space");
 		return 1;
 	}
 	bufferIndex = 0;
@@ -508,9 +508,9 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 			if (!*loginID)
 			{
-				printf((char*)"\r\nEnter client user name: ");
+				printf((char*)"%s",(char*)"\r\nEnter client user name: ");
 				ReadALine(buffer,stdin);
-				printf((char*)"\r\n");
+				printf((char*)"%s",(char*)"\r\n");
 				Client(buffer);
 			}
 			else Client(loginID);
@@ -778,19 +778,19 @@ bool ProcessInputDelays(char* buffer,bool hitkey)
 			if (loopBackDelay && milli > (clock_t)loopBackTime) 
 			{
 				strcpy(buffer,(char*)"[ loopback ]");
-				printf((char*)"\r\n");
+				printf((char*)"%s",(char*)"\r\n");
 			}
 			else if (callBackDelay && milli > (clock_t)callBackTime) 
 			{
 				strcpy(buffer,(char*)"[ callback ]");
-				printf((char*)"\r\n");
+				printf((char*)"%s",(char*)"\r\n");
 				callBackDelay = 0; // used up
 			}
 			else if (alarmDelay && milli > (clock_t)alarmTime)
 			{
 				alarmDelay = 0;
 				strcpy(buffer,(char*)"[ alarm ]");
-				printf((char*)"\r\n");
+				printf((char*)"%s",(char*)"\r\n");
 			}
 			else return true; // nonblocking check for input
 		}
@@ -798,7 +798,7 @@ bool ProcessInputDelays(char* buffer,bool hitkey)
 		{
 			alarmDelay = 0;
 			strcpy(buffer,(char*)"[ alarm ]");
-			printf((char*)"\r\n");
+			printf((char*)"%s",(char*)"\r\n");
 		}
 	}
 	return false;
@@ -838,16 +838,16 @@ void ProcessInputFile()
 				ProcessOOB(ourMainOutputBuffer);
 				printf((char*)"%s",UTF2ExtendedAscii(ourMainOutputBuffer));
 			}
-			if ((!documentMode || *ourMainOutputBuffer) && !silent) printf((char*)"\r\n");
+			if ((!documentMode || *ourMainOutputBuffer) && !silent) printf((char*)"%s",(char*)"\r\n");
 
-			if (showWhy) printf((char*)"\r\n"); // line to separate each chunk
+			if (showWhy) printf((char*)"%s",(char*)"\r\n"); // line to separate each chunk
 
 			if (loopBackDelay) loopBackTime = ElapsedMilliseconds() + loopBackDelay; // resets every output
 
 			//output user prompt
 			if (documentMode || silent) {;} // no prompt in document mode
 			else if (*userPrefix) printf((char*)"%s ",userPrefix);
-			else printf((char*)"   >");
+			else printf((char*)"%s",(char*)"   >");
 			
 			*ourMainInputBuffer = ' '; // leave space at start to confirm NOT a null init message, even if user does only a cr
 			ourMainInputBuffer[1] = 0;
@@ -895,15 +895,15 @@ void MainLoop() //   local machine loop
 	*ourMainInputBuffer = 0;
 	if (!*loginID)
 	{
-		printf((char*)"\r\nEnter user name: ");
+		printf((char*)"%s",(char*)"\r\nEnter user name: ");
 		ReadALine(user,stdin);
-		printf((char*)"\r\n");
+		printf((char*)"%s",(char*)"\r\n");
 		if (*user == '*') // let human go first  -   say "*bruce
 		{
 			memmove(user,user+1,strlen(user));
-			printf((char*)"\r\nEnter starting input: ");
+			printf((char*)"%s",(char*)"\r\nEnter starting input: ");
 			ReadALine(ourMainInputBuffer,stdin);
-			printf((char*)"\r\n");
+			printf((char*)"%s",(char*)"\r\n");
 		}
 	}
 	else strcpy(user,loginID);
@@ -1375,6 +1375,7 @@ loopback:
 			++sourceLines;
 		}
 		startConversation = false;
+		++loopcount;
 	}
 	if (++loopcount > 50) ReportBug((char*)"loopcount excess %d %s",loopcount,nextInput)
 	return true;
@@ -1849,6 +1850,16 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 
 	if (tokenControl & (DO_SUBSTITUTE_SYSTEM|DO_PRIVATE)  && !oobExists)  
 	{
+		// test for punctuation not done by substitutes (eg "?\")
+		char c = (wordCount) ? *wordStarts[wordCount] : 0;
+		if ((c == '?' || c == '!') && wordStarts[wordCount])  
+		{
+			char* tokens[3];
+			tokens[1] = AllocateString(wordStarts[wordCount],1,1);
+			ReplaceWords(wordCount,1,1,tokens);
+		}  
+
+		// test for punctuation badly done at end (eg "?\")
 		ProcessSubstitutes();
  		if (mytrace & TRACE_PREPARE || prepareMode == PREPARE_MODE)
 		{
@@ -1882,13 +1893,6 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 			originalCount = wordCount;
 		}
 	}
-	// test for punctuation not done by substitutes
-	char c = (wordCount) ? *wordStarts[wordCount] : 0;
-	if (c == '?' || c == '!') 
-	{
-		tokenFlags |= (c == '?') ? QUESTIONMARK : EXCLAMATIONMARK;
-		--wordCount;
-	}  
 	
 	// if 1st token is an interjection DO NOT allow this to be a question
 	if (wordCount && wordStarts[1] && *wordStarts[1] == '~' && !(tokenControl & NO_INFER_QUESTION)) 
@@ -1998,6 +2002,7 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 				strcpy(atword, derivationSentence[j]);
 				atword += strlen(atword);
 				if (j < derivationLength) *atword++ = ' ';
+				*atword = 0;
 			}
 		}
 	}

@@ -1421,7 +1421,7 @@ char* WriteUserTopics(char* ptr,bool sharefile)
 		sprintf(ptr,(char*)"%s ",GetTopicName(pendingTopicList[id])); 
 		ptr += strlen(ptr);
 	}
-	sprintf(ptr,(char*)"#pending\r\n");
+	sprintf(ptr,(char*)"%s",(char*)"#pending\r\n");
 	ptr += strlen(ptr);
  
     //   write out dirty topics
@@ -1861,21 +1861,21 @@ static void LoadTopicData(const char* name,unsigned int build,int layer,bool pla
 			myexit((char*)"bad plan alignment");
 		}
 		ptr = ReadCompiledWord(ptr,name);
-		if (!topicBlockPtrs[0] || !topicBlockPtrs[0]->topicName)
+		if (!topicBlockPtrs[layer]) //  || !topicBlockPtrs[layer]->topicName
 		{
 			if (build == BUILD0) 
 			{
 				EraseTopicFiles(BUILD0,(char*)"0");
-				printf((char*)"\r\n>>>  TOPICS directory bad. Contents erased. :build 0 again.\r\n\r\n");
+				printf((char*)"%s",(char*)"\r\n>>>  TOPICS directory bad. Contents erased. :build 0 again.\r\n\r\n");
 			}
 			else if (build == BUILD1) 
 			{
-				printf((char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 1 again.\r\n\r\n");
+				printf((char*)"%s",(char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 1 again.\r\n\r\n");
 				EraseTopicFiles(BUILD1,(char*)"1");
 			}
 			else if (build == BUILD2) 
 			{
-				printf((char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 2 again.\r\n\r\n");
+				printf((char*)"%s",(char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 2 again.\r\n\r\n");
 			}
 			return;
 		}
@@ -1905,7 +1905,6 @@ static void LoadTopicData(const char* name,unsigned int build,int layer,bool pla
 		}
 		int datalen;
 		ptr = ReadInt(ptr,datalen);
-
 		char* space = AllocateString(0,datalen); // no closing null, just \r\n
 		char* copy = space;
 		int didread = (int)fread(copy,1,datalen-2,in); // not yet read \r\n 
@@ -1915,6 +1914,8 @@ static void LoadTopicData(const char* name,unsigned int build,int layer,bool pla
 			ReportBug((char*)"failed to read all of topic/plan %s read: %d wanted: %d \r\n",name,didread,datalen)
 			break;
 		}
+		char* x = strstr(space,"NOTEX");
+
 		// read \r\n or \n carefully, since windows and linux do things differently
 		char c = 0;
 		didread = fread(&c,1,1,in); // \n or \r\n
@@ -2328,7 +2329,7 @@ char* WriteUserContext(char* ptr,bool sharefile )
 
 	// write out recent context
 	int i = contextIndex;
-	sprintf(ptr,(char*)"#context ");
+	sprintf(ptr,(char*)"%s",(char*)"#context ");
 	ptr += strlen(ptr);
 	while (--i != (int)contextIndex)
 	{

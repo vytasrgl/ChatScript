@@ -86,7 +86,7 @@ void ScriptError()
 	if (compiling)
 	{
 		patternContext = false; 
-		Log(STDUSERLOG,(char*)"*** Error- line %d of %s: (char*)",currentFileLine,currentFilename);
+		Log(STDUSERLOG,(char*)"*** Error- line %d of %s: ",currentFileLine,currentFilename);
 	}
 }
 
@@ -1980,7 +1980,7 @@ name of topic  or concept
 				if (memorizeSeen && !ifstatement) BADSCRIPT((char*)"PATTERN-27 Cannot use _ before  )")
 				if (variableGapSeen && nestIndex > 1) 
 					BADSCRIPT((char*)"PATTERN-26 Cannot have wildcard followed by )")
-				if (nestKind[--nestIndex] != '(') BADSCRIPT((char*)"PATTERN-9 ) is not closing corresponding ((char*)")
+				if (nestKind[--nestIndex] != '(') BADSCRIPT((char*)"PATTERN-9 ) is not closing corresponding (")
 				break;
 			case '[':	//   list of pattern choices begin
 				if (quoteSeen) BADSCRIPT((char*)"PATTERN-30 Quoting [ is meaningless.");
@@ -2012,7 +2012,7 @@ name of topic  or concept
 				if (quoteSeen) BADSCRIPT((char*)"PATTERN-38 Quoting } is meaningless.");
 				if (memorizeSeen) BADSCRIPT((char*)"PATTERN-39 Cannot use _ before  }")
 				if (variableGapSeen) BADSCRIPT((char*)"PATTERN-40 Cannot have wildcard followed by }")
-				if (nestKind[--nestIndex] != '{') BADSCRIPT((char*)"PATTERN-41 } is not closing corresponding { (char*)")
+				if (nestKind[--nestIndex] != '{') BADSCRIPT((char*)"PATTERN-41 } is not closing corresponding {")
 				break;
 			case '\\': //   literal next character
 				if (quoteSeen) BADSCRIPT((char*)"PATTERN-42 Quoting an escape is meaningless.");
@@ -2380,7 +2380,7 @@ static char* GatherChunk(char* ptr, FILE* in, char* save, bool body) // get unfo
 		if (level == 0) break; //   end of stream of if body
 
 		size_t len = strlen(word);
-		if ((len + (save - original) + 3) >= maxBufferSize) BADSCRIPT((char*)"BODY-4 Body too big. Limit is %d ",maxBufferSize)
+		if ((len + (save - original) + 3) >= maxBufferSize) BADSCRIPT((char*)"BODY-4 Body exceeding limit of %d bytes",maxBufferSize)
 		strcpy(save,word);
 		save += len;
 		*save++ = ' ';
@@ -2532,7 +2532,7 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 	else if (RelationToken(nextToken))
 	{
 		if (notted && *nextToken != '?') BADSCRIPT((char*)"IF-8 cannot do ! in front of comparison %s",nextToken)
-		if (*word == '\'' && (word[1] == '$' || word[1] == '_')) {;} // quoted variable
+		if (*word == '\'' && ((word[1] == '^' && IsDigit(word[2])) || word[1] == '$' || word[1] == '_')) {;} // quoted variable
 		else if (*word != '@' && *word != '$' && *word != '_' && *word != '^' && *word != '%' && !IsAlphaUTF8(*word)  && !IsDigit(*word) && *word != '+' && *word != '-') 
 			BADSCRIPT((char*)"IF test comparison 1st value must be number, word, $var, _#, sysvar, @1subject or ^fnarg -%s",word)
 		strcpy(data,word);
@@ -4007,7 +4007,7 @@ static char* ReadPlan(char* ptr, FILE* in,unsigned int build)
 	if (hasPlans == 0)
 	{
 		FILE* out = FopenUTF8Write(build == BUILD0 ? (char*)"TOPIC/plans0.txt" : (char*)"TOPIC/plans1.txt");
-		fprintf(out,(char*)"0     \r\n"); //   reserve 5-digit count for number of plans
+		fprintf(out,(char*)"%s",(char*)"0     \r\n"); //   reserve 5-digit count for number of plans
 		fclose(out);
 	}
 	++hasPlans;
@@ -4369,9 +4369,9 @@ static void WriteConcepts(WORDP D, uint64 build)
 		}
 		bit >>= 1;
 	}
-	if (D->internalBits & FAKE_NOCONCEPTLIST) fprintf(out,(char*)"NOCONCEPTLIST ");
-	if (D->internalBits & UPPERCASE_MATCH) fprintf(out,(char*)"UPPERCASE_MATCH ");
-	fprintf(out,(char*)"( ");
+	if (D->internalBits & FAKE_NOCONCEPTLIST) fprintf(out,(char*)"%s",(char*)"NOCONCEPTLIST ");
+	if (D->internalBits & UPPERCASE_MATCH) fprintf(out,(char*)"%s",(char*)"UPPERCASE_MATCH ");
+	fprintf(out,(char*)"%s",(char*)"( ");
 
 	size_t lineSize = 0;
 	NextInferMark();
@@ -4422,7 +4422,7 @@ static void WriteConcepts(WORDP D, uint64 build)
 				fwrite(word,1,wlen,out);
 				if (lineSize > 500) // avoid long lines
 				{
-					fprintf(out,(char*)"\r\n    ");
+					fprintf(out,(char*)"%s",(char*)"\r\n    ");
 					lineSize = 0;
 				}
 				KillFact(F);
@@ -4431,7 +4431,7 @@ static void WriteConcepts(WORDP D, uint64 build)
 		}
 	}
 
-	fprintf(out,(char*)")\r\n");
+	fprintf(out,(char*)"%s",(char*)")\r\n");
 	fclose(out);
 }
 
@@ -4454,14 +4454,14 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 			unsigned int offset = D - dictionaryBase;
 			unsigned int xoffset;
 			fread(&xoffset,1,4,in);
-			if (xoffset != offset) printf((char*)"Bad dictionary change test\r\n");
+			if (xoffset != offset) printf((char*)"%s",(char*)"Bad dictionary change test\r\n");
 			fread(&oldproperties,1,8,in);
 			fread(&oldflags,1,8,in);
 			fread(&xoffset,1,4,in); //old internal
 			char junk;
 			fread(&junk,1,1,in); // multiword header info
 			fread(&junk,1,1,in); // 0 marker
-			if (junk != 0) printf((char*)"out of dictionary change data2?\r\n"); // multiword header 
+			if (junk != 0) printf((char*)"%s",(char*)"out of dictionary change data2?\r\n"); // multiword header 
 		}
 		else notPrior = true;
 		if (!D->word ||  *D->word == '$') continue;		// dont write topic names or concept names, let keywords do that and  no variables
@@ -4530,7 +4530,7 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 #endif
 			}
 			else WriteDictionaryFlags(D,dictout); // write the new
-			fprintf(dictout,(char*)"\r\n");
+			fprintf(dictout,(char*)"%s",(char*)"\r\n");
 		}
 		D->properties = prop;
 		D->systemFlags = flags;
@@ -4661,7 +4661,7 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 	patternFile = FopenUTF8Write(filename);
 	if (!patternFile)
 	{
-		printf((char*)"Unable to create patternfile  in the TOPIC subdirectory? Make sure this directory exists and is writable.\r\n");
+		printf((char*)"%s",(char*)"Unable to create patternfile  in the TOPIC subdirectory? Make sure this directory exists and is writable.\r\n");
 		return;
 	}
 

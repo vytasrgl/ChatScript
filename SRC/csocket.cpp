@@ -248,7 +248,7 @@ void TCPServerSocket::setListen(int queueLen) throw(SocketException) {
 void Client(char* login)// test client for a server
 {
 	char word[MAX_WORD_SIZE];
-	printf((char*)"\r\n\r\n** Client launched\r\n");
+	printf((char*)"%s",(char*)"\r\n\r\n** Client launched\r\n");
 	char* data = AllocateBuffer(); // 80K limit
 	FILE* source = stdin;
 
@@ -258,7 +258,7 @@ void Client(char* login)// test client for a server
 	if (*from == '*') // let user go first.
 	{
 		++from;
-		printf((char*)"\r\ninput:    ");
+		printf((char*)"%s",(char*)"\r\ninput:    ");
 		ReadALine(input,source);
 	}
 
@@ -317,7 +317,7 @@ restart: // start with user
 			Log(STDUSERLOG,(char*)"%s",ptr);
 
 			// we say that  until :exit
-			printf((char*)"\r\n>    ");
+			printf((char*)"%s",(char*)"\r\n>    ");
 			ReadALine(ptr,source);
 			strcat(ptr,(char*)" "); // never send empty line
 			if (!strnicmp(SkipWhitespace(ptr),(char*)":quit",5)) break;
@@ -345,9 +345,9 @@ restart: // start with user
 				*base = 0;
 				Log(STDUSERLOG,(char*)"%s",ptr); 	// chatbot replies this
 
-				printf((char*)"\r\nEnter client user name: ");
+				printf((char*)"%s",(char*)"\r\nEnter client user name: ");
 				ReadALine(word,source);
-				printf((char*)"\r\n");
+				printf((char*)"%s",(char*)"\r\n");
 				from = word;
 				goto restart;
 			}
@@ -835,7 +835,7 @@ static void* AcceptSockets(void*) // accepts incoming connections from users
             TCPSocket *sock = serverSocket->accept();
 			LaunchClient((void*)sock);
          }
-	} catch (SocketException &e) {printf((char*)"accept busy\r\n"); ReportBug((char*)"***Accept busy\r\n")}
+	} catch (SocketException &e) {printf((char*)"%s",(char*)"accept busy\r\n"); ReportBug((char*)"***Accept busy\r\n")}
     myexit((char*)"end of internet server");
 	return NULL;
 }
@@ -995,7 +995,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		if (serverctrlz) len += 3; // send end marker for positive confirmation of completion
 		sock->send(output, len);
 } catch (...)  {
-		printf((char*)"client socket fail\r\n");
+		printf((char*)"%s",(char*)"client socket fail\r\n");
 		ReportBug((char*)"***%s client socket failed %s \r\n",IP,GetTimeInfo()+SKIPWEEKDAY)}
 
 	delete sock;
@@ -1048,7 +1048,7 @@ static void* MainChatbotServer()
 
 	if (setjmp(scriptJump[SERVER_RECOVERY])) // crashes come back to here
 	{
-		printf((char*)"***Server exception\r\n");
+		printf((char*)"%s",(char*)"***Server exception\r\n");
 		ReportBug((char*)"***Server exception\r\n")
 #ifdef WIN32
 		char* bad = GetUserVariable((char*)"$cs_crashmsg");

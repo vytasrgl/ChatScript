@@ -30,6 +30,7 @@ void ResetTokenSystem()
 	tokenFlags = 0;
 	wordStarts[0] = reuseAllocation(0,(char*)"");    
     wordCount = 0;
+	memset(wordStarts,0,sizeof(char*)*MAX_SENTENCE_LENGTH); // reinit for new volley - sharing of word space can occur throughout this volley
 }
 
 void DumpResponseControls(uint64 val)
@@ -638,8 +639,8 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				else if (len > 2 && !strnicmp(end-3,(char*)"p.m",3)) return end-3;
 				else if (len > 3 && !strnicmp(end-4,(char*)"a.m.",4)) return end-4;
 				else if (len > 3 && !strnicmp(end-4,(char*)"p.m.",4)) return end-4;
-				else if (ptr[2] == ' ') return ptr+2;
-				else if (ptr[3] == ' ' && IsDigit(ptr[2])) return ptr+3;
+				else if (ptr[2] == ' ' || !ptr[2]) return ptr+2;
+				else if ((ptr[3] == ' ' || !ptr[3]) && IsDigit(ptr[2])) return ptr+3;
 			} 
 			else if (c == '-') // - used as measure separator or arithmetic
 			{
@@ -1000,7 +1001,7 @@ static bool HasCaps(char* word)
     if (!IsUpperCase(*word) || strlen(word) == 1) return false;
     while (*++word)
     {
-        if (!IsUpperCase(*word)) return true; // do not allow all caps as such a word
+        if (!IsUpperCase(*word)) return true; // do not allow all caps as such a word. at best its an acronym
     }
     return false;
 }
@@ -1130,6 +1131,8 @@ void ProperNameMerge()
     int end = UNINIT;
     uint64 kind = 0;
 	bool upperStart = false;
+	wordStarts[wordCount+1] = "";
+	wordStarts[wordCount+2] = "";
 
     for (int i = FindOOBEnd(1); i <= wordCount; ++i) 
     {
@@ -1147,12 +1150,19 @@ void ProperNameMerge()
 		}
 		if (!IsUpperCase(*word) && FindWord(word) && tokenControl & NO_LOWERCASE_PROPER_MERGE) // dont allow lowercase words to merge into a title
 		{
-			if (start != UNINIT) i = FinishName(start,end,upperStart,kind,Z);
+			int localend = i-1;
+			if (start != UNINIT) i = FinishName(start,localend,upperStart,kind,Z);
+			continue;
+		}
+
+		if (IsUpperCase(*word) && start != UNINIT && i == wordCount) // composite at end of sentence
+		{
+			i = FinishName(start,i,upperStart,kind,Z);
 			continue;
 		}
 			
 		// check for easy cases of 2 words in a row being a known uppercase word
-		if (start == UNINIT && i != (int)wordCount && *wordStarts[i+1] != '"')
+		if (start == UNINIT && i != (int)wordCount && wordStarts[i+1] && *wordStarts[i+1] != '"')
 		{
 			char composite[MAX_WORD_SIZE];
 			strcpy(composite,wordStarts[i]);
@@ -1325,8 +1335,6 @@ void ProperNameMerge()
 				}
 			}
             //   Hammer, Howell, & Houton, Inc. 
-			end = i - 1;
-			i = FinishName(start,end,upperStart,kind,NULL);
        }
     }
 
@@ -1667,7 +1675,7 @@ static WORDP ViableIdiom(char* text,int i,unsigned int n,unsigned int caseform)
 	if (word->internalBits & HAS_SUBSTITUTE)
 	{
 		uint64 allowed = tokenControl & (DO_SUBSTITUTE_SYSTEM|DO_PRIVATE);
-		return (allowed && word->internalBits) ? word : 0; // allowed transform
+		return (allowed & word->internalBits) ? word : 0; // allowed transform
 	}
 
 	if (!(tokenControl & DO_SUBSTITUTES)) return 0; // no dictionary word merge

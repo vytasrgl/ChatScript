@@ -393,7 +393,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		result = FAILRULE_BIT;
 		return ptr;
 	}
-
 	if (timerLimit) // check for violating time restriction
 	{
 		if (timerCheckInstance == TIMEOUT_INSTANCE) 
@@ -425,7 +424,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	{
 		callArgumentBase = callArgumentIndex - 1;
 		ChangeDepth(1,(char*)"HandleSystemCall");
-		if (((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & FN_NO_TRACE)) && CheckTopicTrace()) Log(STDUSERTABLOG, "System Call %s((char*)",name);
+		if (((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & FN_NO_TRACE)) && CheckTopicTrace()) Log(STDUSERTABLOG, "System Call %s(",name);
 		info = &systemFunctionSet[D->x.codeIndex];
 		char* start = ptr;
 		while (ptr && *ptr != ')' && *ptr != ENDUNIT) // read arguments
@@ -463,11 +462,10 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	{
 		callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
 		callStack[callIndex++] = D;
-		ChangeDepth(1,(char*)"HandleUserCall");
 
 		unsigned int oldFnVarBase = fnVarBase;
 		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE))) && CheckTopicTrace()) 
-			Log(STDUSERTABLOG, "Call %s((char*)",name);
+			Log(STDUSERTABLOG, "Call %s(",name);
 		if (!D->w.fndefinition)
 		{
 			ReportBug((char*)"Missing function definition for %s\r\n",D->word);
@@ -537,7 +535,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			}
 			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE)))  && CheckTopicTrace())
 			{
-				if (*argcopy == '^') Log(STDUSERLOG, "%s",argcopy);
+				if (*argcopy == '^') Log(STDUSERLOG, "%s->%s",argcopy,arg);
 				else if (*argcopy == '"' && argcopy[1] == '^') Log(STDUSERLOG, "  %s",argcopy); // show original format string- but it may be redundant display from evaling it
 				else Log(STDUSERLOG, "%s",arg);
 				if (*arg == '$') Log(STDUSERLOG,(char*)" (%s)",GetUserVariable(arg));
@@ -556,7 +554,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			}
 			if (!stricmp(arg,(char*)"null")) *arg = 0;	 // pass NOTHING as the value
 			++j;
-		}
+		} // end of argument processing
 		while ((callArgumentIndex - oldArgumentIndex) < args) // fill in defaulted args to null
 		{
 			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE))) && CheckTopicTrace()) Log(STDUSERLOG, "null, ");
@@ -572,6 +570,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		fnVarBase = callArgumentBase = oldArgumentIndex; 
 	
 		//   run the definition
+		ChangeDepth(1,(char*)"HandleUserCall");
 		unsigned int oldtrace = trace;
 		if (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE)) trace = (unsigned int) -1;
 		if (result & ENDCODES){;}
@@ -587,12 +586,12 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			if (!(D->internalBits & IS_OUTPUT_MACRO)) flags|= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
 			Output((char*)definition,buffer,result,flags);
 		}
-		ChangeDepth(-1,(char*)"HandleUserCall");
 		trace = oldtrace;
 		fnVarBase = oldFnVarBase;
 		if (callIndex) --callIndex; // safe decrement
 		if (result & ENDCALL_BIT) result = (FunctionResult) (result ^ ENDCALL_BIT); // terminated user call 
-	}
+		ChangeDepth(-1,(char*)"HandleUserCall");
+	} // end user function
 
 	//   pop argument list
 	callArgumentIndex = oldArgumentIndex;	 
@@ -2552,7 +2551,7 @@ static FunctionResult ComputeCode(char* buffer)
 			}
 			else sprintf(buffer,(char*)"%1.2f",value);
 		}
-		else sprintf(buffer,(char*)" ?");
+		else sprintf(buffer,(char*)"%s",(char*)" ?");
 	}
 	else //   integer
     {
@@ -4016,7 +4015,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 	char* scan = ARGUMENT(2);	//   how to burst
 	char* scan1 = scan;
 
-	if (!*scan) 
+	if (!*scan || !*scan1) // scan1 test just to suppress compiler warning
 	{
 		scan = " "; // default is space AND OR _
 		scan1 = "_";
@@ -4899,6 +4898,11 @@ static FunctionResult POSCode(char* buffer)
 	{
 		strcpy(buffer,arg2);
 		*buffer = GetUppercaseData(*buffer);
+		char* at = buffer;
+		while (*++at)
+		{
+			if (*at == ' ' || *at == '_') at[1] = GetUppercaseData(at[1]);
+		}
 		return NOPROBLEM_BIT;
 	}
 	else if (!stricmp(arg1,(char*)"allupper"))
@@ -4914,10 +4918,10 @@ static FunctionResult POSCode(char* buffer)
 	}
 	else if (!stricmp(arg1,(char*)"canonical"))
 	{
-		WORDP entry,canonical;
+		WORDP entry = NULL,canonical = NULL;
 		uint64 sysflags = 0;
 		uint64 cansysflags = 0;
-		GetPosData(2,arg2,entry,canonical,sysflags,cansysflags);
+		if (*arg2) GetPosData(2,arg2,entry,canonical,sysflags,cansysflags);
 		if (canonical) strcpy(buffer,canonical->word);
 		else if (entry) strcpy(buffer,entry->word);
 		else strcpy(buffer,arg2);
@@ -7339,7 +7343,7 @@ static char* IsJsonNumber(char* str)
 		while (*++at)
 		{
 			if (*at == '.' && !periodseen && !exponentseen) periodseen = true;
-			if ((*at == 'e' || *at == 'E')  && !exponentseen) 
+			else if ((*at == 'e' || *at == 'E')  && !exponentseen) 
 			{
 				if (at[1] == '+' || at[1] == '-') ++at;
 				exponentseen = true;
@@ -7528,12 +7532,12 @@ static void dump(const char *text, FILE *stream, unsigned char *ptr, size_t size
     for(c = 0; c < width; c++) 
 	{
       if (i+c < size)  printf((char*)"%02x ", ptr[i+c]);
-      else printf((char*)"   ");
+      else printf((char*)"%s",(char*)"   ");
     }
  
     /* show data on the right */
     for(c = 0; (c < width) && (i+c < size); c++) printf( "%c",(ptr[i+c]>=0x20) && (ptr[i+c]<0x80)?ptr[i+c]:'.');
-    printf((char*)"\n");
+    printf((char*)"%s",(char*)"\n");
   }
 }
  
@@ -8382,7 +8386,7 @@ static FunctionResult JSONFormatCode(char* buffer)
 		}
 		else if (*arg == ',')
 		{
-			if (kind[level] != OBJECTJ) break;
+			if (kind[level] != OBJECTJ && kind[level] != ARRAYJ) break;
 			*buffer++ = *arg;
 			field = 1;
 		}

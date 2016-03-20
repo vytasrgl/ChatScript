@@ -231,7 +231,7 @@ void InitFacts()
 		factBase = (FACT*) malloc(maxFacts * sizeof(FACT)); // only on 1st startup, not on reload
 		if ( factBase == 0)
 		{
-			printf((char*)"failed to allocate fact space\r\n");
+			printf((char*)"%s",(char*)"failed to allocate fact space\r\n");
 			myexit((char*)"failed to get fact space");
 		}
 	}
@@ -300,7 +300,7 @@ FACT* SpecialFact(FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned in
 	{
 		--factFree;
 		ReportBug((char*)"out of fact space at %d",Fact2Index(factFree))
-		printf((char*)"out of fact space");
+		printf((char*)"%s",(char*)"out of fact space");
 		return factFree; // dont return null because we dont want to crash anywhere
 	}
 	//   init the basics
@@ -491,7 +491,7 @@ bool ExportFacts(char* name, int set,char* append)
 	for (unsigned int i = 1; i <= count; ++i)
 	{
 		FACT* F = factSet[set][i];
-		if (!F) fprintf(out,(char*)"null ");
+		if (!F) fprintf(out,(char*)"%s",(char*)"null ");
 		else if ( !(F->flags & FACTDEAD))
 		{
 			unsigned int original = F->flags;
@@ -760,7 +760,7 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 	{
 		--factFree;
 		ReportBug((char*)"out of fact space at %d",Fact2Index(factFree))
-		printf((char*)"out of fact space");
+		printf((char*)"%s",(char*)"out of fact space");
 		return NULL;
 	}
 	currentFact = factFree;

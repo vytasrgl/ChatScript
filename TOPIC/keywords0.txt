@@ -2270,6 +2270,7 @@
 ~military_groups ( troop squadron squad regiment posse platoon phalanx patrol militia defense_force corps brigade battalion army )
 ~military_man ( Admiral_Nimitz George_Marshall Genghis_Khan Joan_of_Arc Geronimo David_Farragut van_Clausewitz William_the_Conqueror Moshe_Dayan Robert_the_Bruce Omar_Bradley Alfred_the_Great Alexander_the_Great George_Patton Robert_E._Lee Oliver_Cromwell Napoleon_Bonaparte Ulysses_S._Grant Norman_Schwarzkopf Rommel Douglas_MacArthur Hannibal Sun_Tzu military_man )
 ~minerals ( mineral~1 )
+~indoor_activities ( ~arts theater museum hobby gallery )
 ~minor_outdoor_activities ( walk track tennis spelunk snowboard ski skateboard skate paintball hunt horseshoes horseback hike hang_gliding golf glide fencing cycling climbing caving camping birding bird_watching badminton backpack archery ~water_sports )
 ~water_sports ( yachting water_sport~1 water_skiing water_polo water-skiing water-ski to_row swimming swim surfing snorkel sculling scuba_diving scuba sailing sailboard sail rowing kayaking kayak flatwater_racing fishing diving dive canoeing canoe )
 ~misc_websites NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR ( Yahoo Wikipedia Weather.com Ticketmaster Thesaurus.com Netflix match.com MapQuest IRC Google_Maps Encyclopedia_Dramatica eBay Amazon.com )
