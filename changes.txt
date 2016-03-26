@@ -1,4 +1,10 @@
-version 6.2e 3/20
+version 6.2f  3/25/2016
+1. ^jsonparse now accepts a flag argument of SAFE, which means you can use it against data the extends beyond the minimal, meaning
+if you memorize OOB data after [, you dont have to care to find the closing ], which will be hard since JSON itself has ] in it. Eg
+	u: ( \[ _* ) $$jsonfacts ^jsonparse(safe _0)
+2. support for spanish spellchecking
+
+version 6.2e 3/20/2016
 
 version 6.2d 3/14/2016
 1. ^substitute 1st arg can now be "insensitive", meaning character search and case insensivive. Or you can

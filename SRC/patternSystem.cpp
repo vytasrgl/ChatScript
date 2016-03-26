@@ -610,8 +610,8 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					// nest inherits gaps leading to it. memorization requests withheld til he returns
 					int whenmatched = 0;
 					char* type = "[";
-					if (*word == '(') type = "((char*)";
-					else if (*word == '{') type = "{ (char*)";
+					if (*word == '(') type = "(";
+					else if (*word == '{') type = "{";
 					else if (*word == '<') 
 					{
 						type = "<<";

@@ -1334,6 +1334,9 @@ void ProperNameMerge()
 					continue;
 				}
 			}
+			end = i - 1;	// possessive is not part of it
+			i = FinishName(start,end,upperStart,kind,NULL);
+
             //   Hammer, Howell, & Houton, Inc. 
        }
     }

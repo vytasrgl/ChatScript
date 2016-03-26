@@ -647,6 +647,7 @@ uint64 FindMiscValueByName(char* name)
  
 bool IsArithmeticOperator(char* word)
 {
+	word = SkipWhitespace(word);
 	char c = *word;
 	return (c == '+' || c == '-' || c == '*' || c == '/'  || c == '&' || 
 		(c == '|' && (word[1] == ' ' || word[1] == '^' || word[1] == '=')) || 
@@ -840,6 +841,9 @@ unsigned int IsNumber(char* word,bool placeAllowed) // simple digit number or wo
 		return (val != NOT_A_NUMBER) ? CURRENCY_NUMBER : 0 ;
 	}
 	if (IsDigitWord(word)) return DIGIT_NUMBER; // a numeric number
+
+	if (*word == '#' && IsDigitWord(word+1)) return DIGIT_NUMBER; // #123
+
 	if (*word == '\'' && !strchr(word+1,'\'') && IsDigitWord(word+1)) return DIGIT_NUMBER;	// includes date and feet
     WORDP D;
     D = FindWord(word);
@@ -1949,6 +1953,7 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	if (!number || !*number) return NOT_A_NUMBER;
 	char c = *number;
 	if (c == '$'){;}
+	else if (c == '#' && IsDigitWord(number+1)) return Convert2Integer(number+1);
 	else if (!IsAlphaUTF8DigitNumeric(c) || c == '.') return NOT_A_NUMBER; // not  0-9 letters + - 
 
 	size_t len = strlen(number);

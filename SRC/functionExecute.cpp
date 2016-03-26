@@ -58,6 +58,7 @@ char lognames[MAX_LOG_NAMES][200];
 FILE* logfiles[4];
 
 bool planning = false;
+bool safeJsonParse = false;
 
 #define MAX_REUSE_SAFETY 10
 static int reuseIndex = 0;
@@ -485,6 +486,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			if (currentRule == NULL) //   this is a table function- DONT EVAL ITS ARGUMENTS AND... keep quoted item intact
 			{
 				ptr = ReadCompiledWord(ptr,arg); // return dq args as is
+				strcpy(argcopy,arg);
 #ifndef DISCARDSCRIPTCOMPILER
 				if (compiling && ptr == NULL) BADSCRIPT((char*)"TABLE-11 Arguments to %s ran out",name)
 #endif
@@ -7308,6 +7310,7 @@ static int JSONArgs()
 		}
 		else if (!stricmp(word,(char*)"transient"))  used = true;
 		else if (!stricmp(word,(char*)"unique")) used = true;
+		else if (!stricmp(word,(char*)"safe")) safeJsonParse = used = true;
 	}
 	if (used) ++index;
 	return index;
@@ -8329,12 +8332,51 @@ static FunctionResult JSONGatherCode(char* buffer) // jason FACT cluster by name
 
 static FunctionResult JSONParseCode(char* buffer)
 {
+	safeJsonParse = false;
 	int index = JSONArgs();
 	char* data = ARGUMENT(index);
 	if (*data == '^') ++data; // skip opening functional marker
 	if (*data == '"') ++data; // skip opening quote
 	size_t len = strlen(data);
 	if (len && data[len-1] == '"') data[--len] = 0;
+	data = SkipWhitespace(data);
+
+	// if safe, locate proper end of OOB data we assume all [] are balanced except for final OOB which has the extra ]
+	int bracket = 1; // for the initial one  - match off {} and [] and stop immediately after
+	if (safeJsonParse)
+	{
+		safeJsonParse = false;
+		char* at = data;
+		bool quote = false;
+		while (*++at)
+		{
+			if (quote)
+			{
+				if (*at == '"' && at[-1] != '\\') quote = false; // turn off quoted expr
+				continue;
+			}
+			else if (*at == ':' || *at == ',' || *at == ' ') continue;
+			else if (*at == '{' || *at == '[' ) ++bracket; // an opener
+			else if (*at == '}' || *at == ']') // a closer
+			{
+				--bracket;
+				// have we ended the item
+				if (bracket <= 1) 
+				{
+					at[1] = 0;
+					break;
+				}
+			}
+			else if (*at == '"' && !quote) 
+			{
+				quote = true;
+				if (bracket == 1) return FAILRULE_BIT; // dont accept quoted string as top level
+			}
+		}
+		len = strlen(data);
+	}
+
+
 	return ParseJson(buffer, data, len);
 }
 

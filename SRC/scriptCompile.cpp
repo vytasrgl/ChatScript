@@ -359,7 +359,7 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		bool functionString = false;
 		if (*ptr == '^') 
 		{
-			*word++ = *ptr++;	// ^"script" 
+			*word++ = *ptr++;	// ^"script"    swallows ^
 			noblank = false; // allowed blanks at start or rear
 			functionString = true;
 		}
@@ -372,25 +372,13 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		if (end)  
 		{
 			if (*word == '"' && word[1] != FUNCTIONSTRING && !functionString) return end; // all legal within
-
-			// verify that [ is matched with ]
-			int brackets = 0;
-			if (functionString)
-			{
-				char* at = word;
-				while (*++at)
-				{
-					if (*at == '[' && *(at-1) != '\\') ++brackets;
-					else if (*at == ']' && *(at-1) != '\\') --brackets;
-				}
-			}
-			if (brackets) BADSCRIPT((char*)"Mismatched brackets in function string %s",word)
-
+			// NOW WE SEE A FUNCTION STRING
 			// when seeing ^, see if it remaps as a function argument
 			// check for internal ^ also...
 			char* hat = word-1;
-			if (*word == '"' && word[1] == FUNCTIONSTRING) hat = word+1;
-			else if (word[1] == '"' && *word == FUNCTIONSTRING) hat = word+1;
+			if (*word == '"' && functionString) hat = word; // came before
+			else if (*word == '"' && word[1] == FUNCTIONSTRING) hat = word+1;
+			else if (word[1] == '"' && *word == FUNCTIONSTRING) hat = word;
 			
 			while ( (hat = strchr(hat+1,'^'))) // find a hat within
 			{
@@ -3315,7 +3303,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 		{
 			ptr = ReadNextSystemToken(in,ptr,args[indexArg],false,false);  
 			if (*args[indexArg] == ')') break;
-			if (*args[indexArg] == '^') 
+			if (*args[indexArg] == '^' && args[indexArg][1] != '"') 
 				BADSCRIPT((char*)"TABLE-3 TableMacro %s requires real args, not redefinition args",currentFunctionDefinition->word)
 			if (++indexArg >= MAX_TABLE_ARGS) BADSCRIPT((char*)"TABLE-4 too many table args")
 		}
@@ -3364,7 +3352,15 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 		// common arguments processing
 		for (unsigned int i = 0; i < sharedArgs; ++i)
 		{
-			strcpy(systemArgumentList,args[i]);
+			if (*args[i] == '^' && args[i][1] == '"')
+			{
+				FunctionResult result;
+				char* oldoutputbase = currentOutputBase;
+				currentOutputBase = systemArgumentList;
+				ReformatString(args[i]+2,systemArgumentList,result);
+				currentOutputBase = oldoutputbase;
+			}
+			else strcpy(systemArgumentList,args[i]);
 			systemArgumentList += strlen(systemArgumentList);
 			*systemArgumentList++ = ' ';
 			++argCount;

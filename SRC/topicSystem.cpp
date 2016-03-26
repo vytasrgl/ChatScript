@@ -1072,8 +1072,8 @@ retry:
 	}
 	if (trace & (TRACE_PATTERN | TRACE_SAMPLE )  && CheckTopicTrace())
 	{
-		if (*label) Log(STDUSERTABLOG, "try %c:%d.%d %s: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID),label); //  \\  blocks linefeed on next Log call
-		else  Log(STDUSERTABLOG, "try %c:%d.%d: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID)); //  \\  blocks linefeed on next Log call
+		if (*label) Log(STDUSERTABLOG, "try %c:%d.%d %s @%d: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID),label,start); //  \\  blocks linefeed on next Log call
+		else  Log(STDUSERTABLOG, "try %c:%d.%d @%d: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID),start); //  \\  blocks linefeed on next Log call
 		if (trace & TRACE_SAMPLE && *ptr == '(') TraceSample(currentTopicID,ruleID);// show the sample as well as the pattern
 		if (*ptr == '(')
 		{
@@ -1149,11 +1149,12 @@ retry:
 			{
 				if (end > 0 && end <= wordCount && end > oldstart) oldstart = start = end; // allow system to retry if marked an end before
 			}
-			else if (end > start) oldstart = start = end;	// continue from last match location
+			// else if (end > start) oldstart = start = end;	// continue from last match location
 			else if (start > MAX_SENTENCE_LENGTH) 
 			{
 				start = 0; // never matched internal words - is at infinite start -- WHY allow this?
 			}
+			else  oldstart = start+1;	// continue from last start match location + 1
 			if (end != NORETRY) goto retry;
 		}
 	}
@@ -2446,6 +2447,7 @@ topicBlock* TI(int topicid)
 	
 FunctionResult LoadLayer(int layer,char* name,unsigned int build)
 {
+	UnlockLevel();
 	//  if (layer == 2) ReturnToLayer(1,false); // Warning - erases user facts and variables, etc. 
 	int originalTopicCount = numberOfTopics;
 	char filename[MAX_WORD_SIZE];

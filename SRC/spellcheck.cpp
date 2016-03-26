@@ -291,10 +291,16 @@ bool SpellCheckSentence()
 		char* known = ProbableKnownWord(word);
 		if (known) 
 		{
-			if (strcmp(known,word)) // revised the word to lower case
+			if (strcmp(known,word) && !IsUpperCase(*known)) // revised the word to lower case (avoid to upper case like "fields" to "Fields"
 			{
-				wordStarts[i] = reuseAllocation(wordStarts[i],known);
-				fixedSpell = true;
+				char* tokens[2];
+				WORDP D = FindWord(known,0,PRIMARY_CASE_ALLOWED);
+				if (D) 
+				{
+					tokens[1] = D->word;
+					ReplaceWords(i,1,1,tokens);
+					fixedSpell = true;
+				}
 			}
 			continue;
 		}
@@ -500,23 +506,21 @@ bool SpellCheckSentence()
 	return fixedSpell;
 }
 
-unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char* inputSet, unsigned int min,
+static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char* inputSet, int min,
 		unsigned char realWordLetterCounts[LETTERMAX], int language)
 {//   dictword has no underscores, inputSet is already lower case
     char dictw[MAX_WORD_SIZE];
     MakeLowerCopy(dictw,D->word);
     char* dictinfo = dictw;
     char* dictstart = dictinfo;
-    unsigned int val = 0; //   a difference in length will manifest as a difference in letter count
+	char* inputstart = inputSet;
+    int val = 0; //   a difference in length will manifest as a difference in letter count
     //   how many changes  (change a letter, transpose adj letters, insert letter, drop letter)
     if (size != inputLen) 
 	{
 		val += (size < inputLen) ? 5 : 2;	// real word is shorter than what they typed, not so likely as longer
 		if (size < 7) val += 3;	
 	}
-    //   first and last letter errors are rare, more likely to get them right
-    if (*dictinfo != *inputSet) val += 6; // costs a lot  to change first letter, odds are he types that right 
-    if (dictinfo[size-1] != inputSet[inputLen-1]) val += 6; // costs more to change last letter, odds are he types that right or sees its wrong
     if (val > min) return 60;	// fast abort
 	
 	// match off how many letter counts are correct between the two, need to be close enough to bother with
@@ -538,8 +542,8 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 		}
 	}
 	unsigned int countVariation = size - ((size > 7) ? 3 : 2); // since size >= 2, this is always >= 0
-	if (count < countVariation)  return 60;	// need most letters be in common
-	if (count == size)  // same letters (though he may have excess) --  how many transposes
+	if (count < countVariation  && language == ENGLISH)  return 60;	// need most letters be in common
+	if (count == size && language == ENGLISH)  // same letters (though he may have excess) --  how many transposes
 	{
 		unsigned int bad = 0;
 		for (unsigned int i = 0; i < size; ++i) if (dictinfo[i] != inputSet[i]) ++bad;
@@ -572,7 +576,28 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
         }
 
         //   letter match failed
-
+		
+        // can we change an accented letter forward to another similar letter without accent
+		if (*dictinfo == 0xc3)
+		{
+			bool accent = false;
+			if (*inputSet == 'a' && (dictinfo[1] >= 0xa0 && dictinfo[1] <= 0xa5 )) accent = true;
+			else if (*inputSet == 'e' && (dictinfo[1] >= 0xa8 && dictinfo[1] <= 0xab )) accent = true;
+			else if (*inputSet == 'i' &&  (dictinfo[1] >= 0xac && dictinfo[1] <= 0xaf )) accent = true;
+			else if (*inputSet == 'o' && (dictinfo[1] >= 0xb2 && dictinfo[1] <= 0xb6 )) accent = true;
+			else if (*inputSet == 'u' && (dictinfo[1] >= 0xb9 && dictinfo[1] <= 0xbc )) accent = true;
+			if (accent)
+			{
+				++dictinfo;
+				++dictinfo; // double unicode
+				++inputSet;
+				continue;
+			}
+		}
+		  //   first and last letter errors are rare, more likely to get them right
+		if (dictinfo == dictstart && *dictstart != *inputstart && language == ENGLISH) val += 6; // costs a lot  to change first letter, odds are he types that right 
+		if (dictinfo[1] == 0 &&  inputSet[1] == 0 &&  *dictinfo != *inputSet) val += 6; // costs more to change last letter, odds are he types that right or sees its wrong
+  
         //   try to resynch series and reduce cost of a transposition of adj letters  
         if (*dictinfo == inputSet[1] && dictinfo[1] == *inputSet) // transpose 
         {
@@ -608,10 +633,10 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
        }
        else //   this has no valid neighbors.  alter it to be the correct, but charge for multiple occurences
        {
-			if (count == 1 && *dictinfo != *inputSet) val += 30; //costs a lot to change the first letter, odds are he types that right or sees its wrong
+			if (count == 1 && *dictinfo != *inputSet && language == ENGLISH) val += 30; //costs a lot to change the first letter, odds are he types that right or sees its wrong
 			//  2 in a row are bad, check for a substituted vowel sound
 			bool swap = false;
-			unsigned int oldval = val;
+			int oldval = val;
 			if (dictinfo[1] != inputSet[1]) // do multicharacter transformations
 			{
 				if (language == SPANISH) // ch-x | qu-k | c-k | do-o | b-v | bue-w | vue-w | z-s | s-c | h- | y-i | y-ll | m-n  1st is valid
@@ -623,6 +648,12 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						continue;
 					}
 					if (*inputSet == 'b' && *dictinfo == 'v') 
+					{
+						dictinfo += 1;
+						inputSet += 1;
+						continue;
+					}
+					if (*inputSet == 'v' && *dictinfo == 'b') 
 					{
 						dictinfo += 1;
 						inputSet += 1;
@@ -652,6 +683,12 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						inputSet += 1;
 						continue;
 					}
+					if (*inputSet == 'n' && *dictinfo == 'm') 
+					{
+						dictinfo += 1;
+						inputSet += 1;
+						continue;
+					}
 					if (*dictinfo == 'h') 
 					{
 						dictinfo += 1;
@@ -663,6 +700,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						inputSet += 1;
 						val -= (size < inputLen) ? 5 : 2;
 						if (size < 7) val -= 3;	
+						if (val < 0) val = 0;
 						continue;
 					}
 					if (*inputSet == 'k' && !strncmp(dictinfo,(char*)"qu",2)) 
@@ -671,6 +709,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						inputSet += 1;
 						val -= (size < inputLen) ? 5 : 2;
 						if (size < 7) val -= 3;	
+						if (val < 0) val = 0;
 						continue;
 					}
 					if (*inputSet == 'o' && !strncmp(dictinfo,(char*)"do",2) && !inputSet[1] && !dictinfo[2]) // at end
@@ -679,6 +718,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						inputSet += 1;
 						val -= (size < inputLen) ? 5 : 2;
 						if (size < 7) val -= 3;	
+						if (val < 0) val = 0;
 						continue;
 					}
 					if (*inputSet == 'w' && !strncmp(dictinfo,(char*)"bue",3)) 
@@ -687,6 +727,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						inputSet += 1;
 						val -= (size < inputLen) ? 5 : 2;
 						if (size < 7) val -= 3;	
+						if (val < 0) val = 0;
 						continue;
 					}
 					if (*inputSet == 'w' && !strncmp(dictinfo,(char*)"vue",3)) 
@@ -695,14 +736,25 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
 						inputSet += 1;
 						val -= (size < inputLen) ? 5 : 2;
 						if (size < 7) val -= 3;	
+						if (val < 0) val = 0;
 						continue;
 					}
 					if (!strncmp(inputSet,(char*)"ll",2) && *dictinfo == 'y') 
 					{
-						dictinfo += 3;
-						inputSet += 1;
+						inputSet += 2;
+						dictinfo += 1;
 						val -= (size < inputLen) ? 5 : 2;
 						if (size < 7) val -= 3;	
+						if (val < 0) val = 0;
+						continue;
+					}
+					if (*inputSet == 'y' && *dictinfo == 'l' && dictinfo[1] == 'l') 
+					{
+						inputSet += 1;
+						dictinfo += 2;
+						val -= (size < inputLen) ? 5 : 2;
+						if (size < 7) val -= 3;	
+						if (val < 0) val = 0;
 						continue;
 					}
 				}
@@ -737,7 +789,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
                     inputSet += 2;
                     val += 5; 
                }
-             else if (*dictinfo == 'x' && !strncmp(inputSet,(char*)"cks",3)) 
+			else if (*dictinfo == 'x' && !strncmp(inputSet,(char*)"cks",3)) 
                {
                     dictinfo += 1;
                     inputSet += 3;
@@ -793,6 +845,7 @@ unsigned int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, cha
     }
     return val;
 }
+
 
 static char* StemSpell(char* word,unsigned int i)
 {
@@ -895,7 +948,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
     WORDP bestGuess[4000];
     unsigned int index = 0;
     unsigned int bestGuessindex = 0;
-    unsigned int min = 30;
+    int min = 30;
 	unsigned char realWordLetterCounts[LETTERMAX];
 	memset(realWordLetterCounts,0,LETTERMAX); 
 	for (int  i = 0; i < (int)len; ++i)  ++realWordLetterCounts[(unsigned char)letterIndexData[(unsigned char)word[i]]]; // compute number of each kind of character
@@ -919,9 +972,10 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
         if (flags & DETERMINER) pos &= -1 ^ (VERB|CONJUNCTION|PREPOSITION|DETERMINER);  
     }
     posflags &= pos; //   if pos types are known and restricted and dont match
-	static int range[] = {0,-1,1};
-	for (unsigned int i = 0; i < 3; ++i)
+	static int range[] = {0,-1,1,-2,2};
+	for (unsigned int i = 0; i < 5; ++i)
 	{
+		if (language == ENGLISH && i >= 3) break;	// only allow +-2 for spanish
 		MEANING offset = lengthLists[len + range[i]];
 		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"\r\n  Begin offset %d\r\n",i);
 		while (offset)
@@ -929,12 +983,12 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 			D = Meaning2Word(offset);
 			offset = D->spellNode;
 			if (!(D->properties & posflags)) continue; // wrong kind of word
-			if (*D->word != letterLow && *D->word != letterHigh) continue;	// we assume no one misspells starting letter
+			if (*D->word != letterLow && *D->word != letterHigh && language == ENGLISH) continue;	// we assume no one misspells starting letter
 			char* under = strchr(D->word,'_');
 			if (hasUnderscore && !under) continue;	 // require keep any underscore
 			if (!hasUnderscore && under) continue;	 // require not have any underscore
 			if (isUpper && !(D->internalBits & UPPERCASE_HASH) && start != 1) continue;	// dont spell check to lower a word in upper
-			unsigned int val = EditDistance(D, D->length, len, base+1,min,realWordLetterCounts,language);
+			int val = EditDistance(D, D->length, len, base+1,min,realWordLetterCounts,language);
 			if (val <= min) // as good or better
 			{
 				if (val < min)

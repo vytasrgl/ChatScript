@@ -98,7 +98,7 @@ char* ReadCommandArg(char* ptr, char* buffer,FunctionResult& result,unsigned int
 	if (control == 0) control |= OUTPUT_KEEPSET | OUTPUT_NOTREALBUFFER | OUTPUT_ONCE | OUTPUT_NOCOMMANUMBER;
 	else control |= OUTPUT_ONCE | OUTPUT_NOCOMMANUMBER;
 	char* answer = FreshOutput(ptr,buffer,result,control, limit);
-	impliedSet = oldImpliedSet;
+	if (!(control & ASSIGNMENT))  impliedSet = oldImpliedSet; // assignment of @0 = ^querytopics needs to be allowed to change to alreadyhandled
 	return answer;
 }
 
@@ -109,7 +109,7 @@ char* ReadShortCommandArg(char* ptr, char* buffer,FunctionResult& result,unsigne
 	if (control == 0) control |= OUTPUT_KEEPSET | OUTPUT_NOTREALBUFFER | OUTPUT_ONCE | OUTPUT_NOCOMMANUMBER;
 	else control |= OUTPUT_ONCE | OUTPUT_NOCOMMANUMBER;
 	char* answer = FreshOutput(ptr,buffer,result,control,MAX_WORD_SIZE);
-	impliedSet = oldImpliedSet;
+	if (!(control & ASSIGNMENT)) impliedSet = oldImpliedSet; // assignment of @0 = ^querytopics needs to be allowed to change to alreadyhandled
 	return answer;
 }
 
@@ -171,6 +171,7 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		return;
 	--len;
 	char c = input[len];
+	char* original = input;
 	input[len] = 0;	// remove closing "
 	if (*input == ':') // has been compiled by script compiler. safe to execute fully. actual string is "^:xxxxx" 
 	{
@@ -316,6 +317,7 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		}
 		*output = 0;
 	}
+	original[len] = c;
 	*output = 0; // when failures, return the null string
 	if (trace & TRACE_OUTPUT) Log(STDUSERLOG,(char*)" %s",start);
 }

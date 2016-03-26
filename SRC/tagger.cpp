@@ -502,10 +502,10 @@ void DumpSentence(int start,int end)
 			else continue;
 			if (i == 1 && phrases[wordCount] == phrases[1]) 
 			{
-				DescribeComponent(wordCount,buffer,(char*)"{ (char*)",(char*)"}"); // wrapped?
+				DescribeComponent(wordCount,buffer,(char*)"{",(char*)"}"); // wrapped?
 				strcat(buffer,(char*)" ");
 			}
-			DescribeComponent(i,buffer,(char*)"{ (char*)",(char*)"}"); // wrapped?
+			DescribeComponent(i,buffer,(char*)"{",(char*)"}"); // wrapped?
 			strcat(buffer,(char*)" ");
 		}
 

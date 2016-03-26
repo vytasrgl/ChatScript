@@ -3367,7 +3367,7 @@ static void C_WikiText(char* ptr)
 		if (!span && !squ && !prex && FlushEmbedded(ptr,(char*)"<math",(char*)"</math>",mathx)) continue; 
 		if (!squ && !span && FlushEmbedded(ptr,(char*)"<pre",(char*)"</pre>",prex)) continue;  // bug - what is this
 		if (!squ && FlushEmbedded(ptr,(char*)"<span",(char*)"</span>",span)) continue;  
-		if (FlushEmbedded(ptr,(char*)"{{ (char*)",(char*)"}}",squ)) 
+		if (FlushEmbedded(ptr,(char*)"{{",(char*)"}}",squ)) 
 		{
 			continue;  //  wikimedia templates
 		}
