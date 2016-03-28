@@ -65,7 +65,7 @@ but is needed when seeing the dictionary definitions (:word) and if one wants to
 #endif
 
 #define HASH_EXTRA		2					// +1 for being 1-based and +1 for having uppercase bump
-
+bool dictionaryBitsChanged = false;
 static unsigned int propertyRedefines = 0;	// property changes on locked dictionary entries
 static unsigned int flagsRedefines = 0;		// systemflags changes on locked dictionary entries
 
@@ -1077,8 +1077,13 @@ void ReturnToLayer(int layer, bool unlocked)
 	DictionaryRelease(dictionaryPreBuild[layer+1],stringsPreBuild[layer+1]);
 
 #ifndef DISCARDSCRIPTCOMPILER
-	if (!server) ReadDictDetailsBeforeLayer(layer+1);// on server we assume scripts will not damage level0 or earlier data of dictionary but user doing :trace might
+	if (!server ) 
+	{
+		if (layer != 1 || dictionaryBitsChanged)
+			ReadDictDetailsBeforeLayer(layer+1);// on server we assume scripts will not damage level0 or earlier data of dictionary but user doing :trace might
+	}
 #endif
+	dictionaryBitsChanged = false;
 
 	// canonical map in layer 1 is now garbage- 
 	if (unlocked)
@@ -1256,13 +1261,13 @@ static void WriteBinaryEntry(WORDP D, FILE* out)
 	{
 		unsigned char c = (unsigned char)GetMeaningCount(D);
 		Write8(c,0);  //   limit 255 no problem
-		for (unsigned int i = 1; i <= GetMeaningCount(D); ++i) Write32(GetMeaning(D,i),0);
+		for (int i = 1; i <= GetMeaningCount(D); ++i) Write32(GetMeaning(D,i),0);
 	}
 	if (GetGlossCount(D)) 
 	{
 		unsigned char c = (unsigned char)GetGlossCount(D);
 		Write8(c,0); //   limit 255 no problem
-		for (unsigned int i = 1; i <= GetGlossCount(D); ++i) 
+		for (int i = 1; i <= GetGlossCount(D); ++i) 
 		{
 			Write8(D->w.glosses[i] >> 24,0);
 			WriteString(Index2String(D->w.glosses[i] & 0x00ffffff),0);
@@ -1639,12 +1644,12 @@ void WriteDictionary(WORDP D,uint64 data)
 
 	//   write out the basics (name meaningcount idiomcount)
 	fprintf(out,(char*)" %s ( ",D->word);
-	unsigned int count = GetMeaningCount(D);
+	int count = GetMeaningCount(D);
 	if (count) fprintf(out,(char*)"meanings=%d ",count);
 
 	// check valid glosses (sometimes we have troubles that SHOULD have been found earlier)
-	unsigned int ngloss = 0;
-	for (unsigned int i = 1; i <= count; ++i)
+	int ngloss = 0;
+	for (int i = 1; i <= count; ++i)
 	{
 		if (GetGloss(D,i)) ++ngloss;
 	}
@@ -1669,7 +1674,7 @@ void WriteDictionary(WORDP D,uint64 data)
 		
 	fprintf(out,(char*)"%s",(char*)"\r\n");
 	//   now dump the meanings and their glosses
-	for (unsigned int i = 1; i <= count; ++i)
+	for (int i = 1; i <= count; ++i)
 	{
 		MEANING M = GetMeaning(D,i);
 		fprintf(out,(char*)"    %s ", WriteMeaning(M,true)); 
@@ -1827,7 +1832,7 @@ MEANING GetMaster(MEANING T)
 { //   for a specific meaning return node that is master or return general node if all fails.
 	if (!T) return 0;
     WORDP D = Meaning2Word(T);
-    unsigned int index = Meaning2Index(T);
+    int index = Meaning2Index(T);
 	if (!GetMeaningCount(D)) return MakeMeaning(D,index); // has none, all erased
 	if (index > GetMeaningCount(D))
 	{
@@ -1842,7 +1847,7 @@ MEANING GetMaster(MEANING T)
 	{
 		old = at;
 		WORDP X = Meaning2Word(at);
-		unsigned int ind = Meaning2Index(at);
+		int ind = Meaning2Index(at);
 		if (ind > GetMeaningCount(X)) 
 		{
 			ReportBug((char*)"syset master failure %s",X->word)
@@ -1860,7 +1865,7 @@ void RemoveMeaning(MEANING M, MEANING M1)
 	
 	//   remove meaning and keep only valid main POS values (may not have a synset ptr when its irregular conjugation or such)
 	WORDP D = Meaning2Word(M);
-	for (unsigned int i = 1; i <= GetMeaningCount(D); ++i)
+	for (int i = 1; i <= GetMeaningCount(D); ++i)
 	{
 		if ((GetMeaning(D,i) & STDMEANING) == M1) // he points to ourself
 		{
@@ -2387,18 +2392,18 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 			return;
 		}
 		WORDP X = Meaning2Word(M);
-		unsigned int index = Meaning2Index(M);
+		int index = Meaning2Index(M);
 		if (index > GetMeaningCount(X)) 
 			ReportBug((char*)"Has meaning index too high %s.%d points to %s.%d but limit is %d\r\n",D->word,i,X->word,index, GetMeaningCount(X))
 			
 		// can we find the master meaning for this meaning?
 		MEANING at = M;
-		unsigned int n = 0;
+		int n = 0;
 		while (!(at & SYNSET_MARKER)) // find the correct ptr to return as master
 		{
 			WORDP X = Meaning2Word(at);
 			if (X->internalBits & DELETED_MARK) ReportBug((char*)"Synset goes to dead word %s",X->word)
-			unsigned int ind = Meaning2Index(at);
+			int ind = Meaning2Index(at);
 			if (ind > GetMeaningCount(X)) 
 			{
 				ReportBug((char*)"syset master failure %s",X->word)
@@ -2437,7 +2442,7 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 		unsigned int counter = 0;
 		MEANING M = GetMeaning(D,i);
 		WORDP X = Meaning2Word(M);
-		unsigned int index = Meaning2Index(M);
+		int index = Meaning2Index(M);
 		if (M & SYNSET_MARKER);
 		else while (X != D) // run til we loop once back to this entry, counting synset heads we see
 		{

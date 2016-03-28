@@ -2306,7 +2306,8 @@ retry:
 				if (posValues[i] & (CONJUNCTION_SUBORDINATE|PREPOSITION)) ++right;
 				else if (posValues[i] & IDIOM && allOriginalWordBits[i] & PREPOSITION) ++right; // "a couple *of days"
 				else if (posValues[i] & PARTICLE && allOriginalWordBits[i] & PREPOSITION) ++right; 
-				else if (!showUsed ||  (usedWordIndex == i && usedType & (CONJUNCTION_SUBORDINATE|PREPOSITION)))  Log(STDUSERLOG,(char*)"** Bad IN %s word %d(%s) line %d: %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & (CONJUNCTION_SUBORDINATE|PREPOSITION)))  
+					Log(STDUSERLOG,(char*)"** Bad IN %s word %d(%s) line %d: %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"PDT")) 
 			{
@@ -2402,7 +2403,8 @@ retry:
 				else if (posValues[i] & ADVERB && posValues[i+1] & PREPOSITION) ++right; // "he walked *all by himself"
 				//else if (!stricmp(wordStarts[i],(char*)"every") || !stricmp(wordStarts[i],(char*)"no") || !stricmp(wordStarts[i],(char*)"another")
 				//	 || !stricmp(wordStarts[i],(char*)"any") || !stricmp(wordStarts[i],(char*)"some")
-				else if (!showUsed || (usedWordIndex == i && usedType & DETERMINER_BITS))   Log(STDUSERLOG,(char*)"** Bad DT %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & DETERMINER_BITS))   
+					Log(STDUSERLOG,(char*)"** Bad DT %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"PRP$")) 
 			{
@@ -2433,7 +2435,7 @@ retry:
 		    }
 			else if (!stricmp(tags[i],(char*)"VBN")) // past particple
 			{
-				if (posValues[i] & VERB_PAST_PARTICIPLE || ( posValues[i] & AUX_VERB && allOriginalWordBits[i] & VERB_PAST_PARTICIPLE)) ++right;  // includes our modals that can have this tense as verbs
+				if (posValues[i] & VERB_PAST_PARTICIPLE || ( posValues[i] & AUX_VERB && allOriginalWordBits[i] & (VERB_PAST_PARTICIPLE|VERB_PRESENT_PARTICIPLE))) ++right;  // includes our modals that can have this tense as verbs - he has said
 				else if (posValues[i] & (ADJECTIVE_PARTICIPLE|ADJECTIVE_NORMAL|NOUN_ADJECTIVE) && allOriginalWordBits[i] & VERB_PAST_PARTICIPLE) ++right;
 				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PAST_PARTICIPLE))   Log(STDUSERLOG,(char*)"** Bad VBN (past participle) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}

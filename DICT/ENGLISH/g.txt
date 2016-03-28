@@ -180,7 +180,7 @@
  Grimaldo ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  genus_Elagatis ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Elagatis~1nz (^fish_genus~1) a genus of Carangidae
- great ( meanings=8 glosses=5 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ) comparative=greatest 
+ great ( meanings=8 glosses=5 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=greatest 
     great~1nz (^success~3) a person who has achieved distinction and honor in some field
     with_child~1az in an advanced stage of pregnancy
     slap-up~1az very good
@@ -797,11 +797,10 @@
  Grose ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  genus_Latrodectus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Latrodectus~1nz (^arthropod_genus~1) venomous spiders
- Griorgair ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Goode ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  genus_Melopsittacus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Melopsittacus~1nz (^bird_genus~1) a genus of Psittacidae
- give ( meanings=45 glosses=36 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT ) conjugate=given 
+ give ( meanings=45 glosses=36 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT VERB_ALLOWS_OF_AFTER ) conjugate=given 
     spring~3n 
     give~2vz proffer 
     give~3vz consent to engage in sexual intercourse with a man
@@ -1250,8 +1249,6 @@
  Gribble ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Geneve ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     Geneva~1n 
- Galliformes ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    order_Galliformes~1n 
  guard_duty ( meanings=1 NOUN NOUN_SINGULAR ) 
     sentry_duty~1n 
  Gregory ( meanings=6 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -1368,7 +1365,7 @@
  genus_Molothrus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Molothrus~1nz (^bird_genus~1) cowbirds
  Galilea ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- gas ( meanings=8 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) plural=gasses 
+ gas ( meanings=8 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) plural=gasses 
     accelerator_pedal~1nz (^foot_pedal~1) a pedal that controls the throttle valve
     flatulency~1nz (^physiological_condition~1) a state of excessive gas in the alimentary canal
     gaseous_state~1nz (^state~7) the state of matter distinguished from the solid and liquid states by: relatively low density and viscosity
@@ -1493,8 +1490,6 @@
     ribaldry~1n 
  gallina ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
     jungle_fowl~1n 
- genus_Nestor ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Nestor~1nz (^bird_genus~1) a genus of Psittacidae
  gridiron ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     football_field~1n 
     grid~1n 
@@ -1669,8 +1664,6 @@
     rod~2n 
  gunplay ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     gunfight~1n 
- genus_Furnarius ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Furnarius~1nz (^bird_genus~1) type genus of the family Furnariidae: ovenbirds
  genus_Colaptes ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Colaptes~1nz (^bird_genus~1) a genus of Picidae
  gain ( meanings=13 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
@@ -1961,7 +1954,7 @@
  genus_Enterobius ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Enterobius~1nz (^worm_genus~1) pinworms
  Gebhardt ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- gape ( meanings=4 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:NOUN VERB_NOOBJECT ) 
+ gape ( meanings=4 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     gape~1nz (^stare~1) a stare of amazement
     gape~2nz (^facial_expression~2) an expression of openmouthed astonishment
     gawp~1vz look with amazement
@@ -2223,7 +2216,6 @@
  Goshorn ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Gallant_Fox ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Gallant_Fox~1nz (^thoroughbred~2) thoroughbred that won the triple crown in 1930
- Georgine ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  genus_Nimravus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Nimravus~1nz (^mammal_genus~1) false sabertoothed tigers
  Gavialis_gangeticus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -2355,9 +2347,6 @@
  Gorman ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  garter_snake ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     grass_snake~2nz (^colubrid_snake~1) any of numerous nonvenomous longitudinally-striped viviparous North American and Central American snakes
- goalie ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    goalkeeper~1n 
-    goalkeeper~2n 
  grey_mullet ( meanings=2 glosses=2 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     gray_mullet~1nz (^percoid_fish~1) freshwater or coastal food fishes a spindle-shaped body
     gray_mullet~2nz (^fish~2) highly valued lean flesh of marine or freshwater mullet
@@ -2389,8 +2378,7 @@
     boom~4n 
     pan_gravy~1nz (^juice~2) the seasoned but not thickened juices that drip from cooking meats
     gravy~3nz (^sauce~1) a sauce made by adding stock, flour, or other ingredients to the juice and fat that drips from cooking meats
- Gia ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    Armed_Islamic_Group~1n 
+ Gia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  genus_Oryctolagus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Oryctolagus~1nz (^mammal_genus~1) Old World rabbits
  German_bee ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -2461,7 +2449,7 @@
  Grindstaff ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Gzifa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Georgette ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- glossy ( meanings=6 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:ADJECTIVE ) comparative=glossiest 
+ glossy ( meanings=6 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=glossiest 
     glossy~1nz (^picture~2) a photograph that is printed on smooth shiny paper
     slick~4n 
     showy~1az superficially attractive and stylish
@@ -2597,7 +2585,7 @@
  Giacomo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Gwynn ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     Eleanor_Gwyn~1n 
- gasp ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT ) 
+ gasp ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     pant~1nz (^breathing_in~1) a short labored intake of breath with the mouth open
     puff~10v 
  Goldy ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2804,7 +2792,7 @@
     Elaphurus~1nz (^mammal_genus~1) a genus of Cervidae
  Garaitz ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Geier ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- gray ( meanings=12 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ gray ( meanings=12 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     grey~1nz (^mount~2) horse of a light gray or whitish color
     grey~2nz (^clothing~1) clothing that is a grey color
     greyness~1nz (^achromatic_colour~1) a neutral achromatic color midway between white and black
@@ -2875,8 +2863,7 @@
  grilling ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     broiling~1nz (^preparation~1) cooking by direct exposure to radiant heat
  Gurule ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Gad ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    generalized_anxiety_disorder~1n 
+ Gad ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Grimmett ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  genus_Myrmecobius ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Myrmecobius~1nz (^mammal_genus~1) banded anteater
@@ -2891,8 +2878,6 @@
  Glenna ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  genus_Phyllium ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Phyllium~1nz (^arthropod_genus~1) type genus of the Phyllidae
- genus-Fenusa ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Fenusa~1nz (^arthropod_genus~1) birch leaf miner
  gemination ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     duplication~1n 
     gemination~2nz (^repetition~2) the doubling of a word or phrase
@@ -3353,7 +3338,7 @@
  genus_Pluvianus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Pluvianus~1nz (^bird_genus~1) coursers
  Greig ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- glare ( meanings=6 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN VERB_NOOBJECT ) 
+ glare ( meanings=6 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     glower~1nz (^stare~1) an angry stare
     blaze~3n 
     public_eye~1nz (^prominence~3) a focus of public attention
@@ -3573,6 +3558,7 @@
  Geol ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Georg ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Georgeann ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Georgine ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Geraint ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
     Sir_Geraint~1n 
  Gerdie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3657,6 +3643,7 @@
  Greyson ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Griflet ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Grindan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Griorgair ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Griswalde ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Grizela ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Grosvenor ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3714,7 +3701,7 @@
     award~5vz give as judged due or on the basis of merit
     concede~4vz give over
     give~39v 
- giving ( meanings=4 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB ) 
+ giving ( meanings=4 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     giving~1nz (^disposal~1) disposing of property by voluntary transfer without receiving value in return
     gift~1nz (^share-out~1) the act of giving
     giving~3nz (^impartation~1) the imparting of news or promises etc.
@@ -3852,7 +3839,7 @@
     marvellous~3a 
     sumptuous~1az rich and superior in quality
     grand~11az 
- gesture ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:NOUN VERB_NOOBJECT ) 
+ gesture ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     gesture~1nz (^motion~2) motion of hands or body to emphasize or help to express a thought or feeling
     gesture~2nz (^indication~3) something done as an indication of intention
     motion~3n 
@@ -3908,9 +3895,12 @@
  goalkeeper ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     goaltender~1nz (^position~4) the defensive position on an ice hockey or soccer or lacrosse team who stands in front of the goal and tries to prevent opposing players from scoring
     netminder~1nz (^soccer_player~1) the soccer or hockey player assigned to protect the goal
- goaltender ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 ) 
+ goalie ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     netkeeper~1n 
     netkeeper~2n 
+ goaltender ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 ) 
+    goalie~1n 
+    goalie~2n 
  golf ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_NOOBJECT ) 
     golf_game~1nz (^outdoor_game~1) a game played on a large open course with 9 or 18 holes
     golf~2vz play golf
@@ -3935,7 +3925,7 @@
     ghost~7vz move like a ghost
  give-and-go ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     give-and-go~1nz (^basketball_play~1) a basketball maneuver
- get ( meanings=37 glosses=11 VERB_PRESENT VERB_INFINITIVE AUX_BE AUX_VERB_PRESENT VERB COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_TAKES_ADJECTIVE VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=gotten 
+ get ( meanings=37 glosses=11 VERB_PRESENT VERB_INFINITIVE AUX_BE AUX_VERB_PRESENT VERB COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_TAKES_ADJECTIVE VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) conjugate=gotten 
     sire~4v 
     have~3v 
     take~3vz be stricken by an illness, fall victim to an illness
@@ -4124,7 +4114,7 @@
  gaze ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE3_4 posdefault:NOUN VERB_NOOBJECT ) 
     regard~1n 
     stare~3v 
- glower ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ glower ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     glare~1n 
     frown~2v 
     glare~4v 
@@ -4196,7 +4186,7 @@
     endue~1vz give qualities or abilities to
  grey_market ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     gray_market~1nz (^market~1) an unofficial market in which goods are bought and sold at prices lower than the official price set by a regulatory agency
- grey ( meanings=11 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ grey ( meanings=11 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gray~1n 
     gray~2n 
     gray~3n 
@@ -4225,12 +4215,12 @@
     garage~3vz keep or store in a garage
  going-out-of-business_sale ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     going-out-of-business_sale~1nz (^sale~3) a sale of all the tangible assets of a business that is about to close
- gold ( meanings=8 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ gold ( meanings=8 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     amber~1nz (^yellow~1) a deep yellow color
     gold~2nz (^invaluableness~1) something likened to the metal in brightness or preciousness or superiority etc.
     gold~3nz (^wealth~3) great wealth
     gold~4nz (^precious_metal~1) coins made of gold
-    AU~2nz (^noble_metal~1) a soft yellow malleable ductile metallic element
+    Au~1nz (^noble_metal~1) a soft yellow malleable ductile metallic element
     gilt~2a 
     golden~6a 
     gold~8az 
@@ -4275,7 +4265,7 @@
     glorification~1nz (^idolization~2) the act of glorifying 
     idealisation~1nz (^appreciation~2) a portrayal of something as ideal
     glory~3n 
- good ( meanings=28 glosses=20 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ) comparative=better 
+ good ( meanings=28 glosses=20 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=better 
     trade_good~1nz (^artifact~1) articles of commerce
     goodness~1nz (^morality~1) moral excellence or admirableness
     goodness~2nz (^quality~1) that which is pleasing or valuable or useful
@@ -4426,7 +4416,7 @@
     genus_Euglena~1nz (^protoctist_genus~1) type genus of the family Euglenaceae: green algae with a single flagellum
  green_algae ( meanings=1 NOUN NOUN_SINGULAR ) 
     chlorophyte~1n 
- green ( meanings=12 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:ADJECTIVE VERB_NOOBJECT ) 
+ green ( meanings=12 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:ADJECTIVE VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     super_C~1nz (^ketamine_hydrochloride~1) street names for ketamine
     viridity~1nz (^chromatic_colour~1) green color or pigment
     leafy_vegetable~1nz (^vegetable~1) any of various leafy plants or their leaves and stems eaten as vegetables
@@ -4717,6 +4707,8 @@
     Procnias~1nz (^bird_genus~1) bellbirds
  genus_Cephalopterus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Cephalopterus~1nz (^bird_genus~1) a genus of Cotingidae
+ genus_Furnarius ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    Furnarius~1nz (^bird_genus~1) type genus of the family Furnariidae: ovenbirds
  genus_Formicarius ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Formicarius~1nz (^bird_genus~1) type genus of the Formicariidae
  genus_Dendrocolaptes ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -5350,6 +5342,8 @@
     Geophilus~1nz (^arthropod_genus~1) type genus of the Geophilidae: a cosmopolitan genus of centipedes sometimes called earwigs
  genus_Tachypleus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Tachypleus~1nz (^arthropod_genus~1) a genus of Limulidae
+ Galliformes ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    order_Galliformes~1n 
  gallinaceous_bird ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     gallinacean~1nz (^bird~1) heavy-bodied largely ground-feeding domestic or game birds
  gallinaceous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
@@ -5363,7 +5357,7 @@
     chicken~1n 
  genus_Agriocharis ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Agriocharis~1nz (^bird_genus~1) a genus of birds of the family Meleagrididae including the ocellated turkey
- grouse ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT ) 
+ grouse ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     grouse~1nz (^game_bird~1) popular game bird having a plump body and feathered legs and feet
     grouse~2nz (^wildfowl~1) flesh of any of various grouse of the family Tetraonidae
     crab~6v 
@@ -5428,7 +5422,7 @@
     Alectoris~1nz (^bird_genus~1) a genus of Perdicidae
  Greek_partridge ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Alectoris_graeca~1n 
- Greek ( meanings=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL NOUN_NODETERMINER ) 
+ Greek ( meanings=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL NOUN_NODETERMINER ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     Hellenic~1n 
     Hellene~1n 
     Greek~3nz 
@@ -5462,6 +5456,8 @@
     Psittacus~1nz (^bird_genus~1) type genus of the Psittacidae: usually restricted to the African grey
  genus_Ara ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Ara~1nz (^bird_genus~1) macaws
+ genus_Nestor ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    Nestor~1nz (^bird_genus~1) a genus of Psittacidae
  genus_Kakatoe ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     genus_Cacatua~1nz (^bird_genus~1) a genus of Psittacidae
  genus_Cacatua ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -6429,6 +6425,8 @@
     Amphibolips~1nz (^arthropod_genus~1) cynipid gall wasps, especially causing oak-apple galls
  genus_Andricus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Andricus~1nz (^arthropod_genus~1) cynipid gall wasps, chiefly affecting oaks
+ genus-Fenusa ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    Fenusa~1nz (^arthropod_genus~1) birch leaf miner
  genus_Monomorium ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Monomorium~1nz (^arthropod_genus~1) a genus of Formicidae
  genus_Camponotus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -7427,7 +7425,7 @@
     gray_snapper~1n 
  gray_snapper ( meanings=1 NOUN NOUN_SINGULAR ) 
     mangrove_snapper~1n 
- grunt ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ grunt ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     grunt~1nz (^percoid_fish~1) medium-sized tropical marine food fishes that utter grunting sounds when caught
     oink~1n 
     grunt~3nz (^unskilled_person~1) an unskilled or low-ranking soldier or other worker
@@ -8838,7 +8836,7 @@
     sulfisoxazole~1n 
  goggle_box ( meanings=1 NOUN NOUN_SINGULAR ) 
     telly~1n 
- goggle ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT ) 
+ goggle ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     gape~3v 
  galvanic_battery ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     voltaic_battery~1nz (^battery~3) battery consisting of a number of voltaic cells arranged in series or parallel
@@ -9092,13 +9090,13 @@
     grey~3n 
  greyness ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     grayness~1n 
- gamboge ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ gamboge ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lemon~2n 
     gamboge~2nz (^gum_resin~1) a gum resin used as a yellow pigment and a purgative
     gamboge~3az 
  greenish_yellow ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     greenish_yellow~1nz (^yellow~1) a shade of yellow tinged with green
- greenish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ greenish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     green~6a 
     greenish~2az 
  greenness ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
@@ -9111,12 +9109,12 @@
     peacock_blue~1nz (^blue~1) a shade of blue tinged with green
  greyish_brown ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     dun~2n 
- greyish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ greyish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     grey~5a 
     greyish~2az 
  grayish_brown ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     greyish_brown~1n 
- grayish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 ) 
+ grayish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     greyish~1a 
     grayish~2az 
  greasiness ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -9245,7 +9243,7 @@
  gastrointestinal_system ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     systema_digestorium~1nz (^system~4) the system that makes food absorbable into the body
  gastrointestinal ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
-    GI~2az of or relating to the stomach and intestines
+    GI~1az of or relating to the stomach and intestines
     gastrointestinal~2az 
  gluteal_artery ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     arteria_glutes~1nz (^arterial_blood_vessel~1) branches of the internal iliac artery that supply the hip joint and gluteal region
@@ -9289,8 +9287,7 @@
     gastric_juice~1n 
  gastrointestinal_hormone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     GI_hormones~1nz (^internal_secretion~1) hormones that affect gastrointestinal functioning
- GI ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR COMMON2 VERB_DIRECTOBJECT ) 
-    GB~5n 
+ GI ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON2 VERB_DIRECTOBJECT ) 
     gastrointestinal~1a 
     G.I.~1v 
  gastrin ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -9449,7 +9446,7 @@
     public_knowledge~1nz (^knowledge~1) knowledge that is available to anyone
  good_sense ( meanings=1 NOUN NOUN_SINGULAR ) 
     common_sense~1n 
- genius ( meanings=6 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 ) plural=genii 
+ genius ( meanings=6 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) plural=genii 
     brilliance~3nz (^intelligence~2) unusual mental ability
     flair~2nz (^talent~1) a natural talent
     wizardry~1nz (^creative_thinking~1) exceptional creative ability
@@ -9633,7 +9630,7 @@
     anatomy~3n 
  gross_anatomy ( meanings=1 NOUN NOUN_SINGULAR ) 
     macroscopic_anatomy~1n 
- gross ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ADJECTIVE_NOT_PREDICATE NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ gross ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ADJECTIVE_NOT_PREDICATE NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     revenue~1nz (^amount~4) the entire amount of income before any deductions are made
     gross~2nz (^large_integer~1) twelve dozen
     rank~8a 
@@ -9812,11 +9809,11 @@
     grammatical_meaning~1nz (^import~4) the meaning of a word that depends on its role in a sentence
  gibberish ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     gibber~1nz (^meaninglessness~2) unintelligible talking
- gibber ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ gibber ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     gibberish~1n 
     gibber~2vz chatter inarticulately
     piffle~3v 
- gabble ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ gabble ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     jabber~1n 
     palaver~5v 
  guff ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -9845,7 +9842,7 @@
     goodbye~1n 
  glad_hand ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     glad_hand~1nz (^welcome~1) a warm welcome
- glad ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=gladdest 
+ glad ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ) comparative=gladdest 
     beaming~2az cheerful and bright
     glad~2az feeling happy appreciation
     glad~3az showing or causing joy and pleasure
@@ -9888,7 +9885,7 @@
     go-ahead~2nz (^stoplight~1) a signal to proceed
  gospel_truth ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     gospel~2nz (^truth~3) an unquestionable truth
- gibe ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
+ gibe ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     jibe~1n 
     barrack~2v 
     jibe~3v 
@@ -9926,10 +9923,10 @@
     appoggiatura~1n 
  gesticulation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     gesticulation~1nz (^motion~3) a deliberate and vigorous gesture or motion
- grimace ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:NOUN VERB_NOOBJECT ) 
+ grimace ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     face~11n 
     pull_a_face~1vz contort the face to indicate a certain mental or emotional state
- grin ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN VERB_NOOBJECT ) 
+ grin ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     smiling~1n 
     grin~2vz to draw back the lips and reveal the teeth, in a smile, grimace, or snarl
  grinning ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
@@ -10048,21 +10045,21 @@
     guttural~3az relating to or articulated in the throat
  guttural_consonant ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     guttural~1n 
- groan ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ groan ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     moan~1nz (^vocalization~1) an utterance expressing pain or disapproval
     moan~2vz indicate pain, discomfort, or displeasure
- giggle ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ giggle ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     giggle~1nz (^laugh~3) a foolish or nervous laugh
     titter~2vz laugh nervously
- guffaw ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
+ guffaw ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     belly_laugh~2n 
     laugh_loudly~1v 
- gab ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_NOOBJECT ) 
+ gab ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     causerie~1nz (^chat~1) light informal conversation for social occasions
     yak~3vz talk profusely
  gabfest ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     chitchat~1n 
- gossip ( meanings=5 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT ) 
+ gossip ( meanings=5 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     gabfest~1n 
     comment~3n 
     gossiper~1n 
@@ -10078,7 +10075,7 @@
     power_politics~1nz (^diplomatic_negotiations~1) diplomacy in which the nations threaten to use force in order to obtain their objectives
  golden_handshake ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     golden_handshake~1nz (^severance_agreement~1) a lucrative severance agreement offered to an employee
- gripe ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ gripe ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     squawk~1n 
     holler~3v 
  grievance ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
@@ -10088,7 +10085,7 @@
  growling ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     growling~1nz (^vocalization~1) a gruff or angry utterance
     growl~1n 
- grumble ( meanings=6 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT ) 
+ grumble ( meanings=6 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     murmur~2n 
     rumble~3n 
     murmur~5v 
@@ -10163,14 +10160,14 @@
     foundering~1nz (^sinking~2) sinking
  gravitational_collapse ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     gravitational_collapse~1nz (^implosion~2) the implosion of a star resulting from its own gravity
- gobble ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ gobble ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     gobble~1nz (^cry~5) the characteristic sound made by a turkey cock
     gobble~2vz make a gurgling sound, characteristic of turkeys
     bolt~11vz eat hastily without proper chewing
- growl ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE3_4 posdefault:NOUN VERB_NOOBJECT ) 
+ growl ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE3_4 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     growling~2nz (^cry~5) the sound of growling
     rumble~4vz to utter or emit low dull rumbling sounds
- gurgle ( meanings=5 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ gurgle ( meanings=5 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     gurgle~1nz (^sound~5) the bubbling sound of water flowing from a bottle with a narrow neck
     gurgle~2vz utter with a gurgling sound
     guggle~1vz drink from a flask with a gurgling sound
@@ -10227,7 +10224,7 @@
     gloat~1n 
  gleefulness ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     glee~1n 
- gloat ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT ) 
+ gloat ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     gloating~1n 
     triumph~4v 
     gloat~3vz gaze at or think about something with great self-satisfaction, gratification, or joy
@@ -10524,6 +10521,8 @@
     gaggle~2vz make a noise characteristic of a goose
  gam ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     gam~1nz (^herd~2) a herd of whales
+ GIA ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    Armed_Islamic_Group~1n 
  GRAPO ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     First_of_October_Antifascist_Resistance_Group~1n 
  GSPC ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -10908,12 +10907,10 @@
  Great_Britain ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     GB~1nz (^island~2) an island comprising England and Scotland and Wales
     Britain~1n 
- GB ( meanings=6 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ GB ( meanings=4 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     Great_Britain~1n 
     gigabyte~1n 
     gigabyte~2n 
-    gigabit~1n 
-    gilbert~1n 
     sarin~1n 
  Gloucester ( meanings=2 glosses=2 NOUN NOUN_PROPER_SINGULAR ) 
     Gloucester~1nz (^city~2) a city in southwestern England in Gloucestershire on the Severn
@@ -10992,14 +10989,13 @@
  Gulu ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Gulu~1nz (^city~2) a city in northern Uganda
  Grand_Canyon_State ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Arizona~2nz (^American_state~1) a state in southwestern United States
+    AZ~1nz (^American_state~1) a state in southwestern United States
  Golden_State ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Calif.~1nz (^American_state~1) a state in the western United States on the Pacific
  Gainesville ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Gainesville~1nz (^town~2) a university town in north central Florida
- GA ( meanings=3 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ GA ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     Peach_State~1n 
-    gallium~1n 
     tabun~1n 
  Gem_State ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     ID~2nz (^American_state~1) a state in the Rocky Mountains
@@ -11072,7 +11068,7 @@
     Canis_Major~1n 
  gaseous_nebula ( meanings=1 NOUN NOUN_SINGULAR ) 
     diffuse_nebula~1n 
- gaseous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ gaseous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gaseous~1az existing as or having characteristics of a gas
     gaseous~2az 
  geological_fault ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -11962,7 +11958,7 @@
     prepare~8v 
  groomsman ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     groomsman~1nz (^tender~5) a male attendant of the bridegroom at a wedding
- grouch ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 GRADE5_6 posdefault:NOUN VERB_NOOBJECT ) 
+ grouch ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 GRADE5_6 posdefault:NOUN VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     crank~4n 
     scold~3v 
  grump ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
@@ -12043,7 +12039,7 @@
     jailbird~1n 
  gay_woman ( meanings=1 NOUN NOUN_SINGULAR ) 
     tribade~1n 
- gawk ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ gawk ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     lummox~1n 
     goggle~1v 
  guiding_light ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -12900,7 +12896,7 @@
     annual_ring~1n 
  gentle_wind ( meanings=1 NOUN NOUN_SINGULAR ) 
     zephyr~1n 
- gentle ( meanings=11 glosses=10 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ gentle ( meanings=11 glosses=10 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     easy~7az marked by moderate steepness
     soft~10az having little impact
     gentle~3az having or showing a kindly or tender nature
@@ -12930,7 +12926,7 @@
     gamma_radiation~1n 
  gaslight ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     gaslight~1nz (^light~12) light yielded by the combustion of illuminating gas
- glowing ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:VERB ) 
+ glowing ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     radiance~2n 
     glowing~2az highly enthusiastic
     glowing~3az 
@@ -14360,7 +14356,7 @@
     Silybum~1nz (^asterid_dicot_genus~1) small genus of east African herbs
  genus_Solidago ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Solidago~1nz (^asterid_dicot_genus~1) goldenrod
- goldenrod ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
+ goldenrod ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     goldenrod~1nz (^wild_flower~1) any of numerous chiefly summer-blooming and fall-blooming North American plants especially of the genus Solidago
     goldenrod~2az 
  grey_goldenrod ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -14768,7 +14764,7 @@
     giant_foxtail~1nz (^foxtail_grass~1) two species of coarse annual foxtails that are naturalized weeds in United States
  glaucous_bristlegrass ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     Setaria_glauca~1nz (^foxtail_grass~1) common weedy and bristly grass found in nearly all temperate areas
- glaucous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ glaucous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     glaucous~1az having a frosted look from a powdery coating, as on plants
  green_bristlegrass ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     Setaria_viridis~1nz (^foxtail_grass~1) European foxtail naturalized in North America
@@ -16416,7 +16412,7 @@
  genus_Pinckneya ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Pinckneya~1nz (^asterid_dicot_genus~1) small genus of shrubs or small trees of southeastern United States and northern South America
  Georgia_bark ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    fever_tree~3n 
+    Pinckneya_pubens~1n 
  genus_Psychotria ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Psychotria~1nz (^asterid_dicot_genus~1) tropical chiefly South American shrubs and trees
  genus_Sarcocephalus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -18169,9 +18165,12 @@
  GiB ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     gibibyte~1n 
  gigabit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    Gbit~1nz (^computer_memory_unit~1) a unit of information equal to 1000 megabits or 10^9 bits
+    Gb~1nz (^computer_memory_unit~1) a unit of information equal to 1000 megabits or 10^9 bits
  Gbit ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    GB~4n 
+    gigabit~1n 
+ Gb ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
+    Gbit~1n 
+    gilbert~1n 
  gibibit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     Gibit~1nz (^computer_memory_unit~1) a unit of information equal to 1024 mebibits or 2^30 bits
  Gibit ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -18179,7 +18178,9 @@
  gauss ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     gauss~1nz (^flux_density_unit~1) a unit of magnetic flux density equal to 1 maxwell per square centimeter
  gilbert ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    GI~1nz (^magnetomotive_force_unit~1) a unit of magnetomotive force equal to 0.7958 ampere-turns
+    Gi~1nz (^magnetomotive_force_unit~1) a unit of magnetomotive force equal to 0.7958 ampere-turns
+ Gi ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Gb~2n 
  Gy ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     gray~5n 
  gee ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB INTERJECTION NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT ) 
@@ -18505,6 +18506,8 @@
     writer_'s_cramp~1n 
  generalized_anxiety_disorder ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     anxiety_reaction~1nz (^anxiety_disorder~1) an anxiety disorder characterized by chronic free-floating anxiety and such symptoms as tension or sweating or trembling or lightheadedness or irritability etc that has lasted for more than six months
+ GAD ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    generalized_anxiety_disorder~1n 
  gynophobia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     gynophobia~1nz (^social_phobia~1) a morbid fear of women
  glove_anesthesia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -18571,11 +18574,12 @@
     beryllium~1n 
  gadolinium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     Gd~1nz (^metal~2) a ductile silvery-white ductile ferromagnetic trivalent metallic element of the rare earth group
- Gd ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+ Gd ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     gadolinium~1n 
-    soman~1n 
  gallium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    GA~2nz (^metal~2) a rare silvery metallic element
+    Ga~1nz (^metal~2) a rare silvery metallic element
+ Ga ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    gallium~1n 
  germanium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     Ge~2nz (^element~6) a brittle grey crystalline element that is a semiconducting metalloid used in transistors
  Greenland_spar ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
@@ -18584,7 +18588,7 @@
     ytterbite~1nz (^mineral~1) a mineral that is a source of rare earths
  galena ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     galena~1nz (^mineral~1) soft blue-grey mineral
- garnet ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ garnet ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     garnet~1nz (^mineral~1) any of a group of hard glassy minerals used as gemstones and as an abrasive
     garnet~2az 
  garnierite ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -18780,7 +18784,7 @@
     grainy~1a 
  globular_pearlite ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     granular_pearlite~1n 
- globular ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ globular ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     spherical~1a 
  greaseproof_paper ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     greaseproof_paper~1nz (^paper~7) paper that is impermeable to oil or grease
@@ -18875,6 +18879,8 @@
     gingerol~1nz (^chemical_irritant~1) derived from ginger
  Gram_'s_solution ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
     Gram_'s_solution~1nz (^solution~5) a solution used in staining bacteria by Gram's method
+ GD ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    soman~1n 
  graphic_tellurium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     sylvanite~1nz (^mineral~1) a silver-white mineral consisting of silver gold telluride
  guanosine ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -19159,7 +19165,7 @@
  gluttonous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     gluttonous~1az given to excess in consumption of especially food or drink
     gluttonous~2az 
- greedy ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) comparative=greediest 
+ greedy ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=greediest 
     greedy~1az wanting to eat or drink more than one can reasonably consume
     prehensile~1az immoderately desirous of acquiring e.g. wealth
     devouring~1az ardently or excessively desirous
@@ -19202,7 +19208,7 @@
     kaput~1az destroyed or killed
     gone~3az no longer retained
     bypast~1az well in the past
- generous ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ generous ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     generous~1az more than adequate
     generous~2az willing to give and share unstintingly
     generous~3az not petty in character and mind
@@ -19213,13 +19219,13 @@
     foxy~1a 
  glued ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:VERB ) 
     pasted~1az affixed or as if affixed with glue or paste
- gullible ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ gullible ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gullible~1az easily tricked because of being too trusting
     green~8a 
     gullible~3az 
  gravid ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     expectant~1a 
- gracious ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ gracious ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gracious~1az disposed to bestow favors
     courteous~2a 
     gracious~3az characterized by charm, good taste, and generosity of spirit
@@ -19246,7 +19252,7 @@
  grisly ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=grisliest 
     grim~1a 
     grisly~2az 
- gruesome ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ gruesome ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     grisly~1a 
  guardant ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ADJECTIVE_POSTPOSITIVE ) 
     gardant~1a 
@@ -19271,15 +19277,15 @@
     glossy-haired~1a 
  glossy-furred ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     glossy-coated~1a 
- good-looking ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
+ good-looking ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     handsome~1a 
     good-looking~2az 
- glorious ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ glorious ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     resplendent~1a 
     glorious~2az having or deserving or conferring glory
     magnificent~1a 
     glorious~4az 
- gorgeous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ gorgeous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gorgeous~1az dazzlingly beautiful
     gorgeous~2az 
  great_bellied ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM  poscondition=?=A ) 
@@ -19300,7 +19306,7 @@
     gamy~1a 
     gamy~2a 
     naughty~2a 
- gritty ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=grittiest 
+ gritty ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=grittiest 
     gamey~1a 
     granular~2a 
  gutsy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=gutsiest 
@@ -19345,7 +19351,7 @@
  gingerly ( meanings=2 glosses=2 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON2 COMMON1 posdefault:ADVERB ) 
     gingerly~1az with extreme care or delicacy
     gingerly~2bz in a gingerly manner
- guarded ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ guarded ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     restrained~1a 
  groping ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     groping~1az acting with uncertainty or hesitance or lack of confidence
@@ -19428,7 +19434,7 @@
     dulled~1a 
  grouped ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
     sorted~1az arranged into groups
- grimy ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ grimy ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     grubby~2a 
  grungy ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     grimy~1a 
@@ -19556,13 +19562,13 @@
     swagger~3a 
     peachy~2a 
     groovy~3az 
- gaunt ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ gaunt ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     emaciated~1a 
     gaunt~2az 
  gangling ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     lanky~1az tall and thin
     rangy~3az tall and thin and having long slender limbs
- gangly ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ gangly ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gangling~1a 
     gangling~2a 
     gangly~3az 
@@ -19589,12 +19595,12 @@
     gas-filled~1az full of a gas
  glutted ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
     overfull~1a 
- glassy ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=glassiest 
+ glassy ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=glassiest 
     glazed~1az lacking liveliness
     vitrified~1a 
     glassy~3az resembling glass in smoothness and shininess and slickness
     glassy~4az 
- glazed ( meanings=5 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ glazed ( meanings=5 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     glassy~1a 
     shiny~2az having a shiny surface or coating
     glassed~1a 
@@ -19634,10 +19640,10 @@
  good-tempered ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     placid~2a 
     good-tempered~2az 
- grouchy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ grouchy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     crabbed~1a 
     grouchy~2az 
- grumpy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) comparative=grumpiest 
+ grumpy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=grumpiest 
     grouchy~1a 
     grumpy~2az 
  glowering ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
@@ -19710,7 +19716,7 @@
  grief-stricken ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     sorrowing~1az sorrowful through loss or deprivation
     grief-stricken~2az 
- grieving ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
+ grieving ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     mourning~3a 
     grieving~2az 
  gleeful ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -19731,7 +19737,7 @@
  gargantuan ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     elephantine~1a 
     gargantuan~2az 
- gigantic ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ gigantic ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     mammoth~2a 
     gigantic~2az 
  gnomish ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -20369,7 +20375,7 @@
  gustiest ( MOST_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) comparative=gustier 
  gutsier ( MORE_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) comparative=gutsy 
  gutsiest ( MOST_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) comparative=gutsier 
- gratify ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ gratify ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     indulge~1v 
     satisfy~2v 
  grossly ( meanings=1 glosses=1 ADVERB COMMON2 COMMON1 posdefault:ADVERB ) 
@@ -20854,7 +20860,7 @@
     down~23v 
     pass~27v 
     see~14v 
- glorify ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ glorify ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     glorify~1vz bestow glory upon
     glorify~2vz cause to seem more splendid
     transfigure~2v 
@@ -20894,7 +20900,7 @@
  gradate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     gradate~1vz pass imperceptibly from one degree, shade, or tone into another
     gradate~2vz arrange according to grades
- grok ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 VERB_DIRECTOBJECT ) 
+ grok ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) 
     savvy~4v 
  get_the_picture ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_CONJUGATE1 ) 
     grok~1v 
@@ -20942,7 +20948,7 @@
     try_for~1v 
     fancy~7v 
     apply~9v 
- greet ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT ) 
+ greet ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     greet~1vz react to in a certain way
     greet~2vz send greetings to
     recognise~5v 
@@ -21116,7 +21122,7 @@
  get_it_on ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT VERB_CONJUGATE1 ) 
     have_a_go_at_it~1v 
  G.I. ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT ) 
-    GI~3vz clean in preparation for inspection
+    GI~2vz clean in preparation for inspection
  glass_in ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     glass~11v 
  ghostwrite ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
@@ -21195,7 +21201,7 @@
     go_into~1v 
  gate-crash ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB posdefault:VERB VERB_NOOBJECT ) 
     barge_in~2v 
- genuflect ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT ) 
+ genuflect ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     kowtow~3v 
     genuflect~2vz bend the knees and bow in church or before a religious superior or image
  gyrate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 

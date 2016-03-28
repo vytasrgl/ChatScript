@@ -271,7 +271,7 @@
  Zinacef ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Ceftin~1n 
  zalcitabine ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
-    ddC~1n 
+    DDC~1n 
  Zestril ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Prinival~1n 
  zoo ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN ) 
@@ -560,7 +560,7 @@
  Zimbabwean ( meanings=2 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR ) 
     Zimbabwean~1nz (^African~1) a native or inhabitant of Zimbabwe
     Zimbabwean~2az of or relating to or characteristic of Zimbabwe or its people
- zany ( meanings=5 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=zaniest 
+ zany ( meanings=5 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=zaniest 
     fathead~1n 
     zany~2nz (^clown~1) a buffoon in one of the old comedies
     buffoonish~1a 
@@ -799,16 +799,17 @@
     ZB~2nz (^computer_memory_unit~1) a unit of information equal to 1000 exabytes or 10^21 bytes
  zebibyte ( meanings=1 NOUN NOUN_SINGULAR ) 
     zettabyte~1n 
- ZB ( meanings=3 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
+ ZB ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     zebibyte~1n 
     zettabyte~2n 
-    zettabit~1n 
  ZiB ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     ZB~1n 
  zettabit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    Zbit~1nz (^computer_memory_unit~1) a unit of information equal to 1000 exabits or 10^21 bits
+    Zb~1nz (^computer_memory_unit~1) a unit of information equal to 1000 exabits or 10^21 bits
  Zbit ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    ZB~3n 
+    zettabit~1n 
+ Zb ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Zbit~1n 
  zebibit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     Zibit~1nz (^computer_memory_unit~1) a unit of information equal to 1024 exbibits or 2^70 bits
  Zibit ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -946,7 +947,7 @@
     peppy~1a 
     lively~5a 
     zippy~3az 
- zealous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ zealous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     avid~1az marked by active interest and enthusiasm
     zealous~2az 
  zaftig ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 

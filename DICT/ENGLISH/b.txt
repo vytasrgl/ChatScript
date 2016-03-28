@@ -20,7 +20,6 @@
     moor~3vz come into or dock at a wharf
     moor~4v 
     berth~6vz provide with a berth
- Bazemore ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Belisle ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bakker ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  break ( meanings=63 glosses=57 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=broken 
@@ -102,7 +101,6 @@
  Benghazi ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Benghazi~1nz (^city~2) port in northern Libya on the Gulf of Sidra
  Bing ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Boothe ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Brumley ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Brandeis ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Bentz ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -203,7 +201,7 @@
     slowworm~1n 
  Bermudez ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Baylor ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- brick ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ brick ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brick~1nz (^ceramic~1) rectangular block of clay baked by the sun or in a kiln
     brick~2nz (^good_person~1) a good fellow
     brick~3az 
@@ -607,7 +605,7 @@
  Bonnibelle ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  bean_aphid ( meanings=1 NOUN NOUN_SINGULAR ) 
     blackfly~2n 
- brilliant ( meanings=7 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ brilliant ( meanings=7 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brilliant~1az full of light
     bright~5a 
     splendid~2a 
@@ -690,7 +688,7 @@
  Burr ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
     Aaron_Burr~1n 
  Billington ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- branching ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:VERB ) 
+ branching ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ramification~1n 
     branching~2az resembling the branches of a tree
     ramate~1az having branches
@@ -878,7 +876,6 @@
  Banister ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bleecker ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Blancheflor ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Braw)eigh ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  black-billed_cuckoo ( meanings=1 NOUN NOUN_SINGULAR ) 
     Coccyzus_erythropthalmus~1n 
  Brenneman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -1012,7 +1009,7 @@
  Bainbridge ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  bath_salts ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     bath_salts~1nz (^toilet_articles~1) a preparation that softens or scents a bath
- broad ( meanings=10 glosses=8 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ broad ( meanings=10 glosses=8 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     broad~1nz (^woman~3) slang term for a woman
     tolerant~1az showing or characterized by broad-mindedness
     unsubtle~1az lacking subtlety
@@ -1032,7 +1029,7 @@
  Braxton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  business_suit ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     business_suit~1nz (^suit~2) a suit of clothes traditionally worn by businessmen
- bronze ( meanings=8 glosses=5 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ bronze ( meanings=8 glosses=5 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     bronze~1nz (^sculpture~2) a sculpture made of bronze
     bronze~2nz (^copper-base_alloy~1) an alloy of copper and tin and sometimes other elements
     bronzy~1az of the color of bronze
@@ -1494,6 +1491,7 @@
  Berke ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Benedetto ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bunn ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Brawleigh ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Blaec ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Bromleah ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Busch ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -1692,7 +1690,7 @@
  Brione ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  backhander ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:ADJECTIVE ) comparative=backhand 
     backhander~1nz (^blow~2) a backhanded blow
- bow ( meanings=14 glosses=13 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ bow ( meanings=14 glosses=13 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     bow~1nz (^stroke~2) a stroke with a curved piece of wood with taut horsehair strands that is used in playing stringed instruments
     bow~2nz (^stick~1) a slightly curved piece of resilient wood with taut horsehair strands
     bow~3nz (^weapon~1) a weapon for shooting arrows, composed of a curved piece of resilient wood with a taut cord to propel the arrow
@@ -1923,7 +1921,6 @@
  Bowen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  butterfly_valve ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     butterfly_valve~1nz (^valve~3) a valve in a carburetor that consists of a disc that turns and acts as a throttle
- Berniece ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Babatunde ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  beautification ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     beautification~1nz (^change_of_state~1) the act of making something more beautiful
@@ -1952,7 +1949,7 @@
     bookfair~1nz (^fair~2) bazaar at which books are sold or auctioned off in order to raise funds for a worthy cause
     bookfair~2nz (^fair~4) fair organized by publishers or booksellers to promote the sale of books
  Barbee ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- bound ( meanings=17 glosses=9 VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=bound comparative=bounder 
+ bound ( meanings=17 glosses=9 VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_TAKING_NOUN_INFINITIVE ) conjugate=bound comparative=bounder 
     leaping~1n 
     limit~1n 
     boundary~2n 
@@ -2178,8 +2175,6 @@
  Beorhthilde ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Breena ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Birtle ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- business_activity ( meanings=1 NOUN NOUN_SINGULAR ) 
-    commercial_activity~1n 
  Binford ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Blackman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  box_office ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -2301,8 +2296,6 @@
  billiard_saloon ( meanings=1 NOUN NOUN_SINGULAR ) 
     billiard_parlour~1n 
  Bumgardner ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Bonney ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
-    William_H._Bonney~1n 
  bicycle ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_NOOBJECT ) 
     cycle~1nz (^wheeled_vehicle~1) a wheeled vehicle that has two wheels and is moved by foot pedals
     pedal~5vz ride a bicycle
@@ -2573,20 +2566,6 @@
     bunny_hug~1nz (^ballroom_dancing~1) a syncopated ballroom dance formerly popular in the US
  Belknap ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Borst ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- bite ( meanings=13 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) conjugate=bitten 
-    bite~1nz (^subtraction~1) a portion removed from the whole
-    chomp~1nz (^feeding~1) the act of gripping or chewing off with the teeth and jaws
-    pungency~1nz (^spiciness~2) a strong odor or taste property
-    pungency~2nz (^humor~5) wit having a sharp and caustic quality
-    bite~5nz (^success~2) an instance of a fish taking the bait
-    collation~3n 
-    morsel~1nz (^taste~7) a small amount of solid food
-    bite~8nz (^wound~4) a wound resulting from biting by an animal or a person
-    insect_bite~1nz (^hurt~5) a painful wound caused by the thrust of an insect's stinger into skin
-    bite~10vz penetrate or cut, as with a knife
-    prick~7vz deliver a sting to
-    seize_with_teeth~1vz to grip, cut off, or tear with or as if with the teeth or jaws
-    sting~8vz cause a sharp or stinging pain or discomfort
  Bautista ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Beresford ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  back_entrance ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -2693,7 +2672,6 @@
  Britten ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Edward_Benjamin_Britten~1n 
  Brunner ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Bardo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Belanger ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Broadnax ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  buzz_bomb ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -3139,7 +3117,6 @@
  Bixler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  bush_tit ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     bushtit~1nz (^titmouse~1) active grey titmice of western North America
- Bashaw ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Baldhart ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Buzzell ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bamard ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3212,8 +3189,6 @@
  beater ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN ) comparative=beat 
     beater~1nz (^implement~1) an implement for beating
     beater~2nz (^worker~2) a worker who rouses wild game from under cover for a hunter
- bowling_pin ( meanings=1 NOUN NOUN_SINGULAR ) 
-    pin~1n 
  Bartholomew ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Berdie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Boyles ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -3324,7 +3299,6 @@
  bergall ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     Tautogolabrus_adspersus~1n 
  Biles ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
- Brandi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  black_wattle ( meanings=1 NOUN NOUN_SINGULAR ) 
     Acacia_auriculiformis~1n 
  bronchoscopic_smear ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -3372,7 +3346,7 @@
     Chicago~1n 
     scratch~8n 
  Bugbee ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- best ( meanings=9 glosses=5 NOUN_ABSTRACT MOST_FORM VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON2 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) comparative=good 
+ best ( meanings=9 glosses=5 NOUN_ABSTRACT MOST_FORM VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON2 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=good 
     best~1nz (^effort~3) the supreme effort one can make
     topper~4n 
     better~5a 
@@ -3420,7 +3394,7 @@
  bycatch ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 ) 
     by-catch~1n 
  Blanton ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- blow ( meanings=29 glosses=25 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=blown 
+ blow ( meanings=29 glosses=25 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) conjugate=blown 
     puff~1nz (^breathing_out~1) forceful exhalation through the nose or mouth
     blow~2nz (^stroke~2) a powerful stroke with the fist or a weapon
     coke~1nz (^cocaine~1) street names for cocaine
@@ -3557,7 +3531,7 @@
  Bobb ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  brent_goose ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     brant_goose~1nz (^goose~1) small dark geese that breed in the north and migrate southward
- buss ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ buss ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     kiss~2n 
     kiss~3v 
  Buss ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -3629,7 +3603,7 @@
  battlewagon ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     battleship~1nz (^combat_ship~1) large and heavily armoured warship
  Bawdewyn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- ball ( meanings=12 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
+ ball ( meanings=12 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ball~1nz (^pitch~2) a pitch that is not in the strike zone
     ball~2nz (^baseball~1) the game of baseball
     ball~3nz (^game_equipment~1) round object that is hit or thrown or kicked in games
@@ -3695,7 +3669,6 @@
  Bauman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Battle_of_Gettysburg ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Gettysburg~1nz (^pitched_battle~1) a battle of the American Civil War 
- Bitya ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  bridle ( meanings=5 glosses=4 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     curb~1n 
     bridle~2nz (^headgear~2) headgear for a horse
@@ -3765,7 +3738,7 @@
     luggage~1nz (^case~2) cases used to carry belongings when traveling
     baggage~2nz (^equipage~2) the portable equipment and supplies of an army
     baggage~3nz (^woman~3) a worthless or immoral woman
- beige ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:ADJECTIVE ) 
+ beige ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ecru~1nz (^light_brown~1) a very light brown
     beige~2az of a light greyish-brown color
     beige~3az 
@@ -3895,8 +3868,6 @@
     buttery~5az 
  Battle_of_Fredericksburg ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Fredericksburg~1nz (^pitched_battle~1) an important battle in the American Civil War 
- Bureau_of_Justice_Statistics ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    BJS~1nz (^agency~3) the agency in the Department of Justice that is the primary source of criminal justice statistics for federal and local policy makers
  Brundage ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bella ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
  bathometer ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -3938,7 +3909,6 @@
     bed~12vz place in a prepared bed of soil
     bed~13vz furnish with a bed
  Blackwell ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Ballinamore ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Burnley ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bathild ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Birney ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4096,7 +4066,7 @@
  Basile ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  bran_muffin ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     bran_muffin~1nz (^muffin~1) muffin containing bran
- brave ( meanings=7 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ brave ( meanings=7 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brave~1nz (^people~1) people who are brave
     brave~2nz (^warrior~1) a North American Indian warrior
     unfearing~1az invulnerable to fear or intimidation
@@ -4716,6 +4686,8 @@
  Balderas ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Barbara ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Barreras ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Bashaw ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Bazemore ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Beale ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Benavidez ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Benda ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -4734,6 +4706,9 @@
     Ernest_Bloch~1n 
  Boger ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bolden ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Bonney ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+    William_H._Bonney~1n 
+ Boothe ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Boughton ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bowers ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
  Boyd ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4769,6 +4744,7 @@
     Baldr~1nz (^Norse_deity~1) god of light and peace and noted for his beauty and sweet nature
  Baldhere ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Baldwyn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Ballinamore ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Balmoral ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
     bluebonnet~1n 
  Baltasar ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4778,6 +4754,7 @@
  Barbi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Barbie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Bardawulf ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Bardo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Barnet ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Baron ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Barra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4835,6 +4812,7 @@
  Berneen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Bernette ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Bernice ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Berniece ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Berniss ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Bernyce ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Bersules ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4860,6 +4838,7 @@
  Birkett ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Birkhead ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Birley ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Bitya ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Blaeey ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Blaire ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Blanca ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
@@ -4896,6 +4875,7 @@
  Brandee ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Brandeles ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Branden ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Brandi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Brayden ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Braydon ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Breandan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4983,7 +4963,7 @@
  beachhead ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     foothold~1nz (^accomplishment~1) an initial accomplishment that opens the way for further developments
     beachhead~2nz (^bridgehead~2) a bridgehead on the enemy's shoreline seized by an amphibious operation
- brush ( meanings=15 glosses=15 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ brush ( meanings=15 glosses=15 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     brush~1nz (^contact~1) contact with something dangerous or undesirable
     brushing~1nz (^hairdressing~1) the act of brushing your hair
     brushing~2nz (^dental_care~1) the act of brushing your teeth
@@ -5107,7 +5087,7 @@
     Babinski~1n 
  burping ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
     belching~1n 
- blush ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ blush ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     flush~1n 
     flush~5n 
     flush~12v 
@@ -5394,6 +5374,20 @@
  burnup ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     burnup~1nz (^expenditure~1) the amount of fuel used up
     burnup~2nz (^race~2) a high-speed motorcycle race on a public road
+ bite ( meanings=13 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) conjugate=bitten 
+    bite~1nz (^subtraction~1) a portion removed from the whole
+    chomp~1nz (^feeding~1) the act of gripping or chewing off with the teeth and jaws
+    pungency~1nz (^spiciness~2) a strong odor or taste property
+    pungency~2nz (^humor~5) wit having a sharp and caustic quality
+    bite~5nz (^success~2) an instance of a fish taking the bait
+    collation~3n 
+    morsel~1nz (^taste~7) a small amount of solid food
+    bite~8nz (^wound~4) a wound resulting from biting by an animal or a person
+    insect_bite~1nz (^hurt~5) a painful wound caused by the thrust of an insect's stinger into skin
+    bite~10vz penetrate or cut, as with a knife
+    prick~7vz deliver a sting to
+    seize_with_teeth~1vz to grip, cut off, or tear with or as if with the teeth or jaws
+    sting~8vz cause a sharp or stinging pain or discomfort
  Braxton-Hicks_contraction ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     false_labor~1nz (^muscular_contraction~1) painless contractions of the muscles of the uterus that continue throughout pregnancy with increasing frequency
  blend ( meanings=6 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
@@ -5519,9 +5513,8 @@
     pressure~9v 
  bezique ( meanings=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     penuchle~1n 
- Black_Maria ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+ Black_Maria ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Black_Maria~1nz (^short_whist~1) a form of whist in which players avoid winning tricks containing hearts or the queen of spades
-    police_wagon~1n 
  bolivia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     bolivia~1nz (^basket_rummy~1) a form of canasta in which sequences can be melded
  board ( meanings=13 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
@@ -5662,7 +5655,7 @@
     anaerobic_exercise~1n 
  back_exercise ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     back_exercise~1nz (^exercise~1) exercise designed to strengthen the back muscles
- big ( meanings=17 glosses=9 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ) comparative=biggest 
+ big ( meanings=17 glosses=9 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=biggest 
     heavy~3a 
     large~4a 
     giving~4a 
@@ -5698,7 +5691,7 @@
     beta~2az preliminary or testing stage of a software or hardware product
     beta~3az second in order of importance
  barium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    BA~2nz (^metal~2) a soft silvery metallic element of the alkali earth group
+    Ba~1nz (^metal~2) a soft silvery metallic element of the alkali earth group
  binding ( meanings=7 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 posdefault:VERB ) 
     dressing~1n 
     cover~4n 
@@ -5851,7 +5844,7 @@
     brewing~1nz (^production~4) the production of malt beverages from malt and hops by grinding and boiling them and fermenting the result with yeast
  beekeeping ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     apiculture~1n 
- boring ( meanings=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 posdefault:VERB ) 
+ boring ( meanings=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     oil_production~1n 
     drilling~2n 
     slow~6a 
@@ -5908,7 +5901,7 @@
     bombardment~2nz (^radiation~2) the act of subjecting a body or substance to the impact of high-energy particles (as electrons or alpha rays)
     battery~2n 
     onslaught~2n 
- black ( meanings=20 glosses=19 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ black ( meanings=20 glosses=19 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     black~1nz (^clothing~1) black clothing 
     black~2nz (^piece~2) the darker pieces
     inkiness~1nz (^achromatic_colour~1) the quality or state of the achromatic color of least lightness
@@ -5979,7 +5972,7 @@
     Bible-worship~1n 
  Bible-worship ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     bibliolatry~1nz (^devotion~2) the worship of the Bible
- blue ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_NOOBJECT ) comparative=bluest 
+ blue ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=bluest 
     blueness~1nz (^chromatic_colour~1) blue color or pigment
     blue~2nz (^organization~6) any organization or party whose uniforms or badges are blue
     wild_blue_yonder~1nz (^sky~1) the sky as viewed during daylight
@@ -6029,6 +6022,8 @@
  bestowal ( meanings=2 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     bestowment~1n 
     bestowment~2n 
+ business_activity ( meanings=1 NOUN NOUN_SINGULAR ) 
+    commercial_activity~1n 
  black_market ( meanings=3 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR VERB_DIRECTOBJECT VERB_CONJUGATE1 ) 
     black_market~1nz (^market~1) an illegal market in which goods or currencies are bought and sold in violation of rationing or controls
     black_market~2nz (^market~5) people who engage in illicit trade
@@ -6116,7 +6111,7 @@
     vendetta~1nz (^feud~1) a feud in which members of the opposing parties murder each other
  barrage_jamming ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     barrage_jamming~1nz (^jam~1) electronic jamming over a wide range of frequencies simultaneously
- buzz ( meanings=6 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ buzz ( meanings=6 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     buzz~1nz (^activity~1) a confusion of activity and gossip
     bombilation~1n 
     buzz~3vz call with a buzzer
@@ -6333,7 +6328,7 @@
     class_Bacillariophyceae~1n 
  brown_algae ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     brown_algae~1nz (^algae~1) algae having the chlorophyll masked by brown and yellow pigments
- brown ( meanings=6 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ brown ( meanings=6 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brownness~1nz (^chromatic_colour~1) an orange of low brightness and saturation
     browned~1az deeply suntanned
     dark-brown~1az of a color similar to that of wood or earth
@@ -6802,7 +6797,7 @@
  bay_scallop ( meanings=2 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     Pecten_irradians~1n 
     bay_scallop~2nz (^escallop~3) muscle of small choice shallow-water scallops
- bay ( meanings=10 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ bay ( meanings=10 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     bay~1nz (^horse~1) a horse of a moderate reddish-brown color
     alcove~1nz (^recess~2) a small recess opening off a larger room
     bay~3nz (^compartment~1) a compartment in an aircraft used for some specific purpose
@@ -7124,7 +7119,7 @@
     scald~6v 
  bark_beetle ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     bark_beetle~1nz (^beetle~1) small beetle that bores tunnels in the bark and wood of trees
- bark ( meanings=9 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ bark ( meanings=9 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     barque~1nz (^sailing_vessel~1) a sailing ship with 3 masts
     bark~2nz (^cry~5) the sound made by a dog
     bark~3nz (^noise~5) a noise resembling the bark of a dog
@@ -7822,7 +7817,7 @@
     balaclava~1nz (^cap~1) a cap that is close-fitting and woolen and covers all of the head but the face
  balance_beam ( meanings=1 NOUN NOUN_SINGULAR ) 
     beam~1n 
- beam ( meanings=13 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ beam ( meanings=13 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     balance_beam~1nz (^gymnastic_apparatus~1) a gymnastic apparatus used by women gymnasts
     beam~2nz (^structural_member~1) long thick piece of wood or metal or concrete, etc., used in construction
     beam~3nz (^side~1) the broad side of a ship
@@ -9016,7 +9011,7 @@
     bookstall~1nz (^store~2) a shop where books are sold
  bookstall ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     bookshop~1n 
- boom ( meanings=10 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ boom ( meanings=10 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     boom~1nz (^spar~2) any of various more-or-less horizontal spars or poles used to extend the foot of a sail or for handling cargo or in mooring
     microphone_boom~1nz (^pole~1) a pole carrying an overhead microphone projected over a film or tv set
     roaring~2nz (^noise~5) a deep prolonged loud noise
@@ -9148,6 +9143,8 @@
     bowl~6n 
  bowling_equipment ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     bowling_equipment~1nz (^game_equipment~1) equipment used in bowling
+ bowling_pin ( meanings=1 NOUN NOUN_SINGULAR ) 
+    pin~1n 
  bowling_shoe ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     bowling_shoe~1nz (^shoe~3) a special shoe worn when bowling
  bowsprit ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -9246,7 +9243,7 @@
     spur~1nz (^line~5) a railway line connected to a trunk line
  brand-name_drug ( meanings=1 NOUN NOUN_SINGULAR ) 
     proprietary_drug~1n 
- brass ( meanings=8 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ) 
+ brass ( meanings=8 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brass_instrument~1nz (^wind~4) a wind instrument that consists of a brass tube that is blown by means of a cup-shaped or funnel-shaped mouthpiece
     plaque~1nz (^monument~1) a memorial made of brass
     brass~3nz (^decoration~2) an ornament or utensil made of brass
@@ -9414,7 +9411,7 @@
     broadcasting~2nz (^telecommunication~2) taking part in a radio or tv program
  broadcast_station ( meanings=1 NOUN NOUN_SINGULAR ) 
     broadcasting_station~1n 
- broadcast ( meanings=5 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) conjugate=broadcasted 
+ broadcast ( meanings=5 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) conjugate=broadcasted 
     broadcast~1nz (^message~1) message that is transmitted by radio or television
     program~6n 
     spread~14v 
@@ -9446,7 +9443,7 @@
     broiler~2nz (^chicken~3) flesh of a small young chicken not over 2 1/2 lb suitable for broiling
  broken_arch ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     broken_arch~1nz (^arch~1) an arch with a gap at the apex
- broken ( meanings=14 glosses=13 VERB_PAST_PARTICIPLE VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE COMMON4 COMMON1 KINDERGARTEN posdefault:VERB ) conjugate=broke 
+ broken ( meanings=14 glosses=13 VERB_PAST_PARTICIPLE VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE COMMON4 COMMON1 KINDERGARTEN posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) conjugate=broke 
     broken~1az physically and forcibly separated into pieces or cracked or split
     unkept~1az having been violated or disregarded
     broken~3az not continuous in space, time, or sequence or varying abruptly
@@ -9529,7 +9526,7 @@
     buckram~3vz stiffen with or as with buckram
  bucksaw ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     bucksaw~1nz (^saw~2) a saw that is set in a frame in the shape of an H
- buff ( meanings=8 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) comparative=buffer 
+ buff ( meanings=8 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=buffer 
     buffer~1n 
     yellowish_brown~1n 
     buff~3nz (^skin~4) bare skin
@@ -9744,7 +9741,7 @@
     butt~1n 
  butter_dish ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     butter_dish~1nz (^dish~2) a small dish for holding butter at the table
- butter ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) comparative=but 
+ butter ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=but 
     butter~1nz (^food~3) an edible emulsion of fat globules made by churning milk or cream
     butter~2nz (^belligerent~1) a fighter who strikes the opponent with his head
     butter~3vz spread butter on
@@ -9929,6 +9926,8 @@
     pillow_lace~1n 
  business_establishment ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     place_of_business~1nz (^establishment~2) an establishment where business is conducted, goods are made or stored or processed or where services are rendered
+ black_Maria ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    patrol_wagon~1n 
  bateau_bridge ( meanings=1 NOUN NOUN_SINGULAR ) 
     floating_bridge~1n 
  bateau ( NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) plural=bateaux 
@@ -10189,7 +10188,7 @@
     bedside_manner~1nz (^manner~1) manner or conduct of a physician in the presence of a patient
  bad_manners ( meanings=1 NOUN NOUN_SINGULAR ) 
     ill-breeding~1n 
- bad ( meanings=18 glosses=12 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=worst 
+ bad ( meanings=18 glosses=12 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=worst 
     badness~3nz (^quality~1) that which is below standard or expectations as of ethics or decency
     tough~4a 
     spoiled~1az not in an edible or usable condition
@@ -10243,10 +10242,10 @@
  burnish ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     polish~1n 
     furbish~1vz polish and make shiny
- burgundy ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ burgundy ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     burgundy~1nz (^dark_red~1) a dark purplish-red to blackish-red color
     burgundy~2az 
- blond ( meanings=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE ) 
+ blond ( meanings=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     blonde~1n 
     blonde~2n 
     blonde~3a 
@@ -10258,7 +10257,7 @@
     blonde~4az 
  brownish_yellow ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     brownish_yellow~1nz (^yellow~1) a yellow color of low lightness with a brownish tinge
- brownish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ) 
+ brownish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brown~3a 
     brownish~2az 
  bottle_green ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -10335,7 +10334,7 @@
     boniness~1n 
  boniness ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     emaciation~1n 
- boil ( meanings=7 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ boil ( meanings=7 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     boiling_point~2nz (^temperature~1) the temperature at which a liquid boils at sea level
     furuncle~1nz (^staphylococcal_infection~1) a painful sore with a hard core filled with pus
     boil~3vz immerse or be immersed in a boiling liquid, often for cooking purposes
@@ -10694,7 +10693,7 @@
     cheap~3a 
     grub~4v 
     loaf~4v 
- behind ( meanings=8 glosses=6 PARTICLE NOUN ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB ) 
+ behind ( meanings=8 glosses=6 PARTICLE NOUN ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB DISTANCE_ADVERB ) 
     tush~1n 
     behind~2az having the lower score or lagging position in a contest
     behind~3bz in or to or toward the rear
@@ -11304,7 +11303,7 @@
     Ecclesiasticus~1n 
  Brahmana ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Brahmana~1nz (^Veda~1) prose works attached to the Samhitas instructing the bahmins to perform the very elaborate sacrificial rituals
- brief ( meanings=7 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR EXTENT_ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) comparative=briefer 
+ brief ( meanings=7 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR EXTENT_ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) comparative=briefer 
     brief~1nz (^outline~2) a condensed written summary or abstract
     legal_brief~1nz (^instrument~5) a document stating the facts and points of law of a client's case
     brief~3az concise and succinct
@@ -11416,7 +11415,7 @@
     fiddle-faddle~1n 
  buzzword ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     cant~2nz (^meaninglessness~2) stock phrases that have become nonsense through endless repetition
- babble ( meanings=5 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ babble ( meanings=5 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     babbling~1n 
     talk~7v 
     blether~2v 
@@ -11490,9 +11489,8 @@
  baccalaureate ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     bachelor_'s_degree~1n 
     baccalaureate~2nz (^discourse~3) a farewell sermon to a graduating class at their commencement ceremonies
- BA ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ BA ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     AB~2n 
-    barium~1n 
  Bachelor_of_Arts_in_Library_Science ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     ABLS~1nz (^bachelor_'s_degree~1) a bachelor's degree in library science
  Bachelor_of_Arts_in_Nursing ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -11546,7 +11544,7 @@
     berating~1nz (^reprehension~1) a severe rebuke
  blowing ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:VERB ) 
     blowing~1nz (^processing~1) processing that involves blowing a gas
- blame ( meanings=6 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ blame ( meanings=6 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     rap~2nz (^reproach~1) a reproach for some lapse or misdeed
     inculpation~1nz (^accusation~2) an accusation that you are responsible for some lapse or misdeed
     goddamned~1az expletives used informally as intensifiers
@@ -11567,7 +11565,7 @@
     boundary_condition~1nz (^condition~3) a condition specified for the solution to a set of differential equations
  bon_mot ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR posdefault:NOUN ) 
     mot~1nz (^humor~5) a clever remark
- banter ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT ) 
+ banter ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     give-and-take~2n 
     jolly~6v 
  backchat ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
@@ -11624,7 +11622,7 @@
     boldface~2vz print in boldface
  bold_face ( meanings=1 NOUN NOUN_SINGULAR ) 
     bold~1n 
- bold ( meanings=5 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) 
+ bold ( meanings=5 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     boldface~1nz (^case~13) a typeface with thick heavy lines
     bold~2az fearless and daring
     bold~3az clear and distinct
@@ -11655,7 +11653,7 @@
     British_Crown~1nz (^Crown~1) the symbol of the power of the British monarchy
  bravado ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) plural=bravadoes 
     bluster~1nz (^flash~7) a swaggering show of courage
- bluster ( meanings=7 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT ) 
+ bluster ( meanings=7 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     bravado~1n 
     rodomontade~1n 
     bluster~3nz (^blow~7) a violent gusty wind
@@ -11671,10 +11669,10 @@
     benefit_concert~1nz (^benefit~2) a concert given for the benefit of some charitable cause
  Basic_English ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Basic_English~1nz (^artificial_language~1) a simplified form of English proposed for use as an auxiliary language for international communication
- Basic ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    Basic~1nz (^programming_language~1) a popular programming language that is relatively easy to learn
  Blaia_Zimondal ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Blaia_Zimondal~1nz (^artificial_language~1) an artificial language
+ BASIC ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    BASIC~1nz (^programming_language~1) a popular programming language that is relatively easy to learn
  Biloxi ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Biloxi~1nz (^Siouan_language~1) the Siouan language spoken by the Biloxi
     Biloxi~2nz (^town~2) an old town in southern Mississippi on the Gulf of Mexico
@@ -11866,7 +11864,7 @@
  bilabial ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:ADJECTIVE ) 
     bilabial~1nz (^labial_consonant~1) a consonant that is articulated using both lips
     bilabial~2az of or relating to or being a speech sound that is articulated using both lips
- bellow ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ bellow ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     holloa~1n 
     bawl~3vz shout loudly and without restraint
     roar~8v 
@@ -11940,13 +11938,13 @@
     briefing~1nz (^making_known~1) detailed instructions, as for a military operation
  bayat ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     bayat~1nz (^oath~3) an oath of allegiance to an emir
- boast ( meanings=3 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ boast ( meanings=3 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     self-praise~1nz (^speech_act~1) speaking of yourself in superlatives
     bluster~6v 
     feature~8v 
  boasting ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     jactitation~3n 
- brag ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:VERB VERB_NOOBJECT ) comparative=bragger 
+ brag ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:VERB VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) comparative=bragger 
     bragging~1n 
     boss~6a 
     boast~2v 
@@ -12035,7 +12033,7 @@
     billow~5vz move with great difficulty
  breath_of_fresh_air ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     breath_of_fresh_air~1nz (^relief~6) a welcome relief
- baa ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT ) 
+ baa ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     baa~1nz (^cry~5) the cry made by sheep
     blat~1vz cry plaintively
  bam ( meanings=1 NOUN INTERJECTION NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -12047,18 +12045,18 @@
  bleep ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
     beep~1n 
     bleep~2vz emit a single short high-pitched signal
- blare ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ blare ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     din~2n 
     blast~16v 
     beep~3v 
  blaring ( meanings=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     blare~1n 
     blasting~2a 
- bleat ( meanings=3 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ bleat ( meanings=3 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     bleat~1nz (^cry~5) the sound of sheep or goats
     baa~2v 
     bleat~3vz talk whiningly
- bray ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ bray ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     bray~1nz (^cry~5) the cry of an ass
     bray~2vz laugh loudly and harshly
     mash~3v 
@@ -12137,7 +12135,7 @@
     bloodlust~1nz (^desire~2) a desire for bloodshed
  bright_side ( meanings=1 NOUN NOUN_SINGULAR ) 
     silver_lining~1n 
- bright ( meanings=12 glosses=10 ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ bright ( meanings=12 glosses=10 ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     hopeful~2a 
     bright~2az having lots of light either natural or artificial
     bright~3az emitting or reflecting light readily or in large amounts
@@ -12267,7 +12265,7 @@
     bonbon~1nz (^candy~1) a candy that usually has a center of fondant or fruit or nuts coated in chocolate
  bubble_gum ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     bubble_gum~1nz (^gum~2) a kind of chewing gum that can be blown into bubbles
- butterscotch ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
+ butterscotch ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     butterscotch~1nz (^candy~1) a hard brittle candy made with butter and brown sugar
  bitter_chocolate ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     baking_chocolate~1n 
@@ -12491,7 +12489,7 @@
  buttercup_squash ( meanings=2 glosses=2 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     buttercup_squash~1nz (^turban_squash~1) drum-shaped squash with dark green rind marked in silver or grey
     buttercup_squash~2nz (^Cucurbita_maxima_turbaniformis~1) plant bearing somewhat drum-shaped fruit having dark green rind with greyish markings
- buttercup ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+ buttercup ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     butterflower~1n 
  bamboo_shoot ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     bamboo_shoot~1nz (^vegetable~1) edible young shoots of bamboo
@@ -12911,9 +12909,8 @@
     Arab_Revolutionary_Brigades~1n 
  Brigate_Rosse ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     BR~1nz (^foreign_terrorist_organization~1) a Marxist-Leninist terrorist organization that arose out of a student protest movement in the late 1960s
- BR ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+ BR ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     Red_Brigades~1n 
-    bromine~1n 
  British_Commonwealth ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Commonwealth_of_Nations~1n 
  business_firm ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -12976,6 +12973,8 @@
     BJA~1nz (^agency~3) the bureau in the Department of Justice that assists local criminal justice systems to reduce or prevent crime and violence and drug abuse
  BJA ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Bureau_of_Justice_Assistance~1n 
+ Bureau_of_Justice_Statistics ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    BJS~1nz (^agency~3) the agency in the Department of Justice that is the primary source of criminal justice statistics for federal and local policy makers
  BJS ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Bureau_of_Justice_Statistics~1n 
  Bureau_of_Diplomatic_Security ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -14799,7 +14798,7 @@
  brunet ( meanings=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     brunette~1n 
     brunette~2a 
- brunette ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN ) 
+ brunette ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brunet~1nz (^individual~1) a person with dark hair
     brunet~2az marked by dark or relatively dark pigmentation of hair or skin or eyes
     brunette~3az 
@@ -14907,7 +14906,7 @@
     colossus~2n 
  battler ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     combatant~1n 
- belligerent ( meanings=4 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ belligerent ( meanings=4 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     scrapper~1nz (^individual~1) someone who fights
     aggressive~2az characteristic of an enemy or one eager to fight
     warring~1az engaged in war
@@ -14955,7 +14954,7 @@
     blockhead~1n 
  busy_bee ( meanings=1 NOUN NOUN_SINGULAR ) 
     sharpie~3n 
- busy ( meanings=7 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) comparative=busiest 
+ busy ( meanings=7 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=busiest 
     busy~1az crowded with or characterized by much activity
     busy~2az actively or fully engaged or occupied
     busybodied~1az intrusive in a meddling or offensive manner
@@ -15641,6 +15640,8 @@
     Streisand~1nz (^singer~1) United States singer and actress
  Billy_Sunday ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Sunday~1n 
+ Blackbeard ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Edward_Thatch~1n 
  Baroness_Thatcher_of_Kesteven ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Iron_Lady~1nz (^stateswoman~1) British stateswoman
  Benjamin_Thompson ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -18686,6 +18687,8 @@
     benzoyl_radical~1n 
  benzoyl_radical ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     benzoyl_group~1nz (^group~3) the univalent radical derived from benzoic acid
+ Ba ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    barium~1n 
  baryta ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     baryta~1nz (^barium~1) any of several compounds of barium
  barium_hydroxide ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -18720,7 +18723,9 @@
  Bh ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     bohrium~1n 
  bromine ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    BR~2nz (^element~6) a nonmetallic heavy volatile corrosive dark brown liquid element belonging to the halogens
+    Br~1nz (^element~6) a nonmetallic heavy volatile corrosive dark brown liquid element belonging to the halogens
+ Br ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    bromine~1n 
  baddeleyite ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     baddeleyite~1nz (^mineral~1) a mineral consisting of zirconium oxide
  bastnasite ( meanings=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -19474,7 +19479,7 @@
     bate~1vz soak in a special solution to soften and remove chemicals used in previous treatments
     bate~2vz flap the wings wildly or frantically
     bate~3vz moderate or restrain
- bawl ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ bawl ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     bawl~1vz cry loudly
     yawp~2vz make a raucous noise
     bellow~2v 
@@ -19486,7 +19491,7 @@
  bizarre ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     off-the-wall~1a 
     bizarre~2az 
- bury ( meanings=6 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ bury ( meanings=6 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     forget~2v 
     bury~2vz place in the earth and cover with soil
     sink~6v 
@@ -19496,7 +19501,7 @@
  burred ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:VERB ) 
     bristly~1a 
  blew ( VERB_PAST VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB ) conjugate=blow 
- bored ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:VERB ) 
+ bored ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT FACTITIVE_ADJECTIVE_VERB ) 
     blase~2az uninterested because of frequent exposure or indulgence
     world-weary~1az tired of the world
     bored~3az 
@@ -19531,7 +19536,7 @@
     base-forming~1az yielding a base in aqueous solution
  basipetal ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     basipetal~1az of leaves or flowers
- brisk ( meanings=5 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE VERB_NOOBJECT ) 
+ brisk ( meanings=5 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brisk~1az very active
     spanking~2a 
     bracing~2a 
@@ -19710,7 +19715,7 @@
  balding ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 ) 
     balding~1az getting bald
     balding~2az 
- beautiful ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ beautiful ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     beautiful~1az delighting the senses or exciting intellectual or emotional admiration
     beautiful~2az highly enjoyable
     beautiful~3az 
@@ -19980,7 +19985,7 @@
     blackish-red~1az of red tinged with black
  blae ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     blae~1az of bluish-black or grey-blue
- blueish ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ blueish ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     bluish~1az of the color intermediate between green and violet
     blueish~2az 
  blue-lilac ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
@@ -20024,7 +20029,7 @@
     reddish~1a 
  brownish-orange ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     sorrel~6az of a light brownish color
- blackish ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ blackish ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     blackish~1az of something that is somewhat black
     blackish~2az 
  black-grey ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
@@ -20355,7 +20360,7 @@
     bleary~3az 
  blurry ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     bleary~1a 
- bossy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) comparative=bossiest 
+ bossy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=bossiest 
     magisterial~2a 
     bossy~2az 
  bootlicking ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
@@ -20471,7 +20476,7 @@
  buxom ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     zaftig~1a 
     full-bosomed~1a 
- boundless ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ boundless ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unbounded~1a 
     boundless~2az 
  bandy-legged ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
@@ -20505,7 +20510,7 @@
     bacciferous~2az 
  blue-fruited ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     blue-fruited~1az bearing blue fruit
- bountiful ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ bountiful ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     plentiful~3a 
     handsome~2a 
  brimful ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -20523,7 +20528,7 @@
     branded~2az marked with a brand
  bighearted ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     bountiful~2a 
- bounteous ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ bounteous ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     bighearted~1a 
  beggarly ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADVERB ) 
     mean~3a 
@@ -20626,12 +20631,12 @@
     blameful~2az 
  bloodguilty ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     bloodguilty~1az guilty of murder or bloodshed
- brainy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=brainiest 
+ brainy ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=brainiest 
     brilliant~4a 
     brainy~2az 
  born ( meanings=1 glosses=1 VERB_PAST_PARTICIPLE VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:VERB ) conjugate=bore 
     born~1az brought into existence
- brainless ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ brainless ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     headless~2az not using intelligence
     brainless~2az 
  benumbed ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
@@ -20665,12 +20670,12 @@
     biggish~2az 
  blown-up ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     enlarged~4a 
- bulky ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) comparative=bulkiest 
+ bulky ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=bulkiest 
     bulky~1az of large size for its weight
  Brobdingnagian ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     vast~1a 
     Brobdingnagian~2az huge
- bitty ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ) comparative=bittiest 
+ bitty ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=bittiest 
     itsy-bitsy~1az very small
     bitty~2az 
  bittie ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
@@ -20745,7 +20750,7 @@
  blocked ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 posdefault:VERB ) 
     plugged~1a 
     out_of_use~1a 
- brand-new ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
+ brand-new ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     spic-and-span~2a 
  bran-new ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     brand-new~1a 
@@ -20811,14 +20816,14 @@
     befuddled~3a 
     preoccupied~2a 
     bemused~3az 
- bewildered ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
+ bewildered ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     bemused~1a 
     bewildered~2az 
  black-barred ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     black-barred~1az having a pattern consisting of black bars
  black-marked ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     black-marked~1az having black marks
- blotched ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
+ blotched ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     splotched~1a 
  brindled ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     brinded~1az having a grey or brown streak or a pattern or a patchy coloring
@@ -20864,7 +20869,7 @@
  bigheaded ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     persnickety~2a 
     bigheaded~2az 
- boastful ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ boastful ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     braggart~2a 
     boastful~2az 
  braggy ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
@@ -20898,7 +20903,7 @@
     abuzz~1az noisy like the sound of a bee
  biracial ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
     biracial~1az consisting of or combining two races
- boorish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ boorish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     neanderthal~1a 
     boorish~2az 
  bounderish ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
@@ -21011,7 +21016,7 @@
     bacillary~2a 
  bacilliform ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     baculiform~1az formed like a bacillus
- baculiform ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ baculiform ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     bacillary~1a 
  bag-shaped ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     bag-shaped~1az shaped like a bag
@@ -21077,7 +21082,7 @@
     barky~2az 
  bullate ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     bullate~1az of leaves
- bumpy ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ) comparative=bumpiest 
+ bumpy ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=bumpiest 
     bumpy~1az covered with or full of bumps
     jumpy~1az causing or characterized by jolts and irregular movements
     bumpy~3az 
@@ -21895,7 +21900,7 @@
  busier ( MORE_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=busy 
  busiest ( MOST_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=busier 
  bustiest ( MOST_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) comparative=bustier 
- bewilder ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ bewilder ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     amaze~1v 
     throw~18v 
  BC ( meanings=1 ADVERB COMMON2 ) 
@@ -21904,7 +21909,7 @@
     before_Christ~1b 
  before_Christ ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
     BC~1bz 
- before ( meanings=4 glosses=1 PARTICLE ADVERB PREPOSITION CONJUNCTION_SUBORDINATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION ) 
+ before ( meanings=4 glosses=1 PARTICLE ADVERB PREPOSITION CONJUNCTION_SUBORDINATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION TIME_ADVERB ) 
     earlier~2b 
     in_front~1bz at or in the front
     before~3z 
@@ -21913,7 +21918,7 @@
     B.C.E.~1b 
  B.C.E. ( meanings=1 glosses=1 ADVERB ) 
     BCE~1bz of the period before the Common Era
- barely ( meanings=2 glosses=1 ADVERB EXTENT_ADVERB COMMON4 KINDERGARTEN posdefault:ADVERB ) 
+ barely ( meanings=2 glosses=1 ADVERB EXTENT_ADVERB COMMON4 KINDERGARTEN posdefault:ADVERB NEGATIVE_ADVERB_STARTER ) 
     hardly~1b 
     scantily~1bz in a sparse or scanty way
  basically ( meanings=1 glosses=1 ADVERB EXTENT_ADVERB COMMON4 KINDERGARTEN posdefault:ADVERB ) 
@@ -22734,7 +22739,7 @@
     blow_out~1v 
  branch_out ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     broaden~3vz vary in order to spread risk or to expand
- belittle ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ belittle ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     diminish~2v 
     pick_at~1vz express a negative opinion of
     derogate~1vz cause to seem less serious
@@ -22811,7 +22816,7 @@
  bethink ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     bethink~1vz consider or ponder something carefully
     bethink~2vz cause oneself to consider something
- believe ( meanings=5 glosses=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ believe ( meanings=5 glosses=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB FACTITIVE_ADJECTIVE_VERB ) 
     believe~1vz accept as true
     believe~2vz credit with veracity
     believe~3vz follow a credo
@@ -22830,9 +22835,9 @@
     screen~13v 
  budget_for ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     budget_for~1vz calculate enough money for
- beware ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT ) 
+ beware ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     mind~10vz be on one's guard
- boggle ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ boggle ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     flabbergast~1v 
     boggle~2vz startle with amazement or fear
     boggle~3vz hesitate when confronted with a problem, or when in doubt or fear
@@ -22851,12 +22856,12 @@
  bespeak ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     quest~3v 
     point~29v 
- beg ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ beg ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     implore~1vz call upon in supplication
     solicit~4v 
     beg~3vz dodge, avoid answering, or take for granted
     beg~4vz ask to obtain free
- beseech ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ beseech ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     adjure~2v 
  blaze_away ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     blaze_away~1vz speak with fire and passion
@@ -22896,7 +22901,7 @@
     brush_aside~1v 
  buckle_under ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     knuckle_under~1v 
- blaspheme ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ blaspheme ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     blaspheme~1vz speak of in an irreverent or impious manner
     imprecate~1vz utter obscenities or profanities
  bastardize ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
@@ -22905,21 +22910,21 @@
  bastardise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     bastardize~1v 
     bastardize~2v 
- beatify ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ beatify ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     beatify~1vz declare to be blessed
     beatify~2vz make blessedly happy
     exalt~3v 
- berate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ berate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     chide~1v 
  bawl_out ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     berate~1v 
  brush_down ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     tell_off~1vz reprimand
- belabor ( meanings=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT ) 
+ belabor ( meanings=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     belabour~1v 
     belabour~2v 
     belabour~3v 
- belabour ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ belabour ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     belabor~1vz attack verbally with harsh criticism
     belabor~2vz beat soundly
     belabor~3vz to work at or to absurd length
@@ -22927,10 +22932,10 @@
     bloviate~1vz orate verbosely and windily
  beat_around_the_bush ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT VERB_CONJUGATE1 ) 
     prevaricate~1v 
- belie ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) conjugate=belying 
+ belie ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) conjugate=belying 
     misrepresent~1vz represent falsely
     negate~4vz be in contradiction with
- bamboozle ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ bamboozle ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     snow~4v 
  betray ( meanings=6 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
     denounce~2v 
@@ -22942,7 +22947,7 @@
  besmirch ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     sully~1v 
     smirch~4vz smear so as to make dirty or stained
- badmouth ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT ) 
+ badmouth ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     malign~3v 
  bristle_at ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     bristle_up~1vz show anger or indignation
@@ -22952,7 +22957,7 @@
     bridle_at~1v 
  bristle_up ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     bridle_up~1v 
- bemock ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
+ bemock ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     mock~3v 
  befool ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     take_in~4v 
@@ -22965,7 +22970,7 @@
     imprecate~2v 
  bedamn ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     beshrew~1v 
- bless ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ bless ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     bless~1vz give a benediction to
     hallow~1vz render holy by means of religious rites
     sign~13v 
@@ -22988,15 +22993,15 @@
  bow_down ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     bow~11v 
     prostrate~5v 
- backbite ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_NOOBJECT ) 
+ backbite ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     bitch~5vz say mean things
- bewail ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ bewail ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     lament~4v 
  bemoan ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     bewail~1v 
  bewray ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     betray~3v 
- blab ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT ) 
+ blab ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     let_the_cat_out_of_the_bag~1v 
     blabber~2v 
  babble_out ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
@@ -23021,7 +23026,7 @@
     mess_up~3v 
  blurt_out ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB SEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     ejaculate~3v 
- blurt ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ blurt ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     blurt_out~1v 
  blunder_out ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     blurt~1v 
@@ -23033,7 +23038,7 @@
  bring_forward ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     call_up~4vz bring forward for consideration
     advance~16v 
- baptize ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
+ baptize ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     baptise~1v 
  baptise ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
     christen~1v 
@@ -23283,7 +23288,7 @@
  becharm ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     enamour~1v 
     charm~8v 
- beguile ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ beguile ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     enamor~1v 
     hoodwink~2v 
  ball_over ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
@@ -23418,7 +23423,7 @@
     obnubilate~2v 
  becloud ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     befog~1v 
- bedazzle ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ bedazzle ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     dazzle~3v 
  brattle ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
     clack~5v 
@@ -23428,7 +23433,7 @@
     bombilate~1vz make a buzzing sound
  bombilate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
     buzz~5v 
- burble ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT ) 
+ burble ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     guggle~3v 
  buy_back ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_CONJUGATE1 ) 
     repurchase~2v 

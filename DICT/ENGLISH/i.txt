@@ -393,7 +393,7 @@
     identity_element~1n 
  inspection_and_repair ( meanings=1 NOUN NOUN_SINGULAR ) 
     service~2n 
- independent ( meanings=7 glosses=5 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ independent ( meanings=7 glosses=5 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     self-employed_person~1nz (^worker~2) a writer or artist who sells services to different employers without a long-term contract with any of them
     fencesitter~1nz (^individualist~1) a neutral or uncommitted person
     independent~3az free from external control and constraint
@@ -778,7 +778,7 @@
     food~2n 
  I-beam ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     I-beam~1nz (^girder~1) girder having a cross section resembling the letter `I'
- instinctive ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ instinctive ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     natural~13a 
  irregularity ( meanings=4 glosses=3 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     abnormality~1nz (^misbehaviour~1) behavior that breaches the rule or etiquette or custom or morality
@@ -957,8 +957,7 @@
  implosion ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     implosion~1nz (^occlusion~1) the initial occluded phase of a stop consonant
     implosion~2nz (^collapse~2) a sudden inward collapse
- Isi ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
-    Directorate_for_Inter-Services_Intelligence~1n 
+ Isi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  interlocking ( meanings=3 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     mesh~1nz (^catch~2) the act of interlocking or meshing
     engagement~6n 
@@ -1039,7 +1038,7 @@
     hardness~3n 
     insensibility~2nz (^unconsciousness~1) a lack of sensibility
  Ito ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- irregular ( meanings=12 glosses=10 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ irregular ( meanings=12 glosses=10 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     irregular~1nz (^product~1) merchandise that has imperfections
     insurgent~1nz (^warrior~1) a member of an irregular armed force that fights a stronger force by sabotage and harassment
     unpredictable~1az not occurring at expected times
@@ -1184,7 +1183,7 @@
  infrared_lamp ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     heat_lamp~1nz (^electric_heater~1) electric heater consisting of a high-power incandescent lamp that emits infrared radiation
  Ivalyn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- impress ( meanings=8 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ impress ( meanings=8 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) 
     impressment~1nz (^seizure~1) the act of coercing someone into government service
     yarn-dye~1vz dye before it is spun
     ingrain~1vz produce or try to produce a vivid impression of
@@ -1264,7 +1263,7 @@
  Ide ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  immensity ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     wideness~1n 
- infant ( meanings=1 NOUN NOUN_SINGULAR COMMON4 posdefault:NOUN ) 
+ infant ( meanings=1 NOUN NOUN_SINGULAR COMMON4 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     baby~5n 
  internment_camp ( meanings=1 NOUN NOUN_SINGULAR ) 
     prisoner_of_war_camp~1n 
@@ -1336,7 +1335,7 @@
     loafing~1nz (^inactivity~1) having no employment
     faineance~1n 
     groundlessness~1n 
- I ( meanings=1 PRONOUN_SUBJECT KINDERGARTEN ANIMATE_BEING ) 
+ I ( meanings=1 PRONOUN_SUBJECT KINDERGARTEN ANIMATE_BEING OBJECT_AS_ADJECTIVE ) 
     I~1z 
  Ingalls ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  insinuation ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
@@ -1434,8 +1433,7 @@
  Iakovos ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Ian ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Ichabod ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Ida ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
-    International_Development_Association~1nz (^United_Nations_agency~1) an agency of the United Nations affiliated with the World Bank
+ Ida ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
  Idaia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Idal ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Idelisa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1476,11 +1474,8 @@
  Intizara ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Iolana ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Ionanna ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Ipo ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    initial_public_offering~1n 
- Ira ( meanings=2 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
-    individual_retirement_account~1nz (^retirement_savings_account~1) a retirement plan that allows you to contribute a limited yearly sum toward your retirement
-    Provos~1nz (^foreign_terrorist_organization~1) a militant organization of Irish nationalists who used terrorism and guerilla warfare in an effort to drive British forces from Northern Ireland and achieve a united independent Ireland
+ Ipo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Ira ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
  Iratze ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Irenbend ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Iris ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
@@ -1860,7 +1855,7 @@
     inscription~1nz (^writing~1) the activity of inscribing letters or words
     lettering~1nz (^writing~4) letters inscribed on something
     dedication~3nz (^message~1) a short message dedicating it to someone or something
- image ( meanings=11 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
+ image ( meanings=11 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) 
     simulacrum~1nz (^representation~3) a representation of a person 
     picture~3n 
     image~3nz (^effect~1) the general impression that something presents to the public
@@ -1999,7 +1994,7 @@
     indexation~1nz (^regulation~1) a system of economic regulation: wages and interest are tied to the cost-of-living index in order to reduce the effects of inflation
  illegal_possession ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     illegal_possession~1nz (^criminal_possession~1) possession of controlled substances
- illegal ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE1_2 posdefault:ADJECTIVE ) 
+ illegal ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     illegal~1az prohibited by law or by official or accepted rules
     illegal~2az 
  inertial ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -2190,8 +2185,10 @@
     humoring~1n 
  initial_public_offering ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     initial_offering~1nz (^commerce~1) a corporation's first offer to sell stock to the public
+ IPO ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    initial_public_offering~1n 
  initial_offering ( meanings=1 NOUN NOUN_SINGULAR ) 
-    Ipo~1n 
+    IPO~1n 
  investing ( meanings=1 NOUN NOUN_SINGULAR COMMON4 posdefault:VERB ) 
     investment~3n 
  international_affairs ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -2222,7 +2219,7 @@
     insubordination~2nz (^rebelliousness~2) defiance of authority
  ill_service ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     ill_turn~1nz (^injury~2) an act intended to help that turns out badly
- ill ( meanings=9 glosses=6 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE ) 
+ ill ( meanings=9 glosses=6 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ailment~1nz (^upset~5) an often persistent bodily disorder or disease
     ominous~1az presaging ill fortune
     ill~3az distressing
@@ -2272,7 +2269,7 @@
  insolence ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     insolence~1nz (^offense~3) an offensive disrespectful impudent act
     crust~1n 
- insult ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ insult ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     affront~1n 
     abuse~3n 
     affront~2v 
@@ -2345,7 +2342,7 @@
     order_Insessores~1n 
  indigo_bunting ( meanings=1 NOUN NOUN_SINGULAR ) 
     Passerina_cyanea~1n 
- indigo ( meanings=5 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) plural=indigoes 
+ indigo ( meanings=5 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) plural=indigoes 
     indigo~1nz (^violet~1) a blue-violet color
     indigo_plant~1n 
     anil~2n 
@@ -2443,7 +2440,7 @@
     least_bittern~1nz (^bittern~1) small American bittern
  ivory_gull ( meanings=1 NOUN NOUN_SINGULAR ) 
     Pagophila_eburnea~1n 
- ivory ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN ) 
+ ivory ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     bone~1n 
     tusk~2nz (^dentine~2) a hard smooth ivory colored dentine that makes up most of the tusks of elephants and walruses
     ivory~3az 
@@ -3063,7 +3060,7 @@
     igniter~2n 
  intimate_apparel ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     lingerie~1nz (^underwear~1) women's underwear and nightclothes
- intimate ( meanings=10 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ intimate ( meanings=10 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:ADJECTIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     confidant~1n 
     familiar~4a 
     intimate~3az marked by close acquaintance, association, or familiarity
@@ -3865,7 +3862,7 @@
     enteroceptor~1nz (^sensory_receptor~1) any receptor that responds to stimuli inside the body
  incompetent_cervix ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     incompetent_cervix~1nz (^uterine_cervix~1) uterine cervix that becomes dilated before term and without labor often resulting in miscarriage or premature birth
- incompetent ( meanings=7 glosses=5 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ incompetent ( meanings=7 glosses=5 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     incompetent_person~1nz (^unskilled_person~1) someone who is not competent to take effective action
     unequal_to~1az not meeting requirements
     incompetent~3az not qualified or suited for a purpose
@@ -4206,7 +4203,7 @@
     impossibleness~1n 
  impossible_action ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     impossibility~1nz (^choice~3) an alternative that is not available
- impossible ( meanings=5 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ impossible ( meanings=5 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     impossible~1nz (^impossible_action~1) something that cannot be done
     impossible~2az not capable of occurring or being accomplished or dealt with
     unimaginable~1az totally unlikely
@@ -4255,7 +4252,7 @@
  invariable ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
     constant~1nz (^quantity~3) a quantity that does not vary
     invariable~2az not liable to or capable of change
- infinitesimal ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ infinitesimal ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     infinitesimal~1nz (^variable_quantity~1) a variable that has zero as its limit
     minute~8a 
  inner_product ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -4285,8 +4282,11 @@
     intrigue~2nz (^romance~4) a clandestine love affair
     connive~1vz form intrigues in an underhand manner
     fascinate~3vz cause to be interested or curious
- individual_retirement_account ( meanings=1 NOUN NOUN_SINGULAR ) 
-    Ira~1n 
+ individual_retirement_account ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    IRA~1nz (^retirement_savings_account~1) a retirement plan that allows you to contribute a limited yearly sum toward your retirement
+ IRA ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
+    individual_retirement_account~1n 
+    Irish_Republican_Army~1n 
  inkling ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     intimation~1n 
  intimation ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -4314,7 +4314,7 @@
     school_of_thought~1n 
  irrational_hostility ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     irrational_hostility~1nz (^prejudice~1) extreme prejudice
- irrational ( meanings=4 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:ADJECTIVE ) 
+ irrational ( meanings=4 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     irrational_number~1n 
     irrational~2az not consistent with or using reason
     irrational~3az real but not expressible as the quotient of two integers
@@ -4767,7 +4767,7 @@
     malarky~1n 
  idle_talk ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     blether~1nz (^chatter~1) idle or foolish and irrelevant talk
- interview ( meanings=5 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ interview ( meanings=5 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     consultation~3n 
     interview~2nz (^examination~4) the questioning of a person 
     question~9v 
@@ -5052,7 +5052,7 @@
  INLA ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Irish_National_Liberation_Army~1n 
  Irish_Republican_Army ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Ira~2n 
+    Provisional_Irish_Republican_Army~1n 
  Islamic_Army_of_Aden ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     IAA~1n 
  IAA ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -5110,9 +5110,8 @@
     Internal_Revenue_Service~1n 
  Inland_Revenue ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     IR~1nz (^administrative_unit~1) a board of the British government that administers and collects major direct taxes
- IR ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ IR ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     Inland_Revenue~1n 
-    iridium~1n 
  intensive_care_unit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     ICU~1nz (^unit~3) a hospital unit staffed and equipped to provide intensive care
  ICU ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -5162,8 +5161,10 @@
     ICAO~1nz (^United_Nations_agency~1) the United Nations agency concerned with civil aviation
  ICAO ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     International_Civil_Aviation_Organization~1n 
- International_Development_Association ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Ida~1n 
+ International_Development_Association ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    IDA~1nz (^United_Nations_agency~1) an agency of the United Nations affiliated with the World Bank
+ IDA ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    International_Development_Association~1n 
  International_Finance_Corporation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     IFC~1nz (^United_Nations_agency~1) a United Nations agency that invests directly in companies and guarantees loans to private investors
  IFC ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -5203,7 +5204,9 @@
  international_intelligence_agency ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     international_intelligence_agency~1nz (^intelligence~5) an intelligence agency outside the United States
  Inter-Services_Intelligence ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Isi~1n 
+    Directorate_for_Inter-Services_Intelligence~1n 
+ ISI ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
+    Inter-Services_Intelligence~1n 
  International_Relations_and_Security_Network ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     ISN~1nz (^international_intelligence_agency~1) Switzerland's information network for security and defense studies and for peace and conflict research and for international relations
  ISN ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -5236,7 +5239,7 @@
     foot~8n 
  Iraqi_National_Congress ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     INC~1nz (^opposition~3) a heterogeneous collection of groups united in their opposition to Saddam Hussein's government of Iraq
- INC ( meanings=1 NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 KINDERGARTEN ) 
+ INC ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     Iraqi_National_Congress~1n 
  institute ( meanings=3 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 posdefault:NOUN VERB_DIRECTOBJECT ) 
     institute~1nz (^association~4) an association organized to promote art or science or education
@@ -5453,6 +5456,8 @@
     Idaho_Falls~1nz (^town~2) a town in southeastern Idaho on the Snake River
  IL ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     Illinois~2n 
+ IN ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
+    Indiana~1n 
  Indianapolis ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Indianapolis~1nz (^state_capital~1) the capital and largest city of Indiana
  IA ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
@@ -6829,7 +6834,7 @@
     installment_debt~1nz (^debt~2) debt to be paid by installments
  invisible_balance ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     invisible_balance~1nz (^balance~7) the difference in value over a period of time of a country's imports and exports of services and payments of property incomes
- invisible ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ invisible ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     inconspicuous~1a 
     unseeable~1az impossible or nearly impossible to see
     invisible~3az 
@@ -6930,7 +6935,7 @@
     illumination_unit~1nz (^light_unit~1) a measure of illumination
  international_candle ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     international_candle~1nz (^luminous_intensity_unit~1) a former international unit of luminous intensity
- inch ( meanings=3 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN TAKES_POSTPOSITIVE_ADJECTIVE posdefault:NOUN VERB_NOOBJECT ) 
+ inch ( meanings=3 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN TAKES_POSTPOSITIVE_ADJECTIVE posdefault:NOUN VERB_NOOBJECT DISTANCE_NOUN ) 
     inch~1nz (^linear_measure~1) a unit of length equal to one twelfth of a foot
     column_inch~1nz (^square_measure~1) a unit of measurement for advertising space
     edge~9v 
@@ -7091,7 +7096,7 @@
     centigrade_scale~1nz (^temperature_scale~1) a temperature scale that defines the freezing point of water as 0 degrees and the boiling point of water as 100 degrees
  imaginative_comparison ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     imaginative_comparison~1nz (^comparison~3) the kind of mental comparison that is expressed in similes or metaphors or allegories
- imaginative ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ imaginative ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     inventive~1az marked by independence and creativity in thought or action
     imaginative~2az 
  incurvature ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -7475,7 +7480,9 @@
  iodine-125 ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER posdefault:NOUN ) 
     iodine-125~1nz (^radioisotope~1) light radioactive isotope of iodine with a half-life of 60 days
  iridium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    IR~2nz (^metal~2) a heavy brittle metallic element of the platinum group
+    Ir~1nz (^metal~2) a heavy brittle metallic element of the platinum group
+ Ir ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    iridium~1n 
  ilmenite ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     ilmenite~1nz (^mineral~1) a weakly magnetic black mineral found in metamorphic and plutonic rocks
  isinglass ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
@@ -7855,7 +7862,7 @@
     ideological~1a 
  ill-treated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     mistreated~1az subjected to cruel treatment
- inaccessible ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ inaccessible ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unaccessible~1az capable of being reached only with great difficulty or not at all
     unprocurable~1az not capable of being obtained
  inaccurate ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
@@ -7880,11 +7887,11 @@
  indolent ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     indolent~1az slow to heal or develop and usually painless
     lazy~1a 
- inadequate ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ inadequate ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unequal~1az lacking the requisite qualities or resources to meet a task
     poor~7a 
     inadequate~3az 
- incapable ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ incapable ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     incompetent~2a 
     incapable~2az lacking capacity or ability
     incapable~3az not having the temperament or inclination for
@@ -7902,7 +7909,7 @@
     inlaid~1az adorned by inlays
  inwrought ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     inwrought~1az having a decorative pattern worked or woven in
- ingenious ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ ingenious ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cunning~3a 
     ingenious~2az 
  inept ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
@@ -7913,7 +7920,7 @@
  inadvisable ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     unadvisable~1az not prudent or wise
     inadvisable~2az not advisable
- ill-advised ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
+ ill-advised ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unadvised~1az without careful prior deliberation or counsel
     ill-advised~2az 
  inaesthetic ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
@@ -7970,7 +7977,7 @@
  insentient ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     insensate~1a 
     insentient~2az 
- insensate ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 GRADE5_6 posdefault:ADJECTIVE ) 
+ insensate ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     insentient~1az devoid of feeling and consciousness and animation
     inhuman~2a 
     insensate~3az 
@@ -8062,11 +8069,11 @@
     meshed~1az interlocked and interacting
  illuminated ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
     lighted~1a 
- iridescent ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ iridescent ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     pearlescent~1a 
     shot~18a 
     iridescent~3az 
- impartial ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ impartial ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unprejudiced~1a 
     impartial~2az showing lack of favoritism
  illiberal ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -8085,7 +8092,7 @@
     individualistic~3az 
  incalculable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     incalculable~1az not capable of being computed or enumerated
- innumerable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ innumerable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unnumerable~1az too numerous to be counted
  innumerous ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     infinite~3a 
@@ -8115,7 +8122,7 @@
     inscribed~2az written on or in a surface
  inducive ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     inductive~1a 
- impulsive ( meanings=6 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ impulsive ( meanings=6 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     hotheaded~1a 
     capricious~1a 
     driving~3az having the power of driving or impelling
@@ -8297,7 +8304,7 @@
     uncomprehensible~1az difficult to understand
     inexplicable~1az incapable of being explained or accounted for
     incomprehensible~3az 
- impenetrable ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ impenetrable ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     impenetrable~1az impossible to understand
     impenetrable~2az not admitting of penetration or passage into or through
     dense~4a 
@@ -8480,7 +8487,7 @@
  ill-mannered ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     unmannered~2a 
     ill-mannered~2az 
- inventive ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ inventive ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     imaginative~1a 
  incredible ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     unbelievable~1a 
@@ -8570,11 +8577,11 @@
     infra_dig~1az 
  infra ( meanings=1 ADVERB COMMON2 COMMON1 ) 
     below~4b 
- industrious ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ industrious ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     hardworking~1a 
     energetic~2a 
     industrious~3az 
- indiscreet ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ indiscreet ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     indiscreet~1az lacking discretion
     indiscreet~2az 
  imprudent ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -8617,7 +8624,7 @@
  inedible ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     uneatable~1a 
     inedible~2az 
- ignorant ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ ignorant ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     illiterate~2a 
     unlettered~1az uneducated in general
     unknowing~2a 
@@ -8874,7 +8881,7 @@
     icebound~2az 
  ice-clogged ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     ice-clogged~1az obstructed by ice
- icy ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ) comparative=iciest 
+ icy ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=iciest 
     icy~1az covered with or containing or consisting of ice
     icy~2az shiny and slick as with a thin coating of ice
     gelid~1az extremely cold
@@ -9085,7 +9092,7 @@
     incorporated~4az 
  introjected ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:VERB ) 
     introjected~1az incorporated unconsciously into your own psyche
- intelligent ( meanings=5 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ intelligent ( meanings=5 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     intelligent~1az having the capacity for thought and reason especially to a high degree
     reasoning~2a 
     sound~12a 
@@ -9197,7 +9204,7 @@
     identified~1az having the identity known or established
  interpreted ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
     taken~2a 
- immense ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ immense ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     huge~1a 
     immense~2az 
  itty-bitty ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
@@ -9208,7 +9215,7 @@
  ill-gotten ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     dirty~8a 
     ill-gotten~2az 
- illicit ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ illicit ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     outlaw~3a 
     illicit~2az contrary to accepted morality or convention
     illicit~3az 
@@ -9459,9 +9466,9 @@
  imprecise ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     imprecise~1az not precise
     imprecise~2az 
- imbecilic ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ imbecilic ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     imbecile~2a 
- idiotic ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ idiotic ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     imbecilic~1a 
     crackbrained~1a 
     nonsensical~2a 
@@ -9531,7 +9538,7 @@
     irremediable~1az impossible to remedy or correct or redress
  irreparable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     irreparable~1az impossible to repair, rectify, or amend
- irrelevant ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ irrelevant ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     irrelevant~1az having no bearing on or connection with the subject at issue
     irrelevant~2az 
  inapplicable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -9550,7 +9557,7 @@
     unreconcilable~1az impossible to reconcile
  indrawn ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     withdrawn~1a 
- irresolute ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ irresolute ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     irresolute~1az uncertain how to act or proceed
  infirm ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     infirm~1az lacking firmness of will or character or purpose
@@ -9703,7 +9710,7 @@
     weapons-grade~1az extremely strong or concentrated or durable
  ironlike ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     ironlike~1az exhibiting strength or hardness like that of iron
- insufficient ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ insufficient ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     deficient~3a 
     insufficient~2az 
  invalidating ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
@@ -9789,7 +9796,7 @@
     incorporative~1az growing by taking over and incorporating adjacent territories
  insalubrious ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     unhealthful~3az detrimental to health
- inane ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ inane ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fatuous~1a 
  ill-conceived ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     misguided~2az poorly conceived or thought out
@@ -10169,7 +10176,7 @@
     urge~4v 
     inspire~5vz supply the inspiration for
     invigorate~4v 
- irritate ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ irritate ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     irritate~1vz excite to an abnormal condition, or chafe or inflame
     irritate~2vz excite to some characteristic action or condition, such as motion, contraction, or nervous impulse, by the application of a stimulus
     annoy~1v 
@@ -11361,7 +11368,7 @@
  insofar_as ( meanings=2 CONJUNCTION_SUBORDINATE KINDERGARTEN posdefault:PREPOSITION ) 
     insofar_as~1z 
     insofar_as~2z 
- in_addition ( ADVERB CONDITIONAL_IDIOM KINDERGARTEN  poscondition=?=R ) 
+ in_addition ( ADVERB CONDITIONAL_IDIOM KINDERGARTEN  poscondition=(null) ) 
  in_accord_with ( meanings=1 PREPOSITION posdefault:PREPOSITION ) 
     in_accord_with~1z 
  in_addition_to ( meanings=1 PREPOSITION posdefault:PREPOSITION ) 
@@ -11662,7 +11669,7 @@
     immobilize~6v 
  inure ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     harden~1v 
- incarnadine ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
+ incarnadine ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     incarnadine~1vz make flesh-colored
  imbue ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     hue~2vz suffuse with color
@@ -11682,13 +11689,13 @@
     illuminate~3vz add embellishments and paintings to
  implode ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT ) 
     go_off~1vz burst inward
- infuscate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
+ infuscate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     infuscate~1vz darken with a brownish tinge, as of insect wings
  intervene ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_NOOBJECT ) 
     intervene~1vz occur between other event or between certain points of time
     interfere~2vz get involved, so as to alter or hinder an action, or through force or threat of force
     intervene~3vz be placed or located between other things or extend between spaces and events
- iterate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ iterate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     iterate~1vz run or be performed again
     repeat~4v 
  inaugurate ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
@@ -11784,7 +11791,7 @@
     iodinate~1vz cause to combine with iodine
  ionate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     ionate~1vz add ions to
- inform ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ inform ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     inform~1vz give character or essence to
     inform~2vz impart knowledge of some fact, state or affairs, or event to
     inform~3vz act as an informer
@@ -11818,7 +11825,7 @@
     isomerize~2v 
  intuit ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT ) 
     intuit~1vz know or grasp by intuition or feeling
- infer ( meanings=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ infer ( meanings=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) 
     understand~3v 
     guess~4v 
     derive~3v 
@@ -11870,9 +11877,9 @@
  impanel ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     panel~9v 
     empanel~2v 
- introspect ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT ) 
+ introspect ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) 
     introspect~1vz reflect on one's own thoughts and feelings
- imagine ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ imagine ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB QUOTEABLE_VERB FACTITIVE_ADJECTIVE_VERB ) 
     think~7v 
     envisage~1vz form a mental image of something that is not present or that is not the case
  induce ( meanings=5 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
@@ -11898,7 +11905,7 @@
  interrelate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     interrelate~1vz place into a mutual relationship
     relate~5v 
- insist ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ insist ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     assert~1vz assert to be true
     importune~1vz beg persistently and urgently
     take_a_firm_stand~1vz be emphatic or resolute and refuse to budge
@@ -11934,7 +11941,7 @@
     inflict~1v 
     levy~4vz impose and collect
     enforce~2v 
- instruct ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ instruct ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     instruct~1vz give instructions or directions for some task
     learn~5v 
     apprise~3v 
@@ -11951,7 +11958,7 @@
  instigate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
     prompt~6vz serve as the inciting cause of
     stir_up~1vz provoke or stir up
- indicate ( meanings=5 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
+ indicate ( meanings=5 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT QUOTEABLE_VERB ) 
     argue~2v 
     bespeak~2v 
     designate~4v 
@@ -11979,18 +11986,18 @@
     pose~5vz pretend to be someone you are not
     impersonate~2vz represent another person with comic intentions
     portray~4v 
- impeach ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ impeach ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     accuse~1v 
     impeach~2vz charge with an offense or misdemeanor committed while in office
     impeach~3vz challenge the honesty or veracity of
- incriminate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ incriminate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     criminate~2vz bring an accusation against
     inculpate~1vz suggest that someone is guilty
  incite ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
     set_off~4v 
     egg_on~1vz urge on
     prompt~8v 
- imprecate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ imprecate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     curse~6v 
     anathemise~2v 
  impugn ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
@@ -12013,10 +12020,10 @@
     interpose~2vz introduce
     interpose~3vz be or come between
     intervene~2v 
- insinuate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ insinuate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     intimate~9vz give to understand
     insinuate~2vz introduce or insert in a subtle manner
- imply ( meanings=5 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ imply ( meanings=5 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     connote~1v 
     imply~2vz suggest as a logically necessary consequence
     entail~5v 
@@ -12038,7 +12045,7 @@
     endorse~2v 
     endorse~3v 
     endorse~4v 
- illustrate ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ illustrate ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     instance~3vz clarify by giving an example of
     illustrate~2vz supply with illustrations
     illustrate~3vz depict with an illustration
@@ -12175,7 +12182,7 @@
  intimidate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     intimidate~1vz make timid or fearful
     restrain~4v 
- irk ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ irk ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     gall~7vz irritate or vex
  infuriate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     incense~3v 
@@ -12269,7 +12276,7 @@
     maltreat~1v 
  ill-treat ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT ) 
     ill-use~1v 
- indict ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ indict ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     indict~1vz accuse formally of a crime
  infract ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     go_against~2v 
@@ -12441,3 +12448,4 @@
  itself ( meanings=1 PRONOUN_OBJECT COMMON4 COMMON1 PRONOUN_REFLEXIVE KINDERGARTEN PRONOUN_SINGULAR ) 
     itself~1z 
  Inc. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Inc ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 

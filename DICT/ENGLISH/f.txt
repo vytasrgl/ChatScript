@@ -226,7 +226,7 @@
     extinguisher~1nz (^device~2) a manually operated device for extinguishing small fires
  Fu ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
  Felicitas ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- fast ( meanings=16 glosses=13 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE posdefault:ADVERB VERB_NOOBJECT ) comparative=fastest 
+ fast ( meanings=16 glosses=13 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE posdefault:ADVERB VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=fastest 
     fasting~1nz (^abstinence~1) abstaining from food
     fast~2az causing a shortening of exposure time
     truehearted~1az unwavering in devotion to friend or vow or cause
@@ -288,7 +288,7 @@
     flounder~2nz (^flatfish~2) flesh of any of various American and European flatfish
     stagger~5vz walk with great difficulty
     flounder~4vz behave awkwardly
- frank ( meanings=6 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ) 
+ frank ( meanings=6 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     frankfurter~1n 
     blunt~2a 
     frank~3az clearly manifest
@@ -440,12 +440,11 @@
     flying_visit~1nz (^visit~3) a visit that last for only a very short time
  FIFO ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     first_in_first_out~1n 
- Fae ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    fuel-air_explosive~1n 
+ Fae ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  foreignness ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     curiousness~1nz (^quality~1) the quality of being alien or not native
  Fiacre ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- fine ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) comparative=finest 
+ fine ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=finest 
     amercement~1nz (^penalty~4) money extracted as a penalty
     fine~2az characterized by elegance or refinement or accomplishment
     fine~3az minutely precise especially in differences in meaning
@@ -516,7 +515,7 @@
     nervus_trigeminus~1nz (^cranial_nerve~1) the main sensory nerve of the face and motor nerve for the muscles of mastication
  Fatimah ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     Fatima~1n 
- fake ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=faker 
+ fake ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) comparative=faker 
     juke~1nz (^feint~1) a deceptive move made by a football player
     postiche~1nz (^imitation~2) something that is a counterfeit
     role_player~2n 
@@ -526,6 +525,7 @@
     talk_through_one_'s_hat~1vz speak insincerely or without regard for facts or truths
     counterfeit~3vz make a copy of with the intent to deceive
     misrepresent~2vz tamper, with the purpose of deception
+ Flem ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Farlow ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Fionna ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  flue ( meanings=3 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -555,7 +555,7 @@
     fix~15vz set or place definitely
     prepare~5v 
     fix~17vz influence an event or its outcome by illegal means
- first ( meanings=5 glosses=4 NOUN ADJECTIVE ADVERB ADJECTIVE_NUMBER NOUN_NUMBER COMMON4 COMMON2 COMMON1 ORDINAL KINDERGARTEN posdefault:ADVERB ) 
+ first ( meanings=5 glosses=4 NOUN ADJECTIVE ADVERB ADJECTIVE_NUMBER NOUN_NUMBER COMMON4 COMMON2 COMMON1 ORDINAL KINDERGARTEN posdefault:ADVERB QUANTITY_NOUN ) 
     first~1az 
     first_off~1bz before anything else
     for_the_first_time~1bz the initial time
@@ -935,7 +935,7 @@
  freshwater_bream ( meanings=2 glosses=2 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     bream~1nz (^centrarchid~1) any of various usually edible freshwater percoid fishes having compressed bodies and shiny scales
     bream~4nz (^freshwater_fish~1) flesh of various freshwater fishes of North America or of Europe
- fucoid ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
+ fucoid ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fucoid_algae~1n 
     fucoid~2nz (^fossil~1) a fossilized cast or impression of algae of the order Fucales
  Farrow ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -1218,7 +1218,7 @@
     foreleg~1nz (^forelimb~1) the forelimb of a quadruped
  Folse ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Faraji ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- functional ( meanings=7 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 posdefault:ADJECTIVE ) 
+ functional ( meanings=7 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     functional~1az designed for or capable of a particular function or use
     running~7a 
     functional~3az involving or affecting function rather than physiology
@@ -1287,7 +1287,7 @@
     formalities~1n 
  fairy_swallow ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     fairy_swallow~1nz (^domestic_pigeon~1) fancy domestic pigeon having blue-and-white plumage and heavily muffed feet
- fledgling ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ fledgling ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fledgeling~1n 
     entrant~4n 
     callow~1az young and inexperienced
@@ -1345,7 +1345,7 @@
     financial_audit~1nz (^attestation_service~1) an attestation that the client's financial statement is accurate
  Fraser ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Farkas ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- fourth ( meanings=1 glosses=1 NOUN ADJECTIVE ADVERB ADJECTIVE_NUMBER NOUN_NUMBER COMMON4 COMMON2 COMMON1 ORDINAL KINDERGARTEN ) 
+ fourth ( meanings=1 glosses=1 NOUN ADJECTIVE ADVERB ADJECTIVE_NUMBER NOUN_NUMBER COMMON4 COMMON2 COMMON1 ORDINAL KINDERGARTEN QUANTITY_NOUN ) 
     fourthly~1bz in the fourth place
  Fortuna ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Fortuna~1nz (^Roman_deity~1) the goddess of fortune and good luck
@@ -1402,7 +1402,7 @@
  Feenat ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Frida ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Franzen ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- fuzzy ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) comparative=fuzziest 
+ fuzzy ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=fuzziest 
     fuzzed~1a 
     fuzzy~2az confused and not coherent
     blurred~2a 
@@ -1565,7 +1565,6 @@
     fucoid~1nz (^brown_algae~1) any of various algae of the family Fucaceae
  free_trade ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     free_trade~1nz (^trade~2) international trade free of government interference
- Frison ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Feldtun ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Fanny ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  finesse ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -1691,7 +1690,7 @@
     fret~7v 
     frazzle~3vz wear away by rubbing
  Finan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- funny ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=funniest 
+ funny ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=funniest 
     funny_remark~1nz (^laugh~1) an account of an amusing incident 
     curious~2az beyond or deviating from the usual or expected
     mirthful~1az arousing or provoking laughter
@@ -1847,7 +1846,7 @@
  Francis ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  freshwater_fish ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     freshwater_fish~1nz (^seafood~1) flesh of fish from fresh water used as food
- find ( meanings=18 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=found 
+ find ( meanings=18 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) conjugate=found 
     uncovering~1nz (^act~1) the act of discovering something
     discovery~2nz (^brainstorm~1) a productive insight
     find_oneself~1vz accept and make use of one's personality, abilities, and situation
@@ -2228,7 +2227,6 @@
  Furst ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Fogel ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Fagundes ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Ferebee ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  fake_book ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     fake_book~1nz (^fake~2) a fake in the form of an imitation book
  Franks ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
@@ -2487,7 +2485,7 @@
     Septobasidium_pseudopedicellatum~1n 
  Faustino ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Fortunato ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- feel ( meanings=17 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_TAKES_ADJECTIVE VERB_DIRECTOBJECT ) conjugate=felt 
+ feel ( meanings=17 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_TAKES_ADJECTIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) conjugate=felt 
     feel~1nz (^stimulation~1) manual stimulation of the genital area for sexual pleasure
     tactile_property~1nz (^property~2) a property perceived by touch
     feel~3nz (^consciousness~2) an intuitive awareness
@@ -2586,7 +2584,6 @@
     favor~7v 
     favor~8v 
     favor~9v 
- Frona ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Fissurellidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Fissurellidae~1nz (^mollusk_family~1) marine limpets
  Frankliniella ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -2618,6 +2615,7 @@
  Feinstein ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Feld ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Fendley ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Ferebee ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Ferrante ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Ferro ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Fetter ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -2637,6 +2635,7 @@
     Henry_Watson_Fowler~1n 
  Franko ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Frink ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Frison ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Fulford ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Furlong ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Fyfe ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2759,6 +2758,7 @@
  Frimunt ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Frisa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Frollo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Frona ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Fronia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Fytch ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Faith ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
@@ -2773,7 +2773,6 @@
  Fransisca ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Fumiko ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Filiberto ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Flem ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Friedel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Fulgence ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Fluffy ( NOUN_HUMAN NOUN_FIRSTNAME NOUN NOUN_PROPER_SINGULAR ) 
@@ -2789,7 +2788,7 @@
     word_of_farewell~1n 
  French_leave ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     French_leave~1nz (^going~1) an abrupt and unannounced departure
- French ( meanings=5 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER GRADE1_2 VERB_DIRECTOBJECT ) 
+ French ( meanings=5 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER GRADE1_2 VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     French~1nz (^Latinian_language~1) the Romance language spoken in France and in countries colonized by France
     French_people~1nz (^country~1) the people of France
     Daniel_Chester_French~1nz (^sculptor~1) United States sculptor who created the seated marble figure of Abraham Lincoln in the Lincoln Memorial in Washington D.C.
@@ -2870,7 +2869,7 @@
     defeat~2n 
  foiling ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
     thwarting~1n 
- fault ( meanings=8 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ fault ( meanings=8 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     error~1n 
     fault~2nz (^service~4) a serve that is illegal (e.g., that lands outside the prescribed area)
     fault~3nz (^responsibility~2) responsibility for a bad situation or event
@@ -2921,7 +2920,7 @@
     flick~9vz cause to move with a flick
     twitch~6vz toss with a sharp movement so as to cause to turn over in the air
     leaf~6v 
- free ( meanings=23 glosses=19 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) comparative=freest 
+ free ( meanings=23 glosses=19 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=freest 
     free_people~1nz (^people~1) people who are free
     loose~6a 
     devoid~1az completely wanting or lacking
@@ -2992,7 +2991,7 @@
     fire~16vz drive out or away by or as if by fire
     fuel~5vz provide with fuel
     give_the_sack~1vz terminate the employment of
- fair ( meanings=18 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ fair ( meanings=18 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     carnival~2nz (^show~1) a traveling show
     bazaar~1nz (^sale~3) a sale of miscellany
     fair~3nz (^exhibition~2) a competitive exhibition of farm products
@@ -3230,7 +3229,7 @@
     forth~2bz forward in time or order or degree
     fore~3bz near or toward the bow of a ship or cockpit of a plane
     send_on~1vz send or ship onward from an intermediate post or station in transit
- foot ( meanings=14 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) plural=feet 
+ foot ( meanings=14 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT DISTANCE_NOUN ) plural=feet 
     foot~1nz (^walk~3) travel by walking
     animal_foot~1nz (^vertebrate_foot~1) the pedal extremity of vertebrates other than human beings
     invertebrate_foot~1nz (^organ~4) any of various organs of locomotion or attachment in invertebrates
@@ -3363,7 +3362,7 @@
     campaign~7v 
  flying_mare ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     flying_mare~1nz (^grappling~1) a wrestling maneuver
- figure ( meanings=18 glosses=14 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ figure ( meanings=18 glosses=14 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB ) 
     figure~1nz (^play~6) a predetermined set of movements in dancing or skating
     design~2nz (^decoration~2) a decorative or artistic work
     figure~3nz (^model~2) a model of a bodily form 
@@ -3448,7 +3447,7 @@
     fan~5vz strike out , (of a pitcher)
     winnow~4vz separate the chaff from by using air currents
     fan~7vz agitate the air
- flirt ( meanings=4 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ flirt ( meanings=4 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     flirting~1n 
     tease~2n 
     mash~4v 
@@ -3464,7 +3463,7 @@
     japery~1n 
     fluff~2n 
     frivolousness~1n 
- film ( meanings=7 glosses=4 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ film ( meanings=7 glosses=4 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     film~1nz (^object~1) a thin coating or layer
     photographic_film~1nz (^photographic_material~1) photographic material consisting of a base of celluloid covered with a photographic emulsion
     plastic_film~1nz (^sheet~4) a thin sheet of material used to wrap or cover things
@@ -3591,7 +3590,7 @@
     facial~3az of or pertaining to the outside surface of an object
     facial~4az of or concerning the face
     facial~5az 
- female ( meanings=6 glosses=5 NOUN_HUMAN NOUN_SHE NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ female ( meanings=6 glosses=5 NOUN_HUMAN NOUN_SHE NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     female~1nz (^animal~1) an animal that produces gametes that can be fertilized by male gametes (spermatozoa)
     female_person~1nz (^individual~1) a person who belongs to the sex that can have babies
     female~3az being the sex that produces fertilizable gametes (ova) from which offspring develop
@@ -3689,7 +3688,7 @@
  forlorn ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     forlorn~1az marked by or showing hopelessness
     forlorn~2az 
- friendly ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=friendliest 
+ friendly ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=friendliest 
     friendly~1nz (^military_personnel~1) troops belonging to or allied with your own military forces
     friendly~2az characteristic of or befitting a friend
     friendly~3az of or belonging to your own country's forces or those of an ally
@@ -3713,7 +3712,7 @@
     feminism~2nz (^philosophy~1) a doctrine that advocates equal rights for women
  flood_control ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     flood_control~1nz (^control~1) the art or technique of trying to control rivers with dams etc in order to minimize the occurrence of floods
- freeze ( meanings=14 glosses=14 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=frozen 
+ freeze ( meanings=14 glosses=14 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) conjugate=frozen 
     freeze~1nz (^restriction~1) fixing at a particular level
     halt~1nz (^pause~1) an interruption or temporary suspension of progress or movement
     frost~1nz (^cold_weather~1) weather cold enough to cause freezing
@@ -4571,7 +4570,7 @@
     flack_catcher~1n 
  fungicide ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     antifungal_agent~1n 
- flat ( meanings=25 glosses=20 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:ADJECTIVE ) comparative=flattest 
+ flat ( meanings=25 glosses=20 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=flattest 
     apartment~1n 
     flat~2nz (^scenery~1) scenery consisting of a wooden frame covered with painted canvas
     flat_tire~1nz (^pneumatic_tire~1) a deflated pneumatic tire
@@ -4759,7 +4758,7 @@
     telefax~2vz send something via a facsimile machine
  facsimile_machine ( meanings=1 NOUN NOUN_SINGULAR ) 
     facsimile~1n 
- fax ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT ) 
+ fax ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     facsimile_machine~1n 
     facsimile~3v 
  factory_ship ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -4826,7 +4825,7 @@
     Pepcid~1nz (^histamine_blocker~1) a histamine blocker used to treat peptic ulcers and gastritis and esophageal reflux
  fan_belt ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     fan_belt~1nz (^belt~3) a belt driven by the crankshaft that drives a fan that pulls air through the radiator
- fancy ( meanings=7 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT ) comparative=fanciest 
+ fancy ( meanings=7 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=fanciest 
     fancy~1nz (^vision~1) a kind of imagination that was held by Coleridge to be more casual and superficial than true imagination
     phantasy~2nz (^misconception~1) something many people believe that is false
     partiality~2nz (^liking~1) a predisposition to like something
@@ -4882,7 +4881,7 @@
     fast_reactor~1nz (^nuclear_reactor~1) nuclear reactor in which nuclear fissions are caused by fast neutrons because little or no moderator is used
  fat_farm ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     fat_farm~1nz (^health_club~1) a health spa that specializes in helping people lose weight
- fat ( meanings=9 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:ADJECTIVE VERB_DIRECTOBJECT ) comparative=fattest 
+ fat ( meanings=9 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=fattest 
     avoirdupois~1nz (^bodily_property~1) excess bodily weight
     adipose_tissue~1nz (^animal_tissue~1) a kind of body tissue containing stored fat that serves as a source of energy
     fat~3nz (^lipoid~1) a soft greasy substance occurring in organic tissue and consisting of a mixture of lipids 
@@ -5034,8 +5033,8 @@
     fifth_wheel~1nz (^bearing~1) a steering bearing that enables the front axle of a horse-drawn wagon to rotate
     spare~2n 
     deadwood~1nz (^redundancy~2) someone or something that is unwanted and unneeded
- fifth ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN ) 
- fighter ( meanings=3 NOUN NOUN_SINGULAR COMMON4 posdefault:NOUN ) 
+ fifth ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN QUANTITY_NOUN ) 
+ fighter ( meanings=3 NOUN NOUN_SINGULAR COMMON4 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fighter_aircraft~1n 
     hero~3n 
     battler~1n 
@@ -5059,7 +5058,7 @@
     fibril~1nz (^fibre~4) a very slender natural or synthetic fiber
  filature ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     filature~1nz (^spool~1) a bobbin used in spinning silk into thread
- file ( meanings=9 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
+ file ( meanings=9 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     file~1nz (^hand_tool~1) a steel hand tool with small sharp teeth on some or all of its surfaces
     filing_cabinet~1nz (^office_furniture~1) office furniture consisting of a container for keeping papers in order
     data_file~1nz (^record~6) a set of related records kept together
@@ -5466,7 +5465,7 @@
     fluegelhorn~1n 
  fluid_drive ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     fluid_drive~1nz (^coupling~2) an automotive power coupling
- fluid ( meanings=8 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
+ fluid ( meanings=8 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fluid~1nz (^matter~1) continuous amorphous matter that tends to flow and to conform to the outline of its container: a liquid or a gas
     fluid~2nz (^substance~1) a substance that is fluid at room temperature and pressure
     unstable~1a 
@@ -5852,7 +5851,9 @@
  frypan ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     frying_pan~1n 
  fuel-air_explosive ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    Fae~1nz (^explosive_device~1) a device consisting of a container of fuel and two explosive charges
+    FAE~1nz (^explosive_device~1) a device consisting of a container of fuel and two explosive charges
+ FAE ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    fuel-air_explosive~1n 
  fuel_cell ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     fuel_cell~1nz (^cell~2) cell that produces electricity by oxidation of fuel 
  fuel ( meanings=5 glosses=4 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
@@ -6059,7 +6060,7 @@
     pot~3n 
  forget_me_drug ( meanings=1 NOUN NOUN_SINGULAR ) 
     roofy~1n 
- forget ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=forgotten 
+ forget ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB ) conjugate=forgotten 
     block~16v 
     bury~1vz dismiss from the mind
     leave~6v 
@@ -6222,7 +6223,7 @@
  fussiness ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     fussiness~1nz (^elaborateness~1) unnecessary elaborateness in details
     peevishness~2n 
- focus ( meanings=12 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=focusing plural=foci 
+ focus ( meanings=12 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB ) conjugate=focusing plural=foci 
     focus~1nz (^distinctness~1) maximum clarity or distinctness of an image rendered by an optical system
     focus~2nz (^pellucidity~2) maximum clarity or distinctness of an idea
     focusing~2n 
@@ -6292,7 +6293,7 @@
  far_cry ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     far_cry~1nz (^disparity~1) a disappointing disparity
     far_cry~2nz (^farawayness~1) distance estimated in terms of the audibility of a cry
- far ( meanings=10 glosses=9 PARTICLE ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB ) comparative=furthest 
+ far ( meanings=10 glosses=9 PARTICLE ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB NON_COMPLEMENT_ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=furthest 
     far~1az located at a great distance in time or space or degree
     far~2az being of a considerable distance or length
     far~3az beyond a norm in opinion or actions
@@ -7235,9 +7236,8 @@
     fibre_optics~1n 
  frequency_modulation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     FM~1nz (^modulation~2) modulation of the frequency of the carrier wave
- FM ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+ FM ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     frequency_modulation~1n 
-    fermium~1n 
  four-letter_word ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     four-letter_Anglo-Saxon_word~1n 
  four-letter_Anglo-Saxon_word ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
@@ -7400,8 +7400,6 @@
     freeware~1nz (^package~2) software that is provided without charge
  Fortran_compiler ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Fortran_compiler~1nz (^compiling_program~1) a compiler for programs written in FORTRAN
- Fortran ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Fortran~1nz (^algebraic_language~1) a high-level programing language for mathematical and scientific purposes
  flow_chart ( meanings=1 NOUN NOUN_SINGULAR ) 
     flowchart~1n 
  flowchart ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -7503,7 +7501,7 @@
  falsity ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     falsehood~2n 
     falseness~3n 
- fib ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT ) 
+ fib ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     tarradiddle~2n 
     fib~2vz tell a relatively insignificant lie
  fairytale ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -7584,7 +7582,7 @@
     finger_spelling~1n 
  facial_gesture ( meanings=1 NOUN NOUN_SINGULAR ) 
     facial_expression~2n 
- frown ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT ) 
+ frown ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     scowl~1nz (^facial_expression~2) a facial expression of dislike or displeasure
     lour~1vz look angry or sullen, wrinkle one's forehead, as if to signal disapproval
  fasces ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
@@ -7594,6 +7592,8 @@
  flaunt ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     flaunt~1nz (^display~5) the act of displaying something ostentatiously
     swank~3v 
+ FORTRAN ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    FORTRAN~1nz (^algebraic_language~1) a high-level programing language for mathematical and scientific purposes
  FORTRAN_program ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     FORTRAN_program~1nz (^program~5) a program written in FORTRAN
  first_language ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -7697,7 +7697,7 @@
     trope~1n 
  frozen_metaphor ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     dead_metaphor~1nz (^metaphor~1) a metaphor that has occurred so often that it has become a new meaning of the expression
- frozen ( meanings=8 glosses=7 VERB_PAST_PARTICIPLE VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE ADJECTIVE_ONLY_PREDICATE COMMON4 KINDERGARTEN posdefault:VERB ) conjugate=froze 
+ frozen ( meanings=8 glosses=7 VERB_PAST_PARTICIPLE VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE ADJECTIVE_ONLY_PREDICATE COMMON4 KINDERGARTEN posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) conjugate=froze 
     fixed~1az incapable of being changed or moved or undone
     frozen~2az not convertible to cash
     quick-frozen~1az preserved by freezing sufficiently rapidly to retain flavor and nutritional value
@@ -8317,7 +8317,7 @@
     wad~2n 
     constellate~2vz come together as in a cluster or flock
     flock~7vz move as a crowd or in a group
- faithful ( meanings=7 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ faithful ( meanings=7 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     congregation~3n 
     faithful~2nz (^following~2) any loyal and steadfast following
     close~4a 
@@ -8609,8 +8609,8 @@
     FPS~1nz (^independent_agency~1) an agency in the General Services Administration that is a security organization to provide a safe environment where Federal agencies can conduct their business
  FPS ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Federal_Protective_Service~1n 
- fifth_column ( meanings=1 NOUN NOUN_SINGULAR ) 
-    Trojan_Horse~2n 
+ fifth_column ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    Trojan_horse~1nz (^unit~3) a subversive group that supports the enemy and engages in espionage or sabotage
  free_enterprise ( meanings=1 NOUN NOUN_SINGULAR ) 
     laissez-faire_economy~1n 
  Falange ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -8637,7 +8637,7 @@
     Federal_National_Mortgage_Association~1n 
  FNMA ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Fannie_Mae~1n 
- few ( meanings=4 glosses=2 NOUN_ABSTRACT PRONOUN_SUBJECT PRONOUN_OBJECT NOUN ADJECTIVE DETERMINER ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 COMMON1 PRONOUN_INDIRECTOBJECT KINDERGARTEN DETERMINER_PLURAL PRONOUN_PLURAL ) comparative=fewest 
+ few ( meanings=4 glosses=2 NOUN_ABSTRACT PRONOUN_SUBJECT PRONOUN_OBJECT NOUN ADJECTIVE DETERMINER ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 COMMON1 PRONOUN_INDIRECTOBJECT KINDERGARTEN DETERMINER_PLURAL PRONOUN_PLURAL ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=fewest 
     few~1nz (^elite_group~1) a small elite group
     few~2az a quantifier that can be used with count nouns and is often preceded by `a'
     few~3z 
@@ -9472,7 +9472,7 @@
     foolish_woman~1nz (^fool~2) a female fool
  foolish_woman ( meanings=1 NOUN NOUN_SINGULAR ) 
     flibbertigibbet~1n 
- foolish ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) 
+ foolish ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gooselike~1az having or revealing stupidity
     foolish~2az devoid of good sense or judgment
     foolish~3az 
@@ -9817,7 +9817,7 @@
     Kriss_Kringle~1n 
  forgetful_person ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     scatterbrain~1nz (^simple~1) a flighty and disorganized person
- forgetful ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) 
+ forgetful ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     oblivious~1az failing to keep in mind
     mindless~4az not mindful or attentive
     short~11a 
@@ -10205,7 +10205,7 @@
  First_Baron_Lytton ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Edward_George_Earle_Bulwer-Lytton~1n 
  First_Baron_Macaulay ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    MacAulay~1n 
+    Macaulay~1n 
  Ferdinand_Magellan ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Fernao_Magalhaes~1nz (^navigator~1) Portuguese navigator in the service of Spain
  Fernao_Magalhaes ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -10552,7 +10552,7 @@
  fever_tree ( meanings=4 glosses=1 NOUN NOUN_SINGULAR ) 
     Acacia_xanthophloea~1n 
     blue_gum~1n 
-    Pinckneya_pubens~1n 
+    bitter-bark~1n 
     fever_tree~4nz (^tree~1) any of several trees having leaves or bark used to allay fever or thought to indicate regions free of fever
  frangipani ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     frangipanni~1n 
@@ -10943,7 +10943,7 @@
     afloat~2a 
  forest_red_gum ( meanings=1 NOUN NOUN_SINGULAR ) 
     Eucalypt_tereticornis~1n 
- fuchsia ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+ fuchsia ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fuchsia~1nz (^bush~4) any of various tropical shrubs widely cultivated for their showy drooping purplish or reddish or white flowers
     fuchsia~2az 
  Fuchsia_coccinea ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -11476,7 +11476,7 @@
     fragrant_cliff_fern~1n 
  fragile_fern ( meanings=1 NOUN NOUN_SINGULAR ) 
     brittle_fern~1n 
- fragile ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ fragile ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fragile~1az vulnerably delicate
     delicate~2a 
     thin~4a 
@@ -11510,7 +11510,7 @@
     quick_buck~1n 
  filthy_lucre ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     filthy_lucre~1nz (^profit~2) shameful profit
- filthy ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) comparative=filthiest 
+ filthy ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=filthiest 
     nasty~1a 
     nasty~2a 
     dirty~10a 
@@ -11643,7 +11643,7 @@
     fractionation~2nz (^industrial_process~1) a process that uses heat to separate a substance into its components
  freeze-drying ( meanings=1 NOUN NOUN_SINGULAR ) 
     lyophilization~1n 
- functioning ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:VERB ) 
+ functioning ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     operation~10n 
     functioning~2az performing or able to perform its regular function
  falloff ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
@@ -11667,7 +11667,7 @@
     fundamental_measure~1nz (^measure~1) one of the four quantities that are the basis of systems of measurement
  fundamental_measure ( meanings=1 NOUN NOUN_SINGULAR ) 
     fundamental_quantity~1n 
- fill ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ fill ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     fill~1nz (^enough~1) a quantity sufficient to satisfy
     filling~6nz (^stuff~7) any material that fills a space or container
     fill~3vz plug with a substance
@@ -11732,7 +11732,7 @@
     femtovolt~1nz (^potential_unit~1) a unit of potential equal to one quadrillionth of a volt
  ft ( meanings=1 NOUN NOUN_SINGULAR COMMON4 COMMON2 COMMON1 posdefault:NOUN ) 
     foot~11n 
- furlong ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
+ furlong ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN DISTANCE_NOUN ) 
     furlong~1nz (^linear_measure~1) a unit of length equal to 220 yards
  fingerbreadth ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     digit~2n 
@@ -11834,7 +11834,7 @@
     former~2az referring to the first of two things or persons mentioned 
     other~2az belonging to the distant past
     sometime~1a 
-    late~5az of the immediate past
+    previous~3az of the immediate past
     former~6az 
  Fahrenheit_scale ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Fahrenheit_scale~1nz (^temperature_scale~1) a temperature scale that defines the freezing point of water as 32 degrees and the boiling point of water a 212 degrees
@@ -12009,7 +12009,7 @@
     fetal_alcohol_syndrome~1n 
  furry_tongue ( meanings=1 NOUN NOUN_SINGULAR ) 
     hairy_tongue~1n 
- furry ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=furriest 
+ furry ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=furriest 
     furred~1a 
     furry~2az 
  festination ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
@@ -12124,8 +12124,10 @@
  fullerene ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     fullerene~1nz (^carbon~2) a form of carbon having a large molecule consisting of an empty cage of sixty or more carbon atoms
  fermium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
-    FM~2nz (^metal~2) a radioactive transuranic metallic element produced by bombarding plutonium with neutrons
+    Fm~1nz (^metal~2) a radioactive transuranic metallic element produced by bombarding plutonium with neutrons
     fermium~2az 
+ Fm ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    fermium~1n 
  fluorine ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     F~4nz (^element~6) a nonmetallic univalent element belonging to the halogens
  francium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
@@ -12805,10 +12807,10 @@
  fie ( INTERJECTION ) 
  foo ( INTERJECTION ) 
  fooey ( INTERJECTION ) 
- fain ( meanings=2 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON2 COMMON1 posdefault:ADVERB ) 
+ fain ( meanings=2 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON2 COMMON1 posdefault:ADVERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     inclined~3a 
     gladly~1b 
- feign ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ feign ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     affect~4v 
     assume~5v 
  faze ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
@@ -12821,7 +12823,7 @@
  for ( meanings=2 PARTICLE PREPOSITION CONJUNCTION_COORDINATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION ) 
     for~1z 
     for~2z 
- femtosecond ( ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN posdefault:NOUN TIMEWORD ) 
+ femtosecond ( ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN posdefault:NOUN TIMEWORD QUANTITY_NOUN ) 
  finally ( meanings=3 glosses=2 ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB TIMEWORD ) 
     at_long_last~1bz as the end result of a succession or process
     eventually~1b 
@@ -12855,11 +12857,11 @@
     cowardly~1az lacking courage
     frightful~2az extremely distressing
     fearful~6az 
- frightened ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:VERB ) 
+ frightened ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     scared~1az made afraid
     terrified~1az thrown into a state of intense fear or desperation
     frightened~3az 
- fearless ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) 
+ fearless ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unafraid~1az oblivious of dangers or perils or calmly resolute in facing them
     audacious~3a 
     fearless~3az 
@@ -12868,7 +12870,7 @@
     feverous~1az having or affected by a fever
     febrile~1az of or relating to or characterized by fever
     feverish~4az 
- frantic ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ frantic ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     frenzied~1az excessively agitated
     excited~4a 
     frantic~3az 
@@ -12909,7 +12911,7 @@
     fascinating~3az 
  fetching ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     winning~2a 
- fortunate ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ fortunate ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ) 
     rosy~1az presaging good fortune
     golden~4a 
     fortunate~3az having unexpected good fortune
@@ -13059,7 +13061,7 @@
     indolent~2a 
  free-enterprise ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE posdefault:ADJECTIVE ) 
     competitive~2a 
- fierce ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ fierce ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     rough~4az violently agitated and turbulent
     bowelless~1az ruthless in competition
     trigger-happy~1az marked by extreme intensity of emotions or convictions
@@ -13098,7 +13100,7 @@
     focused~1az of an optical system adjusted to produce a clear image
     focussed~1a 
     focussed~2a 
- fuscous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ fuscous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     taupe~2az of something having a dusky brownish grey color
  flame-orange ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     red-orange~1a 
@@ -13120,11 +13122,11 @@
     flesh-colored~2az 
  flesh-coloured ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     flesh-colored~1az having a bright red or pinkish color
- faded ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ faded ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     washed-out~1a 
     attenuate~1a 
     faded~3az 
- flashy ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=flashiest 
+ flashy ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=flashiest 
     sporty~2a 
     brassy~2a 
     flashy~3az 
@@ -13224,7 +13226,7 @@
  feckless ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     inept~2a 
     feckless~2az not fit to assume responsibility
- fretful ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 GRADE5_6 posdefault:ADJECTIVE ) 
+ fretful ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     whiny~1az habitually complaining
     fidgety~1az nervous and unable to relax
     fretful~3az 
@@ -13308,7 +13310,7 @@
  fictive ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     fictive~1az capable of imaginative creation
     assumed~1a 
- fabulous ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ fabulous ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fabulous~1az barely credible
     fab~1az extremely pleasing
     mythological~1az based on or told of in traditional stories
@@ -13417,7 +13419,7 @@
     flighty~3az 
  fevered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     fevered~1az highly excited
- forgiving ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
+ forgiving ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     exonerative~1a 
     forgiving~2az inclined or able to forgive and show mercy
  full-fledged ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
@@ -13450,7 +13452,7 @@
     unfailing~3a 
     foolproof~2az 
     goofproof~1v 
- fantastic ( meanings=5 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN ADJECTIVE_POSTPOSITIVE posdefault:ADJECTIVE ) 
+ fantastic ( meanings=5 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN ADJECTIVE_POSTPOSITIVE posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fantastical~1az ludicrously odd
     wondrous~1az extraordinarily good or great 
     fantastic~3az extravagantly fanciful in design, construction, appearance
@@ -13484,7 +13486,7 @@
  finical ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     particular~6a 
     finical~2az 
- finicky ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ finicky ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     finical~1a 
     finicky~2az 
  fussy ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=fussiest 
@@ -13495,7 +13497,7 @@
  fattish ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     fattish~1az somewhat fat
     fattish~2az 
- fleshy ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=fleshiest 
+ fleshy ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=fleshiest 
     overweight~2a 
     sarcoid~1a 
     fleshy~3az 
@@ -13714,7 +13716,7 @@
     flaming~2a 
     fervid~2a 
     fiery~4az 
- frigid ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) 
+ frigid ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     arctic~2a 
     icy~4a 
     cold~12a 
@@ -13873,14 +13875,14 @@
     foliaged~2az 
  foliolate ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     foliolate~1az having leaflets (compound leaves) or a specified kind or number of leaflets
- furtive ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ furtive ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     backstair~1a 
     sneak~4a 
     furtive~3az 
  forgivable ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     venial~1az easily excused or forgiven
     forgivable~2az 
- fanatical ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ fanatical ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     rabid~1a 
     fanatical~2az 
  future_day ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM  poscondition=?=A ) 
@@ -13925,7 +13927,7 @@
  flowered ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     floral~1az resembling or made of or suggestive of flowers
     flowered~2az 
- freckled ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
+ freckled ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lentiginous~1a 
     freckled~2az 
  featureless ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -13971,7 +13973,7 @@
     fur-bearing~1az of animals having fur
  fruitless ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     bootless~1a 
- futile ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ futile ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fruitless~1a 
     otiose~2a 
     futile~3az 
@@ -14019,7 +14021,7 @@
  fretted ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     latticed~1a 
     fretted~2az having frets
- flowery ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ flowery ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ornate~1az marked by elaborate rhetoric and elaborated with decorative details
     flowery~2az of or relating to or suggestive of flowers
     flowery~3az 
@@ -14043,7 +14045,7 @@
  featherbrained ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     empty-headed~1a 
     featherbrained~2az 
- flippant ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ flippant ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     light-minded~1a 
  frolicsome ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     sportive~1az given to merry frolicking
@@ -14193,9 +14195,9 @@
     flourishing~2az 
  foiled ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     disappointed~1a 
- frustrated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:VERB ) 
+ frustrated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     thwarted~1az disappointingly unsuccessful
- first-rate ( meanings=2 glosses=1 ADJECTIVE ADVERB ADJECTIVE_NORMAL posdefault:ADJECTIVE ) comparative=first-rater 
+ first-rate ( meanings=2 glosses=1 ADJECTIVE ADVERB ADJECTIVE_NORMAL posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=first-rater 
     A-one~1a 
     very_well~2bz quite well
  fantabulous ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -14783,7 +14785,7 @@
     enchant~2v 
     grip~10v 
     intrigue~4v 
- frighten ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ frighten ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB FACTITIVE_ADJECTIVE_VERB ) 
     fright~2v 
     frighten~2vz drive out by frightening
  frustrate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
@@ -15592,7 +15594,7 @@
     flip~10v 
  fall_into_place ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT VERB_CONJUGATE1 ) conjugate=falling_into_place 
     penetrate~1v 
- find_out ( meanings=4 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
+ find_out ( meanings=4 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 OMITTABLE_THAT_VERB ) 
     get_wind~1v 
     catch_out~1v 
     find~7v 
@@ -15634,7 +15636,7 @@
     anticipate~6v 
  ferret_out ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB SEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     ferret~3vz search and discover through persistent investigation
- flabbergast ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ flabbergast ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     bowl_over~1vz overcome with amazement
  factorize ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     factorise~1vz resolve into factors
@@ -15693,14 +15695,14 @@
  feed_back ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_CONJUGATE1 ) 
     feed_back~1vz respond to a query or outcome
     resubmit~1vz submit again to a program or automatic system
- felicitate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
+ felicitate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     congratulate~2v 
  fend_for ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     defend~1v 
  fend ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     resist~1v 
     fend~2vz try to manage without help
- forgive ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) conjugate=forgiven 
+ forgive ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT QUOTEABLE_VERB ) conjugate=forgiven 
     forgive~1vz stop blaming or grant forgiveness
     forgive~2vz absolve from payment
  foredoom ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
@@ -15784,7 +15786,7 @@
     turn_over~2v 
  fiddle_with ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     twiddle~2v 
- fondle ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ fondle ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     caress~2vz touch or stroke lightly in a loving or endearing manner
  flap_down ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     slam~6v 
@@ -15829,7 +15831,7 @@
  fabricate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     invent~2v 
     construct~4v 
- fantasize ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ fantasize ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) 
     fantasise~1vz portray in the mind
     fantasise~2vz indulge in fantasies
  fantasise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 

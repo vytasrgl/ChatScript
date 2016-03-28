@@ -448,7 +448,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 		ptr = SkipWhitespace(endptr + 1);   // past end of choice
 	}
 
-	//   pick a choice randomly
+	//   pick a choice randomly - a choice starts past the [  but has visible the closing ]
 	respondLevel = 0;
 	while (count > 0)
 	{
@@ -984,7 +984,8 @@ retry:
 		case ')':  case ']': case '}':  // ordinary output closers, never space before them
 			*buffer++ = *word;
 			*buffer = 0;
-            break;
+ 			--paren;
+			break;
 		case '(': case '{':
 			CONDITIONAL_SPACE();
 			if (controls & OUTPUT_RAW) strcpy(buffer,word);

@@ -1352,7 +1352,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		if (skip) return false;	// cannot stay any longer
 		// endwrap allowed
 		if (i > endSentence && endwrap && direction == 1) i = startSentence;
-		else if ( i < (int)startSentence  && endwrap && direction == -1) i = endSentence;
+		else if ( i < startSentence  && endwrap && direction == -1) i = endSentence;
 		else if (control == ISQUESTION) {;}
 		else if (control == PRIORCANONICAL || control == PRIORORIGINAL) i = endSentence;
 		else return (notflag) ? true : false;
@@ -1374,8 +1374,8 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		case POSITION: // FIRST LAST START END  where doublequotes can be ignored
 			if ( bits == 1) 
 			{
-				if (i == (int)startSentence) answer = true;
-				else if ( i == (int) (startSentence+1) && *wordStarts[startSentence] == '"') answer = true;
+				if (i == startSentence) answer = true;
+				else if ( i ==  (startSentence+1) && *wordStarts[startSentence] == '"') answer = true;
 				if (answer && !notflag && direction == -1) endwrap = true;	// allowed to test wrap around end
 			}
 			else if ( bits > 100 && i == endSentence) 
@@ -1476,12 +1476,12 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		case HAS2VERBS: // GLOBAL    subord conjunct will require it
 			{
 				int n = 0;
-				for (int i = startSentence; i <= endSentence; ++i)
+				for (int x = startSentence; x <= endSentence; ++x)
 				{
-					if (posValues[i] & VERB_BITS) 
+					if (posValues[x] & VERB_BITS) 
 					{
 						if (notflag) ++n; // pessimise to 2 possible verb
-						else if (bitCounts[i] == 1) ++n;  // KNOWN to be true
+						else if (bitCounts[x] == 1) ++n;  // KNOWN to be true
 					}
 				}
 				if (n > 1) answer = NO_FIELD_INCREMENT;
@@ -1562,7 +1562,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 					// at sentence start if comma follows with no verb in this chunk. (so not a gerund)
 					if (i == startSentence)  // Studying hard, he ran.
 					{
-						 int j;
+						int j;
 						for (j = i+1; j < endSentence; ++j)
 						{
 							if (*wordStarts[j] == ',') break; // if found a verb, might be gerund, but still possible participle
@@ -1570,9 +1570,9 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 						if (*wordStarts[j] == ',') answer = true;
 					}
 					// at sentence start if comma follows with no verb in this chunk. (so not a gerund)
-					if ((i-1) == (int)startSentence && posValues[i-1] & CONJUNCTION)  // after Studying hard, he ran.
+					if ((i-1) == startSentence && posValues[i-1] & CONJUNCTION)  // after Studying hard, he ran.
 					{
-						 int j;
+						int j;
 						for (j = i+1; j < endSentence; ++j)
 						{
 							if (*wordStarts[j] == ',') break; // if found a verb, might be gerund, but still possible participle
@@ -1581,12 +1581,12 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 					}
 
 					// after "as" object as adjective
-					if (!stricmp(wordStarts[i-1],(char*)"as")) // I remember him as silly
+					if (i > 1 && !stricmp(wordStarts[i-1],(char*)"as")) // I remember him as silly
 					{
 						answer = true;
 						break;
 					}
-					if (i > 1 && !stricmp(wordStarts[i-2],(char*)"as") && posValues[i-1] & ADVERB) // I remember his as seriously silly
+					if (i > 2 && !stricmp(wordStarts[i-2],(char*)"as") && posValues[i-1] & ADVERB) // I remember his as seriously silly
 					{
 						answer = true;
 						break;
@@ -1652,7 +1652,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 						answer = true;
 						break;
 					}
-					if (i > 1 && !stricmp(wordStarts[i-2],(char*)"as") && posValues[i-1] & ADVERB) // I remember his as seriously silly
+					if (i > 2 && !stricmp(wordStarts[i-2],(char*)"as") && posValues[i-1] & ADVERB) // I remember his as seriously silly
 					{
 						answer = true;
 						break;
@@ -2571,7 +2571,7 @@ static void GuessOnProbability(bool &changed)
 static bool ApplyRules() // get the set of all possible tags.
 {
 	if (!tags) return true;
-	if (trace & TRACE_POS && prepareMode != PREPARE_MODE) Log(STDUSERLOG,(char*)"%s",DumpAnalysis(startSentence,endSentence,posValues,(char*)"\r\nOriginal POS: (char*)",true,true));
+	if (trace & TRACE_POS && prepareMode != PREPARE_MODE) Log(STDUSERLOG,(char*)"%s",DumpAnalysis(startSentence,endSentence,posValues,(char*)"\r\nOriginal POS:",true,true));
 	unsigned int pass = 0;
 	unsigned int limit = 50;
 retry:
@@ -2898,7 +2898,7 @@ char* DumpAnalysis(int start, int end,uint64 flags[MAX_SENTENCE_LENGTH],const ch
 				else if (D && D->properties & FOREIGN_WORD)  strcat(buffer,(char*)"/foreign");
 			}
 		}
-		strcat(buffer,(char*)" ((char*)");
+		strcat(buffer,(char*)" (");
 		lenpre = strlen(buffer);
 #ifndef DISCARDPARSER
 		if (roleDisplay)
@@ -3814,7 +3814,6 @@ static void AddClause(int i,char* msg)
 		SetRole(i,needRoles[roleIndex] & (OBJECT2|MAINOBJECT));
 		needRoles[roleIndex] &= -1 ^ OBJECT_COMPLEMENT; // in addition remove this
 	}
-
 	if (trace & TRACE_POS) Log(STDUSERLOG,msg,wordStarts[i]);
 	if (!clauses[i])
 	{
@@ -3827,6 +3826,10 @@ static void AddClause(int i,char* msg)
 	{
 		if (posValues[i-1] & ADJECTIVE_BITS) SetRole(i,ADJECTIVE_COMPLEMENT);
 		AddRoleLevel(CLAUSE|SUBJECT2|VERB2,i); // start of a clause triggers a new level for it, looking for subject and verb (which will be found).
+		if (!stricmp(wordStarts[i],"that") || !stricmp(wordStarts[i],"who")) // fibers "that" show up
+		{
+			if (posValues[i+1] & (VERB_BITS | AUX_VERB)) needRoles[roleIndex] &= -1 ^ SUBJECT2; // could be a verb
+		}
 		// possibly the start is the subject (or object) or possibly not. cannot tell in advance usually.
 		if (!firstNounClause) // pending noun clause as subject for verb
 		{					

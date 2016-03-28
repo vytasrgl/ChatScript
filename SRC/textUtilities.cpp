@@ -330,7 +330,6 @@ void AcquireDefines(char* fileName)
 		else if (!strnicmp(readBuffer,(char*)"// end system flags",19))  // end of system flags seen
 		{
 			offset = 1;
-			endsystem = true;
 		}
 		else if (!strnicmp(readBuffer,(char*)"// parse flags",14))  // start of parse flags seen
 		{
@@ -344,6 +343,7 @@ void AcquireDefines(char* fileName)
 			word[2] = ENDUNIT; // misc flag words have ```` in front
 			word[3] = ENDUNIT; // misc flag words have ```` in front
 			offset = 4;
+			endsystem = true;
 		}
 
 		char* ptr = ReadCompiledWord(readBuffer,word+offset);
@@ -404,8 +404,7 @@ void AcquireDefines(char* fileName)
                 excludeop = plusop = minusop = orop = shiftop = timesop = false;
             }
         }
-		WORDP D = StoreWord(word,AS_IS);
-		D->properties = result;
+		WORDP D = StoreWord(word,AS_IS | result);
 		AddInternalFlag(D,DEFINES);
 
 #ifdef WIN32
@@ -413,7 +412,7 @@ void AcquireDefines(char* fileName)
 #else
 		sprintf(word+offset,(char*)"%lld",result); 
 #endif
-		if (!endsystem) // cross ref from number to value only for properties and system flags for decoding bits back to words for marking
+		if (!endsystem) // cross ref from number to value only for properties and system flags and parsemarks for decoding bits back to words for marking
 		{
 			WORDP E = StoreWord(word);
 			AddInternalFlag(E,DEFINES);
@@ -875,17 +874,20 @@ unsigned int IsNumber(char* word,bool placeAllowed) // simple digit number or wo
 		else if (IsPlaceNumber(hyphen+1)) return FRACTION_NUMBER;
 	}
 
-	// test for fraction
+	// test for fraction or percentage
 	bool slash = false;
+	bool percent = false;
 	if (IsDigit(*word)) // see if all digits now.
 	{
 		char* ptr = word;
 		while (*++ptr)
 		{
 			if (*ptr == '/' && !slash) slash = true; 
+			else if (*ptr == '%' && !ptr[1]) percent = true; 
 			else if (!IsDigit(*ptr)) break;	// not good
 		}
 		if (slash && !*ptr) return FRACTION_NUMBER;  
+		if (percent && !*ptr) return FRACTION_NUMBER;  
 	}
 
     return (Convert2Integer(word) != NOT_A_NUMBER) ? WORD_NUMBER : 0;		//   try to read the number
@@ -1355,7 +1357,8 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 					break;					// end of string - otherwise will be \n
 			}
 			if (c != '\n' && c != '\r') holdc = c; // failed to find lf... hold this character for later but ignoring 2 cr in a row
-			if (c == '\n') 	++currentFileLine;	// for debugging error messages
+			if (c == '\n') 	
+				++currentFileLine;	// for debugging error messages
 			if (blockComment) 
 			{
 				if (endingBlockComment) 

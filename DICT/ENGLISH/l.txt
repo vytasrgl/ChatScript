@@ -57,8 +57,7 @@
  Lindholm ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Leiopelma ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Leiopelma~1n 
- Lasalle ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
-    Sieur_de_LaSalle~1n 
+ Lasalle ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Labarbera ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  learnedness ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     learning~2n 
@@ -84,7 +83,7 @@
  Lissie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  lesser_scaup_duck ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     Aythya_affinis~1nz (^scaup_duck~1) common scaup of North America
- little ( meanings=13 glosses=10 NOUN_ABSTRACT PRONOUN_SUBJECT PRONOUN_OBJECT NOUN ADJECTIVE ADVERB DETERMINER ADJECTIVE_NORMAL NOUN_SINGULAR EXTENT_ADVERB ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN PRONOUN_SINGULAR posdefault:ADJECTIVE ) comparative=littler 
+ little ( meanings=13 glosses=10 NOUN_ABSTRACT PRONOUN_SUBJECT PRONOUN_OBJECT NOUN ADJECTIVE ADVERB DETERMINER ADJECTIVE_NORMAL NOUN_SINGULAR EXTENT_ADVERB ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN PRONOUN_SINGULAR posdefault:ADJECTIVE NEGATIVE_ADVERB_STARTER ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=littler 
     little~1nz (^small_indefinite_quantity~1) a small amount or duration
     little~2az small in a way that arouses feelings 
     trivial~1az small and of little importance
@@ -99,7 +98,7 @@
     little~12z 
     little~13z 
  Leisa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- last ( meanings=22 glosses=18 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:VERB OMITTABLE_TIME_PREPOSITION VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ last ( meanings=22 glosses=18 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:VERB OMITTABLE_TIME_PREPOSITION VERB_DIRECTOBJECT VERB_NOOBJECT TIME_ADJECTIVE ) 
     last~1nz (^activity~1) a person's dying act
     cobbler_'s_last~1nz (^holding_device~1) holding device shaped like a human foot that is used to fashion or repair shoes
     final_stage~1nz (^finish~4) the concluding parts of an event or occurrence
@@ -199,7 +198,7 @@
     ligation~1nz (^tying~1) tying a duct or blood vessel with a ligature (as to prevent bleeding during surgery)
  legionella ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     Legionella_pneumophilia~1n 
- large ( meanings=12 glosses=10 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ) comparative=larger 
+ large ( meanings=12 glosses=10 NOUN_ABSTRACT NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=larger 
     large~1nz (^size~1) a garment size for a large person
     great~2a 
     large~3az having broad power and range and scope
@@ -429,8 +428,7 @@
  Larkin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lamere ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Lorence ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Lem ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    lunar_excursion_module~1n 
+ Lem ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  lick ( meanings=7 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) 
     punch~1n 
     lap~1n 
@@ -688,7 +686,7 @@
  long-term ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     long-run~1a 
     long-term~2az 
- level ( meanings=20 glosses=15 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=leveller 
+ level ( meanings=20 glosses=15 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=leveller 
     storey~1nz (^structure~1) a structure consisting of a room or set of rooms at a single position along a vertical scale
     horizontal_surface~1nz (^surface~2) a flat surface at right angles to a plumb line
     spirit_level~1nz (^indicator~1) indicator that establishes the horizontal when a bubble is centered in a tube of liquid
@@ -865,8 +863,6 @@
     line-drive_double~1n 
  LuGanda ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     LuGanda~1nz (^Bantoid_language~1) the Bantu language of the Buganda people
- Lancelot ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
-    Sir_Lancelot~1n 
  Letizia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lophodytes_cucullatus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     hooded_sheldrake~1nz (^merganser~1) small North American duck with a high circular crest on the male's head
@@ -976,7 +972,7 @@
  Leopoldine ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lundie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  lunar_excursion_module ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    lunar_module~1nz (^ballistic_capsule~1) a spacecraft that carries astronauts from the command module to the surface of the moon and back
+    LEM~1nz (^ballistic_capsule~1) a spacecraft that carries astronauts from the command module to the surface of the moon and back
  linguistic_competence ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     linguistic_competence~1nz (^competence~1) a speaker's implicit, internalized knowledge of the rules of their language (contrasted with linguistic performance)
  Leflore ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -1228,7 +1224,7 @@
  Leptotyphlops_humilis ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     western_blind_snake~1nz (^blind_snake~1) burrows among roots of shrubs and beneath rocks in desert and rocky hillside areas and beach sand of western United States
  Louisiana ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    La~1n 
+    Pelican_State~1n 
  Lux ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Lathrop ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lum ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -1433,7 +1429,7 @@
  Lenore ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Lenwood ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  local_area_network ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    Lan~1nz (^computer_network~1) a local computer network for communication between computers
+    LAN~1nz (^computer_network~1) a local computer network for communication between computers
  Lisandro ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  labium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) plural=labia 
     labium~1nz (^external_body_part~1) a liplike structure that bounds a bodily orifice
@@ -1495,7 +1491,7 @@
     lying_in_wait~2az waiting in concealment
  Leana ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lise ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- lemon ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ lemon ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     stinker~1nz (^artifact~1) an artifact that is defective or unsatisfactory
     maize~1nz (^yellow~1) a strong yellow color
     lemon~3nz (^nip~4) a distinctive tart flavor characteristic of lemons
@@ -1846,19 +1842,6 @@
     beauty~3n 
  Lulu ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
  Louann ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- late ( meanings=12 glosses=8 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE TIMEWORD ) comparative=latest 
-    late~1az having died recently
-    late~2az being or occurring at an advanced period of time or after a usual or expected time
-    later~2a 
-    late~4az of a later stage in the development of a language or literature
-    previous~3a 
-    recent~2az of the immediate past or just previous to the present time
-    tardy~1az after the expected or usual time
-    late~8az 
-    tardily~1bz later than usual or than expected
-    lately~1b 
-    deep~22bz to an advanced time
-    late~12bz at an advanced age or stage
  Laverriere ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Loftin ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  law_of_gravitation ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -2137,7 +2120,7 @@
  Landrada ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  long_division ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     long_division~1nz (^division~3) the operation of division in which the sequence of steps are indicated in detail
- leader ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN ) comparative=lead 
+ leader ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=lead 
     loss_leader~1nz (^feature~1) a featured article of merchandise sold at a loss in order to draw customers
     leader~2nz (^individual~1) a person who rules or guides or inspires others
  Leister ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -2159,7 +2142,6 @@
  Lelar ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  large_white_petunia ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     Petunia_axillaris~1nz (^petunia~1) annual herb having large nocturnally fragrant white flowers
- Lucretia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Lavine ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Laurette ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lorriane ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2376,7 +2358,7 @@
     Richard_Lovelace~1n 
  light_show ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     light_show~1nz (^display~1) a display of colored lights moving in shifting patterns
- lower ( meanings=6 glosses=1 MORE_FORM VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=low 
+ lower ( meanings=6 glosses=1 MORE_FORM VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT NON_COMPLEMENT_ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=low 
     lower_berth~1n 
     glower~2v 
     lour~2v 
@@ -2534,7 +2516,7 @@
     leadership~2nz (^ability~2) the ability to lead
     leadership~3nz (^body~9) the body of people who lead a group
     leadership~4nz (^position~16) the status of a leader
- liquid ( meanings=12 glosses=9 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN posdefault:ADJECTIVE ) 
+ liquid ( meanings=12 glosses=9 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     liquid~1nz (^consonant~1) a frictionless continuant that is not a nasal consonant
     liquid_state~1nz (^state~7) the state in which a substance exhibits a characteristic readiness to flow with little or no tendency to disperse and relatively high incompressibility
     liquid~3nz (^fluid~1) fluid matter having no fixed shape but a fixed volume
@@ -2603,7 +2585,6 @@
     Limacidae~1nz (^mollusk_family~1) slugs
  Lydon ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Lodima ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Luciano ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Luxovious ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lany ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Leax ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2715,6 +2696,7 @@
  Luce ( meanings=2 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Clare_Booth_Luce~1n 
     Henry_Luce~1n 
+ Luciano ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lucien ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lujan ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Lundberg ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -2740,6 +2722,8 @@
  Lala ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lalia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lamorak ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Lancelot ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+    Sir_Lancelot~1n 
  Landmari ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  L'Angley ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lani ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2933,6 +2917,7 @@
  Lucinda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Lucious ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lucrece ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Lucretia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Lucy ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
     Lucy~1nz (^Australopithecus_afarensis~1) incomplete skeleton of female found in eastern Ethiopia in 1974
  Ludwik ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2976,8 +2961,7 @@
  Lakia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lakita ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lamonica ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Lan ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    local_area_network~1n 
+ Lan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Larae ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Laree ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Larhonda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2998,8 +2982,7 @@
  Lavette ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lavonda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lavonia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Le ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
-    lupus_erythematosus~1n 
+ Le ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
  Lean ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Leeanna ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Leisha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
@@ -3059,7 +3042,7 @@
     life~12nz (^period~3) the period between birth and the present time
     life~13nz (^period~3) the period from the present until death
     life_sentence~1nz (^sentence~3) a prison term lasting as long as the prisoner lives
- leave ( meanings=17 glosses=15 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT ) conjugate=left 
+ leave ( meanings=17 glosses=15 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT FACTITIVE_NOUN_VERB FACTITIVE_ADJECTIVE_VERB ) conjugate=left 
     leave-taking~1nz (^going~1) the act of departing politely
     leave~2nz (^permission~2) permission to do something
     leave_of_absence~1nz (^time_off~1) the period of time during which you are absent from work or duty
@@ -3151,7 +3134,7 @@
     localization_principle~1n 
  leading_astray ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     leading_off~1nz (^temptation~1) the act of enticing others into sinful ways
- lucky ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) comparative=luckiest 
+ lucky ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=luckiest 
     golden~1a 
     lucky~2az occurring by chance
     lucky~3az having or bringing good fortune
@@ -3176,7 +3159,7 @@
     leveraged_buyout~1nz (^buyout~1) a buyout using borrowed money
  light_adaptation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     light_adaptation~1nz (^adaptation~1) the process of adjusting the eyes to relatively high levels of illumination
- light ( meanings=47 glosses=42 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=lit comparative=lighter 
+ light ( meanings=47 glosses=42 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) conjugate=lit comparative=lighter 
     light_source~1nz (^source_of_illumination~1) any device serving as a source of illumination
     lighter~2n 
     lightness~2nz (^visual_property~1) the visual effect of illumination on objects or scenes as created in pictures
@@ -3262,7 +3245,7 @@
     hurl~4v 
  lap_of_honour ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     victory_lap~1nz (^circle~1) a lap by the winning person or team run to celebrate the victory
- low ( meanings=16 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR EXTENT_ADVERB COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE VERB_NOOBJECT ) comparative=lowest 
+ low ( meanings=16 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR EXTENT_ADVERB COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE VERB_NOOBJECT NON_COMPLEMENT_ADJECTIVE QUOTEABLE_VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=lowest 
     low_gear~1nz (^gear~3) the lowest forward gear ratio in the gear box of a motor vehicle
     low~2nz (^degree~1) a low level or position or degree
     depression~9nz (^air_mass~1) an air mass of lower pressure
@@ -3279,7 +3262,7 @@
     low~14az 
     low~15bz in a low position
     moo~2vz make a low noise, characteristic of bovines
- long ( meanings=12 glosses=11 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL EXTENT_ADVERB ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE posdefault:ADVERB ) comparative=longest 
+ long ( meanings=12 glosses=11 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL EXTENT_ADVERB ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE posdefault:ADVERB DISTANCE_ADJECTIVE ) comparative=longest 
     long~1az having or being more than normal or necessary:
     long~2az primarily spatial sense
     long~3az primarily temporal sense
@@ -3494,7 +3477,7 @@
  lavishness ( meanings=2 NOUN NOUN_SINGULAR COMMON2 ) 
     prodigality~1n 
     luxury~2n 
- legal ( meanings=7 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ legal ( meanings=7 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     legal~1az allowed by official rules
     legal~2az established by or founded upon law or official or accepted rules
     sound~16a 
@@ -3603,7 +3586,7 @@
     hearing~1n 
  life_class ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     life_class~1nz (^art_class~1) an art class using a live human model
- lecture ( meanings=5 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ lecture ( meanings=5 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     lecturing~1nz (^instruction~2) teaching by giving a discourse on some subject
     speech~2n 
     talk~5n 
@@ -3737,7 +3720,7 @@
  lamentation ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     mourning~1nz (^activity~1) the passionate and demonstrative activity of expressing grief
     wail~1nz (^complaint~4) a cry of sorrow and grief
- laughter ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
+ laughter ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN QUOTEABLE_VERB ) 
     laughter~1nz (^activity~1) the activity of laughing
     laugh~3n 
  loaning ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
@@ -3836,7 +3819,7 @@
     star~7n 
     lead~15nz (^score~9) the score by which a team or individual is winning
     lead~16nz (^angle~2) the angle between the direction a gun is aimed and the position of a moving target
-    PB~4nz (^metal~2) a soft heavy toxic malleable metallic element
+    Pb~2nz (^metal~2) a soft heavy toxic malleable metallic element
     lead~18az 
     lead~19vz cause to undertake a certain action
     chair~6v 
@@ -4027,7 +4010,7 @@
     Dermochelys_coriacea~1n 
  leatherback ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     leatherback_turtle~1n 
- leathery ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ leathery ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     leathered~1a 
     leathery~2az 
  Lepidosauria ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -4758,7 +4741,7 @@
     communion_table~1n 
  Larotid ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Trimox~1n 
- lobby ( meanings=4 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ lobby ( meanings=4 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     foyer~1n 
     third_house~1nz (^political_entity~1) a group of people who try actively to influence legislation
     lobby~3nz (^people~1) the people who support some common cause or business or principle or sectional interest
@@ -4803,7 +4786,7 @@
     funny_house~1n 
  long-beard ( meanings=1 NOUN NOUN_SINGULAR ) 
     longbeard~1n 
- licorice ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ licorice ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     liquorice~1n 
     Glycyrrhiza_glabra~1n 
  liquidiser ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
@@ -4819,7 +4802,7 @@
     breechclout~1n 
  loud_hailer ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     loud-hailer~1nz (^loudspeaker_system~1) a portable loudspeaker with built-in microphone and amplifier
- loud ( meanings=4 glosses=2 ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE posdefault:ADVERB ) 
+ loud ( meanings=4 glosses=2 ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE posdefault:ADVERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     loud~1az characterized by or producing sound of great volume or intensity
     forte~4az used chiefly as a direction or description in music
     flash~11a 
@@ -4876,7 +4859,7 @@
  loving_cup ( meanings=2 glosses=1 NOUN NOUN_SINGULAR ) 
     cup~2n 
     loving_cup~2nz (^drinking_vessel~1) a large drinking vessel that people drink out of in turn at a banquet
- loving ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:VERB ) 
+ loving ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     loving~1az feeling or showing love and affection
     loving~2az 
  ledger ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -5194,7 +5177,7 @@
     tincture_of_opium~1n 
  laugh_track ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     laugh_track~1nz (^soundtrack~1) prerecorded laughter added to the soundtrack of a radio or television show
- laugh ( meanings=4 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ laugh ( meanings=4 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     jape~1nz (^humor~5) a humorous anecdote or remark intended to provoke laughter
     laugh~2nz (^facial_expression~2) a facial expression characteristic of a person laughing
     laughter~2nz (^vocalization~1) the sound of laughing
@@ -5256,7 +5239,7 @@
     leper~2nz (^diseased_person~1) a person afflicted with leprosy
  lazy_daisy_stitch ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     lazy_daisy_stitch~1nz (^chain_stitch~1) long chain stitches arranged in flower patterns
- lazy ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) comparative=laziest 
+ lazy ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=laziest 
     work-shy~1az disinclined to work or exertion
     lazy~2az moving slowly and gently
     lazy~3az 
@@ -5400,7 +5383,7 @@
     lido_deck~1nz (^deck~1) an open deck including a swimming pool
  Liebig_condenser ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Liebig_condenser~1nz (^condenser~4) a condenser: during distillation the vapor passes through a tube that is cooled by water
- lie ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=lying 
+ lie ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) conjugate=lying 
     prevarication~3nz (^falsehood~2) a statement that deviates from or perverts the truth
     lie~2nz (^position~12) position or manner in which something is situated
     lie~3vz tell an untruth
@@ -5679,6 +5662,8 @@
     local~2n 
  local_anaesthetic ( meanings=1 NOUN NOUN_SINGULAR ) 
     local_anesthetic~1n 
+ LAN ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    local_area_network~1n 
  local_oscillator ( meanings=1 NOUN NOUN_SINGULAR ) 
     heterodyne_oscillator~1n 
  local_road ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -5879,11 +5864,13 @@
     sawmill~1n 
  lumberyard ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 ) 
     lumberyard~1nz (^work~5) a workplace where lumber is stocked for sale
- lunar ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ lunar ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lunar~1az of or relating to or associated with the moon
     lunar~2az 
  lunar_module ( meanings=1 NOUN NOUN_SINGULAR ) 
-    Lem~1n 
+    lunar_excursion_module~1n 
+ LEM ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    lunar_module~1n 
  lunchroom ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 KINDERGARTEN posdefault:NOUN ) 
     lunchroom~1nz (^restaurant~1) a restaurant where lunch can be purchased
  lunette ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -6184,7 +6171,7 @@
     lusterlessness~1n 
  lemon_yellow ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     gamboge~1n 
- lavender ( meanings=4 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ) 
+ lavender ( meanings=4 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lavender~1nz (^purple~1) a pale purple color
     lavender~2nz (^bush~4) any of various Old World aromatic shrubs or subshrubs with usually mauve or blue flowers
     lilac-colored~1az of a pale purple color
@@ -6201,7 +6188,7 @@
  low_frequency ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     low_pitch~1nz (^pitch~6) a pitch that is perceived as below other pitches
     LF~1nz (^radio_frequency~1) 30 to 300 kilohertz
- lilt ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
+ lilt ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     swing~7n 
     lilt~2vz articulate in a very careful and rhythmic way
  lusciousness ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
@@ -6276,7 +6263,7 @@
     heel~11v 
     lean~10vz cause to lean to the side
     list~7vz include in a list
- lean ( meanings=11 glosses=8 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB posdefault:ADJECTIVE VERB_TAKES_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=leaned comparative=leaner 
+ lean ( meanings=11 glosses=8 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB posdefault:ADJECTIVE VERB_TAKES_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) conjugate=leaned comparative=leaner 
     leaning~2n 
     thin~2az lacking excess flesh
     lean~3az not profitable or prosperous
@@ -6373,7 +6360,7 @@
     lm~1nz (^luminous_flux_unit~1) a unit of luminous flux equal to the amount of light given out through a solid angle of 1 steradian by a point source of 1 candela intensity radiating uniformly in all directions
  lunate_bone ( meanings=1 NOUN NOUN_SINGULAR ) 
     semilunar_bone~1n 
- lunate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
+ lunate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     crescent-shaped~1a 
  long_bone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     os_longum~1nz (^bone~2) in limbs of vertebrate animals: a long cylindrical bone that contains marrow
@@ -6694,7 +6681,7 @@
  linguistic_process ( meanings=2 glosses=1 NOUN NOUN_SINGULAR ) 
     language~2n 
     linguistic_process~2nz (^human_process~1) a process involved in human language
- like ( meanings=13 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE PARTICLE NOUN VERB ADJECTIVE PREPOSITION ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_TAKES_GERUND VERB_DIRECTOBJECT ) 
+ like ( meanings=13 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE PARTICLE NOUN VERB ADJECTIVE PREPOSITION ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_TAKES_GERUND VERB_DIRECTOBJECT OMITTABLE_THAT_VERB FACTITIVE_NOUN_VERB FACTITIVE_ADJECTIVE_VERB ) 
     ilk~1nz (^form~9) a kind of person
     the_likes_of~1nz (^form~9) a similar kind
     similar~1a 
@@ -7202,7 +7189,7 @@
  laugh_line ( meanings=2 NOUN NOUN_SINGULAR ) 
     punch_line~1n 
     crow_'s_foot~2n 
- lampoon ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) 
+ lampoon ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     charade~2n 
     satirize~1v 
  lights-out ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR posdefault:NOUN ) 
@@ -7411,7 +7398,7 @@
     litmus~1nz (^acid-base_indicator~1) a coloring material that turns red in acid solutions and blue in alkaline solutions
  litmus ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     litmus_test~2n 
- leak ( meanings=9 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT ) 
+ leak ( meanings=9 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     news_leak~1n 
     escape~7n 
     leak~3nz (^hole~4) an accidental hole that allows something to enter or escape
@@ -7688,7 +7675,7 @@
     lanseh~1n 
  lansat ( meanings=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     lansa~1n 
- lime ( meanings=9 glosses=8 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ lime ( meanings=9 glosses=8 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lime~1nz (^citrous_fruit~1) the green acidic fruit of any of various lime trees
     lime_tree~1nz (^tree~1) any of various deciduous trees of the genus Tilia with heart-shaped leaves and drooping cymose clusters of yellowish often fragrant flowers
     Citrus_aurantifolia~1nz (^citrus_tree~1) any of various related trees bearing limes
@@ -7904,7 +7891,7 @@
     Laurel_and_Hardy~1nz (^duet~4) United States slapstick comedy duo who made many films together
  lower_class ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     underclass~1nz (^class~3) the social class lowest in the social hierarchy
- legion ( meanings=5 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON2 COMMON1 posdefault:NOUN ) 
+ legion ( meanings=5 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON2 COMMON1 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     horde~1n 
     host~4n 
     legion~3nz (^force~6) a large military unit
@@ -8185,8 +8172,7 @@
     Lombardia~1n 
  Lombardia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Lombardy~1nz (^Italian_region~1) a region of north central Italy bordering Switzerland
- La ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
-    Pelican_State~1n 
+ La ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     lanthanum~1n 
  Ljubljana ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Ljubljana~1nz (^national_capital~1) the capital of Slovenia
@@ -8353,6 +8339,8 @@
     Louisville~1nz (^city~2) the largest city in Kentucky
  Louisiana_Purchase ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Louisiana_Purchase~1nz (^district~1) territory in the western United States purchased from France in 1803 for $15 million
+ LA ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Louisiana~1n 
  Las_Vegas ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Las_Vegas~1nz (^city~2) largest city in Nevada
  Liberty_Island ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -8746,7 +8734,7 @@
     lunger~2nz (^mover~2) someone who moves forward suddenly
  letter_writer ( meanings=1 NOUN NOUN_SINGULAR ) 
     correspondent~1n 
- lovely ( meanings=4 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=loveliest 
+ lovely ( meanings=4 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=loveliest 
     cover_girl~1nz (^photographer_'s_model~1) a very pretty girl who works as a photographer's model
     lovely~2az appealing to the emotions as well as the eye
     endearing~1az lovable especially in a childlike or naive way
@@ -9609,6 +9597,8 @@
     Francois_de_La_Rochefoucauld~1n 
  Larousse ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Pierre_Larousse~1n 
+ LaSalle ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Sieur_de_LaSalle~1n 
  Lasso ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Orlando_di_Lasso~1n 
  La_Tour ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -10328,6 +10318,19 @@
     Aster_macrophyllus~1nz (^wood_aster~1) tufted perennial wood aster of North America
  late_purple_aster ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     late_purple_aster~1nz (^aster~2) a variety of aster
+ late ( meanings=12 glosses=7 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE TIMEWORD TIME_ADVERB ) comparative=latest 
+    late~1az having died recently
+    late~2az being or occurring at an advanced period of time or after a usual or expected time
+    later~2a 
+    late~4az of a later stage in the development of a language or literature
+    former~5a 
+    recent~2az of the immediate past or just previous to the present time
+    tardy~1az after the expected or usual time
+    late~8az 
+    tardily~1bz later than usual or than expected
+    lately~1b 
+    deep~22b 
+    late~12bz at an advanced age or stage
  lesser_knapweed ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     Centaurea_nigra~1nz (^knapweed~1) a weedy perennial with tough wiry stems and purple flowers
  leopard's-bane ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -10662,7 +10665,7 @@
     California_privet~1nz (^privet~1) semi-evergreen Japanese shrub having malodorous flowers
  Ligustrum_vulgare ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     common_privet~1nz (^privet~1) deciduous semi-evergreen shrub used for hedges
- lilac ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:ADJECTIVE ) 
+ lilac ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lilac~1nz (^bush~4) any of various plants of the genus Syringa having large panicles of usually fragrant flowers
     lavender~3a 
     lilac~3az 
@@ -11963,7 +11966,9 @@
  lupus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     lupus~1nz (^disease_of_the_skin~1) any of several forms of ulcerative skin disease
  lupus_erythematosus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    Le~1nz (^autoimmune_disorder~1) a chronic inflammatory collagen disease affecting connective tissue
+    LE~1nz (^autoimmune_disorder~1) a chronic inflammatory collagen disease affecting connective tissue
+ LE ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    lupus_erythematosus~1n 
  lichtenoid_eczema ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     chronic_eczema~1n 
  love_bite ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -12014,7 +12019,7 @@
     lung_cancer~1nz (^carcinoma~1) carcinoma of the lungs
  lumpy_jaw ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     cervicofacial_actinomycosis~1n 
- lumpy ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=lumpiest 
+ lumpy ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=lumpiest 
     lumpy~1az having lumps
     chunky~1a 
     lumpy~3az 
@@ -12061,7 +12066,7 @@
     leukoencephalitis~1nz (^encephalitis~1) inflammation of the white matter of the brain
  lethargic_encephalitis ( meanings=1 NOUN NOUN_SINGULAR ) 
     epidemic_encephalitis~1n 
- lethargic ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ lethargic ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unenrgetic~1az deficient in alertness or activity
     lethargic~2az 
  labyrinthitis ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -12094,7 +12099,7 @@
     borderline_schizophrenia~1n 
  lambdacism ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     lambdacism~1nz (^defect_of_speech~1) speech defect involving excessive use or unusual pronunciation of the phoneme `l'
- lisp ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 posdefault:NOUN VERB_NOOBJECT ) 
+ lisp ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     lisp~1nz (^defect_of_speech~1) a speech defect that involves pronouncing `s' like voiceless `th' and `z' like voiced `th'
     lisp~2vz speak with a lisp
  low_spirits ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -12180,7 +12185,7 @@
  lanthanide_series ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     lanthanide_series~1nz (^series~5) the rare-earth elements with atomic numbers 57 through 71
  lanthanum ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    La~2nz (^metal~2) a white soft metallic element that tarnishes readily
+    La~1nz (^metal~2) a white soft metallic element that tarnishes readily
  lawrencium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     Lr~1nz (^element~6) a radioactive transuranic element synthesized from californium
     lawrencium~2az 
@@ -12661,7 +12666,7 @@
     lurex~1nz 
  lyocell ( meanings=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     lyocell~1nz 
- lightyear ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
+ lightyear ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN DISTANCE_NOUN ) 
     lightyear~1nz 
  linothorax ( meanings=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     linothorax~1nz 
@@ -12757,7 +12762,7 @@
     epicurean~2a 
     elaborate~2az marked by complexity and richness of detail
     luxuriant~4az 
- lacking ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 posdefault:VERB ) 
+ lacking ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     wanting~1a 
     wanting~2a 
  light-fingered ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
@@ -12783,7 +12788,7 @@
     bloodless~3a 
     black-and-blue~1a 
     livid~5az 
- lively ( meanings=7 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) comparative=liveliest 
+ lively ( meanings=7 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=liveliest 
     full_of_life~1a 
     lively~2az filled with events or activity
     lively~3az full of life and energy
@@ -12888,7 +12893,7 @@
     lustrous~2az brilliant
     shiny~3a 
     lustrous~4az 
- lurid ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ lurid ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lurid~1az shining with an unnatural red glow as of fire seen through smoke
     lurid~2az ghastly pale
     shocking~2a 
@@ -12951,7 +12956,7 @@
     lighthearted~1a 
     light~29a 
     lightsome~3az 
- light-hearted ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
+ light-hearted ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lightsome~1a 
     light-hearted~2az 
  light-green ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
@@ -13081,7 +13086,7 @@
     slack~7a 
     lax~3az lacking in strength or firmness or resilience
     lax~4az pronounced with muscles of the tongue and jaw relatively relaxed
- likely ( meanings=6 glosses=4 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ likely ( meanings=6 glosses=4 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ) 
     likely~1az within the realm of credibility
     likely~2az has a good chance of being the case or of coming about
     probable~3az likely but not certain to be or become true or real
@@ -13106,7 +13111,7 @@
  low-spirited ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     down_in_the_mouth~1a 
     low-spirited~2az 
- lonely ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) comparative=loneliest 
+ lonely ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=loneliest 
     lonesome~1a 
     unfrequented~1az devoid of creatures
     solitary~5az characterized by or preferring solitude
@@ -13169,7 +13174,7 @@
  listless ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     listless~1az lacking zest or vivacity
     dispirited~2a 
- lukewarm ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ lukewarm ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     halfhearted~1az feeling or showing little interest or enthusiasm
     tepid~2az moderately warm
     lukewarm~3az 
@@ -13193,7 +13198,7 @@
     affordable~1az that you have the financial means for
  left-eyed ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     left-eyed~1az having only the left eye
- loyal ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ loyal ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     firm~3a 
     loyal~2az steadfast in allegiance or duty
     patriotic~1az inspired by love for your country
@@ -13215,7 +13220,7 @@
     larghissimo~1az as slow and broad as possible
  loose-jowled ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     jowly~1a 
- lanky ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=lankiest 
+ lanky ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=lankiest 
     gangly~1a 
     gangly~2a 
  lank ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
@@ -13343,10 +13348,10 @@
     late-flowering~1a 
  late-ripening ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     late-ripening~1az of plants that ripen in the fall
- laughable ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ laughable ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     comical~1a 
     cockeyed~3a 
- ludicrous ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ ludicrous ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ridiculous~2az broadly or extravagantly humorous
     preposterous~1az incongruous
     ludicrous~3az 
@@ -13451,7 +13456,7 @@
     legitimate~5vz make legitimate
     legitimate~6vz show or affirm to be just and legitimate
     legitimatise~1vz make legal
- licit ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
+ licit ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lawful~2a 
     licit~2az sanctioned by custom or morality especially sexual morality
  legible ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -13472,7 +13477,7 @@
  like-minded ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     like-minded~1az of the same turn of mind
     like-minded~2az 
- liable ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 posdefault:ADJECTIVE ) 
+ liable ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ) 
     apt~4az at risk of or subject to experiencing something usually unpleasant
     liable~2az held legally responsible
     nonresistant~2a 
@@ -13562,7 +13567,7 @@
     loud-voiced~1az having an unusually loud voice
  low-toned ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     low~9a 
- lovable ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ lovable ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     loveable~1a 
     lovable~2az 
  loveable ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -13575,7 +13580,7 @@
     likeable~1a 
     appealing~2a 
     likable~3az 
- likeable ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ likeable ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     likable~1az easy to like
     likable~2a 
  lovelorn ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -14018,7 +14023,7 @@
     lithomantic~1az of or relating to lithomancy
  lobated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     lobate~2az having or resembling a lobe or lobes
- lobular ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ lobular ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lobular~1az of or relating to or resembling a lobule
  Lusitanian ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     Lusitanian~1az of or relating to or characteristic of the region of Lusitania or its people or language
@@ -14758,7 +14763,7 @@
     lose_track~1vz fail to keep informed or aware
  live_over ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     relive~1vz experience again, often in the imagination
- learn ( meanings=6 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=learned 
+ learn ( meanings=6 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB ) conjugate=learned 
     larn~1vz gain knowledge or skills
     pick_up~4v 
     read~3v 
@@ -14816,10 +14821,10 @@
     laugh_away~1v 
  laugh_away ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_CONJUGATE1 ) 
     laugh_off~1vz deal with a problem by laughing or pretending to be amused by it
- lambaste ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT ) 
+ lambaste ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     have_words~1v 
     cane~4v 
- lambast ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ lambast ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     lambaste~1v 
     lambaste~2v 
  lip_off ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) conjugate=lipping_off 
@@ -14832,7 +14837,7 @@
     betray~2v 
     misdirect~2vz lead someone in the wrong direction or give someone wrong directions
     lead_off~2vz teach immoral behavior to
- laud ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ laud ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     exalt~2v 
  lash_out ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     assail~1v 
@@ -15036,7 +15041,7 @@
     look_around~1vz look about oneself
  look_after ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     look_after~1vz keep under careful scrutiny
- listen ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB SPELLING_EXCEPTION COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ listen ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB SPELLING_EXCEPTION COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     listen~1vz hear with intention
     take_heed~1vz listen and pay attention
     mind~13vz pay close attention to
@@ -15365,7 +15370,7 @@
     lose_out_to~1vz 
  lump_together ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB SEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     lump_together~1vz   When you lump things together, you put them in one group or treat them in the same way.
- less_than ( CONDITIONAL_IDIOM  poscondition=?[DAR1$]=R_?[dPN]=<R+Np+s_?=<Rp+s ) 
+ less_than ( CONDITIONAL_IDIOM  poscondition=(null) ) 
  Lieut. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Lt. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Lieut ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 

@@ -317,8 +317,9 @@ REVERSE 0	INCLUDE * VERB_INFINITIVE
 	IS CONJUNCTION_SUBORDINATE
 DISCARD
 
-# wont be verb immediately after subord conjunct if could be noun "as *snakes shed their skin"
+# wont be verb immediately after subord conjunct if could be noun "as *snakes shed their skin" unless conjuct is a pronoun
 -1 IS CONJUNCTION_SUBORDINATE
+	STAY !HASORIGINAL PRONOUN_BITS
 	INCLUDE * VERB_BITS
 	STAY HAS NORMAL_NOUN_BITS
 DISCARD

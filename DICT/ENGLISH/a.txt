@@ -7,10 +7,6 @@
     Robert_Adam~1n 
  Alectura_lathami ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     brush_turkey~1nz (^mound_builder~1) black megapode of wooded regions of Australia and New Guinea
- aquatint ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
-    aquatint~1nz (^engraving~1) a method of etching that imitates the broad washes of a water color
-    aquatint~2nz (^etching~3) an etching made by a process that makes it resemble a water color
-    aquatint~3vz etch in aquatint
  australopithecine ( meanings=2 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON1 ) 
     australopithecine~1nz (^hominid~1) any of several extinct humanlike bipedal primates with relatively small brains of the genus Australopithecus
     australopithecine~2az of or belonging to the hominid genus Australopithecus
@@ -103,7 +99,7 @@
  apsis ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) plural=apsides 
     apse~1nz (^recess~2) a domed or vaulted recess or projection on a building especially the east end of a church
  Adon ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- adult ( meanings=5 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN ) 
+ adult ( meanings=5 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     adult~1nz (^animal~1) any mature animal
     grownup~1nz (^individual~1) a fully developed person from maturity onward
     fully_grown~1az fully developed
@@ -275,8 +271,6 @@
  attache_case ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     attache~1nz (^briefcase~1) a shallow and rectangular briefcase
  Auda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
- apple_of_discord ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    apple_of_discord~1nz (^prize~1) a golden apple thrown into a banquet of the gods by Eris (goddess of discord
  Ashira ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Adahy ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Alastrina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -368,7 +362,7 @@
     armillary~1az of or relating to bracelets
  Aelfric ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Advanced_Research_and_Development_Activity ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Arda~1nz (^agency~3) an agency of the Intelligence Community that conducts advanced research and development related to information technology
+    ARDA~1nz (^agency~3) an agency of the Intelligence Community that conducts advanced research and development related to information technology
  Azevedo ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  automobile_factory ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     auto_factory~1nz (^mill~2) a factory where automobiles are manufactured
@@ -561,7 +555,6 @@
  anaerobic ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     anaerobiotic~1a 
     anaerobic~2az not aerobic
- Amadeo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Alejandrina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Aspidiotus_perniciosus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     San_Jose_scale~1nz (^armored_scale~1) small east Asian insect naturalized in the United States that damages fruit trees
@@ -1240,8 +1233,7 @@
     Aedes_albopictus~1nz (^mosquito~1) striped native of Japan thriving in southwestern and midwestern United States and spreading to the Caribbean
  Argasidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Argasidae~1nz (^arthropod_family~1) soft ticks
- Amd ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER ) 
-    age-related_macular_degeneration~1n 
+ Amd ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  auxiliary_research_submarine ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     auxiliary_research_submarine~1nz (^submarine~1) a submarine for research purposes
  alphabetization ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
@@ -1414,7 +1406,7 @@
  Akbar ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Arizona ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     genus_Arizona~1n 
-    Az~1n 
+    Grand_Canyon_State~1n 
  Altizer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Antonie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Addergoole ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1665,7 +1657,7 @@
  Avera ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Australian_bonytongue ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Scleropages_jardinii~1nz (^fish_species~1) a species of large fish found in Australian rivers
- away ( meanings=14 glosses=13 PARTICLE ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB ) 
+ away ( meanings=14 glosses=13 PARTICLE ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB DISTANCE_ADVERB ) 
     outside~3a 
     away~2az used of an opponent's ground
     away~3az not present
@@ -1753,7 +1745,7 @@
  Aleezah ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Asuncion ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     Asuncion~1nz (^national_capital~1) the capital and chief port of Paraguay
- angry ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) comparative=angriest 
+ angry ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=angriest 
     angry~1az feeling or showing anger
     tempestuous~1az as if showing violent anger
     angry~3az severely inflamed and painful
@@ -1844,8 +1836,7 @@
  Almund ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  adultery ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     criminal_conversation~1n 
- Ada ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER KINDERGARTEN ) 
-    adenosine_deaminase~1nz (^enzyme~1) an enzyme found in mammals that can catalyze the deamination of adenosine into inosine and ammonia
+ Ada ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  advocacy ( meanings=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
     protagonism~1n 
  auto_tire ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -2004,7 +1995,6 @@
  Azizah ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Aphididae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Aphididae~1nz (^arthropod_family~1) small soft-bodied plant lice
- Alfonse ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Anthony ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Susan_B._Anthony~1n 
     Mark_Anthony~1n 
@@ -2143,7 +2133,7 @@
  Annemie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  armor-plated ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     armour-clad~1a 
- American ( meanings=5 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER ) 
+ American ( meanings=5 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     American_English~1n 
     American~2nz (^inhabitant~1) a native or inhabitant of a North American or Central American or South American country
     American~3nz (^inhabitant~1) a native or inhabitant of the United States
@@ -2355,7 +2345,6 @@
     genus_Anomala~1n 
  Archie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Andree ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Amaury ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Avent ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Alexandrea ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Adaira ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2438,7 +2427,7 @@
  Axton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Atterberry ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Alvarie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- apple ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ apple ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     apple~1nz (^edible_fruit~1) fruit with red or yellow or green skin and sweet to tart crisp whitish flesh
     Malus_pumila~1nz (^apple_tree~1) native Eurasian tree widely cultivated in many varieties for its firm rounded edible fruits
  acarus ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) plural=acari 
@@ -3195,7 +3184,7 @@
     archeopteryx~1n 
  Alabama ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Alabama~1nz (^Muskhogean_language~1) the Muskhogean language of the Alabama
-    Al~1n 
+    Heart_of_Dixie~1n 
     Alabama_River~1n 
     Alabama~4nz (^Muskhogean~2) a member of the Muskhogean people formerly living in what is now the state of Alabama
  Addressograph ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -3376,8 +3365,7 @@
  autonomic_nervous_system ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     ANS~1nz (^neural_structure~1) the part of the nervous system of vertebrates that controls involuntary actions of the smooth muscles and heart and glands
  Arceneaux ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Al ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
-    Heart_of_Dixie~1n 
+ Al ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
     aluminum~1n 
  Aya ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Akio ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3667,7 +3655,7 @@
  Aries ( meanings=3 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
     Aries_the_Ram~1n 
     Aries~2nz (^constellation~2) a small zodiacal constellation in the northern hemisphere
-    Ram~3nz (^individual~1) a person who is born while the sun is in Aries
+    Ram~2nz (^individual~1) a person who is born while the sun is in Aries
  Anghus ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Adley ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Arlo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4377,6 +4365,7 @@
  Alyson ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Alzan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Alzena ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Amadeo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Amall ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Amalure ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Amara ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4384,6 +4373,7 @@
  Amaris ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Amata ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Amaud ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Amaury ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Amazu ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Amber ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
  Ambra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4466,8 +4456,7 @@
  Arcadia ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Arcadia~1nz (^geographical_region~1) a department of Greece in the central Peloponnese
  Archerd ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Arda ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
-    Advanced_Research_and_Development_Activity~1n 
+ Arda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Ardel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Ardelia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Ardine ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4621,6 +4610,7 @@
  Alek ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Aleksander ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Aleksandre ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Alfonse ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Algir ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Allessandro ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Alyn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -5007,7 +4997,7 @@
     chafe~1nz (^anger~2) anger produced by some annoying irritation
     aggravator~1n 
     botheration~2n 
- annoying ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:VERB ) 
+ annoying ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     annoyance~1n 
     galling~1a 
     annoying~3az 
@@ -5044,7 +5034,7 @@
     angling~1nz (^fishing~1) fishing with a hook and line
  away_game ( meanings=1 NOUN NOUN_SINGULAR ) 
     road_game~1n 
- athletic ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ athletic ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     acrobatic~1a 
     athletic~2az having a sturdy and well proportioned body
     athletic~3az relating to or befitting athletics or athletes
@@ -5161,7 +5151,7 @@
     analogy~1nz (^comparison~1) drawing a comparison in order to show a similarity in some respect
     analogy~2nz (^inference~1) an inference that if things agree in some respects they probably agree in others
     doctrine_of_analogy~1n 
- attention ( meanings=6 glosses=6 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ attention ( meanings=6 glosses=6 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN OMITTABLE_THAT_VERB ) 
     aid~1nz (^work~1) the work of providing treatment for or attending to someone or something
     attention~2nz (^courtesy~1) a courteous act indicating affection
     attention~3nz (^stance~1) a motionless erect stance with arms at the sides and feet together
@@ -5387,6 +5377,10 @@
     arts_and_crafts~1nz (^art~1) the arts of decorative design and handicraft
  arts ( meanings=1 NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     humanistic_discipline~1n 
+ aquatint ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+    aquatint~1nz (^engraving~1) a method of etching that imitates the broad washes of a water color
+    aquatint~2nz (^etching~3) an etching made by a process that makes it resemble a water color
+    aquatint~3vz etch in aquatint
  arrangement ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
     arranging~1nz (^composition~2) the act of arranging and adapting a piece of music
     placement~3nz (^position~6) the spatial property of the way in which something is placed
@@ -5664,7 +5658,7 @@
     gathering~4nz (^social_group~1) a group of persons together in one place
  absenteeism ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     absenteeism~1nz (^absence~1) habitual absence from work
- answer ( meanings=15 glosses=15 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ answer ( meanings=15 glosses=15 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     answer~1nz (^response~1) a nonverbal reaction
     answer~2nz (^pleading~1) the principal pleading by the defendant in response to plaintiff's complaint
     solvent~1nz (^statement~4) a statement that solves a problem or explains how to solve the problem
@@ -6653,7 +6647,7 @@
     genus_Anagasta~1n 
  Anagasta_kuehniella ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Mediterranean_flour_moth~1n 
- almond ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ almond ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     almond~1nz (^edible_nut~1) oval-shaped edible seed of the almond tree
     Amygdalus_communis~1nz (^almond_tree~1) small bushy deciduous tree native to Asia and North Africa having pretty pink blossoms and highly prized edible nuts enclosed in a hard green hull
     almond~3az 
@@ -7425,7 +7419,7 @@
     Aladdin_'s_lamp~1nz (^lamp~1) a magical lamp from which Aladdin summoned a genie
  Aladdin ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Aladdin~1nz (^character~7) in the Arabian Nights a boy who acquires a magic lamp from which he can summon a genie
- alarm ( meanings=6 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ alarm ( meanings=6 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     warning_device~1nz (^device~2) a device that signals the occurrence of some undesirable event
     alarm_clock~1nz (^clock~1) a clock that wakes a sleeper at some preset time
     alarum~1nz (^signal~1) an automatic signal warning of danger
@@ -7525,7 +7519,7 @@
  aluminum ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
     aluminium~1nz (^metal~2) a silvery ductile metallic element found primarily in bauxite
  aluminium ( meanings=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
-    Al~2n 
+    Al~1n 
  Amati ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Amati~1nz (^violin~1) a violin made by Nicolo Amati or a member of his family
     Nicolo_Amati~1n 
@@ -7895,6 +7889,8 @@
  applecart ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     applecart~1nz (^cart~2) a handcart from which apples and other fruit are sold in the street
     applecart~2nz (^preparation~5) the planning that is disrupted when someone `upsets the applecart'
+ apple_of_discord ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    apple_of_discord~1nz (^prize~1) a golden apple thrown into a banquet of the gods by Eris (goddess of discord
  apple_orchard ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     apple_orchard~1nz (^orchard~1) a grove of apple trees
  appliance ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:NOUN ) 
@@ -8106,9 +8102,8 @@
     ash-bin~1n 
  Ash_Can ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Ashcan_school~1n 
- Ashcan_school ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+ Ashcan_school ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Ash_Can~1nz (^artistic_movement~1) early 20th-century United States painting
-    Eight~1nz (^school~4) a group of United States painters founded in 1907 and noted for their realistic depictions of sordid aspects of city life
  ashlar ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 ) 
     ashlar~1nz (^stone~1) a rectangular block of hewn stone used for building purposes
  ash-pan ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -8159,7 +8154,7 @@
     styptic~1nz (^medicine~3) a drug that causes contraction of body tissues and canals
  astrodome ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     astrodome~1nz (^dome~1) a transparent dome on top of an airplane where the navigator can make celestial observations
- astronomical ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ astronomical ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     galactic~1az inconceivably large
     astronomic~2az relating or belonging to the science of astronomy
     astronomical~3az 
@@ -8572,7 +8567,7 @@
     sportswear~1n 
  anti-sway_bar ( meanings=1 NOUN NOUN_SINGULAR ) 
     stabilizer_bar~1n 
- after ( meanings=4 glosses=1 MORE_FORM PARTICLE ADVERB PREPOSITION CONJUNCTION_SUBORDINATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION TIMEWORD ) comparative=aft 
+ after ( meanings=4 glosses=1 MORE_FORM PARTICLE ADVERB PREPOSITION CONJUNCTION_SUBORDINATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION TIMEWORD TIME_ADVERB DISTANCE_ADVERB ) comparative=aft 
     afterwards~1b 
     after~2bz behind or in the rear
     after~3z 
@@ -8998,23 +8993,23 @@
     Turkey_red~1nz (^red~1) a bright orange-red color produced in cotton cloth with alizarine dye
  alizarine ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     alizarin~1nz (^pigment~2) an orange-red crystalline compound used in making red pigments and in dyeing
- amber ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ) 
+ amber ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gold~1n 
     amber~2nz (^natural_resin~1) a hard yellowish to brownish translucent fossil resin
     brownish-yellow~1a 
     amber~4az 
- azure ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ) 
+ azure ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     sapphire~1n 
     sky-blue~2a 
     azure~3az 
     azure~4vz color azure
- aqua ( meanings=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) plural=aquae 
+ aqua ( meanings=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) plural=aquae 
     greenish_blue~1n 
- aquamarine ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ) 
+ aquamarine ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     aqua~1n 
     aquamarine~2nz (^beryl~1) a transparent variety of beryl that is blue green in color
     aquamarine~3az 
- apricot ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ apricot ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     yellowish_pink~1n 
     apricot~2nz (^edible_fruit~1) downy yellow to rosy-colored fruit resembling a small peach
     apricot_tree~1n 
@@ -9084,7 +9079,7 @@
     relative_atomic_mass~1n 
  angular_momentum ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     angular_momentum~1nz (^momentum~1) the product of the momentum of a rotating body and its distance from the axis of rotation
- angular ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ angular ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     angulate~1az having angles or an angular shape
     angular~2az measured by an angle or by the rate of change of an angle
     angular~3az 
@@ -9151,7 +9146,7 @@
     arm_'s_length~1nz (^length~4) a distance sufficient to exclude intimacy
  altitude ( meanings=3 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
     height~2n 
-    El~1n 
+    elevation~7n 
     altitude~3nz (^length~4) the perpendicular distance from the base of a geometric figure to the opposite vertex
  absolute_ceiling ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     absolute_ceiling~1nz (^ceiling~3) the maximum altitude at which an airplane can maintain horizontal flight
@@ -9419,7 +9414,7 @@
     appendicular_artery~1nz (^arterial_blood_vessel~1) the branch of the ileocolic artery that supplies the vermiform appendix
  arcuate_artery ( meanings=1 NOUN NOUN_SINGULAR ) 
     arteria_arcuata~1n 
- arcuate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ arcuate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     arciform~1a 
  arteria_arcuata ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     arcuate_artery~1nz (^arterial_blood_vessel~1) curved artery in the foot
@@ -9679,10 +9674,9 @@
     amniotic~1a 
  arterial_blood ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     arterial_blood~1nz (^blood~2) blood found in arteries
- AB ( meanings=3 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ AB ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     type_AB~1n 
     Artium_Baccalaurens~1n 
-    Av~1nz (^Jewish_calendar_month~1) the eleventh month of the civil year
  antiserum ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) plural=antisera 
     antiserum~1nz (^blood_serum~1) blood serum containing antibodies against specific antigens
  adrenocorticotropic_hormone ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -9804,7 +9798,7 @@
     amygdaloid_nucleus~1n 
  amygdaloid_nucleus ( meanings=1 NOUN NOUN_SINGULAR ) 
     corpus_amygdaloideum~1n 
- amygdaloid ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 ) 
+ amygdaloid ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     amygdaloid~1nz (^volcanic_rock~1) volcanic rock in which rounded cavities formed by expanding gas have subsequently become filled with mineral deposits
     almond-shaped~1a 
  aqueductus_cerebri ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -9944,7 +9938,7 @@
     alpha-adrenoceptor~1nz (^receptor~2) receptors postulated to exist on nerve cell membranes of the sympathetic nervous system in order to explain the specificity of certain agents that affect only some sympathetic activities
  alpha-adrenoceptor ( meanings=1 NOUN NOUN_SINGULAR ) 
     alpha_receptor~1n 
- ancient ( meanings=5 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ ancient ( meanings=5 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ancient~1nz (^individual~1) a person who lived in ancient times
     antediluvian~1nz (^senior_citizen~1) a very old person
     ancient~3az very old
@@ -10050,8 +10044,6 @@
     sound~2n 
  ABO_blood_group_system ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     ABO_group~1nz (^classification_system~1) a classification system for the antigens of human blood
- ABO ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    native_Australian~1n 
  ABO_system ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     ABO_blood_group_system~1n 
  ABO_group ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -10140,7 +10132,7 @@
     abatable~1az capable of being abated
  attractive_nuisance ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     attractive_nuisance~1nz (^nuisance~1) anything on your premises that might attract children into danger or harm
- attractive ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) 
+ attractive ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     attractive~1az pleasing to the eye or mind especially through beauty or charm
     attractive~2az having the properties of a magnet
     attractive~3az having power to arouse interest
@@ -10556,7 +10548,7 @@
     a.k.a.~1b 
  anonym ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     pseudonym~1n 
- author ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ author ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     generator~4n 
     writer~1n 
     author~3vz be the author of
@@ -10915,7 +10907,7 @@
  all_clear ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     all_clear~1nz (^permission~2) permission to proceed because obstacles have been removed
     all_clear~2nz (^signal~1) a signal that danger is over
- acclaim ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ acclaim ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     acclamation~1n 
     herald~3v 
     clap~5v 
@@ -11025,7 +11017,7 @@
     air_alert~1nz (^alarm~3) the warning signal that begins a period of preparation for an enemy air attack
     air_alert~2nz (^alert~3) the condition in which combat aircraft are airborne and ready for an operation
     air_alert~3nz (^period~3) the time period during which military and civilian agencies are prepared for an enemy air attack
- alert ( meanings=8 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 GRADE3_4 posdefault:VERB posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ alert ( meanings=8 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 GRADE3_4 posdefault:VERB posdefault:ADJECTIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     alarm~3n 
     alerting~1nz (^warning~3) a warning serves to make you more alert to danger
     qui_vive~1nz (^preparation~7) condition of heightened watchfulness or preparation for action
@@ -11056,7 +11048,7 @@
     accent~1nz (^diacritical_mark~1) a diacritical mark used to indicate stress or placed above a vowel to indicate a special pronunciation
  acute_accent ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     ague~1nz (^accent_mark~1) a mark placed above a vowel to indicate pronunciation
- acute ( meanings=8 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:ADJECTIVE ) 
+ acute ( meanings=8 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     acute_accent~1n 
     acute~2az having or experiencing a rapid onset and short but severe course
     acute~3az of critical importance and consequence
@@ -11121,9 +11113,8 @@
     problem-oriented_language~1nz (^source_language~1) a language whose statements resemble terminology of the user
  assembly_language ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     assembly_language~1nz (^programming_language~1) a low-level programing language
- ALGOL ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+ ALGOL ( meanings=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     ALGOL~1nz (^algebraic_language~1) 
-    ALGOL~2nz (^binary_star~1) the second brightest star in Perseus
  Amerind ( meanings=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR ) 
     Indian~1n 
     Indian~4a 
@@ -11254,7 +11245,7 @@
  Aboriginal_Australian ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Australian~1nz (^Austronesian_language~1) the Austronesian languages spoken by Australian aborigines
  Aboriginal ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR COMMON1 ) 
-    Australian_Aborigine~1n 
+    native_Australian~1n 
     Aboriginal~2az of or pertaining to members of the indigenous people of Australia
  Atayalic ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Tayalic~1nz (^Formosan~1) a language spoken by a Malaysian people on Formosa
@@ -11834,7 +11825,7 @@
     pasta~1nz (^food~3) shaped and dried dough made from flour and water and sometimes egg
  atole ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     atole~1nz (^cornmeal_mush~1) eaten as mush or as a thin gruel
- aubergine ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
+ aubergine ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     mad_apple~1nz (^solanaceous_vegetable~1) egg-shaped vegetable having a shiny skin typically dark purple but occasionally white or yellow
     Solanum_melongena~1n 
  acorn_squash ( meanings=2 glosses=2 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -12089,7 +12080,7 @@
  Armata_Corsa ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Corsican_Army~1n 
  Armed_Islamic_Group ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Gia~1nz (^foreign_terrorist_organization~1) a terrorist organization of Islamic extremists whose violent activities began in 1992
+    GIA~1nz (^foreign_terrorist_organization~1) a terrorist organization of Islamic extremists whose violent activities began in 1992
  Armenian_Secret_Army_for_the_Liberation_of_Armenia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     3rd_October_Organization~1nz (^foreign_terrorist_organization~1) a militant Marxist-Leninist terrorist organization formed in 1975 to force Turkey to acknowledge killing more than a million Armenians and forcibly removing them from border areas in 1915
  ASALA ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12115,7 +12106,7 @@
  Aden-Abyan_Islamic_Army ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Islamic_Army_of_Aden~1n 
  Army_of_Muhammad ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Jaish-e-Muhammad~1n 
+    JEM~1n 
  Anti-Imperialist_International_Brigade ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Japanese_Red_Army~1nz (^foreign_terrorist_organization~1) a terrorist group organized in 1970 to overthrow the Japanese government and monarchy and to foment world revolution
  Association_of_Islamic_Groups_and_Communities ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -12345,6 +12336,8 @@
     aircrew~1nz (^crew~2) the crew of an aircraft
  academe ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     academia~1n 
+ Ashcan_School ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    Eight~1nz (^school~4) a group of United States painters founded in 1907 and noted for their realistic depictions of sordid aspects of city life
  air_force_academy ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     air_force_academy~1nz (^academy~2) an academy for training air force officers
  Academy_of_Motion_Picture_Arts_and_Sciences ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -12375,6 +12368,8 @@
     appellant~2az of or relating to or taking account of appeals 
  appeals_court ( meanings=1 NOUN NOUN_SINGULAR ) 
     court_of_appeals~1n 
+ ARDA ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Advanced_Research_and_Development_Activity~1n 
  A'man ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     A'man~1nz (^international_intelligence_agency~1) the Israeli military intelligence which produces comprehensive national intelligence briefings for the prime minister and the cabinet
  advertising_agency ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -12606,7 +12601,7 @@
     apex~2n 
     tiptop~2n 
  Aries_the_Ram ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Ram~2nz (^house~12) the first sign of the zodiac which the sun enters at the vernal equinox
+    Ram~1nz (^house~12) the first sign of the zodiac which the sun enters at the vernal equinox
  Aquarius ( meanings=3 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Aquarius_the_Water_Bearer~1n 
     Aquarius~2nz (^constellation~2) a zodiacal constellation in the southern hemisphere
@@ -12844,9 +12839,6 @@
     Aqaba~1nz (^city~2) Jordan's port
  Aqaba ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Akaba~1n 
- Az ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
-    Grand_Canyon_State~1n 
-    azimuth~1n 
  Avignon ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Avignon~1nz (^town~2) a town in southeastern France on the Rhone River
  Alsace ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12888,7 +12880,9 @@
  Apia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Apia~1nz (^national_capital~1) the capital of Western Samoa
  American_Samoa ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Eastern_Samoa~1nz (^district~1) a United States territory on the eastern part of the island of Samoa
+    AS~1nz (^district~1) a United States territory on the eastern part of the island of Samoa
+ AS ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
+    Eastern_Samoa~1n 
  Al_Madinah ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Medina~1nz (^city~2) a city in western Saudi Arabia
  Astrakhan ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12939,6 +12933,8 @@
     Antioch~1nz (^town~2) a town in southern Turkey
  Abu_Dhabi ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     United_Arab_Emirates_'s_capital~1n 
+ AL ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
+    Camellia_State~1n 
  AK ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     Alaska~1n 
  Anchorage ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12947,9 +12943,11 @@
     Alexander_Archipelago~1nz (^archipelago~1) a group of islands off southeastern Alaska
  Admiralty_Island ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Admiralty_Island~1nz (^island~2) an Alaskan island in the Alexander Archipelago near Juneau
- AR ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ AZ ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
+    Arizona~2n 
+    azimuth~1n 
+ AR ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     Arkansas~1n 
-    argon~1n 
  Anaheim ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Anaheim~1nz (^city~2) a city in southern California 
  American_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -13001,6 +12999,8 @@
     Nafud~1n 
  Ar_Rimsal ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Rub_al-Khali~1n 
+ Ar ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    argon~1n 
  abience ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     abience~1nz (^impulse~6) an urge to withdraw or avoid a situation or an object
  adience ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
@@ -13063,6 +13063,8 @@
     Alaska_Range~1nz (^chain~8) a mountain range in south central Alaska
  Aldebaran ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Aldebaran~1nz (^binary_star~1) the brightest star in Taurus
+ Algol ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Algol~1nz (^binary_star~1) the second brightest star in Perseus
  Allegheny_Mountains ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Alleghenies~1nz (^chain~8) the western part of the Appalachian Mountains
  Allegheny ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -13480,9 +13482,11 @@
  Aztec ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Aztec~1nz (^Nahuatl~2) a member of the Nahuatl people who established an empire in Mexico that was overthrown by Cortes in 1519
  Aborigine ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Aboriginal~1n 
+    Australian_Aborigine~1n 
+ Abo ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Aborigine~1n 
  Australian_Aborigine ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    ABO~1nz (^ethnic_group~1) a dark-skinned member of a race of people living in Australia when Europeans arrived
+    Aboriginal~1nz (^ethnic_group~1) a dark-skinned member of a race of people living in Australia when Europeans arrived
  Acadian ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Acadian~1nz (^French_Canadian~1) an early French settler in the Maritimes
  Adventist ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -13594,7 +13598,7 @@
     abiogenist~1nz (^believer~2) a believer in abiogenesis
  able_seaman ( meanings=1 NOUN NOUN_SINGULAR ) 
     able-bodied_seaman~1n 
- able ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ) 
+ able ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     able~1az having the necessary means or skill or know-how or authority to do something
     able~2az having inherent physical or mental ability or capacity
     capable~4az have the skills and qualifications to do things well
@@ -13668,7 +13672,7 @@
     accused~2az 
  accuser ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     accuser~1nz (^controversialist~1) someone who imputes guilt or blame
- adept ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ adept ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     whiz~2n 
     expert~2a 
     adept~3az 
@@ -14027,7 +14031,7 @@
     annuitant~1nz (^recipient~2) the recipient of an annuity
  anointer ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     anointer~1nz (^religious_person~1) one who anoints as a religious ceremony
- anorexic ( meanings=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ anorexic ( meanings=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     anorectic~1n 
     anorectic~3a 
  anorectic ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 posdefault:ADJECTIVE ) 
@@ -15046,7 +15050,7 @@
  Andre_Maurois ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Emile_Herzog~1nz (^writer~1) French writer best known for his biographies
  Aimee_Semple_McPherson ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Mcpherson~1nz (^evangelist~1) United States evangelist noted for her extravagant religious services (1890-1944)
+    McPherson~1nz (^evangelist~1) United States evangelist noted for her extravagant religious services (1890-1944)
  Andrew_Mellon ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Andrew_William_Mellon~1n 
  Andrew_W._Mellon ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -15453,9 +15457,8 @@
  alternating ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 GRADE5_6 posdefault:VERB ) 
     alternate~2az occurring by turns
     alternating~2az reversing direction
- AC ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON4 NOUN_NODETERMINER ) 
+ AC ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON4 ) 
     alternating_electric_current~1n 
-    actinium~1n 
  alternating_electric_current ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     alternating_current~1nz (^electrical_energy~1) an electric current that reverses direction sinusoidally
  alternation_of_generations ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -17676,7 +17679,7 @@
     spermatozoid~1n 
  arborescent_plant ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     arborescent_plant~1nz (^ligneous_plant~1) having the shape or characteristics of a tree
- arborescent ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ arborescent ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     tree-shaped~1az resembling a tree in form and branching structure
     arborescent~2az 
  angiospermous_tree ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -18205,9 +18208,8 @@
     archine~1nz (^linear_measure~1) a Russian unit of length
  Astronomical_Unit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     AU~1nz (^astronomy_unit~1) a unit of length used for distances within the solar system
- AU ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ AU ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     Astronomical_Unit~1n 
-    gold~5n 
  angstrom ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     angstrom_unit~1n 
  angstrom_unit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -18360,7 +18362,7 @@
  angular_position ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     angular_position~1nz (^position~6) relation by which any position with respect to any other position is established
  ALT ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER ) 
-    altitude~2n 
+    EL~1n 
  attorney-client_relation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     lawyer-client_relation~1nz (^fiduciary_relation~1) the responsibility of a lawyer to act in the best interests of the client
  academic_relation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -18379,7 +18381,7 @@
     angularity~2nz (^shape~1) a shape having one or more sharp angles
  amorphous_shape ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     amorphous_shape~1nz (^shape~1) an ill-defined or arbitrary shape
- amorphous ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ amorphous ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     uncrystallized~1a 
     unstructured~2a 
     shapeless~2az having no definite form or distinct shape
@@ -18410,7 +18412,7 @@
  angle_of_dip ( meanings=1 NOUN NOUN_SINGULAR ) 
     inclination~8n 
  azimuth ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    Az~2nz (^angle~2) the azimuth of a celestial body is the angle between the vertical plane containing it and the plane of the meridian
+    AZ~2nz (^angle~2) the azimuth of a celestial body is the angle between the vertical plane containing it and the plane of the meridian
  acantha ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     spine~5nz (^projection~10) any sharply pointed projection
  angle_of_view ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -19022,9 +19024,11 @@
  angle-closure_glaucoma ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     acute_glaucoma~1nz (^glaucoma~1) glaucoma in which the iris blocks the outflow of aqueous humor
  age-related_macular_degeneration ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    Amd~1nz (^macular_degeneration~1) macular degeneration that is age-related
+    AMD~1nz (^macular_degeneration~1) macular degeneration that is age-related
  age-related ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     age-related~1az changing as an individual's age increases
+ AMD ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER ) 
+    age-related_macular_degeneration~1n 
  adenitis ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     adenitis~1nz (^inflammation~4) inflammation of a gland or lymph node
  alveolitis ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
@@ -19123,7 +19127,7 @@
  anxiety_disorder ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     anxiety_disorder~1nz (^psychological_disorder~1) a cover term for a variety of mental disorders in which severe anxiety is a salient symptom
  anxiety_reaction ( meanings=1 NOUN NOUN_SINGULAR ) 
-    Gad~1n 
+    GAD~1n 
  acarophobia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     acarophobia~1nz (^zoophobia~1) a morbid fear of small insects and mites and worms
  agoraphobia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -19535,8 +19539,10 @@
  actinide_series ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     actinide_series~1nz (^series~5) a series of 15 radioactive elements with increasing atomic numbers from actinium to lawrencium
  actinium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    AC~2nz (^element~6) a radioactive element of the actinide series
+    Ac~1nz (^element~6) a radioactive element of the actinide series
     actinium~2az 
+ Ac ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    actinium~1n 
  ammonia_alum ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     ammonium_alum~1n 
  ammonium_alum ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -19544,17 +19550,21 @@
  ammonium ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     ammonium_ion~1n 
  americium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    americium~1nz (^metal~2) a radioactive transuranic metallic element
+    Am~1nz (^metal~2) a radioactive transuranic metallic element
     americium~2az 
+ Am ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    americium~1n 
  antimony ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    SB~2nz (^metal~2) a metallic element having four allotropic forms
+    Sb~1nz (^metal~2) a metallic element having four allotropic forms
  argon ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    AR~2nz (^element~6) a colorless and odorless inert gas
+    Ar~1nz (^element~6) a colorless and odorless inert gas
  astatine ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     astatine~1nz (^element~6) a highly unstable radioactive element 
     astatine~2az 
  atrazine ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     atrazine~1nz (^weed_killer~1) a synthetic compound derived from triazine that is widely used as an agricultural herbicide
+ Au ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    gold~5n 
  acidic_hydrogen ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     acid_hydrogen~1nz (^hydrogen_atom~1) a hydrogen atom in an acid that forms a positive ion when the acid dissociates
  acidic ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
@@ -19565,7 +19575,7 @@
     acidic_hydrogen~1n 
  azote ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     azote~1nz (^nitrogen~1) an obsolete name for nitrogen
- Ag ( meanings=1 NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN ) 
+ Ag ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     silver~5n 
  ader_wax ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     earth_wax~1n 
@@ -19633,8 +19643,10 @@
     adenine~1nz (^purine~2) purine base found in DNA and RNA
  adenosine ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     adenosine~1nz (^nucleoside~1) a nucleoside that is a structural component of nucleic acids
- adenosine_deaminase ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    Ada~1n 
+ adenosine_deaminase ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    ADA~1nz (^enzyme~1) an enzyme found in mammals that can catalyze the deamination of adenosine into inosine and ammonia
+ ADA ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 NOUN_NODETERMINER ) 
+    adenosine_deaminase~1n 
  adenosine_monophosphate ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     adenylic_acid~1nz (^base~19) a nucleotide found in muscle cells and important in metabolism
  AMP ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -19912,7 +19924,7 @@
     activated~5az 
  activated_charcoal ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     activated_carbon~1nz (^carbon~2) powdered or granular carbon used for purifying by adsorption
- abrasive ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:ADJECTIVE ) 
+ abrasive ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     abrasive_material~1n 
     harsh~1a 
     scratchy~4az causing abrasion
@@ -20024,7 +20036,7 @@
     naval_brass~1n 
  acrylic_fiber ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     acrylic~4nz (^synthetic_fiber~1) polymerized from acrylonitrile
- argent ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:ADJECTIVE ) 
+ argent ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     argent~1nz (^tincture~4) a metal tincture used in heraldry to give a silvery appearance
     silvery~3a 
  alizarin_carmine ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -20223,8 +20235,10 @@
     August~1n 
  Adar_Sheni ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Veadar~1nz (^Jewish_calendar_month~1) included seven times in every 19 years
+ Ab ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    Av~1nz (^Jewish_calendar_month~1) the eleventh month of the civil year
  Av ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
-    AB~3n 
+    Ab~1n 
  Asarh ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Asadha~1n 
  Asadha ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -20604,7 +20618,7 @@
     later_on~1bz happening at a time subsequent to a reference time
  already ( meanings=1 glosses=1 ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB TIMEWORD ) 
     already~1bz prior to a specified or implied time
- ago ( meanings=2 glosses=1 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB TIMEWORD ) 
+ ago ( meanings=2 glosses=1 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB TIMEWORD TIME_ADVERB ) 
     ago~1az 
     ago~2bz in the past
  annually ( meanings=2 glosses=2 ADVERB COMMON4 KINDERGARTEN posdefault:ADVERB TIMEWORD ) 
@@ -20657,7 +20671,7 @@
     stern~6a 
  abundant ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     abundant~1az present in great quantity
- abounding ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
+ abounding ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     galore~1a 
  ample ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
     rich~2a 
@@ -20673,7 +20687,7 @@
     satisfactory~1az meeting requirements
     acceptable~4az judged to be in conformity with approved usage
     acceptable~5az 
- accessible ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ accessible ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     accessible~1az capable of being reached
     accessible~2az easy to get along with or talk to
     accessible~3az easily obtained
@@ -20739,7 +20753,7 @@
     avaricious~2az 
  acropetal ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     acropetal~1az of leaves or flowers
- agile ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ agile ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     nimble~1a 
     nimble~2az mentally quick
     agile~3az 
@@ -20748,7 +20762,7 @@
     abeyant~2az 
  activistic ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     activist~2az advocating or engaged in activism
- alive ( meanings=8 glosses=6 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ alive ( meanings=8 glosses=6 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     live~1az capable of erupting
     live~2az possessing life
     animated~1az having life or vigor or spirit
@@ -20805,7 +20819,7 @@
     advantageous~1az giving an advantage
     advantageous~2az appropriate for achieving a particular end
     advantageous~3az 
- adventurous ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ adventurous ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     adventuresome~1a 
     adventurous~2az 
  adventuresome ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -20842,7 +20856,7 @@
  acceptive ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     acceptive~1az inclined to accept rather than reject
     acceptant~1az accepting willingly
- accepting ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ accepting ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     accepting~1az tolerating without protest
  afloat ( meanings=3 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ) 
     afloat~1az borne on the water
@@ -20856,7 +20870,7 @@
  aground ( meanings=2 glosses=2 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON2 COMMON1 posdefault:ADVERB ) 
     aground~1az stuck in a place where a ship can no longer float
     aground~2bz with the bottom lodged on the ground
- afraid ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 KINDERGARTEN ADJECTIVE_POSTPOSITIVE posdefault:ADJECTIVE ) 
+ afraid ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 KINDERGARTEN ADJECTIVE_POSTPOSITIVE posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     afraid~1az filled with fear or apprehension
     afraid~2az filled with regret or concern
     afraid~3az feeling worry or concern or insecurity
@@ -20891,7 +20905,7 @@
  aquaphobic ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     hydrophobic~1a 
     aquaphobic~2az 
- aggressive ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ aggressive ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     aggressive~1az having or showing determination and energetic pursuit of your ends
     belligerent~2a 
     fast-growing~1a 
@@ -20903,7 +20917,7 @@
     aroused~4az aroused to action
     turned_on~1a 
     wound_up~1a 
- agreeable ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ agreeable ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     agreeable~1az conforming to your own liking or feelings or nature
     agreeable~2az prepared to agree or consent
     conformable~1a 
@@ -20943,11 +20957,11 @@
  altruistic ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     selfless~1az showing unselfish concern for the welfare of others
     altruistic~2az 
- ambiguous ( meanings=3 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ ambiguous ( meanings=3 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ambiguous~1az having more than one possible meaning
     equivocal~2az open to two or more interpretations
     ambiguous~3az having no intrinsic or objective meaning
- ambitious ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ ambitious ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ambitious~1az having a strong desire for success or achievement
     challenging~1az requiring full use of your abilities or resources
     ambitious~3az 
@@ -21019,7 +21033,7 @@
     apropos~4z 
  apposite ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     apt~1a 
- apt ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 posdefault:ADJECTIVE ) 
+ apt ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     pertinent~1a 
     tending~2a 
     clever~3a 
@@ -21073,7 +21087,7 @@
     uncultivated~3a 
     artless~4az showing lack of art
     artless~5az 
- articulate ( meanings=7 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:VERB posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ articulate ( meanings=7 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:VERB posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     articulate~1az expressing yourself easily or characterized by clear expressive language
     articulated~1az consisting of segments held together by joints
     enunciate~1vz express or state clearly
@@ -21083,7 +21097,7 @@
     articulate~7vz unite by forming a joint or joints
  aphonic ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     voiceless~1a 
- ashamed ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 GRADE1_2 posdefault:ADJECTIVE ) 
+ ashamed ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ashamed~1az feeling shame or guilt or embarrassment or remorse
     ashamed~2az 
  assertive ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -21181,12 +21195,12 @@
     aware~3az 
  alarming ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
     alarming~1az frightening because of an awareness of danger
- atrocious ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ atrocious ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ugly~1a 
     abominable~1a 
     flagitious~1a 
     atrocious~4az 
- awful ( meanings=8 glosses=4 ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ) 
+ awful ( meanings=8 glosses=4 ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fearful~2a 
     atrocious~2a 
     awing~1az inspiring awe or admiration or wonder
@@ -21316,7 +21330,7 @@
     triclinic~1a 
  amber-green ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     amber-green~1az of green tinged with amber
- auburn ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 ) 
+ auburn ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     auburn~1az colored a moderate reddish-brown
     auburn~2az 
  aureate ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
@@ -21337,7 +21351,7 @@
     achromous~1a 
  achromous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     achromic~1az having no color
- ashen ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 GRADE5_6 posdefault:ADJECTIVE ) 
+ ashen ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     livid~3a 
     ashen~2az made of wood of the ash tree
     ashen~3az 
@@ -21351,7 +21365,7 @@
  addled ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     wooly~2a 
     addled~2az no longer edible
- astute ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ astute ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     sharp~3a 
     astute~2az 
  anserine ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
@@ -21414,7 +21428,7 @@
     aflare~1a 
     climb_down~1v 
     perch~10v 
- awkward ( meanings=7 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ awkward ( meanings=7 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ill_at_ease~1az socially uncomfortable
     awkward~2az causing inconvenience
     sticky~3a 
@@ -21548,7 +21562,7 @@
     apochromatic~1az corrected for both chromatic and spherical aberration
  amendable ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     correctable~1a 
- abrupt ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ abrupt ( meanings=5 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     abrupt~1az surprisingly and unceremoniously brusque in manner
     abrupt~2az exceedingly sudden and unexpected
     sharp~9a 
@@ -21679,7 +21693,7 @@
  adynamic ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     undynamic~1a 
     debilitated~1a 
- anxious ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ anxious ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     dying~3az eagerly desirous
     uneasy~5a 
     anxious~3az 
@@ -21783,7 +21797,7 @@
     hoped-for~1az expected hopefully
  awaited ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 posdefault:VERB ) 
     anticipated~1a 
- affordable ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 posdefault:ADJECTIVE ) 
+ affordable ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     low-cost~1a 
     affordable~2az 
  arco ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 ) 
@@ -21822,7 +21836,7 @@
     reproving~1az expressing reproof or reproach especially as a corrective
  aftershafted ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     aftershafted~1az having an aftershaft
- all_over ( meanings=4 ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL CONDITIONAL_IDIOM ADJECTIVE_NOT_PREDICATE  poscondition=?[NPAd]=p?=R ) 
+ all_over ( meanings=4 ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL CONDITIONAL_IDIOM ADJECTIVE_NOT_PREDICATE NON_COMPLEMENT_ADJECTIVE  poscondition=?[NPAd]=p?=R ) 
     ended~1a 
     everywhere~1b 
     over~1b 
@@ -21845,7 +21859,7 @@
     adamantine~2az having the hardness of a diamond
     adamantine~3az consisting of or having the hardness of adamant
     adamantine~4az 
- adaptable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ adaptable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     adaptable~1az capable of adapting to a particular situation or use
  all-mains ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE ) 
     all-mains~1az used of a radio receiver that is adaptable to all voltages
@@ -21964,7 +21978,7 @@
     liverish~1az irritable as if suffering from indigestion
  al_dente ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM posdefault:ADVERB  poscondition=?=A ) 
     al_dente~1az 
- abusive ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ abusive ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     abusive~1az characterized by physical or psychological maltreatment
     scurrilous~1az expressing offensive reproach
     abusive~3az 
@@ -22183,7 +22197,7 @@
     agelong~1az lasting through all time
  all-night ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     nightlong~1a 
- adorable ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ adorable ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lovely~3a 
     adorable~2az 
  admired ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
@@ -22263,7 +22277,7 @@
     a_few~2z 
  a_couple_of ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM ADJECTIVE_NOT_PREDICATE  poscondition=?[AN]=A ) 
     a_few~1a 
- amaranthine ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ amaranthine ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     unfading~1az of an imaginary flower that never fades
     amaranthine~2az of or related to the amaranth plant
  actuated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
@@ -22429,10 +22443,10 @@
     acrid~3az 
  afflictive ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     painful~4a 
- amused ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ amused ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     diverted~1a 
     amused~2az 
- annoyed ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ annoyed ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     pissed~2a 
     harassed~1a 
     annoyed~3az 
@@ -22505,7 +22519,7 @@
     revelatory~1az prophetic of devastation or ultimate doom
  antifertility ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     prophylactic~5a 
- arrogant ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ arrogant ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     chesty~1a 
     arrogant~2az 
  agitative ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
@@ -22569,7 +22583,7 @@
     acceptive~2a 
  admissive ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     admissive~1az characterized by or allowing admission
- aloof ( meanings=2 glosses=1 ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ aloof ( meanings=2 glosses=1 ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     upstage~2a 
     aloof~2bz in an aloof manner
  accountable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
@@ -22603,7 +22617,7 @@
     antler-like~1az resembling antlers
  apple-shaped ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     apple-shaped~1az having the general shape of an apple
- allantoid ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ allantoid ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     sausage-shaped~1a 
  almond-shaped ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     amygdaloidal~1az shaped like an almond
@@ -22620,7 +22634,7 @@
  aspherical ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
     aspheric~1az varying slightly from a perfectly spherical shape
     aspherical~2az 
- auriform ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ auriform ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ear-shaped~1a 
  angulate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     angular~1a 
@@ -22682,7 +22696,7 @@
  airworthy ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     airworthy~1az fit to fly
     airworthy~2az 
- alluring ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
+ alluring ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     tempting~2a 
     alluring~2az 
  asunder ( meanings=2 glosses=1 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON2 COMMON1 posdefault:ADVERB ) 
@@ -22724,7 +22738,7 @@
     autographed~1az bearing an autograph
  acerose ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     needle-shaped~1a 
- acicular ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
+ acicular ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     acerose~1a 
  apiculate ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     apiculate~1az having a short sharply pointed tip
@@ -22814,7 +22828,7 @@
     adjunct~5a 
  appurtenant ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     ancillary~1a 
- amazed ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ amazed ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_TAKING_NOUN_INFINITIVE ) 
     astonished~1a 
  astonied ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     amazed~1a 
@@ -22895,7 +22909,7 @@
     anticlimactic~1az coming after the climax especially of a dramatic or narrative plot
     anticlimactical~1a 
     anticlimactic~3az 
- ahead ( meanings=8 glosses=7 PARTICLE ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB ) 
+ ahead ( meanings=8 glosses=7 PARTICLE ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB DISTANCE_ADVERB ADJECTIVE_TAKING_NOUN_INFINITIVE ) 
     in_the_lead~1az having the leading position or higher score in a contest
     before~2b 
     in_advance~2bz ahead of time
@@ -23535,7 +23549,7 @@
     appositional~1a 
  appropriative ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
     appropriative~1az of or relating to or given to the act of taking for yourself
- apsidal ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
+ apsidal ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     apsidal~1az of or relating to an apse
  aptitudinal ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     aptitudinal~1az of or relating to aptitudes
@@ -24381,19 +24395,19 @@
  aggravate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
     exacerbate~1vz make worse
     exacerbate~2vz exasperate or irritate
- amaze ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ amaze ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     mystify~2v 
     astonish~1v 
  amuse ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
     amuse~1vz make laugh
     divert~4vz occupy in an agreeable, entertaining or pleasant fashion
- annoy ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ annoy ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     nettle~2v 
- astonish ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ astonish ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     astound~1vz affect with wonder
- astound ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ astound ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB QUOTEABLE_VERB ) 
     amaze~2v 
- as ( meanings=3 glosses=1 PARTICLE ADJECTIVE ADVERB PREPOSITION CONJUNCTION_SUBORDINATE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION ) 
+ as ( meanings=3 glosses=1 PARTICLE ADJECTIVE ADVERB PREPOSITION CONJUNCTION_SUBORDINATE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION OBJECT_AS_ADJECTIVE ) 
     every_bit~1bz to the same degree 
     as~2z 
     as~3z 
@@ -24529,7 +24543,7 @@
     adroitly~1bz with adroitness
  at_all ( meanings=1 ADVERB CONDITIONAL_IDIOM posdefault:ADVERB  poscondition=?=R ) 
     in_the_least~1b 
- a_lot ( meanings=1 ADVERB CONDITIONAL_IDIOM KINDERGARTEN posdefault:ADVERB  poscondition=?![TNP]=R ) 
+ a_lot ( meanings=1 ADVERB CONDITIONAL_IDIOM KINDERGARTEN posdefault:ADVERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT  poscondition=?![TNP]=R ) 
     very_much~1bz 
  a_good_deal ( meanings=1 ADVERB CONDITIONAL_IDIOM posdefault:ADVERB  poscondition=?=R ) 
     much~5b 
@@ -25157,7 +25171,7 @@
     anesthesiologically~2bz 
  as_given ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
     as_given~1bz 
- at_no_time ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
+ at_no_time ( meanings=1 ADVERB CONDITIONAL_IDIOM NEGATIVE_ADVERB_STARTER  poscondition=?=R ) 
     at_no_time~1bz 
  allosterically ( meanings=2 ADVERB COMMON1 posdefault:ADVERB ) 
     allosterically~1bz 
@@ -25397,7 +25411,7 @@
     as_soon_as~2z 
  as_though ( meanings=1 CONJUNCTION_SUBORDINATE KINDERGARTEN posdefault:PREPOSITION ) 
     as_though~1z 
- as_a_result ( ADVERB CONDITIONAL_IDIOM KINDERGARTEN  poscondition=?=R ) 
+ as_a_result ( ADVERB CONDITIONAL_IDIOM KINDERGARTEN  poscondition=(null) ) 
  a_bit_like ( meanings=1 PREPOSITION ) 
     a_bit_like~1z 
  a_cut_above ( meanings=1 PREPOSITION ) 
@@ -25527,7 +25541,7 @@
     stage~9vz plan, organize, and carry out 
     set~41vz adapt for performance in a different way
     format~5vz set into a specific format
- assume ( meanings=9 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ assume ( meanings=9 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) 
     get_into~1v 
     adopt~2vz take on a certain form, attribute, or aspect
     presume~2v 
@@ -25764,7 +25778,7 @@
     revalue~2vz gain in value
     instruct~3vz make aware of
     apprise~4v 
- apprise ( meanings=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ apprise ( meanings=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     appreciate~1v 
     appreciate~2v 
     apprize~3v 
@@ -25793,7 +25807,7 @@
     bode~1v 
  ask_for_it ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT VERB_CONJUGATE1 ) 
     ask_for_trouble~1v 
- ask ( meanings=7 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT ) 
+ ask ( meanings=7 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     ask~1vz make a request or demand for something to somebody
     require~2v 
     enquire~2vz inquire about
@@ -25842,7 +25856,7 @@
     take_up~10v 
     follow~12v 
     assume~9v 
- appear ( meanings=7 glosses=7 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_ADJECTIVE VERB_NOOBJECT PRESENTATION_VERB ) 
+ appear ( meanings=7 glosses=7 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_ADJECTIVE VERB_NOOBJECT PRESENTATION_VERB OMITTABLE_THAT_VERB ) 
     appear~1vz come into sight or view
     come_along~2vz come into being or existence, or appear on the scene
     come_out~2vz be issued or published
@@ -25972,7 +25986,7 @@
     ascertain~2vz learn or discover with certainty
     find_out~3v 
     find_out~4v 
- assure ( meanings=6 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ assure ( meanings=6 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     ascertain~1v 
     assure~2vz assure somebody of the truth of something with the intention of giving the listener confidence
     promise~3v 
@@ -25988,7 +26002,7 @@
  abide ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT ) 
     tolerate~1v 
     stay~14v 
- approve ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ approve ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     approve~1vz judge to be right or commendable
     sanction~5v 
  assign ( meanings=8 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
@@ -26019,7 +26033,7 @@
     try~8v 
  aspire ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 posdefault:VERB VERB_TAKES_TOINFINITIVE ) 
     draw_a_bead_on~1v 
- assert ( meanings=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ assert ( meanings=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     insist~1v 
     swear~4v 
     maintain~3v 
@@ -26037,7 +26051,7 @@
     give_up~11vz allow the other team to score
     leave~15v 
     admit~8vz afford possibility
- ascribe ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ ascribe ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     impute~1v 
  anthropomorphize ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     anthropomorphise~1vz ascribe human features to something
@@ -26068,7 +26082,7 @@
     deny~6v 
  arbitrate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_NOOBJECT ) 
     liaise~1v 
- agree ( meanings=7 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_NOOBJECT ) 
+ agree ( meanings=7 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_NOOBJECT OMITTABLE_THAT_VERB ) 
     agree~1vz consent or assent to a condition, or agree to do something
     hold~15vz be in accord
     agree~3vz achieve harmony of opinion, feeling, or purpose
@@ -26135,7 +26149,7 @@
     assert~2v 
  avouch ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     avow~1vz admit openly and bluntly
- attest ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ attest ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     attest~1vz authenticate, affirm to be true, genuine, or correct, as in an official capacity
     attest~2vz establish or verify the usage of
     evidence~4v 
@@ -26159,7 +26173,7 @@
  arraign ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT ) 
     arraign~1vz accuse of a wrong or an inadequacy
     arraign~2vz call before a court to answer an indictment
- asperse ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
+ asperse ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     defame~1v 
  assassinate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     assassinate~1vz destroy or damage seriously, as of someone's reputation
@@ -26167,14 +26181,14 @@
  arse_around ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     horse_around~1v 
     bum~7v 
- applaud ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ applaud ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     applaud~1vz express approval of
     spat~7v 
- assail ( meanings=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ assail ( meanings=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     assault~4v 
     attack~15v 
     assault~5v 
- accurse ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
+ accurse ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     anathemise~1v 
  anathemize ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     execrate~1v 
@@ -26188,7 +26202,7 @@
     accurse~1v 
  answer_for ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     account~11v 
- advise ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ advise ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     counsel~3vz give advice to
     send_word~1vz inform of something
     suggest~1vz make a proposal, declare a plan for something
@@ -26196,7 +26210,7 @@
     adulate~1vz flatter in an obsequious manner
  affiance ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     betroth~1v 
- apologize ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ apologize ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     apologise~1vz acknowledge faults or shortcomings or failing
     justify~2v 
  apologise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
@@ -26225,10 +26239,10 @@
     embroider~1v 
  aggrandise ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     aggrandize~1v 
- annotate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ annotate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     gloss~7v 
     footnote~2v 
- announce ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ announce ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     declare~3vz announce publicly or officially
     foretell~3v 
     denote~3vz make known
@@ -26261,7 +26275,7 @@
     abduce~1vz advance evidence for
  abduce ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     cite~3v 
- allege ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ allege ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     aver~2v 
  asseverate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     assert~3v 
@@ -26317,7 +26331,7 @@
     aluminise~1vz cover with aluminum
  aluminise ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     aluminize~1v 
- attract ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ attract ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     attract~1vz exert a force on causing it to approach or prevent it from moving away
     draw_in~2v 
     appeal~7vz be attractive to
@@ -26393,7 +26407,7 @@
     execrate~2v 
  adore ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_TAKES_VERBINFINITIVE VERB_TAKES_TOINFINITIVE VERB_DIRECTOBJECT ) 
     adore~1vz love intensely
- appal ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
+ appal ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     horrify~1v 
     outrage~5v 
  appall ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
@@ -26423,7 +26437,7 @@
     antagonize~2v 
  abreact ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_NOOBJECT ) 
     abreact~1vz discharge bad feelings or tension through verbalization
- alienate ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ alienate ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     disaffect~1vz arouse hostility or indifference in where there had formerly been love, affection, or friendliness
     alienate~2vz make withdrawn or isolated or emotionally dissociated
     alien~8vz transfer property or ownership
@@ -26521,7 +26535,7 @@
  air-condition ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT ) 
     air-cool~1vz equip with an apparatus for controlling the humidity and temperature
     air-condition~2vz control the humidity and temperature of
- appoint ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
+ appoint ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT FACTITIVE_NOUN_VERB FACTITIVE_ADJECTIVE_VERB ) 
     appoint~1vz furnish
     name~12vz create and charge with a task or function
     charge~40v 
@@ -26829,14 +26843,15 @@
     an~2z 
  any_and_all ( meanings=1 DETERMINER KINDERGARTEN DETERMINER_PLURAL ) 
     any_and_all~1z 
- as_great_a ( CONDITIONAL_IDIOM  poscondition=?[N]=A ) 
- all_of_the ( CONDITIONAL_IDIOM  poscondition=?[AN]=A ) 
- a_lack_of ( CONDITIONAL_IDIOM  poscondition=?[AN]=A ) 
- a_lot_of ( CONDITIONAL_IDIOM  poscondition=?[AN]=A ) 
- a_bit_of ( CONDITIONAL_IDIOM  poscondition=?[AN]=A ) 
- a_good_deal_of ( CONDITIONAL_IDIOM  poscondition=?[AN]=A ) 
- a_great_deal_of ( CONDITIONAL_IDIOM  poscondition=?[AN]=A ) 
+ as_great_a ( CONDITIONAL_IDIOM  poscondition=(null) ) 
+ all_of_the ( CONDITIONAL_IDIOM  poscondition=(null) ) 
+ a_lack_of ( CONDITIONAL_IDIOM  poscondition=(null) ) 
+ a_lot_of ( CONDITIONAL_IDIOM  poscondition=(null) ) 
+ a_bit_of ( CONDITIONAL_IDIOM  poscondition=(null) ) 
+ a_good_deal_of ( CONDITIONAL_IDIOM  poscondition=(null) ) 
+ a_great_deal_of ( CONDITIONAL_IDIOM  poscondition=(null) ) 
  arteria_gastrica_brefes ( NOUN NOUN_PLURAL ) 
+ AG ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR NOUN_NODETERMINER KINDERGARTEN ) 
  Attny. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  A.G. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Adm. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 

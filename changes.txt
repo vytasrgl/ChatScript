@@ -1,3 +1,6 @@
+version 6.2g 3/27/2016
+1. fixed slowdown introduced into the engine a few versions ago.
+
 version 6.2f  3/25/2016
 1. ^jsonparse now accepts a flag argument of SAFE, which means you can use it against data the extends beyond the minimal, meaning
 if you memorize OOB data after [, you dont have to care to find the closing ], which will be hard since JSON itself has ] in it. Eg

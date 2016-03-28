@@ -456,7 +456,7 @@ void DumpSentence(int start,int end)
 				Describe(j,buffer); // the verb
 				if (indirectObjectRef[j]) 
 				{
-					strcat(buffer,(char*)"  IndirectObject: (char*)");
+					strcat(buffer,(char*)"  IndirectObject:");
 					Describe(indirectObjectRef[j],buffer);
 				}
 				DescribeUnit(objectRef[j],buffer, "  DirectObject:",0,clauseid);
@@ -502,10 +502,10 @@ void DumpSentence(int start,int end)
 			else continue;
 			if (i == 1 && phrases[wordCount] == phrases[1]) 
 			{
-				DescribeComponent(wordCount,buffer,(char*)"{",(char*)"}"); // wrapped?
+				DescribeComponent(wordCount,buffer,(char*)"{","}"); // wrapped?
 				strcat(buffer,(char*)" ");
 			}
-			DescribeComponent(i,buffer,(char*)"{",(char*)"}"); // wrapped?
+			DescribeComponent(i,buffer,(char*)"{","}"); // wrapped?
 			strcat(buffer,(char*)" ");
 		}
 

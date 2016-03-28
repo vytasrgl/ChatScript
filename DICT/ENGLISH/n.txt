@@ -1,8 +1,8 @@
 ﻿ Nathraichean ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Napayshni ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  netkeeper ( meanings=2 NOUN NOUN_SINGULAR COMMON1 ) 
-    goalie~1n 
-    goalie~2n 
+    goalkeeper~1n 
+    goalkeeper~2n 
  natural_virtue ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     natural_virtue~1nz (^cardinal_virtue~1) one of the four virtues (prudence, justice, fortitude, and temperance) derived from nature
  Nevins ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -319,7 +319,7 @@
  Novocain ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     procaine_hydrochloride~1n 
  Nielsine ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- narrow ( meanings=11 glosses=10 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ narrow ( meanings=11 glosses=10 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     narrow~1nz (^sound~7) a narrow strait connecting two bodies of water
     narrow-minded~1az lacking tolerance or flexibility or breadth of view
     minute~7az characterized by painstaking care and detailed examination
@@ -386,7 +386,7 @@
     frill~1n 
     bunk~5n 
     nonsensical~1a 
- new ( meanings=10 glosses=7 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ) 
+ new ( meanings=10 glosses=7 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     new~1az unfamiliar
     unexampled~1az having no previous example or precedent or parallel
     young~3a 
@@ -508,7 +508,7 @@
  Nolyn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Nedda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Nakita ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- naive ( meanings=6 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ naive ( meanings=6 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     uninitiated~1az not initiated
     uninstructed~1az lacking information or instruction
     naive~3az inexperienced
@@ -560,7 +560,7 @@
     Michel_Ney~1n 
  Nicky ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Nuss ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- nankeen ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
+ nankeen ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     nankeen~1nz (^material~1) a durable fabric formerly loomed by hand in China from natural cotton having a yellowish color
  numismatology ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     coin_collection~1n 
@@ -673,7 +673,7 @@
  Nevin ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Nam ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Nefin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- nod ( meanings=7 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ nod ( meanings=7 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     nod~1nz (^inclination~1) the act of nodding the head
     nod~2nz (^motion~3) a sign of assent or salutation or command
     nod~3vz be almost asleep
@@ -858,8 +858,7 @@
  Niyol ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  newspeak ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     newspeak~1nz (^manufacture~2) deliberately ambiguous and contradictory language use to mislead and manipulate the public
- Ngo ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    nongovernmental_organization~1n 
+ Ngo ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Nucifraga_columbiana ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Clark_'s_nutcracker~1nz (^nutcracker~1) nutcracker of the western United States
  northern_flying_squirrel ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -1116,8 +1115,6 @@
  Nivens ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Neff ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Nekane ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- napkin_ring ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    napkin_ring~1nz (^ring~2) a circular band used to hold a particular person's napkin
  nullity ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     nullity~1nz (^act~2) something that is null
     nothingness~2n 
@@ -1163,7 +1160,7 @@
     native~8az 
  Neritidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Neritidae~1nz (^mollusk_family~1) neritids
- need ( meanings=8 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE AUX_VERB_PRESENT NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ need ( meanings=8 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE AUX_VERB_PRESENT NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) 
     motive~1nz (^psychological_feature~1) the psychological feature that arouses an organism to action toward a desired goal
     want~2nz (^essential~1) anything that is necessary but lacking
     demand~5nz (^status~1) a condition requiring relief
@@ -1240,7 +1237,7 @@
  Nerian ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Nugent ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Nordin ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- name ( meanings=13 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
+ name ( meanings=13 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT FACTITIVE_NOUN_VERB FACTITIVE_ADJECTIVE_VERB ) 
     name~1nz (^sanction~2) by the sanction or authority of
     name~2nz (^linguistic_unit~1) a language unit by which a person or thing is known
     epithet~1nz (^calumniation~1) a defamatory or abusive word or phrase
@@ -1381,8 +1378,7 @@
  Nann ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Nannette ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Nannie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Nara ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    National_Archives_and_Records_Administration~1n 
+ Nara ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Nardo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Narve ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Nassor ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1496,8 +1492,7 @@
  Natacha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Natosha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Nereida ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Nga ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    National_Geospatial-Intelligence_Agency~1n 
+ Nga ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Ngan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Nickole ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Nicolasa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1536,7 +1531,7 @@
     nomination~3nz (^status~1) the condition of having been proposed as a suitable candidate for appointment or election
  near_thing ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     near_thing~1nz (^avoidance~1) something that barely avoids failure or disaster
- near ( meanings=10 glosses=4 PARTICLE ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB posdefault:PREPOSITION ) comparative=nearest 
+ near ( meanings=10 glosses=4 PARTICLE ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB posdefault:PREPOSITION NON_COMPLEMENT_ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=nearest 
     close~6a 
     approximate~2az very close in resemblance
     dear~3az with or in a close or intimate relationship
@@ -2385,6 +2380,8 @@
     Napier_'s_rods~1nz (^calculator~1) a set of graduated rods formerly used to do multiplication and division by a method invented by John Napier
  Napier_'s_rods ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Napier_'s_bones~1n 
+ napkin_ring ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    napkin_ring~1nz (^ring~2) a circular band used to hold a particular person's napkin
  naproxen ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 ) 
     Naprosyn~1nz (^nonsteroidal_anti-inflammatory_drug~1) a nonsteroidal anti-inflammatory drug used in the treatment of arthritis and musculoskeletal inflammation and moderate pain
  Naprosyn ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -2471,7 +2468,7 @@
     navigation_light~1nz (^light~1) light on an airplane that indicates the plane's position and orientation
  navy_base ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     navy_base~1nz (^base~4) base of operations for a naval fleet
- navy ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ navy ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     navy_blue~1nz (^blue~1) a dark shade of blue
     naval_forces~1nz (^service~14) an organization of military vessels belonging to a country and available for sea warfare
     navy~3az 
@@ -2526,7 +2523,7 @@
  Neobiotic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     neomycin~1nz (^antibiotic_drug~1) an antibiotic obtained from an actinomycete and used as an intestinal antiseptic in surgery
  neon ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
-    NE~3nz (^element~6) a colorless odorless gaseous element that give a red glow in a vacuum tube
+    Ne~1nz (^element~6) a colorless odorless gaseous element that give a red glow in a vacuum tube
     neon~2az 
  neon_induction_lamp ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     neon_tube~1nz (^lamp~1) a lamp consisting of a small gas-discharge tube containing neon at low pressure
@@ -2880,7 +2877,7 @@
  neediness ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     neediness~1nz (^quality~1) the quality of needing attention and affection and reassurance to a marked degree
     deprivation~3n 
- note ( meanings=13 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) 
+ note ( meanings=13 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     note~1nz (^air~2) a characteristic emotional quality
     note~2nz (^written_account~1) a brief written record
     billet~3n 
@@ -3058,14 +3055,14 @@
     nodule~1nz (^node~2) a small node
     nodule~2nz (^lump~2) a small rounded lump of mineral substance (usually harder than the surrounding rock or sediment)
     tubercle~2n 
- navicular ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 posdefault:ADJECTIVE ) 
+ navicular ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     scaphoid_bone~1n 
     scaphoid~1az shaped like a boat
  nasal_bone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     os_nasale~1nz (^bone~2) an elongated rectangular bone that forms the bridge of the nose
  nervous_tissue ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     nerve_tissue~1nz (^animal_tissue~1) tissue composed of neurons
- nervous ( meanings=6 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) 
+ nervous ( meanings=6 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     spooky~1az unpredictably excitable
     aflutter~1az excited in anticipation
     nervous~3az easily agitated
@@ -3183,7 +3180,7 @@
     ninth_cranial_nerve~1nz (^cranial_nerve~1) sensory nerve to the pharynx and back of the tongue
  ninth_cranial_nerve ( meanings=1 NOUN NOUN_SINGULAR ) 
     glossopharyngeal_nerve~1n 
- ninth ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN ) 
+ ninth ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN QUANTITY_NOUN ) 
  nervus_vagus ( meanings=1 NOUN NOUN_SINGULAR ) 
     vagus_nerve~1n 
  nervus_accessorius ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -3285,7 +3282,7 @@
     near_vision~1nz (^sight~3) vision for objects 2 feet or closer to the viewer
  night-sight ( meanings=1 NOUN NOUN_SINGULAR ) 
     scotopic_vision~1n 
- normal ( meanings=6 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) 
+ normal ( meanings=6 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     pattern~3n 
     normal~2az conforming with or constituting a norm or standard or level or type or social norm
     normal~3az being approximately average or within certain limits in e.g. intelligence and development
@@ -3543,7 +3540,7 @@
     nominal~5az of, relating to, or characteristic of an amount that is not adjusted for inflation
     nominal~6az pertaining to a noun or to a word group that functions as a noun
     nominal~7az relating to or constituting or bearing or giving a name
- neuter ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ neuter ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     neuter~1nz (^gender~2) a gender that refers chiefly to inanimate objects (neither masculine nor feminine)
     neuter~2az of grammatical gender
     sexless~3a 
@@ -3678,9 +3675,8 @@
     negation~3nz (^statement~4) a negative statement
  nota_bene ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     N.B.~1nz (^note~4) a Latin phrase used to indicate that special attention should be paid to something
- NB ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ NB ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     nota_bene~1n 
-    niobium~1n 
  N.B. ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     NB~1n 
  name-dropping ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -3904,7 +3900,7 @@
     nativity~1n 
  nascence ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     nascency~1n 
- neigh ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ neigh ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     nicker~1n 
     nicker~2v 
  nicker ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
@@ -4003,7 +3999,7 @@
  nutmeg_melon ( meanings=2 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     net_melon~1n 
     netted_melon~2n 
- nutmeg ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ nutmeg ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     nutmeg~1nz (^spice~2) hard aromatic seed of the nutmeg tree used as spice when grated or ground
     nutmeg_tree~1n 
  native_peach ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -4078,7 +4074,9 @@
  null_space ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     null_space~1nz (^mathematical_space~1) a space that contains no points
  nongovernmental_organization ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    Ngo~1nz (^organization~6) an organization that is not part of the local or state or federal government
+    NGO~1nz (^organization~6) an organization that is not part of the local or state or federal government
+ NGO ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    nongovernmental_organization~1n 
  National_Liberation_Army ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     ELN~1n 
     ELN~2nz (^foreign_terrorist_organization~1) a Marxist terrorist group formed in 1963 by Colombian intellectuals who were inspired by the Cuban Revolution
@@ -4119,7 +4117,9 @@
  NASA ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     National_Aeronautics_and_Space_Administration~1n 
  National_Archives_and_Records_Administration ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Nara~1nz (^independent_agency~1) the independent agency that oversees management of federal government records including presidential libraries and historic collections
+    NARA~1nz (^independent_agency~1) the independent agency that oversees management of federal government records including presidential libraries and historic collections
+ NARA ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    National_Archives_and_Records_Administration~1n 
  National_Labor_Relations_Board ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     NLRB~1nz (^independent_agency~1) an independent agency of the United States government charged with mediating disputes between management and labor unions
  NLRB ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -4278,7 +4278,9 @@
  NGB ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     National_Guard_Bureau~1n 
  National_Geospatial-Intelligence_Agency ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Nga~1nz (^agency~3) a combat support agency that provides geographic intelligence in support of national security
+    NGA~1nz (^agency~3) a combat support agency that provides geographic intelligence in support of national security
+ NGA ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    National_Geospatial-Intelligence_Agency~1n 
  night_school ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     night_school~1nz (^school~5) a school that holds classes in the evenings for students who cannot attend during the day
  nursery_school ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -4632,10 +4634,9 @@
     Nantucket~1nz (^island~2) an island resort off Cape Cod
  Natchez ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Natchez~1nz (^town~2) a town in southwest Mississippi on the Mississippi River
- NE ( meanings=3 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+ NE ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     Nebraska~1n 
     northeastward~1n 
-    neon~1n 
  North_Platte ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     North_Platte~1nz (^town~2) a town in west central Nebraska on the Platte River
     North_Platte_River~1n 
@@ -4685,9 +4686,8 @@
     Tar_Heel_State~1n 
  North_Dakota ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Peace_Garden_State~1n 
- ND ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ ND ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     North_Dakota~1n 
-    neodymium~1n 
  Nashville ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Nashville~1nz (^state_capital~1) capital of the state of Tennessee
  Newport_News ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -4774,7 +4774,7 @@
  necessity ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
     requirement~3n 
     necessity~2nz (^need~3) the condition of being essential or indispensable
- necessary ( meanings=4 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ necessary ( meanings=4 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     requisite~1n 
     necessary~2az unavoidably determined by prior circumstances
     necessary~3az absolutely essential
@@ -4963,7 +4963,7 @@
     Amerindian~1nz (^individual~1) any member of the peoples living in North or South America before the Europeans arrived
     Amerind~2a 
  native_Australian ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Aborigine~1n 
+    Abo~1n 
  non-Jew ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     gentile~2n 
  non-Catholic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -5319,7 +5319,7 @@
     New_Waver~1nz (^film_producer~1) a film maker who follows New Wave ideas
  next_friend ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     next_friend~1nz (^agent~4) a person who acts on behalf of an infant or disabled person
- next ( meanings=6 glosses=2 ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 COMMON1 KINDERGARTEN OMITTABLE_TIME_PREPOSITION ) 
+ next ( meanings=6 glosses=2 ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 COMMON1 KINDERGARTEN OMITTABLE_TIME_PREPOSITION TIME_ADJECTIVE ) 
     following~4a 
     side_by_side~1az nearest in space or position
     future~4a 
@@ -5477,9 +5477,8 @@
     nurse-midwife~1nz (^registered_nurse~1) a registered nurse who has received special training as a midwife
  nurse_practitioner ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     nurse_clinician~1nz (^registered_nurse~1) a registered nurse who has received special training and can perform many of the duties of a physician
- NP ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+ NP ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     nurse_practitioner~1n 
-    neptunium~1n 
  nurse_clinician ( meanings=1 NOUN NOUN_SINGULAR ) 
     NP~1n 
  nuncio ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -5974,7 +5973,7 @@
     nimble_Will~1n 
  nimble_Will ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Muhlenbergia_schreberi~1n 
- nimble ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ nimble ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     quick~2a 
     agile~2a 
     nimble~3az 
@@ -6867,13 +6866,21 @@
     nonmetal~1nz (^element~6) a chemical element lacking typical metallic properties
     nonmetallic~1a 
  neodymium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    ND~2nz (^metal~2) a yellow trivalent metallic element of the rare earth group
+    Nd~1nz (^metal~2) a yellow trivalent metallic element of the rare earth group
+ Nd ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    neodymium~1n 
+ Ne ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    neon~1n 
  neptunium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    NP~2nz (^metal~2) a radioactive transuranic metallic element
+    Np~1nz (^metal~2) a radioactive transuranic metallic element
+ Np ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    neptunium~1n 
  Ni ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     nickel~3n 
  niobium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    NB~2nz (^metal~2) a soft grey ductile metallic element used in alloys
+    Nb~1nz (^metal~2) a soft grey ductile metallic element used in alloys
+ Nb ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    niobium~1n 
  nobelium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     nobelium~1nz (^element~6) a radioactive transuranic element synthesized by bombarding curium with carbon ions
     nobelium~2az 
@@ -7304,7 +7311,7 @@
     non~1bz negation of a word or group of words
  nock ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT ) 
     mark~24v 
- nanosecond ( ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN posdefault:NOUN TIMEWORD ) 
+ nanosecond ( ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN posdefault:NOUN TIMEWORD QUANTITY_NOUN ) 
  nascent ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     nascent~1az being born or beginning
  nonabsorbent ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -7338,7 +7345,7 @@
     nonresinous~1a 
  non-resiny ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     nonresiny~1a 
- neat ( meanings=7 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) 
+ neat ( meanings=7 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     clean~3a 
     straight~8a 
     tasteful~1az free from what is tawdry or unbecoming
@@ -7408,7 +7415,7 @@
  nightmarish ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     hair-raising~1a 
     nightmarish~2az 
- nervy ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) comparative=nerviest 
+ nervy ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=nerviest 
     brash~1a 
     nervy~2az showing or requiring courage and contempt of danger
     high-strung~1a 
@@ -7450,7 +7457,7 @@
     shockable~1az capable of being shocked
  numerable ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     enumerable~1a 
- numberless ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ numberless ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     multitudinous~1a 
  neglected ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
     unattended~1a 
@@ -7481,7 +7488,7 @@
     neutral-coloured~1a 
  neutral-coloured ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     neutral-colored~1az having a color that does not attract attention
- noisy ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) comparative=noisiest 
+ noisy ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=noisiest 
     noisy~1az attracting attention by showiness or bright colors
     noisy~2az full of or characterized by loud and nonmusical sounds
  nonchristian ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
@@ -7500,7 +7507,7 @@
     nonclassical~1az not classical
  nonsensitive ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     unrestricted~1az never having had security classification
- nasty ( meanings=5 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) comparative=nastiest 
+ nasty ( meanings=5 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=nastiest 
     foul~3az disgustingly dirty
     cruddy~1az characterized by obscenity
     tight~4a 
@@ -7570,7 +7577,7 @@
     unmixable~1az incapable of mixing
  noncompetitive ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     noncompetitive~1az not involving competition or competitiveness
- neither ( meanings=4 glosses=1 PRONOUN_SUBJECT PRONOUN_OBJECT ADJECTIVE ADVERB DETERMINER ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN DETERMINER_SINGULAR PRONOUN_SINGULAR posdefault:ADVERB ) 
+ neither ( meanings=4 glosses=1 PRONOUN_SUBJECT PRONOUN_OBJECT ADJECTIVE ADVERB DETERMINER ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN DETERMINER_SINGULAR PRONOUN_SINGULAR posdefault:ADVERB NEGATIVE_ADVERB_STARTER ) 
     neither~1az not either
     neither~2bz 
     neither~3z 
@@ -7623,7 +7630,7 @@
     intangible~2az lacking substance or reality
  narrow-bodied ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     narrow-bodied~1az having a relatively narrow body
- nice ( meanings=6 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ nice ( meanings=6 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     gracious~2az exhibiting courtesy and politeness
     squeamish~1az excessively fastidious and easily disgusted
     nice~3az pleasant or pleasing or agreeable in nature or appearance
@@ -7823,7 +7830,7 @@
     nifty~2az 
  not_bad ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM ADJECTIVE_ONLY_PREDICATE  poscondition=?=A ) 
     nifty~1a 
- naughty ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ) comparative=naughtiest 
+ naughty ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=naughtiest 
     naughty~1az badly behaved
     spicy~1az suggestive of sexual impropriety
     naughty~3az 
@@ -7957,7 +7964,7 @@
     trifling~2az not worth considering
  nonmeaningful ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     meaningless~1az having no meaning or direction or purpose
- nonsensical ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ nonsensical ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     nonsense~3az having no intelligible meaning
     absurd~3a 
     nonsensical~3az 
@@ -7983,7 +7990,7 @@
     nonmodern~1az not modern
  nonmonotonic ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
     nonmonotonic~1az not monotonic
- numerous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ numerous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     legion~5az amounting to a large indefinite number
  nonmoving ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
     unmoving~2az not in motion
@@ -8993,7 +9000,7 @@
     nyctophilic~1az 
  nyctophobic ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     nyctophobic~1az 
- nineth ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN ) 
+ nineth ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER ORDINAL KINDERGARTEN QUANTITY_NOUN ) 
  nearer ( meanings=2 MORE_FORM ADJECTIVE ADVERB PREPOSITION ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE posdefault:ADVERB ) comparative=near 
     closer~1b 
     nearer~2z 
@@ -9026,7 +9033,7 @@
  nuttiest ( MOST_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) comparative=nuttier 
  naughtily ( meanings=1 ADVERB COMMON1 posdefault:ADVERB ) 
     mischievously~1b 
- never ( meanings=2 glosses=2 ADVERB COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:ADVERB ) 
+ never ( meanings=2 glosses=2 ADVERB COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:ADVERB NEGATIVE_ADVERB_STARTER ) 
     ne'er~1bz not ever
     never~2bz not at all
  ne'er ( meanings=1 ADVERB COMMON2 COMMON1 posdefault:ADVERB ) 
@@ -9201,7 +9208,7 @@
     northeastward~3bz in a northeastward direction
  northwestwardly ( meanings=1 glosses=1 ADVERB COMMON1 ) 
     northwestward~3bz in a northwestward direction
- not_only ( meanings=3 ADVERB CONDITIONAL_IDIOM KINDERGARTEN  poscondition=?=R ) 
+ not_only ( meanings=3 ADVERB CONDITIONAL_IDIOM KINDERGARTEN NEGATIVE_ADVERB_STARTER  poscondition=?=R ) 
     not_only~1bz 
     not_only~2bz 
     not_only~3bz 
@@ -9225,12 +9232,12 @@
  nonoccupationally ( meanings=2 ADVERB COMMON1 ) 
     nonoccupationally~1bz 
     nonoccupationally~2bz 
- no_sooner ( meanings=2 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
+ no_sooner ( meanings=2 ADVERB CONDITIONAL_IDIOM NEGATIVE_ADVERB_STARTER  poscondition=?=R ) 
     no_sooner~1bz 
     no_sooner~2bz 
- not_since ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
+ not_since ( meanings=1 ADVERB CONDITIONAL_IDIOM NEGATIVE_ADVERB_STARTER  poscondition=?=R ) 
     not_since~1bz 
- never_before ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
+ never_before ( meanings=1 ADVERB CONDITIONAL_IDIOM NEGATIVE_ADVERB_STARTER  poscondition=?=R ) 
     never_before~1bz 
  nephrologically ( meanings=2 ADVERB ) 
     nephrologically~1bz 
@@ -9356,7 +9363,7 @@
     nonsurgically~1bz 
  nuclearly ( meanings=1 ADVERB ) 
     nuclearly~1bz 
- nor ( meanings=1 CONJUNCTION_COORDINATE COMMON4 COMMON1 KINDERGARTEN posdefault:PREPOSITION ) 
+ nor ( meanings=1 CONJUNCTION_COORDINATE COMMON4 COMMON1 KINDERGARTEN posdefault:PREPOSITION NEGATIVE_ADVERB_STARTER ) 
     nor~1z 
  no_wonder ( meanings=1 CONJUNCTION_SUBORDINATE KINDERGARTEN ) 
     no_wonder~1z 
@@ -9498,7 +9505,7 @@
     notarize~1v 
  nitpick ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT ) 
     nitpick~1vz be overly critical
- notify ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ notify ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     apprize~4v 
  nominate ( meanings=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
     put_up~3v 
@@ -9511,7 +9518,7 @@
  nasalise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     nasalize~1v 
     nasalize~2v 
- narrate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ narrate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     recount~3v 
     narrate~2vz provide commentary for a film, for example
  nasale ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
@@ -9520,9 +9527,9 @@
     notate~1vz put into notation, as of music or choreography
  namedrop ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
     namedrop~1vz refer to people that one assumes one's interlocutors admire in order to try to impress them
- netmail ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
+ netmail ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 VERB_DIRECTOBJECT VERB_INDIRECTOBJECT QUOTEABLE_VERB ) 
     e-mail~3vz communicate electronically on the computer
- natter ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT ) 
+ natter ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     chaffer~1v 
  net_fish ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT VERB_CONJUGATE1 ) 
     net_fish~1vz fish with nets
@@ -9535,7 +9542,7 @@
     nab~1vz seize suddenly
     apprehend~2v 
     nab~3vz tag the base runner to get him out
- nuzzle ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ nuzzle ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     nuzzle~1vz dig out with the snout
     nose~10v 
     nest~7v 
@@ -9609,5 +9616,5 @@
     nut_out~1vz 
  no_one ( meanings=1 PRONOUN_SUBJECT PRONOUN_OBJECT PRONOUN_INDIRECTOBJECT KINDERGARTEN PRONOUN_SINGULAR ) 
     no_one~1z 
- not_much ( CONDITIONAL_IDIOM  poscondition=?[AN]=A ) 
- none_of_the ( CONDITIONAL_IDIOM  poscondition=?[AN]=A?[AN]=A ) 
+ not_much ( CONDITIONAL_IDIOM  poscondition=(null) ) 
+ none_of_the ( CONDITIONAL_IDIOM  poscondition=(null) ) 

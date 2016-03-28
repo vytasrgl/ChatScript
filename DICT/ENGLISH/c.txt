@@ -738,7 +738,7 @@
     coach~3nz (^car~3) a railcar where passengers ride
     bearing~4nz (^bodily_property~1) characteristic way of bearing one's body
  Craddock ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- crack ( meanings=24 glosses=23 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=cracker 
+ crack ( meanings=24 glosses=23 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) comparative=cracker 
     cracking~1nz (^break~4) the act of cracking something
     offer~1nz (^effort~3) a usually brief attempt
     tornado~1nz (^cocaine~1) a purified and potent form of cocaine that is smoked rather than snorted
@@ -790,7 +790,6 @@
     collateral~3az situated or running side by side
     collateral~4az accompany, concomitant
     verifying~1az serving to support or corroborate
- Cyneley ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  cybercrime ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 ) 
     cybercrime~1nz (^crime~1) crime committed using a computer and the internet to steal a person's identity or sell contraband or stalk victims or disrupt operations with malevolent programs
  caspase-mediated_cell_death ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -862,7 +861,6 @@
  creamer ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN ) comparative=cream 
     cream_pitcher~1nz (^pitcher~2) a small pitcher for serving cream
  Creamer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Camryn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  cross-pollination ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR posdefault:NOUN ) 
     cross-pollination~1nz (^influence~1) stimulating influence among diverse elements
     cross-pollination~2nz (^pollination~1) fertilization by transfer of pollen from the anthers of one flower to the stigma of another
@@ -961,7 +959,7 @@
  Curietherapy ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     radium_therapy~1n 
  Cloninger ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- CT ( meanings=2 NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR COMMON2 KINDERGARTEN ) 
+ CT ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     computerized_axial_tomography~1n 
     Nutmeg_State~1n 
  Cansler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -1098,7 +1096,7 @@
  cat_and_rat ( meanings=1 NOUN NOUN_SINGULAR ) 
     cat_and_mouse~1n 
  Chereen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- coral ( meanings=6 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ) 
+ coral ( meanings=6 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     coral~1nz (^actinozoan~1) marine colonial polyp characterized by a calcareous skeleton
     coral~2nz (^pink~1) a variable color averaging a deep pink
     coral~3nz (^hard_roe~1) unfertilized lobster roe
@@ -1600,7 +1598,7 @@
     Cuban~1nz (^West_Indian~1) a native or inhabitant of Cuba
     Cuban~2az of or relating to or characteristic of Cuba or the people of Cuba
  Canady ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- closed ( meanings=10 glosses=7 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 GRADE1_2 posdefault:VERB ) 
+ closed ( meanings=10 glosses=7 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 GRADE1_2 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     shut~1a 
     closed~2az not open or affording passage or access
     shut~2a 
@@ -1857,7 +1855,7 @@
     molding~1nz (^creating_from_raw_materials~1) the act of creating something by casting it in a mold
     cast~4n 
  Casandra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- call ( meanings=40 glosses=31 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT ) 
+ call ( meanings=40 glosses=31 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB FACTITIVE_ADJECTIVE_VERB ) 
     call_option~1nz (^option~3) the option to buy a given stock at a given price before a given date
     call~2nz (^decision~1) the decision made by an umpire or referee
     call~3nz (^visit~2) a visit in an official or professional capacity
@@ -2057,7 +2055,7 @@
  Chiles ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
  Chlamydiaceae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Chlamydiaceae~1nz (^bacteria_family~1) Gram-negative parasites in warm-blooded vertebrates
- clustered ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
+ clustered ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     agglomerated~1a 
     clustered~2az growing close together but not in dense mats
  Cecile ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
@@ -2075,7 +2073,7 @@
  Cawley ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  class_Symphyla ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Symphyla~1nz (^class~5) small class of minute arthropods
- cuddle ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ cuddle ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     snuggle~1nz (^embracement~1) a close and affectionate embrace
     draw_close~1vz move or arrange oneself in a comfortable and cozy position
     cuddle~3vz hold close, as for affection, comfort, or warmth
@@ -2240,7 +2238,7 @@
  copyright ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ) 
     right_of_first_publication~1n 
     copyright~2vz secure a copyright on a written work
- celery ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ celery ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     celery~1nz (^vegetable~1) stalks eaten raw or cooked or used as seasoning
     Apium_graveolens_dulce~1nz (^herbaceous_plant~1) widely cultivated herb with aromatic leaf stalks that are eaten raw or cooked
  Catron ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -2378,7 +2376,7 @@
  Carrasco ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  capillary_tubing ( meanings=1 NOUN NOUN_SINGULAR ) 
     capillary~1n 
- crow ( meanings=6 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_NOOBJECT ) 
+ crow ( meanings=6 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     crow~1nz (^corvine_bird~1) black birds having a raucous call
     gasconade~1nz (^boast~1) an instance of boastful talk
     crow~3nz (^cry~5) the cry of a cock
@@ -2853,7 +2851,6 @@
  Clach ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  cup_tie ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     cup_tie~1nz (^game~3) an eliminating game between teams in a cup competition
- Carswell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Connal ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  cartilaginous_fish ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     chondrichthian~1nz (^fish~1) fishes in which the skeleton may be calcified but not ossified
@@ -3174,7 +3171,7 @@
  Cyprinodontidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Cyprinodontidae~1nz (^fish_family~1) large family of small soft-finned fishes
  Corso ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- copper ( meanings=7 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ copper ( meanings=7 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     copper~1nz (^lycaenid_butterfly~1) any of various small butterflies of the family Lycaenidae having coppery wings
     copper_color~1nz (^reddish_brown~1) a reddish-brown color resembling the color of polished copper
     fuzz~3n 
@@ -3260,10 +3257,6 @@
  Cardiidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Cardiidae~1nz (^mollusk_family~1) somewhat heart-shaped sand-burrowing bivalve mollusks
  Cayla ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- checkout ( meanings=3 NOUN NOUN_SINGULAR COMMON4 posdefault:NOUN ) 
-    check-out_procedure~1n 
-    checkout_counter~1n 
-    checkout_time~1n 
  Constantina ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     Constantina~1nz (^city~2) a Romanian resort city on the Black Sea
  celestial ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -3285,7 +3278,7 @@
  Carleen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  cold_feet ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     cold_feet~1nz (^timorousness~2) timidity that prevents the continuation of a course of action
- cinnamon ( meanings=3 glosses=3 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ) 
+ cinnamon ( meanings=3 glosses=3 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cinnamon~1nz (^spice~2) spice from the dried aromatic bark of the Ceylon cinnamon tree
     Cinnamomum_zeylanicum~1nz (^laurel~2) tropical Asian tree with aromatic yellowish-brown bark
     cinnamon_bark~1nz (^bark~4) aromatic bark used as a spice
@@ -3312,8 +3305,7 @@
     teasing~1nz (^comb~1) the act of removing tangles from you hair with a comb
  care_delivery ( meanings=1 NOUN NOUN_SINGULAR ) 
     healthcare_delivery~1n 
- Cad ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
-    computer-aided_design~1n 
+ Cad ( NOUN NOUN_PROPER_SINGULAR ) 
  class_Sarcodina ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Sarcodina~1nz (^class~5) characterized by the formation of pseudopods for locomotion and taking food: Actinopoda
  Catapres ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -3424,7 +3416,7 @@
     Chester~1nz (^city~2) a city of southeastern Pennsylvania on the Delaware river
  Curtice ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  calcium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
-    CA~2nz (^metal~2) a white metallic element that burns with a brilliant light
+    Ca~1nz (^metal~2) a white metallic element that burns with a brilliant light
  caffeine_addict ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     caffein_addict~1nz (^addict~1) someone addicted to caffeine
  Chaparro ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -3444,7 +3436,7 @@
  Conchobarra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Chauncy ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Commerce ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Doc~1n 
+    Department_of_Commerce~1n 
  comb-footed_spider ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     theridiid~1nz (^spider~1) spider having a comb-like row of bristles on each hind foot
  Cherrie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
@@ -3630,8 +3622,7 @@
  Cosby ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  clupeid ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     clupeid_fish~1n 
- Cim ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    Central_Intelligence_Machinery~1n 
+ Cim ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Cheng ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Coghlan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  contempt_of_court ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -4706,7 +4697,7 @@
  Channelle ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Cathie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Casas ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- cable ( meanings=8 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT ) 
+ cable ( meanings=8 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     cable~1nz (^rope~2) a very strong thick rope made of twisted hemp or steel wire
     cable_television_service~1nz (^television~1) a television system that transmits over cables
     transmission_line~1nz (^conductor~1) a conductor for transmitting electrical or optical signals or electric power
@@ -4939,7 +4930,7 @@
     chairlift~1nz (^lift~9) a ski lift on which riders are seated and carried up or down a mountainside
  Culley ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Corliss ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- contact ( meanings=11 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) 
+ contact ( meanings=11 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     contact~1nz (^interaction~1) close interaction
     physical_contact~1nz (^touching~1) the act of touching physically
     tangency~1nz (^junction~3) a junction where things (as two electrical conductors) touch or are in physical contact
@@ -4990,8 +4981,7 @@
     cordite~1nz (^explosive_compound~1) explosive powder dissolved in acetone and dried and extruded in brown cords
  Criswell ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Cleta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Cira ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    Continuity_Irish_Republican_Army~1n 
+ Cira ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  crampoon ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     climbing_iron~1n 
     crampon~2nz (^grappling_hook~1) a hinged pair of curved iron bars
@@ -5043,7 +5033,7 @@
     coaster~3nz (^resident~2) a resident of a coastal area
  cecropia_moth ( meanings=1 NOUN NOUN_SINGULAR ) 
     cecropia~1n 
- cost ( meanings=5 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) conjugate=cost 
+ cost ( meanings=5 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_INDIRECTOBJECT OMITTABLE_THAT_VERB ) conjugate=cost 
     price~2n 
     price~3n 
     cost~3nz (^expenditure~3) the total spent for goods or services including money and time and labor
@@ -5207,7 +5197,7 @@
     compressor~1nz (^mechanical_device~1) a mechanical device that compresses gasses
  Carner ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Cummins ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- chant ( meanings=3 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ chant ( meanings=3 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     chant~1nz (^religious_song~1) a repetitive song in which as many syllables as necessary are assigned to a single tone
     intonate~1v 
     tone~15v 
@@ -5323,7 +5313,6 @@
     Croatian~2az of or relating to or characteristic of Croatia or its people or language
  cabinetry ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     cabinetwork~1n 
- Cromer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Carden ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Cherina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Cha ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -5415,7 +5404,7 @@
     cartridge_belt~1nz (^belt~2) a broad belt with loops or pockets for holding ammunition
  Charadrius_vociferus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     killdeer_plover~1nz (^plover~1) American plover of inland waters and fields having a distinctive cry
- cerise ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ) 
+ cerise ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cherry~1n 
     ruddy~1a 
     cerise~3az 
@@ -5826,7 +5815,7 @@
  convenience_store ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     convenience_store~1nz (^store~2) a store selling a limited variety of food and pharmaceutical items
  Crowson ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- cruel ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ cruel ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     roughshod~2az able or disposed to inflict pain or suffering
     cruel~2az 
  chemist ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -5885,7 +5874,7 @@
     Cyrus_the_Younger~1n 
  Catholic_Pope ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     pope~1n 
- cardioid ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
+ cardioid ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cardioid~1nz (^epicycloid~1) an epicycloid in which the rolling circle equals the fixed circle
  Cedrick ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Carrillo ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -6008,8 +5997,6 @@
     clock_tower~1nz (^tower~1) a tower with a large clock visible high up on an outside face
  Cyrilla ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Charest ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- cellular_telephone ( meanings=1 NOUN NOUN_SINGULAR ) 
-    cell~6n 
  Chionanthus_virginicus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     fringe_bush~1nz (^fringe_tree~1) small bushy tree of southeastern United States having profuse clusters of white flowers
  Caroll ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -6133,7 +6120,7 @@
     intercourse~1n 
  Chlamydera ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Chlamydera~1n 
- cheap ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ cheap ( meanings=5 glosses=4 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     inexpensive~1az relatively low in price or charging low prices
     chintzy~1az embarrassingly stingy
     crummy~1az of very poor quality
@@ -6141,7 +6128,7 @@
     cheap~5az 
  cold_frame ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     cold_frame~1nz (^protection~5) protective covering consisting of a wooden frame with a glass top in which small plants are protected from the cold
- cooperative ( meanings=6 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:ADJECTIVE ) 
+ cooperative ( meanings=6 glosses=4 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     co-op~1nz (^commercial_enterprise~2) a jointly owned commercial enterprise that produces and distributes goods and services and is run for the benefit of its owners
     cooperative~2nz (^association~4) an association formed and operated for the benefit of those using it
     accommodative~3a 
@@ -6213,7 +6200,7 @@
     collared_lizard~1nz (^iguanid_lizard~1) any of several robust long-tailed lizards with collars of two dark bands
  Caddell ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Cyne ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- clean ( meanings=32 glosses=29 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=cleaner 
+ clean ( meanings=32 glosses=29 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=cleaner 
     clean_and_jerk~1nz (^weightlifting~1) a weightlift in which the barbell is lifted to shoulder height and then jerked overhead
     clean~2az free of drugs
     neat~1az free from clumsiness
@@ -6255,6 +6242,7 @@
  Carlton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Carper ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Carrick ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Carswell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Cartier ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Jacques_Cartier~1n 
  Carty ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -6299,6 +6287,7 @@
  Crim ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Crist ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Croft ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Cromer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Crossman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Cruz ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Culberson ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -6340,6 +6329,7 @@
  Cameo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Camila ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Camille ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Camryn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Candace ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Caomh ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Capucine ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -6592,6 +6582,7 @@
  Cwen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Cymberly ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Cynburleigh ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Cyneley ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Cynhard ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Cyrano ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Caddie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -6654,7 +6645,7 @@
     approaching~4a 
  close_call ( meanings=1 NOUN NOUN_SINGULAR ) 
     close_shave~1n 
- close ( meanings=38 glosses=35 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN ADJECTIVE_POSTPOSITIVE posdefault:VERB posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=closest 
+ close ( meanings=38 glosses=35 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN ADJECTIVE_POSTPOSITIVE posdefault:VERB posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT NON_COMPLEMENT_ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=closest 
     finis~1nz (^finish~1) the concluding part of any performance
     end~6nz (^section~4) the last section of a communication
     finale~3n 
@@ -6701,7 +6692,7 @@
     takeover~2n 
  credit_hour ( meanings=1 NOUN NOUN_SINGULAR ) 
     semester_hour~1n 
- cut ( meanings=63 glosses=57 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=cut comparative=cutter 
+ cut ( meanings=63 glosses=57 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) conjugate=cut comparative=cutter 
     cut~1nz (^absence~1) an unexcused absence from class
     cut~2nz (^decrease~1) the act of reducing the amount or number
     cutting~1nz (^shortening~1) the act of shortening something by chopping off the ends
@@ -6822,7 +6813,7 @@
     trick~1n 
     conjury~1nz (^magic~2) calling up a spirit or devil
     incantation~1n 
- cast ( meanings=20 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=cast 
+ cast ( meanings=20 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE ) conjugate=cast 
     hurl~1nz (^throw~1) a violent throw
     casting~2nz (^fishing~1) the act of throwing a fishing line out over the water by means of a rod and reel
     roll~4n 
@@ -6882,6 +6873,10 @@
     counter~1n 
  check-in ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR posdefault:NOUN ) 
     check-in~1nz (^arrival~2) the act of reporting your presence
+ checkout ( meanings=3 NOUN NOUN_SINGULAR COMMON4 posdefault:NOUN ) 
+    check-out_procedure~1n 
+    checkout_counter~1n 
+    checkout_time~1n 
  checkup ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     medical_examination~1n 
  comparison ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
@@ -6890,7 +6885,7 @@
     comparison~3nz (^relation~1) relation based on similarities and differences
  comparing ( meanings=1 NOUN NOUN_SINGULAR COMMON4 posdefault:VERB ) 
     comparison~1n 
- caress ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) 
+ caress ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     caress~1nz (^stroke~1) a gentle affectionate stroking 
     fondle~1v 
  connection ( meanings=9 glosses=8 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
@@ -7044,7 +7039,7 @@
     cardiospasm~1nz (^spasm~1) a spasm of the cardiac sphincter 
  carjacking ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
     carjacking~1nz (^highjack~1) the violent theft of an occupied car
- cold ( meanings=17 glosses=16 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE ) 
+ cold ( meanings=17 glosses=16 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     low_temperature~1nz (^vasoconstrictive~1) the absence of heat
     coldness~3nz (^temperature~2) the sensation produced by low temperatures
     common_cold~1nz (^communicable_disease~1) a mild viral infection involving the nose and respiratory passages 
@@ -7137,7 +7132,7 @@
     life_history~1n 
     calling~1n 
     career~3vz move headlong at high speed
- clear ( meanings=45 glosses=34 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 GRADE3_4 posdefault:VERB posdefault:ADJECTIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ clear ( meanings=45 glosses=34 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_ONLY_PREDICATE COMMON4 COMMON1 GRADE3_4 posdefault:VERB posdefault:ADJECTIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     open~4n 
     clear~2nz (^innocence~2) the state of being free of suspicion
     clear~3az readily apparent to the mind
@@ -7461,7 +7456,7 @@
     scrag~4vz wring the neck of
     choke~15vz check or slow down the action or effect of
     choke~16vz fail to perform adequately due to tension or agitation
- child ( meanings=4 glosses=4 NOUN NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN ) plural=children 
+ child ( meanings=4 glosses=4 NOUN NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) plural=children 
     tyke~1nz (^juvenile_person~1) a young person of either sex
     kid~2nz (^issue~8) a human offspring of any age
     baby~7nz (^individual~1) an immature childish person
@@ -7500,7 +7495,7 @@
     cross-country~2bz not following tracks or roads
  cliff_diving ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     cliff_diving~1nz (^dive~2) diving into the water from a steep overhanging cliff
- crab ( meanings=9 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ crab ( meanings=9 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     crab~1nz (^row~1) a stroke of the oar that either misses the water or digs too deeply
     crab~2nz (^decapod_crustacean~1) decapod having eyes on short stalks and a broad flattened carapace with a small abdomen folded under the thorax and pincers
     crab_louse~1nz (^sucking_louse~1) a louse that infests the pubic region of the human body
@@ -7632,7 +7627,7 @@
  coloratura ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     coloratura~1nz (^vocalizing~1) singing with florid ornamentation
     coloratura_soprano~1n 
- carol ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ carol ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     carol~1nz (^song~1) a joyful song
     Christmas_carol~1n 
     carol~3vz sing carols
@@ -8203,7 +8198,7 @@
     course_of_lectures~1nz (^course~2) a series of lectures dealing with a subject
  chalk_talk ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     chalk_talk~1nz (^talk~1) a talk that uses a blackboard and chalk
- chalk ( meanings=6 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
+ chalk ( meanings=6 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     chalk~1nz (^writing_implement~1) a piece of calcite or a similar substance, usually in the shape of a crayon, that is used to write or draw on blackboards or other flat surfaces
     ice~2n 
     chalk~3nz (^white~3) a pure flat white with little reflectance
@@ -8222,7 +8217,7 @@
     motion-picture_photography~1n 
  creative_activity ( meanings=1 NOUN NOUN_SINGULAR ) 
     creation~2n 
- creative ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) 
+ creative ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     creative~1az promoting construction or creation
     originative~1az having the ability or power to create
     creative~3az 
@@ -8541,7 +8536,7 @@
     cohabitation~1nz (^inhabitation~1) the act of living together and having a sexual relationship
  concubinage ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     concubinage~1nz (^cohabitation~1) cohabitation without being legally married
- claim ( meanings=11 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE1_2 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) 
+ claim ( meanings=11 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE1_2 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     claim~1nz (^demand~1) demand for something as rightful or due
     title~1nz (^right~4) an informal right to something
     title~2nz (^legal_right~1) an established or recognized right
@@ -9296,7 +9291,7 @@
     linnet~2nz (^finch~1) small finch originally of the western United States and Mexico
  Carpodacus_purpureus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     purple_finch~1nz (^finch~1) North American finch having a raspberry-red head and breast and rump
- canary ( meanings=5 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ) 
+ canary ( meanings=5 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     canary_bird~1nz (^finch~1) any of several small Old World finches
     canary_yellow~1nz (^yellow~1) a moderate yellow with a greenish tinge
     canary~3nz (^singer~1) a female singer
@@ -9314,7 +9309,7 @@
     genus_Coccothraustes~1n 
  Coccothraustes_coccothraustes ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     hawfinch~1nz (^grossbeak~1) a common large finch of Eurasia
- cardinal ( meanings=7 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ cardinal ( meanings=7 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     Richmondena_Cardinalis~1n 
     carmine~1nz (^red~1) a variable color averaging a vivid red
     cardinal~3nz (^bishop~3) one of a group of more than 100 prominent bishops in the Sacred College who advise the Pope and elect new Popes
@@ -9348,7 +9343,7 @@
     umbrella_bird~1nz (^chatterer~1) black tropical American bird having a large overhanging crest and long feathered wattle
  clay-colored_robin ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     Turdus_greyi~1nz (^thrush~1) robin of Mexico and Central America
- chat ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_NOOBJECT ) 
+ chat ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_NOOBJECT VERB_ALLOWS_OF_AFTER QUOTEABLE_VERB ) 
     schmoose~1nz (^conversation~1) an informal conversation
     chatter~6v 
  cackler ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -9818,7 +9813,7 @@
     Carolina_parakeet~1nz (^parroquet~1) extinct parakeet whose range extended far into the United States
  cuculiform_bird ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     cuculiform_bird~1nz (^bird~1) birds having zygodactyl feet
- cuckoo ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ cuckoo ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     cuckoo~1nz (^cuculiform_bird~1) any of numerous European and North American birds having pointed wings and a long tail
     goose~3n 
     cuckoo~3vz repeat monotonously, like a cuckoo repeats his call
@@ -10099,7 +10094,7 @@
     cuttle~1nz (^decapod~1) ten-armed oval-bodied cephalopod with narrow fins as long as the body and a large calcareous internal shell
  cuttle ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     cuttlefish~1n 
- crop ( meanings=12 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ crop ( meanings=12 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     craw~1nz (^stomach~1) a pouch in many birds and some lower animals that resembles a stomach for storage and preliminary maceration of food
     crop~2nz (^handle~1) the stock or handle of a whip
     crop~3nz (^end_product~1) the output of something in a season
@@ -10558,7 +10553,7 @@
     conenose~1n 
  cotton_stainer ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     cotton_stainer~1nz (^heteropterous_insect~1) a true bug: bug that damages and stains the lint of developing cotton
- cotton ( meanings=6 glosses=5 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ cotton ( meanings=6 glosses=5 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cotton~1nz (^material~1) fabric woven from cotton fibers
     cotton~2nz (^thread~2) thread made of cotton fibers
     cotton_plant~1nz (^bush~4) erect bushy mallow plant or small tree bearing bolls containing seeds with many long hairy fibers
@@ -10647,7 +10642,7 @@
     Samia_cynthia~1n 
  Callimorpha ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Callimorpha~1n 
- cinnabar ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
+ cinnabar ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     Callimorpha_jacobeae~1n 
     cinnabar~2nz (^mineral~1) a heavy reddish mineral consisting of mercuric sulfide
     Chinese-red~1a 
@@ -10929,7 +10924,7 @@
     bonnet_monkey~1n 
  crown_monkey ( meanings=1 NOUN NOUN_SINGULAR ) 
     capped_macaque~1n 
- crown ( meanings=15 glosses=14 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
+ crown ( meanings=15 glosses=14 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     crown~1nz (^peak~3) the part of a hat that covers the crown of the head
     diadem~1nz (^jewelled_headdress~1) an ornamental jeweled headdress signifying sovereignty
     crown~3nz (^chaplet~1) a wreath or garland worn on the head to signify victory
@@ -11311,7 +11306,7 @@
     caster~2n 
  crazy_house ( meanings=1 NOUN NOUN_SINGULAR ) 
     booby_hatch~1n 
- crazy ( meanings=7 glosses=5 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=craziest 
+ crazy ( meanings=7 glosses=5 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=craziest 
     weirdo~1n 
     gaga~1az intensely enthusiastic about or preoccupied with
     crazy~3az possessed by inordinate excitement
@@ -11374,7 +11369,7 @@
     bouquet~1n 
  clodhopper ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     work_shoe~1nz (^shoe~3) a thick and heavy shoe
- complex ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:ADJECTIVE ) 
+ complex ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     building_complex~1nz (^structure~1) a whole structure made up of interconnected or related structures
     composite~1nz (^whole~2) a conceptual whole made up of complicated and related parts
     complex~3nz (^feeling~1) a combination of emotions and impulses that have been rejected from awareness but still influence a person's behavior
@@ -11385,7 +11380,7 @@
     bullfight~1n 
  charabanc ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     autobus~1n 
- cylindrical ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ cylindrical ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cylindric~1az having the form of a cylinder
     cylindrical~2az 
  coach_station ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -11446,12 +11441,12 @@
  caesium_clock ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     caesium_clock~1nz (^atomic_clock~1) an atomic clock based on the energy difference between two states of the caesium nucleus in a magnetic field
  caesium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    cesium~1nz (^metal~2) a soft silver-white ductile metallic element 
+    Cs~1nz (^metal~2) a soft silver-white ductile metallic element 
  coffeehouse ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 ) 
     coffee_shop~1nz (^restaurant~1) a small restaurant where drinks and snacks are sold
  coffee_shop ( meanings=1 NOUN NOUN_SINGULAR ) 
     cafe~1n 
- coffee ( meanings=4 glosses=3 NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ coffee ( meanings=4 glosses=3 NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     chocolate~1n 
     coffee_berry~1nz (^seed~5) a seed of the coffee tree
     java~1nz (^drink~3) a beverage consisting of an infusion of ground coffee beans
@@ -12071,11 +12066,10 @@
     pit~9n 
     dental_caries~1n 
     enclosed_space~1n 
- CD ( meanings=4 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
+ CD ( meanings=3 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     compact_disk~1n 
     certificate_of_deposit~1n 
-    cadmium~1n 
-    CD~4nz 
+    CD~3nz 
  CD_player ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     CD_player~1nz (^electronic_equipment~1) a stand-alone piece of electronic equipment that either has its own display or attaches to a television set
  CD-R ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12135,6 +12129,8 @@
     violoncello~1n 
  cellophane ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     cellophane~1nz (^plastic_wrap~1) a transparent paperlike product that is impervious to moisture and used to wrap candy or cigarettes etc.
+ cellular_telephone ( meanings=1 NOUN NOUN_SINGULAR ) 
+    cell~6n 
  cellular_phone ( meanings=1 NOUN NOUN_SINGULAR ) 
     cellular_telephone~1n 
  cellphone ( meanings=1 NOUN NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:NOUN ) 
@@ -12425,7 +12421,7 @@
     chenille~2nz (^cord~1) a soft tufted cord used in embroidery
  cheroot ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     cheroot~1nz (^cigar~1) a cigar with both ends cut flat
- cherry ( meanings=5 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ cherry ( meanings=5 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cherry_red~1nz (^red~1) a red the color of ripe cherries
     cherry~2nz (^edible_fruit~1) a red fruit with a single hard stone
     cherry_tree~1nz (^fruit_tree~1) any of numerous trees and shrubs producing a small fleshy round fruit with a single hard stone
@@ -12691,7 +12687,7 @@
     circuitry~1nz (^electronic_equipment~1) electronic equipment consisting of a system of circuits
  circular_plane ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     compass_plane~1nz (^plane~2) a plane with a flexible face that can plane concave or convex surfaces
- circular ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ circular ( meanings=4 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     broadside~5n 
     orbitual~1az describing a circle
     round~17a 
@@ -13450,7 +13446,7 @@
     conelike~1a 
  conical_projection ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     conic_projection~1nz (^map_projection~1) a map projection of the globe onto a cone with its point over one of the earth's poles
- conical ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ conical ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cone-shaped~1a 
  connecting_room ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     connecting_room~1nz (^hotel_room~1) a hotel room that shares a wall with an adjoining room and is connected by a private door
@@ -13924,7 +13920,7 @@
     crayon~2vz write, draw, or trace with a crayon
  crazy_quilt ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     crazy_quilt~1nz (^patchwork_quilt~1) a patchwork quilt without a design
- cream ( meanings=9 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) comparative=creamer 
+ cream ( meanings=9 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=creamer 
     ointment~1nz (^toilet_articles~1) toiletry consisting of any of various substances in the form of a thick liquid that have a soothing and moisturizing effect when applied to the skin
     cream~2nz (^dairy_product~1) the part of milk containing the butterfat
     pick~8nz (^elite_group~1) the best people or things in a group
@@ -14192,7 +14188,7 @@
  cudgel ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT ) 
     cudgel~1nz (^club~2) a club that is used as a weapon
     fustigate~1v 
- cue ( meanings=5 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
+ cue ( meanings=5 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     pool_stick~1nz (^sports_implement~1) sports implement consisting of a tapering rod used to strike a cue ball in pool or billiards
     discriminative_stimulus~1nz (^stimulation~3) a stimulus that provides information about what to do
     clue~1n 
@@ -14671,7 +14667,7 @@
     cyclone~2nz (^atmosphere~5) rapid inward circulation of air masses about a low pressure center
  cooking_stove ( meanings=1 NOUN NOUN_SINGULAR ) 
     kitchen_range~1n 
- content ( meanings=11 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ content ( meanings=11 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_TAKING_NOUN_INFINITIVE ) 
     subject~1n 
     mental_object~1nz (^knowledge~1) the sum or range of what has been perceived, discovered, or learned
     message~2n 
@@ -14731,7 +14727,7 @@
  cadmium_cell ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     Weston_cell~1nz (^standard_cell~1) a standard voltaic cell
  cadmium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    CD~3nz (^metal~2) a soft bluish-white ductile malleable toxic bivalent metallic element
+    Cd~1nz (^metal~2) a soft bluish-white ductile malleable toxic bivalent metallic element
  caning ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     wicker~1n 
  contact_arm ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -14768,7 +14764,7 @@
  cheerfulness ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     sunniness~1n 
     blitheness~1nz (^happiness~1) a feeling of spontaneous good spirits
- cheer ( meanings=7 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ cheer ( meanings=7 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     sunshine~1n 
     cheer~2nz (^approval~2) a cry or shout of approval
     cheer~3vz show approval or good wishes by shouting
@@ -14830,7 +14826,7 @@
  carefulness ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     carefulness~1nz (^attentiveness~1) the quality of being careful and painstaking
     caution~1n 
- caution ( meanings=5 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ caution ( meanings=5 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     cautiousness~1nz (^attentiveness~1) the trait of being cautious
     circumspection~1nz (^discernment~1) the trait of being circumspect and prudent
     precaution~3n 
@@ -14876,7 +14872,7 @@
  chatter_mark ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     chatter_mark~1nz (^blemish~1) a mark made by a chattering tool on the surface of a workpiece
     chatter_mark~2nz (^erosion~2) marks on a glaciated rock caused by the movement of a glacier
- chatter ( meanings=8 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ chatter ( meanings=8 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     yakety-yak~1nz (^talk~2) noisy talk
     chattering~1nz (^noise~5) the high-pitched continuing noise made by animals
     chattering~2nz (^noise~5) the rapid series of noises made by the parts of a machine
@@ -15198,7 +15194,7 @@
     propriety~1nz (^behavior~3) correct or appropriate behavior
  composure ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     calm~1n 
- calm ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ calm ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN posdefault:VERB posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     equanimity~1nz (^disposition~2) steadiness of mind under stress
     calm_air~1nz (^wind~8) wind moving at less than 1 knot
     calm~3az free from storm or wind
@@ -15212,7 +15208,7 @@
     composure~1n 
     calmness~2nz (^feeling~1) a feeling of calm
     calmness~3nz (^good_weather~1) an absence of strong winds or rain
- cool ( meanings=12 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=cooler 
+ cool ( meanings=12 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=cooler 
     sang-froid~1nz (^calm~1) great coolness and composure under strain
     cool~2nz (^cold~1) the quality of being at a refreshingly low temperature
     nerveless~1az marked by calm self-control 
@@ -15315,7 +15311,7 @@
     charcoal~3n 
  chrome_red ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     chrome_red~1nz (^red~1) a red pigment used in paints
- chrome ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ chrome ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     chrome~1nz (^chromium~1) another word for chromium when it is used in dyes or pigments
     chrome~2vz treat with a chromium compound
     chromium-plate~1vz plate with chromium
@@ -15324,14 +15320,14 @@
     cerise~2a 
     carmine~3az 
     carmine~4vz color carmine
- crimson ( meanings=6 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE VERB_NOOBJECT ) 
+ crimson ( meanings=6 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     deep_red~1n 
     violent~1a 
     carmine~2a 
     red~6a 
     crimson~5az 
     blush~3v 
- claret ( meanings=3 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT ) 
+ claret ( meanings=3 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     claret~1nz (^dark_red~1) a dark purplish-red color
     red_Bordeaux~1n 
     claret~3vz drink claret
@@ -15342,24 +15338,24 @@
  chrome_green ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     chrome_green~1nz (^green~2) a brilliant green color
     chrome_green~2nz (^pigment~2) any of a class of green pigments consisting of chrome yellow and iron blue
- chartreuse ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
+ chartreuse ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     pea_green~1n 
     chartreuse~2az of something having the yellowish green color of Chartreuse liqueur
     chartreuse~3az 
- cyan ( meanings=3 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ) 
+ cyan ( meanings=3 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cyan~1nz (^bluish_green~1) a primary subtractive color for light
     teal~3a 
     cyan~3az 
- cerulean ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:ADJECTIVE ) 
+ cerulean ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     azure~1n 
     bright_blue~1a 
     cerulean~3az 
  cobalt_blue ( meanings=2 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     turquoise~1n 
     cobalt_ultramarine~1n 
- cobalt ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    CO~3nz (^metal~2) a hard ferromagnetic silver-white bivalent or trivalent metallic element
- chocolate ( meanings=4 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ) 
+ cobalt ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
+    Co~1nz (^metal~2) a hard ferromagnetic silver-white bivalent or trivalent metallic element
+ chocolate ( meanings=4 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     burnt_umber~1nz (^brown~1) a medium brown to dark-brown color
     chocolate~2nz (^food~3) a food made from roasted ground cacao beans
     drinking_chocolate~1nz (^drink~3) a beverage made from cocoa powder and milk and sugar
@@ -15756,7 +15752,7 @@
     carpal_tunnel~1nz (^passage~7) a passageway in the wrist through which nerves and the flexor muscles of the hands pass
  cuneiform_bone ( meanings=1 NOUN NOUN_SINGULAR ) 
     os_triquetrum~1n 
- cuneiform ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 posdefault:ADJECTIVE ) 
+ cuneiform ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cuneiform~1nz (^script~1) an ancient wedge-shaped script used in Mesopotamia and Persia
     cuneiform~2az of or relating to the tarsal bones
     wedge-shaped~2a 
@@ -15860,7 +15856,7 @@
     cornea~1nz (^tissue_layer~1) the transparent dome-shaped anterior portion of the outer covering of the eye
  crystalline_lens ( meanings=1 NOUN NOUN_SINGULAR ) 
     lens~3n 
- crystalline ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ crystalline ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     crystalline~1az consisting of or containing or of the nature of crystals
     transparent~1a 
     crystalline~3az distinctly or sharply outlined
@@ -16513,7 +16509,7 @@
     crystallization~1nz (^mental_synthesis~1) a mental synthesis that becomes fixed or concrete by a process resembling crystal formation
     crystal~4n 
     crystallizing~1nz (^chemical_phenomenon~1) the formation of crystals
- conjecture ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
+ conjecture ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN OMITTABLE_THAT_VERB ) 
     conjecture~1nz (^logical_thinking~1) reasoning that involves the formation of conclusions from incomplete evidence
     speculation~2nz (^hypothesis~1) a hypothesis that has been formed by speculating or conjecturing 
     speculation~3n 
@@ -16714,7 +16710,7 @@
  confabulation ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     confabulation~1nz (^memory~4) a plausible but imagined memory that fills in gaps in what is remembered
     chat~1n 
- concentrate ( meanings=11 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ concentrate ( meanings=11 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB ) 
     concentrate~1nz (^image~6) a concentrated example of something
     concentrate~2nz (^food_product~1) a concentrated form of a foodstuff
     dressed_ore~1nz (^ore~2) the desired mineral that is left after impurities have been removed from mined ore
@@ -17389,7 +17385,7 @@
     Congressional_Record~1nz (^written_account~1) a published written account of the speeches and debates and votes of the United States Congress
  Combined_DNA_Index_System ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Combined_DNA_Index_System~1nz (^file~3) the DNA file maintained by the Federal Bureau of Investigation
- chronicle ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ chronicle ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     story~3n 
     chronicle~2vz record in chronological order
  case_history ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -17488,7 +17484,9 @@
     compatible~3az capable of forming a homogeneous mixture that neither separates nor is altered by chemical interaction
     compatible~4az 
  computer-aided_design ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    Cad~1nz (^package~2) software used in art and architecture and engineering and manufacturing to assist in precision drawing
+    CAD~1nz (^package~2) software used in art and architecture and engineering and manufacturing to assist in precision drawing
+ CAD ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
+    computer-aided_design~1n 
  computer_program ( meanings=1 NOUN NOUN_SINGULAR ) 
     program~5n 
  computer_programme ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -17594,7 +17592,7 @@
     counterargument~1nz (^argument~5) an argument offered in opposition to another argument
  corroboration ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
     certification~4nz (^confirmation~4) confirmation that some fact or statement is true through the use of documentary evidence
- counsel ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ counsel ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     guidance~3n 
     advocate~2n 
     rede~1v 
@@ -17667,7 +17665,7 @@
     applause~1n 
  character_reference ( meanings=1 NOUN NOUN_SINGULAR ) 
     reference~6n 
- compliment ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ compliment ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     compliment~1nz (^praise~1) a remark expressing praise and admiration
     congratulate~1vz say something to someone that expresses praise
     compliment~3vz express respect or esteem for
@@ -17680,7 +17678,7 @@
     Medal_of_Honor~1nz (^ribbon~3) the highest U.S. military decoration awarded for bravery and valor in action `above and beyond the call of duty'
  Croix_de_Guerre ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Croix_de_Guerre~1nz (^ribbon~3) a French military decoration for gallantry
- censure ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT ) 
+ censure ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     animadversion~1nz (^disapprobation~1) harsh criticism or disapproval
     excommunication~2nz (^rejection~4) the state of being excommunicated
     criminate~1vz rebuke formally
@@ -17725,7 +17723,7 @@
     construal~1nz (^interpretation~4) an interpretation of the meaning of something
  contextual_definition ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     contextual_definition~1nz (^definition~2) a definition in which the term is used by embedding it in a larger expression containing its explanation
- converse ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ converse ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     converse~1nz (^proposition~2) a proposition obtained by conversion
     reversed~1a 
     converse~3az of words so related that one reverses the relation denoted by the other
@@ -17748,12 +17746,12 @@
     carp~3v 
  cautious_statement ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     cautious_statement~1nz (^statement~4) a statement made with careful qualifications
- cautious ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 ) 
+ cautious ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     timid~1nz (^people~1) people who are fearful and cautious
     cautious~2az showing careful forethought
     conservative~5a 
     cautious~4az 
- comment ( meanings=6 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) 
+ comment ( meanings=6 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     commentary~1nz (^statement~4) a written explanation or criticism or illustration that is added to a book or other textual material
     remark~2nz (^statement~4) a statement that expresses a personal opinion or belief or adds information
     scuttlebutt~1nz (^account~7) a report about the behavior of other people
@@ -18113,7 +18111,7 @@
     coup_de_theatre~1nz (^theatrical_production~1) a highly successful theatrical production
     coup_de_theatre~2nz (^stagecraft~1) a sensational bit of stagecraft
     coup_de_theatre~3nz (^surprise~2) a dramatic surprise
- cry ( meanings=12 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) plural=crying 
+ cry ( meanings=12 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) plural=crying 
     cry~1nz (^outburst~2) a fit of weeping
     shout~1n 
     yell~2n 
@@ -18239,7 +18237,7 @@
     clamor~4v 
  clamouring ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
     clamour~1n 
- curse ( meanings=9 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ curse ( meanings=9 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     swearing~2n 
     whammy~1n 
     execration~2n 
@@ -18256,7 +18254,7 @@
     fellow~2n 
     gadfly~2n 
     blaspheme~2v 
- croak ( meanings=4 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE3_4 posdefault:NOUN VERB_NOOBJECT ) 
+ croak ( meanings=4 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE3_4 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     croaking~1nz (^vocalization~1) a harsh hoarse utterance
     conk~3v 
     gnarl~2vz make complaining remarks or noises under one's breath
@@ -18265,24 +18263,24 @@
     croak~1n 
  cachinnation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     cachinnation~1nz (^laugh~3) loud convulsive laughter
- cackle ( meanings=6 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ cackle ( meanings=6 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     cackle~1nz (^laugh~3) a loud laugh suggestive of a hen's cackle
     yak~2n 
     cackle~3nz (^cry~5) the sound made by a hen after laying an egg
     cackle~4vz emit a loud, unpleasant kind of laughing
     cackle~5vz squawk shrilly and loudly, characteristic of hens
     cackle~6vz talk or utter in a cackling manner
- chortle ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
+ chortle ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     chuckle~1nz (^laugh~3) a soft partly suppressed laugh
     chuckle~2v 
- chuckle ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ chuckle ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     chortle~1n 
     laugh_softly~1v 
  confab ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
     confabulation~2n 
     consult~2v 
     visit~8v 
- chitchat ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ chitchat ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     small_talk~1n 
     confab~3v 
  chit-chat ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR posdefault:NOUN VERB_NOOBJECT ) 
@@ -18549,16 +18547,16 @@
     clap~8vz put quickly or forcibly
     clap~9vz strike the air in flight
     clap~10vz cause to strike the air in flight
- caterwaul ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+ caterwaul ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON1 posdefault:NOUN posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     caterwaul~1nz (^cry~5) the yowling sound made by a cat in heat
     yowl~2vz utter shrieks, as of cats
- caw ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
+ caw ( meanings=2 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     caw~1nz (^cry~5) the sound made by corvine birds
     caw~2vz utter a cry, characteristic of crows, rooks, or ravens
  chattering ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     chatter~2n 
     chatter~3n 
- cheep ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ cheep ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     peep~2n 
     chirp~2v 
  chink ( meanings=6 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
@@ -18568,11 +18566,11 @@
     check~15v 
     chink~5vz fill the chinks of, as with caulking
     tinkle~2v 
- chirp ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN VERB_NOOBJECT ) 
+ chirp ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     chirp~1nz (^sound~5) a sharp sound made by small birds or insects
     chirrup~2vz make high-pitched sounds
     tweedle~3vz sing in modulation
- chirrup ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ chirrup ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON1 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     twitter~1nz (^sound~5) a series of chirps
     peep~5v 
  clang ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
@@ -18608,14 +18606,14 @@
     clopping~1n 
  clumping ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     clunking~1n 
- cluck ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
+ cluck ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     clucking~1n 
     clack~4v 
  clucking ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
     cluck~1nz (^cry~5) the sound made by a hen
  cock-a-doodle-doo ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR posdefault:NOUN ) 
     cock-a-doodle-doo~1nz (^crow~3) an imitation of the crow of a cock
- coo ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+ coo ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT QUOTEABLE_VERB ) 
     coo~1nz (^cry~5) the sound made by a pigeon
     coo~2vz cry softly, as of pigeons
     coo~3vz speak softly or lovingly
@@ -18758,7 +18756,7 @@
     cynicism~1nz (^pessimism~2) a cynical feeling of distrust
  calf_love ( meanings=1 NOUN NOUN_SINGULAR ) 
     puppy_love~1n 
- caring ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:VERB ) 
+ caring ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     lovingness~2nz (^love~3) a loving feeling
     caring~2az feeling and exhibiting concern and empathy for others
     caring~3az 
@@ -19200,7 +19198,7 @@
  chop-suey_greens ( meanings=2 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     chop-suey_greens~1nz (^green~3) succulent and aromatic young dark green leaves used in Chinese and Vietnamese and Japanese cooking
     tong_ho~1n 
- crisp ( meanings=9 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ crisp ( meanings=9 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     potato_chip~1n 
     curt~1a 
     sharp~4a 
@@ -19910,11 +19908,13 @@
     Corsican~1az of or relating to or characteristic of Corsica or its people
  Chukaku-Ha ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Chukaku-Ha~1nz (^foreign_terrorist_organization~1) an ultra-leftist militant group founded in 1957 from the breakup of the Japanese Communist Party
+ CIRA ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    Continuity_Irish_Republican_Army~1n 
  Continuity_Army_Council ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Cira~1n 
+    CIRA~1n 
  Catholic_Reaction_Force ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     People_'s_Republican_Army~1n 
- Catholic ( meanings=2 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR ) 
+ Catholic ( meanings=2 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     Catholic~1nz (^Christian~1) a member of a Catholic church
     Catholic~2az of or relating to or supporting Catholicism
  Caliphate_State ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -19985,9 +19985,8 @@
     coronary_care_unit~1nz (^intensive_care_unit~1) a hospital unit specially staffed and equipped to treat patients with serious cardiac problems
  Christendom ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Christianity~2n 
- Christian_church ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
+ Christian_church ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     church~3n 
-    Disciples_of_Christ~1n 
  Catholic_Church ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Catholic_Church~1nz (^church~3) any of several churches claiming to have maintained historical continuity with the original Christian Church
  Church_of_Rome ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -20002,6 +20001,8 @@
     Sacred_College~1nz (^body~9) the body of cardinals who advise the Pope and elect new Popes
  Coptic_Church ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Coptic_Church~1nz (^church~3) the ancient Christian church of Egypt
+ Christian_Church ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Disciples_of_Christ~1n 
  Church_of_England ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Anglican_Church~1n 
  Church_of_Ireland ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -20311,7 +20312,9 @@
  CSIS ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Canadian_Security_Intelligence_Service~1n 
  Central_Intelligence_Machinery ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Cim~1nz (^international_intelligence_agency~1) the United Kingdom's central unit for the tasking and coordination and funding of intelligence and security agencies
+    CIM~1nz (^international_intelligence_agency~1) the United Kingdom's central unit for the tasking and coordination and funding of intelligence and security agencies
+ CIM ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    Central_Intelligence_Machinery~1n 
  Communications_Security_Establishment ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     CSE~1nz (^international_intelligence_agency~1) Canadian agency that gathers communications intelligence and assist law enforcement and security agencies
  CSE ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -20839,7 +20842,7 @@
  Curitiba ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Curitiba~1nz (^city~2) a city in southeastern Brazil
  City_of_London ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    City_of_London~1nz (^center~15) the part of London situated within the ancient boundaries
+    the_City~2nz (^center~15) the part of London situated within the ancient boundaries
  City_of_Westminster ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Westminster~1nz (^borough~2) a borough of Greater London on the Thames
  Cheddar ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -20979,9 +20982,8 @@
     Carolina~1n 
  Camellia_State ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Alabama~2n 
- CA ( meanings=2 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+ CA ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     California~1n 
-    calcium~1n 
  Calif. ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     CA~1n 
  Chula_Vista ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -20992,10 +20994,9 @@
     Santa_Catalina~1nz (^island~2) an island resort in the Pacific off the southwestern coast of California
  Centennial_State ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     CO~1nz (^American_state~1) a state in west central United States in the Rocky Mountains
- CO ( meanings=4 NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER KINDERGARTEN ) 
+ CO ( meanings=3 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     Colorado~1n 
     conscientious_objector~1n 
-    cobalt~1n 
     carbon_monoxide~1n 
  Colorado_Springs ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Colorado_Springs~1nz (^city~2) a city in east central Colorado on the eastern edge of the Rocky Mountains
@@ -22224,7 +22225,7 @@
     clerk~3vz work as a clerk, as in the legal business
  clever_Dick ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     clever_clogs~1n 
- clever ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ) 
+ clever ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ingenious~1az showing inventiveness and skill
     canny~1az showing self-interest and shrewdness in dealing with others
     apt~3az mentally quick and resourceful
@@ -22255,7 +22256,7 @@
     haberdasher~1n 
  clumsy_person ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     clumsy_person~1nz (^individual~1) a person with poor motor coordination
- clumsy ( meanings=5 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) comparative=clumsiest 
+ clumsy ( meanings=5 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=clumsiest 
     inept~3a 
     unwieldy~1az lacking grace in movement or posture
     fumbling~1az showing lack of skill or aptitude
@@ -24480,7 +24481,7 @@
     herb_Christopher~1n 
  Canada_anemone ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Anemone_Canadensis~1n 
- columbine ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
+ columbine ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     aquilegia~1nz (^flower~2) a plant of the genus Aquilegia having irregular showy spurred flowers
  Caltha ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Caltha~1n 
@@ -26260,7 +26261,7 @@
     queen_'s_cup~1nz (^Clinton_'s_lily~1) plant with 1 or 2 white starlike flowers on short leafless stalks
  century_plant ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     American_aloe~1nz (^xerophilous_plant~1) tropical American plants with basal rosettes of fibrous sword-shaped leaves and flowers in tall spikes
- century ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN TIMEWORD ) 
+ century ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN TIMEWORD TIME_NOUN ) 
     one_C~1nz (^large_integer~1) ten 10s
     century~2nz (^period~3) a period of 100 years
  cantala ( meanings=2 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
@@ -27856,11 +27857,11 @@
     compound_leaf~1nz (^leaf~3) a leaf composed of a number of leaflets on a common stalk
  cordate_leaf ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     cordate_leaf~1nz (^simple_leaf~1) a heart-shaped leaf
- cordate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
+ cordate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     heart-shaped~1a 
  cuneate_leaf ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     cuneate_leaf~1nz (^simple_leaf~1) a wedge-shaped leaf having the acute angle at the base
- cuneate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
+ cuneate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     wedge-shaped~1a 
  crenate_leaf ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     crenate_leaf~1nz (^leaf~3) a leaf having a scalloped margin
@@ -28483,7 +28484,7 @@
     capacity_measure~1n 
  cubic_measure ( meanings=1 NOUN NOUN_SINGULAR ) 
     cubage_unit~1n 
- cubic ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ cubic ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     three-dimensional~1a 
     cubic~2az 
  cubic_content_unit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -28566,7 +28567,7 @@
     cable_length~1n 
  cubit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     cubit~1nz (^linear_measure~1) an ancient unit of length based on the length of the forearm
- centimeter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN ) 
+ centimeter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN DISTANCE_NOUN ) 
     cm~1nz (^metric_linear_unit~1) a metric unit of length equal to one hundredth of a meter
  centimetre ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     centimeter~1n 
@@ -28823,7 +28824,7 @@
     concave_polygon~1nz (^polygonal_shape~1) a polygon such that there is a straight line that cuts it in four or more points
  curved_shape ( meanings=1 NOUN NOUN_SINGULAR ) 
     curve~5n 
- curved ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ curved ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     curving~1a 
     curved~2az 
  closed_curve ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -29161,9 +29162,8 @@
     color_blindness~1nz (^visual_impairment~1) genetic inability to distinguish differences in hue
  cystic_fibrosis ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     CF~1n 
- CF ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+ CF ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     fibrocystic_disease_of_the_pancreas~1n 
-    californium~1n 
  congenital_megacolon ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     Hirschsprung_'s_disease~1n 
  clinocephaly ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -29638,7 +29638,7 @@
     colloid~1nz (^mixture~5) a mixture with properties between those of a solution and fine suspension
  colloidal_gel ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     gel~2nz (^colloid~1) a colloid in a more solid form than a sol
- colloidal ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ colloidal ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     colloidal~1az of or relating to or having the properties of a colloid
  colloidal_solution ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     colloidal_suspension~1n 
@@ -29658,8 +29658,6 @@
     CS_gas~1nz (^lachrymator~1) a tear gas that is stronger than CN gas but wears off faster
  CS_gas ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
     chlorobenzylidenemalononitrile~1n 
- CS ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
-    caesium~1n 
  chloroacetophenone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     CN_gas~1nz (^lachrymator~1) a tear gas that is weaker than CS gas but lasts longer
  CN_gas ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
@@ -29694,20 +29692,27 @@
     nanotube~1nz (^fullerene~1) a fullerene molecule having a cylindrical or toroidal shape
  chemical_element ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     element~6n 
+ Cd ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    cadmium~1n 
+ Ca ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    calcium~1n 
  californium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    CF~2nz (^metal~2) a radioactive transuranic element
+    Cf~1nz (^metal~2) a radioactive transuranic element
     californium~2az 
+ Cf ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    californium~1n 
  carbon_atom ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     carbon_atom~1nz (^atom~2) an atom of carbon
  carbon_14 ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     radiocarbon~1n 
  cerium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     Ce~1nz (^metal~2) a ductile grey metallic element of the lanthanide series
- Ce ( meanings=2 NOUN ADVERB NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+ Ce ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     cerium~1n 
-    Common_era~2b 
  cesium ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    CS~1n 
+    caesium~1n 
+ Cs ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    cesium~1n 
  cesium_137 ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     cesium_137~1nz (^caesium~1) a radioactive isotope of cesium used in radiation therapy
  chlorine ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -29719,6 +29724,8 @@
     chromium~2az 
  Cr ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     chromium~1n 
+ Co ( meanings=1 NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER KINDERGARTEN ) 
+    cobalt~1n 
  cobalt_60 ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     cobalt_60~1nz (^cobalt~1) a radioactive isotope of cobalt with mass number 60
  Cu ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
@@ -30011,7 +30018,7 @@
  carbon_monoxide ( meanings=1 NOUN NOUN_SINGULAR ) 
     carbon_monoxide_gas~1n 
  carbon_monoxide_gas ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    CO~4nz (^monoxide~1) an odorless very poisonous gas that is a product of incomplete combustion of carbon
+    CO~3nz (^monoxide~1) an odorless very poisonous gas that is a product of incomplete combustion of carbon
  carbon_paper ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     carbon~3nz (^paper~7) a thin paper coated on one side with a dark waxy substance 
  carbon_tetrachloride ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -30137,7 +30144,7 @@
     cinder_pig~1nz (^pig_iron~1) pig iron containing a substantial proportion of slag
  citric_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     citric_acid~1nz (^acid~2) a weak water-soluble acid found in many fruits 
- citrine ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ citrine ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     citrine~1nz (^quartz~1) semiprecious yellow quartz resembling topaz
     citrine~2az 
  claystone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -30588,7 +30595,7 @@
     week~2n 
  compassionate_leave ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     compassionate_leave~1nz (^leave~3) leave granted in an emergency such as family sickness or death
- compassionate ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ compassionate ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     compassionate~1az showing or having compassion
     compassionate~2az 
     sympathize_with~1v 
@@ -30691,9 +30698,8 @@
     cold_spell~1n 
  Christian_era ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Common_era~1nz (^era~2) the time period beginning with the supposed year of Christ's birth
- Common_era ( meanings=2 glosses=1 NOUN ADVERB NOUN_PROPER_SINGULAR ) 
+ Common_era ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Christian_era~1n 
-    C.E.~1bz of the period coinciding with the Christian era
  centennial ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
     centenary~1nz (^day_of_remembrance~1) the 100th anniversary
     centenary~2az of or relating to or completing a period of 100 years
@@ -31237,7 +31243,7 @@
     crapulous~2a 
  conceptional ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
     notional~1az being of the nature of a notion or concept
- copious ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ copious ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     ample~1a 
     voluminous~1a 
  come-at-able ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL ) 
@@ -31257,18 +31263,18 @@
     complementary~2a 
  completing ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
     complemental~1a 
- capable ( meanings=6 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) 
+ capable ( meanings=6 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     equal_to~1az having the requisite qualities for
     capable~2az having capacity or ability
     capable~3az having the temperament or inclination for
     able~3a 
     open~23a 
     capable~6az 
- competent ( meanings=3 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ competent ( meanings=3 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     competent~1az adequate for the purpose
     competent~2az properly or sufficiently qualified or capable or efficient
     competent~3az legally qualified or sufficient
- coherent ( meanings=5 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ coherent ( meanings=5 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     tenacious~1a 
     coherent~2az of waves having a constant phase relation
     ordered~1a 
@@ -31306,7 +31312,7 @@
     claustrophobic~1az suffering from claustrophobia
     claustrophobic~2az uncomfortably closed or hemmed in
     claustrophobic~3az 
- combative ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ combative ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     bellicose~1a 
     agonistical~1a 
     contentious~2a 
@@ -31358,14 +31364,14 @@
  clawed ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     taloned~1a 
     clawed~2az having or resembling a claw or claws
- crafty ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=craftiest 
+ crafty ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=craftiest 
     cunning~4a 
     crafty~2az 
  cute ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=cuter 
     precious~1az obviously contrived to charm
     cunning~5az attractive especially by means of smallness or prettiness or quaintness
     cute~3az 
- careless ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ) 
+ careless ( meanings=4 glosses=3 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     careless~1az effortless and unstudied
     careless~2az marked by lack of attention or consideration or forethought or thoroughness
     regardless~1az without due thought or consideration
@@ -31408,7 +31414,7 @@
     conscious~2az knowing and perceiving
     witting~2az intentionally conceived
     conscious~4az 
- creepy ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) comparative=creepiest 
+ creepy ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=creepiest 
     creepy-crawly~2a 
     creepy~2az annoying and unpleasant
     creepy~3az 
@@ -31467,10 +31473,10 @@
  cased ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     cased~1az enclosed in a case
     encased~1a 
- courageous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) 
+ courageous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     brave~4az possessing or displaying courage
     courageous~2az 
- cowardly ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ cowardly ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     fearful~4a 
     cowardly~2az 
  chickenhearted ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
@@ -31536,21 +31542,21 @@
     choppy~1az rough with small waves
     jerky~3az marked by abrupt transitions
     choppy~3az 
- confident ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 GRADE5_6 posdefault:ADJECTIVE ) 
+ confident ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE COMMON4 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     sure-footed~1az not liable to error in judgment or action
     positive~4a 
     confident~3az having or marked by confidence or assurance
     confident~4az 
  cared-for ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     cared-for~1az having needed care and attention
- careful ( meanings=6 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ careful ( meanings=6 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     careful~1az exercising caution or showing care or attention
     measured~1az unhurried and with care and dignity
     thrifty~1az mindful of the future in spending money
     heedful~3az cautiously attentive
     careful~5az full of cares or anxiety
     careful~6az 
- certain ( meanings=9 glosses=7 ADJECTIVE DETERMINER ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ certain ( meanings=9 glosses=7 ADJECTIVE DETERMINER ADJECTIVE_NORMAL ADJECTIVE_ONLY_PREDICATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ) 
     sure~1az exercising or taking care great enough to bring assurance
     certain~2az established beyond doubt or question
     sure~3az having or feeling no doubt or uncertainty
@@ -31726,7 +31732,7 @@
     chaste~2az abstaining from unlawful sexual intercourse
     chaste~3az pure and simple in design or style
     chaste~4az 
- cheerful ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) 
+ cheerful ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cheerful~1az being full of or promoting cheer
     pollyannaish~1az pleasantly optimistic
     cheerful~3az 
@@ -31905,7 +31911,7 @@
     clear-thinking~1a 
  clear-thinking ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     clearheaded~1az not mentally confused
- confused ( meanings=6 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ confused ( meanings=6 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     confused~1az mentally confused
     disjointed~1a 
     upset~8a 
@@ -31915,7 +31921,7 @@
  clement ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
     clement~1az inclined to show mercy
     clement~2az physically mild
- canny ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=canniest 
+ canny ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=canniest 
     cagy~2a 
  cloddish ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     doltish~1az heavy and dull and stupid
@@ -32013,10 +32019,10 @@
     commodious~1a 
     convenient~2az suited to your comfort or purpose or needs
     convenient~3az 
- cramped ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
+ cramped ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cramped~1az constricted in size
     cramped~2az 
- comfortable ( meanings=7 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) 
+ comfortable ( meanings=7 glosses=5 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     comfy~1az providing or experiencing physical well-being or relief 
     comfortable~2az free from stress or conducive to mental ease
     well-to-do~1az in fortunate circumstances financially
@@ -32065,7 +32071,7 @@
  communicatory ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     communicative~1a 
     communicatory~2az 
- chatty ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=chattiest 
+ chatty ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=chattiest 
     gossipy~1a 
     garrulous~1a 
     chatty~3az 
@@ -32143,7 +32149,7 @@
     cuplike~1az resembling the shape of a cup
  cupular ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     cupulate~1a 
- cupulate ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ cupulate ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cupular~1az shaped like a cupule
     cupulate~2az 
  convexo-convex ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
@@ -32209,7 +32215,7 @@
  confining ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     close~10a 
     limiting~2a 
- crowded ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:VERB ) 
+ crowded ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     crowded~1az overfilled or compacted or concentrated
  congruent ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ) 
     congruent~1az coinciding when superimposed
@@ -32300,7 +32306,7 @@
  convincing ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
     convincing~1az causing one to believe the truth of something
     convincing~2az 
- credible ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ credible ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     credible~1az appearing to merit belief or acceptance
     believable~1a 
     credible~3az credulous
@@ -32366,7 +32372,7 @@
     costive~1az retarding evacuation of feces
  constipated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     constipated~1az have difficult or incomplete or infrequent evacuation of the bowels
- considerate ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ considerate ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     considerate~1az showing concern for the rights and feelings of others
     considerate~2az 
  courteous ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
@@ -32413,7 +32419,7 @@
  cubical ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     cuboidal~1a 
     cubical~2az 
- cubiform ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
+ cubiform ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cubical~1a 
     cubiform~2az 
  collinear ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -32444,7 +32450,7 @@
     cut_off~7v 
     scratch_out~1v 
     cut_out~7vz form and create by cutting out
- curious ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ) 
+ curious ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     curious~1az eager to investigate and learn or learn more 
     peculiar~3a 
     curious~3az having curiosity aroused
@@ -32606,7 +32612,7 @@
  complimentary ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     complimentary~1az conveying or resembling a compliment
     free~10a 
- crinkled ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
+ crinkled ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     wavelike~1az uneven by virtue of having wrinkles or waves
  crinkly ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     rippled~2a 
@@ -32634,7 +32640,7 @@
     incriminating~1a 
  carpetbagging ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     carpetbag~2az presumptuously seeking success or a position in a new locality
- costly ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) comparative=costliest 
+ costly ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=costliest 
     pricy~1az having a high price
     dearly-won~1az entailing great loss or sacrifice
     costly~3az 
@@ -32658,7 +32664,7 @@
  choosey ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     choosy~1az difficult to please
     choosey~2az 
- chubby ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ) comparative=chubbiest 
+ chubby ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=chubbiest 
     embonpoint~2az sufficiently fat so as to have a pleasing fullness of figure
     chubby~2az 
  corpulent ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -33011,7 +33017,7 @@
     appreciated~1az fully understood or grasped
  capacious ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     capacious~1az large in capacity
- colossal ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ) 
+ colossal ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     stupendous~1az so great in size or force or extent as to elicit awe
     colossal~2az 
  caulked ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
@@ -33091,7 +33097,7 @@
     stylised~1az using artistic forms and conventions to create effects
  conventionalised ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:VERB ) 
     conventionalized~1a 
- charming ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ charming ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     wizard~3a 
     charming~2az pleasing or delighting
     charming~3az 
@@ -33121,7 +33127,7 @@
     capsule~9v 
  capsulated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     capsulate~1az used of seeds or spores that are enclosed in a capsule
- clathrate ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
+ clathrate ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     clathrate~1az designating or relating to a compound in which one component is physically enclosed within the crystal structure of another
     cancellate~2a 
  closed_in ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM ADJECTIVE_ONLY_PREDICATE  poscondition=?=A ) 
@@ -33302,7 +33308,7 @@
     big-chested~1a 
  cock-a-hoop ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     braggy~1a 
- conceited ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ conceited ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     vain~2a 
     conceited~2az 
  circumspect ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 GRADE5_6 posdefault:ADJECTIVE ) 
@@ -33341,7 +33347,7 @@
     commonsensical~2az 
  counterintuitive ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     counterintuitive~1az contrary to what common sense would suggest
- cultured ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
+ cultured ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cultivated~2a 
     cultured~2az 
  couth ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
@@ -33406,7 +33412,7 @@
     coccoid~1az spherical
  cumuliform ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     cumuliform~1az shaped like a cumulus cloud
- circinate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ circinate ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     annulated~1a 
  crescent-shaped ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     crescent~2az resembling the new moon in shape
@@ -33483,7 +33489,7 @@
  concealed ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
     concealed~1az hidden on any grounds for any motive
     hidden~3a 
- callous ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ callous ( meanings=4 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE5_6 posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     pachydermatous~1az emotionally hardened
     calloused~1az having calluses
     callous~3az 
@@ -33543,7 +33549,7 @@
     clean-shaven~2az 
  calced ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     shod~2az used of certain religious orders who wear shoes
- cordiform ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ cordiform ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cordate~1a 
  convoluted ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     tortuous~2a 
@@ -33645,7 +33651,7 @@
     grumose~1az transformed from a liquid into a soft semisolid or solid mass
  congealed ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
     jellied~1az congealed into jelly
- cannular ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ cannular ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     tubular~1a 
  corroded ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     corroded~1az eaten away as by acid or oxidation
@@ -33814,7 +33820,7 @@
     heavy-laden~2a 
  confiding ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:VERB ) 
     confiding~1az willing to entrust personal matters
- cynical ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ cynical ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     misanthropic~2a 
     cynical~2az 
  creditworthy ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -34471,7 +34477,7 @@
     cross-sentential~1az of or relating to relations between sentences
  calcific ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     calcific~1az involving or resulting from calcification
- cochlear ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ cochlear ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cochlear~1az of or relating to the cochlea of the ear
  classificatory ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     classificatory~1az relating to or involving classification:
@@ -34518,7 +34524,7 @@
     credal~1az of or relating to a creed
  credal ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     creedal~1a 
- cretaceous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
+ cretaceous ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cretaceous~1az abounding in chalk
     cretaceous~2az 
  cybernetic ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
@@ -34548,7 +34554,7 @@
     contested~1az disputed or made the object of contention or competition
  corbelled ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:VERB ) 
     corbelled~1az having a corbel
- carinated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
+ carinated ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     carinate~2az having a ridge or shaped like a ridge or suggesting the keel of a ship
  closed-captioned ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     closed-captioned~1az broadcast with captions that are seen only on receivers having special equipment
@@ -34572,7 +34578,7 @@
     county-level~1az 
  city-level ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     city-level~1az 
- cesious ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
+ cesious ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     cesious~1az 
  crunchy ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE1_2 posdefault:ADJECTIVE ) 
     crunchy~1az 
@@ -34711,7 +34717,7 @@
     cavelike~1az 
  cayenned ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     cayenned~1az 
- celadon ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ) 
+ celadon ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     celadon~1az 
  celebrative ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     celebrative~1az 
@@ -34906,7 +34912,7 @@
     citied~1az 
  citizenly ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADVERB ) 
     citizenly~1az 
- citreous ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+ citreous ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     citreous~1az 
  citylike ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     citylike~1az 
@@ -35507,7 +35513,7 @@
  cuter ( MORE_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=cute 
  captivate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
     trance~3v 
- confuse ( meanings=5 glosses=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
+ confuse ( meanings=5 glosses=4 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     confound~1vz mistake one thing for another
     obnubilate~1vz make unclear, indistinct, or blurred
     fuddle~2v 
@@ -35515,8 +35521,12 @@
     disconcert~2vz cause to feel embarrassment
  convince ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT COMMON_PARTICIPLE_VERB ) 
     win_over~1vz make agree, understand, or realize the truth or validity of something
+ CE ( meanings=1 ADVERB ) 
+    C.E.~1b 
  C.E. ( meanings=1 ADVERB ) 
-    Ce~2b 
+    Common_Era~1b 
+ Common_Era ( meanings=1 glosses=1 ADVERB ) 
+    CE~1bz of the period coinciding with the Christian era
  close_to ( meanings=1 PREPOSITION posdefault:ADVERB ) 
     close_to~1z 
  completely ( meanings=2 glosses=2 ADVERB EXTENT_ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB ) 
@@ -36428,7 +36438,7 @@
     cross-fertilize~2v 
  cross-pollinate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT ) 
     pollenate~1v 
- conceive ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ conceive ( meanings=3 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) 
     conceive~1vz become pregnant
     consider~1vz judge or regard
     conceptualise~1vz have the idea for
@@ -36479,7 +36489,7 @@
     caramelize~2v 
  creolize ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
     creolize~1vz develop into a creole
- continue ( meanings=10 glosses=10 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT PRESENTATION_VERB ) 
+ continue ( meanings=10 glosses=10 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT PRESENTATION_VERB QUOTEABLE_VERB ) 
     continue~1vz exist over a prolonged period of time
     carry_on~1vz continue talking
     go_forward~1vz move ahead
@@ -36540,7 +36550,7 @@
     climax~6vz end, especially to reach a final or climactic stage
     culminate~4vz reach the highest altitude or the meridian, of a celestial body
     culminate~5vz reach the highest or most decisive point
- conglobate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
+ conglobate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     conglobe~1vz assume a globular shape
  conglobe ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
     conglobate~1v 
@@ -36608,7 +36618,7 @@
  concatenate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     concatenate~1vz add by linking or joining so as to form a chain or series
     concatenate~2vz combine two strings to form a single one
- chasten ( meanings=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ chasten ( meanings=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     tame~6v 
     temper~5v 
     correct~9v 
@@ -37008,7 +37018,7 @@
     chondrify~1vz turn into cartilage
  citify ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     citify~1vz accustom to urban ways
- clarify ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ clarify ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     clarify~1vz make clear by removing impurities or solids, as by heating
     elucidate~2v 
  carboxylate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 VERB_DIRECTOBJECT ) 
@@ -37073,7 +37083,7 @@
     cut_up~5vz cut to pieces
     carve~2vz form by carving
     chip_at~1vz engrave or cut by chipping away at a surface
- comprehend ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ comprehend ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) 
     get_the_picture~1v 
     perceive~2vz to become aware of through the senses
     embrace~6v 
@@ -37123,32 +37133,32 @@
     copyedit~1vz edit and correct
  copyedit ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     subedit~1v 
- cogitate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ cogitate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) 
     think~5v 
     cogitate~2vz consider carefully and deeply
- cerebrate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
+ cerebrate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT OMITTABLE_THAT_VERB ) 
     cogitate~1v 
  chew_over ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB SEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     mull~2v 
- contemplate ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ contemplate ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) 
     excogitate~1v 
     contemplate~2vz consider as a possibility
     meditate~2v 
     contemplate~4vz look at thoughtfully
- conclude ( meanings=5 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ conclude ( meanings=5 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB ) 
     reason_out~1v 
     conclude~2vz bring to a close
     resolve~8vz reach a conclusion after a discussion or deliberation
     conclude~4vz reach agreement on
     close~37v 
- calculate ( meanings=6 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ calculate ( meanings=6 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) 
     reckon~2v 
     reckon~4v 
     reckon~6v 
     aim~7v 
     forecast~4vz predict in advance
     account~13v 
- compute ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT ) 
+ compute ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 KINDERGARTEN posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB ) 
     figure~15vz make a mathematical calculation or computation
  carry_back ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_CONJUGATE1 ) 
     carry_back~1vz deduct a loss or an unused credit from taxable income for a prior period
@@ -37198,7 +37208,7 @@
     mark_off~2v 
  cross-check ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB posdefault:VERB VERB_DIRECTOBJECT ) 
     cross-check~1vz check out conflicting sources
- corroborate ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ corroborate ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     confirm~2v 
     validate~3vz give evidence for
     support~22v 
@@ -37212,7 +37222,7 @@
  controvert ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
     refute~1vz prove to be false or incorrect
     oppose~2v 
- choose ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) conjugate=chosen 
+ choose ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT FACTITIVE_NOUN_VERB FACTITIVE_ADJECTIVE_VERB ) conjugate=chosen 
     take~11v 
     opt~1vz select as an alternative over another
     choose~3vz see fit or proper to act in a certain way
@@ -37226,7 +37236,7 @@
  colligate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     subsume~1vz consider as part of a general rule or principle
     associate~7v 
- consider ( meanings=9 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ consider ( meanings=9 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB FACTITIVE_NOUN_VERB FACTITIVE_ADJECTIVE_VERB ) 
     believe~4v 
     reckon~3v 
     consider~3vz regard or treat with consideration, respect, and esteem
@@ -37286,7 +37296,7 @@
  contemporise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     synchronize~4v 
     synchronize~6v 
- communicate ( meanings=7 glosses=6 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ communicate ( meanings=7 glosses=6 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 COMMON1 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     intercommunicate~1vz transmit thoughts or feelings
     pass~22v 
     commune~4vz receive Communion, in the Catholic church
@@ -37377,26 +37387,26 @@
     face~15v 
     face~16v 
     confront~4vz be face to face with
- confess ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ confess ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB FACTITIVE_NOUN_VERB FACTITIVE_ADJECTIVE_VERB ) 
     concede~2v 
     confess~2vz confess to God in the presence of a priest, as in the Catholic faith
     squeal~2vz confess to a punishable or reprehensible deed, usually under pressure
- certify ( meanings=5 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ certify ( meanings=5 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     attest~3v 
     certify~2vz declare legally insane
     certify~3vz guarantee payment on
     licence~4v 
     indorse~2vz guarantee as meeting a certain standard
- canonize ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ canonize ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     canonise~1vz declare to be a saint
     canonise~2vz treat as a sacred person
- canonise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ canonise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     saint~4v 
     canonize~2v 
  contravene ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     negate~3v 
     conflict~8v 
- criminate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT ) 
+ criminate ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     reprimand~2v 
     impeach~1v 
  crucify ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
@@ -37404,9 +37414,9 @@
     mortify~3v 
     bedevil~2v 
     crucify~4vz kill by nailing onto a cross
- chastise ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ chastise ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     chasten~3v 
- castigate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+ castigate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     chastise~1v 
     castigate~2vz inflict severe punishment on
  call_on_the_carpet ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_CONJUGATE1 ) 
@@ -37414,34 +37424,34 @@
  call_down ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     trounce~1v 
     invoke~3v 
- chide ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT ) 
+ chide ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     call_down~1v 
  chew_out ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     remonstrate~1v 
  chew_up ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     chew_out~1v 
- criticize ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ criticize ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     pick_apart~1v 
     criticise~2vz act as a critic
- criticise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ criticise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     criticize~1v 
     criticize~2v 
- complain ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_NOOBJECT ) 
+ complain ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     complain~1vz make a formal accusation
     kvetch~3v 
  clapperclaw ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     blackguard~2v 
     clapperclaw~2vz claw with the nails
- calumniate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
+ calumniate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     denigrate~1v 
- condemn ( meanings=6 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
+ condemn ( meanings=6 glosses=5 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     condemn~1vz declare or judge unfit for use or habitation
     excoriate~1vz express strong disapproval of
     doom~4v 
     condemn~4vz demonstrate the guilt of 
     condemn~5vz appropriate for public use
     condemn~6vz compel or force into a particular state or activity
- cheerlead ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ cheerlead ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     cheerlead~1vz act as a cheerleader in a sports event
  cheer_up ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     cheer~5v 
@@ -37460,15 +37470,15 @@
     call_out~1vz challenge to a duel
     shout~3v 
     call_out~3vz call out loudly, as of names or numbers
- consult ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ consult ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     consult~1vz advise professionally
     confer~1v 
     refer~2v 
     confer_with~1v 
- confer ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ confer ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     confabulate~1vz have a conference in order to talk something over
     bestow~1vz present
- confabulate ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ confabulate ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     confab~2v 
     gossip~4v 
     confabulate~3vz unconsciously replace fact with fantasy in one's memory
@@ -37484,12 +37494,12 @@
     curry_favor~1v 
  court_favour ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT VERB_CONJUGATE1 ) 
     court_favor~1v 
- congratulate ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ congratulate ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     compliment~2v 
     felicitate~1vz express congratulations
     preen~2v 
     plume~8v 
- commend ( meanings=5 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ commend ( meanings=5 glosses=3 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     commend~1vz express approval of
     remember~6v 
     recommend~3v 
@@ -37504,7 +37514,7 @@
     trust~11v 
     practice~8v 
     pull~24v 
- condone ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ condone ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     excuse~4v 
  cover_for ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     cover_for~1vz provide an excuse or alibi for someone so as to cover up guilt
@@ -37523,7 +37533,7 @@
     clue_in~1vz provide someone with a clue
  contraindicate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
     contraindicate~1vz make a treatment inadvisable
- convey ( meanings=7 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
+ convey ( meanings=7 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE5_6 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     convey~1vz make known
     carry~6v 
     fetch~2v 
@@ -37536,7 +37546,7 @@
     predicate~3v 
  come_out_of_the_closet ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT VERB_CONJUGATE1 ) 
     come_out~7v 
- confide ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ confide ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     confide~1vz reveal in private
     commit~4v 
  commentate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_NOOBJECT ) 
@@ -37547,7 +37557,7 @@
  chalk_up ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     tally~5vz keep score, as in games
     run_up~5vz accumulate as a debt
- characterize ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT ) 
+ characterize ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT OMITTABLE_THAT_VERB QUOTEABLE_VERB ) 
     characterise~1vz describe or portray the character or the qualities or peculiarities of
     characterise~2vz be characteristic of
  characterise ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
@@ -37588,7 +37598,7 @@
     circumstantiate~1vz give circumstantial evidence for
  cross-refer ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB posdefault:VERB VERB_NOOBJECT ) 
     cross-refer~1vz refer from one entry to another, as in catalogues, books, and lists
- christen ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT ) 
+ christen ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     baptize~1vz administer baptism to
  coquet ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
     chat_up~2v 
@@ -37601,7 +37611,7 @@
     natter~1v 
  clam_up ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     close_up~2v 
- croon ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ croon ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     croon~1vz sing softly
  cantillate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     chant~2vz recite with musical intonation
@@ -37612,7 +37622,7 @@
  cronk ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_NOOBJECT ) 
     honk~3v 
     croak~4v 
- chitter ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
+ chitter ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT QUOTEABLE_VERB ) 
     twitter~2v 
  cackel ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_NOOBJECT ) 
     cackel~1vz make a cackling sound
@@ -37679,7 +37689,7 @@
  conglutinate ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     conglutinate~1vz stick together
     coapt~2vz cause to adhere
- canoodle ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
+ canoodle ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT QUOTEABLE_VERB ) 
     canoodle~1vz fondle or pet affectionately
  creep_in ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     sneak_in~2v 
@@ -37994,7 +38004,7 @@
     feel_for~1v 
  condole ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 GRADE5_6 VERB_NOOBJECT ) 
     condole~1vz express one's sympathetic grief, on the occasion of someone's death
- commiserate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT ) 
+ commiserate ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_NOOBJECT QUOTEABLE_VERB ) 
     sympathize~2vz to feel or express sympathy or compassion
  care_a_hang ( meanings=1 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_NOOBJECT VERB_CONJUGATE1 ) 
     give_a_damn~1vz show no concern or interest
@@ -38218,7 +38228,7 @@
     co-educate~1v 
  coronate ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT ) 
     crown~14v 
- celebrate ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ celebrate ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE1_2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     lionize~1vz assign great social importance to
     fete~3vz have a celebration
     keep~18v 
@@ -38310,7 +38320,7 @@
     cry_for~1vz need badly or desperately
  cry_for ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     cry_out_for~1v 
- consist ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ consist ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT VERB_ALLOWS_OF_AFTER ) 
     comprise~3v 
     dwell~4v 
     consist~3vz be consistent in form, tenor, or character
@@ -38948,7 +38958,7 @@
     cut_in_on~1vz   interrupt She cut in on the conversation and delivered the news.
  cut_out_on ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     cut_out_on~1vz 
- Class_a ( CONDITIONAL_IDIOM  poscondition=?=<NwA. ) 
+ Class_a ( CONDITIONAL_IDIOM  poscondition=(null) ) 
  Col. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Capt. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Cmdr. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
@@ -38959,6 +38969,7 @@
  Capt ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Cmdr ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Corp ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Ct ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Commander ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Corporal ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Chair ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 

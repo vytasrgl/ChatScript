@@ -3584,7 +3584,7 @@ static char* ReadKeyword(char* word,char* ptr,bool &notted, bool &quoted, MEANIN
 				M = ReadMeaning(word);
 				if (!M) BADSCRIPT((char*)"CONCEPT-7 WordNet word doesn't exist %s",word)
 				WORDP D = Meaning2Word(M);
-				unsigned int index = Meaning2Index(M);
+				int index = Meaning2Index(M);
 				if ((GetMeaningCount(D) == 0 && !(GETTYPERESTRICTION(M) & BASIC_POS)) || (index && !strcmp(word,D->word) && index > GetMeaningCount(D)))
 				{
 					if (index) 

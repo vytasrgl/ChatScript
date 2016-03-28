@@ -5327,6 +5327,7 @@ static FunctionResult AddPropertyCode(char* buffer)
 	unsigned int parseBits = 0;
 	result = GetPropertyCodes(arg1,ptr,val,sysval,internalBits,parseBits);
 	if (result != NOPROBLEM_BIT) return result;
+	if (!compiling) dictionaryBitsChanged = true;
 	if (D) // add to dictionary entry
 	{
 		if (val & NOUN_SINGULAR && D->internalBits & UPPERCASE_HASH) //make it right
@@ -5387,10 +5388,10 @@ static FunctionResult DefineCode(char* buffer)
 	}
 	if (!stricmp(ARGUMENT(3),(char*)"all")) all = true;
 
-	for (unsigned int i = 1; i <= GetMeaningCount(D); ++i)
+	for (int i = 1; i <= GetMeaningCount(D); ++i)
 	{
 		MEANING T = GetMaster(GetMeaning(D,i)) | GETTYPERESTRICTION(GetMeaning(D,i));
-		unsigned int index = Meaning2Index(T);
+		int index = Meaning2Index(T);
 		WORDP E = Meaning2Word(T);
 		char* gloss = GetGloss(E,index);
 		unsigned int restrict = GETTYPERESTRICTION(T);

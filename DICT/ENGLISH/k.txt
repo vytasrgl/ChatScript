@@ -511,7 +511,7 @@
  Ka ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
     Ka~1nz (^Hindu_deity~1) unknown god
  kayo ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 VERB_DIRECTOBJECT ) 
-    Ko~1n 
+    knockout~1n 
     knock_out~4v 
  Kellen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Koehn ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -631,7 +631,6 @@
  Kammie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Kellach ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Knighton ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Kokyangwuti ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Kaul ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  knee-jerk_reflex ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     patellar_reflex~1nz (^physiological_reaction~1) a reflex extension of the leg resulting from a sharp tap on the patellar tendon
@@ -684,7 +683,7 @@
  Kesterson ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Kecia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Knoton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- kneeling ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
+ kneeling ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     kneel~1n 
  Kamilla ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Kendale ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -730,9 +729,7 @@
     kick~12vz drive or propel with the foot
     kick~13vz thrash about or strike out with the feet
     kick~14vz kick a leg up
- Ko ( meanings=2 NOUN_HUMAN VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_PROPER_SINGULAR COMMON2 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
-    knockout~1n 
-    Ko~2vz 
+ Ko ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Kiel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Kelwin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Kinneret ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1277,7 +1274,7 @@
  Keener ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
  Keffer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Keith ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- Kelly ( meanings=3 glosses=3 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
+ Kelly ( meanings=3 glosses=3 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     Eugene_Curran_Kelly~1nz (^dancer~1) United States dancer who performed in many musical films
     Princess_Grace_of_Monaco~1nz (^actress~1) United States film actress who retired when she married into the royal family of Monaco
     Weary_Willie~1nz (^clown~1) United States circus clown
@@ -1512,6 +1509,7 @@
  Kohana ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Koi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Kojo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Kokyangwuti ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Kolby ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Kolena ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Koltin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1593,7 +1591,7 @@
     knuckler~1nz (^pitch~2) a baseball pitch thrown with little speed or spin
  knuckler ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     knuckleball~1n 
- knock ( meanings=11 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ knock ( meanings=11 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) 
     whang~1nz (^blow~2) the act of hitting vigorously
     roast~1nz (^criticism~1) negative criticism
     knock~3nz (^misfortune~1) a bad experience
@@ -1606,12 +1604,15 @@
     ping~6vz sound like a car engine that is firing too early
     rap~10vz make light, repeated taps on a surface
  knockout ( meanings=3 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    kayo~1nz (^blow~2) a blow that renders the opponent unconscious
+    KO~1nz (^blow~2) a blow that renders the opponent unconscious
     dish~5n 
     hard~12a 
+ KO ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_PROPER_SINGULAR COMMON2 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+    kayo~1n 
+    KO~2vz 
  KO_punch ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     haymaker~1n 
- kiss ( meanings=4 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+ kiss ( meanings=4 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
     kiss~1nz (^touching~1) a light glancing touch
     osculation~1nz (^touching~1) the act of caressing with the lips
     osculate~1vz touch with the lips or press the lips as an expression of love, greeting, etc.
@@ -1955,7 +1956,7 @@
     curbstone~1n 
  key_pattern ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     fret~2nz (^architectural_ornament~1) an ornamental pattern consisting of repeated vertical and horizontal lines 
- keep ( meanings=25 glosses=18 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_ADJECTIVE VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=kept 
+ keep ( meanings=25 glosses=18 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_ADJECTIVE VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_NOUN_VERB FACTITIVE_ADJECTIVE_VERB ) conjugate=kept 
     hold~4nz (^cell~3) a cell in a jail or prison
     donjon~1nz (^fastness~1) the main tower within the walls of a medieval castle or fortress
     sustenance~3n 
@@ -2064,7 +2065,7 @@
     khaddar~1n 
  khaddar ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     khadi~1nz (^material~1) a coarse homespun cotton cloth made in India
- khaki ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:ADJECTIVE ) 
+ khaki ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     khaki~1nz (^material~1) a sturdy twilled cloth of a yellowish brown color used especially for military uniforms
     khaki~2az of a yellowish brown color
     khaki~3az 
@@ -2310,14 +2311,14 @@
  kinship ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     affinity~5n 
     relationship~2n 
- knowing ( meanings=6 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 posdefault:VERB ) 
+ knowing ( meanings=6 glosses=1 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 posdefault:VERB ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     knowing~1nz (^higher_cognitive_process~1) a clear and certain mental apprehension
     learned~1a 
     wise_to~1a 
     knowledgeable~3a 
     intentional~1a 
     knowing~6az 
- know ( meanings=11 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=known 
+ know ( meanings=11 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 GRADE3_4 posdefault:VERB VERB_TAKES_TOINFINITIVE VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) conjugate=known 
     know~1nz (^knowing~1) the fact of being aware of information that is known to few people
     acknowledge~1v 
     know~3vz be familiar or acquainted with a person or an object
@@ -2329,7 +2330,7 @@
     know~9vz perceive as familiar
     know~10vz be able to distinguish, recognize as being different
     know~11vz know the nature or character of
- kind ( meanings=5 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR EXTENT_ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN ) 
+ kind ( meanings=5 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR EXTENT_ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     variety~3n 
     tolerant~2az tolerant and forgiving under provocation
     genial~2az agreeable, conducive to comfort
@@ -2623,7 +2624,7 @@
     Kongo~1nz (^Bantoid_language~1) the Bantu language spoken by the Kongo living in the tropical forests of Zaire and Congo and Angola
  Kwa ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Kwa~1nz (^Niger-Congo~1) a group of African language in the Niger-Congo group spoken from the Ivory Coast east to Nigeria
- keen ( meanings=8 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:ADJECTIVE VERB_DIRECTOBJECT ) 
+ keen ( meanings=8 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:ADJECTIVE VERB_DIRECTOBJECT ADJECTIVE_TAKING_NOUN_INFINITIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     keen~1nz (^dirge~1) a funeral lament sung with loud wailing
     keen~2az having a sharp cutting edge or point
     cutting~11a 
@@ -2784,9 +2785,8 @@
     Association_of_Islamic_Groups_and_Communities~1n 
  Khmer_Rouge ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     KR~1n 
- KR ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+ KR ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     Party_of_Democratic_Kampuchea~1n 
-    krypton~1n 
  Ku_Klux_Klan ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     KKK~1nz (^secret_society~1) a secret society of white Southerners in the United States
  Klan ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -3112,8 +3112,8 @@
     Kukenaam~1n 
  Kan_River ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Gan_Jiang~1n 
- K2 ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    K2~1nz (^mountain_peak~1) a mountain peak in the Karakoram Range in northern Kashmir
+ K2 ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Mount_Godwin_Austen~1n 
  Kamet ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Kamet~1nz (^mountain_peak~1) a mountain in the Himalayas in northern India
  Kanawha ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -4069,14 +4069,17 @@
     cubic_meter~1n 
  kilobyte ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     KiB~1nz (^computer_memory_unit~1) a unit of information equal to 1024 bytes
-    KB~2nz (^computer_memory_unit~1) a unit of information equal to 1000 bytes
+    kB~2nz (^computer_memory_unit~1) a unit of information equal to 1000 bytes
  kibibyte ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     K~3n 
- KB ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON4 ) 
+ KB ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
     kibibyte~1n 
     K~4n 
- KiB ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ kB ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON4 ) 
     KB~1n 
+    KB~2n 
+ KiB ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    kB~1n 
  kilobit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     kb~1nz (^computer_memory_unit~1) a unit of information equal to 1000 bits
  kbit ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -4100,7 +4103,7 @@
     kiloton~2nz (^avoirdupois_unit~1) one thousand tons
  kos ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 ) 
     kos~1nz (^linear_measure~1) 
- kilometer ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN ) 
+ kilometer ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN DISTANCE_NOUN ) 
     klick~1nz (^metric_linear_unit~1) a metric unit of length equal to 1000 meters
  kilometre ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     kilometer~1n 
@@ -4337,7 +4340,9 @@
  kraurosis_vulvae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     kraurosis_vulvae~1nz (^kraurosis~1) kraurosis of the vulva
  krypton ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    KR~2nz (^element~6) a colorless element that is one of the six inert gasses
+    Kr~1nz (^element~6) a colorless element that is one of the six inert gasses
+ Kr ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    krypton~1n 
  kaolin ( meanings=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     china_stone~1n 
     kaolin~2az 
@@ -4583,7 +4588,7 @@
     discriminating~2a 
  killable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     killable~1az fit to kill, especially for food
- knowledgeable ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
+ knowledgeable ( meanings=4 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     knowing~2a 
     versed~1az thoroughly acquainted through study or experience
     knowing~4az alert and fully informed

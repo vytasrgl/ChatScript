@@ -140,7 +140,7 @@
 #define GetMeanings(D) ((MEANING*) Index2String(D->meanings))
 #define GetMeaning(D,k) GetMeanings(D)[k]
 #define GetMeaningsFromMeaning(T) (GetMeanings(Meaning2Word(T)))
-#define Meaning2Index(x) ((unsigned int)((x & INDEX_BITS) >> INDEX_OFFSET)) //   which dict entry meaning
+#define Meaning2Index(x) ((int)((x & INDEX_BITS) >> INDEX_OFFSET)) //   which dict entry meaning
 
 #define GetFactBack(D) ((D->temps) ? GetTemps(D)[FACTBACK] : 0) // transient per search
 unsigned char* GetWhereInSentence(WORDP D); // always skips the linking field at front
@@ -234,6 +234,7 @@ extern MEANING Mintersect;
 extern MEANING MgambitTopics;
 extern MEANING MadjectiveNoun;
 extern MEANING Mnumber;
+extern bool dictionaryBitsChanged;
 extern char livedata[500];
 extern char englishFolder[500];
 extern char systemFolder[500];
@@ -274,8 +275,8 @@ void AddCircularEntry(WORDP base, unsigned int field,WORDP entry);
 void SetWordValue(WORDP D, int x);
 int GetWordValue(WORDP D);
 
-inline unsigned int GetMeaningCount(WORDP D) { return (D->meanings) ? GetMeaning(D,0) : 0;}
-inline unsigned int GetGlossCount(WORDP D) 
+inline int GetMeaningCount(WORDP D) { return (D->meanings) ? GetMeaning(D,0) : 0;}
+inline int GetGlossCount(WORDP D) 
 {
 	return (D->w.glosses && *D->word != '~' && *D->word != '^' && *D->word != '$' && !(D->internalBits & HAS_SUBSTITUTE) && !(D->systemFlags & CONDITIONAL_IDIOM))  ? D->w.glosses[0] : 0;
 }

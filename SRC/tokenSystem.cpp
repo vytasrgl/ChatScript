@@ -538,7 +538,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		if (end[0] == '.' && end[1] == '.' && end[2] == '.') break; // ...
 	}
 	if (end == ptr) ++end;	// must shift at least 1
-	WORDP X = FindWord(ptr,end-ptr);
+	WORDP X = FindWord(ptr,end-ptr,PRIMARY_CASE_ALLOWED);
 	// avoid punctuation so we can detect emoticons
 	if (X && !(X->properties & PUNCTUATION) && (X->properties & PART_OF_SPEECH || X->systemFlags & PATTERN_WORD || X->internalBits & HAS_SUBSTITUTE)) // we know this word (with exceptions)
 	{
@@ -563,7 +563,23 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 
 		else return end;
 	}
+	if (IsUpperCase(*ptr)) 
+	{
+		X = FindWord(ptr,end-ptr,LOWERCASE_LOOKUP);
+		// avoid punctuation so we can detect emoticons
+		if (X && !(X->properties & PUNCTUATION) && (X->properties & PART_OF_SPEECH || X->systemFlags & PATTERN_WORD || X->internalBits & HAS_SUBSTITUTE)) // we know this word (with exceptions)
+		{
+			//  No. must not be recognized unless followed by a digit
+			if (!strnicmp(ptr,(char*)"no.",end-ptr))
+			{
+				char* at = end;
+				if (*at) while (*++at && *at == ' ');
+				if (IsDigit(*at)) return end;
+			}
 
+			else return end;
+		}
+	}
 	// could it be email or web address?
 	char item[MAX_WORD_SIZE];
 	int mylen = end - ptr;
@@ -659,16 +675,18 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				else if (next == '-' ) 
 					break; // the anyways-- break 
 			}
-			// number before things? 8months
-			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(*ptr))
+			// number before things? 8months but not 24%
+			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(c) && c != '%')
 			{
 				return ptr;
 			}
 			if ( c == ']' || c == ')') break; //closers
 			if (c == '&') break; // must represent "and" 
-			if (ptr != start && IsDigit(*(ptr-1)) && IsWordTerminator(ptr[1]) && (c == '"' || c == '\'' || c == '%')) break; // special markers on trailing end of numbers get broken off. 50' and 50" and 50%
+			if (ptr != start && IsDigit(*(ptr-1)) && IsWordTerminator(ptr[1]) && (c == '"' || c == '\'' )) break; // special markers on trailing end of numbers get broken off. 50' and 50" 
 			if ((c == 'x' || c== 'X') && IsDigit(*start) && IsDigit(next)) break; // break  4x4
-			if (kind & ARITHMETICS && IsDigit(next) && c != '/' && c != '.' && IsDigit(*start) && !(tokenControl & TOKEN_AS_IS)) break;  // split numeric operator like  60*2 => 60 * 2  but 60 1/2 stays // 1+1=
+			// allow 24%
+			if (kind & ARITHMETICS && IsDigit(next) && c != '/' && c != '.' && IsDigit(*start) && !(tokenControl & TOKEN_AS_IS)) 
+				break;  // split numeric operator like  60*2 => 60 * 2  but 60 1/2 stays // 1+1=
 		}
 
 		if (kind & BRACKETS) break; // separate brackets
@@ -752,11 +770,11 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 			if (*ptr == ' ') ++ptr;
 			continue;
 		}
-
+		ptr = SkipWhitespace(ptr);
 		if (!(tokenControl & TOKEN_AS_IS)) while (*ptr == ptr[1] && !IsAlphaUTF8OrDigit(*ptr)  && *ptr != '-' && *ptr != '.' && *ptr != '[' && *ptr != ']' && *ptr != '(' && 
 			*ptr != ')' && *ptr != '{' && *ptr != '}') ++ptr; // ignore repeated non-alpha non-digit characters -   - but NOT -- and not ...
 		if (count == 0 && *ptr != '[' ) oobStart = false;
-		if (*ptr == '"' && !strchr(ptr+1,'"')) ++ptr; // ignore single starting quote?  "hi   -- but if it next sentence line was part like POS tagging, would be a problem
+		if (*ptr == '"' && !strchr(ptr+1,'"') && !(tokenControl & TOKEN_AS_IS)) ++ptr; // ignore single starting quote?  "hi   -- but if it next sentence line was part like POS tagging, would be a problem
 
 		// find end of word 
 		int oldCount = count;

@@ -297,7 +297,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 			return 0;
 		}
 	}
-	if (*original == '~' || *original == '$' || *original == '^' || *original == '%')
+	if (*original == '~' || (*original == '$' && !IsDigit(original[1])) || *original == '^' || (*original == '%' && original[1]))
 	{
 		char copy[MAX_WORD_SIZE];
 		MakeLowerCopy(copy,original);
@@ -626,6 +626,19 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 			sysflags |= ORDINAL;
 			properties = ADVERB|ADJECTIVE|ADJECTIVE_NUMBER|NOUN|NOUN_NUMBER| (baseflags & TAG_TEST); // place numbers all all potential adverbs:  "*first, he wept"  but not in front of an adjective or noun, only as verb effect
 		}
+		else if (kind == FRACTION_NUMBER && strchr(original,'%'))
+		{
+			int64 val1 = atoi(original);
+			float val = ((float)val1) / 100.0;
+			sprintf(number,(char*)"%1.2f",val );
+			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
+			entry = StoreWord(original,properties);
+			canonical = StoreWord(number,properties);
+			properties |= canonical->properties;
+			sysflags = entry->systemFlags;
+			cansysflags = canonical->systemFlags;
+			return properties;
+		}
 		else if (kind == FRACTION_NUMBER && br) // word fraction
 		{
 			char c = *br;
@@ -825,6 +838,12 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 	{
 		char lower[MAX_WORD_SIZE];
 		MakeLowerCopy(lower,original);
+		WORDP X = FindWord(original,0,LOWERCASE_LOOKUP);
+		if (X && strcmp(original,X->word)) // upper case noun we know in lower case -- "Proceeds"
+		{
+			properties |= X->properties & NOUN_BITS;
+			if (!entry) entry = canonical = X;
+		}
 		if (original[len-1] == 's')
 		{
 			char* noun = GetSingularNoun(original,true,true);

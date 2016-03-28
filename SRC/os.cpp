@@ -266,7 +266,7 @@ void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath)
 
 void StartFile(const char* name)
 {
-	currentFileLine = 0;
+	if (strnicmp(name,"TMP",3)) currentFileLine = 0;
 	strcpy(currentFilename,name); // in case name is simple
 
 	char* at = strrchr((char*) name,'/');	// last end of path
