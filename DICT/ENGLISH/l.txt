@@ -1223,7 +1223,7 @@
  Loris ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Leptotyphlops_humilis ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     western_blind_snake~1nz (^blind_snake~1) burrows among roots of shrubs and beneath rocks in desert and rocky hillside areas and beach sand of western United States
- Louisiana ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Louisiana ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Pelican_State~1n 
  Lux ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Lathrop ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2295,6 +2295,8 @@
  Labarge ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Lampkin ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Luise ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ lobster_thermidor ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    lobster_thermidor~1nz (^dish~4) diced lobster mixed with Mornay sauce placed back in the shell and sprinkled with grated cheese and browned
  Latarsha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Litton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Laisha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -7743,8 +7745,6 @@
     lobster_a_la_Newburg~1n 
  lobster_a_la_Newburg ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
     lobster_Newburg~1nz (^seafood_Newburg~1) lobster in Newburg sauce served on buttered toast or rice
- lobster_thermidor ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    lobster_thermidor~1nz (^dish~4) diced lobster mixed with Mornay sauce placed back in the shell and sprinkled with grated cheese and browned
  lutfisk ( meanings=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     lutefisk~1n 
  loblolly ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
@@ -8239,7 +8239,7 @@
     Lyonnais~1nz (^geographical_region~1) a former province of east central France
  Libreville ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Libreville~1nz (^national_capital~1) the capital of Gabon
- Laos ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Laos ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Lao_People_'s_Democratic_Republic~1n 
  Lao_People_'s_Democratic_Republic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Laos~1nz (^Asian_country~1) a mountainous landlocked communist state in southeastern Asia
@@ -8258,7 +8258,7 @@
     Lebanon~1nz (^Asian_country~1) an Asian republic at east end of Mediterranean
  Lesotho ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Kingdom_of_Lesotho~1n 
- Liberia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Liberia ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Liberia~1n 
  Liberian_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Monrovia~1nz (^national_capital~1) the capital and chief port and largest city of Liberia
@@ -8303,11 +8303,11 @@
     Saint_Petersburg~1n 
  Livonia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Livonia~1nz (^geographical_region~1) a region on the Baltic that is divided between northern Estonia and southern Latvia
- Latvia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Latvia ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Latvia~1n 
  Liepaja ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Liepaja~1nz (^city~2) a city of southwestern Latvia on the Baltic Sea
- Lithuania ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Lithuania ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Lithuania~1n 
  Lietuva ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Lithuania~1n 
@@ -12340,7 +12340,7 @@
  lauric_acid ( meanings=1 NOUN NOUN_SINGULAR ) 
     dodecanoic_acid~1n 
  lauryl_alcohol ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    1-dodecanol~1nz (^alcohol~2) a colorless insoluble solid alcohol used to make detergents and pharmaceuticals
+    lauryl_alcohol~1nz (^alcohol~2) a colorless insoluble solid alcohol used to make detergents and pharmaceuticals
  latten ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     latten~1nz (^brass~7) brass that was hammered into thin sheets
  lava ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 

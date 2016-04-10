@@ -156,7 +156,7 @@ char* ReadInt64(char* ptr, int64 & w);
 int64 atoi64(char* ptr );
 char* ReadQuote(char* ptr, char* buffer,bool backslash = false, bool noblank = true);
 char* ReadArgument(char* ptr, char* buffer);
-char* ReadCompiledWord(char* ptr, char* word,bool noquote = false,bool var = false);
+
 int ReadALine(char* buf,FILE* file,unsigned int limit = maxBufferSize,bool returnEmptyLines = false);
 char* SkipWhitespace(char* ptr);
 char* BalanceParen(char* ptr,bool within=true);

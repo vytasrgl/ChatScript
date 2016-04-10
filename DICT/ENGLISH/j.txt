@@ -753,7 +753,7 @@
  Jett ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Jusino ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Jacques ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Jordan ( meanings=2 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
+ Jordan ( meanings=2 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN OF_PROPER ) 
     Hashemite_Kingdom_of_Jordan~1nz (^Asian_country~1) an Arab kingdom in southwestern Asia on the Red Sea
     Jordan_River~1nz (^river~1) a river in Palestine that empties into the Dead Sea
  Jolly_Roger ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -2716,7 +2716,7 @@
     Jabalpur~1nz (^city~2) an industrial city of central India to the southeast of Delhi
  Jakarta ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Djakarta~1n 
- Japan ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Japan ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Japanese_Islands~1n 
     Nippon~1n 
  Japanese_Islands ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 

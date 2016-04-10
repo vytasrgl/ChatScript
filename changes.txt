@@ -1,3 +1,11 @@
+
+version 6.3 4/10/2016
+1. ~twitter_name detected as concept for @xxx names  and ~hashtag_label detected as concept
+2. $cs_beforereset and $cs_afterreset if, assigned to functions, will execute them before and
+after a :reset. This is your chance to pass some information across to the newly reinited user.
+I store data in _match variables before and retrieve them after.
+3. Outputmacros can be declared as executable javascript code. New manual in Esoterica for that.
+
 version 6.2g 3/27/2016
 1. fixed slowdown introduced into the engine a few versions ago.
 

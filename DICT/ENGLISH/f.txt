@@ -515,6 +515,11 @@
     nervus_trigeminus~1nz (^cranial_nerve~1) the main sensory nerve of the face and motor nerve for the muscles of mastication
  Fatimah ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     Fatima~1n 
+ frigid ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
+    glacial~1a 
+    frozen~5a 
+    cold~12a 
+    frigid~4az 
  fake ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) comparative=faker 
     juke~1nz (^feint~1) a deceptive move made by a football player
     postiche~1nz (^imitation~2) something that is a counterfeit
@@ -1156,7 +1161,7 @@
     Battle_of_Fontenoy~1n 
  Frith ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  four-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    4-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team 4 hits
+    four-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team 4 hits
  fusillade ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT ) 
     burst~3n 
     fusillade~2vz attack with fusillade
@@ -1202,7 +1207,7 @@
  felt_fern ( meanings=1 NOUN NOUN_SINGULAR ) 
     Pyrrosia_lingua~1n 
  Fite ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- France ( meanings=2 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 GRADE5_6 ) 
+ France ( meanings=2 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 GRADE5_6 OF_PROPER ) 
     French_Republic~1nz (^European_country~1) a republic in western Europe
     Jacques_Anatole_Francois_Thibault~1nz (^writer~1) French writer of sophisticated novels and short stories
  Fortin ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -1274,7 +1279,7 @@
  fusion_reactor ( meanings=1 NOUN NOUN_SINGULAR ) 
     thermonuclear_reactor~1n 
  Fryer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Florida ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Florida ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Sunshine_State~1n 
  Falk ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Friedrich ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2299,8 +2304,6 @@
     flying_phalanger~1n 
  FRG ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Germany~1n 
- flushless_toilet ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    flushless_toilet~1nz (^toilet~3) a toilet that relies on bacteria to break down waste matter
  French_roof ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     French_roof~1nz (^mansard_roof~1) a mansard roof with sides that are nearly perpendicular
  firewall ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 posdefault:NOUN ) 
@@ -3420,7 +3423,7 @@
  football_game ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     football~1n 
  five-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    5-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team 5 hits
+    five-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team 5 hits
  fives ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     fives~1nz (^court_game~1) a game resembling handball
  five_hundred ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ) 
@@ -4581,7 +4584,7 @@
     flat~8az commercially inactive
     matt~2a 
     flat~10az having a relatively broad surface in relation to depth or thickness
-    2-dimensional~1az lacking the expected range or depth
+    two-dimensional~2az lacking the expected range or depth
     level~10a 
     flat~13az lacking contrast or shading between tones
     flat~14az horizontally level
@@ -5505,6 +5508,8 @@
     Dalmane~1nz (^minor_tranquilliser~1) tranquilizer used to treat insomnia
  flurbiprofen ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 ) 
     Ansaid~1nz (^nonsteroidal_anti-inflammatory_drug~1) a nonsteroidal anti-inflammatory drug that is administered only orally
+ flushless_toilet ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    flushless_toilet~1nz (^toilet~3) a toilet that relies on bacteria to break down waste matter
  flush_toilet ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     lavatory~1nz (^toilet~3) a toilet that is cleaned of waste by the flow of water through it
  flute ( meanings=4 glosses=4 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) 
@@ -8787,7 +8792,7 @@
     Republic_of_Fiji~1n 
  Fijis ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Fiji_Islands~1n 
- Finland ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Finland ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Finland~1n 
  Finnish_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Helsinki~1nz (^national_capital~1) the capital and largest city of Finland
@@ -13318,7 +13323,7 @@
  flattened ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     planate~1az having been flattened
  four-dimensional ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
-    4-dimensional~1az involving or relating to the fourth dimension or time
+    four-dimensional~1az involving or relating to the fourth dimension or time
  factory-made ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     factory-made~1az produced in quantity at a factory
  fordable ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -13716,15 +13721,10 @@
     flaming~2a 
     fervid~2a 
     fiery~4az 
- frigid ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
-    arctic~2a 
-    icy~4a 
-    cold~12a 
-    frigid~4az 
  frosty ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=frostiest 
     snappy~4a 
     rimy~1az covered with frost
-    frigid~2a 
+    icy~4a 
     frosty~4az 
  frigorific ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     frigorific~1az causing cold
@@ -13815,9 +13815,9 @@
  full-term ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     full-term~1az gestated for the entire duration of normal pregnancy
  four-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    4-membered~1az of a chemical compound having a ring with four members
+    four-membered~1az of a chemical compound having a ring with four members
  five-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    5-membered~1az of a chemical compound having a ring with five members
+    five-membered~1az of a chemical compound having a ring with five members
  fewer ( meanings=3 glosses=1 MORE_FORM PRONOUN_SUBJECT PRONOUN_OBJECT ADJECTIVE DETERMINER ADJECTIVE_NORMAL COMMON4 PRONOUN_INDIRECTOBJECT KINDERGARTEN DETERMINER_PLURAL PRONOUN_PLURAL ) comparative=few 
     fewer~1az quantifier meaning a smaller number of
     fewer~2z 

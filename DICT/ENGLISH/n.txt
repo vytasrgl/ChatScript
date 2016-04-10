@@ -171,7 +171,7 @@
     noxiousness~1nz (^unwholesomeness~1) the quality of being noxious
  Noles ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Niel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Nevada ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Nevada ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Silver_State~1n 
  Najera ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Naoma ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
@@ -1019,7 +1019,7 @@
     cuckoo_'s_nest~1n 
  Negasi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Nicolette ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Nebraska ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Nebraska ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Cornhusker_State~1n 
  Neace ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Nahiossi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2051,7 +2051,7 @@
     American_lobster~2n 
  Norway_lobster ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Nephrops_norvegicus~1n 
- Norway ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Norway ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Kingdom_of_Norway~1n 
  Nephrops_norvegicus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Norway_lobster~1nz (^lobster~1) edible European lobster resembling the American lobster but slenderer
@@ -7971,7 +7971,7 @@
  nonmechanistic ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     nonmechanistic~1az not mechanistic
  nine-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    9-membered~1az of a chemical compound having a ring with nine members
+    nine-membered~1az of a chemical compound having a ring with nine members
  nonmusical ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     unmusical~2az not musical in nature
     unmusical~3az lacking interest in or talent for music

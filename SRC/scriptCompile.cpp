@@ -1013,6 +1013,8 @@ static char* FlushToTopLevel(FILE* in,char* ptr,unsigned int depth,char* data)
 	int oldindex = jumpIndex;
 	jumpIndex = -1; // prevent ReadNextSystemToken from possibly crashing.
 	*newBuffer = 0;
+	ptr = ReadNextSystemToken(NULL,NULL,word,false);	// clear out anything ahead
+	ptr = readBuffer + strlen(readBuffer) - 1;
 	while (ALWAYS)
 	{
 		char* quote = NULL;
@@ -2745,6 +2747,30 @@ static char* ReadLoop(char* word, char* ptr, FILE* in, char* &data,char* rejoind
 	*data = 0;
 	return ptr; // caller adds extra space after
 }
+static char* ReadJavaScript(FILE* in, char* &data,char* ptr)
+{
+	strcpy(data,"*JavaScript");
+	data += strlen(data);
+	*data++ = ' ';
+	strcpy(data,ptr);
+	data += strlen(data);
+	char word[MAX_WORD_SIZE];
+	while (ReadALine(readBuffer,in) >= 0)
+	{
+		char* comment = strstr(readBuffer,"//");
+		if (comment) *comment = 0;	// erase comments to end of line
+		if (strstr(readBuffer,"/*")) BADSCRIPT("Cannot use /* ... */ comments in CS JavaScript: %s", readBuffer);
+		char* ptr = SkipWhitespace(readBuffer);
+		if (!*ptr) continue;
+		ReadCompiledWord(ptr,word);
+		if (TopLevelUnit(word) || !stricmp(word,(char*)"datum:"))  break;
+		*data++ = ' ';
+		strcpy(data,ptr);
+		data += strlen(data);
+	}
+
+	return readBuffer;
+}
 
 char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* supplement,WORDP call)
 {
@@ -2760,6 +2786,8 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 	patternContext = false;
 	char hold[MAX_WORD_SIZE];
 	*hold = 0;
+	bool start = true;
+	bool javascript = false;
 	while (ALWAYS) //   read as many tokens as needed to complete the responder definition
 	{
 		if ((data-original) >= MAX_JUMP_OFFSET) BADSCRIPT((char*)"OUTPUT-1 code exceeds size limit of %d bytes",MAX_JUMP_OFFSET)
@@ -2784,6 +2812,14 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 		}
 		else ptr = ReadNextSystemToken(in,ptr,word,false); 
 		if (!*word)  break; //   end of file
+
+		if (start && !stricmp(word,"javascript"))
+		{
+			ptr = ReadJavaScript(in,data,ptr);
+			javascript = true;
+			break;
+		}
+
 		if (*word == '$') // jammed together asignment?
 		{
 			char* assign = strchr(word,'=');
@@ -2950,7 +2986,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 	*data = 0;
 
 	//   now verify no choice block exceeds CHOICE_LIMIT and that each [ is closed with ]
-	while (*original)
+	if (!javascript) while (*original)
 	{
 		original = ReadCompiledWord(original,word);
 		if (*original != '[') continue;
@@ -2976,7 +3012,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 	return ptr;
 }
 
-static char* ReadTopLevelRule(char* typeval,char* ptr, FILE* in,char* data,char* basedata)
+static void ReadTopLevelRule(char* typeval,char* &ptr, FILE* in,char* data,char* basedata)
 {//   handles 1 responder/gambit + all rejoinders attached to it
 	char type[10];
 	strcpy(type,typeval);
@@ -3141,7 +3177,6 @@ Then one of 3 kinds of character:
 	}
 
 	*data = 0;
-	return ptr;
 }
 
 static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
@@ -3595,7 +3630,7 @@ static char* ReadKeyword(char* word,char* ptr,bool &notted, bool &quoted, MEANIN
 			else // ordinary word or concept-- see if it makes sense
 			{
 				char end = word[strlen(word)-1];
-				if (!IsAlphaUTF8OrDigit(end) && end != '"')  
+				if (!IsAlphaUTF8OrDigit(end) && end != '"' && strlen(word) != 1)  
 				{
 					if (end != '.' || strlen(word) > 6) WARNSCRIPT((char*)"last character of keyword %s is punctuation. Is this intended?\r\n",word)
 				}
@@ -3782,7 +3817,7 @@ static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 					strcpy(pack,ENDUNITTEXT+1);	//   init 1st rule
 					pack += strlen(pack);
 				}
-				ptr = ReadTopLevelRule(lowercaseForm,ptr,in,pack,data);
+				ReadTopLevelRule(lowercaseForm,ptr,in,pack,data);
 				currentRuleID = TOPLEVELID(currentRuleID) + 1;
 				pack += strlen(pack);
 				if ((pack - data) > (MAX_TOPIC_SIZE - 2000)) BADSCRIPT((char*)"TOPIC-4 Topic %s data too big. Split it by calling another topic using u: () respond(~subtopic) and putting the rest of the rules in that subtopic",currentTopicName)
@@ -3976,7 +4011,7 @@ static char* ReadPlan(char* ptr, FILE* in,unsigned int build)
 					strcpy(pack,ENDUNITTEXT+1);	//   init 1st rule
 					pack += strlen(pack);
 				}
-				ptr = ReadTopLevelRule(lowercaseForm,ptr,in,pack,data);
+				ReadTopLevelRule(lowercaseForm,ptr,in,pack,data);
 				pack += strlen(pack);
 				if ((pack - data) > (MAX_TOPIC_SIZE - 2000)) BADSCRIPT((char*)"PLAN-4 Plan %s data too big. Split it by calling another topic using u: () respond(~subtopic) and putting the rest of the rules in that subtopic",planName)
 			}

@@ -2152,7 +2152,7 @@ void InitKeywords(const char* name,unsigned int build,bool buildDictionary,bool 
 			if (*word == ')' ||  !*word  ) break; // til end of keywords or end of line
 			MEANING U;
 			char* p1 = word;
-			if (*word == '!') 
+			if (*word == '!' && word[1]) 
 			{
 				++p1;
 				AddInternalFlag(set,HAS_EXCLUDE);

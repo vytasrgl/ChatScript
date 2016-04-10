@@ -204,7 +204,7 @@ static char* predefinedSets[] = //  some internally mapped concepts not includin
 {
 	 (char*)"~repeatme",(char*)"~repeatinput1",(char*)"~repeatinput2",(char*)"~repeatinput3",(char*)"~repeatinput4",(char*)"~repeatinput5",(char*)"~repeatinput6",(char*)"~uppercase",(char*)"~utf8",(char*)"~sentenceend",
 	(char*)"~pos",(char*)"~sys",(char*)"~grammar_role",(char*)"~daynumber",(char*)"~yearnumber",(char*)"~dateinfo",(char*)"~email_url",(char*)"~fahrenheit",(char*)"~celsius",(char*)"~kelvin",
-	(char*)"~KINDERGARTEN",(char*)"~GRADE1_2",(char*)"~GRADE3_4",(char*)"~GRADE5_6",
+	(char*)"~KINDERGARTEN",(char*)"~GRADE1_2",(char*)"~GRADE3_4",(char*)"~GRADE5_6",(char*)"~twitter_name",(char*)"~hashtag_label",
 
     NULL
 };
@@ -443,6 +443,7 @@ char* reuseAllocation(char* old, char* word)
 
 char* reuseAllocation(char* old, char* word,int size)
 {
+	if (size == 0) size = strlen(word);
 	size_t len = 0;
 	if (old && !planning  && !compiling && !loading) 
 	{

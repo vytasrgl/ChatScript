@@ -61,39 +61,6 @@ typedef struct RESPONSE
 	SOURCE_ECHO_LOG = 2,
 };
  
-//   DoFunction results
- enum FunctionResult {
-	NOPROBLEM_BIT = 0,
-	ENDRULE_BIT = 1,
-	FAILRULE_BIT  = 2,
-
-	RETRYRULE_BIT =  4,
-	RETRYTOPRULE_BIT =  8,
-
-	ENDTOPIC_BIT =  16,
-	FAILTOPIC_BIT  = 32,
-	RETRYTOPIC_BIT  = 64,
-
-	ENDSENTENCE_BIT =  128,
-	FAILSENTENCE_BIT =  256,
-	RETRYSENTENCE_BIT =  512,
-
-	ENDINPUT_BIT  = 1024,
-	FAILINPUT_BIT  = 2048,
-	RETRYINPUT_BIT = 4096,
-
-	FAILMATCH_BIT  = 8192,			// transient result of TestRule, converts to FAILRULE_BIT
-	FAILLOOP_BIT  = 16384,
-	ENDLOOP_BIT  = 32768,
-
-	UNDEFINED_FUNCTION  = 65536, //   potential function call has no definition so isnt
-	ENDCALL_BIT  =    131072,
-
-	NEXTLOOP_BIT = 262144,
-
-	NOREJOINDER = 262144,	// can be ored on
-};
- 
 extern unsigned int derivationIndex[256];
 extern char* derivationSentence[MAX_SENTENCE_LENGTH];
 extern bool docstats;

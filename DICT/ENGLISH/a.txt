@@ -14,7 +14,7 @@
     Audubon_'s_warbler~1n 
  Agiefan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Alyx ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Alaska ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Alaska ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Last_Frontier~1n 
  Asher ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Afric ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -214,7 +214,7 @@
  allis ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     allice_shad~1n 
  Amnchadh ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- America ( meanings=2 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ America ( meanings=2 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     USA~2n 
     America~2nz (^ground~8) North America and South America and Central America
  Alexandra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
@@ -1082,7 +1082,7 @@
     distaste~1nz (^dislike~2) a feeling of intense dislike
  anal_sex ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     sodomy~1n 
- Africa ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Africa ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Africa~1nz (^continent~1) the second largest continent
  Abel ( meanings=2 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
     Abel~1nz (^man~4) Cain and Abel were the first children of Adam and Eve born after the Fall of Man
@@ -1307,7 +1307,7 @@
  Andreas ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Adalbert ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Aretha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Asia ( meanings=2 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
+ Asia ( meanings=2 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN OF_PROPER ) 
     Asia~1nz (^collection~4) the nations of the Asian continent collectively
     Asia~2nz (^continent~1) the largest continent with 60% of the earth's population
  Auhert ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1404,7 +1404,7 @@
     air-to-surface_missile~1n 
  Arruda ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Akbar ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Arizona ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Arizona ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     genus_Arizona~1n 
     Grand_Canyon_State~1n 
  Altizer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -2521,7 +2521,7 @@
     aromatherapy~1nz (^therapy~1) the therapeutic use of aromatic plant extracts and essential oils in baths or massage
  apprenticeship ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     apprenticeship~1nz (^position~2) the position of apprentice
- Arkansas ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
+ Arkansas ( meanings=2 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Land_of_Opportunity~1n 
     Arkansas_River~1n 
  Atman ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3182,7 +3182,7 @@
  Afram ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  archaeopteryx ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     archeopteryx~1n 
- Alabama ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+ Alabama ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Alabama~1nz (^Muskhogean_language~1) the Muskhogean language of the Alabama
     Heart_of_Dixie~1n 
     Alabama_River~1n 
@@ -4592,7 +4592,7 @@
  Angelyn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Angla ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Anglea ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- Argentina ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Argentina ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     genus_Argentina~1n 
     Argentine_Republic~1n 
  Ashlea ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -6400,7 +6400,7 @@
     stilt~2nz (^limicoline_bird~1) long-legged three-toed wading bird of brackish marshes of Australia
  arctic ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     golosh~1n 
-    glacial~1a 
+    icy~3a 
     arctic~3az 
  Alcidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Alcidae~1nz (^bird_family~1) web-footed diving seabirds of northern seas: auks
@@ -8567,7 +8567,7 @@
     sportswear~1n 
  anti-sway_bar ( meanings=1 NOUN NOUN_SINGULAR ) 
     stabilizer_bar~1n 
- after ( meanings=4 glosses=1 MORE_FORM PARTICLE ADVERB PREPOSITION CONJUNCTION_SUBORDINATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION TIMEWORD TIME_ADVERB DISTANCE_ADVERB ) comparative=aft 
+ after ( meanings=4 glosses=1 MORE_FORM PARTICLE ADVERB PREPOSITION CONJUNCTION_SUBORDINATE ADJECTIVE_NOT_PREDICATE COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION TIMEWORD OF_PROPER TIME_ADVERB DISTANCE_ADVERB ) comparative=aft 
     afterwards~1b 
     after~2bz behind or in the rear
     after~3z 
@@ -12629,7 +12629,7 @@
     Republic_of_Albania~1n 
  Albanian_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Tirana~1nz (^national_capital~1) the capital and largest city of Albania in the center of the country
- Algeria ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Algeria ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Algerie~1n 
  Algerie ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Democratic_and_Popular_Republic_of_Algeria~1n 
@@ -12746,7 +12746,7 @@
     Agrigento~1n 
  Arctic_Archipelago ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Arctic_Archipelago~1nz (^archipelago~1) all the islands that lie to the north of mainland Canada and the Arctic Circle
- Australia ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Australia ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Commonwealth_of_Australia~1n 
     Australia~2nz (^continent~1) the smallest continent
  Australian_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12768,7 +12768,7 @@
     Admiralty_Islands~1nz (^archipelago~1) a group of islands in the Bismarck Archipelago
  Austria-Hungary ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Austria-Hungary~1nz (^geographical_region~1) a geographical area in central and eastern Europe
- Austria ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Austria ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Austria~1n 
  Austrian_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Vienna~1nz (^national_capital~1) the capital and largest city of Austria
@@ -12777,7 +12777,7 @@
     Austrian~2az of or relating to Austria or its people or culture
  Arabian_Peninsula ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Arabia~1nz (^peninsula~1) a peninsula between the Red Sea and the Persian Gulf
- Arabia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Arabia ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Arabian_Peninsula~1n 
  Aalst ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Aalst~1nz (^town~2) a town in central Belgium
@@ -12889,7 +12889,7 @@
     Astrakhan~1nz (^city~2) a city in southwestern Russia on the delta of the Volga River
  Asian_Russia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Asian_Russia~1nz (^Russian_Federation~1) the Russia that is part of Asia
- Armenia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Armenia ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Armenia~1n 
  Azerbaijan ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Azerbajdzhan~1n 
@@ -12915,7 +12915,7 @@
     Almaty~1nz (^city~2) the largest city in Kazakhstan and the capital until 1998
  Ashkhabad ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Ashkhabad~1nz (^national_capital~1) the capital and largest city of Turkmenistan
- Andorra ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Andorra ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Principality_of_Andorra~1n 
  Alep ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Halab~1n 
@@ -26119,7 +26119,7 @@
  abjure ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     retract~1v 
  annul ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
-    countermand~2v 
+    repeal~2v 
     nullify~3v 
  authorize ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
     clear~32v 

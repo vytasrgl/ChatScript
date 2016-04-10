@@ -850,7 +850,7 @@
     genus_Odontophorus~1n 
  Ostrander ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Orlina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Oklahoma ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Oklahoma ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     OK~2n 
  Otis ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     genus_Otis~1n 
@@ -874,7 +874,7 @@
     prefigure~1v 
  ocean_trip ( meanings=1 NOUN NOUN_SINGULAR ) 
     voyage~2n 
- Oregon ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Oregon ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     OR~2n 
  Omet ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Otthilda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1582,7 +1582,7 @@
     upset~2n 
     revolutionize~1v 
     reverse~13v 
-    revoke~2v 
+    countermand~2v 
     turn_over~5v 
     upset~18v 
     overthrow~4v 
@@ -1704,7 +1704,7 @@
  outdoor_sport ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     field_sport~1nz (^sport~2) a sport that is played outdoors
  one-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    1-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only one hit
+    one-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only one hit
  Olympian ( meanings=4 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR ) 
     Olympic_god~1n 
     Olympian~2nz (^athlete~1) an athlete who participates in the Olympic games
@@ -3031,7 +3031,7 @@
     cyma_reversa~1n 
  ogee_arch ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     keel_arch~1nz (^pointed_arch~1) a pointed arch having an S-shape on both sides
- Ohio ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Ohio ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Buckeye_State~1n 
     Ohio_River~1n 
  ohmmeter ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 ) 
@@ -7888,7 +7888,7 @@
     precipitous~2a 
  of_import ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM  poscondition=?=A ) 
     important~2a 
- of ( meanings=1 PARTICLE PREPOSITION EXTENT_ADVERB COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION OBJECT_AS_ADJECTIVE ) 
+ of ( meanings=1 PARTICLE PREPOSITION EXTENT_ADVERB COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:PREPOSITION OF_PROPER OBJECT_AS_ADJECTIVE ) 
     of~1z 
  of_the_essence ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM ADJECTIVE_ONLY_PREDICATE  poscondition=?=A ) 
     all_important~1a 

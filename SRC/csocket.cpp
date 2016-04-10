@@ -672,17 +672,17 @@ static void ServerGetChatLock()  //LINUX
 void InternetServer()  //LINUX
 {
 	// set error handlers
-  //BUG  signal(-1, AnsiSignalMapperHandler);  
+signal(-1, AnsiSignalMapperHandler);  
     
 	struct sigaction action; 
     memset(&action, 0, sizeof(action)); 
-   //BUG  sigemptyset(&action.sa_mask); 
+sigemptyset(&action.sa_mask); 
 
     action.sa_flags = 0; 
     action.sa_handler = fpViolationHandler; 
-  //BUG   sigaction(SIGFPE,&action,NULL); 
+sigaction(SIGFPE,&action,NULL); 
     action.sa_handler = SegmentFaultHandler; 
-//BUG     sigaction(SIGSEGV,&action,NULL); 
+sigaction(SIGSEGV,&action,NULL); 
 
     //   thread to accept incoming connections, doesnt need much stack
     pthread_t socketThread;     
@@ -1065,7 +1065,9 @@ static void* MainChatbotServer()
 	printf((char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
 	serverLog = oldserverlog;
 #ifdef WIN32
- _try { // catch crashes in windows
+	_try { // catch crashes in windows
+#else
+	try {
 #endif
 	int counter = 0;
 	while (1)
@@ -1098,9 +1100,14 @@ static void* MainChatbotServer()
 
 		*((int*) clientBuffer) = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
 		ServerTransferDataToClient();
+		}
 	}
 #ifdef WIN32
-		}_except (true) {ReportBug((char*)"Server exception\r\n") Crash();}
+	_except(true) {ReportBug((char*)"Server exception\r\n") 
+			Crash();}
+#else
+	catch (...) {ReportBug((char*)"Server exception\r\n") 
+			Crash();}
 #endif
 	return NULL;
 }

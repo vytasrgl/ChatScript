@@ -2205,7 +2205,7 @@
     Garland~1nz (^city~2) a city in northeastern Texas
     Judy_Garland~1n 
  Galit ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Georgia ( meanings=3 glosses=3 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Georgia ( meanings=3 glosses=3 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN OF_PROPER ) 
     Sakartvelo~1nz (^Asian_country~1) a republic in Asia Minor on the Black Sea separated from Russia by the Caucasus mountains
     GA~1nz (^American_state~1) a state in southeastern United States
     Georgia~3nz (^Colony~1) one of the British colonies that formed the United States
@@ -10831,7 +10831,7 @@
     Grand_Canal~2nz (^canal~1) the major waterway in Venice, Italy
  Goma ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Goma~1nz (^city~2) a city in eastern Congo at the northern end of Lake Kivu near the border with Rwanda
- Guatemala ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Guatemala ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Guatemala~1n 
  Guatemala_City ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Guatemala_City~1nz (^national_capital~1) the capital and largest city of Guatemala
@@ -10849,7 +10849,7 @@
     Gothenburg~1n 
  Gothenburg ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Goteborg~1nz (^city~2) a port in southwestern Sweden
- Germany ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Germany ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Federal_Republic_of_Germany~1n 
  German_Democratic_Republic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     East_Germany~1nz (^European_country~1) a republic in north central Europe on the Baltic
@@ -10861,7 +10861,7 @@
     Galapagos~1nz (^island~2) a group of islands in the Pacific off South America
  Galapagos ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Galapagos_Islands~1n 
- Greece ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Greece ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Hellenic_Republic~1n 
     Greece~2nz (^Balkan_country~1) ancient Greece
  Greek_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -11112,7 +11112,7 @@
     glacial_boulder~1nz (^boulder~1) a boulder that has been carried by a glacier to a place far distant from its place of origin
  glacial ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     polar~3a 
-    frozen~5a 
+    frigid~2a 
     glacial~3az relating to or derived from a glacier
     glacial~4az 
  glacier ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN ) 

@@ -1,6 +1,7 @@
 
 # these verbs should never reduce lower a base adj/adv. They aren't.
 number number
+customer customer
 lighter light
 founder founder
 matter matter

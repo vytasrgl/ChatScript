@@ -291,6 +291,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define TIME_NOUN  				    0x10000000 // "six *years *hence"
 #define TIME_ADJECTIVE				0x20000000 // " a year *old "
 #define DISTANCE_ADJECTIVE  		0x40000000 // "six feet *tall
+#define OF_PROPER		     		0x80000000 // Bank of *America always merge these of 
 // end parse flags -- THIS IS A REQUIRED MARKER FOR ABOVE ZONE
 
 // ALL VALUES BELOW HERE DO NOT NEED TO DECODE A BIT VALUE BACK TO A NAME VALUE

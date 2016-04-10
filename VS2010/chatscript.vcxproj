@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\SRC\common.h" />
+    <ClInclude Include="..\SRC\common1.h" />
     <ClInclude Include="..\SRC\constructCode.h" />
     <ClInclude Include="..\SRC\csocket.h" />
     <ClInclude Include="..\SRC\cs_ev.h" />
@@ -28,6 +29,7 @@
     <ClInclude Include="..\SRC\markSystem.h" />
     <ClInclude Include="..\SRC\outputSystem.h" />
     <ClInclude Include="..\SRC\patternSystem.h" />
+    <ClInclude Include="..\SRC\privatesrc.h" />
     <ClInclude Include="..\SRC\scriptCompile.h" />
     <ClInclude Include="..\SRC\spellcheck.h" />
     <ClInclude Include="..\SRC\systemVariables.h" />
@@ -49,6 +51,7 @@
     <ClCompile Include="..\SRC\englishtagger.cpp" />
     <ClCompile Include="..\SRC\evserver.cpp" />
     <ClCompile Include="..\SRC\factSystem.cpp" />
+    <ClCompile Include="..\SRC\javascript.cpp" />
     <ClCompile Include="..\SRC\jsmn.cpp" />
     <ClCompile Include="..\SRC\os.cpp" />
     <ClCompile Include="..\SRC\functionExecute.cpp" />
@@ -57,6 +60,7 @@
     <ClCompile Include="..\SRC\markSystem.cpp" />
     <ClCompile Include="..\SRC\outputSystem.cpp" />
     <ClCompile Include="..\SRC\patternSystem.cpp" />
+    <ClCompile Include="..\SRC\privatesrc.cpp" />
     <ClCompile Include="..\SRC\scriptCompile.cpp" />
     <ClCompile Include="..\SRC\secure.cpp" />
     <ClCompile Include="..\SRC\spellcheck.cpp" />
@@ -125,7 +129,7 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/J %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\lib\libev;..\SRC\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\libev;..\SRC\curl;..\SRC\mongo\bson;..\SRC\mongo\mongoc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ShowIncludes>false</ShowIncludes>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>

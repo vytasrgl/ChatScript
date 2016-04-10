@@ -18,8 +18,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #include "common.h"
 
-#define MAX_ARGUMENT_COUNT 400 //  assume 10 args 40 nested calls max. 
-
 
 #define FAILCODES ( FAILINPUT_BIT | FAILTOPIC_BIT | FAILLOOP_BIT | FAILRULE_BIT | FAILSENTENCE_BIT | RETRYSENTENCE_BIT | RETRYTOPIC_BIT | UNDEFINED_FUNCTION | RETRYINPUT_BIT )
 #define SUCCESSCODES ( ENDINPUT_BIT | ENDSENTENCE_BIT | NEXTLOOP_BIT | ENDTOPIC_BIT | ENDRULE_BIT | ENDCALL_BIT | ENDLOOP_BIT)
@@ -60,6 +58,7 @@ extern TestMode wasCommand;
 extern unsigned int callIndex;
 extern WORDP callStack[MAX_CALL_DEPTH];
 extern unsigned int callArgumentBases[MAX_CALL_DEPTH];    // arguments to functions
+extern unsigned int callArgumentIndex;
 
 extern long http_response;
 
@@ -68,7 +67,6 @@ extern unsigned int currentIterator;
 
 extern char lastInputSubstitution[INPUT_BUFFER_SIZE];
 extern int globalDepth;
-#define ARGUMENT(n) callArgumentList[callArgumentBase+n]
 #ifdef WIN32
 FunctionResult InitWinsock();
 #endif
@@ -81,11 +79,11 @@ void pguserBug(const void* buffer,size_t size);
 extern char* pguserdb;
 #endif
 
+FunctionResult RunJavaScript(char* definition, char* buffer,unsigned int args);
+void DeletePermanentJavaScript();
+void DeleteTransientJavaScript();
+
 //   argument data for user calls
-#define MAX_ARG_BYTES 50000
-extern char callArgumentList[MAX_ARGUMENT_COUNT+1][MAX_ARG_BYTES];    //   function callArgumentList
-extern unsigned int callArgumentIndex;
-extern unsigned int callArgumentBase;
 extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
 

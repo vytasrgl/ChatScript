@@ -2545,7 +2545,7 @@
     Arctonyx_collaris~1n 
  Hardee ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Hough ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Holland ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Holland ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     The_Netherlands~1n 
  husking ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
     denudation~1n 
@@ -8083,7 +8083,7 @@
     Haleakala_National_Park~1nz (^national_park~1) a national park in Hawaii including a dormant volcano
  Hawaii_Volcanoes_National_Park ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Hawaii_Volcanoes_National_Park~1nz (^national_park~1) a national park in Hawaii featuring active volcanoes
- Hawaii ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
+ Hawaii ( meanings=2 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Hawai'i~1n 
     Hawaii_Island~1n 
  Hot_Springs_National_Park ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -8205,7 +8205,7 @@
     Jordan~1n 
  Haute-Normandie ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Upper-Normandy~1nz (^French_region~1) a division of Normandy
- Hungary ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Hungary ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Hungary~1n 
  Hungarian_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Budapest~1nz (^national_capital~1) capital and largest city of Hungary
@@ -12219,8 +12219,8 @@
     cerotic_acid~1nz (^acid~2) a white solid fatty acid found in waxes
  hexanedioic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     adipic_acid~1nz (^carboxylic_acid~1) a carboxylic acid used in the manufacture of nylon
- HMG-CoA_reductase ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
-    5-hydroxy-3-methylglutaryl-coenzyme_A_reductase~1n 
+ HMG-CoA_reductase ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    HMG-CoA_reductase~1nz (^reductase~1) a liver enzyme that is responsible for producing cholesterol
  horseradish_peroxidase ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     horseradish_peroxidase~1nz (^peroxidase~1) an enzyme used in immunohistochemistry to label antigens and their antibodies
  hydrazoic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 

@@ -3506,9 +3506,6 @@
     genus_Sebastiana~1n 
  Sperry ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Elmer_Ambrose_Sperry~1n 
- simplism ( meanings=2 NOUN NOUN_SINGULAR COMMON1 ) 
-    oversimplification~1n 
-    oversimplification~2n 
  Sanabria ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  sexual_abuse ( meanings=1 NOUN NOUN_SINGULAR ) 
     sex_offense~1n 
@@ -6273,7 +6270,7 @@
     American_water_shrew~1n 
  Sango ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Sango~1nz (^Niger-Congo~1) a trade language widely used in Chad
- Scotland ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Scotland ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Scotland~1nz (^European_country~1) one of the four countries that make up the United Kingdom of Great Britain and Northern Ireland
  Second_Earl_of_Guilford ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Frederick_North~1nz (^national_leader~1) British statesman under George III whose policies led to rebellion in the American colonies
@@ -9947,6 +9944,9 @@
  seating ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:VERB ) 
     seating~1nz (^service~10) the service of ushering people to their seats
     seating_room~1n 
+ simplism ( meanings=2 NOUN NOUN_SINGULAR COMMON1 ) 
+    oversimplification~1n 
+    oversimplification~2n 
  sustenance ( meanings=3 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
     upkeep~2n 
     nutriment~1nz (^food~1) a source of materials to nourish the body
@@ -20243,7 +20243,7 @@
  self-report_inventory ( meanings=1 NOUN NOUN_SINGULAR ) 
     self-report_personality_inventory~1n 
  Sixteen_Personality_Factor_Questionnaire ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    16_PF~1nz (^self-report_personality_inventory~1) a self-report personality inventory developed by Raymond B. Cattell to measure the 16 personality dimensions that emerged from his factor analysis of a wide range of traits
+    Sixteen_Personality_Factor_Questionnaire~1nz (^self-report_personality_inventory~1) a self-report personality inventory developed by Raymond B. Cattell to measure the 16 personality dimensions that emerged from his factor analysis of a wide range of traits
  stock-index_futures ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     stock-index_futures~1nz (^futures_contract~1) a futures contract based on a stock index
  shitlist ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
@@ -23902,7 +23902,7 @@
     Santiago~4nz (^city~2) city in the northern Dominican Republic
  San_Juan ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     San_Juan~1nz (^city~2) the capital and largest city of Puerto Rico
- Slovakia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Slovakia ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Slovak_Republic~1n 
  Slovak_Republic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Slovakia~1nz (^European_country~1) a landlocked republic in central Europe
@@ -23920,7 +23920,7 @@
     Spitsbergen~1n 
  Stavanger ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Stavanger~1nz (^city~2) a port city in southwestern Norway
- Sweden ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Sweden ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Kingdom_of_Sweden~1n 
  Sverige ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Sweden~1n 
@@ -23967,13 +23967,13 @@
     Sicily~2nz (^Italian_region~1) the Italian region on the island of Sicily
  Serbia_and_Montenegro ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Union_of_Serbia_and_Montenegro~1n 
- Serbia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Serbia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Srbija~1nz (^geographical_region~1) a historical region in central and northern Yugoslavia
  Srbija ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Serbia~1n 
  Sarajevo ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Sarajevo~1nz (^city~2) capital and largest city of Bosnia
- Slovenia ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Slovenia ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Republic_of_Slovenia~1n 
  Slovenija ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Slovenia~1n 
@@ -24172,7 +24172,7 @@
  Solomon_Islands ( meanings=2 glosses=2 NOUN NOUN_PROPER_SINGULAR ) 
     Solomons~1nz (^archipelago~1) the northernmost islands are part of Papua New Guinea
     Solomon_Islands~2nz (^country~4) the southern Solomon Islands that since 1978 form an independent state in the British Commonwealth
- Somalia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Somalia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Somalia~1nz (^African_country~1) a republic in extreme eastern Africa on the Somali peninsula
  Somali_peninsula ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Horn_of_Africa~1nz (^peninsula~1) a peninsula of northeastern Africa comprising Somalia and Djibouti and Eritrea and parts of Ethiopia
@@ -24212,7 +24212,7 @@
     Samarcand~1nz (^city~2) city in southern Uzbekistan
  Samarcand ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Samarkand~1n 
- Spain ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Spain ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Kingdom_of_Spain~1n 
  Spanish_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Madrid~1nz (^national_capital~1) the capital and largest city situated centrally in Spain
@@ -24230,7 +24230,7 @@
     Surinam~1n 
  Swaziland ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Kingdom_of_Swaziland~1n 
- Switzerland ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Switzerland ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Swiss_Confederation~1n 
  Swiss_Confederation ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Svizzera~1nz (^European_country~1) a landlocked federal republic in central Europe
@@ -24242,7 +24242,7 @@
     Schweiz~1n 
  Swiss_canton ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Swiss_canton~1nz (^canton~1) one of the cantons of Switzerland
- Syria ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Syria ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Syrian_Arab_Republic~1n 
  Syrian_Arab_Republic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Syria~1nz (^Asian_country~1) an Asian republic in the Middle East at the east end of the Mediterranean
@@ -33840,8 +33840,8 @@
     husk~2n 
     shuck~2vz remove the shucks from
     shuck~3vz remove from the shell
- serotonin ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    5-hydroxytryptamine~1n 
+ serotonin ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+    serotonin~1nz (^monoamine_neurotransmitter~1) a neurotransmitter involved in e.g. sleep and depression and memory
  soft_coal ( meanings=1 NOUN NOUN_SINGULAR ) 
     bituminous_coal~1n 
  sea_coal ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -33992,8 +33992,8 @@
     Seidlitz_powders~1n 
  Seidlitz_powders ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Rochelle_powder~1nz (^purgative~1) an effervescing salt containing sodium bicarbonate and Rochelle salt and tartaric acid
- salicylic_acid ( meanings=1 NOUN NOUN_SINGULAR ) 
-    2-hydroxybenzoic_acid~1n 
+ salicylic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    salicylic_acid~1nz (^hydroxy_acid~1) a white crystalline substance with a bitter aftertaste
  salmon_oil ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     salmon_oil~1nz (^animal_oil~1) a fatty oil obtained from the wastes in canning salmon
  salol ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -34436,7 +34436,7 @@
  second_childhood ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     senility~2nz (^age~3) mental infirmity as a consequence of old age
  solar_day ( meanings=1 NOUN NOUN_SINGULAR ) 
-    24-hour_interval~1n 
+    twenty-four_hour_period~1n 
  sell-by_date ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     sell-by_date~1nz (^date~6) a date stamped on perishable produce indicating the date by which it should be sold
  Succoth ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -34462,7 +34462,7 @@
  Saint_Agnes_'s_Eve ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Saint_Agnes_'s_Eve~1nz (^Christian_holy_day~1) a Christian holy day
  St_Martin_'s_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    11_November~1nz (^quarter_day~1) the feast of Saint Martin
+    Martinmas~1nz (^quarter_day~1) the feast of Saint Martin
  Saint_Martin_'s_summer ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Indian_summer~1nz (^period~3) a period of unusually warm weather in the autumn
  Saint_Valentine_'s_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -34661,7 +34661,7 @@
  shibah ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     shiva~1n 
  Sept_._11 ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    9-11~1nz (^terrorist_attack~1) the day in 2001 when Arab suicide bombers hijacked United States airliners and used them as bombs
+    Sept_._11~1nz (^terrorist_attack~1) the day in 2001 when Arab suicide bombers hijacked United States airliners and used them as bombs
  schoolchildren ( NOUN NOUN_PLURAL COMMON2 COMMON1 ) plural=schoolchild 
  salaryman ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) plural=salarymen 
     salaryman~1nz 
@@ -37624,9 +37624,9 @@
     canorous~1a 
     songful~2az 
  six-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
-    6-membered~1az of a chemical compound having a ring with six members
+    six-membered~1az of a chemical compound having a ring with six members
  seven-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    7-membered~1az of a chemical compound having a ring with seven members
+    seven-membered~1az of a chemical compound having a ring with seven members
  strip-mined ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     strip-mined~1az mined near the earth's surface by stripping
  singable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -44315,7 +44315,7 @@
  something ( meanings=1 PARTICLE PRONOUN_SUBJECT PRONOUN_OBJECT COMMON4 COMMON2 COMMON1 PRONOUN_INDIRECTOBJECT KINDERGARTEN TAKES_POSTPOSITIVE_ADJECTIVE PRONOUN_SINGULAR ) 
     something~1z 
  shall ( AUX_VERB_FUTURE COMMON4 COMMON2 KINDERGARTEN ) 
- should ( AUX_VERB_FUTURE COMMON4 COMMON2 COMMON1 KINDERGARTEN ) 
+ should ( AUX_VERB_FUTURE COMMON4 COMMON2 COMMON1 KINDERGARTEN OF_PROPER ) 
  she ( meanings=1 PRONOUN_SUBJECT COMMON4 COMMON2 COMMON1 KINDERGARTEN PRONOUN_SINGULAR ANIMATE_BEING ) 
     she~1z 
  such_a ( meanings=1 DETERMINER CONDITIONAL_IDIOM KINDERGARTEN DETERMINER_SINGULAR  poscondition=?[AN]=d ) 

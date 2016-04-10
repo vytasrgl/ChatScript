@@ -1520,7 +1520,7 @@
  Chasidah ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  chimneypiece ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     mantlepiece~1nz (^shelf~1) shelf that projects from wall above fireplace
- Czechoslovakia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Czechoslovakia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Czechoslovakia~1nz (^geographical_region~1) a former republic in central Europe
  citizen ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN ) 
     citizen~1nz (^national~1) a native or naturalized member of a state or other political community
@@ -2011,7 +2011,7 @@
     connecting_rod~1nz (^rod~3) a rod that transmits motion
  clothes_moth ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     clothes_moth~1nz (^tineid_moth~1) any of several small yellowish or buff-colored moths whose larvae eat organic matter e.g. woolens
- Colorado ( meanings=3 NOUN NOUN_PROPER_SINGULAR ) 
+ Colorado ( meanings=3 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Centennial_State~1n 
     Colorado_River~1n 
     Colorado_River~2n 
@@ -2048,7 +2048,7 @@
     claro~1nz (^cigar~1) a cigar made with light-colored tobacco
  civil_action ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     civil_action~1nz (^action~4) legal action to protect a private civil right or to compel a civil remedy
- California ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ California ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Golden_State~1n 
  clef ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     clef~1nz (^musical_notation~1) a musical notation written on a staff indicating the pitch of the notes following it
@@ -2077,7 +2077,7 @@
     snuggle~1nz (^embracement~1) a close and affectionate embrace
     draw_close~1vz move or arrange oneself in a comfortable and cozy position
     cuddle~3vz hold close, as for affection, comfort, or warmth
- Columbia ( meanings=5 glosses=3 NOUN NOUN_PROPER_SINGULAR ) 
+ Columbia ( meanings=5 glosses=3 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Columbia_University~1n 
     Columbia~2nz (^town~2) a university town in central Missouri
     Columbia~3nz (^state_capital~1) capital and largest city in South Carolina
@@ -4344,7 +4344,7 @@
  Cichorium_intybus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     chicory_plant~1nz (^herbaceous_plant~1) perennial Old World herb having rayed flower heads with blue florets cultivated for its root and its heads of crisp edible leaves used in salads
  Cate ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- China ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ China ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     People_'s_Republic_of_China~1n 
     Taiwan~2n 
  carnation ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -4895,6 +4895,9 @@
  Christofferson ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  civil_censorship ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     civil_censorship~1nz (^military_censorship~1) military censorship of civilian communications entering or leaving of circulating within territories controlled by armed forces
+ countermand ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+    countermand~1nz (^bid~4) a contrary command cancelling or reversing a previous command
+    revoke~2v 
  Cein ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  comedy ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
     funniness~1nz (^sport~3) a comic incident or series of incidents
@@ -5733,7 +5736,7 @@
  companionway ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     companionway~1nz (^staircase~1) a stairway or ladder that leads from one deck to another on a ship
  Combs ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
- Connecticut ( meanings=3 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Connecticut ( meanings=3 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Constitution_State~1n 
     Connecticut~2nz (^Colony~1) one of the British colonies that formed the United States
     Connecticut_River~1n 
@@ -9384,7 +9387,7 @@
     rook~1nz (^corvine_bird~1) common gregarious Old World bird about the size and color of the American crow
  Cyanocitta_cristata ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     jaybird~1n 
- Canada ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Canada ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Canada~1nz (^North_American_country~1) a nation in northern North America
  camp ( meanings=12 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=camper 
     bivouac~1nz temporary living quarters specially built by the army for soldiers
@@ -11222,7 +11225,7 @@
     Scomberomorus_regalis~1n 
  Chile_bonito ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Pacific_bonito~1n 
- Chile ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Chile ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Chile~1n 
  Chilean_bonito ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Sarda_chiliensis~1n 
@@ -18320,9 +18323,6 @@
     counterproposal~1nz (^proposal~3) a proposal offered as an alternative to an earlier proposal
  counteroffer ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     counteroffer~1nz (^offer~2) an offer made by someone who has rejected a prior offer
- countermand ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
-    countermand~1nz (^bid~4) a contrary command cancelling or reversing a previous command
-    repeal~2v 
  call_up ( meanings=5 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     call_up~1nz (^summons~2) an order to report for military duty
     think~3v 
@@ -20688,7 +20688,7 @@
     Central_American_country~1n 
  Cayman_Islands ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Cayman_Islands~1nz (^colony~4) a British colony in the Caribbean to the northwest of Jamaica
- Cambodia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Cambodia ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Kingdom_of_Cambodia~1n 
  Cambodian_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Phnom_Penh~1nz (^national_capital~1) the capital and largest city of Kampuchea
@@ -20755,7 +20755,7 @@
     Caribbean_Island~1nz (^island~2) an island in the Caribbean Sea
  Caribees ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Lesser_Antilles~1n 
- Cuba ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Cuba ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Cuba~1nz (^island~2) the largest island in the West Indies
     Republic_of_Cuba~1n 
  Cuban_capital ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 

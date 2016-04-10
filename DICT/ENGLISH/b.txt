@@ -2800,7 +2800,7 @@
  Brayan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  black_swan ( meanings=1 NOUN NOUN_SINGULAR ) 
     Cygnus_atratus~1n 
- Bosnia ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Bosnia ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Bosnia_and_Herzegovina~1n 
     Bosnia~2nz (^state~5) the northern part of Bosnia-Herzegovina
  bowstring ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -4232,7 +4232,7 @@
  Bromleigh ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Bruggeman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Bicknell ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- be ( meanings=14 glosses=7 VERB_INFINITIVE AUX_BE VERB COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT PRESENTATION_VERB ) conjugate=were 
+ be ( meanings=14 glosses=7 VERB_INFINITIVE AUX_BE VERB COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:VERB VERB_TAKES_ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT PRESENTATION_VERB OF_PROPER ) conjugate=were 
     be~1vz spend or use time
     follow~14v 
     exist~1v 
@@ -13376,7 +13376,7 @@
     Buenos_Aires~1nz (^national_capital~1) capital and largest city of Argentina
  Balkan_Peninsula ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Balkans~2nz (^peninsula~1) a large peninsula in southeastern Europe containing the Balkan Mountain Range
- Bulgaria ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Bulgaria ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Bulgaria~1n 
  Bulgarian_capital ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Serdica~1n 
@@ -13506,9 +13506,9 @@
     Kingdom_of_Bhutan~1n 
  Botswana ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Republic_of_Botswana~1n 
- Bolivia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Bolivia ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Bolivia~1n 
- Brazil ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Brazil ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Federative_Republic_of_Brazil~1n 
  Belem ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Santa_Maria_de_Belem~1n 
@@ -13526,7 +13526,7 @@
     British_East_Africa~1nz (^district~1) the former British territories of eastern Africa, including Kenya, Tanganyika, Uganda, and Zanzibar
  British_West_Africa ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     British_West_Africa~1nz (^district~1) the former British territories of western Africa, including Nigeria, Cameroon, Gambia, Togo, Sierra Leone, and the Gold Coast
- Britain ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Britain ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     U.K.~1n 
  Blighty ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Blighty~1nz (^United_Kingdom_of_Great_Britain_and_Northern_Ireland~1) a slang term for Great Britain used by British troops serving abroad
@@ -19174,7 +19174,7 @@
  Bastille_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Bastille_Day~1nz (^national_holiday~1) a legal holiday in France celebrating the storming of the Paris bastille in 1789
  bissextile_year ( meanings=1 NOUN NOUN_SINGULAR ) 
-    366_days~1n 
+    leap_year~1n 
  bimester ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     bimester~1nz (^period~3) a period of 2 months
  Baisakh ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 

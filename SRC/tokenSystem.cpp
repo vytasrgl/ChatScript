@@ -402,7 +402,7 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 
 static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool nomodify, bool oobStart)
 {
-	char c = *ptr; 
+ 	char c = *ptr; 
 	unsigned char kind = IsPunctuation(c);
 	char* end  = NULL;
 	static bool quotepending = false;
@@ -582,13 +582,13 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	}
 	// could it be email or web address?
 	char item[MAX_WORD_SIZE];
-	int mylen = end - ptr;
-	strncpy(item,ptr,mylen);
-	item[mylen] = 0;
+	int len = end - ptr;
+	strncpy(item,ptr,len);
+	item[len] = 0;
 	char* atsign = strchr(item,'@'); // possible email?
 	if (atsign)
 	{
-		if (strchr(atsign+1,'.') && IsAlphaUTF8(item[mylen-1]) &&  IsAlphaUTF8(item[mylen-2])) // can be domain data
+		if (strchr(atsign+1,'.') && IsAlphaUTF8(item[len-1]) &&  IsAlphaUTF8(item[len-2])) // can be domain data
 		{
 			return end;
 		}
@@ -618,7 +618,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	char next2;
 	while (++ptr && !IsWordTerminator(*ptr)) // now scan to find end of token one by one, stopping where appropriate
     {
-		unsigned int len = end - ptr;
 		c = *ptr;
 		kind = IsPunctuation(c);
 		next = ptr[1];
@@ -760,8 +759,6 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 	unsigned int paren = 0;
 	while (ptr) // find tokens til end of sentence or end of tokens
 	{
-		if (!*ptr) break; 
-
 		//test input added markers
 		if (*ptr == '`') // internal marker from ^input
 		{
@@ -771,16 +768,20 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 			continue;
 		}
 		ptr = SkipWhitespace(ptr);
+		if (!*ptr) break; 
 		if (!(tokenControl & TOKEN_AS_IS)) while (*ptr == ptr[1] && !IsAlphaUTF8OrDigit(*ptr)  && *ptr != '-' && *ptr != '.' && *ptr != '[' && *ptr != ']' && *ptr != '(' && 
-			*ptr != ')' && *ptr != '{' && *ptr != '}') ++ptr; // ignore repeated non-alpha non-digit characters -   - but NOT -- and not ...
+			*ptr != ')' && *ptr != '{' && *ptr != '}') 
+			++ptr; // ignore repeated non-alpha non-digit characters -   - but NOT -- and not ...
 		if (count == 0 && *ptr != '[' ) oobStart = false;
-		if (*ptr == '"' && !strchr(ptr+1,'"') && !(tokenControl & TOKEN_AS_IS)) ++ptr; // ignore single starting quote?  "hi   -- but if it next sentence line was part like POS tagging, would be a problem
+		if (*ptr == '"' && !strchr(ptr+1,'"') && !(tokenControl & TOKEN_AS_IS) && ptr[1])  ++ptr; // ignore single starting quote?  "hi   -- but if it next sentence line was part like POS tagging, would be a problem  and beware of 5' 11"
 
 		// find end of word 
 		int oldCount = count;
+		if (!*ptr) break; 
 		char* end = FindWordEnd(ptr,priorToken,words,count,nomodify,oobStart); 
 		if (count != oldCount || *ptr == ' ')	// FindWordEnd performed allocation already or removed stage direction start
 		{
+			if (count > 0) strcpy(priorToken,words[count]);
 			ptr = SkipWhitespace(end);
 			continue;
 		}
@@ -792,7 +793,6 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 		char lastc = *(end-1);
 		if (*priorToken == '(') ++paren;
 		else if (*priorToken && paren) --paren;
-
 
 		// adjust am and AM if used as a time reference and not the verb "am"
 		if (!stricmp(priorToken,(char*)"am") && count && IsDigit(words[count][0])) 
@@ -811,14 +811,25 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 			return ptr;
 		}
 
+		// after number
+		bool afterNumber = false;
+		
 		//   handle symbols for feet and inches by expanding them
 		if (!(tokenControl & TOKEN_AS_IS) && IsDigit(startc) &&  (lastc == '\'' || lastc == '"'))
 		{
 			char* word = reuseAllocation(0,ptr,len-1);  // number w/o the '
-			if (word) words[count] = word;
-			++count;
-			words[count] = reuseAllocation(words[count], (lastc == '"') ? (char*) "feet": (char*)"inches" ); // spell out the notation
+			if (word) words[count++] = word;
+			words[count] = reuseAllocation(0,(lastc == '\'') ? (char*) "feet": (char*)"inches",0); // spell out the notation
 			ptr = SkipWhitespace(end);
+			strcpy(priorToken,words[count]);
+			continue;
+		}
+		//   handle symbols for feet and inches by expanding them
+		if (!(tokenControl & TOKEN_AS_IS) &&  startc == '"' && len == 1 && count && IsDigit(words[count-1][0]))
+		{
+			words[count] = reuseAllocation(0,(char*)"inches",0); // spell out the notation
+			ptr = SkipWhitespace(end);
+			strcpy(priorToken,words[count]);
 			continue;
 		}
 
@@ -1024,7 +1035,7 @@ static bool HasCaps(char* word)
     return false;
 }
 
-static int FinishName(int& start, int& end, bool upperStart,uint64 kind,WORDP name)
+static int FinishName(int& start, int& end, bool& upperStart,uint64 kind,WORDP name)
 { // start is beginning of sequence, end is on the sequence last word. i is where to continue outside after having done this one
 	
     if (end == UNINIT) end = start;
@@ -1042,11 +1053,12 @@ static int FinishName(int& start, int& end, bool upperStart,uint64 kind,WORDP na
 			char* tokens[2];
 			tokens[1] = E->word;
 			ReplaceWords(start,end-start + 1,1,tokens);  //   replace multiple words with single word
+			tokenFlags |= DO_PROPERNAME_MERGE;
 		}
-		tokenFlags |= DO_PROPERNAME_MERGE;
 	}
 	int result = start + 1;
 	start = end = UNINIT;
+	upperStart = false;
 	return result; // continue AFTER here
 }
 
@@ -1166,7 +1178,7 @@ void ProperNameMerge()
 			if (start != UNINIT) i = FinishName(start,end,upperStart,kind,Z);
 			continue;
 		}
-		if (!IsUpperCase(*word) && FindWord(word) && tokenControl & NO_LOWERCASE_PROPER_MERGE) // dont allow lowercase words to merge into a title
+		if (*word != ',' && !IsUpperCase(*word) && FindWord(word) && tokenControl & NO_LOWERCASE_PROPER_MERGE) // dont allow lowercase words to merge into a title
 		{
 			int localend = i-1;
 			if (start != UNINIT) i = FinishName(start,localend,upperStart,kind,Z);
@@ -1175,7 +1187,8 @@ void ProperNameMerge()
 
 		if (IsUpperCase(*word) && start != UNINIT && i == wordCount) // composite at end of sentence
 		{
-			i = FinishName(start,i,upperStart,kind,Z);
+			int end = i;
+			i = FinishName(start,end,upperStart,kind,Z);
 			continue;
 		}
 			
@@ -1199,7 +1212,8 @@ void ProperNameMerge()
 				}
 				else
 				{
-					i = FinishName(i,end,false,0,Z);
+					bool fakeupper = false;
+					i = FinishName(i,end,fakeupper,0,Z);
 					continue;
 				}
 			}
@@ -1214,7 +1228,8 @@ void ProperNameMerge()
 				if (Z && (Z->properties & NOUN || Z->systemFlags & PATTERN_WORD)) 
 				{
 					int count = i + 2;
-					i = FinishName(i,count,false,0,Z);
+					bool fakeupper = false;
+					i = FinishName(i,count,fakeupper,0,Z);
 					continue;
 				}
 			}
@@ -1240,7 +1255,7 @@ void ProperNameMerge()
 		if (i == 1 && L &&  L->properties & AUX_VERB && nextWord && nextWord->properties & (PRONOUN_BITS)) continue;	// obviously its not Will You but its will they
 		else if (start == UNINIT && IsLowerCase(*word) && L && L->properties & (ESSENTIAL_FLAGS|QWORD)) continue; //   he didnt capitalize it himself and its a useful word, not a proper name
 		
-		if (!D) D = L; //   ever heard of this word? 
+		if (!D && L && L->properties) D = L; //   ever heard of this word? 
 
 		//   given human first name as starter or a title
         if (start == UNINIT && D && D->properties & (NOUN_FIRSTNAME|NOUN_TITLE_OF_ADDRESS))
@@ -1280,8 +1295,8 @@ void ProperNameMerge()
         }
 
 		// so much for known human name pairs. Now the general issue.
-        bool intended = HasCaps(word) && i != 1;
-		if (HasCaps(word) && !D) intended = true;	// unknown word which had caps. He must have meant it
+        bool intended = (HasCaps(word) || IsUpperCase(*word)) && i != 1;
+		if ((HasCaps(word) || IsUpperCase(*word)) && !D) intended = true;	// unknown word which had caps. He must have meant it  - GE is an abbrev, but allow it to pass
         uint64 type = (D) ? (D->systemFlags & TIMEWORD) : 0; // type of word if we know it
 		if (!kind) kind = type;
         else if (kind && type && kind != type) intended = false;   // cant intermix time and space words
@@ -1293,6 +1308,12 @@ void ProperNameMerge()
 			{
 				end = i;
 				i = FinishName(start,end,upperStart,kind,D);
+			}
+			if (start == UNINIT)  
+			{
+				upperStart = true;
+				start = i;
+				end = UNINIT;
 			}
 			continue;
 		}
@@ -1317,41 +1338,20 @@ void ProperNameMerge()
             }
             if (end != UNINIT) end = UNINIT;  //   swallow a word along the way that is allowed to be lower case
         }
-        else if (start != UNINIT) // lowercase may end name, unless turns out to be followed by uppercase
+        else if (start != UNINIT) // lowercase may end name, unless turns out to be followed by uppercase after comma and being special
         {
-			// Do not allow lower case particles and connectors after a comma...  Shell Oil, the Dutch group 
-            if (D && D->properties & LOWERCASE_TITLE && i > 1 && *wordStarts[i-1] != ',' ) // allowable particles and connecting words that can be in lower case
+			if (*word == ',' && wordStarts[i+1]) // obvious names of companies
 			{
-				if (i < (int)wordCount && !IsUpperCase(*wordStarts[i+1])) // Pluto, the dog 
-				{
-						i = FinishName(start,end,upperStart,kind,NULL);
-						continue;
-				}
-				//   be careful with possessives. we dont want London's Millenium Eye to match or Taiwanese President
-				if (D->properties & POSSESSIVE)
-				{
-					end = i - 1;	// possessive is not part of it
-					i = FinishName(start,end,upperStart,kind,NULL);
-				}
-				WORDP G = FindWord(wordStarts[1],0,LOWERCASE_LOOKUP);
-				if (start == 1 && G && G->properties & BASIC_POS && !FindWord(wordStarts[1],0,UPPERCASE_LOOKUP)) // we have a NORMAL word followed by boring word. "Principality of Monoco"
-				{
-					end = i - 1;	// possessive is not part of it
-					i = FinishName(start,end,upperStart,kind,NULL);
-				}
+				if (!strcmp(wordStarts[i+1],"Inc.") || !strcmp(wordStarts[i+1],"Ltd.")) continue;
+				else if (!strcmp(wordStarts[i+1],"Incorporated") || !strcmp(wordStarts[i+1],"Corporation")) continue;
+			}
+			if (!stricmp(word,"of") && wordStarts[i+1])
+			{
+				WORDP X = FindWord(wordStarts[i+1]);
+				if (X && D->parseBits & OF_PROPER) continue; // allow Bank of America
+			}
 
-				continue;
-			}
-            if (*word == ',' && i < wordCount && IsUpperCase(*wordStarts[i+1])) // comma series, but DONT allow adjective to follow ((char*)"Pluto, American astronomer" 
-            {
-				WORDP next = FindWord(wordStarts[i+1]);
-				if (next && next->properties & (DETERMINER|ADJECTIVE_BITS)) {;}
-				else
-				{
-					end = i;
-					continue;
-				}
-			}
+			// dont merge comma and lowercase names. Do those via script or recognition
 			end = i - 1;	// possessive is not part of it
 			i = FinishName(start,end,upperStart,kind,NULL);
 
@@ -1432,7 +1432,8 @@ static void MergeNumbers(int& start,int& end) //   four score and twenty = four-
 
 void ProcessCompositeNumber() 
 {
-    //  convert a series of numbers into one hypenated one and remove commas from a comma-digited string
+    //  convert a series of numbers into one hypenated one and remove commas from a comma-digited string.
+	// merge all numbers into one, even if not interpretable.  9  1 1 become such a number as does twenty forty sixty-five
     int start = UNINIT;
 	int end = UNINIT;
 	char* number;
@@ -1484,12 +1485,15 @@ void ProcessCompositeNumber()
                 continue; 
             }
 
-			//  numbers in  series cannot merge unless triples after the first (international like 1 222 233)
+			//  numbers in  series cannot merge unless triples after the first (international like 1 222 233) or all single digits
 			if (IsDigit(*wordStarts[start]))
 			{
+				bool multidigit = true;
 				for ( int j = start + 1; j < end; ++j) 
 				{
-					if (strlen(wordStarts[j]) != 3 && IsDigit(*wordStarts[j])) 
+					if (wordStarts[j][1] || !IsDigit(wordStarts[j][0])) multidigit = false; 
+
+					if (strlen(wordStarts[j]) != 3 && IsDigit(*wordStarts[j]) && !multidigit) 
 					{
 						start = end = UNINIT;
 						break;
@@ -1515,10 +1519,12 @@ void ProcessCompositeNumber()
 			//   and 3 , 3455 or   3 , 12   makes no sense either. Must be 3 digits past the comma
 			if (IsDigit(*wordStarts[start]))
 			{
+				bool multidigit = true;
 				for (int j = start + 1; j < end; ++j) 
 				{
+					if (wordStarts[j][1] || !IsDigit(wordStarts[j][0])) multidigit = false; 
 					//  cannot merge numbers like 1 2 3  instead numbers after the 1st digit number must be triples (international)
-					if (strlen(wordStarts[j]) != 3 && IsDigit(*wordStarts[j])) return;
+					if (strlen(wordStarts[j]) != 3 && IsDigit(*wordStarts[j]) && !multidigit) return;
 				}
 			}
 

@@ -239,7 +239,10 @@ static bool ReadUserFacts()
 	{
 		if (*readBuffer == '#' && readBuffer[1] == ENDUNIT) break;
 		char* data = readBuffer;
-		if (*data == '(' && strchr(data,')')) ReadFact(data,0);
+		if (*data == '(' && strchr(data,')')) 
+		{
+			if (!ReadFact(data,0)) return false;
+		}
 		else 
 		{
 			ReportBug((char*)"Bad user fact %s\r\n",readBuffer)

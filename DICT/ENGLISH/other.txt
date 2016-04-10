@@ -378,7 +378,7 @@
     .45-caliber~1a 
  .45-calibre ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     .45_calibre~1a 
- # ( ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE OBJECT_AS_ADJECTIVE ) 
+ # ( ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE OF_PROPER OBJECT_AS_ADJECTIVE ) 
  'tween ( meanings=1 ADVERB ) 
     between~1b 
  'tween_decks ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 

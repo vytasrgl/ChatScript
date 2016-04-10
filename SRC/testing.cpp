@@ -408,10 +408,12 @@ static void MemorizeRegress(char* input)
 	if (!in) Log(STDUSERLOG,(char*)"Couldn't find %s\n",file);
 	else  
 	{
-		FILE* out = FopenUTF8Write(outputfile);
+		FILE* out = NULL;
+		if (*outputfile) FopenUTF8Write(outputfile);
 		if (!out)
 		{
-			out = FopenUTF8Write((char*)"TMP/regress.txt");
+			strcpy(outputfile,(char*)"TMP/regress.txt");
+			out = FopenUTF8Write(outputfile);
 			if (!out)
 			{
 				printf((char*)"cannot open %s\r\n",outputfile);
@@ -525,7 +527,7 @@ static void MemorizeRegress(char* input)
 		}
 		fclose(out);
 		fclose(in);
-		Log(STDUSERLOG,(char*)"Regression file %s created\n",outputfile);
+		Log(STDUSERLOG,(char*)"Regression file %s created\r\n",outputfile);
 	}
 }
 
@@ -569,7 +571,7 @@ static void VerifyRegress(char* file)
 		//Start: user:fd bot:rose rand:553 volley:0 topic:~hello input:  output: Good morning.  
 		//	verify:  rule:~hello.1.0. kind:t label: pattern: ( !$olduser =8%input=0 =7%hour<12 )  output: $olduser = 1 Good morning. $begintime = %fulltime  
 		//	verify2:  rule:~submain_control.5.0  kind:u label: pattern: ( =8%input<%userfirstline )  output: $repeatstart = %userfirstline + 10 ^gambit ( ~hell 
-		//Respond: user:fd bot:rose volley:1 topic:~hello input: what is your name output: My name is Rose. What's yours?  
+		//Respond: user:fd bot:rose volley:1 topic:~hellold input: what is your name output: My name is Rose. What's yours?  
 		//	verify:  rule:~hello.4.0=MYNAME. kind:t label:MYNAME pattern: ( )  output: My name is Rose. $begintime = %fulltime ^^if ( ! $ 
 		//	verify2: what is your name?  rule:~physical_self.101.0=TELLNAME  kind:u label:TELLNAME pattern: ( ![ him my her them ] << what your [ name moniker output: ^reuse ( ~hello.myname ) `01b u: ( !my what * you  
 		if (!*myBuffer) continue;
@@ -584,7 +586,13 @@ static void VerifyRegress(char* file)
 		}
 
 		char user[MAX_WORD_SIZE];
-		char* u = strstr(ptr,(char*)"user:") + 5;
+		char* u = strstr(ptr,(char*)"user:");
+		if (!u) 
+		{
+			ReportBug("Inconsistent regression file");
+			return;
+		}
+		u += 5;
 		ptr = ReadCompiledWord(u,user);
 		
 		char bot[MAX_WORD_SIZE];
@@ -622,7 +630,7 @@ static void VerifyRegress(char* file)
 
 		strcpy(loginID,user); // user login
 
-		if (*myBuffer == 'S') // start it
+		if (*myBuffer == 'S' || myBuffer[3] == 'S' ) // start it  - 1st line may have utf8 marker
 		{
 			int depth = globalDepth; // reset clears depth, but we are still in process so need to restore it
 			int turn = atoi(volleyid);
@@ -632,6 +640,7 @@ static void VerifyRegress(char* file)
 			userFirstLine = volleyCount+1;
 			*readBuffer = 0;
 			nextInput = vinput;
+			ProcessInput("");
 			FinishVolley(vinput,buffer,NULL);
 			char* revised = Purify(buffer);
 			if (revised != buffer) strcpy(buffer,revised);
@@ -641,7 +650,7 @@ static void VerifyRegress(char* file)
 				Log(ECHOSTDUSERLOG,(char*)"*** No response to startup\r\n");
 			}
 		}
-		else if (*myBuffer == 'R')// respond
+		else if (*myBuffer == 'R' || myBuffer[3] == 'R' )// respond - 1st line may have utf8 marker
 		{
 			int depth = globalDepth; // reset clears depth, but we are still in process so need to restore it
 			++volley;
@@ -670,7 +679,7 @@ static void VerifyRegress(char* file)
 		ReadALine(readBuffer,in);
 		strcpy(verifyinfo,readBuffer); // copy so we can debug seeing original data
 		//	verify:  rule:~hello.1.0. kind:t label: pattern: ( !$olduser =8%input=0 =7%hour<12 )  output: $olduser = 1 Good morning. $begintime = %fulltime  
-		char* vverify = strstr(verifyinfo,(char*)"verify: (char*)") + 8;
+		char* vverify = strstr(verifyinfo,(char*)"verify: ") + 8;
 		ptr = strstr(vverify,(char*)"rule:");
 		*ptr = 0; // end of verification level
 		ptr += 5;
@@ -679,13 +688,13 @@ static void VerifyRegress(char* file)
 		ptr = strstr(ptr,(char*)"kind:")+5;
 		char vkind = *ptr;
 		char* vlabel = strstr(ptr,(char*)"label:") + 6;
-		char* vpattern = strstr(vlabel,(char*)"pattern: (char*)");
+		char* vpattern = strstr(vlabel,(char*)"pattern: ");
 		*--vpattern = 0;
 		vpattern += 10;
 		char* equal = strchr(vtag1,'=');
 		if (equal) *equal = 0;	// remove label from tag
 
-		char* voldoutputcode = strstr(vpattern,(char*)"output: (char*)"); // what it said then.
+		char* voldoutputcode = strstr(vpattern,(char*)"output: "); // what it said then.
 		*--voldoutputcode = 0;
 		voldoutputcode += 9;
 		len = strlen(voldoutputcode);
@@ -1137,7 +1146,8 @@ static void C_TestPattern(char* input)
 	char prepassTopic[MAX_WORD_SIZE];
 	strcpy(prepassTopic,GetUserVariable((char*)"$cs_prepass"));
 	PrepareSentence(ptr,true,true);	
-	
+	PrepassSentence(prepassTopic);
+
 	unsigned int gap = 0;
 	unsigned int wildcardSelector = 0;
 	wildcardIndex = 0;
@@ -1172,7 +1182,7 @@ static void C_TestPattern(char* input)
 	{
 		Log(STDUSERLOG,(char*)" Failed\r\n    Adjusted Input: ");
 		for (int i = 1; i <= wordCount; ++i) Log(STDUSERLOG,(char*)"%s ",wordStarts[i]);
-		Log(STDUSERLOG,(char*)"\r\n    Canonical Input: (");
+		Log(STDUSERLOG,(char*)"\r\n    Canonical Input: ");
 		for (int i = 1; i <= wordCount; ++i) Log(STDUSERLOG,(char*)"%s ",wordCanonical[i]);
 		Log(STDUSERLOG,(char*)"\r\n");
 	}
@@ -3927,6 +3937,12 @@ static void C_User(char* username)
 /// SERVER COMMANDS
 ///////////////////////////////////////////////
 
+static void C_Crash(char* x)
+{
+	int xx = 0;
+	xx = xx / xx;
+}
+
 static void C_Flush(char* x)
 {
 	FlushCache();
@@ -4555,7 +4571,38 @@ static void C_Word(char* input)
 			word[len-1] = 0;
 			memmove(word,word+1,len);
 		}
-		DumpDictionaryEntry(word,limit);  
+		if (*word == '#')
+		{
+			uint64 n = FindValueByName(word+1);
+			if (n) 
+#ifdef WIN32
+				Log(STDUSERLOG,(char*)"Value: %I64u  %llx\r\n",n,n);
+#else
+				Log(STDUSERLOG,(char*)"Value: %llu  %llx\r\n",n,n); 
+#endif
+			n = FindSystemValueByName(word+1);
+			if (n) 
+#ifdef WIN32
+				Log(STDUSERLOG,(char*)"System: %I64u %llx\r\n",n,n);
+#else
+				Log(STDUSERLOG,(char*)"System: %llu  %llx\r\n",n,n); 
+#endif
+			n = FindParseValueByName(word+1);
+			if (n) 
+#ifdef WIN32
+				Log(STDUSERLOG,(char*)"Parse: %I64u  %llx\r\n",n,n);
+#else
+				Log(STDUSERLOG,(char*)"Parse: %llu  %llx\r\n",n,n); 
+#endif
+			n = FindMiscValueByName(word+1);
+			if (n) 
+#ifdef WIN32
+				Log(STDUSERLOG,(char*)"Misc: %I64u  %llx\r\n",n,n);
+#else
+				Log(STDUSERLOG,(char*)"Misc: %llu  %llz\r\n",n,n); 
+#endif
+		}
+		else DumpDictionaryEntry(word,limit);  
 	}
 } 	
 
@@ -7721,7 +7768,7 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":identify",C_Identify,(char*)"Give version data on this CS"},
 	{ (char*)":macros",C_Macros,(char*)"List all user-defined ^macros and plans"},
 	{ (char*)":memstats",C_MemStats,(char*)"Show memory allocations"},
-	{ (char*)":list",C_List,(char*)"v (variables) @ _ m (macros) t (topics)"}, 
+	{ (char*)":list",C_List,(char*)"$ (variables) @ (factsets)  _  (match variables)   ^ (macros)   ~ (topics&concepts)"}, 
 	{ (char*)":queries",C_Queries,(char*)"List all defined queries"},
 	{ (char*)":tracedfunctions",C_TracedFunctions,(char*)"List all user defined macros currently being traced"},
 	{ (char*)":tracedtopics",C_TracedTopics,(char*)"List all topics currently being traced"},
@@ -7741,7 +7788,7 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)"\r\n---- System Control commands",0,(char*)""}, 
 	{ (char*)":build",C_Build,(char*)"Compile a script - filename {nospell,outputspell,reset}"}, 
 	{ (char*)":bot",C_Bot,(char*)"Change to this bot"},  
-	{ (char*)":crash",0,(char*)"Simulate a server crash"}, 
+	{ (char*)":crash",C_Crash,(char*)"Simulate a server crash"}, 
 	{ (char*)":flush",C_Flush,(char*)"Flush server cached user data to files"}, 
 	{ (char*)":quit",C_Quit,(char*)"Exit ChatScript"}, 
 	{ (char*)":reset",ResetUser,(char*)"Start user all over again, flushing his history"}, 

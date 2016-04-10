@@ -9781,7 +9781,7 @@
     Roman_Republic~1nz (^republic~2) the ancient Roman state from 509 BC until Augustus assumed power in 27 BC
  Roman_Empire ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Roman_Empire~1nz (^empire~4) an empire established by Augustus in 27 BC and divided in AD 395 into the Western Roman Empire and the eastern or Byzantine Empire
- Romania ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Romania ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Roumania~1n 
  Roumania ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Rumania~1nz (^European_country~1) a republic in southeastern Europe with a short coastline on the Black Sea
@@ -9903,7 +9903,7 @@
     Rand~1n 
  Rus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Rus~1nz (^country~4) the medieval Russian state established by Scandinavian traders in the 9th century
- Russia ( meanings=4 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Russia ( meanings=4 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Russia~1nz (^empire~4) a former empire in eastern Europe and northern Asia created in the 14th century with Moscow as the capital
     Soviet_Union~1n 
     Russian_Federation~1n 

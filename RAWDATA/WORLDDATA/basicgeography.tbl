@@ -233,7 +233,7 @@ Connecticut Hartford
 Florida Tallahassee
 Georgia Atlanta
 Delaware Dover
-Hawai'i Honolulu
+Hawaii Honolulu
 Idaho Boise
 Illinois Springfield
 Iowa Des_Moines
@@ -570,7 +570,7 @@ DATA:
 # COUNTRY components (states or countries)
 
  part "United States of America" ~state [Alabama Alaska Arizona Arkansas  California Connecticut Colorado ]
- part "United States of America" ~state [Delaware  Florida  Georgia Hawai'i Idaho  Illinois  Indiana  Iowa ]
+ part "United States of America" ~state [Delaware  Florida  Georgia Hawaii Idaho  Illinois  Indiana  Iowa ]
  part "United States of America" ~state [Kansas  Kentucky Louisiana  Maine  Maryland  Massachusetts  Michigan  Minnesota   Mississippi  Missouri Montana ]
  part "United States of America" ~state [Nebraska Nevada  New_Hampshire  New_Jersey   New_Mexico  New_York North_Carolina  North_Dakota ]
  part "United States of America" ~state [Ohio Oklahoma  Oregon  Pennsylvania  Rhode_Island ]
@@ -591,7 +591,7 @@ DATA:
  part Jordan ~sea "Dead Sea"
 
 # HAWAII special
- part Hawai'i ~island [O'ahu Big_Island Maui Kaua'i Lana'i]
+ part Hawaii ~island [O'ahu Big_Island Maui Kaua'i Lana'i]
  part O'ahu ~beach [Ala_Moana Waikiki] 
  
 # JAPAN special
@@ -607,7 +607,7 @@ part Japan ~island [Hokkaido Honshu Shikoku Kyushu Awaji ]
  part O'ahu ~landmark ["Sea Life Park" "Iolani Palace" "Bishop Museum"  "Punchbowl Cemetery" "Hanauma Bay" "Diamond Head Crater"  "Waikiki Beach" "Waikiki Aquarium" ]    
 
 # US CITIES
-part Hawai'i ~city [Honolulu Kailua Kaneohe Pearl_City Aiea Hawaii_Kai Kona Hilo Haleiwa Ewa Mililani ]
+part Hawaii ~city [Honolulu Kailua Kaneohe Pearl_City Aiea Hawaii_Kai Kona Hilo Haleiwa Ewa Mililani ]
 
 part California ~city [Fresno Oakland San_Francisco Los_Angeles San_Jose Sacremento San_Diego San_Luis_Obispo] 
 part Washington ~city Seattle

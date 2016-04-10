@@ -1859,7 +1859,7 @@
  Tuten ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Testudo ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Testudo~1n 
- Tennessee ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Tennessee ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Volunteer_State~1n 
     Tennessee_River~1n 
  tibialis_anticus ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -2442,7 +2442,7 @@
  truck_bed ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     truck_bed~1nz (^floor~1) the floor or bottom of a wagon or truck or trailer
  two-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    2-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only 2 hits
+    two-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only 2 hits
  Tague ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  typification ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     typification~1nz (^representation~1) the act of representing by a type or symbol
@@ -2746,7 +2746,7 @@
  Thermopylae ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     battle_of_Thermopylae~1n 
  Tihkoosue ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Thailand ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Thailand ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Kingdom_of_Thailand~1n 
  Tyesone ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  thrombolytic ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -2999,7 +2999,7 @@
  terrain_intelligence ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     terrain_intelligence~1nz (^tactical_intelligence~1) tactical intelligence on the natural and man-made characteristics of an area
  Tamas ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Texas ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Texas ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Lone-Star_State~1n 
  Thielen ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Torence ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3927,7 +3927,7 @@
  touch_football ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     touch_football~1nz (^American_football_game~1) a version of American football in which the ball carrier is touched rather than tackled
  three-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    3-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only 3 hits
+    three-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only 3 hits
  tap-off ( meanings=1 NOUN NOUN_SINGULAR ) 
     tip-off~1n 
  trente-et-quarante ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -8400,7 +8400,7 @@
     tattletale_grey~1n 
  Turkey_red ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
     alizarine_red~1n 
- Turkey ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Turkey ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Turkey~1n 
  turquoise ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
     aquamarine~1n 
@@ -9881,7 +9881,7 @@
  Tswana ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
     Setswana~1n 
     Bechuana~1n 
- Tonga ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+ Tonga ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Tonga~1nz (^Bantoid_language~1) the language of the Tongan people of south central Africa
     Kingdom_of_Tonga~1n 
  tabular_matter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -9941,7 +9941,7 @@
  torch_song ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     torch_song~1nz (^song~3) a popular song concerned with disappointment in love
  twelve-tone_system ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    12-tone_system~1nz (^serial_music~1) a type of serial music introduced by Arnold Schoenberg
+    twelve-tone_music~1nz (^serial_music~1) a type of serial music introduced by Arnold Schoenberg
  techno ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
     techno~1nz a style of fast heavy electronic dance music usually without vocals
  trad ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -11040,7 +11040,7 @@
     T'ien-ching~1n 
  T'ien-ching ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Tianjin~1nz (^city~2) a major industrial center in northeastern China on the Grand Canal near the Yellow Sea
- Taiwan ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
+ Taiwan ( meanings=2 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Formosa~1n 
     Nationalist_China~1n 
  Taipeh ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -11126,7 +11126,7 @@
     Tyrol~1n 
  Tamil_Nadu ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Madras~2nz (^state~5) a state in southeastern India on the Bay of Bengal 
- Tibet ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Tibet ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Xizang~1n 
  Thibet ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Sitsang~1n 
@@ -16539,7 +16539,7 @@
     thoughtless~2az showing lack of careful thought
     thoughtless~3az 
  third-dimensional ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    3-dimensional~1a 
+    three-dimensional~2a 
  three-d ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     third-dimensional~1a 
  tailored ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
@@ -17032,9 +17032,9 @@
  tuneless ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     unmelodious~2a 
  three-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
-    3-membered~1az of a chemical compound having a ring with three members
+    three-membered~1az of a chemical compound having a ring with three members
  ten-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    10-membered~1az of a chemical compound having a ring with ten members
+    ten-membered~1az of a chemical compound having a ring with ten members
  tigerish ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     tigerish~1az resembling a tiger in fierceness and lack of mercy
  trigger-happy ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
@@ -18135,7 +18135,7 @@
     full~10b 
  that_much ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
     that_much~1bz 
- that ( meanings=6 PRONOUN_SUBJECT PRONOUN_OBJECT ADVERB CONJUNCTION_SUBORDINATE DETERMINER COMMON4 COMMON2 COMMON1 KINDERGARTEN DETERMINER_SINGULAR PRONOUN_SINGULAR posdefault:PREPOSITION CONJUNCT_SUBORD_NOUN OMITTABLE_TIME_PREPOSITION PRONOUN_RELATIVE ) 
+ that ( meanings=6 PRONOUN_SUBJECT PRONOUN_OBJECT ADVERB CONJUNCTION_SUBORDINATE DETERMINER COMMON4 COMMON2 COMMON1 KINDERGARTEN DETERMINER_SINGULAR PRONOUN_SINGULAR posdefault:PREPOSITION CONJUNCT_SUBORD_NOUN OMITTABLE_TIME_PREPOSITION PRONOUN_RELATIVE OF_PROPER ) 
     that~1bz 
     that~2z 
     that~3z 

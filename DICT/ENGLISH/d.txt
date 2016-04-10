@@ -1599,7 +1599,7 @@
  disinfection ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     disinfection~1nz (^medical_care~1) treatment to destroy harmful microorganisms
  Doretha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Delaware ( meanings=5 glosses=3 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+ Delaware ( meanings=5 glosses=3 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Delaware~1nz (^Algonquian_language~1) the Algonquian language spoken by the Delaware
     Diamond_State~1n 
     Delaware~3nz (^Colony~1) one of the British colonies that formed the United States
@@ -10264,7 +10264,7 @@
     Dominican_Republic~1nz (^country~4) a republic in the West Indies
  Dahomey ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Benin~1n 
- Denmark ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Denmark ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Kingdom_of_Denmark~1n 
  Danmark ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Denmark~1n 
@@ -14538,8 +14538,8 @@
     second_childhood~1n 
  day_of_the_month ( meanings=1 ) 
     date~5n 
- D-day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    6_June_1944~1n 
+ D-day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    D-day~1nz (^date~5) date of the Allied landing in France, World War II
  day_of_the_week ( meanings=1 glosses=1 ) 
     day_of_the_week~1nz (^calendar_day~1) any one of the seven days in a week
  Dominicus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 

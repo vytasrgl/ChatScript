@@ -346,7 +346,7 @@
  Verene ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Vonnie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Vicki ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Virginia ( meanings=3 glosses=3 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Virginia ( meanings=3 glosses=3 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN OF_PROPER ) 
     Virginia~1nz (^town~2) a town in northeastern Minnesota in the heart of the Mesabi Range
     Old_Dominion_State~1nz (^American_state~1) a state in the eastern United States
     Virginia~3nz (^Colony~1) one of the British colonies that formed the United States
@@ -559,7 +559,7 @@
     vault~5vz bound vigorously
     overleap~2v 
  Vania ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Vermont ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Vermont ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Green_Mountain_State~1n 
  Vetter ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Varik ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1270,7 +1270,7 @@
     Vicksburg~2nz (^town~2) a town in western Mississippi on bluffs above the Mississippi River to the west of Jackson
  Vietnam_War ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Vietnam~1nz (^war~2) a prolonged war between the communist armies of North Vietnam who were supported by the Chinese and the armies of South Vietnam who were supported by the United States
- Vietnam ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
+ Vietnam ( meanings=2 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Vietnam_War~1n 
     Socialist_Republic_of_Vietnam~1n 
  vermin ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -4960,10 +4960,10 @@
     Victory_Day~1n 
  Victory_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     V-day~1nz (^day~5) the day of a victory
- V-E_Day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    8_May_1945~1n 
- V-J_Day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    15_August_1945~1n 
+ V-E_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    V-E_Day~1nz (^Victory_Day~1) the date of Allied victory in Europe, World War II
+ V-J_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    V-J_Day~1nz (^Victory_Day~1) the date of Allied victory over Japan, World War II
  Vendemiaire ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Vendemiaire~1nz (^Revolutionary_calendar_month~1) first month of the Revolutionary calendar 
  Ventose ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 

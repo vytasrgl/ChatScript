@@ -33,6 +33,14 @@ pgserver: EXECUTABLE=../BINARIES/ChatScriptpg
 pgserver: INCLUDEDIRS=-Ievserver -Ipostgres
 pgserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
+
+mongoserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 
+mongoserver: PGLOAD= -lpq -pthread
+mongoserver: all
+mongoserver: EXECUTABLE=../BINARIES/ChatScriptmongo
+mongoserver: INCLUDEDIRS=-Ievserver 
+mongoserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
+
 UNAME := $(shell uname)
 
 CC=g++
@@ -48,7 +56,7 @@ LDFLAGS=-mmacosx-version-min=10.7 $(PGLOAD)
 CFLAGS=-mmacosx-version-min=10.7 -c -Wall  -funsigned-char -Wno-write-strings -Wno-char-subscripts 
 endif
 
-SOURCES=constructCode.cpp evserver.cpp csocket.cpp cs_ev.c dictionarySystem.cpp englishTagger.cpp factSystem.cpp  functionExecute.cpp english.cpp infer.cpp jsmn.cpp markSystem.cpp os.cpp outputSystem.cpp patternSystem.cpp  scriptCompile.cpp spellcheck.cpp secure.cpp systemVariables.cpp tagger.cpp testing.cpp textUtilities.cpp tokenSystem.cpp topicSystem.cpp userCache.cpp userSystem.cpp variableSystem.cpp mainSystem.cpp 
+SOURCES=constructCode.cpp evserver.cpp csocket.cpp cs_ev.c dictionarySystem.cpp englishTagger.cpp factSystem.cpp  functionExecute.cpp english.cpp infer.cpp javascript.cpp jsmn.cpp markSystem.cpp os.cpp outputSystem.cpp patternSystem.cpp privatesrc.cpp scriptCompile.cpp spellcheck.cpp secure.cpp systemVariables.cpp tagger.cpp testing.cpp textUtilities.cpp tokenSystem.cpp topicSystem.cpp userCache.cpp userSystem.cpp variableSystem.cpp mainSystem.cpp 
 OBJECTS=$(SOURCES:.cpp=.o)
  
 all: $(SOURCES) binary

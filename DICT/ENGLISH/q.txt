@@ -1125,7 +1125,7 @@
  quantity_unit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     charge_unit~1nz (^electromagnetic_unit~1) a measure of the quantity of electricity
  quarter_mile ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    440_yards~1nz (^linear_measure~1) a unit of length equal to a quarter of 1 mile
+    quarter_mile~1nz (^linear_measure~1) a unit of length equal to a quarter of 1 mile
  qindarka ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     qintar~1nz (^Albanian_monetary_unit~1) 100 qindarka equal 1 lek in Albania
  qintar ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 

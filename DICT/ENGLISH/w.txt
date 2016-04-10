@@ -376,7 +376,7 @@
  wage_freeze ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     wage_freeze~1nz (^freeze~1) a freeze of wages at a given level
  Waneta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Wyoming ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Wyoming ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Equality_State~1n 
  Weiner ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  window-washing ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -580,7 +580,7 @@
     whaler~2nz (^tar~1) a seaman who works on a ship that hunts whales
  wise_to ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM ADJECTIVE_ONLY_PREDICATE  poscondition=?=A ) 
     wise~3a 
- Wisconsin ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Wisconsin ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Badger_State~1n 
     Wisconsin_River~1n 
  WATS_line ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -1375,7 +1375,7 @@
     waddle~1nz (^gait~1) walking with short steps and the weight tilting from one foot to the other
     paddle~7v 
  Wilfredo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Washington ( meanings=5 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Washington ( meanings=5 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Washington~1nz (^federal_government~1) the federal government of the United States
     Washington_D.C.~1n 
     Evergreen_State~1n 
@@ -5735,7 +5735,7 @@
     Hebridean_Isles~1n 
  Western_Isles ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Western_Islands~1n 
- Wales ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
+ Wales ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 OF_PROPER ) 
     Cymru~1n 
  West_Bengal ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     West_Bengal~1nz (^state~5) a state in eastern India

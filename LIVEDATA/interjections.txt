@@ -275,6 +275,7 @@
  <how_bizarre ~emosad
  <how_can_you_say ~emoprotest
  <how_do_you_do> ~emohowzit
+ <how_is_your_day ~emohowzit
  <how_goes_it ~emohowzit
  <how_goes_things ~emohowzit
  <how_goes> ~emohowzit

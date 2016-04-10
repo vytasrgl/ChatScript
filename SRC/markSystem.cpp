@@ -905,6 +905,22 @@ void MarkAllImpliedWords()
 #ifndef DISCARDPARSER
 		MarkRoles(i);
 #endif
+
+		if ((*wordStarts[i] == '@' || *wordStarts[i] == '#')  && strlen(wordStarts[i]) > 2)
+		{
+			char* ptr = wordStarts[i];
+			bool hasAlpha = false;
+			while (*++ptr)
+			{
+				if (!IsDigit(*ptr) && !IsAlphaUTF8(*ptr) && *ptr != '_') break;
+				if (IsAlphaUTF8(*ptr)) hasAlpha = true;
+			}
+			if (!*ptr && hasAlpha) 
+			{
+				if (*wordStarts[i] == '@') MarkFacts(MakeMeaning(StoreWord("~twitter_name")),i,i); 
+				if (*wordStarts[i] == '#') MarkFacts(MakeMeaning(StoreWord("~hashtag_label")),i,i); 
+			}
+		}
 	
 		// mark general number property
 		if (D->properties & ( NOUN_NUMBER | ADJECTIVE_NUMBER))   // a date can become an idiom, marking it as a proper noun and not a number

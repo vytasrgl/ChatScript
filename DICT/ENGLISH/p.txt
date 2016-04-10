@@ -193,7 +193,7 @@
  Primo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  panchromatic_film ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     panchromatic_film~1nz (^film~2) photographic film sensitive to light of all colors
- Poland ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Poland ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Poland~1n 
  perforation ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     perforation~1nz (^puncture~1) the act of punching a hole
@@ -1467,7 +1467,7 @@
     peristome~2nz (^plant_process~1) fringe of toothlike appendages surrounding the mouth of a moss capsule
  Polyodontidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Polyodontidae~1nz (^fish_family~1) paddlefishes
- Pennsylvania ( meanings=3 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Pennsylvania ( meanings=3 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     University_of_Pennsylvania~1n 
     PA~2n 
     Pennsylvania~3nz (^Colony~1) one of the British colonies that formed the United States
@@ -7075,7 +7075,7 @@
  polar ( meanings=7 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     polar~1az having a pair of equal and opposite charges
     pivotal~1a 
-    icy~3a 
+    arctic~2a 
     opposite~6a 
     polar~5az of or existing at or near a geographical pole or within the Arctic or Antarctic Circles
     polar~6az located at or near or coming from the earth's poles
@@ -15192,7 +15192,7 @@
     MEK~1n 
  Palestine_Islamic_Jihad ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     PIJ~1n 
- Palestine ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Palestine ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Promised_Land~2n 
     Palestine~2nz (^mandatory~1) a former British mandate on the east coast of the Mediterranean
  Palestinian_Islamic_Jihad ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -16023,7 +16023,7 @@
     Republic_of_Paraguay~1n 
  Parthia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Parthia~1nz (^geographical_region~1) an ancient kingdom in Asia to the southeast of the Caspian Sea
- Peru ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Peru ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Peru~1n 
  Philippines ( meanings=3 NOUN NOUN_PROPER_PLURAL ) 
     Philippine_Islands~1n 
@@ -16035,7 +16035,7 @@
     Mount_Pinatubo~1n 
  Polska ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Poland~1n 
- Portugal ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Portugal ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Portuguese_Republic~1n 
  Portuguese_Republic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Portugal~1nz (^European_country~1) a republic in southwestern Europe on the Iberian Peninsula
@@ -23149,8 +23149,8 @@
     alum~3n 
  potash ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     caustic_potash~1n 
- pure_gold ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    24-karat_gold~1n 
+ pure_gold ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    pure_gold~1nz (^gold~5) 100 per cent gold
  palladium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     Pd~1nz (^metal~2) a silver-white metallic element of the platinum group that resembles platinum
  Pd ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 

@@ -981,7 +981,7 @@ bool IsNumericDate(char* word,char* end) // 01.02.2009 or 1.02.2009 or 1.2.2009
 
 bool IsUrl(char* word, char* end)
 { //     if (!strnicmp(t+1,(char*)"co.",3)) //   jump to accepting country
-          
+    if (*word == '@') return false;
     if (!strnicmp((char*)"www.",word,4) || !strnicmp((char*)"http",word,4) || !strnicmp((char*)"ftp:",word,4)) return true; // classic urls
 	size_t len = strlen(word);
 	if (len > 200) return false;
@@ -2055,16 +2055,32 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	bool hasDigit = IsDigit(*word);
 	char* hyp = strchr(word,'-');
 	if (hyp) *hyp = 0;
+	bool separator = false;
 	if (hasDigit) // see if all digits now.
 	{
 		char* ptr = word-1;
 		while (*++ptr)
 		{
-			if (*ptr == '-' || *ptr == '+') return NOT_A_NUMBER;
+			if (ptr != word && *ptr == '-') separator = true;
+			else if (*ptr == '-' || *ptr == '+') return NOT_A_NUMBER;
 			else if (!IsDigit(*ptr)) return NOT_A_NUMBER;	// not good
 		}
 		if (!*ptr && !hyp) return atoi64(word) * ((sign == '-') ? -1 : 1);	// all digits with sign
+	
+		// try for digit sequence 9-1-1 or whatever
+		ptr = word;
+		if (hyp) *hyp = '-';
+		int64 value = 0;
+		while (IsDigit(*ptr))
+		{
+			value *= 10;
+			value += *ptr - '0';
+			if (*++ptr != '-') break;	// 91-55
+			++ptr;
+		}
+		if (!*ptr) return value;	// dont know what to do with it
 	}
+
 	if (hyp) *hyp = '-';
 
 	// look up direct word numbers
@@ -2091,17 +2107,25 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	*hyphen = c;
 	if (val == NOT_A_NUMBER) return NOT_A_NUMBER; // lead is not a number
 
+	// val is now the lead number
+
 	// decode powers of ten names on 2nd pieces
     long billion = 0;
-    char* found = strstr(word,(char*)"billion"); // eight-billion 
+    char* found = strstr(word+1,(char*)"billion"); // eight-billion 
     if (found && *(found-1) == '-') // is 2nd piece
     {
-        *(found-1) = 0;
-        billion = (int)Convert2Integer(word);
+        *(found-1) = 0; // hide the word billion
+        billion = (int)Convert2Integer(word);  // determine the number of billions
         if (billion == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') return NOT_A_NUMBER;
-        word = found + 7;
+        word = found + 7; // now points to next part
         if (*word == '-' || *word == '_') ++word; // has another hypen after it
     }
+	else if (val == 1000000000) 
+	{
+		val = 0; 
+		billion = 1;
+		if (hyphen) word = hyphen + 1;
+	}
 
 	hyphen = strchr(word,'-'); 
 	if (!hyphen) hyphen = strchr(word,'_'); // alternate form of separation
@@ -2115,6 +2139,12 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
         word = found + 7;
         if (*word == '-' || *word == '_') ++word; // has another hypen after it
     }
+	else if (val == 1000000) 
+	{
+		val = 0; 
+		million = 1;
+		if (hyphen) word = hyphen + 1;
+	}
 
 	hyphen = strchr(word,'-'); 
 	if (!hyphen) hyphen = strchr(word,'_'); // alternate form of separation
@@ -2127,7 +2157,13 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
         if (thousand == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') return NOT_A_NUMBER;
         word = found + 8;
 		if (*word == '-' || *word == '_') ++word; // has another hypen after it
-    }    
+    }  
+	else if (val == 1000) 
+	{
+		val = 0; 
+		thousand = 1;
+		if (hyphen) word = hyphen + 1;
+	}
 
 	hyphen = strchr(word,'-'); 
 	if (!hyphen) hyphen = strchr(word,'_'); // alternate form of separation
@@ -2141,6 +2177,12 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
         word = found + 7;
  		if (*word == '-' || *word == '_') ++word; // has another hypen after it
     }  
+	else if (val == 100) 
+	{
+		val = 0; 
+		hundred = 1;
+		if (hyphen) word = hyphen + 1;
+	}
 
 	// now do tens and ones, which can include omitted hundreds label like two-fifty-two
     hyphen = strchr(word,'-'); 

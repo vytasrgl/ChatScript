@@ -153,7 +153,7 @@
  Eriq ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  eelblenny ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     eelblenny~1nz (^prickleback~2) eellike fishes found in subarctic coastal waters
- Europe ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Europe ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Europe~1nz (^collection~4) the nations of the European continent collectively
     EC~1n 
     Europe~3nz (^continent~1) the 2nd smallest continent 
@@ -582,6 +582,12 @@
  Edelman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Ellzey ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Escanor ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ electric ( meanings=5 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
+    electric_automobile~1nz (^automobile~1) a car that is powered by electricity
+    galvanising~1az affected by emotion as if by electricity
+    electric~3az exceptionally tense
+    electrical~2az using or providing or producing or transmitting or operated by electricity
+    electric~5az 
  Ethelreda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Edred ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Ellyce ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -1585,7 +1591,7 @@
  Espinoza ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Edet ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  eleven-plus ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    11-plus~1nz (^examination~2) an examination taken by 11 and 12 year old students to select suitable candidates for grammar school
+    eleven-plus~1nz (^examination~2) an examination taken by 11 and 12 year old students to select suitable candidates for grammar school
  Efnisien ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Englert ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Enzo ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -2949,12 +2955,6 @@
     eye-drop~2n 
  electric_healing ( meanings=1 NOUN NOUN_SINGULAR ) 
     galvanism~1n 
- electric ( meanings=5 glosses=4 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
-    electric_automobile~1nz (^automobile~1) a car that is powered by electricity
-    galvanising~1az affected by emotion as if by electricity
-    electric~3az exceptionally tense
-    electrical~2az using or providing or producing or transmitting or operated by electricity
-    electric~5az 
  electromotive_drug_administration ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     EMDA~1nz (^therapy~1) therapy that uses a local electric current to introduce the ions of a medicine into the tissues
  electromotive ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -7160,7 +7160,7 @@
     American_Samoa~1n 
  European_Russia ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     European_Russia~1nz (^geographical_region~1) the part of Russia that is part of Europe
- Estonia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Estonia ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Esthonia~1n 
  Esthonia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Republic_of_Estonia~1n 
@@ -11999,7 +11999,7 @@
  embryologic ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     embryonic~2az of an organism prior to birth or hatching
  eight-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    8-membered~1az of a chemical compound having a ring with eight members
+    eight-membered~1az of a chemical compound having a ring with eight members
  embroiled ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     entangled~3a 
  expeditionary ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 

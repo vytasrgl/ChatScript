@@ -21,7 +21,7 @@
  Mcmillin ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Mulkey ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Mcinerney ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Missouri ( meanings=4 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+ Missouri ( meanings=4 glosses=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Missouri~1nz (^Chiwere~1) a dialect of the Chiwere language spoken by the Missouri
     Show_Me_State~1n 
     Missouri_River~1n 
@@ -66,7 +66,7 @@
     medusoid~1n 
  malingering ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
     skulking~1nz (^escape~5) evading duty or work by pretending to be incapacitated
- Mississippi ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Mississippi ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     MS~2n 
     Mississippi_River~1n 
  Mcgee ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -442,7 +442,7 @@
  Maethelwine ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Meda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Mitsuko ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Minnesota ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Minnesota ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     North_Star_State~1n 
  Merwyn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Mathewson ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -1060,7 +1060,7 @@
  maximation ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     maximisation~1n 
  Melva ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Montana ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Montana ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     MT~2n 
  method ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ) 
     method_acting~1nz (^playacting~1) an acting technique introduced by Stanislavsky in which the actor recalls emotions or reactions from his or her own life and uses them to identify with the character being portrayed
@@ -1452,7 +1452,7 @@
  Moncha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Montenegro ( meanings=1 glosses=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Crna_Gora~1nz (^geographical_region~1) a former country bordering on the Adriatic Sea
- Michigan ( meanings=3 NOUN NOUN_PROPER_SINGULAR ) 
+ Michigan ( meanings=3 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     boodle~1n 
     Wolverine_State~1n 
     Lake_Michigan~1n 
@@ -2102,7 +2102,7 @@
  Marily ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  milk_snake ( meanings=1 NOUN NOUN_SINGULAR ) 
     house_snake~1n 
- Massachusetts ( meanings=4 glosses=3 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+ Massachusetts ( meanings=4 glosses=3 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Massachuset~1nz (^Algonquian_language~1) the Algonquian language of the Massachuset
     Bay_State~1nz (^American_state~1) a state in New England
     Massachusetts_Bay_Colony~1n 
@@ -2980,7 +2980,7 @@
  Madalynn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Murillo ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Bartolome_Esteban_Murillo~1n 
- Maryland ( meanings=2 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Maryland ( meanings=2 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Free_State~2n 
     Maryland~2nz (^Colony~1) one of the British colonies that formed the United States
  Miele ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -12083,7 +12083,7 @@
     Mesoamerica~1nz (^geographical_region~1) Mexico and Central America
  Managua ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Nicaraguan_capital~1n 
- Mexico ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Mexico ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     United_Mexican_States~1n 
  Matamoros ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Matamoros~1nz (^city~2) a city in northeastern Mexico opposite Brownsville near the mouth of the Rio Grande
@@ -12167,7 +12167,7 @@
     Meshed~1nz (^city~2) the holy city of Shiite Muslims
  Macedon ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Macedonia~1n 
- Macedonia ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Macedonia ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Makedonija~1n 
     Macedonia~2nz (^Balkan_country~1) landlocked republic on the Balkan Peninsula
  Makedonija ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12211,7 +12211,7 @@
     Maldives~1nz (^island~2) a group of about 1,200 small coral islands in the Indian ocean
  Mali ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Republic_of_Mali~1n 
- Malta ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Malta ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Malta~1nz (^island~2) a strategically located island to the south of Sicily in the Mediterranean Sea
     Republic_of_Malta~1n 
  Mauritania ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12229,7 +12229,7 @@
     Monaco-Ville~1nz (^national_capital~1) the capital of Monaco
  Monte_Carlo ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Monte_Carlo~1nz (^town~2) a town and popular resort in the principality of Monaco
- Mongolia ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Mongolia ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Mongolia~1nz (^geographical_region~1) a vast region in Asia including the Mongolian People's Republic and China's Inner Mongolia
     Mongolian_People_'s_Republic~1n 
  Mongolian_People_'s_Republic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -12285,7 +12285,7 @@
     Minsk~1nz (^national_capital~1) the capital of Belarus and of the Commonwealth of Independent States
  Memel ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Klaipeda~1n 
- Moldova ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Moldova ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Republic_of_Moldova~1n 
  Moldavia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Moldova~1n 
@@ -17895,8 +17895,8 @@
     manganic_acid~1nz (^acid~2) a dibasic acid found only in solution and in manganate salts
  metaphosphoric_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     metaphosphoric_acid~1nz (^polyphosphoric_acid~1) a glassy solid acid often used as a dehydrating agent
- methacrylic_acid ( meanings=1 NOUN NOUN_SINGULAR ) 
-    2-methylpropenoic_acid~1n 
+ methacrylic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    methacrylic_acid~1nz (^acid~2) an unsaturated acid used to make resins and plastics
  mucic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     mucic_acid~1nz (^carboxylic_acid~1) a solid acid found in milk or sugar
  metallic_element ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -20211,7 +20211,7 @@
     misty-eyed~1az having eyes blurred as with tears
  multiparous ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     multiparous~1az producing more than one offspring at a time
- merged ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 posdefault:VERB ) 
+ merged ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 COMMON1 posdefault:VERB OF_PROPER ) 
     incorporate~1a 
  many-chambered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     many-chambered~1az having many chambers

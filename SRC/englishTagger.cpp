@@ -2997,9 +2997,10 @@ void MarkTags(unsigned int i)
 		for (int j = 63; j >= 0; --j)
 		{
 			if (!(originalLower[i]->systemFlags & bit)) {;}
-			else if (bit & WEB_URL && strchr(originalLower[i]->word,'@'))
+			else if (bit & WEB_URL && strchr(originalLower[i]->word+1,'@'))
 			{
-				MarkFacts(MakeMeaning(StoreWord((char*)"~email_url")),start,stop);
+				char* x = strchr(originalLower[i]->word+1,'@');
+				if (x && IsAlphaUTF8(x[1])) MarkFacts(MakeMeaning(StoreWord((char*)"~email_url")),start,stop);
 			}
 			else if (bit & MARK_FLAGS)  MarkFacts(sysMeanings[j],start,stop);
 			bit >>= 1;

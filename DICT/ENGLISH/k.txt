@@ -108,7 +108,7 @@
  Kalvin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Kizzie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Kyle ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
- Kentucky ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Kentucky ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Bluegrass_State~1n 
  knowingness ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     knowingness~1nz (^perspicaciousness~1) shrewdness demonstrated by knowledge
@@ -619,7 +619,7 @@
  Keoki ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Kirk ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Kamille ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Kansas ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Kansas ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Kansa~1nz (^Dhegiha~1) the Dhegiha dialect spoken by the Kansa
     Sunflower_State~1n 
     Kansas_River~1n 
@@ -2957,7 +2957,7 @@
     Conakry~1n 
  Kingdom_of_The_Netherlands ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Nederland~1nz (^European_country~1) a constitutional monarchy in western Europe on the North Sea
- Korea ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Korea ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Korean_Peninsula~1n 
  Korean_Peninsula ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Han-Gook~1nz (^peninsula~1) an Asian peninsula separating the Yellow Sea and the Sea of Japan

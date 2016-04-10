@@ -889,7 +889,13 @@ static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead)
 		bool embedded = *answer != '"' && (strchr(answer,' ') != NULL || strchr(answer,'(') != NULL) ; // does this need protection? blanks or function call maybe
 		if (embedded) sprintf(buffer,(char*)"`%s`",answer); // has blanks, use internal string notation
 		else strcpy(buffer,answer); // use normal notation
-
+		// INSURE no cr or newline within it. as that will blow things up by moving saved user data to next line
+		char* at = buffer - 1;
+		while (*++at)
+		{
+			if (*at == '\n') *at = ' ';
+			else if (*at == '\r') *at = ' ';
+		}
 		buffer += strlen(buffer);
 	}
 	*buffer++ = ' ';
@@ -973,6 +979,11 @@ char* ReadField(char* ptr,char* field,char fieldkind, unsigned int& flags)
 	else if (*ptr == ENDUNIT) // internal string token (fact read)
 	{
 		char* end = strchr(ptr+1,ENDUNIT); // find corresponding end
+		if (!*end)
+		{
+			ReportBug("No end found");
+			return NULL;
+		}
 		*end = 0;
 		strcpy(field,ptr+1);
 		return end+2; // point AFTER the space after the `

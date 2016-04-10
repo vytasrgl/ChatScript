@@ -12,6 +12,8 @@
  UT ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     Utah~1n 
     Greenwich_Mean_Time~1n 
+ underdiagnose ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+    underdiagnose~1vz 
  underbodice ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     camisole~2nz (^unmentionable~1) a short sleeveless undergarment for women
  upsurge ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -2183,7 +2185,7 @@
     Russia~2n 
  Ufa ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
     Ufa~1nz (^city~2) a city in the European part of Russia
- Ukraine ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Ukraine ( meanings=1 NOUN NOUN_PROPER_SINGULAR OF_PROPER ) 
     Ukrayina~1n 
  Ukrayina ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Ukraine~1nz (^country~4) a republic in southeastern Europe
@@ -2203,7 +2205,7 @@
     the_States~1n 
  Urbana ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Urbana~1nz (^town~2) a university town in east central Illinois adjoining Champaign
- Utah ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Utah ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Beehive_State~1n 
  Upper_Tunguska ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Angara~1nz (^river~1) a river in southeastern Siberia that flows northwest from Lake Baikal to become a tributary of the Yenisei River
@@ -9064,8 +9066,6 @@
     undercorrect~1vz 
  underdetect ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     underdetect~1vz 
- underdiagnose ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
-    underdiagnose~1vz 
  underemphasise ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     underemphasise~1vz 
  underemphasize ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 

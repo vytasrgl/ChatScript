@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.2g";
+char* version = "6.3";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -190,7 +190,7 @@ void CreateSystem()
 	sprintf(data,(char*)"ChatScript %s Version %s  %ld bit %s compiled %s",kind,version,(long int)(sizeof(char*) * 8),os,compileDate);
 	strcat(data,(char*)" host=");
 	strcat(data,hostname);
-	if (server)  Log(SERVERLOG,(char*)"Server",data);
+	if (server)  Log(SERVERLOG,(char*)"Server %s\r\n",data);
 	strcat(data,(char*)"\r\n");
 	printf((char*)"%s",data);
 
@@ -432,7 +432,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	logmainbuffer = AllocateAlignedBuffer();
 	readBuffer = AllocateBuffer();
 	joinBuffer = AllocateBuffer();
-	newBuffer = AllocateBuffer();
+	newBuffer = AllocateBuffer(); // used for script compiling
 	baseBufferIndex = bufferIndex;
 	quitting = false;
 	InitTextUtilities();
@@ -641,6 +641,7 @@ void PartiallyCloseSystem()
     CloseDictionary();	// dictionary system
     CloseFacts();		// fact system
 	CloseBuffers();		// memory system
+	DeletePermanentJavaScript(); // javascript permanent system
 }
 
 void CloseSystem()
@@ -1193,6 +1194,10 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output)
 	static char copy[INPUT_BUFFER_SIZE];
 	char* p = incoming;
 	while ((p = strchr(p,ENDUNIT))) *p = '\''; // remove special character used by system in various ways. Dont allow it.
+	p = incoming;
+	while ((p = strchr(p,'\n'))) *p = ' '; // remove special character used by system in various ways. Dont allow it.
+	p = incoming;
+	while ((p = strchr(p,'\r'))) *p = ' '; // remove special character used by system in various ways. Dont allow it.
 	strcpy(copy,incoming); // so input trace not contaminated by input revisions -- mainInputBuffer is "incoming"
 
 	ok = ProcessInput(copy);
@@ -1215,7 +1220,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output)
 	ComputeWhy(after);
 	after += strlen(after) + 1;
 	strcpy(after,activeTopic); // currently the most interesting topic
-
+	DeleteTransientJavaScript(); // unload context if there
 	return volleyCount;
 }
 
@@ -1242,7 +1247,6 @@ FunctionResult Reply()
 	FreeOutputBuffer();
 	if (pushed) PopTopic();
 	if (globalDepth) ReportBug((char*)"Main code global depth not 0");
-
 	return result;
 }
 
@@ -1273,6 +1277,13 @@ unsigned int ProcessInput(char* input)
 	
 	if (*at == ':' && IsAlphaUTF8(at[1]) && IsAlphaUTF8(at[2]) && !documentMode && !readingDocument) // avoid reacting to :P and other texting idioms
 	{
+		bool reset = false;
+		if (!strnicmp(at,":reset",6)) 
+		{
+			reset = true;
+			char* intercept = GetUserVariable("$cs_beforereset");
+			if (intercept) Callback(FindWord(intercept),"()"); // call script function first
+		}
 		TestMode commanded = DoCommand(at,mainOutputBuffer);
 		if (!strnicmp(at,(char*)":retry",6) || !strnicmp(at,(char*)":redo",5))
 		{
@@ -1294,13 +1305,18 @@ unsigned int ProcessInput(char* input)
 			userFirstLine = volleyCount+1;
 			*readBuffer = 0;
 			nextInput = buffer;
+			if (reset) 
+			{
+				char* intercept = GetUserVariable("$cs_afterreset");
+				if (intercept) Callback(FindWord(intercept),"()"); // call script function after
+			}
 			ProcessInput(buffer);
 			return 2; 
 		}
 		else if (commanded == COMMANDED ) 
 		{
 			ResetToPreUser(); // flush existing user data as we will try something else and reload user, dont want him left over from now also
-			return false; 
+				return false; 
 		}
 		else if (commanded == OUTPUTASGIVEN) return true; 
 		// otherwise FAILCOMMAND
