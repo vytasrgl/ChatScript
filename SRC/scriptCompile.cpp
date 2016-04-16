@@ -1652,7 +1652,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call)
 	//   now generate stuff as an output stream with its validation
 	int oldspell = spellCheck;
 	spellCheck = 0;
-	ReadOutput(hold,NULL,data,NULL,NULL,D); // block implicit calls because createfact( xxx xxx ( )) looks like a call
+	ReadOutput(hold,NULL,data,NULL,NULL,D,false); // block implicit calls because createfact( xxx xxx ( )) looks like a call
 	spellCheck = oldspell;
 
 	patternContext = oldContext;
@@ -2395,7 +2395,7 @@ static char* ReadChoice(char* word, char* ptr, FILE* in, char* &data,char* rejoi
 		ptr = ReadNextSystemToken(in,ptr,word,false);
 	}
 	ptr = GatherChunk(ptr, in, choice,false); 
-	ReadOutput(choice,NULL,data,rejoinders,NULL);
+	ReadOutput(choice,NULL,data,rejoinders,NULL,false);
 	*data++ = ']';
 	*data++ = ' ';
 	*data = 0;
@@ -2577,7 +2577,7 @@ static char* ReadBody(char* word, char* ptr, FILE* in, char* &data,char* rejoind
 	bool oldContext = patternContext;
 	patternContext = false;
 	ptr = GatherChunk(ptr, in, body,true); 
-	ReadOutput(body+2,NULL,data,rejoinders,NULL); 
+	ReadOutput(body+2,NULL,data,rejoinders,NULL,false); 
 	patternContext = oldContext;
 	*data++ = '}'; //   body has no blank after it, done by higher level
 	FreeBuffer();
@@ -2772,7 +2772,7 @@ static char* ReadJavaScript(FILE* in, char* &data,char* ptr)
 	return readBuffer;
 }
 
-char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* supplement,WORDP call)
+char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* supplement,WORDP call,bool outputmacro)
 {
 	char* original = data;
 	*data = 0;
@@ -2785,6 +2785,8 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 	bool oldContext = patternContext;
 	patternContext = false;
 	char hold[MAX_WORD_SIZE];
+	char display[MAX_DISPLAY][100];
+	int displayIndex = 0;
 	*hold = 0;
 	bool start = true;
 	bool javascript = false;
@@ -2812,6 +2814,26 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 		}
 		else ptr = ReadNextSystemToken(in,ptr,word,false); 
 		if (!*word)  break; //   end of file
+
+		// check for optional display variables
+		if (outputmacro && *word == '(')
+		{
+			*data++ = ' ';
+			*data++ = '(';
+			while (1)
+			{
+				ptr = ReadNextSystemToken(in,ptr,word,false);
+				strcpy(data,word);
+				data += strlen(data);
+				*data++ = ' ';
+				if (*word == ')') break;
+				strcpy(display[displayIndex],word);
+				if (*word != '$' && *word != '(') BADSCRIPT("Display argument must be uservar: %s",word)
+				if (++displayIndex >= MAX_DISPLAY) BADSCRIPT("Display argumenlimited to 10:  %s",word)
+			}
+			ptr = ReadNextSystemToken(in,ptr,word,false);
+		}
+		outputmacro = false;
 
 		if (start && !stricmp(word,"javascript"))
 		{
@@ -3124,7 +3146,7 @@ Then one of 3 kinds of character:
 		} //   END OF WHILE
 		if (patternDone) 
 		{
-			ptr = ReadOutput(ptr,in,data,rejoinders,word);
+			ptr = ReadOutput(ptr,in,data,rejoinders,word,false);
 	
 			//   data points AFTER last char added. Back up to last char, if blank, leave it to be removed. else restore it.
 			while (*--data == ' '); 
@@ -3197,9 +3219,9 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	WORDP D = NULL;
 	bool gettingArguments = true;
 	patternContext = false;
+	char word[MAX_WORD_SIZE];
 	while (gettingArguments) //   read as many tokens as needed to get the name and argumentList
 	{
-		char word[MAX_WORD_SIZE];
 		ptr = ReadNextSystemToken(in,ptr,word,false);
 		if (!*word) break; //   end of file
 
@@ -3279,8 +3301,9 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	AddInternalFlag(D,(unsigned int)(FUNCTION_NAME|build|typeFlags));
 	*pack++ = (unsigned char)(functionArgumentCount + 'A'); // some 30 can be had
 	
+
 	currentFunctionDefinition = D;
-	ptr = ((typeFlags & FUNCTION_BITS) == IS_PATTERN_MACRO) ? ReadPattern(ptr,in,pack,true,false) : ReadOutput(ptr,in,pack,NULL); 
+	ptr = ((typeFlags & FUNCTION_BITS) == IS_PATTERN_MACRO) ? ReadPattern(ptr,in,pack,true,false) : ReadOutput(ptr,in,pack,NULL,NULL,NULL,true); 
 	*pack = 0;
 
 	//   record that it is a macro, with appropriate validation information
@@ -4834,7 +4857,7 @@ char* CompileString(char* ptr) // incoming is:  ^"xxx"
 	*pack++ = ':'; // a internal marker that is has in fact been compiled - otherwise it is a format string whose spaces count but cant fully execute
 
 	if (tmp[2] == '(')  ReadPattern(tmp+2,NULL,pack,false,false); // incoming is:  ^"(xxx"
-	else ReadOutput(tmp+2,NULL,pack,NULL);
+	else ReadOutput(tmp+2,NULL,pack,NULL,false);
 
 	TrimSpaces(data,false);
 	len = strlen(data);

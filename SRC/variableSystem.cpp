@@ -197,7 +197,7 @@ void ShowChangedVariables()
 	}
 }
 
-void SetUserVariable(const char* var, char* word)
+void SetUserVariable(const char* var, char* word, bool reuse)
 {
 	char varname[MAX_WORD_SIZE];
 	MakeLowerCopy(varname,(char*)var);
@@ -216,14 +216,19 @@ void SetUserVariable(const char* var, char* word)
 				word[MAX_USERVAR_SIZE] = 0; // limit on user vars same as match vars
 				ReportBug((char*)"Too long user variable %s assigning %s\r\n",var,word);
 			}
-			word = reuseAllocation(D->w.userValue,word);
+			if (!reuse) word = reuseAllocation(D->w.userValue,word); // we may be restoring old value which doesnt need allocation
 			if (!word) return;
 		}
 	}
 
     if (!(D->internalBits & VAR_CHANGED))	// not changed already this volley
     {
-        userVariableList[userVariableIndex++] = D;
+		unsigned int i;
+		for (i = 0; i < userVariableIndex; ++i)
+		{
+			if (userVariableList[i] == D) break;
+		}
+        if (i >= userVariableIndex) userVariableList[userVariableIndex++] = D;
         if (userVariableIndex == MAX_USER_VARS) // if too many variables, discard one (wont get written)  earliest ones historically get saved (like $cs_token etc)
         {
             --userVariableIndex;

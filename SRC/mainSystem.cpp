@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.3";
+char* version = "6.3a";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -727,7 +727,7 @@ int FindOOBEnd(int start)
 {
 	if (*wordStarts[start] == OOB_START)
 	{
-		while (++start <= wordCount && *wordStarts[start] != OOB_END); // find a close
+		while (++start < wordCount && *wordStarts[start] != OOB_END); // find a close
 		return (*wordStarts[start] == OOB_END) ? (start + 1) : 1;
 	}
 	else return 1; // none
@@ -1774,7 +1774,7 @@ char* ConcatResult()
     return result;
 }
 
-void PrepareSentence(char* input,bool mark,bool user) // set currentInput and nextInput
+void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set currentInput and nextInput
 {
 	char* original[MAX_SENTENCE_LENGTH];
 	unsigned int mytrace = trace;
@@ -1970,7 +1970,7 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 		}
 	}
 	
-	nextInput = ptr;	//   allow system to overwrite input here
+	if (!analyze) nextInput = ptr;	//   allow system to overwrite input here
 
 	if (tokenControl & DO_INTERJECTION_SPLITTING && wordCount > 1 && *wordStarts[1] == '~') // interjection. handle as own sentence
 	{
@@ -1995,9 +1995,12 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 		else strcat(buffer,(char*)". ");
 
 		char* end = buffer + strlen(buffer);
-		strcpy(end,nextInput); // a copy of rest of input
-		strcpy(nextInput,buffer); // unprocessed user input is here
-		ptr = nextInput;
+		if (!analyze) 
+		{
+			strcpy(end,nextInput); // a copy of rest of input
+			strcpy(nextInput,buffer); // unprocessed user input is here
+			ptr = nextInput;
+		}
 		wordCount = 1;
 		tokenFlags |= DO_INTERJECTION_SPLITTING;
 	}
@@ -2060,21 +2063,23 @@ void PrepareSentence(char* input,bool mark,bool user) // set currentInput and ne
 	wordStarts[wordCount+2] = 0;
     if (mark && wordCount) MarkAllImpliedWords();
 
- 	nextInput = SkipWhitespace(nextInput);
-	moreToCome = false;	   
-	at = nextInput-1;
-	while (*++at)
+	if (!analyze)
 	{
-		if (*at == ' ' || *at == '`' || *at == '\n' || *at == '\r') continue;	// ignore this junk
-		moreToCome = true;	// there is more input coming
-		break;
+ 		nextInput = SkipWhitespace(nextInput);
+		moreToCome = false;	   
+		at = nextInput-1;
+		while (*++at)
+		{
+			if (*at == ' ' || *at == '`' || *at == '\n' || *at == '\r') continue;	// ignore this junk
+			moreToCome = true;	// there is more input coming
+			break;
+		}
+		moreToComeQuestion = (strchr(nextInput,'?') != 0);
+		char nextWord[MAX_WORD_SIZE];
+		ReadCompiledWord(nextInput,nextWord);
+		WORDP next = FindWord(nextWord);
+		if (next && next->properties & QWORD) moreToComeQuestion = true; // assume it will be a question (misses later ones in same input)
 	}
-	moreToComeQuestion = (strchr(nextInput,'?') != 0);
-
-	char nextWord[MAX_WORD_SIZE];
-	ReadCompiledWord(nextInput,nextWord);
-	WORDP next = FindWord(nextWord);
-	if (next && next->properties & QWORD) moreToComeQuestion = true; // assume it will be a question (misses later ones in same input)
 	if (prepareMode == PREPARE_MODE || trace & TRACE_POS || prepareMode == POS_MODE || (prepareMode == PENN_MODE && trace & TRACE_POS)) DumpTokenFlags((char*)"After parse");
 }
 

@@ -1,3 +1,3 @@
 #ifdef PRIVATE_CODE
-#include ..\privatecode\privatecode.cpp
+#include ../privatecode/privatecode.cpp
 #endif

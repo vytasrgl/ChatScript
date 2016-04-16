@@ -473,22 +473,11 @@ static void RiseUp(MEANING M,unsigned int start, unsigned int end,unsigned int d
 	}
 }
 
-static void MarkSequenceTitleFacts(MEANING M, unsigned int start, unsigned int end,bool canonical) // title phrases in sentence
+static void MarkSequenceTitleFacts(MEANING M,  int start,  int end,bool canonical) // title phrases in sentence
 {
     if (!M) return;
 	WORDP D = Meaning2Word(M);
 	if (D->properties & NOUN_TITLE_OF_WORK && canonical) return; // accidental canonical match. not intended
-
-	if (D->properties & PART_OF_SPEECH) // mark pos data
-	{
-		uint64 bit = START_BIT;
-		for (int j = 63; j >= 0; --j)
-		{
-			if (D->properties & bit) MarkFacts(posMeanings[j],start,end,canonical,(D->properties & NOUN_TITLE_OF_WORK && !canonical) ? false : true); // treat original title as a full normal word
-			bit >>= 1;
-		}
-	}
-
 	MarkFacts(M,start,end,canonical,true);
 }
 
@@ -498,6 +487,7 @@ void MarkFacts(MEANING M,int start, int end,bool canonical,bool sequence)
     if (!M) return;
 	WORDP D = Meaning2Word(M);
 	if (!sequence || D->properties & (PART_OF_SPEECH|NOUN_TITLE_OF_WORK|NOUN_HUMAN) || D->systemFlags & PATTERN_WORD || D->internalBits &  CONCEPT) MarkWordHit(D,start,end); // if we want the synset marked, RiseUp will do it.
+
 	int result = MarkSetPath(M,start,end,0,canonical); // generic membership of this word all the way to top
 	if (sequence && result == 1) MarkWordHit(D,start,end); // if we want the synset marked, RiseUp will do it.
 	WORDP X;
@@ -658,7 +648,6 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
 					MarkFacts(MakeMeaning(D),i,i+k,false,true); 
 				}
-				MakeUpperCopy(buffer2,rawbuffer);
 				D = FindWord(buffer2,0,UPPERCASE_LOOKUP);
 				if (D)
 				{
@@ -684,7 +673,6 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
 					MarkFacts(MakeMeaning(D),i,i+k,false,true); 
 				}
-				MakeUpperCopy(buffer2,raw_buffer);
 				D = FindWord(buffer2,0,UPPERCASE_LOOKUP);
 				if (D)
 				{

@@ -508,7 +508,7 @@ static void PerformPosTag(int start, int end)
 	else // decide how to handle casing
 	{
 		if (upperCount > 3 && upperCount > (total/2)) tokenControl &= -1 ^ STRICT_CASING;
-		if (total > 4 && (total-upperCount) <= 2) tokenControl |= ONLY_LOWERCASE; // dont believe the upper case
+//		if (total > 4 && (total-upperCount) <= 2) tokenControl |= ONLY_LOWERCASE; // dont believe the upper case - but address input
 	}
 	if (oobExists) noPosTagging = true; // no out-of-band parsetagging
 	else if (prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == POSVERIFY_MODE){;} // told to try regardless
@@ -523,7 +523,8 @@ static void PerformPosTag(int start, int end)
     {
 		char* original =  wordStarts[i];
 		if (!*original) continue; // bug?
-		if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original)) MakeLowerCase(original);
+		if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original)) 
+			MakeLowerCase(original);
 		
 /* SHOULD BE CONTROLLABLE AND ONLY UNDER THE PROPER NAME MERGING CODE
 	// consider proper name merging as an idiom

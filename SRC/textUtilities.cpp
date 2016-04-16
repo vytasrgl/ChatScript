@@ -851,7 +851,13 @@ unsigned int IsNumber(char* word,bool placeAllowed) // simple digit number or wo
 	uint64 valx;
 	if (IsRomanNumeral(word,valx)) return ROMAN_NUMBER;
 	if (IsDigitWithNumberSuffix(word)) return WORD_NUMBER;
-
+	// word fraction numbers
+	if (!strcmp(word,(char*)"half") ) return FRACTION_NUMBER;
+	else if (!strcmp(word,(char*)"third") ) return FRACTION_NUMBER;
+	else if (!strcmp(word,(char*)"thirds") ) return FRACTION_NUMBER;
+	else if ( !strcmp(word,(char*)"quarter") ) return FRACTION_NUMBER;
+	else if ( !strcmp(word,(char*)"quarters") ) return FRACTION_NUMBER;
+	
 	char* ptr;
     if (placeAllowed && IsPlaceNumber(word)) return PLACETYPE_NUMBER; // th or first or second etc. but dont call if came from there
     else if (!IsDigit(*word) && ((ptr = strchr(word+1,'-')) || (ptr = strchr(word+1,'_'))))	// composite number as word, but not digits
@@ -901,12 +907,8 @@ bool IsPlaceNumber(char* word) // place number and fraction numbers
 	// word place numbers
 	if (len > 4 && !strcmp(word+len-5,(char*)"first") ) return true;
 	else if (len > 5 && !strcmp(word+len-6,(char*)"second") ) return true;
-	else if (len > 4 && !strcmp(word+len-4,(char*)"half") ) return true;
 	else if (len > 4 && !strcmp(word+len-5,(char*)"third") ) return true;
 	else if (len > 4 && !strcmp(word+len-5,(char*)"fifth") ) return true;
-	else if (len > 5 && !strcmp(word+len-6,(char*)"thirds") ) return true;
- 	else if (len > 6 && !strcmp(word+len-7,(char*)"quarter") ) return true;
- 	else if (len > 7 && !strcmp(word+len-8,(char*)"quarters") ) return true;
 
 	// does it have proper endings?
 	if (word[len-2] == 's' && word[len-1] == 't') {;}  // 1st
@@ -2088,8 +2090,6 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
     {
         if (len == numberValues[i].length && !strnicmp(word,numberValues[i].word,len)) 
 		{
-			if (numberValues[i].realNumber == FRACTION_NUMBER) continue; // cant
-	
 			return numberValues[i].value;  // a match 
 		}
     }

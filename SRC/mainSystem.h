@@ -1,7 +1,7 @@
 #ifndef MAINSYSTEMH
 #define MAINSYSTEMH
 #ifdef INFORMATION
-Copyright (C) 2011-2015 by Bruce Wilcox
+Copyright (C) 2011-2016 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -185,7 +185,7 @@ int PerformChatGivenTopic(char* user, char* usee, char* incoming,char* ip,char* 
 #endif
 void ResetSentence();
 void ResetToPreUser();
-void PrepareSentence(char* input,bool mark = true,bool user=true);
+void PrepareSentence(char* input,bool mark = true,bool user=true, bool analyze = false);
 bool PrepassSentence(char* presspassTopic);
 FunctionResult Reply();
 void OnceCode(const char* var,char* topic = NULL);

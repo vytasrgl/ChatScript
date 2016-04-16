@@ -34,7 +34,7 @@ pgserver: INCLUDEDIRS=-Ievserver -Ipostgres
 pgserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
 
-mongoserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 
+mongoserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DMONGO=1
 mongoserver: PGLOAD= -lpq -pthread
 mongoserver: all
 mongoserver: EXECUTABLE=../BINARIES/ChatScriptmongo

@@ -5838,7 +5838,7 @@ static void C_Do(char* input)
 	char* answer = AllocateBuffer();
 #ifndef DISCARDSCRIPTCOMPILER
 	hasErrors = 0;
-	ReadOutput(input, NULL,out,NULL);
+	ReadOutput(input, NULL,out,NULL,false);
 	if (hasErrors) Log(STDUSERLOG,(char*)"\r\nScript errors prevent execution.");
 	else 
 	{

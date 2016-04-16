@@ -1,6 +1,6 @@
 #include "common.h"
 
-#define DEFAULT_USER_CACHE 150000
+#define DEFAULT_USER_CACHE 400000
 #define NO_CACHEID -1
 
 static unsigned int cacheHead = 0;		// our marker for last allocated cache, used to find next free one

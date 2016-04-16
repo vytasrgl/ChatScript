@@ -314,7 +314,12 @@ FACT* SpecialFact(FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned in
 void KillFact(FACT* F)
 {
 	if (!F || F->flags & FACTDEAD) return; // already dead
+	
+	if (F <= factsPreBuild[2]) 
+		return;	 // may not kill off facts built into world
 
+
+	WORDP x = Meaning2Word(F->object);
 	if (trace & TRACE_FACT && CheckTopicTrace()) 
 	{
 		Log(STDUSERLOG,(char*)"Kill: ");

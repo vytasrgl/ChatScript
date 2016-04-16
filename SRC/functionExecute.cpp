@@ -45,7 +45,6 @@ issuing a FAILRULE or such has no effect there.
 
 #endif
 
-
 #define SIZELIM 200
 #define MAX_TOPIC_KEYS 5000
 #define JSON_LIMIT 8000
@@ -53,6 +52,8 @@ issuing a FAILRULE or such has no effect there.
 #define RULEMARK -2
 
 #define MAX_LOG_NAMES 4
+
+static char* functionAnswerBase = NULL;
 
 char lognames[MAX_LOG_NAMES][200];	
 FILE* logfiles[4];
@@ -76,6 +77,7 @@ unsigned int currentIterator = 0;		// next value of iterator
 int jsonStore = 0; // where to put json fact refs
 int jsonIndex;
 unsigned int jsonPermanent = FACTTRANSIENT;
+bool jsonNoduplicate = false;
 
 //   spot callArgumentList are stored for  function calls
 char callArgumentList[MAX_ARGUMENT_COUNT+1][MAX_ARG_BYTES];    // arguments to functions
@@ -402,6 +404,9 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		result = FAILRULE_BIT;
 		return ptr;
 	}
+
+	bool returncall = !stricmp(name,"^return");
+
 	if (timerLimit) // check for violating time restriction
 	{
 		if (timerCheckInstance == TIMEOUT_INSTANCE) 
@@ -420,7 +425,9 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			}
 		}
 	}
-
+	
+	char* oldFunctionAnswerBase = functionAnswerBase;
+	if (!returncall) functionAnswerBase = buffer; // let ^return be transparent
 	char* paren = ptr;
 	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
 	bool oldecho = echo; 
@@ -469,6 +476,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	} 
 	else //   user function (plan macro, inputmacro, outputmacro, tablemacro)) , eg  ^call (_10 ^2 it ^call2 (3 ) )  spot each token has 1 space separator 
 	{
+		int displayIndex = 0;
+		char* display[MAX_DISPLAY];
 		callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
 		callStack[callIndex++] = D;
 
@@ -578,6 +587,21 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			Log(STDUSERTABLOG,(char*)"");
 		}
 		fnVarBase = callArgumentBase = oldArgumentIndex; 
+		char* basedisplay = 0;
+		// handle any display variables
+		if (definition[1] == '(')
+		{
+			definition += 1;
+			basedisplay = (char*)(++definition);
+			char word[MAX_WORD_SIZE];
+			while (1)
+			{
+				definition = (unsigned char*)ReadCompiledWord((char*)definition,word); 
+				if (*word == ')') break;
+				char* oldvalue = GetUserVariable(word);
+				display[displayIndex++] = oldvalue; // do not NULL init the var... might have been passed as function argument as well
+			}
+		}
 	
 		//   run the definition
 		ChangeDepth(1,(char*)"HandleUserCall");
@@ -600,6 +624,20 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			if (!(D->internalBits & IS_OUTPUT_MACRO)) flags|= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
 			Output((char*)definition,buffer,result,flags);
 		}
+
+		// undo any display variables
+		if (basedisplay)
+		{
+			char word[MAX_WORD_SIZE];
+			displayIndex = 0;
+			while (1)
+			{
+				basedisplay = ReadCompiledWord(basedisplay,word); 
+				if (*word == ')') break;
+				SetUserVariable(word,display[displayIndex++],true);
+			}
+		}
+
 		trace = oldtrace;
 		fnVarBase = oldFnVarBase;
 		if (callIndex) --callIndex; // safe decrement
@@ -618,6 +656,9 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		else Log(STDUSERTABLOG,(char*)"%s (%s) => %s\r\n",ResultCode(result),name,buffer);
 	}
 	if (D->internalBits & MACRO_TRACE) echo = oldecho; // allow eval call to change tracing status
+
+	functionAnswerBase = oldFunctionAnswerBase;
+
 	if (ptr && *ptr == ')') // skip ) and space if there is one...
 	{
 		if (ptr[1] == ' ') return ptr+2; // if this is a pattern comparison, this will NOT be a space, but will be a comparison op instead missing it
@@ -1434,11 +1475,6 @@ static FunctionResult RejoinderCode(char* buffer)
 
 		char level = TopLevelRule(rule)   ? 'a' :  (*rule+1); // default rejoinder level
 		char* ptr = FindNextRule(NEXTRULE,rule,id);
-		while (ptr && *ptr && !TopLevelRule(ptr)) //  walk units til find level matching
-		{
-			if (*ptr == level) break;     //   found desired starter
-			if (*ptr < level) return FAILRULE_BIT; // there is no rejoinder for us
-		}
 		if (!ptr || *ptr != level) return FAILRULE_BIT;		// not found
 
 		inputRejoinderRuleID = id; 
@@ -1833,11 +1869,6 @@ static FunctionResult SetRejoinderCode(char* buffer)
 	{
 		char level = TopLevelRule(rule)   ? 'a' :  (*rule+1); // default rejoinder level
 		char* ptr = FindNextRule(NEXTRULE,rule,id);
-		while (ptr && *ptr && !TopLevelRule(ptr)) //  walk units til find level matching
-		{
-			if (*ptr == level) break;     //   found desired starter
-			if (*ptr < level) return FAILRULE_BIT; // there is no rejoinder for us
-		}
 		if (!ptr || *ptr != level) return FAILRULE_BIT;		// not found
 	}
 
@@ -2084,7 +2115,8 @@ static FunctionResult MarkCode(char* buffer)
 	}
 	if (IsDigit(*ptr) || *ptr == '_') ptr = ReadCompiledWord(ptr,word1);  // the locator, leave it unevaled as number or match var
 	else ptr = ReadShortCommandArg(ptr,word1,result); // evaluate the locator as a number presumably
-	
+	if (*word1 == '$') strcpy(word1,GetUserVariable(word1));
+
 	int startPosition;
 	int endPosition;
 	if (!*word1 || *word1 == ')') startPosition = endPosition = 1; // default mark  (ran out or hit end paren of call
@@ -2363,6 +2395,7 @@ static FunctionResult UnmarkCode(char* buffer)
 	int startPosition = wordCount;
 	int endPosition = 1;
 	if (*word1 == '^' && IsDigit(word1[1])) strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]);
+	if (*word1 == '$') strcpy(word1,GetUserVariable(word1));
 
 	if (!*word1) 
 	{
@@ -3100,7 +3133,7 @@ static FunctionResult AnalyzeCode(char* buffer)
 			*buffer = ' ';
 		}
 	}
-	PrepareSentence(buffer,true,false); 
+	PrepareSentence(buffer,true,false,true); 
 	*buffer = 0; // only wanted effect of script
 	RESTOREOLDCONTEXT()
 	return NOPROBLEM_BIT;
@@ -3204,6 +3237,18 @@ FunctionResult DebugCode(char* buffer)
 	char* xarg = ARGUMENT(1);
 	if (!stricmp(xarg,(char*)"deeptrace") && trace) deeptrace = !deeptrace;
 	return NOPROBLEM_BIT;
+}
+
+static FunctionResult ReturnCode(char* buffer)
+{
+	char* arg = ARGUMENT(1);
+	char* output = AllocateBuffer();
+	FunctionResult result;
+	FreshOutput(arg,output,result,0, MAX_BUFFER_SIZE);
+	FreeBuffer(); // usable still
+	if (result != NOPROBLEM_BIT) return result;
+	memmove(functionAnswerBase,output,strlen(output)+1);
+	return ENDCALL_BIT;
 }
 
 static FunctionResult EndCode(char* buffer)
@@ -3336,6 +3381,18 @@ static FunctionResult NoRejoinderCode(char* buffer)
 {
 	norejoinder = true;
 	return NOPROBLEM_BIT;
+}
+
+static FunctionResult NoTraceCode(char* buffer)
+{      
+	unsigned int oldtrace = trace;
+	trace = 0;
+	FunctionResult result;
+	ChangeDepth(1,(char*)"NoTraceCode");
+	Output(ARGUMENT(1),buffer,result);
+	ChangeDepth(-1,(char*)"NoTraceCode");
+	trace = oldtrace;
+	return result; 
 }
 
 static FunctionResult NoFailCode(char* buffer)
@@ -7314,6 +7371,7 @@ static int JSONArgs()
 	int index = 1;
 	bool used = false;
 	jsonPermanent = FACTTRANSIENT; // default
+	jsonNoduplicate = false;
 	char* arg1 = ARGUMENT(1);
 	if (*arg1 == '"') // remove quotes
 	{
@@ -7328,6 +7386,11 @@ static int JSONArgs()
 		if (!stricmp(word,(char*)"permanent"))  
 		{
 			jsonPermanent = 0;
+			used = true;
+		}
+		else if (!stricmp(word,(char*)"unique"))  
+		{
+			jsonNoduplicate = 1;
 			used = true;
 		}
 		else if (!stricmp(word,(char*)"transient"))  used = true;
@@ -7689,11 +7752,13 @@ static FunctionResult JSONOpenCode(char* buffer)
 
 	if (!stricmp(raw_kind, "POST"))  kind = 'P';
 	else if (!stricmp(raw_kind, "GET")) kind = 'G';
-	else if (!stricmp(raw_kind, "POSTU")) {
+	else if (!stricmp(raw_kind, "POSTU")) 
+	{
 		kind = 'P';
 		encoded = true;
 	}
-	else if (!stricmp(raw_kind, "GETU")) {
+	else if (!stricmp(raw_kind, "GETU")) 
+	{
 		kind = 'G';
 		encoded = true;
 	}
@@ -7899,7 +7964,10 @@ static FunctionResult JSONOpenCode(char* buffer)
 	val = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&output); // store output here
 	val = curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, my_trace);
-	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 300L); // 300 second timeout to connect (once connected no effect)
+	char* timeout = GetUserVariable("$cs_jsontimeout");
+	long timelimit = 300L;
+	if (*timeout) timelimit = atoi(timeout);
+	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, timelimit); // 300 second timeout to connect (once connected no effect)
 	
 	/* the DEBUGFUNCTION has no effect until we enable VERBOSE */
 	if (trace & TRACE_JSON && deeptrace) curl_easy_setopt(curl, CURLOPT_VERBOSE, (long)1);
@@ -8161,15 +8229,18 @@ static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bo
 			while (*next && *next != '[' && *next != ']' && *next != '.') ++next; // find token break
 			char c = *next;
 			*next = 0;
-			if (*path == '[' && !IsDigit(path[1])) return FAILRULE_BIT;
+			if (*path == '[' && !IsDigit(path[1]) && path[1] != '$') return FAILRULE_BIT;
 			F = GetSubjectNondeadHead(D);
-			M = MakeMeaning(FindWord(path+1)); // is CASE sensitive
+			char what[MAX_WORD_SIZE];
+			strcpy(what,path+1);
+			if (*what == '$') strcpy(what,GetUserVariable(what));
+			M = MakeMeaning(FindWord(what)); // is CASE sensitive
 			if (!M) return FAILRULE_BIT; // cant be in a fact if it cant be found
 			while (F)
 			{
-				if (trace & TRACE_JSON) TraceFact(F);
 				if (F->verb == M) 
 				{
+					if (trace & TRACE_JSON) TraceFact(F); // dont trace all, just the matching one
 					D = Meaning2Word(F->object);
 					break;
 				}
@@ -8193,6 +8264,11 @@ static FunctionResult JSONPathCode(char* buffer)
 	if (*path == '"') ++path; // skip opening quote
 	size_t len = strlen(path);
 	if (path[len-1] == '"') path[len-1] = 0;
+	if (*path == 0) 
+	{
+		strcpy(buffer,ARGUMENT(2));	// return the item itself
+		return NOPROBLEM_BIT;
+	}
 	return JSONpath(buffer,path,ARGUMENT(2),!safe);
 }
 
@@ -8664,6 +8740,7 @@ static FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectval
 	int count = 0;
 	while (F) 
 	{
+		if (jsonNoduplicate && F->object == value)  return NOPROBLEM_BIT;	// already there
 		++count;
 		F = GetSubjectNext(F);
 	}
@@ -8725,17 +8802,20 @@ static int JsonArrayRenumber(FACT* F)
 
 static FunctionResult JSONDeleteCode(char* buffer) 
 {
-	WORDP D = FindWord(ARGUMENT(1));
-	if (!D) return FAILRULE_BIT;
+	char* arg = ARGUMENT(1);
+	WORDP D = FindWord(arg);
+	if (!D) 
+		return FAILRULE_BIT;
 	FACT* F = GetSubjectHead(D);
 	if (!F) return NOPROBLEM_BIT;	// has no data on it so word will die on its own
-	if (!(F->flags & JSON_FLAGS)) return FAILRULE_BIT;
+	if (!(F->flags & JSON_FLAGS)) 
+		return FAILRULE_BIT;
 	jkillfact(D);
 	return NOPROBLEM_BIT;
 }
 
 #ifdef PRIVATE_CODE
-#include "..\privatecode\privatesrc.cpp"
+#include "../privatecode/privatesrc.cpp"
 #endif
 
 SystemFunctionInfo systemFunctionSet[] =
@@ -8839,6 +8919,8 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^notnull",NotNullCode,STREAM_ARG,0,(char*)"tests that output of stream argument is not null, fails otherwise"}, 
 	{ (char*)"^result",ResultCode,STREAM_ARG,0,(char*)"executes the stream and returns the result code (never fails) "}, 
 	{ (char*)"^retry",RetryCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"reexecute a rule with a later match or retry  input"},
+	{ (char*)"^return",ReturnCode,STREAM_ARG,SAMELINE,(char*)"return this value from current user function call"}, 
+	{ (char*)"^notrace",NoTraceCode,STREAM_ARG,0,(char*)"execute code with trace off (except for topics and functions)"}, 
 
 #ifndef DISCARDDATABASE
 	{ (char*)"\r\n---- Database",0,0,0,(char*)""},
@@ -8933,7 +9015,7 @@ SystemFunctionInfo systemFunctionSet[] =
 #endif
 
 #ifdef PRIVATE_CODE
-#include "..\privatecode\privatetable.cpp"
+#include "../privatecode/privatetable.cpp"
 #endif
 
 	{0,0,0,0,(char*)""}	

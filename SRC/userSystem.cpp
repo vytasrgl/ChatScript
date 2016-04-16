@@ -547,11 +547,13 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 	}
 	else
 	{
+		if (trace & TRACE_USER) Log(STDUSERLOG,(char*)"loading user\r\n");
 		if (!ReadUserTopics()) return false;
 		if (!ReadUserVariables()) return false;
 		if (!ReadUserFacts()) return false;
 		if (!ReadUserContext()) return false;
 		if (!ReadRecentMessages()) return false;
+		if (trace & TRACE_USER) Log(STDUSERLOG,(char*)"user load completed normally\r\n");
 		oldRandIndex = randIndex = atoi(GetUserVariable((char*)"$cs_randindex")) + (volleyCount % MAXRAND);	// rand base assigned to user
 	}
 	userRecordSourceBuffer = NULL;

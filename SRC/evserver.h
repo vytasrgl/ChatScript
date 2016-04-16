@@ -1,5 +1,5 @@
 #ifdef INFORMATION
-Copyright (C) 2011-2015by Outfit7
+Copyright (C) 2011-2016by Outfit7
 
 Released under Bruce Wilcox License as follows:
 

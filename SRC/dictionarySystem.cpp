@@ -2818,7 +2818,11 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		if (sysflags & ADVERB) Log(STDUSERLOG,(char*)"ADVERB ");
 		if (sysflags & PREPOSITION) Log(STDUSERLOG,(char*)"PREPOSITION ");
 	}
-	if (!D) return;
+	if (!D) 
+	{
+		Log(STDUSERLOG,(char*)"\r\n");
+		return;
+	}
 
 	if (D->systemFlags & CONDITIONAL_IDIOM)  Log(STDUSERLOG,(char*)"poscondition=%s\r\n",D->w.conditionalIdiom);
 	
@@ -3010,7 +3014,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		if (++count >= limit) break;
 		F = GetObjectNondeadNext(F);
 	}
-
+	Log(STDUSERLOG,(char*)"\r\n");
 	FreeBuffer();
 }
 

@@ -1,3 +1,13 @@
+version 6.3a 4/16/2016
+1. jsonarrayinsert allows a leading flag UNIQUE, in which case it does not add to array if already there.
+2. ^notrace(... ) turns off regular tracing for the given stream. Explicit function and topic traces are not blocked, just normal :trace xxdx
+3. $cs_jsontimeout  sets json wait delay (300 second default)
+4. save/restore local variables allow you to avoid naming collisions -- see advanced manual outputmacros:
+e.g. outputmacro: ^myfunc(^arg1) ($$tmp $$tmp1)
+	code
+ the values of $$tmp and $$tmp1 are saved and restored across the call, so the macro may safely write on them.
+5. ^return(...)   see advanced manual outputmacros:
+
 
 version 6.3 4/10/2016
 1. ~twitter_name detected as concept for @xxx names  and ~hashtag_label detected as concept
@@ -361,7 +371,7 @@ version 5.1
 2. outputmacro: ^mymacro variable (^a ^b ^c) allows you to supply fewer args on the call, rest default to null
 3. ^argument(2) and ^argument(2 ^mycall) allow you to access arguments of macros (including table generation) by index and even name a calling scope above you
 4. order of arguments to ^phrase has been flipped
-5 %currentopic  like %topic but is completely current topic, regardless of system or not
+5 
 6. ^phrase() now takes optional 3rd argument "canonical" to request the canonical forms of words
 7. new command line param   "serverretry"  allows :retry to be used from a server
 8. ^respond(PENDING) analogous to ^gambit(PENDING) and also

@@ -182,6 +182,12 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
+		FACT* F = GetSubjectHead(D);
+		while (F)
+		{
+			if (F->verb == Mmember) return D->word;	// is a concept member so it is ok
+			F = GetSubjectNext(F);
+		}
 		// are there facts using this word? -- issue with facts because on seeing input second time, having made facts of original, we see original
 //		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
@@ -354,9 +360,24 @@ bool SpellCheckSentence()
 				}
 				else useAlternateCase = true;
 			}
+			else if (E) // does it have a member concept fact
+			{
+				FACT* F = GetSubjectHead(E);
+				while (F)
+				{
+					if (F->verb == Mmember)
+					{
+						useAlternateCase = true;
+						break;
+					}
+					F = GetSubjectNext(F);
+				}
+			}
 			if (useAlternateCase)
 			{
-				wordStarts[i] = reuseAllocation(wordStarts[i],E->word);
+				char* tokens[2];
+				tokens[1] = E->word;
+				ReplaceWords(i,1,1,tokens);
 				fixedSpell = true;
 				continue;	
 			}
