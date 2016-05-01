@@ -4895,9 +4895,6 @@
  Christofferson ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  civil_censorship ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     civil_censorship~1nz (^military_censorship~1) military censorship of civilian communications entering or leaving of circulating within territories controlled by armed forces
- countermand ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
-    countermand~1nz (^bid~4) a contrary command cancelling or reversing a previous command
-    revoke~2v 
  Cein ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  comedy ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
     funniness~1nz (^sport~3) a comic incident or series of incidents
@@ -9390,7 +9387,7 @@
  Canada ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 OF_PROPER ) 
     Canada~1nz (^North_American_country~1) a nation in northern North America
  camp ( meanings=12 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) comparative=camper 
-    bivouac~1nz temporary living quarters specially built by the army for soldiers
+    bivouac~1nz (^military_quarters~1) temporary living quarters specially built by the army for soldiers
     camp~2nz (^housing~2) temporary lodgings in the country for travelers or vacationers
     camp~3nz (^penal_institution~1) a penal institution 
     summer_camp~1nz (^land_site~1) a site where care and activities are provided for children during the summer months
@@ -10882,10 +10879,10 @@
  cannon_bone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     cannon_bone~1nz (^bone~2) greatly developed metatarsal or metacarpal bone in the shank or cannon part of the leg in hoofed mammals
  croup ( meanings=2 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    croupe~1n 
+    hindquarters~1n 
     spasmodic_laryngitis~1n 
- croupe ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
-    rump~1nz (^body_part~1) the part of an animal that corresponds to the human buttocks
+ croupe ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
+    croup~1n 
  cupule ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     cupule~1nz (^sucker~2) a sucker on the feet of certain flies
     acorn_cup~1n 
@@ -13262,8 +13259,8 @@
     unite~6vz have or possess in combination
  command_module ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     command_module~1nz (^module~3) a space module in which astronauts can live and control the spacecraft and communicate with earth
- command_post ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    GHQ~1nz (^HQ~1) military headquarters from which a military commander controls and organizes the forces
+ command_post ( meanings=1 NOUN NOUN_SINGULAR ) 
+    general_headquarters~1n 
  commercial_art ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     commercial_art~1nz (^art~2) art used for commercial purposes
  commissary ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -14430,8 +14427,8 @@
     harpsichord~1n 
  chapeau ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) plural=chapeaux 
     hat~2n 
- central_office ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    home_office~1nz (^office~4) the office that serves as the administrative center of an enterprise
+ central_office ( meanings=1 NOUN NOUN_SINGULAR ) 
+    home_base~1n 
  cowling ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
     cowl~2n 
  chicha ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -18323,6 +18320,9 @@
     counterproposal~1nz (^proposal~3) a proposal offered as an alternative to an earlier proposal
  counteroffer ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     counteroffer~1nz (^offer~2) an offer made by someone who has rejected a prior offer
+ countermand ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:VERB VERB_DIRECTOBJECT ) 
+    countermand~1nz (^bid~4) a contrary command cancelling or reversing a previous command
+    repeal~2v 
  call_up ( meanings=5 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR VERB_TAKES_GERUND VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB VERB_CONJUGATE1 ) 
     call_up~1nz (^summons~2) an order to report for military duty
     think~3v 
@@ -20626,6 +20626,8 @@
     parking_lot~1n 
  celestial_pole ( meanings=1 NOUN NOUN_SINGULAR ) 
     pole~7n 
+ close_quarters ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    close_quarters~1nz (^situation~2) a situation of being uncomfortably close to someone or something
  casbah ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     kasbah~1n 
  celestial_latitude ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -22044,6 +22046,8 @@
     character_witness~1nz (^witness~5) a witness who testifies under oath as to the good reputation of another person in the community where that person lives
  charge_d'affaires ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     charge_d'affaires~1nz (^diplomatist~1) the official temporarily in charge of a diplomatic mission in the absence of the ambassador
+ charge_of_quarters ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    charge_of_quarters~1nz (^enlisted_man~1) an enlisted man who handles his unit's administrative matters after hours
  charioteer ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     charioteer~1nz (^driver~5) the driver of a chariot
  charmer ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 

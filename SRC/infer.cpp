@@ -15,7 +15,6 @@ static unsigned int currentFreeInfer;	// marks before this are reserved
 unsigned int inferMark = 0;				// primary "been-here" mark for all inferencing and tree traversals
 static unsigned int saveMark = 0;		// tertiary mark - used in zone 1 control
 static unsigned int ignoremark = 0;		// mark on entries to ignore
-static int whichSet = 0;
 static WORDP fact = 0;
 
 #define ORIGINALWORD 0x00000001
@@ -57,6 +56,18 @@ unsigned int NextInferMark() // set up for a new inference
 #define MAX_BACKTRACK 5000
 static MEANING backtracks[MAX_BACKTRACK+1];
 static int backtrackIndex = 0;
+
+FACT* IsConceptMember(WORDP D)
+{
+	if (!D) return NULL;
+	FACT* F = GetSubjectNondeadHead(D);
+	while (F)
+	{
+		if (F->verb == Mmember) return F;	// is a concept member so it is ok
+		F = GetSubjectNondeadNext(F);
+	}
+	return NULL;
+}
 
 static void SetFactBack(WORDP D, MEANING M)
 {
@@ -549,8 +560,9 @@ static bool ConceptPropogateTest(MEANING M,unsigned int mark,unsigned int depth)
 
 unsigned int Query(char* kind, char* subjectword, char* verbword, char* objectword, unsigned int count, char* fromset, char* toset, char* propogate, char* match)
 {
-
-	if (trace & TRACE_QUERY && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"QUERY: %s ",kind);
+	int store = GetSetID(toset);
+	if (store == ILLEGAL_FACTSET) store = 0;
+	if (trace & TRACE_QUERY && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"QUERY: @%d %s ",store,kind);
 	WORDP C = FindWord(kind,0);
 	if (!C || !(C->internalBits & QUERY_KIND)) 
 	{
@@ -610,8 +622,6 @@ unsigned int Query(char* kind, char* subjectword, char* verbword, char* objectwo
 	}
 
 	//   handle what sets are involved
-	int store = GetSetID(toset);
-	if (store == ILLEGAL_FACTSET) store = 0;
 	if (impliedOp == 0 || impliedOp == '=')	SET_FACTSET_COUNT(store,0); // auto kill content
 	else if (impliedOp != '+') 
 	{
@@ -1281,7 +1291,7 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 			//   if search is riccochet, we now walk facts of riccochet target
 			if (match && baseFlags & RICCOCHET_BITS )
 			{
-				if (!Riccochet(baseFlags,G,whichSet,count,rmarks,rmarkv,rmarko))
+				if (!Riccochet(baseFlags,G,whichset,count,rmarks,rmarkv,rmarko))
 				{
 					scanIndex = queueIndex; //   end outer loop 
 					F = NULL;

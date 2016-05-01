@@ -61,7 +61,7 @@ FILE* logfiles[4];
 bool planning = false;
 bool safeJsonParse = false;
 
-#define MAX_REUSE_SAFETY 10
+#define MAX_REUSE_SAFETY 100
 static int reuseIndex = 0;
 static char* reuseSafety[MAX_REUSE_SAFETY+1];
 static int reuseSafetyCount[MAX_REUSE_SAFETY+1];
@@ -405,8 +405,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		return ptr;
 	}
 
-	bool returncall = !stricmp(name,"^return");
-
 	if (timerLimit) // check for violating time restriction
 	{
 		if (timerCheckInstance == TIMEOUT_INSTANCE) 
@@ -426,8 +424,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		}
 	}
 	
-	char* oldFunctionAnswerBase = functionAnswerBase;
-	if (!returncall) functionAnswerBase = buffer; // let ^return be transparent
 	char* paren = ptr;
 	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
 	bool oldecho = echo; 
@@ -476,6 +472,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	} 
 	else //   user function (plan macro, inputmacro, outputmacro, tablemacro)) , eg  ^call (_10 ^2 it ^call2 (3 ) )  spot each token has 1 space separator 
 	{
+		char* oldFunctionAnswerBase = functionAnswerBase;
+		functionAnswerBase = buffer; // let ^return be transparent
 		int displayIndex = 0;
 		char* display[MAX_DISPLAY];
 		callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
@@ -643,6 +641,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		if (callIndex) --callIndex; // safe decrement
 		if (result & ENDCALL_BIT) result = (FunctionResult) (result ^ ENDCALL_BIT); // terminated user call 
 		ChangeDepth(-1,(char*)"HandleUserCall");
+
+		functionAnswerBase = oldFunctionAnswerBase;
 	} // end user function
 
 	//   pop argument list
@@ -656,8 +656,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		else Log(STDUSERTABLOG,(char*)"%s (%s) => %s\r\n",ResultCode(result),name,buffer);
 	}
 	if (D->internalBits & MACRO_TRACE) echo = oldecho; // allow eval call to change tracing status
-
-	functionAnswerBase = oldFunctionAnswerBase;
 
 	if (ptr && *ptr == ')') // skip ) and space if there is one...
 	{
@@ -1019,7 +1017,7 @@ bool RuleTest(char* data) // see if pattern matches
 	return answer;
 }
 
-unsigned int Callback(WORDP D,char* arguments) 
+unsigned int Callback(WORDP D,char* arguments, bool boot) 
 {
 	if (! D || !(D->internalBits & FUNCTION_NAME)) return FAILRULE_BIT;
 	unsigned int oldtrace = trace;
@@ -1029,6 +1027,11 @@ unsigned int Callback(WORDP D,char* arguments)
 	FunctionResult result;
 	AllocateOutputBuffer();
 	DoFunction(D->word,args,currentOutputBase,result);
+	if (*currentOutputBase && boot)
+	{
+		printf("Boot response: %s\r\n",currentOutputBase);
+		if (server) Log(SERVERLOG, "Boot response: %s\r\n",currentOutputBase);
+	}
 	FreeOutputBuffer();
 	trace = oldtrace;
 	return result;
@@ -1056,7 +1059,7 @@ void ResetUser(char* input)
 	ReadNewUser(); 
 	userFirstLine = 1;
 	responseIndex = 0;
-	if (!*input) wasCommand = BEGINANEW;
+	wasCommand = BEGINANEW;
 	*input = 0;
 	currentTopicID = oldtopicid;
 	currentRule = oldrule;
@@ -1748,12 +1751,13 @@ static FunctionResult ReuseCode(char* buffer)
 	}
 
 	bool found = false;
-	for (unsigned int i = 0; i <= MAX_REUSE_SAFETY; ++i)
+	unsigned int locator = 0;
+	for (locator = 0; locator < reuseIndex; ++locator)
 	{
-		if (reuseSafety[i] == rule) 
+		if (reuseSafety[locator] == rule) 
 		{
 			found = true;
-			if (++reuseSafetyCount[i] > 10)
+			if (++reuseSafetyCount[locator] > 10)
 			{
 				char c = rule[30];
 				rule[30] = 0;
@@ -1766,10 +1770,11 @@ static FunctionResult ReuseCode(char* buffer)
 	}
 	if (!found)
 	{
-		reuseSafetyCount[reuseIndex] = 0;
-		reuseSafety[reuseIndex++] = rule;
+		if (reuseIndex == (MAX_REUSE_SAFETY-1)) reuseIndex = 0;
+		locator = reuseIndex++;
+		reuseSafetyCount[locator] = 1;
+		reuseSafety[locator] = rule;
 	}
-	if (reuseIndex == MAX_REUSE_SAFETY) reuseIndex = 0;
 
 	int oldreuseid = currentReuseID;
 	unsigned int oldreusetopic = currentReuseTopic;
@@ -1798,6 +1803,11 @@ static FunctionResult ReuseCode(char* buffer)
 
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)""); //   restore index from lower level
 	if (!result && holdindex == responseIndex && !stricmp(arg3,(char*)"FAIL")) return FAILRULE_BIT; // user wants notification of failure
+	if (--reuseSafetyCount[locator] == 0) // decrement use count, no need to track any more if goes to 0
+	{
+		reuseSafetyCount[locator] = reuseSafetyCount[--reuseIndex];
+		reuseSafety[locator] = reuseSafety[reuseIndex];
+	}
 	return result;
 }
 
@@ -3523,7 +3533,7 @@ FunctionResult LoadCode(char* buffer)
 	if (!stricmp(arg1,(char*)"null")) // unload
 	{
 		if (!topicBlockPtrs[2]) return FAILRULE_BIT;	// nothing is loaded
-		ReturnToLayer(1,false);	// drop 2 info.. but dictionary is now unlocked. Need to relock it.
+		ReturnToAfterLayer(1,false);	// drop 2 info.. but dictionary is now unlocked. Need to relock it.
 		answer = NOPROBLEM_BIT;
 	}
 	else answer = LoadLayer(2,arg1,BUILD2);
@@ -3557,7 +3567,7 @@ FunctionResult ArgumentCode(char* buffer)
 /// DATABASE FUNCTIONS
 //////////////////////////////////////////////////////////
 
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 #include "postgres/libpq-fe.h"
 static  PGconn     *conn; // shared db open stuff
 static bool connDummy = false;
@@ -3570,6 +3580,12 @@ char* pguserdb = 0; // init string for pguser
 #ifdef WIN32
 #pragma comment(lib, "../SRC/postgres/libpq.lib")
 #endif
+
+void DBShutDown()
+{
+	if (conn) PQfinish(conn);
+	conn = NULL;
+}
 
 static FunctionResult DBCloseCode(char* buffer)
 {
@@ -3585,14 +3601,19 @@ static FunctionResult DBCloseCode(char* buffer)
 		Log(STDUSERLOG,msg);
 		return FAILRULE_BIT;
 	}
-
-	PQfinish(conn);
-	conn = NULL;
+	DBShutDown();
 	return (buffer == NULL) ? FAILRULE_BIT : NOPROBLEM_BIT; // special call requesting error return (not done in script)
 }
 
 static FunctionResult DBInitCode(char* buffer)
 {
+	char query[MAX_WORD_SIZE * 2];
+	char* ptr = SkipWhitespace(ARGUMENT(1));
+	if (!strnicmp(ptr,"EXISTS ",7))
+	{
+		ptr = ReadCompiledWord(ptr,query);
+		if (conn) return NOPROBLEM_BIT;
+	}
 	if (conn) 
 	{
 		char* msg = "DB already opened\r\n";
@@ -3600,8 +3621,6 @@ static FunctionResult DBInitCode(char* buffer)
 		if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG,msg);
  		return FAILRULE_BIT;
 	}
-	char* ptr = ARGUMENT(1);
-	char query[MAX_WORD_SIZE * 2];
 	FunctionResult result;
 	*query = 0;
 	FreshOutput(ptr,query,result,0, MAX_WORD_SIZE * 2);
@@ -5152,7 +5171,7 @@ static FunctionResult SubstituteCode(char* buffer)
 	char* arg2 = ARGUMENT(2);
 	strcpy(copy+1,arg2);
 	char* target = copy+1;
-	if (!*target) return FAILRULE_BIT; 
+	// target may be null string
 
 	// find value
 	char* find = ARGUMENT(3);
@@ -5268,6 +5287,32 @@ static FunctionResult TallyCode(char* buffer)
 	char* arg2 = ARGUMENT(2);
 	if (!*arg2 ) sprintf(buffer,(char*)"%d",GetWordValue(D));
 	else SetWordValue(D,atoi(arg2));
+	return NOPROBLEM_BIT;
+}
+
+static FunctionResult WordsCode(char* buffer)  
+{
+	WORDP set[100];
+	char* arg1 = ARGUMENT(1);
+	if (!*arg1)	return FAILRULE_BIT;
+	if (*arg1 == '"')
+	{
+		++arg1;
+		size_t len = strlen(arg1);
+		if (arg1[len-1] == '"') arg1[len-1] = 0;	 //remove quotes
+	}
+	int i = GetWords(arg1,set,false);
+	MEANING M = MakeMeaning(StoreWord("words"));
+	while (i)
+	{
+		FACT* F = CreateFact(MakeMeaning(set[--i]), M,M,FACTTRANSIENT); 
+		if (impliedSet != ALREADY_HANDLED)
+		{
+			AddFact(impliedSet,F);
+		}
+	}
+
+	impliedSet = ALREADY_HANDLED;	
 	return NOPROBLEM_BIT;
 }
 
@@ -5399,7 +5444,8 @@ static FunctionResult AddPropertyCode(char* buffer)
 	unsigned int parseBits = 0;
 	result = GetPropertyCodes(arg1,ptr,val,sysval,internalBits,parseBits);
 	if (result != NOPROBLEM_BIT) return result;
-	if (!compiling) dictionaryBitsChanged = true;
+	if (!compiling) 
+		dictionaryBitsChanged = true;
 	if (D) // add to dictionary entry
 	{
 		if (val & NOUN_SINGULAR && D->internalBits & UPPERCASE_HASH) //make it right
@@ -5784,11 +5830,11 @@ static FunctionResult LengthCode(char* buffer)
 		WORDP D = FindWord(word);
 		if (D)
 		{
-			FACT* F = GetSubjectHead(D);
+			FACT* F = GetSubjectHead(D); // dont use nondead
 			while (F)
 			{
 				++count;
-				F = GetSubjectNext(F);
+				F = GetSubjectNext(F); // dont use nondead
 			}
 		}
 		sprintf(buffer,(char*)"%d",count);
@@ -6435,6 +6481,7 @@ static FunctionResult ReviseFactCode(char* buffer)
 	FACTOID index = atoi(arg);
 	FACT* F = Index2Fact(index);
 	if (F <= factLocked || F->flags & FACTDEAD) return FAILRULE_BIT; // only user undead facts
+	if (F <= factsPreBuild[2])  return FAILRULE_BIT; // may not revise facts built into world
 	char* subject = ARGUMENT(2);
 	char* verb = ARGUMENT(3);
 	char* object = ARGUMENT(4);
@@ -6567,6 +6614,10 @@ static FunctionResult ConceptListCode(char* buffer)
 	}
 	else return FAILRULE_BIT;
 
+	char filter[MAX_WORD_SIZE];
+	FunctionResult result;
+	ReadCommandArg(arg,filter,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT); // possible filter
+
 	int start = 1;
 	int end = 1;
 	if (*word == '\'') memmove(word,word+1,strlen(word));
@@ -6581,6 +6632,7 @@ static FunctionResult ConceptListCode(char* buffer)
 
 	char position[MAX_WORD_SIZE];
 	unsigned int list;
+	size_t len = strlen(filter);
 	for (int i = start; i <= end; ++i)
 	{
 		sprintf(position,(char*)"%d",i);
@@ -6591,11 +6643,16 @@ static FunctionResult ConceptListCode(char* buffer)
 			{
 				MEANING* at = (MEANING*)Index2String(list);
 				WORDP X = Meaning2Word(*at);
-				if (!(X->systemFlags & NOCONCEPTLIST)) 
+				if (!(X->systemFlags & NOCONCEPTLIST) && (!len || !strnicmp(X->word,filter,len))) 
 				{
-					FACT* base = factFree;
-					FACT* F = CreateFact(*at,Mconceptlist,MakeMeaning(StoreWord(position)),FACTTRANSIENT|FACTDUPLICATE);
-					if (F != base) AddFact(set,F);
+					FACT* F = CreateFact(*at,Mconceptlist,MakeMeaning(StoreWord(position)),FACTTRANSIENT);
+					int n = FACTSET_COUNT(set);
+					int i;
+					for (i = n; i > 0; --i)
+					{
+						if (factSet[set][i] == F) break; // repeated
+					}
+					if (!i) AddFact(set,F);
 				}
 				list = (unsigned int) at[1];
 			}
@@ -6607,11 +6664,16 @@ static FunctionResult ConceptListCode(char* buffer)
 			{
 				MEANING* at = (MEANING*)Index2String(list);
 				WORDP X = Meaning2Word(*at);
-				if (!(X->systemFlags & NOCONCEPTLIST)) 
+				if (!(X->systemFlags & NOCONCEPTLIST)  && (!len || !strnicmp(X->word,filter,len))) 
 				{
-					FACT* base = factFree;
 					FACT* F = CreateFact(*at,Mconceptlist,MakeMeaning(StoreWord(position)),FACTTRANSIENT|FACTDUPLICATE);
-					if (F != base) AddFact(set,F);
+					int i;
+					int n = FACTSET_COUNT(set);
+					for (i = n; i > 0; --i)
+					{
+						if (factSet[set][i] == F) break; // repeated
+					}
+					if (!i) AddFact(set,F);
 				}
 				list = (unsigned int) at[1];
 			}
@@ -6929,9 +6991,18 @@ static FunctionResult IntersectFactsCode(char* buffer)
         F = factSet[testSet][i];
 		if (!F) continue;
  		if (trace & TRACE_INFER && CheckTopicTrace())   TraceFact(F);
- 		if (fromKind == 's' && Meaning2Word(F->subject)->inferMark == usedMark) AddFact(store,F);
- 		else if (fromKind == 'v' && Meaning2Word(F->verb)->inferMark == usedMark) AddFact(store,F);
-		else if (fromKind == 'o' && Meaning2Word(F->object)->inferMark == usedMark) AddFact(store,F);
+ 		if (fromKind == 's') 
+		{
+			if (Meaning2Word(F->subject)->inferMark == usedMark) AddFact(store,F);
+		}
+ 		else if (fromKind == 'v')
+		{
+			if (Meaning2Word(F->verb)->inferMark == usedMark) AddFact(store,F);
+		}
+		else if (fromKind == 'o')
+		{
+			if (Meaning2Word(F->object)->inferMark == usedMark) AddFact(store,F);
+		}
 		else 
 		{
 			// entire fact found
@@ -8709,12 +8780,12 @@ static FunctionResult JSONArraySizeCode(char* buffer)
 	WORDP O = FindWord(arrayname);
 	if (!O) return FAILRULE_BIT;
 	// how many existing elements
-	FACT* F = GetSubjectHead(O);
+	FACT* F = GetSubjectNondeadHead(O);
 	int count = 0;
 	while (F) 
 	{
 		++count;
-		F = GetSubjectNext(F);
+		F = GetSubjectNondeadNext(F);
 	}
 	sprintf(buffer,(char*)"%d",count);
 	return NOPROBLEM_BIT;
@@ -8736,13 +8807,13 @@ static FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectval
 	MEANING value = jsonValue(val,flags);
 	
 	// how many existing elements
-	FACT* F = GetSubjectHead(O);
+	FACT* F = GetSubjectNondeadHead(O);
 	int count = 0;
 	while (F) 
 	{
 		if (jsonNoduplicate && F->object == value)  return NOPROBLEM_BIT;	// already there
 		++count;
-		F = GetSubjectNext(F);
+		F = GetSubjectNondeadNext(F);
 	}
 	sprintf(arrayIndex,(char*)"%d",count); // add at end
 	WORDP Idex = StoreWord(arrayIndex);
@@ -8806,7 +8877,7 @@ static FunctionResult JSONDeleteCode(char* buffer)
 	WORDP D = FindWord(arg);
 	if (!D) 
 		return FAILRULE_BIT;
-	FACT* F = GetSubjectHead(D);
+	FACT* F = GetSubjectNondeadHead(D);
 	if (!F) return NOPROBLEM_BIT;	// has no data on it so word will die on its own
 	if (!(F->flags & JSON_FLAGS)) 
 		return FAILRULE_BIT;
@@ -8922,7 +8993,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^return",ReturnCode,STREAM_ARG,SAMELINE,(char*)"return this value from current user function call"}, 
 	{ (char*)"^notrace",NoTraceCode,STREAM_ARG,0,(char*)"execute code with trace off (except for topics and functions)"}, 
 
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 	{ (char*)"\r\n---- Database",0,0,0,(char*)""},
 	{ (char*)"^dbinit",DBInitCode,STREAM_ARG,0,(char*)"access a postgres database"}, 
 	{ (char*)"^dbclose",DBCloseCode,0,0,(char*)"close current postgres database"}, 
@@ -8955,7 +9026,7 @@ SystemFunctionInfo systemFunctionSet[] =
 #ifndef DISCARDCOUNTER
 	{ (char*)"^wordcount",WordCountCode,VARIABLE_ARG_COUNT,0,(char*)"get or set a word count value"},
 #endif
-	
+	{ (char*)"^words",WordsCode,1,0,(char*)"given a word, get all words in dictionary with that spelling- case and space/_ independent"},
 	{ (char*)"\r\n---- MultiPurpose Functions",0,0,0,(char*)""},
 	{ (char*)"^disable",DisableCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"stop a RULE or TOPIC or INPUTREJOINDER or OUTPUTREJOINDER or SAVE"}, 
 	{ (char*)"^enable",EnableCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"allow a rule or topic"}, 

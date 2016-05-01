@@ -1055,6 +1055,16 @@ unsigned int IsMadeOfInitials(char * word,char* end)
 	
 	//   its all caps, needs to be lower cased
 	WORDP D = FindWord(word);
+	if (D) // see if there are any legal allcaps forms
+	{
+		WORDP set[20];
+		int n = GetWords(word,set,true);
+		while (n)
+		{
+			WORDP X = set[--n];
+			if (!strcmp(word,X->word)) return 0;	// we know it in all caps format
+		}
+	}
 	return (D && D->properties & (NOUN_PROPER_SINGULAR|NOUN_PROPER_PLURAL)) ? ABBREVIATION : SHOUT; 
 }
 
@@ -1745,21 +1755,19 @@ char* BalanceParen(char* ptr,bool within) // text starting with ((unless within 
 	if (within) paren = 1;
 	--ptr;
 	bool quoting = false;
-	char prior = 0;
     while (*++ptr && *ptr != ENDUNIT) // jump to END of command to resume here, may have multiple parens within
     {
-		if ( *ptr == '"' && (prior == ' ' || prior == '^')) // string not attached to anything else
-		{
-			quoting =  !quoting;
-			continue;
-		}
-		if (quoting) continue;	// stuff in quotes is safe 
-		prior = *ptr;
 		if (*ptr == '\\' && ptr[1]) // ignore slashed item
 		{
 			++ptr;
 			continue;
 		}
+		if ( *ptr == '"') 
+		{
+			quoting =  !quoting;
+			continue;
+		}
+		if (quoting) continue;	// stuff in quotes is safe 
 		int value = nestingData[(unsigned char)*ptr];
 		if (*ptr == '<' && ptr[1] == '<' && ptr[2] != '<') value = 1;
 		if (*ptr == '>' && ptr[1] == '>' && ptr[2] != '>') 

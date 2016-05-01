@@ -499,7 +499,7 @@ char* GetUserPath(char* login)
 #ifdef USERPATHPREFIX
 	if (server)
 	{
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 		if (pguserdb) return path; // do not use this with postgres storage
 #endif
 		userPath = GetUserPathString(login);
@@ -800,6 +800,7 @@ uint64 Hashit(unsigned char * data, int len,bool & hasUpperCharacters, bool & ha
 			c = GetLowercaseData(c);
 			hasUpperCharacters = true;
 		}
+		if (c == ' ') c = '_';	// force common hash on space vs _
 		crc = X64_Table[(crc >> 56) ^ c ] ^ (crc << 8 );
 	}
 	return crc;
@@ -1050,7 +1051,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	
 	if (server && trace && !userLog) channel = SERVERLOG;	// force traced server to go to server log since no user log
 
-#ifndef DISCARDDATABASE 
+#ifndef DISCARDPOSTGRES 
 	if (pguserdb)
 	{
 		doserver = false;

@@ -1,4 +1,4 @@
-debugserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDDATABASE=1 -DDEBUG
+debugserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDPOSTGRES=1 -DDEBUG
 debugserver: PGLOAD= -pthread
 debugserver: INCLUDEDIRS=-Ievserver
 debugserver: all
@@ -12,14 +12,14 @@ debugpgserver: all
 debugpgserver: EXECUTABLE=../BINARIES/ChatScriptpgDebug
 debugpgserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
 
-server: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDDATABASE=1
+server: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDPOSTGRES=1
 server: PGLOAD= -pthread
 server: INCLUDEDIRS=-Ievserver
 server: all
 server: EXECUTABLE=../BINARIES/ChatScript
 server: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
-standalone: DEFINES+=  -DDISCARDSERVER=1 -DDISCARDDATABASE=1 
+standalone: DEFINES+=  -DDISCARDSERVER=1 -DDISCARDPOSTGRES=1 
 standalone: PGLOAD= -pthread
 standalone: INCLUDEDIRS=-Ievserver
 standalone: all

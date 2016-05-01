@@ -25,7 +25,7 @@
  innominate_bone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     hipbone~1nz (^bone~2) large flaring bone forming one half of the pelvis
  II_Esdras ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    II_Esdras~1nz (^book~3) an Apocryphal book of angelic revelations
+    2_Esdras~1nz (^book~3) an Apocryphal book of angelic revelations
  Indian_lettuce ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Indian_lettuce~1nz (^herbaceous_plant~1) a plant of the genus Montia having edible pleasant-tasting leaves
  incompetence ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -570,7 +570,7 @@
  iontotherapy ( meanings=1 NOUN NOUN_SINGULAR ) 
     iontophoresis~1n 
  I_Maccabees ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    I_Maccabees~1nz (^book~3) an Apocryphal book describing the life of Judas Maccabaeus
+    1_Maccabees~1nz (^book~3) an Apocryphal book describing the life of Judas Maccabaeus
  incentive_option ( meanings=1 NOUN NOUN_SINGULAR ) 
     incentive_stock_option~1n 
  Iniss ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4497,18 +4497,18 @@
     biometric_authentication~1n 
  identification_number ( meanings=1 NOUN NOUN_SINGULAR ) 
     number~5n 
- I_Samuel ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    I_Samuel~1nz (^book~3) the first of two books in the Old Testament that tell of Saul and David
+ I_Samuel ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    1_Samuel~1n 
  II_Samuel ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    II_Samuel~1nz (^book~3) the second of two books of the Old Testament that tell of Saul and David
+    2_Samuel~1nz (^book~3) the second of two books of the Old Testament that tell of Saul and David
  I_Kings ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     I_Kings~1nz (^book~3) the first of two Old Testament books telling the histories of the kings of Judah and Israel
  II_Kings ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    II_Kings~1nz (^book~3) the second of two Old Testament books telling the histories of the kings of Judah and Israel
+    2_Kings~1nz (^book~3) the second of two Old Testament books telling the histories of the kings of Judah and Israel
  I_Chronicles ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    I_Chronicles~1nz (^book~3) the first of two Old Testament books telling the history of Judah and Israel until the return from the Babylonian Captivity in 536 BC
+    1_Chronicles~1nz (^book~3) the first of two Old Testament books telling the history of Judah and Israel until the return from the Babylonian Captivity in 536 BC
  II_Chronicles ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    II_Chronicles~1nz (^book~3) the second of two Old Testament books telling the history of Judah and Israel until the return from the Babylonian Captivity in 536 BC
+    2_Chronicles~1nz (^book~3) the second of two Old Testament books telling the history of Judah and Israel until the return from the Babylonian Captivity in 536 BC
  I_Corinthians ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     First_Epistle_to_the_Corinthians~1n 
  II_Corinthians ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -4527,10 +4527,10 @@
     Second_Epistel_of_John~1n 
  III_John ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Third_Epistel_of_John~1n 
- I_Esdra ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    I_Esdra~1nz (^book~3) an Apocryphal book consisting of a compilation from I Chronicles and II Chronicles and Ezra and Nehemiah
+ I_Esdra ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    1_Esdras~1n 
  II_Maccabees ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    II_Maccabees~1nz (^book~3) an Apocryphal book describing the life of Judas Maccabaeus
+    2_Maccabees~1nz (^book~3) an Apocryphal book describing the life of Judas Maccabaeus
  identity_card ( meanings=1 NOUN NOUN_SINGULAR ) 
     card~3n 
  inventory_item ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 

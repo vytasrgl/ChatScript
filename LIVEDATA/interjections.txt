@@ -32,7 +32,6 @@
  <affirmative> ~yes
  <agreed ~yes
  <ah_yes ~yes
- <aha ~yes
  <sorry_to_hear_that ~emosad
  <alas ~emosad
  <all_right ~yes

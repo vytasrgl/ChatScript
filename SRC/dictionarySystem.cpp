@@ -697,6 +697,52 @@ char* GetCanonical(WORDP D)
 	return  X->word;
 }
 
+int GetWords(char* word, WORDP* set,bool strictcase)
+{
+	int index = 0;
+	size_t len = strlen(word);
+	if (len >= MAX_WORD_SIZE) return 0;	// not legal
+	char commonword [MAX_WORD_SIZE];
+	strcpy(commonword,word);
+	char* at = commonword;
+	while ((at = strchr(at,' '))) *at = '_';	 // match as underscores whenever spaces occur (hash also treats them the same)
+
+	bool hasUpperCharacters;
+	bool hasUTF8Characters;
+	uint64 fullhash = Hashit((unsigned char*) word,len,hasUpperCharacters,hasUTF8Characters); //   sets hasUpperCharacters and hasUTF8Characters 
+	unsigned int hash  = (fullhash % maxHashBuckets) + 1; // mod by the size of the table
+
+	//   lowercase bucket
+	WORDP D = dictionaryBase + hash;
+	char word1 [MAX_WORD_SIZE];
+	if (strictcase && hasUpperCharacters) D = dictionaryBase; // lower case not allowed to match uppercase input
+	while (D != dictionaryBase)
+	{
+		if (fullhash == D->hash && D->length == len)
+		{
+			strcpy(word1,D->word);
+			at = word1;
+			while ((at = strchr(at,' '))) *at = '_';	 // match as underscores whenever spaces occur (hash also treats them the same)
+			if (!stricmp(word1,commonword)) set[index++] = D;
+		}
+		D = dictionaryBase + GETNEXTNODE(D);
+	}
+	D = dictionaryBase + hash + 1; // upper case bucket
+	if (strictcase && !hasUpperCharacters) D = dictionaryBase; // upper case not allowed to match lowercase input
+	while (D != dictionaryBase)
+	{
+		if (fullhash == D->hash && D->length == len)
+		{
+			strcpy(word1,D->word);
+			at = word1;
+			while ((at = strchr(at,' '))) *at = '_';	 // match as underscores whenever spaces occur (hash also treats them the same)
+			if (!stricmp(word1,commonword)) set[index++] = D;
+		}
+		D = dictionaryBase + GETNEXTNODE(D);
+	}
+	return index;
+}
+
 WORDP FindWord(const char* word, int len,uint64 caseAllowed) 
 {
 	if (word == NULL || *word == 0) return NULL;
@@ -939,8 +985,7 @@ void ShowStats(bool reset)
 
 }
 
-#ifndef DISCARDSCRIPTCOMPILER
-static void WriteDictDetailsBeforeLayer(int layer)
+void WriteDictDetailsBeforeLayer(int layer)
 {
 	char word[MAX_WORD_SIZE];
 	sprintf(word,(char*)"TMP/prebuild%d.bin",layer);
@@ -948,6 +993,7 @@ static void WriteDictDetailsBeforeLayer(int layer)
 	if (out)
 	{
 		char x = 0;
+		int count = dictionaryPreBuild[layer] - (dictionaryBase+1);
 		for (WORDP D = dictionaryBase+1; D < dictionaryPreBuild[layer]; ++D) 
 		{
 			unsigned int offset = D - dictionaryBase;
@@ -976,11 +1022,21 @@ static void ReadDictDetailsBeforeLayer(int layer)
 	if (in)
 	{
 		unsigned int xoffset;
+		int count = dictionaryPreBuild[layer] - (dictionaryBase+1);
 		for (WORDP D = dictionaryBase+1; D < dictionaryPreBuild[layer]; ++D) 
 		{
-			fread(&xoffset,1,4,in); 
+			int n = fread(&xoffset,1,4,in); 
+			if (n != 4) // ran dry
+			{
+				int xx = 0;
+				break;
+			}
 			unsigned int offset = D - dictionaryBase;
-			if (xoffset != offset) ReportBug((char*)"Bad return to build\r\n");
+			if (xoffset != offset) // bad entry, ignore resets of data
+			{
+				ReportBug((char*)"Bad return to buildx\r\n");
+				break;
+			}
 			fread(&D->properties,1,8,in);
 			fread(&D->systemFlags,1,8,in);
 			fread(&D->internalBits,1,4,in);
@@ -993,36 +1049,16 @@ static void ReadDictDetailsBeforeLayer(int layer)
 		fclose(in);
 	}
 }
-#endif
 
 void WordnetLockDictionary() // dictionary and facts before build0 layer 
 {
-    dictionaryPreBuild[0] = dictionaryPreBuild[1] = dictionaryPreBuild[2] = dictionaryFree;		// end of wordnet data
-	stringsPreBuild[0] = stringsPreBuild[1] = stringsPreBuild[2] = stringFree;		// mark point for mark release
-	factsPreBuild[0] = factsPreBuild[1] = factsPreBuild[2] = factFree;
-
-#ifndef DISCARDSCRIPTCOMPILER
-	// memorize dictionary values for backup to pre build locations :build0 operations (reseting word to dictionary state)
-	WriteDictDetailsBeforeLayer(0);
-#endif
+	LockLayer(-1,false); // memorize dictionary values for backup to pre build locations :build0 operations (reseting word to dictionary state)
 }
 
 void ReturnDictionaryToWordNet() // drop all memory allocated after the wordnet freeze
 {
 	ClearTemps();
-	while (factFree > factsPreBuild[0]) FreeFact(factFree--); // restore to end of dictionary load
-	DictionaryRelease(dictionaryPreBuild[0],stringsPreBuild[0]);
-#ifndef DISCARDSCRIPTCOMPILER
-	ReadDictDetailsBeforeLayer(0);
-#endif
-	dictionaryLocked = 0;
-	numberOfTopics = 0;
-	// all layer data
-	factsPreBuild[2] = factsPreBuild[1] = factsPreBuild[0];
-	dictionaryPreBuild[2] = dictionaryPreBuild[1] = dictionaryPreBuild[0];
-	stringsPreBuild[2] = stringsPreBuild[1] = stringsPreBuild[0];
-	numberOfTopicsInLayer[0] = numberOfTopicsInLayer[1] = numberOfTopicsInLayer[2] = 0;
-	topicBlockPtrs[0] = topicBlockPtrs[1] = topicBlockPtrs[2] = NULL;
+	ReturnBeforeLayer(0,true); // unlock it to add stuff
 }
 
 void LockLevel()
@@ -1034,37 +1070,32 @@ void LockLevel()
 
 void UnlockLevel()
 {
-	dictionaryLocked = 0;		
-	stringLocked = 0;		
-	factLocked = 0; 
+	dictionaryLocked = NULL;		
+	stringLocked = NULL;		
+	factLocked = NULL; 
 }
 
-void LockLayer(int layer)
+void LockLayer(int layer,bool boot)
 {
 	// stores the results of the layer as the starting point of the next layers (hence size of arrays are +1)
 	for (int i = layer+1; i < NUMBER_OF_LAYERS; ++i)
 	{
-		numberOfTopicsInLayer[i] = numberOfTopicsInLayer[layer];
+		numberOfTopicsInLayer[i] = (layer == -1) ? 0 : numberOfTopicsInLayer[layer];
 		dictionaryPreBuild[i] = dictionaryFree;		
 		stringsPreBuild[i] = stringFree;	
 		factsPreBuild[i] = factFree; 
 		topicBlockPtrs[i] = NULL;
 		buildStamp[i][0] = 0;
-	}
-	
-	if (layer < 2) // permanent layers
-	{
+	}    
+
 	#ifndef DISCARDSCRIPTCOMPILER
-		WriteDictDetailsBeforeLayer(layer+1);
+	if (!boot) WriteDictDetailsBeforeLayer(layer+1);
 	#endif
 
-		// lock dictionary system  at layer 2 or earlier
-		LockLevel();
-	}
+	LockLevel();
 }
 
-
-void ReturnToLayer(int layer, bool unlocked) 
+void ReturnToAfterLayer(int layer, bool unlocked) 
 {
 	if (layer == 1)
 	{
@@ -1085,24 +1116,30 @@ void ReturnToLayer(int layer, bool unlocked)
 	}
 #endif
 	dictionaryBitsChanged = false;
+	LockLayer(layer,true);	// dont write data to file
+	numberOfTopics = numberOfTopicsInLayer[layer];
 
 	// canonical map in layer 1 is now garbage- 
-	if (unlocked)
-	{
-		dictionaryLocked = NULL;
-		stringLocked = NULL;
-		factLocked = NULL; // unlock
-	}
-	numberOfTopics = numberOfTopicsInLayer[layer];
-	for (int i = layer+1; i < NUMBER_OF_LAYERS; ++i)
-	{
-		numberOfTopicsInLayer[i] = numberOfTopicsInLayer[layer];
-		topicBlockPtrs[i] = NULL;
-		factsPreBuild[i] = factsPreBuild[layer+1]; // start of next layer is set for all
-		dictionaryPreBuild[i] = dictionaryPreBuild[layer+1];  // start of next layer is set for all
-		stringsPreBuild[i] = stringsPreBuild[layer+1];  // start of next layer is set for all
-		buildStamp[i][0] = 0;
-	}
+	if (unlocked) UnlockLevel();
+}
+
+void ReturnBeforeLayer(int layer, bool unlocked) 
+{
+	ClearUserVariables();
+	ClearTemps();
+	UnwindLayer2Protect();
+	while (factFree > factsPreBuild[layer]) FreeFact(factFree--); //   restore back to facts alone
+	DictionaryRelease(dictionaryPreBuild[layer],stringsPreBuild[layer]);
+
+#ifndef DISCARDSCRIPTCOMPILER
+	if (!server ) ReadDictDetailsBeforeLayer(layer);// on server we assume scripts will not damage level0 or earlier data of dictionary but user doing :trace might
+#endif
+	dictionaryBitsChanged = false;
+	LockLayer(layer,true);	// dont write data to file
+	numberOfTopics = (layer) ? numberOfTopicsInLayer[layer] : 0;
+
+	// canonical map in layer 1 is now garbage- 
+	if (unlocked) UnlockLevel();
 }
 
 void CloseDictionary()
@@ -1880,6 +1917,11 @@ void RemoveMeaning(MEANING M, MEANING M1)
 MEANING ReadMeaning(char* word,bool create,bool precreated)
 {// be wary of multiple deletes of same word in low-to-high-order
 	char hold[MAX_WORD_SIZE];
+	if (strlen(word) >= (MAX_WORD_SIZE-2)) 
+	{
+		ReportBug("ReadMeaning has word too long: %s",word);
+		word[MAX_WORD_SIZE - 2] = 0; // safety
+	}
 	if (*word == '\\' && word[1] && !word[2])  strcpy(hold,word+1);	//   special single made safe, like \[  or \*
 	else strcpy(hold,word);
 	word = hold;

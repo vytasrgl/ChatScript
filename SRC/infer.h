@@ -26,7 +26,7 @@ extern FACT* factSet[MAX_FIND_SETS+1][MAX_FIND+1];
 extern unsigned int factSetNext[MAX_FIND_SETS+1];
 
 extern unsigned int inferMark;
-
+FACT* IsConceptMember(WORDP D);
 unsigned int NextInferMark();
 unsigned int Query(char* search, char* subject, char* verbword, char* object, unsigned int count, char* from, char* toset, char* up, char* match);
 FunctionResult QueryTopicsOf(char* word,unsigned int store,char* kind);

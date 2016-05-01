@@ -61,7 +61,7 @@ void Login(char* caller,char* usee,char* ip) //   select the participants
 		*usee = 0;
 	}
     if (*usee) MakeLowerCopy(computerID,usee);
-	if (!*computerID) ReadComputerID(); //   we are defaulting the chatee
+	else ReadComputerID(); //   we are defaulting the chatee
 	if (!*computerID) ReportBug((char*)"No default bot?\r\n")
 
 	//   for topic access validation

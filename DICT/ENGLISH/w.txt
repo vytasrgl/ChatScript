@@ -3393,7 +3393,7 @@
     wardrobe~2nz (^collection~4) collection of clothing belonging to one person
     wardrobe~3nz (^collection~4) collection of costumes belonging to a theatrical company
  wardroom ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
-    wardroom~1nz military quarters for dining and recreation for officers of a warship
+    wardroom~1nz (^military_quarters~1) military quarters for dining and recreation for officers of a warship
  warhead ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     payload~2n 
  warming_pan ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -5311,8 +5311,8 @@
  winter_cress ( meanings=2 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     winter_cress~1nz (^cress~1) cress cultivated for winter salads
     St_._Barbara_'s_herb~1n 
- wild_spinach ( meanings=4 glosses=2 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    pigweed~1nz (^green~3) leaves collected from the wild
+ wild_spinach ( meanings=4 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    pigweed~1n 
     wild_spinach~2nz (^green~3) leafy greens collected from the wild and used as a substitute for spinach
     Chenopodium_album~1n 
     fat_hen~1n 

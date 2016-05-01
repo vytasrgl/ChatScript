@@ -581,14 +581,11 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		}
 	}
 	// could it be email or web address?
-	char item[MAX_WORD_SIZE];
-	int len = end - ptr;
-	strncpy(item,ptr,len);
-	item[len] = 0;
-	char* atsign = strchr(item,'@'); // possible email?
-	if (atsign)
+	char* atsign = strchr(ptr,'@'); // possible email?
+	if (atsign && atsign < end)
 	{
-		if (strchr(atsign+1,'.') && IsAlphaUTF8(item[len-1]) &&  IsAlphaUTF8(item[len-2])) // can be domain data
+		char* period = strchr(atsign+1,'.');
+		if (period && period < end && IsAlphaUTF8(ptr[end-ptr-1]) &&  IsAlphaUTF8(ptr[end-ptr-2])) // can be domain data
 		{
 			return end;
 		}
@@ -603,18 +600,19 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	if (W && (W->properties & PART_OF_SPEECH || W->systemFlags & PATTERN_WORD))  return fullstopper; // recognize word at more splits
 
 	// recognize subword? now in case - is a stopper
-	W = (stopper && (stopper-ptr) > 1 && ((*stopper != '-' && *stopper != '/') || !IsAlphaUTF8(stopper[1]))) ? FindWord(ptr,stopper-ptr) : NULL;
-	if (*end == '-' && IsAlphaUTF8(end[1])) W = NULL; // but don't split -  in a name or word 
-	else if (*end && IsDigit(end[1]) && IsDigit(*(end-1))) W = NULL; // if , separating digits, DONT break at it  4,000 even though we recognize subpiece
-	if (W && (W->properties & PART_OF_SPEECH || W->systemFlags & PATTERN_WORD))  return stopper; // recognize word at more splits
-
+	if (stopper)
+	{
+		W = ((stopper-ptr) > 1 && ((*stopper != '-' && *stopper != '/') || !IsAlphaUTF8(stopper[1]))) ? FindWord(ptr,stopper-ptr) : NULL;
+		if (*stopper == '-' && (IsAlphaUTF8(end[1]) || IsDigit(end[1]))) W = NULL; // but don't split -  in a name or word or think like jo-5
+		else if (*stopper && IsDigit(stopper[1]) && IsDigit(*(stopper-1))) W = NULL; // if , separating digits, DONT break at it  4,000 even though we recognize subpiece
+		if (W && (W->properties & PART_OF_SPEECH || W->systemFlags & PATTERN_WORD))  return stopper; // recognize word at more splits
+	}
 	char* start = ptr;
-
 	// check for place number
 	char* place = ptr;
 	while (IsDigit(*place)) ++place;
 	if (!stricmp(place,"st") || !stricmp(place,"nd") || !stricmp(place,"rd")) return end;
-
+	int len = end - ptr;
 	char next2;
 	while (++ptr && !IsWordTerminator(*ptr)) // now scan to find end of token one by one, stopping where appropriate
     {
@@ -684,8 +682,8 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			if (ptr != start && IsDigit(*(ptr-1)) && IsWordTerminator(ptr[1]) && (c == '"' || c == '\'' )) break; // special markers on trailing end of numbers get broken off. 50' and 50" 
 			if ((c == 'x' || c== 'X') && IsDigit(*start) && IsDigit(next)) break; // break  4x4
 			// allow 24%
-			if (kind & ARITHMETICS && IsDigit(next) && c != '/' && c != '.' && IsDigit(*start) && !(tokenControl & TOKEN_AS_IS)) 
-				break;  // split numeric operator like  60*2 => 60 * 2  but 60 1/2 stays // 1+1=
+			if (kind & ARITHMETICS && IsDigit(next) && IsDigit(*(ptr-2))  && c != '/' && c != '.' && IsDigit(*start) && !(tokenControl & TOKEN_AS_IS)) 
+				break;  // split numeric operator like  60*2 => 60 * 2  but 60 1/2 stays // 1+1=  dont BREAK APART word-number like Ja-1
 		}
 
 		if (kind & BRACKETS) break; // separate brackets
@@ -778,7 +776,8 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 		// find end of word 
 		int oldCount = count;
 		if (!*ptr) break; 
-		char* end = FindWordEnd(ptr,priorToken,words,count,nomodify,oobStart); 
+		char* end = FindWordEnd(ptr,priorToken,words,count,nomodify,oobStart);
+		if ((end-ptr) > (MAX_WORD_SIZE-3)) end = ptr + MAX_WORD_SIZE - 3; // abort, too much jammed together. no token to reach MAX_WORD_SIZE
 		if (count != oldCount || *ptr == ' ')	// FindWordEnd performed allocation already or removed stage direction start
 		{
 			if (count > 0) strcpy(priorToken,words[count]);
@@ -936,7 +935,7 @@ static WORDP MergeProperNoun(int& start, int end,bool upperStart)
 	char buffer[MAX_WORD_SIZE];
 	*buffer = 0;
 	// build composite name
-	    char* ptr = buffer;
+	char* ptr = buffer;
 	bool uppercase = false;
 	bool name = false;
 	if (IsUpperCase(*wordStarts[start]) && IsUpperCase(*wordStarts[end])) uppercase = true;	// MUST BE UPPER
@@ -960,7 +959,7 @@ static WORDP MergeProperNoun(int& start, int end,bool upperStart)
 				if (D->properties & NOUN_FIRSTNAME) name = true;
 			}
 		}
-
+		if ( (ptr-buffer+len) >= (MAX_WORD_SIZE -3)) break; // overflow
         strcpy(ptr,word);
         ptr += len;
         if (i < end) *ptr++ = '_'; // more to go
@@ -1088,12 +1087,38 @@ static void HandleFirstWord() // Handle capitalization of starting word of sente
 	if (!D && !E && !multi) return;  // UNKNOWN word in any case (probably a name)
 	if (E && E->internalBits & HAS_SUBSTITUTE){;}
 	else if (!multi || !IsUpperCase(multi[1])) // remove sentence start uppercase if known in lower case unless its a multi-word title or substitute
-	{
-		char word[MAX_WORD_SIZE];
-		MakeLowerCopy(word,wordStarts[1]);
-		if (FindWord(word,0,LOWERCASE_LOOKUP)) wordStarts[1] = reuseAllocation(wordStarts[1],StoreWord(word)->word);  // BEFORE:  DAHINDA was converted to lower case by this.
+	{ // or special case word
+		WORDP set[20];
+		int n = GetWords(wordStarts[1],set,true);	// strict case upper case
+		int i;
+		for (i = 0; i < n; ++i)
+		{
+			if (!strcmp(set[i]->word,wordStarts[1]))  // perfect match 
+			{
+				if (IsLowerCase(wordStarts[1][0])) break;		// starts lower, has upper elsewhere, like eBay.
+				if (IsUpperCase(wordStarts[1][1])) break;	// has uppercase more than once
+			}
+		}
+		if (i >= n) // there is nothing special about his word (like eBay or TED)
+		{
+			char word[MAX_WORD_SIZE];
+			MakeLowerCopy(word,wordStarts[1]);
+			if (FindWord(word,0,LOWERCASE_LOOKUP))
+			{
+				char* tokens[2];
+				tokens[1] = word;
+				ReplaceWords(1,1,1,tokens);
+			}
+		}
 	}
-	else if (multi) wordStarts[1] = reuseAllocation(wordStarts[1],StoreWord(wordStarts[1],NOUN_PROPER_SINGULAR)->word); // implied proper noun of some kind
+	else if (multi) 
+	{
+		char* tokens[2];
+		tokens[1] = word;
+		ReplaceWords(1,1,1,tokens);
+		WORDP D = FindWord(wordStarts[1]);
+		if (D) AddProperty(D,NOUN_PROPER_SINGULAR);
+	}
 }
 
 bool DateZone(int i, int& start, int& end)
@@ -1195,7 +1220,7 @@ void ProperNameMerge()
 		// check for easy cases of 2 words in a row being a known uppercase word
 		if (start == UNINIT && i != (int)wordCount && wordStarts[i+1] && *wordStarts[i+1] != '"')
 		{
-			char composite[MAX_WORD_SIZE];
+			char composite[MAX_WORD_SIZE * 5];
 			strcpy(composite,wordStarts[i]);
 			strcat(composite,(char*)"_");
 			strcat(composite,wordStarts[i+1]);
@@ -1534,15 +1559,6 @@ void ProcessCompositeNumber()
     }
 }
 
-void EraseWords(int i, int length) // remove words starting at i for length
-{
-	int afterCount = wordCount - i - length + 1;
-	memmove(derivationIndex+i,derivationIndex+i+length,sizeof(unsigned int) * afterCount); 
-	memmove(wordStarts+i,wordStarts+i+length,sizeof(char*) * afterCount); 
-	wordCount -= length;
-	wordStarts[wordCount+1] = NULL;
-}
-
 void ReplaceWords(int i, int oldlength,int newlength,char** tokens) 
 {
 	// protect old values after our patch area
@@ -1644,7 +1660,11 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 			for (int j = i; j < i+erasing+1; ++j) Log(STDUSERLOG,(char*)"%s ",wordStarts[j]);
 			Log(STDUSERLOG,(char*)"\r\n");
 		}	
-		EraseWords(i, erasing+1);
+		char* tokens[15];
+		tokens[1] = wordStarts[i+erasing+1]; // the word after the erase zone
+		int extra = (tokens[1] && *tokens[1]) ? 1 : 0;
+		if (i != wordCount)	ReplaceWords(i,erasing+1+1,erasing + extra,tokens); // remove 2, add 1
+		else 	ReplaceWords(i,erasing+1,erasing,tokens); // remove 1, add 0
 		return true;
 	}
 

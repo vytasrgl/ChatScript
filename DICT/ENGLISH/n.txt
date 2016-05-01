@@ -7971,7 +7971,7 @@
  nonmechanistic ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     nonmechanistic~1az not mechanistic
  nine-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    nine-membered~1az of a chemical compound having a ring with nine members
+    9-membered~1az of a chemical compound having a ring with nine members
  nonmusical ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     unmusical~2az not musical in nature
     unmusical~3az lacking interest in or talent for music

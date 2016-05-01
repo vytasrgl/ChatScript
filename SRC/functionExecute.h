@@ -72,7 +72,8 @@ extern int globalDepth;
 FunctionResult InitWinsock();
 #endif
 
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
+void DBShutDown();
 void PGUserFilesCode();
 void PGUserFilesCloseCode();
 void pguserLog(const void* buffer,size_t size);
@@ -96,7 +97,7 @@ void ResetReuseSafety();
 void InitFunctionSystem(); 
 char* DoFunction(char* name, char* ptr, char* buffer,FunctionResult &result);
 void DumpFunctions();
-unsigned int Callback(WORDP D,char* arguments);
+unsigned int Callback(WORDP D,char* arguments,bool boot);
 void ResetFunctionSystem();
 void SaveMark(char* buffer,unsigned int iterator);
 

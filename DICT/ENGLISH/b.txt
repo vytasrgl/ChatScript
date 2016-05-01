@@ -5631,7 +5631,7 @@
     office~1n 
     billet~2nz (^housing~2) lodging for military personnel
     line~14n 
-    quarter~4v 
+    quarter~18v 
  bailiffship ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     bailiffship~1nz (^position~2) the office of bailiff
  baronetage ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
@@ -5709,6 +5709,9 @@
  ball-breaker ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     ball-buster~1nz (^task~1) a job or situation that is demanding and arduous and punishing
     ball-buster~2nz (^woman~3) a demanding woman who destroys men's confidence
+ behalf ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER posdefault:NOUN ) 
+    behalf~1nz (^position~3) as the agent of or on someone's part
+    behalf~2nz (^interest~2) for someone's benefit 
  blaze ( meanings=10 glosses=10 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     hell~1nz (^mischievousness~1) noisy and unrestrained mischief
     blaze~2nz (^marking~3) a light-colored marking
@@ -8043,7 +8046,7 @@
  barouche ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     barouche~1nz (^rig~2) a horse-drawn carriage having four wheels
  barrack ( meanings=4 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT ) 
-    barrack~1nz a building or group of buildings used to house military personnel
+    barrack~1nz (^military_quarters~1) a building or group of buildings used to house military personnel
     jeer~2v 
     cheer~4v 
     barrack~4vz lodge in barracks
@@ -13342,7 +13345,7 @@
     boom_town~1nz (^town~2) a town enjoying sudden prosperity
  barrio ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     barrio~1nz (^populated_area~1) an urban area in a Spanish-speaking country
-    barrio~2nz a Spanish-speaking quarter in a town or city
+    barrio~2nz (^quarter~4) a Spanish-speaking quarter in a town or city
  building_site ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     vacant_lot~1nz (^lot~4) a lot on which there are no permanent buildings
  Balance ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -15085,6 +15088,8 @@
     songster~3nz (^composer~1) a composer of words or music for popular songs
  big_spender ( meanings=1 NOUN NOUN_SINGULAR ) 
     high_roller~2n 
+ better_half ( meanings=1 NOUN NOUN_SINGULAR ) 
+    married_person~1n 
  backup_man ( meanings=1 NOUN NOUN_SINGULAR ) 
     stand-in~1n 
  blabbermouth ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -19174,7 +19179,7 @@
  Bastille_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Bastille_Day~1nz (^national_holiday~1) a legal holiday in France celebrating the storming of the Paris bastille in 1789
  bissextile_year ( meanings=1 NOUN NOUN_SINGULAR ) 
-    leap_year~1n 
+    366_days~1n 
  bimester ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     bimester~1nz (^period~3) a period of 2 months
  Baisakh ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -23868,7 +23873,6 @@
     butt_out~1vz 
  buzz_around ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     buzz_around~1vz 
- behalf ( NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
  Brig. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Blvd. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Bldg. ( NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 

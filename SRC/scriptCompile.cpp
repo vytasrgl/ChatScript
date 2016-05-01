@@ -3124,10 +3124,18 @@ Then one of 3 kinds of character:
 					WORDP E = StoreWord(label,0);
 					AddInternalFlag(E,LABEL);
 					if (strchr(word,'.')) BADSCRIPT((char*)"RULE-2 Label %s must not contain a period",word)
-					if (len > 40) BADSCRIPT((char*)"RULE-2 Label %s must be less than 40 characters",word)
-					*data++ = (char)('0' + len + 2); //   prefix attached to label
+					if (len > 160) BADSCRIPT((char*)"RULE-2 Label %s must be less than 160 characters",word)
+					int fulllen = len;
+					if (len > 40)
+					{
+						int tens = len / 40; // how many 40s does it hold
+						len -= (tens * 40);
+						*data++ = (char) (tens + '*');	// detectable as a 2char label
+						*data++ = (char)('0' + len + 2); //   prefix attached to label
+					}
+					else *data++ = (char)('0' + len + 2); //   prefix attached to label
 					strcpy(data,word);
-					data += len;
+					data += fulllen;
 					*data++ = ' ';
 					ReadNextSystemToken(NULL,NULL,NULL); // drop lookahead token
 					ptr = ReadPattern(ptr,in,data,false,false); //   read ( for real in the paren for pattern
@@ -4493,29 +4501,49 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 {
 	// Note that topic labels (topic.name) and pattern words  will not get written
 	FILE* in = NULL;
-	if ( build == BUILD0) in = FopenReadWritten((char*)"TMP/prebuild0.bin");
-	else if ( build == BUILD1) in = FopenReadWritten((char*)"TMP/prebuild1.bin");
-	else if ( build == BUILD2) in = FopenReadWritten((char*)"TMP/prebuild2.bin");
+	int layer = 0;
+	if ( build == BUILD0) 
+	{
+		in = FopenReadWritten((char*)"TMP/prebuild0.bin");
+		layer = 0;
+	}
+	else if ( build == BUILD1) 
+	{
+		in = FopenReadWritten((char*)"TMP/prebuild1.bin");
+		layer = 1;
+	}
+	else if ( build == BUILD2) 
+	{
+		in = FopenReadWritten((char*)"TMP/prebuild2.bin");
+		layer = 2;
+	}
 	if (!in)  ReportBug((char*)"prebuild bin not found")
 	for (WORDP D = dictionaryBase+1; D < dictionaryFree; ++D) 
 	{
 		uint64 oldproperties = 0;
 		uint64 oldflags = 0;
 		bool notPrior = false;
-		if ( (build == BUILD0 && D < dictionaryPreBuild[0] ) || (build == BUILD1 && D < dictionaryPreBuild[1]) || 
-			 (build == BUILD2 && D < dictionaryPreBuild[2])) // word preexisted this level, so see if it changed
+		if (D < dictionaryPreBuild[layer]) // word preexisted this level, so see if it changed
 		{
+			int count = dictionaryPreBuild[layer] - (dictionaryBase+1);
 			unsigned int offset = D - dictionaryBase;
 			unsigned int xoffset;
-			fread(&xoffset,1,4,in);
-			if (xoffset != offset) printf((char*)"%s",(char*)"Bad dictionary change test\r\n");
+			int result = fread(&xoffset,1,4,in);
+			if (result != 4) // ran out
+			{
+				int xx = 0;
+				break;
+			}
+			if (xoffset != offset) 
+				printf((char*)"%s",(char*)"Bad dictionary change test\r\n");
 			fread(&oldproperties,1,8,in);
 			fread(&oldflags,1,8,in);
 			fread(&xoffset,1,4,in); //old internal
 			char junk;
 			fread(&junk,1,1,in); // multiword header info
 			fread(&junk,1,1,in); // 0 marker
-			if (junk != 0) printf((char*)"%s",(char*)"out of dictionary change data2?\r\n"); // multiword header 
+			if (junk != 0) 
+				printf((char*)"%s",(char*)"out of dictionary change data2?\r\n"); // multiword header 
 		}
 		else notPrior = true;
 		if (!D->word ||  *D->word == '$') continue;		// dont write topic names or concept names, let keywords do that and  no variables
@@ -4696,8 +4724,8 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 	spellCheck = spell;			// what spell checking to perform
 
 	//   erase facts and dictionary to appropriate level
-	if (build == BUILD2) ReturnToLayer(1,false); // rip dictionary back to start of build (but props and systemflags can be wrong)
-	else if (build == BUILD1) ReturnToLayer(0,true); // rip dictionary back to start of build (but props and systemflags can be wrong)
+	if (build == BUILD2) ReturnToAfterLayer(1,false); // rip dictionary back to start of build (but props and systemflags can be wrong)
+	else if (build == BUILD1) ReturnToAfterLayer(0,true); // rip dictionary back to start of build (but props and systemflags can be wrong)
 	else  ReturnDictionaryToWordNet();
 	WalkDictionary(ClearTopicConcept,build);				// remove concept/topic flags from prior defined by this build
 	EraseTopicFiles(build,baseName);

@@ -696,13 +696,20 @@ char* GetLabel(char* rule,char* label)
 	else if (c == ' ')  ++rule; // has no pattern and no label
 	else // there is a label
 	{
-		unsigned int len = c - '0'; // length to jump over label
+		unsigned int len = 0; // contains length of label + 2 (1char the byte jump, 1 char the space after the label before (
+		++rule; // past jump code onto label maybe
+		if (c < '0')  // 2 character label length
+		{
+			len = (40 * (c - '*'));
+			c = *rule++; // past jump code for sure
+		}
+		len += c - '0' - 2;
 		if (label)
 		{
-			strncpy(label,rule+1,len-2);
-			label[len-2] = 0;
+			strncpy(label,rule,len); // added 2 in scriptcompiler... keeping files compatible
+			label[len] = 0;
 		}
-		rule += len;			// start of pattern (
+		rule += len + 1;			// start of pattern ( past space
 	}
 	return rule;
 }
@@ -1357,7 +1364,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	{
 		sprintf(value,(char*)"( %s %c )",topicName,active);
 		cstopicsystem = true;
-		Callback(D,value); 
+		Callback(D,value,false); 
 		cstopicsystem = false;
 	}
 	while (result == RETRYTOPIC_BIT && --limit > 0)
@@ -1381,7 +1388,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	{
 		sprintf(value,(char*)"( %s %s )",topicName, ResultCode(result));
 		cstopicsystem = true;
-		Callback(E,value); 
+		Callback(E,value,false); 
 		cstopicsystem = false;
 	}
 	trace = oldtrace;
@@ -2448,7 +2455,7 @@ topicBlock* TI(int topicid)
 FunctionResult LoadLayer(int layer,char* name,unsigned int build)
 {
 	UnlockLevel();
-	//  if (layer == 2) ReturnToLayer(1,false); // Warning - erases user facts and variables, etc. 
+	//  if (layer == 2) ReturnToAfterLayer(1,false); // Warning - erases user facts and variables, etc. 
 	int originalTopicCount = numberOfTopics;
 	char filename[MAX_WORD_SIZE];
 	InitLayerMemory(name,layer);
@@ -2487,7 +2494,7 @@ FunctionResult LoadLayer(int layer,char* name,unsigned int build)
 		else printf((char*)"%s",data);
 	}
 	
-	LockLayer(layer);
+	LockLayer(layer,false);
 	return NOPROBLEM_BIT;
 }
 
@@ -2504,13 +2511,10 @@ void LoadTopicSystem() // reload all topic data
 	printf((char*)"WordNet: dict=%ld  fact=%ld  stext=%ld %s\r\n",(long int)(dictionaryFree-dictionaryBase),(long int)(factFree-factBase),(long int)(stringBase-stringFree),dictionaryTimeStamp);
 
 	LoadLayer(0,(char*)"0",BUILD0);
-	ReturnToLayer(0,true); // unlock it to add stuff
+	UnlockLevel();
 	ReadLivePosData(); // any needed concepts must have been defined by now in level 0 (assumed). Not done in level1
-	LockLayer(0);
+	LockLayer(0,false); // rewrite prebuild file because we augmented level 0
 	LoadLayer(1,(char*)"1",BUILD1);
-	Callback(FindWord((char*)"^csboot"),(char*)"()"); // do before world is locked
-	NoteBotVariables(); // convert user variables read into bot variables
-	// StoreWord((char*)"$cs_randindex",0);	// so it is before the freeze WHY!!  cant write on it then
 }
 
 

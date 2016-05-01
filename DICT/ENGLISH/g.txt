@@ -2324,6 +2324,8 @@
  Gorham ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  gravimetry ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     hydrometry~1nz (^measure~3) the measurement of specific gravity
+ general_headquarters ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    GHQ~1nz (^headquarters~1) military headquarters from which a military commander controls and organizes the forces
  genus_Saimiri ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Saimiri~1nz (^mammal_genus~1) squirrel monkeys
  Gram_'s_stain ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -8218,7 +8220,7 @@
     boom_box~1nz (^stereo~1) a portable stereo
  ghetto ( meanings=4 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 GRADE5_6 posdefault:NOUN ) plural=ghettoes 
     ghetto~1nz (^city_district~1) a poor densely populated city district occupied by a minority ethnic group linked together by economic hardship and social restrictions
-    ghetto~2nz formerly the restricted quarter of many European cities in which Jews were required to live
+    ghetto~2nz (^quarter~4) formerly the restricted quarter of many European cities in which Jews were required to live
     ghetto~3nz (^life~10) any segregated mode of living or working that results from bias or stereotyping
     ghetto~4az 
  ghillie ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -8607,7 +8609,7 @@
  guard_boat ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     guard_boat~1nz (^boat~1) a boat that is on guard duty around a fleet of warships
  guardhouse ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
-    guardhouse~1nz (^HQ~1) a military facility that serves as the headquarters for military police and in which military prisoners can be detained
+    guardhouse~1nz (^headquarters~1) a military facility that serves as the headquarters for military police and in which military prisoners can be detained
  guardroom ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     guardroom~1nz (^room~1) a room used by soldiers on guard
     guardroom~2nz (^cell~3) a cell in which soldiers who are prisoners are confined
@@ -8679,7 +8681,7 @@
  gun_pendulum ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     gun_pendulum~1nz (^ballistic_pendulum~1) a ballistic pendulum consisting of a suspended gun
  gun_room ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    gun_room~1nz military quarters of midshipmen and junior officers on a British warship
+    gun_room~1nz (^military_quarters~1) military quarters of midshipmen and junior officers on a British warship
  gun_rest ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     gunwale~1nz (^strake~1) wale at the top of the side of boat
  gurney ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -11112,7 +11114,7 @@
     glacial_boulder~1nz (^boulder~1) a boulder that has been carried by a glacier to a place far distant from its place of origin
  glacial ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     polar~3a 
-    frigid~2a 
+    frozen~5a 
     glacial~3az relating to or derived from a glacier
     glacial~4az 
  glacier ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:NOUN ) 

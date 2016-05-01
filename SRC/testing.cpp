@@ -204,7 +204,7 @@ static void MarkUp(WORDP D) // mark all that can be seen from here going up as m
 {	
 	if (D->inferMark == inferMark) return;
 	D->inferMark = inferMark;
-	FACT* F = GetSubjectHead(D);
+	FACT* F = GetSubjectNondeadHead(D);
 	while (F)
 	{
 		if (F->verb == Mmember)
@@ -213,7 +213,7 @@ static void MarkUp(WORDP D) // mark all that can be seen from here going up as m
 			MarkUp(D);
 		}
   
-		F = GetSubjectNext(F);
+		F = GetSubjectNondeadNext(F);
 	}
 }
 
@@ -240,12 +240,12 @@ static void C_Common(char* input)
 		}
 		ReadCompiledWord(input,word1); // read ahead 1
 		if (!*word1) break; //we are on the last word
-		FACT* F = GetSubjectHead(D);
+		FACT* F = GetSubjectNondeadHead(D);
 		NextInferMark();
 		while (F)
 		{
 			if (F->verb == Mmember) MarkUp(Meaning2Word(F->object)); // mark all on this path as seen
-			F = GetSubjectNext(F);
+			F = GetSubjectNondeadNext(F);
 		}
 	}
 	WORDP words[10000];
@@ -268,7 +268,7 @@ static void C_Common(char* input)
 			found[foundIndex++] = 0; // mark the level
 			continue;
 		}
-		F = GetSubjectHead(D);
+		F = GetSubjectNondeadHead(D);
 		while (F)
 		{
 			if (F->verb == Mmember) 
@@ -281,7 +281,7 @@ static void C_Common(char* input)
 					words[index++] = D;
 				}
 			}
-			F = GetSubjectNext(F);
+			F = GetSubjectNondeadNext(F);
 		}	
 	}
 	Log(STDUSERLOG,(char*)"Concept intersection:\r\n");
@@ -2019,7 +2019,7 @@ reloop:
 	unsigned int parseBad = 0;
 	unsigned int ambigSentences = 0;
 
-	ReturnToLayer(1,true);
+	ReturnToAfterLayer(1,true);
 	StoreWord((char*)"NN");
 	StoreWord((char*)"NNS");
 	StoreWord((char*)"NNP");
@@ -2052,7 +2052,7 @@ reloop:
 	StoreWord((char*)"CD");
 	StoreWord((char*)"EX");
 	StoreWord((char*)"FW");
-	LockLayer(1);
+	LockLayer(1,false);
 	ambiguousWords = 0;
 
 	FILE* oldin = NULL;
@@ -2165,7 +2165,7 @@ reloop:
 		char* answer1;
 		tokenControl = STRICT_CASING | DO_ESSENTIALS | DO_POSTAG | DO_CONTRACTIONS | NO_HYPHEN_END | NO_COLON_END | NO_SEMICOLON_END | TOKEN_AS_IS;
 		if (!raw && !ambig && !showUsed) tokenControl |= DO_PARSE;
-		ReturnToLayer(1,false);
+		ReturnToAfterLayer(1,false);
 		PrepareSentence(buffer,true,true);	
 		if (sentenceLengthLimit && (int)wordCount != sentenceLengthLimit) continue; // looking for easy sentences to fix
 		int actualLen = len;
@@ -2763,7 +2763,7 @@ static void C_VerifyPos(char* file)
 			DoCommand(ptr,output);
 			continue;
 		}
-		ReturnToLayer(1,false); // dont let dictionary tamper affect this. A problem with ANY multiple sentence input...
+		ReturnToAfterLayer(1,false); // dont let dictionary tamper affect this. A problem with ANY multiple sentence input...
 	
 		++count;
 		strcpy(sentence,ptr);
@@ -3823,8 +3823,6 @@ static void C_Bot(char* name)
 	if (shared) return; // pool doesnt require , just direct changeover since shared has the primary current context of all bots
 	wasCommand = BEGINANEW;	// make system save revised user file
 }
-
-
 
 static void C_Build(char* input)
 {
@@ -4898,7 +4896,7 @@ TestMode Command(char* input,char* output,bool scripted)
 		(*info->fn)(data);
 		testOutput = NULL;
 		if (strcmp(info->word,(char*)":trace")   && strcmp(info->word,(char*)":echo") && !prepareMode) echo = oldecho;
-		if (scripted) echo = oldecho;
+		if (scripted && strcmp(info->word,(char*)":echo")) echo = oldecho;
 		return wasCommand;
 	}
 	echo = oldecho;
@@ -6377,7 +6375,10 @@ static void C_Trace(char* input)
 		SaveTracedFunctions();
 		WalkDictionary(TracedTopic,0);
 		echo = oldecho;
+		if (trace == 0) echo = false;
+
 	}	
+	else echo = true;
 }
 
 void C_Why(char* buffer)
@@ -6456,7 +6457,7 @@ static void C_Clean(char* word) // remove CR for LINUX
 	WalkDirectory((char*)"src",CleanIt,0);
 }
 
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 static void C_EndPGUser(char* word)
 {
 	PGUserFilesCloseCode();
@@ -6513,7 +6514,7 @@ static void DisplayTables(char* topic)
 {
 	char args[MAX_WORD_SIZE];
 	sprintf(args,(char*)"( %s )",topic);
-	Callback(FindWord(GetUserVariable((char*)"$cs_abstract")),args);
+	Callback(FindWord(GetUserVariable((char*)"$cs_abstract")),args,false);
 }
 
 static void DoHeader(int count,char* basic,FILE* in,int id,unsigned int spelling)
@@ -7818,7 +7819,7 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":topicdump",C_TopicDump,(char*)"Dump topic data suitable for inclusion as extra topics into TMP/tmp.txt (:extratopic or PerformChatGivenTopic)"},
 	{ (char*)":builddict",BuildDictionary,(char*)" basic, layer0, layer1, or wordnet are options instead of default full"}, 
 	{ (char*)":clean",C_Clean,(char*)"Convert source files to NL instead of CR/LF for unix"},
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 	{ (char*)":endpguser",C_EndPGUser,(char*)"Switch from postgres user topic to file system"},
 #endif
 	{ (char*)":extratopic",C_ExtraTopic,(char*)"given topic name and file as output from :topicdump, build in core topic and use it thereafter"},

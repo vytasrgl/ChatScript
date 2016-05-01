@@ -182,12 +182,7 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
-		FACT* F = GetSubjectHead(D);
-		while (F)
-		{
-			if (F->verb == Mmember) return D->word;	// is a concept member so it is ok
-			F = GetSubjectNext(F);
-		}
+		if (IsConceptMember(D)) return D->word;
 		// are there facts using this word? -- issue with facts because on seeing input second time, having made facts of original, we see original
 //		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
@@ -201,6 +196,8 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
+		if (IsConceptMember(D)) return D->word;
+
 		// are there facts using this word?
 //		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
@@ -214,7 +211,9 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
-		// are there facts using this word?
+		if (IsConceptMember(D)) return D->word;
+
+	// are there facts using this word?
 //		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
 
@@ -294,21 +293,36 @@ bool SpellCheckSentence()
 		//  dont  spell check email or other things with @ or . in them
 		if (strchr(word,'@') || strchr(word,'.') || strchr(word,'$')) continue;
 
+		// dont spell check names of json objects or arrays
+		if (!strnicmp(word,"ja-",3) || !strnicmp(word,"jo-",3)) continue;
+
 		char* known = ProbableKnownWord(word);
-		if (known) 
+		if (known && !strcmp(known,word)) continue;	 // we know it
+		if (known && strcmp(known,word)) 
 		{
-			if (strcmp(known,word) && !IsUpperCase(*known)) // revised the word to lower case (avoid to upper case like "fields" to "Fields"
+			char* tokens[2];
+			if (!IsUpperCase(*known)) // revised the word to lower case (avoid to upper case like "fields" to "Fields"
 			{
-				char* tokens[2];
-				WORDP D = FindWord(known,0,PRIMARY_CASE_ALLOWED);
+				WORDP D = FindWord(known,0,LOWERCASE_LOOKUP);
 				if (D) 
 				{
 					tokens[1] = D->word;
 					ReplaceWords(i,1,1,tokens);
 					fixedSpell = true;
+					continue;
 				}
 			}
-			continue;
+			else // is uppercase a concept member? then revise upwards
+			{
+				WORDP D = FindWord(known,0,UPPERCASE_LOOKUP);
+				if (IsConceptMember(D))
+				{
+					tokens[1] = D->word;
+					ReplaceWords(i,1,1,tokens);
+					fixedSpell = true;		
+					continue;
+				}
+			}
 		}
 
 		char* p = word -1;
@@ -362,15 +376,10 @@ bool SpellCheckSentence()
 			}
 			else if (E) // does it have a member concept fact
 			{
-				FACT* F = GetSubjectHead(E);
-				while (F)
+				if (IsConceptMember(E)) 
 				{
-					if (F->verb == Mmember)
-					{
-						useAlternateCase = true;
-						break;
-					}
-					F = GetSubjectNext(F);
+					useAlternateCase = true;
+					break;
 				}
 			}
 			if (useAlternateCase)
@@ -384,7 +393,7 @@ bool SpellCheckSentence()
 		}
 		
 		// merge with next token?
-		char join[MAX_WORD_SIZE];
+		char join[MAX_WORD_SIZE * 3];
 		if (i != wordCount && *wordStarts[i+1] != '"' )
 		{
 			// direct merge as a single word

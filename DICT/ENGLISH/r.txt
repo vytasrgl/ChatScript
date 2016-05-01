@@ -5558,8 +5558,8 @@
  ratel ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     honey_badger~1n 
  rump ( meanings=3 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
-    croup~1n 
-    ass~3n 
+    croupe~1n 
+    hindquarters~2n 
     rump~3nz (^cut_of_beef~1) fleshy hindquarters
  rudapithecus ( meanings=1 NOUN NOUN_SINGULAR ) 
     Dryopithecus_Rudapithecus_hungaricus~1n 

@@ -249,11 +249,11 @@ void Client(char* login)// test client for a server
 {
 	char word[MAX_WORD_SIZE];
 	printf((char*)"%s",(char*)"\r\n\r\n** Client launched\r\n");
-	char* data = AllocateBuffer(); // 80K limit
+	char* data = AllocateBuffer();
+	char* input = AllocateBuffer();
 	FILE* source = stdin;
 
 	char* from = login;
-	char input[MAX_WORD_SIZE];
 	*input = false;
 	if (*from == '*') // let user go first.
 	{
@@ -263,14 +263,6 @@ void Client(char* login)// test client for a server
 	}
 
 restart: // start with user
-	if (!strncmp(input,(char*)":source ",8)) {
-		data = AllocateString(0,100000,1,0);
-		char file[MAX_WORD_SIZE];
-		ReadCompiledWord(input+8,file);
-		FILE* source = fopen(file,(char*)"rb");
-		ReadALine(input,source,100000 - 10);
-	}
-
 	char* separator = strchr(from,':'); // login is username  or  username:botname
 	char* bot;
 	if (separator)
@@ -288,15 +280,25 @@ restart: // start with user
 	strcpy(ptr,bot);
 	ptr += strlen(ptr) + 1;
 	strcpy(ptr,input);  // null message - start conversation or given message, user starts first
+	try 
+	{
+
+SOURCE: 
+	if (!strncmp(ptr,(char*)":source ",8)) 
+	{
+		char file[MAX_WORD_SIZE];
+		ReadCompiledWord(ptr+8,file);
+		FILE* source = fopen(file,(char*)"rb");
+		ReadALine(ptr,source,100000 - 100);
+	}
+
 	echo = 1;
 	while (ALWAYS)
 	{
-		try 
-		{
 			size_t len = (ptr-data) + 1 + strlen(ptr);
 			TCPSocket *sock = new TCPSocket(serverIP, (unsigned short)port);
 			sock->send(data, len );
-			printf((char*)"Sent data to port %d\r\n",port);
+			printf((char*)"Sent %d bytes of data to port %d\r\n",len, port);
 
 			int bytesReceived = 1;              // Bytes read on each recv()
 			int totalBytesReceived = 0;         // Total bytes read
@@ -318,9 +320,10 @@ restart: // start with user
 
 			// we say that  until :exit
 			printf((char*)"%s",(char*)"\r\n>    ");
-			ReadALine(ptr,source);
+			ReadALine(ptr,source,100000 - 100);
 			strcat(ptr,(char*)" "); // never send empty line
 			if (!strnicmp(SkipWhitespace(ptr),(char*)":quit",5)) break;
+			if (!strnicmp(SkipWhitespace(ptr),(char*)":source",7)) goto SOURCE;
 			if (!strnicmp(SkipWhitespace(ptr),(char*)":restart",8)) 
 			{
 				// send restart on to server...
@@ -352,8 +355,9 @@ restart: // start with user
 				goto restart;
 			}
 		}
-		catch(SocketException e) { myexit((char*)"failed to connect to server\r\n");}
 	}
+
+	catch(SocketException e) { myexit((char*)"failed to connect to server\r\n");}
 }
 #endif
 
@@ -860,7 +864,7 @@ static void* Done(TCPSocket * sock,char* memory)
 static void* HandleTCPClient(void *sock1)  // individual client, data on STACK... might overflow... // WINDOWS + LINUX
 {
 	clock_t starttime = ElapsedMilliseconds(); 
-	char* memory = (char*) malloc((2 * MAX_BUFFER_SIZE)+2); // our data in 1st chunk, his reply info in 2nd
+	char* memory = (char*) malloc((2 * MAX_BUFFER_SIZE)+2); // our data in 1st chunk, his reply info in 2nd - 80k limit
 	if (!memory) return NULL; // ignore him if we run out of memory
 	char* output = memory+SERVERTRANSERSIZE;
 	*output = 0;
@@ -895,14 +899,14 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		{
 			int len1 = sock->recv(p, SERVERTRANSERSIZE-50); // leave ip address in front alone
 			len += len1; // total read in so far
-			if (len1 <= 0 || len >= (MAX_BUFFER_SIZE - 100))  // error or too big a transfer. we dont want it
+			if (len1 <= 0 || len >= (SERVERTRANSERSIZE - 100))  // error or too big a transfer. we dont want it
 			{
 				if (len1 < 0) 
 				{
 					ReportBug((char*)"TCP recv from %s returned error: %d\n", sock->getForeignAddress().c_str(), errno);
 					Log(SERVERLOG,(char*)"TCP recv from %s returned error: %d\n", sock->getForeignAddress().c_str(), errno);
 				}
-				else if ( len >= MAX_BUFFER_SIZE)
+				else if ( len >= (SERVERTRANSERSIZE - 100))
 				{
 					ReportBug((char*)"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
 					Log(SERVERLOG,(char*)"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
@@ -1096,7 +1100,8 @@ static void* MainChatbotServer()
 		if (test >= (MAX_BUFFER_SIZE - 100)) strcpy(ourMainInputBuffer,(char*)"too much data");
 		else strcpy(ourMainInputBuffer,ptr); // xfer user message to our incoming feed
 		echo = false;
-		if (serverPreLog) Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s\r\n",user,bot,ourMainInputBuffer);
+		if (serverPreLog) 
+			Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s\r\n",user,bot,ourMainInputBuffer);
 
 		*((int*) clientBuffer) = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
 		ServerTransferDataToClient();

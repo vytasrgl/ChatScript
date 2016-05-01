@@ -1204,7 +1204,6 @@
  Leis ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
  loan_approval ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     loan_approval~1nz (^authorization~1) formal authorization to get a loan
- Loryn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lohmann ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Lemmus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_lemmus~1n 
@@ -2295,8 +2294,6 @@
  Labarge ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Lampkin ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Luise ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- lobster_thermidor ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    lobster_thermidor~1nz (^dish~4) diced lobster mixed with Mornay sauce placed back in the shell and sprinkled with grated cheese and browned
  Latarsha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Litton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Laisha ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2896,6 +2893,7 @@
  Lorin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lornell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lorraina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Loryn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Lota ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     genus_Lota~1n 
  Lothair ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -5634,6 +5632,8 @@
     inhabit~1vz inhabit or live in
  livery_stable ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     livery_stable~1nz (^stable~1) stable where horses and vehicles are kept for hire
+ living_quarters ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    quarters~1nz (^housing~2) housing available for people to live in
  living_room ( meanings=1 NOUN NOUN_SINGULAR posdefault:NOUN ) 
     parlour~1n 
  living-room ( meanings=1 NOUN NOUN_SINGULAR posdefault:NOUN ) 
@@ -7659,6 +7659,8 @@
     lye_hominy~1nz (^hominy~1) hominy prepared by bleaching in lye
  lye ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ) 
     lye~1nz (^caustic~1) a strong solution of sodium or potassium hydroxide
+ lamb's-quarter ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    wild_spinach~1nz (^green~3) leaves collected from the wild
  lemon_rind ( meanings=1 NOUN NOUN_SINGULAR ) 
     lemon_peel~2n 
  Lane_'s_Prince_Albert ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
@@ -7745,6 +7747,8 @@
     lobster_a_la_Newburg~1n 
  lobster_a_la_Newburg ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
     lobster_Newburg~1nz (^seafood_Newburg~1) lobster in Newburg sauce served on buttered toast or rice
+ lobster_thermidor ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    lobster_thermidor~1nz (^dish~4) diced lobster mixed with Mornay sauce placed back in the shell and sprinkled with grated cheese and browned
  lutfisk ( meanings=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     lutefisk~1n 
  loblolly ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
@@ -12340,7 +12344,7 @@
  lauric_acid ( meanings=1 NOUN NOUN_SINGULAR ) 
     dodecanoic_acid~1n 
  lauryl_alcohol ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    lauryl_alcohol~1nz (^alcohol~2) a colorless insoluble solid alcohol used to make detergents and pharmaceuticals
+    1-dodecanol~1nz (^alcohol~2) a colorless insoluble solid alcohol used to make detergents and pharmaceuticals
  latten ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     latten~1nz (^brass~7) brass that was hammered into thin sheets
  lava ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -12543,6 +12547,8 @@
     intercalary_year~1n 
  lunar_year ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     lunar_year~1nz (^year~2) a period of 12 lunar months
+ last_quarter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    last_quarter~1nz (^half-moon~2) the last fourth of the Moon's period of revolution around the Earth
  lunar_month ( meanings=1 NOUN NOUN_SINGULAR ) 
     moon~4n 
  lunation ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
@@ -12562,6 +12568,8 @@
  langsyne ( meanings=2 glosses=1 NOUN ADVERB NOUN_SINGULAR COMMON1 ) 
     auld_langsyne~1n 
     langsyne~2bz at a distant time in the past
+ last_half ( meanings=1 NOUN NOUN_SINGULAR ) 
+    second_half~1n 
  last_gasp ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     last_gasp~1nz (^end~14) the point of death or exhaustion or completion
  lunitidal_interval ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 

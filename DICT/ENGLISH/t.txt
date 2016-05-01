@@ -2442,7 +2442,7 @@
  truck_bed ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     truck_bed~1nz (^floor~1) the floor or bottom of a wagon or truck or trailer
  two-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    two-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only 2 hits
+    2-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only 2 hits
  Tague ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  typification ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     typification~1nz (^representation~1) the act of representing by a type or symbol
@@ -2938,9 +2938,9 @@
  Thi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Thiele ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Thormond ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- tail ( meanings=11 glosses=8 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 KINDERGARTEN ADJECTIVE_POSTPOSITIVE posdefault:NOUN VERB_DIRECTOBJECT ) 
+ tail ( meanings=11 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 KINDERGARTEN ADJECTIVE_POSTPOSITIVE posdefault:NOUN VERB_DIRECTOBJECT ) 
     tail~1nz (^process~3) the posterior part of the body of a vertebrate especially when elongated and extending beyond the trunk or main part of the body
-    stern~1nz (^back~5) the rear part of a ship
+    quarter~3n 
     empennage~1nz (^back~5) the rear part of an aircraft
     tail~4nz (^reverse~4) the reverse side of a coin that does not bear the representation of a person's head
     butt~7n 
@@ -3927,7 +3927,7 @@
  touch_football ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     touch_football~1nz (^American_football_game~1) a version of American football in which the ball carrier is touched rather than tackled
  three-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    three-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only 3 hits
+    3-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only 3 hits
  tap-off ( meanings=1 NOUN NOUN_SINGULAR ) 
     tip-off~1n 
  trente-et-quarante ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -9941,7 +9941,7 @@
  torch_song ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     torch_song~1nz (^song~3) a popular song concerned with disappointment in love
  twelve-tone_system ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    twelve-tone_music~1nz (^serial_music~1) a type of serial music introduced by Arnold Schoenberg
+    12-tone_system~1nz (^serial_music~1) a type of serial music introduced by Arnold Schoenberg
  techno ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
     techno~1nz a style of fast heavy electronic dance music usually without vocals
  trad ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -14250,6 +14250,8 @@
     take-home_pay~1nz (^salary~1) what is left of your pay after deductions for taxes and dues and insurance etc
  take-home ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     take-home~1az remaining after all deductions including taxes
+ time_and_a_half ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    time_and_a_half~1nz (^rate_of_pay~1) a rate of pay that is 1.5 times the regular rate
  tranche ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     tranche~1nz (^share~4) a portion of something
  terminable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -14575,8 +14577,8 @@
     tierce~1nz (^common_fraction~1) one of three equal parts of a divisible whole
     triplet~3n 
     terce~1nz (^canonical_hour~1) the third canonical hour
- twenty-five_percent ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    quartern~1nz (^common_fraction~1) one of four equal parts
+ twenty-five_percent ( meanings=1 NOUN NOUN_SINGULAR ) 
+    fourth_part~1n 
  twenty-five ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR KINDERGARTEN ) 
     twenty-five~1nz (^large_integer~1) the cardinal number that is the sum of twenty-four and one
     xxv~1az being five more than twenty
@@ -16539,7 +16541,7 @@
     thoughtless~2az showing lack of careful thought
     thoughtless~3az 
  third-dimensional ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    three-dimensional~2a 
+    3-dimensional~1a 
  three-d ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     third-dimensional~1a 
  tailored ( meanings=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:VERB ) 
@@ -17032,9 +17034,9 @@
  tuneless ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     unmelodious~2a 
  three-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
-    three-membered~1az of a chemical compound having a ring with three members
+    3-membered~1az of a chemical compound having a ring with three members
  ten-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    ten-membered~1az of a chemical compound having a ring with ten members
+    10-membered~1az of a chemical compound having a ring with ten members
  tigerish ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) 
     tigerish~1az resembling a tiger in fierceness and lack of mercy
  trigger-happy ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 

@@ -623,7 +623,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 		}
 		else // ordinary function
 		{
-			if (*currentRuleOutputBase && (!strcmp(word,(char*)"^gambit") || !strcmp(word,(char*)"^respond") || !strcmp(word,(char*)"^reuse") || !strcmp(word,(char*)"^retry") || !strcmp(word,(char*)"^refine")  )) // leaving current rule
+			if (*currentRuleOutputBase && (!strcmp(word,(char*)"^gambit") || !strcmp(word,(char*)"^respond") || !strcmp(word,(char*)"^reuse") || !strcmp(word,(char*)"^retry") || !strcmp(word,(char*)"^refine")  || !strcmp(word,(char*)"^print")   )) // leaving current rule
 			{
 				if (!AddResponse(currentRuleOutputBase,responseControl)) result = FAILRULE_BIT;
 				buffer = currentRuleOutputBase;	
@@ -1098,9 +1098,12 @@ retry:
 		if (size >= currentOutputLimit) 
 		{
 			char hold[100];
-			strncpy(hold,currentRule,50);
+			strncpy(hold,currentRule,80);
 			hold[50] = 0;
-			ReportBug((char*)"Output overflowed on rule %s\r\n",hold);
+			char hold1[100];
+			strncpy(hold1,currentOutputBase,80);
+			hold1[50] = 0;
+			ReportBug((char*)"Output overflowed on rule %s output: %s\r\n",hold,hold1);
 		}
         if (size >= (currentOutputLimit-200) && !(result  & FAILCODES)) 
 		{

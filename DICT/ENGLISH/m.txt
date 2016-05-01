@@ -7046,8 +7046,10 @@
     hayloft~1nz (^attic~2) a loft in a barn where hay is stored
     mop~2v 
     cut_down~5vz cut with a blade or mower
+ military_headquarters ( meanings=1 NOUN NOUN_SINGULAR ) 
+    HQ~1n 
  main_office ( meanings=1 NOUN NOUN_SINGULAR ) 
-    home_base~1n 
+    central_office~1n 
  main_road ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     highway~1nz (^road~2) a major road for any form of motor transport
  Microzide ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -7822,6 +7824,8 @@
     military_installation~1nz (^facility~3) any facility servicing military forces
  military_post ( meanings=1 NOUN NOUN_SINGULAR ) 
     post~3n 
+ military_quarters ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    military_quarters~1nz (^living_quarters~1) living quarters for personnel on a military post
  military_uniform ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     military_uniform~1nz (^uniform~1) prescribed identifying uniform for soldiers
  military_vehicle ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -8288,7 +8292,7 @@
  mugshot ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     mug_shot~1n 
  mukataa ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    mukataa~1nz (^central_office~1) an Arabic word for headquarters or administrative center
+    mukataa~1nz (^headquarters~2) an Arabic word for headquarters or administrative center
  muller ( meanings=3 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     muller~1nz (^vessel~2) a vessel in which wine is mulled
     pestle~2n 
@@ -12050,7 +12054,7 @@
  military_position ( meanings=1 NOUN NOUN_SINGULAR ) 
     position~14n 
  medina ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
-    medina~1nz the ancient quarter of many cities in northern Africa
+    medina~1nz (^quarter~4) the ancient quarter of many cities in northern Africa
  Main_Street ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Main_Street~1nz (^town~2) any small town 
  market_town ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -17895,8 +17899,8 @@
     manganic_acid~1nz (^acid~2) a dibasic acid found only in solution and in manganate salts
  metaphosphoric_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     metaphosphoric_acid~1nz (^polyphosphoric_acid~1) a glassy solid acid often used as a dehydrating agent
- methacrylic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    methacrylic_acid~1nz (^acid~2) an unsaturated acid used to make resins and plastics
+ methacrylic_acid ( meanings=1 NOUN NOUN_SINGULAR ) 
+    2-methylpropenoic_acid~1n 
  mucic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     mucic_acid~1nz (^carboxylic_acid~1) a solid acid found in milk or sugar
  metallic_element ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 

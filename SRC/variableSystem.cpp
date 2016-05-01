@@ -61,6 +61,8 @@ void SetWildCard(int start, int end, bool inpattern)
 {
 	if (end < start) end = start;				// matched within a token
 	if (end > wordCount && start != end) end = wordCount; // for start==end we allow being off end, eg _>
+	while (unmarked[start]) ++start; // skip over unmarked words at start
+	while (unmarked[end]) --end; // skip over unmarked words at end
     wildcardPosition[wildcardIndex] = start | (end << 16);
     *wildcardOriginalText[wildcardIndex] = 0;
     *wildcardCanonicalText[wildcardIndex] = 0;
@@ -75,6 +77,7 @@ void SetWildCard(int start, int end, bool inpattern)
 		bool started = false;
 		for (int i = start; i <= end; ++i)
 		{
+			if (unmarked[i]) continue; // ignore words masked
 			char* word = wordStarts[i];
 			// if (*word == ',') continue; // DONT IGNORE COMMAS, needthem
 			if (started) 
@@ -85,8 +88,7 @@ void SetWildCard(int start, int end, bool inpattern)
 			else started = true;
 			strcat(wildcardOriginalText[wildcardIndex],word);
 			if (wordCanonical[i]) strcat(wildcardCanonicalText[wildcardIndex],wordCanonical[i]);
-			else 
-				strcat(wildcardCanonicalText[wildcardIndex],word);
+			else strcat(wildcardCanonicalText[wildcardIndex],word);
 		}
  		if (trace & TRACE_OUTPUT && !inpattern && CheckTopicTrace()) Log(STDUSERLOG,(char*)"_%d=%s/%s ",wildcardIndex,wildcardOriginalText[wildcardIndex],wildcardCanonicalText[wildcardIndex]);
 		CompleteWildcard();
@@ -285,9 +287,8 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 
 	// perform numeric op
 	bool floating = false;
-	if (strchr(oldValue,'.') || strchr(moreValue,'.') ) floating = true; 
+	if (strchr(oldValue,'.') || strchr(moreValue,'.') || *op == '/' ) floating = true; 
 	char result[MAX_WORD_SIZE];
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"%s %c %s(%s/0x%x) ",var,minusflag,originalArg,moreValue,atoi(moreValue));
 
     if (floating)
     {
@@ -304,6 +305,13 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 		}
         else newval += more;
         sprintf(result,(char*)"%1.2f",newval);
+		char* at = strchr(result,'.');
+		char* loc = at;
+		while (*++at)
+		{
+			 if (*at != '0') break; // not pure
+		}
+		if (!*at) *loc = 0; // switch to integer
     }
     else
     {
@@ -341,7 +349,7 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 	if (*var == '_')  SetWildCard(result,result,var,0); 
 	else if (*var == '$') SetUserVariable(var,result);
 	else if (*var == '^') strcpy(callArgumentList[atoi(var+1)+fnVarBase],result); 
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"=> %s/0x%x   ",result,atoi(result));
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)" %s/0x%x   ",result,atoi(result));
 }
 
 void ReestablishBotVariables() // refresh bot variables in case user overwrote them
@@ -358,10 +366,13 @@ void NoteBotVariables() // system defined variables
 {
 	for (unsigned int i = 0; i < userVariableIndex; ++i)
 	{
-		botVariableList[botVariableIndex] = userVariableList[i];
-		baseVariableValues[botVariableIndex] = userVariableList[i]->w.userValue;
+		if (userVariableList[i]->word[1] != '$') // not a transient var
+		{
+			botVariableList[botVariableIndex] = userVariableList[i];
+			baseVariableValues[botVariableIndex] = userVariableList[i]->w.userValue;
+			++botVariableIndex;
+		}
 		RemoveInternalFlag(userVariableList[i],VAR_CHANGED);
-		++botVariableIndex;
 	}
 	userVariableIndex = 0;
 }
@@ -440,6 +451,12 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
     int assignFromWild = ALREADY_HANDLED;
 	result = NOPROBLEM_BIT;
 	impliedSet = ALREADY_HANDLED;
+	
+	if (*word == '^' && IsDigit(word[1])) // function variable must be changed to actual value. can never replace a function variable binding  --- CHANGED nowadays are allowed to write on the function binding itself (done with ^^ref)
+	{
+		strcpy(word,callArgumentList[atoi(word+1) + fnVarBase]); 
+	}
+
 	if (*word == '@')
 	{
 		impliedSet = GetSetID(word);
@@ -465,15 +482,9 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	int setToWild = impliedWild; // what he originally requested
 	bool otherassign = (*word != '@') && (*word != '_');
 
-	if (*word == '^' && IsDigit(word[1])) // function variable must be changed to actual value. can never replace a function variable binding  --- CHANGED nowadays are allowed to write on the function binding itself (done with ^^ref)
-	{
-		strcpy(word,callArgumentList[atoi(word+1) + fnVarBase]); 
-	}
-
 	// Get assignment operator
     ptr = ReadCompiledWord(ptr,op); // assignment operator = += -= /= *= %= ^= |= &=
 	impliedOp = *op;
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"%s %s ",word,op);
 	char originalWord1[MAX_WORD_SIZE];
 	ReadCompiledWord(ptr,originalWord1);
 
@@ -514,6 +525,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 
 	if (*word == '@')
 	{
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"%s(%s) %s %s => ",word,GetUserVariable(word),op,originalWord1);
 		if (impliedSet == ALREADY_HANDLED){;}
 		else if (!*word1 && *op == '=') // null assign to set as a whole
 		{
@@ -594,8 +606,15 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 			impliedSet = ALREADY_HANDLED;
 		}
 	}
-	else if (IsArithmeticOperator(op)) 
+	else if (IsArithmeticOperator(op))  
+	{
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
+		{
+			if (*op == '=') Log(STDUSERTABLOG,(char*)"%s %s %s(%s) => ",word,op,originalWord1,GetUserVariable(originalWord1));
+			else Log(STDUSERTABLOG,(char*)"%s(%s) %s %s(%s) => ",word,GetUserVariable(word),op,originalWord1,GetUserVariable(originalWord1));
+		}
 		Add2UserVariable(word,word1,op,originalWord1);
+	}
 	else if (*word == '_') //   assign to wild card
 	{
 		if (impliedWild != ALREADY_HANDLED) // no one has actually done the assignnment yet
@@ -607,16 +626,31 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 			}
 			else SetWildCard(word1,word1,word,0); 
 		}
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 	}
-	else if (*word == '$') SetUserVariable(word,word1);
-	else if (*word == '\'' && word[1] == '$') SetUserVariable(word+1,word1); // '$xx = value  -- like passed thru as argument
-	else if (*word == '%') SystemVariable(word,word1); 
+	else if (*word == '$') 
+	{
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
+		SetUserVariable(word,word1);
+	}
+	else if (*word == '\'' && word[1] == '$') 
+	{
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
+		SetUserVariable(word+1,word1); // '$xx = value  -- like passed thru as argument
+	}
+	else if (*word == '%') 
+	{
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
+		SystemVariable(word,word1);
+	}
 	else if (*word == '^' && word[1] == '^') // assign onto function var
 	{
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s\r\n",word,word1);
 		strcpy(callArgumentList[atoi(word+2)+fnVarBase],word1);
 	}
 	else // if (*word == '^') // cannot touch a function argument, word, or number
 	{
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s illegal\r\n",word);
 		result = FAILRULE_BIT;
 		goto exit;
 	}
@@ -633,7 +667,9 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 			Log(STDUSERLOG,(char*)"variable assign %s has itself as a term\r\n",word);
 		}
 		if (result & ENDCODES) goto exit; // failed next value
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"    %s(%s) %s %s(%s) =>",word,GetUserVariable(word),op,originalWord1,word1);
 		Add2UserVariable(word,word1,op,originalWord1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"\r\n");
 	}
 
 	// debug
@@ -641,9 +677,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	{
 		char* answer = AllocateBuffer();
 		logUpdated = false;
-		if (*word == '$') strcpy(answer,GetUserVariable(word));
-		else if (*word == '_') strcpy(answer,wildcardOriginalText[GetWildcardID(word)]);
-		else if (*word == '@') 
+		if (*word == '@') 
 		{
 			int set = GetSetID(word);
 			int count = FACTSET_COUNT(set);
@@ -653,18 +687,9 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 			WriteFact(F,false,fact,false,false);
 			sprintf(answer,(char*)"last value @%d[%d] is %d %s",set,count,id,fact ); // show last item in set
 		}
-		else FreshOutput(word,answer,result,OUTPUT_SILENT,MAX_WORD_SIZE);
-		if (!*answer) 
-		{
-			if (logUpdated) Log(STDUSERTABLOG,(char*)"=> null  end-assign\r\n");
-			else Log(1,(char*)"null \r\n");
-		}
-		else if (logUpdated) Log(STDUSERTABLOG,(char*)"=> %s  end-assign\r\n",answer);
-		else if (*originalWord1 == '^') Log(STDUSERTABLOG,(char*)"  ... %s %s %s  \r\n",word,op,answer);
-		else Log(1,(char*)" %s  \r\n",answer);
 		FreeBuffer();
 	}
-
+	
 exit:
 	currentFact = NULL; // any assignment uses up current fact by definition
 	FreeBuffer();

@@ -242,6 +242,10 @@
  heavy_weapon ( meanings=1 NOUN NOUN_SINGULAR ) 
     ordnance~1n 
  Hatton ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ headquarters ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_PLURAL GRADE5_6 ) 
+    military_headquarters~1nz (^military_installation~1) the military installation from which a commander performs the functions of command
+    home_office~1nz (^office~4) the office that serves as the administrative center of an enterprise
+    headquarters~3nz (^force~6) a military unit consisting of a commander and the headquarters staff
  Hans ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  hand_calculator ( meanings=1 NOUN NOUN_SINGULAR ) 
     pocket_calculator~1n 
@@ -407,7 +411,7 @@
     Charles_Digby_Harrod~1n 
  Hrothbertina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  home_base ( meanings=2 NOUN NOUN_SINGULAR ) 
-    central_office~1n 
+    headquarters~2n 
     home~3n 
  Harald ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Hightower ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -4483,8 +4487,11 @@
     pawn~5v 
  hock-joint ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     hock~1nz (^articulation~2) tarsal joint of the hind leg of hoofed mammals
+ hindquarters ( meanings=2 glosses=1 NOUN NOUN_SINGULAR posdefault:NOUN ) 
+    rump~1nz (^body_part~1) the part of an animal that corresponds to the human buttocks
+    ass~3n 
  haunch ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
-    haunch~1nz (^croupe~1) the loin and leg of a quadruped
+    haunch~1nz (^hindquarters~1) the loin and leg of a quadruped
     haunch~2nz (^body_part~1) the hip and buttock and upper thigh in human beings
  hind_limb ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     hindlimb~1nz (^limb~4) a posterior appendage such as a leg or the homologous structure in other animals
@@ -5184,8 +5191,8 @@
  headpiece ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     headpiece~1nz (^helmet~1) a protective helmet for the head
     headstall~1nz (^band~1) the band that is the part of a bridle that fits around a horse's head
- HQ ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
-    HQ~1nz (^military_installation~1) the military installation from which a commander performs the functions of command
+ HQ ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
+    headquarters~1n 
  home_office ( meanings=1 NOUN NOUN_SINGULAR ) 
     main_office~1n 
  headrace ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -7478,6 +7485,8 @@
     griddlecake~1n 
  hot_cake ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     hotcake~1n 
+ hindquarter ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER posdefault:NOUN ) 
+    hindquarter~1nz (^cut~17) the back half of a side of meat
  hindshank ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     hindshank~1nz (^shank~8) a cut of meat from the upper part of a rear leg
  honeycomb_tripe ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -7638,8 +7647,10 @@
     sauce_Albert~1nz (^sauce~1) creamy white sauce with horseradish and mustard
  half-and-half_dressing ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     half-and-half_dressing~1nz (^salad_dressing~1) half mayonnaise and half vinaigrette seasoned with minced garlic and mashed anchovies and grated Parmesan cheese
- half-and-half ( meanings=1 glosses=1 ADJECTIVE ADVERB ADJECTIVE_NORMAL ADJECTIVE_NOT_PREDICATE posdefault:ADJECTIVE ) 
-    half-and-half~1bz in equal parts
+ half-and-half ( meanings=3 glosses=3 NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE NOUN_NODETERMINER posdefault:ADJECTIVE ) 
+    half-and-half~1nz (^dairy_product~1) half milk and half light cream
+    half-and-half~2az in equal parts
+    half-and-half~3bz in equal parts
  hollandaise ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     hollandaise~1nz (^sauce~1) eggs and butter with lemon juice
  hot-fudge_sauce ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -7945,9 +7956,8 @@
     High_Commission~1nz (^embassy~2) an embassy of one British Commonwealth country to another
  headquarters_staff ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     headquarters_staff~1nz (^staff~5) military staff stationed at headquarters
- headquarters ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_SINGULAR NOUN_PLURAL ORDINAL GRADE5_6 QUANTITY_NOUN ) 
- high_command ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    high_command~1nz (^leadership~3) the highest leaders in an organization
+ high_command ( meanings=1 NOUN NOUN_SINGULAR ) 
+    supreme_headquarters~1n 
  hard_core ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     hard_core~1nz (^pack~7) the most dedicated and intensely loyal nucleus of a group or movement
  highschool ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -12219,8 +12229,8 @@
     cerotic_acid~1nz (^acid~2) a white solid fatty acid found in waxes
  hexanedioic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     adipic_acid~1nz (^carboxylic_acid~1) a carboxylic acid used in the manufacture of nylon
- HMG-CoA_reductase ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
-    HMG-CoA_reductase~1nz (^reductase~1) a liver enzyme that is responsible for producing cholesterol
+ HMG-CoA_reductase ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
+    5-hydroxy-3-methylglutaryl-coenzyme_A_reductase~1n 
  horseradish_peroxidase ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     horseradish_peroxidase~1nz (^peroxidase~1) an enzyme used in immunohistochemistry to label antigens and their antibodies
  hydrazoic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 

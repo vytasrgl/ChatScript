@@ -1,3 +1,14 @@
+version 6.3b  4/30/2016
+1. ^importfacts may have null as its set value. It wont store the facts created in a factset.
+2. ^conceptlist takes optional 3rd arg, prefix to filter by
+3. ^words(word) get all dictionary entries with this spelling, upper and lower case, spaces vs underscores
+4. #define DISCARDDATABASE renamed to DISCARDPOSTGRES
+5. ^dbinit(EXISTS ...) will return normally when db is already open
+6. :restart autocloses a postgres db
+7. ^CSBOOT will now print its results to console and if a server, to server log
+8. ^CSSHUTDOWN added for system going down behaviors
+
+
 version 6.3a 4/16/2016
 1. jsonarrayinsert allows a leading flag UNIQUE, in which case it does not add to array if already there.
 2. ^notrace(... ) turns off regular tracing for the given stream. Explicit function and topic traces are not blocked, just normal :trace xxdx

@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.3a";
+char* version = "6.4";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -232,15 +232,26 @@ void CreateSystem()
 			{
 
 				*eq = 0;
-				ReturnToLayer(1,true);
+				ReturnToAfterLayer(1,true);
 				*word = '$';
 				SetUserVariable(word,eq+1);
 				if (server) Log(SERVERLOG,(char*)"botvariable: %s = %s\r\n",word,eq+1);
 				else printf((char*)"botvariable: %s = %s\r\n",word,eq+1);
   				NoteBotVariables();
-				LockLayer(1);
+				LockLayer(1,false);
 			}
 		}
+	}
+
+	WORDP boot = FindWord((char*)"^csboot");
+	if (boot) // run script on startup of system. data it generates will also be layer 1 data
+	{
+		UnlockLevel(); // unlock it to add stuff
+		FACT* F = factFree;
+		Callback(boot,(char*)"()",true); // do before world is locked
+		while (++F <= factFree) F->flags |= FACTBUILD1; // convert these to level 1
+		NoteBotVariables(); // convert user variables read into bot variables
+		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
 	}
 
 	unsigned int factUsedMemKB = ( factFree-factBase) * sizeof(FACT) / 1000;
@@ -343,7 +354,7 @@ void CreateSystem()
 	printf((char*)"%s",(char*)"    JSON access disabled.\r\n");
 #endif
 
-#ifdef DISCARDDATABASE
+#ifdef DISCARDPOSTGRES
 	if(server) Log(SERVERLOG,(char*)"    Postgres disabled.\r\n");
 	else printf((char*)"%s",(char*)"    Postgres disabled.\r\n");
 #endif
@@ -488,7 +499,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		}
 		else if (!strnicmp(argv[i],(char*)"system=",7) )  strcpy(systemFolder,argv[i]+7);
 		else if (!strnicmp(argv[i],(char*)"english=",8) )  strcpy(englishFolder,argv[i]+8);
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 		else if (!strnicmp(argv[i],(char*)"pguser=",7) )  pguserdb = argv[i]+7;
 #endif
 
@@ -629,7 +640,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	echo = false;
 
 	InitStandalone();
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 	if (pguserdb) PGUserFilesCode();
 #endif
 	return 0;
@@ -637,22 +648,28 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 void PartiallyCloseSystem()
 {
+	WORDP shutdown = FindWord((char*)"^csshutdown");
+	if (shutdown)  Callback(shutdown,(char*)"()",false); 
+
 	FreeAllUserCaches(); // user system
     CloseDictionary();	// dictionary system
     CloseFacts();		// fact system
 	CloseBuffers();		// memory system
 	DeletePermanentJavaScript(); // javascript permanent system
+#ifndef DISCARDPOSTGRES
+	DBShutDown();
+#endif
 }
 
 void CloseSystem()
 {
 	PartiallyCloseSystem();
-
+	// server remains up on a restart
 #ifndef DISCARDSERVER
 	CloseServer();
 #endif
-
-#ifndef DISCARDDATABASE
+	// user file rerouting stays up on a restart
+#ifndef DISCARDPOSTGRES
 	PGUserFilesCloseCode();
 #endif
 }
@@ -927,7 +944,7 @@ void ResetToPreUser() // prepare for multiple sentences being processed - data l
 	memset(wordStarts,0,sizeof(char*)*MAX_SENTENCE_LENGTH); // reinit for new volley - sharing of word space can occur throughout this volley
 
 	//  Revert to pre user-loaded state, fresh for a new user
-	ReturnToLayer(1,false);  // dict/fact/strings reverted and any extra topic loaded info
+	ReturnToAfterLayer(1,false);  // dict/fact/strings reverted and any extra topic loaded info  (but CSBoot process NOT lost)
 	ReestablishBotVariables(); // any changes user made to a variable will be reset
 	ResetTopicSystem(false);
 	ResetUserChat();
@@ -1282,7 +1299,7 @@ unsigned int ProcessInput(char* input)
 		{
 			reset = true;
 			char* intercept = GetUserVariable("$cs_beforereset");
-			if (intercept) Callback(FindWord(intercept),"()"); // call script function first
+			if (intercept) Callback(FindWord(intercept),"()",false); // call script function first
 		}
 		TestMode commanded = DoCommand(at,mainOutputBuffer);
 		if (!strnicmp(at,(char*)":retry",6) || !strnicmp(at,(char*)":redo",5))
@@ -1308,15 +1325,14 @@ unsigned int ProcessInput(char* input)
 			if (reset) 
 			{
 				char* intercept = GetUserVariable("$cs_afterreset");
-				if (intercept) Callback(FindWord(intercept),"()"); // call script function after
+				if (intercept) Callback(FindWord(intercept),"()",false); // call script function after
 			}
 			ProcessInput(buffer);
 			return 2; 
 		}
 		else if (commanded == COMMANDED ) 
 		{
-			ResetToPreUser(); // flush existing user data as we will try something else and reload user, dont want him left over from now also
-				return false; 
+			return false; 
 		}
 		else if (commanded == OUTPUTASGIVEN) return true; 
 		// otherwise FAILCOMMAND
@@ -1646,18 +1662,41 @@ bool AddResponse(char* msg, unsigned int responseControl)
 	}
 
     strcpy(buffer,msg);
-	if (responseControl & RESPONSE_REMOVETILDE) RemoveTilde(buffer);
+	char* at = SkipWhitespace(buffer);
+	if (*at == '[') // oob starter - find the end
+	{
+		int level = 1;
+		bool quote = false;
+		while (*++at)
+		{
+			if (*(at-1) == '\\'){}
+			else if (*at == '"') quote = !quote; // quotation
+			else if (quote){}
+			else if (*at == '[') ++level;
+			else if (*at == ']') 
+			{
+				--level;
+				if (level == 0)
+				{
+					at = SkipWhitespace(at);
+					break;
+				}
+			}
+		}
+	}
+
+	if (responseControl & RESPONSE_REMOVETILDE) RemoveTilde(at);
 	if (responseControl & RESPONSE_ALTERUNDERSCORES)
 	{
-		Convert2Underscores(buffer,false); // leave new lines alone
-		Convert2Blanks(buffer);	// dont keep underscores in output regardless
+		Convert2Underscores(at,false); // leave new lines alone
+		Convert2Blanks(at);	// dont keep underscores in output regardless
 	}
-	if (responseControl & RESPONSE_UPPERSTART) 	*buffer = GetUppercaseData(*buffer); 
+	if (responseControl & RESPONSE_UPPERSTART) 	*at = GetUppercaseData(*at); 
 
 	//   remove spaces before commas (geofacts often have them in city_,_state)
 	if (responseControl & RESPONSE_REMOVESPACEBEFORECOMMA)
 	{
-		char* ptr = buffer;
+		char* ptr = at;
 		while (ptr && *ptr)
 		{
 			char* comma = strchr(ptr,',');
@@ -1989,12 +2028,14 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set curre
 			strcat(buffer,(char*)" ");
 		}
 
-		// what the rest of the input had as punctuation
-		if (tokenFlags & QUESTIONMARK) strcat(buffer,(char*)"? (char*)");
-		else if (tokenFlags & EXCLAMATIONMARK) strcat(buffer,(char*)"! ");
-		else strcat(buffer,(char*)". ");
-
+		// what the rest of the input had as punctuation OR insure it does have it
 		char* end = buffer + strlen(buffer);
+		char* tail = end - 1;
+		while (tail > buffer && *tail == ' ') --tail; 
+		if (tokenFlags & QUESTIONMARK && *tail != '?') strcat(tail,(char*)"? (char*)");
+		else if (tokenFlags & EXCLAMATIONMARK && *tail != '!' ) strcat(tail,(char*)"! ");
+		else if (*tail != '.') strcat(tail,(char*)". ");
+
 		if (!analyze) 
 		{
 			strcpy(end,nextInput); // a copy of rest of input

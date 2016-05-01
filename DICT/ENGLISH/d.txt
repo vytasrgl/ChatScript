@@ -2237,7 +2237,7 @@
     pull~23vz cause to move in a certain direction by exerting a force upon, either physically or in an abstract sense
     reap~2vz get or derive
     withdraw~8v 
-    quarter~3v 
+    quarter~17v 
     draw~44vz require a specified depth for floating
     draw~45vz allow a draft
  Dantrell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -14538,8 +14538,8 @@
     second_childhood~1n 
  day_of_the_month ( meanings=1 ) 
     date~5n 
- D-day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    D-day~1nz (^date~5) date of the Allied landing in France, World War II
+ D-day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    6_June_1944~1n 
  day_of_the_week ( meanings=1 glosses=1 ) 
     day_of_the_week~1nz (^calendar_day~1) any one of the seven days in a week
  Dominicus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 

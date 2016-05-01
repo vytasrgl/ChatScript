@@ -626,7 +626,6 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define    OUTPUT_RETURNVALUE_ONLY		0x00080000	// just return the buffer, dont print it out		
 
 // flags to control response processing continue from output flags
-#define RESPONSE_NONE						0
 #define RESPONSE_UPPERSTART					0x00100000  // start each output sentence with upper case
 #define RESPONSE_REMOVESPACEBEFORECOMMA		0x00200000  // remove spaces before commas
 #define RESPONSE_ALTERUNDERSCORES			0x00400000

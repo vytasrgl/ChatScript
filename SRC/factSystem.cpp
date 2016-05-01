@@ -674,9 +674,13 @@ char* EatFact(char* ptr,unsigned int flags,bool attribute)
 
 bool ImportFacts(char* name, char* set, char* erase, char* transient)
 {
-	int store = GetSetID(set);
-	if (store == ILLEGAL_FACTSET) return false;
-	SET_FACTSET_COUNT(store,0);
+	int store = -1;
+	if (*set)
+	{
+		store = GetSetID(set);
+		if (store == ILLEGAL_FACTSET) return false;
+		SET_FACTSET_COUNT(store,0);
+	}
 	if ( *name == '"')
 	{
 		++name;
@@ -696,7 +700,7 @@ bool ImportFacts(char* name, char* set, char* erase, char* transient)
 		else if (*word == '(')
 		{
 			EatFact(ptr,flags);
-			AddFact(store,currentFact);
+			if (store > 0) AddFact(store,currentFact);
 		}
 	}
 	fclose(in);
@@ -1012,6 +1016,7 @@ FACT* ReadFact(char* &ptr, unsigned int build)
     if (*word == '0') return 0; 
 	unsigned int flags = 0;
 	if (build == BUILD2) flags |= FACTBUILD2;
+	else if (build == BUILD1) flags |= FACTBUILD1;
 	char subjectname[MAX_WORD_SIZE];
 	ptr = ReadField(ptr,subjectname,'s',flags);
     char verbname[MAX_WORD_SIZE];

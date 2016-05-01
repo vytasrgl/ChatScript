@@ -137,12 +137,10 @@
 + Broadway NOUN_TITLE_OF_WORK 
 + Cardigan_Welsh_corgi NOUN_SINGULAR 
 + Damaraland_mole_rat NOUN_SINGULAR 
-+ Angus NOUN_TITLE_OF_WORK NOUN_SINGULAR 
 + Pomoxis_annularis NOUN_SINGULAR 
 + Black_Maria NOUN_SINGULAR 
 + Chaka NOUN_TITLE_OF_WORK 
 + Gastrophryne_carolinensis NOUN_SINGULAR 
-+ Suzanna NOUN_TITLE_OF_WORK 
 + Apis_mellifera_adansonii NOUN_SINGULAR 
 + Bovinae NOUN_SINGULAR 
 + Islam NOUN_SINGULAR 
@@ -217,7 +215,6 @@
 + Amphiumidae NOUN_SINGULAR 
 + Amazon NOUN_SINGULAR ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
 + Mobula_hypostoma NOUN_SINGULAR 
-+ American_red_squirrel NOUN_SINGULAR 
 + Lucas NOUN_TITLE_OF_WORK 
 + Barbary_ape NOUN_SINGULAR 
 + Andrew_Johnson NOUN_HUMAN NOUN_HE 
@@ -696,7 +693,6 @@
 + Manchester_terrier NOUN_SINGULAR 
 + Evelyn NOUN_TITLE_OF_WORK 
 + Accra ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
-+ Diapheromera_femorata NOUN_SINGULAR 
 + Crocodylus_niloticus NOUN_SINGULAR 
 + John_Cabot NOUN_HUMAN NOUN_HE 
 + Hyaena_hyaena NOUN_SINGULAR 
@@ -708,7 +704,6 @@
 + Conakry ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
 + Caranx_hippos NOUN_SINGULAR 
 + Anabrus_simplex NOUN_SINGULAR 
-+ Archidiskidon_imperator NOUN_SINGULAR 
 + Balaenopteridae NOUN_SINGULAR 
 + Millard_Fillmore NOUN_HUMAN NOUN_HE 
 + Anwar NOUN_TITLE_OF_WORK NOUN NOUN_PROPER_SINGULAR 
@@ -1415,7 +1410,9 @@
 + Belfast ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
 + Chris_Evert NOUN_HUMAN NOUN_SHE 
 + African_monitor NOUN_SINGULAR 
++ Angus NOUN_TITLE_OF_WORK NOUN_SINGULAR 
 + Asian NOUN_SINGULAR 
++ Archidiskidon_imperator NOUN_SINGULAR 
 + Arthur NOUN_TITLE_OF_WORK 
 + Euarctos_americanus NOUN_SINGULAR 
 + Xenopus_laevis NOUN_SINGULAR 
@@ -1438,6 +1435,7 @@
 + American_cockroach NOUN_SINGULAR 
 + Antheraea_mylitta NOUN_SINGULAR 
 + Atticus_atlas NOUN_SINGULAR 
++ American_red_squirrel NOUN_SINGULAR 
 + Tamiasciurus_hudsonicus NOUN_SINGULAR 
 + Dasyprocta_aguti NOUN_SINGULAR 
 + American_saddle_horse NOUN_SINGULAR 
@@ -1963,6 +1961,7 @@
 + Dien_Bien_Phu NOUN_TITLE_OF_WORK 
 + descendent NOUN_HUMAN 
 + Doomsday_Book NOUN_TITLE_OF_WORK 
++ Diapheromera_femorata NOUN_SINGULAR 
 + Dover ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
 + Dave NOUN_TITLE_OF_WORK 
 + Dublin ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
@@ -4015,6 +4014,7 @@
 + Sabrina NOUN_TITLE_OF_WORK 
 + Soleidae NOUN_SINGULAR 
 + sports VERB_PRESENT_3PS NOUN VERB NOUN_PLURAL KINDERGARTEN 
++ Suzanna NOUN_TITLE_OF_WORK 
 + Saturday_night_special NOUN_SINGULAR 
 + Saturday NOUN_TITLE_OF_WORK 
 + Seoul ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 

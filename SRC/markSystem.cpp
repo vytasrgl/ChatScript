@@ -473,19 +473,14 @@ static void RiseUp(MEANING M,unsigned int start, unsigned int end,unsigned int d
 	}
 }
 
-static void MarkSequenceTitleFacts(MEANING M,  int start,  int end,bool canonical) // title phrases in sentence
-{
-    if (!M) return;
-	WORDP D = Meaning2Word(M);
-	if (D->properties & NOUN_TITLE_OF_WORK && canonical) return; // accidental canonical match. not intended
-	MarkFacts(M,start,end,canonical,true);
-}
 
 void MarkFacts(MEANING M,int start, int end,bool canonical,bool sequence) 
 { // M is always a word or sequence from a sentence
 
     if (!M) return;
 	WORDP D = Meaning2Word(M);
+	if (D->properties & NOUN_TITLE_OF_WORK && canonical) return; // accidental canonical match of a title. not intended
+
 	if (!sequence || D->properties & (PART_OF_SPEECH|NOUN_TITLE_OF_WORK|NOUN_HUMAN) || D->systemFlags & PATTERN_WORD || D->internalBits &  CONCEPT) MarkWordHit(D,start,end); // if we want the synset marked, RiseUp will do it.
 
 	int result = MarkSetPath(M,start,end,0,canonical); // generic membership of this word all the way to top
@@ -559,29 +554,42 @@ void MarkFacts(MEANING M,int start, int end,bool canonical,bool sequence)
 	}
 }
 
+static void HuntMatch(char* word,bool strict,int start, int end, unsigned int& usetrace)
+{
+	WORDP set[20];
+	WORDP D;
+	int i = GetWords(word,set,strict); // words in any case and with mixed underscore and spaces
+	while (i) 
+	{
+		D = set[--i];
+		trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
+		MarkFacts(MakeMeaning(D),start,end,false,true); 
+	}
+}
+
 static void SetSequenceStamp() //   mark words in sequence, original and canonical (but not mixed) - detects proper name potential up to 5 words  - and does discontiguous phrasal verbs
 {
+	// these use underscores
 	char* rawbuffer = AllocateBuffer();
-	char* canonbuffer1 = AllocateBuffer();
-	char* raw_buffer = AllocateBuffer();
-	char* canon_buffer1 = AllocateBuffer();
+	char* originalbuffer = AllocateBuffer(); // includes typos
+	char* canonbuffer = AllocateBuffer();
 	unsigned int oldtrace = trace;
 	unsigned int usetrace = trace;
-	char* buffer2 = AllocateBuffer();
 	if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
 	{
 		Log(STDUSERLOG,(char*)"\r\nSequences:\r\n");
 		usetrace = (unsigned int) -1;
 	}
+	uint64 logbase = logCount; // see if we logged anything
 
 	//   consider all sets of up to 3-in-a-row 
-	for (int i = startSentence; i < (int)endSentence; ++i)
+	for (int i = startSentence; i <= (int)endSentence; ++i)
 	{
 		if (!IsAlphaUTF8OrDigit(*wordStarts[i]) ) continue; // we only composite words, not punctuation or quoted stuff
 
 		// check for dates
 		int start,end;
-		if (DateZone(i,start,end))
+		if (DateZone(i,start,end) && i != wordCount)
 		{
 			int at = start - 1;
 			*rawbuffer = 0;
@@ -599,151 +607,59 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 		}
 
 		//   set base phrase
-		*rawbuffer = 0;
-		canonbuffer1[0] = 0;
-		*raw_buffer = 0;
-		canon_buffer1[0] = 0;
-		strcat(rawbuffer,wordStarts[i]);
-		strcat(canonbuffer1,wordCanonical[i]);
-  		strcat(raw_buffer,wordStarts[i]);
-		strcat(canon_buffer1,wordCanonical[i]);
-      
+		strcpy(rawbuffer,wordStarts[i]);
+		strcpy(canonbuffer,wordCanonical[i]);
+		*originalbuffer = 0;
+		start = derivationIndex[i] >> 16; // from here
+		end = derivationIndex[i] & 0x00ff;  // to here
+		for (int j = start; j <= end; ++j)
+		{
+			if (!derivationSentence[j]) break; // in case sentence is empty
+			strcat(originalbuffer,derivationSentence[j]);
+			if ( j != end) strcat(originalbuffer,"_");
+		}
+		
+		// scan interesting initial words (spaced, underscored, capitalized) but we need to recognize bots in lower case, so try all cases here as well
+		NextInferMark();
+		//if (strchr(rawbuffer,'_') || strchr(rawbuffer,' ') || IsUpperCase(*rawbuffer)) 
+			HuntMatch(rawbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i,usetrace);
+		if (strchr(canonbuffer,'_')|| strchr(canonbuffer,' ')) HuntMatch(canonbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i,usetrace);
+		//if (strchr(originalbuffer,'_')|| strchr(originalbuffer,' ') || IsUpperCase(*originalbuffer)) 
+			HuntMatch(originalbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i,usetrace);
+	
 		//   fan out for addon pieces
 		int k = 0;
 		int index = 0;
-		uint64 logbase = logCount; // see if we logged anything
 		while ((++k + i) <= endSentence)
 		{
-			strcat(raw_buffer,(char*)"_");
-			strcat(canon_buffer1,(char*)"_");
-			strcat(rawbuffer,(char*)" ");
-			strcat(canonbuffer1,(char*)" ");
-
+			strcat(rawbuffer,(char*)"_");
 			strcat(rawbuffer,wordStarts[i+k]);
-			strcat(canonbuffer1,wordCanonical[i+k]);
-			strcat(raw_buffer,wordStarts[i+k]);
-			strcat(canon_buffer1,wordCanonical[i+k]);
+
+			strcat(canonbuffer,(char*)"_");
+			strcat(canonbuffer,wordCanonical[i+k]);
+
+			strcat(originalbuffer,(char*)"_");
+			start = derivationIndex[i+k] >> 16; // from here
+			end = derivationIndex[i+k] & 0x00ff;  // to here
+			for (int j = start; j <= end; ++j)
+			{
+				if (!derivationSentence[j]) break; // in case sentence is empty
+				strcat(originalbuffer,derivationSentence[j]);
+				if ( j != end)  strcat(originalbuffer,"_");
+			}
 
 			// we  composite anything, not just words, in case they made a typo
 			NextInferMark();
-
-			// for now, accept upper and lower case forms of the decomposed words for matching
-			// storeword instead of findword because we normally dont store keyword phrases in dictionary
-			WORDP D;
-			if (tokenControl & STRICT_CASING) 
-			{
-				D = FindWord(rawbuffer,0,PRIMARY_CASE_ALLOWED); 
-				if (D)
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
-					MarkFacts(MakeMeaning(D),i,i+k,false,true); 
-				}
-			}
-			else
-			{
-				MakeLowerCopy(buffer2,rawbuffer);
-				WORDP D = FindWord(buffer2,0,LOWERCASE_LOOKUP); 
-				if (D)
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
-					MarkFacts(MakeMeaning(D),i,i+k,false,true); 
-				}
-				D = FindWord(buffer2,0,UPPERCASE_LOOKUP);
-				if (D)
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0;
-					MarkSequenceTitleFacts(MakeMeaning(D),i,i+k,false);
-				}
-			}
-			if (tokenControl & STRICT_CASING) 
-			{
-				D = FindWord(raw_buffer,0,PRIMARY_CASE_ALLOWED); 
-				if (D)
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
-					MarkFacts(MakeMeaning(D),i,i+k,false,true); 
-				}
-			}
-			else
-			{
-				MakeLowerCopy(buffer2,raw_buffer);
-				WORDP D = FindWord(buffer2,0,LOWERCASE_LOOKUP); 
-				if (D)
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
-					MarkFacts(MakeMeaning(D),i,i+k,false,true); 
-				}
-				D = FindWord(buffer2,0,UPPERCASE_LOOKUP);
-				if (D)
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0;
-					MarkSequenceTitleFacts(MakeMeaning(D),i,i+k,false);
-				}
-			}
-			
-			if (tokenControl & STRICT_CASING) 
-			{
-				D = FindWord(canonbuffer1,0,PRIMARY_CASE_ALLOWED); 
-				if (D && !(D->properties & (NOUN_PROPER_SINGULAR|NOUN_PROPER_PLURAL))) // proper nouns MUST be exact match to raw, not canonical
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
-					MarkFacts(MakeMeaning(D),i,i+k,false,true); 
-				}
-			}
-			else
-			{
-				MakeLowerCopy(buffer2,canonbuffer1);
-				D = FindWord(buffer2,0,LOWERCASE_LOOKUP);
-				if (D) 
-				{
-					trace = (D->subjectHead  || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0;
-					MarkFacts(MakeMeaning(D),i,i+k,true,true); 
-				}
-				// dont do uppercase, that should have come from raw - EXCEPT "I say" given "I said"
-				MakeUpperCopy(buffer2,canonbuffer1);
-				D = FindWord(buffer2,0,UPPERCASE_LOOKUP);
-				if (D)
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0;
-					MarkSequenceTitleFacts(MakeMeaning(D),i,i+k,false);
-				}
-		}
-			if (tokenControl & STRICT_CASING) 
-			{
-				D = FindWord(canon_buffer1,0,PRIMARY_CASE_ALLOWED); 
-				if (D && !(D->properties & (NOUN_PROPER_SINGULAR|NOUN_PROPER_PLURAL))) // proper nouns MUST be exact match to raw, not canonical
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
-					MarkFacts(MakeMeaning(D),i,i+k,false,true); 
-				}
-			}
-			else
-			{
-				MakeLowerCopy(buffer2,canon_buffer1);
-				D = FindWord(buffer2,0,LOWERCASE_LOOKUP);
-				if (D) 
-				{
-					trace = (D->subjectHead  || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0;
-					MarkFacts(MakeMeaning(D),i,i+k,true,true); 
-				}
-				// dont do uppercase, that should have come from raw - EXCEPT "I say" given "I said"
-				MakeUpperCopy(buffer2,canon_buffer1);
-				D = FindWord(buffer2,0,UPPERCASE_LOOKUP);
-				if (D)
-				{
-					trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0;
-					MarkSequenceTitleFacts(MakeMeaning(D),i,i+k,false);
-				}
-			}
-	
-
+			HuntMatch(rawbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
+			HuntMatch(canonbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
+			HuntMatch(originalbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
 			if (logCount != logbase && usetrace)  Log(STDUSERLOG,(char*)"\r\n"); // if we logged something, separate
-			
 			if (++index >= SEQUENCE_LIMIT) break; //   up thru 5 words in a phrase
+			logbase = logCount;
 		}
 	}
 	
-	// mark disjoint particles
+	// mark disjoint particle verbs as whole
 	for (int i = wordCount; i >= 1; --i)
 	{
 		if (!(posValues[i] & PARTICLE)) continue;
@@ -783,7 +699,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 			trace = usetrace; // being a subject head means belongs to some set. being a marked word means used as a keyword
 			MarkFacts(MakeMeaning(D),i,i,false,false); 
 		}
-		if (stricmp(original,canonical))
+		if (stricmp(original,canonical)) // they are different
 		{
 			D = FindWord(canonical,0,LOWERCASE_LOOKUP);
 			if (D) 
@@ -793,11 +709,9 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 			}
 		}
 	}
-
+	Log(STDUSERLOG,(char*)"\r\n"); // if we logged something, separate
 
 	trace = oldtrace;
-	FreeBuffer();
-	FreeBuffer();
 	FreeBuffer();
 	FreeBuffer();
 	FreeBuffer();

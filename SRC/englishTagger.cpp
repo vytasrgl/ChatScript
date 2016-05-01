@@ -2419,7 +2419,7 @@ static void WordIdioms(bool &changed)
 
 		if (capState[i] && i != startSentence && !(tokenControl & ONLY_LOWERCASE)) continue; // no upper case idioms (except dates)
 		char* base = wordStarts[i];
-		char word[MAX_WORD_SIZE];
+		char word[MAX_WORD_SIZE * 10]; // any single word will be < max word size
 		unsigned int diff =  endSentence - i ;   
 		int tagged = 0;
 		char* verb = NULL;
