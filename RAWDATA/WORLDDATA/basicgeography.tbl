@@ -504,7 +504,7 @@ DATA:
  part Antarctica ~geographical_areas South_Pole
  part Earth ~earthregion Middle_East
  part North_America ~nAregion [Central_America North_American_Mainland]
- part North_American_Mainland ~country [Canada "United States of America" (United_States U.S. USA America U.S.A.) United_States]
+ part North_American_Mainland ~country [Canada "United States of America" (United_States US U.S. USA America U.S.A.) United_States]
  part Europe ~country [Switzerland Norway  Iceland Andorra Vatican_City (Catican "Holy See") Monaco]
  part Europe ~country [ "Most Serene Republic of San Marino" (San_Marino) Belarus Ukraine "Republic of Moldova" (Moldova)]
  part Europe ~country [ Serbia Croatia Albania "Republic of Macedonia" (Macedonia)  Montenegro]
@@ -614,7 +614,7 @@ part Washington ~city Seattle
 part Maryland ~city Baltimore
 part Oregon ~city Portland 
 part Illinois ~city Chicago
-part Florida ~city [Miami Tampa Jacksonville]
+part Florida ~city [Miami Tampa Jacksonville Orlando]
 part Georgia ~city [Atlanta Savannah]
 part Massachusetts ~city Boston
 part Louisiana ~city New_Orleans

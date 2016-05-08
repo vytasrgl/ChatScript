@@ -152,6 +152,7 @@ int ValidPeriodToken(char* start, char* end, char next,char next2) // token with
 	if (*start == '$' && IsFloat(start+1,end) && IsDigit(next)) return TOKEN_INCOMPLETE; //   decimal number9 or money
 	if (IsNumericDate(start,end)) return TOKEN_INCOMPLETE;	//   swallow period date as a whole - bug . after it?
 	if ( next == '-') return TOKEN_INCOMPLETE;	// like N.J.-based
+	if (IsAlphaUTF8(next)) return TOKEN_INCLUSIVE;  // "file.txt" 
 
 	//  not part of word, will be stand alone token.
 	return TOKEN_EXCLUSIVE;
@@ -1038,6 +1039,15 @@ static int FinishName(int& start, int& end, bool& upperStart,uint64 kind,WORDP n
 { // start is beginning of sequence, end is on the sequence last word. i is where to continue outside after having done this one
 	
     if (end == UNINIT) end = start;
+
+	if ((end - start) > 6) // improbable, probably all caps input
+	{
+		int more = end;
+		start = end = UNINIT;
+		upperStart = false;
+		return more; // continue AFTER here
+	}
+
 	if (upperStart == false && start == 1 && end == (int)wordCount && IsUpperCase(*wordStarts[start])) upperStart = true; // assume he meant it if only literally that as sentence (eg header)
 	
     //   a 1-word title gets no change. also
@@ -1663,7 +1673,7 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 		char* tokens[15];
 		tokens[1] = wordStarts[i+erasing+1]; // the word after the erase zone
 		int extra = (tokens[1] && *tokens[1]) ? 1 : 0;
-		if (i != wordCount)	ReplaceWords(i,erasing+1+1,erasing + extra,tokens); // remove 2, add 1
+		if (i != wordCount)	ReplaceWords(i,erasing+1 + extra,extra,tokens); // remove the removals + the one after if there is one. replace with just the one
 		else 	ReplaceWords(i,erasing+1,erasing,tokens); // remove 1, add 0
 		return true;
 	}

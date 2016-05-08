@@ -2167,15 +2167,22 @@ void NoteLanguage()
 	fclose(out);
 }
 
-void ReadSubstitutes(char* name,unsigned int fileFlag, bool filegiven)
+void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,bool filegiven)
 {
 	char file[MAX_WORD_SIZE];
-	if (filegiven) strcpy(file,name);
+	if (layer) sprintf(file,"TOPIC/%s",name);
+	else if (filegiven) strcpy(file,name);
 	else sprintf(file,(char*)"%s/%s",livedata,name);
     char original[MAX_WORD_SIZE];
     char replacement[MAX_WORD_SIZE];
     FILE* in = FopenStaticReadOnly(file); // LIVEDATA substitutes
-    if (!in) return;
+ 	char word[MAX_WORD_SIZE];
+	if (!in && layer) 
+	{
+		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		in = FopenReadOnly(word);
+	}
+	if (!in) return;
     while (ReadALine(readBuffer,in)  >= 0) 
     {
         if (*readBuffer == '#' || *readBuffer == 0) continue;
@@ -2276,12 +2283,20 @@ void ReadWordsOf(char* name,uint64 mark)
     fclose(in);
 }
 
-void ReadCanonicals(char* file)
+void ReadCanonicals(const char* file,const char* layer)
 {
     char original[MAX_WORD_SIZE];
     char replacement[MAX_WORD_SIZE];
-    FILE* in = FopenStaticReadOnly(file); // LIVEDATA canonicals
-    if (!in) return;
+ 	char word[MAX_WORD_SIZE];
+	if (layer) sprintf(word,"TOPIC/%s",file);
+	else strcpy(word,file);
+    FILE* in = FopenStaticReadOnly(word); // LIVEDATA canonicals
+	if (!in && layer) 
+	{
+		sprintf(word,"TOPIC/BUILD%s/%s",layer,file);
+		in = FopenStaticReadOnly(word);
+	}
+	if (!in) return;
     while (ReadALine(readBuffer,in)  >= 0) 
     {
         if (*readBuffer == '#' || *readBuffer == 0) continue;
@@ -2375,19 +2390,19 @@ void ReadLiveData()
 	// system livedata
 	char word[MAX_WORD_SIZE];
 	sprintf(word,(char*)"%s/systemessentials.txt",systemFolder);
-	ReadSubstitutes(word,DO_ESSENTIALS,true);
+	ReadSubstitutes(word,NULL,DO_ESSENTIALS,true);
 	sprintf(word,(char*)"%s/canonical.txt",systemFolder);
-	ReadCanonicals(word);
+	ReadCanonicals(word,NULL);
 	sprintf(word,(char*)"%s/queries.txt",systemFolder);
 	ReadQueryLabels(word);
 
-	ReadSubstitutes((char*)"substitutes.txt",DO_SUBSTITUTES);
-	ReadSubstitutes((char*)"contractions.txt",DO_CONTRACTIONS);
-	ReadSubstitutes((char*)"interjections.txt",DO_INTERJECTIONS);
-	ReadSubstitutes((char*)"british.txt",DO_BRITISH);
-	ReadSubstitutes((char*)"spellfix.txt",DO_SPELLING);
-	ReadSubstitutes((char*)"texting.txt",DO_TEXTING);
-	ReadSubstitutes((char*)"noise.txt",DO_NOISE);
+	ReadSubstitutes((char*)"substitutes.txt",NULL,DO_SUBSTITUTES);
+	ReadSubstitutes((char*)"contractions.txt",NULL,DO_CONTRACTIONS);
+	ReadSubstitutes((char*)"interjections.txt",NULL,DO_INTERJECTIONS);
+	ReadSubstitutes((char*)"british.txt",NULL,DO_BRITISH);
+	ReadSubstitutes((char*)"spellfix.txt",NULL,DO_SPELLING);
+	ReadSubstitutes((char*)"texting.txt",NULL,DO_TEXTING);
+	ReadSubstitutes((char*)"noise.txt",NULL,DO_NOISE);
 	ReadWordsOf((char*)"lowercaseTitles.txt",LOWERCASE_TITLE);
 }
 

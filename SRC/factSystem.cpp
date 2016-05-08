@@ -22,6 +22,9 @@ start of the layer since facts may have allocated dictionary and string items.
 This is ReturnToDictionaryFreeze for unpeeling 3/4 and ReturnDictionaryToWordNet for unpeeling layer 2.
 
 #endif
+char traceSubject[100];
+char traceVerb[100];
+char traceObject[100];
 
 size_t maxFacts = MAX_FACT_NODES;	// how many facts we can create at max
 
@@ -226,6 +229,10 @@ void ClearUserFacts()
 
 void InitFacts()
 {
+	*traceSubject = 0;
+	*traceVerb = 0;
+	*traceObject = 0;
+
 	if ( factBase == 0) 
 	{
 		factBase = (FACT*) malloc(maxFacts * sizeof(FACT)); // only on 1st startup, not on reload
@@ -463,6 +470,43 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 	{
 		other = ReadMeaning(word,true,true);
 		if (Meaning2Index(other) || GETTYPERESTRICTION(other)) object = other;
+	}
+	if (*traceSubject)
+	{
+		if (s && !stricmp(s->word,traceSubject) && *traceVerb && *traceObject)
+		{
+			DebugCode(NULL);
+		}
+		else if (s && !stricmp(s->word,traceSubject) && v && !stricmp(s->word,traceVerb) && *traceObject)
+		{
+			DebugCode(NULL);
+		}
+		else if (s && !stricmp(s->word,traceSubject) && o && !stricmp(s->word,traceObject) && *traceVerb)
+		{
+			DebugCode(NULL);
+		}
+		else if (s && !stricmp(s->word,traceSubject) && v && !stricmp(s->word,traceVerb) && o && !stricmp(s->word,traceObject))
+		{
+			DebugCode(NULL);
+		}
+	}
+	if (*traceVerb)
+	{
+		if (v && !stricmp(v->word,traceVerb) && *traceSubject && *traceObject)
+		{
+			DebugCode(NULL);
+		}
+		else if (v && !stricmp(s->word,traceVerb) && *traceSubject  && o && !stricmp(s->word,traceObject))
+		{
+			DebugCode(NULL);
+		}
+	}
+	if (*traceObject)
+	{
+		if (o &&  !stricmp(o->word,traceObject)  && *traceSubject && *traceVerb)
+		{
+			DebugCode(NULL);
+		}
 	}
 
 	//   insure fact is unique if requested
@@ -1048,12 +1092,19 @@ FACT* ReadFact(char* &ptr, unsigned int build)
     return F;
 }
 
-void ReadFacts(const char* name,unsigned int build,bool user) //   a facts file may have dictionary augmentations and variable also
+void ReadFacts(const char* name,const char* layer,unsigned int build,bool user) //   a facts file may have dictionary augmentations and variable also
 {
-    FILE* in = (user) ? FopenReadWritten(name) : FopenReadOnly(name); //  TOPIC fact/DICT files
-    if (!in) return;
+  	char word[MAX_WORD_SIZE];
+	if (layer) sprintf(word,"TOPIC/%s",name);
+	else strcpy(word,name);
+    FILE* in = (user) ? FopenReadWritten(word) : FopenReadOnly(word); //  TOPIC fact/DICT files
+	if (!in && layer) 
+	{
+		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		in = FopenReadOnly(word);
+	}
+	if (!in) return;
 	StartFile(name);
-	char word[MAX_WORD_SIZE];
     while (ReadALine(readBuffer, in) >= 0)
     {
 		char* ptr = ReadCompiledWord(readBuffer,word);

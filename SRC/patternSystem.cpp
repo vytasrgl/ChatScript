@@ -2,12 +2,13 @@
 
 #define INFINITE_MATCH (-(200 << 8)) // allowed to match anywhere
 
-#define GAPPASSBACK  0X0000FFFF
-#define NOT_BIT 0X00010000
-#define FREEMODE_BIT 0X00020000
-#define QUOTE_BIT 0X00080000
-#define WILDGAP 0X00100000
-#define WILDSPECIFIC 0X00200000
+#define GAPPASSBACK		0X0000FFFF
+#define NOT_BIT			0X00010000
+#define FREEMODE_BIT	0X00020000
+#define QUOTE_BIT		0X00080000
+#define WILDGAP			0X00100000
+#define WILDSPECIFIC	0X00200000
+#define NOTNOT_BIT		0X00400000
 
 bool matching = false;
 bool clearUnmarks = false;
@@ -182,19 +183,23 @@ static bool FindPhrase(char* word, int start,bool reverse, int & actualStart, in
 	oldend = start = 0; // allowed to match anywhere or only next
 
 	unsigned int n = BurstWord(word);
-	for (unsigned int i = 0; i < n; ++i) // use the set of burst words - but "Andy Warhol" might be a SINGLE word.
+	for (int i = 0; i < n; ++i) // use the set of burst words - but "Andy Warhol" might be a SINGLE word.
 	{
 		WORDP D = FindWord(GetBurstWord(i));
 		bool junk;
 		matched = MatchTest(reverse,D,actualEnd,NULL,NULL,0,junk,actualStart,actualEnd);
 		if (matched)
 		{
-			if (oldend > 0 && actualStart != (oldend + 1)) // do our words match in sequence
+			if (oldend > 0 && actualStart != (oldend + 1)) // do our words match in sequence NO. retry later in sentence
 			{
+				++start;
+				actualStart = actualEnd = start;
+				i = -1;
+				oldend = start = 0;
 				matched = false;
-				break;
+				continue;
 			}
-			if (i == 1) start = actualStart;
+			if (i == 0) start = actualStart; // where we matched INITIALLY
 			oldend = actualEnd;
 		}
 		else break;
@@ -247,6 +252,12 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
 				ptr = nextTokenStart;
 				statusBits |= NOT_BIT;
 				if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDUSERLOG,(char*)"!");
+				if (*ptr == '!') 
+				{
+					ptr = SkipWhitespace(nextTokenStart+1);
+					statusBits |= NOTNOT_BIT;
+					if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDUSERLOG,(char*)"!");
+				}
 				continue;
 			case '\'': //   single quoted item    
 				if (!stricmp(word,(char*)"'s"))
@@ -275,7 +286,8 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
 				ptr = nextTokenStart;
 			
 				// if we are going to memorize something AND we previously matched inside a phrase, we need to move to after...
-				if ((positionStart - positionEnd) == 1) positionEnd = positionStart; // If currently matched a phrase, move to end. 
+				if ((positionStart - positionEnd) == 1 && !reverse) positionEnd = positionStart; // If currently matched a phrase, move to end. 
+				else if ((positionEnd - positionStart) == 1 && reverse) positionStart = positionEnd; // If currently matched a phrase, move to end. 
 				uppercasematch = false;
 				if (word[1] != '*' || IsDigit(word[2]) || word[2] == '-' || (word[2] && word[3] != '*' && word[2] != '~' )) wildcardSelector |= WILDSPECIFIC; // no gap or specific gap
 				else if (word[1] == '*' && IsAlphaUTF8(word[2]))  wildcardSelector |= WILDSPECIFIC; // *dda* pattern
@@ -325,6 +337,12 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
 					if (!positionEnd) break;
 					oldEnd = positionEnd; // forced match ok
 					oldStart = positionStart;
+					if (trace & TRACE_PATTERN  && CheckTopicTrace()) 
+					{
+						if (positionStart <= 0 || positionStart > wordCount || positionEnd <= 0 || positionEnd > wordCount) Log(STDUSERLOG, "(index:%d)",positionEnd);
+						else if (positionStart == positionEnd) Log(STDUSERLOG,(char*)"(word:%s index:%d)",wordStarts[positionEnd],positionEnd);
+						else Log(STDUSERLOG,(char*)"(word:%s-%s index:%d-%d)",wordStarts[positionStart],wordStarts[positionEnd],positionStart,positionEnd);
+					}
 					matched = true;
 				}
 				else
@@ -740,6 +758,16 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						else if (*lhs == '^' && IsDigit(lhs[1])) val = callArgumentList[lhs[1]-'0'+fnVarBase];  // nine argument limit
 						else if (*lhs == '%') val = SystemVariable(lhs,NULL);
 						else val = lhs; // direct word
+
+						if (*val == '"') // phrase requires dynamic matching
+						{
+							matched = FindPhrase(val,(positionEnd < basicStart && firstMatched < 0) ? basicStart : positionEnd, reverse,
+								positionStart,positionEnd);
+							if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart; //   first SOLID match
+							if (trace) sprintf(word,(char*)"%s(%s)%s",lhs,val,op);
+							break;
+						}
+
 						bool junk;
 						matched = MatchTest(reverse,FindWord(val),(positionEnd < basicStart && firstMatched < 0) ? basicStart : positionEnd,NULL,NULL,
 							quoted,junk,positionStart,positionEnd); 
@@ -800,14 +828,20 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart;
          } 
 		statusBits &= -1 ^ QUOTE_BIT; // turn off any pending quote
-
-        if (statusBits & NOT_BIT && matched) // flip success to failure
+        if (statusBits & NOT_BIT) // flip success to failure maybe
         {
-            matched = false; 
-			uppercasematch = false;
-            statusBits &= -1 ^ NOT_BIT;
-            positionStart = oldStart; //   restore any changed position values (if we succeed we would and if we fail it doesnt harm us)
-            positionEnd = oldEnd;
+			if (matched)
+			{
+				if (statusBits & NOTNOT_BIT) // is match immediately after or not
+				{
+					if (!reverse && positionStart == (oldEnd + 1)) matched = uppercasematch = false;
+					else if (reverse && positionEnd == (oldStart + 1)) matched = uppercasematch = false;
+				}
+				else uppercasematch = matched = false; 
+				statusBits &= -1 ^ (NOT_BIT|NOTNOT_BIT);
+				positionStart = oldStart; //   restore any changed position values (if we succeed we would and if we fail it doesnt harm us)
+				positionEnd = oldEnd;
+			}
         }
 
 		//   prove GAP was legal, accounting for ignored words if needed
@@ -954,7 +988,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 		if (statusBits & NOT_BIT) //   flip failure result to success now (after wildcardsetting doesnt happen because formally match failed first)
         {
             matched = true; 
-			statusBits &= -1 ^ NOT_BIT;
+			statusBits &= -1 ^ (NOT_BIT|NOTNOT_BIT);
          }
 
 		//   word ptr may not advance more than 1 at a time (allowed to advance 0 - like a string match or test) unless global unmarks in progress
@@ -1008,11 +1042,6 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					else if (positionStart != positionEnd) Log(STDUSERLOG,(char*)"(%s-%s)",wordStarts[positionStart],wordStarts[positionEnd]);
 					else Log(STDUSERLOG,(char*)"(%s)",wordStarts[positionStart]);
 				}
-				else if (*word == '@' && word[1] == '_')
-				{
-					if (positionStart <= 0 || positionStart > wordCount || positionEnd <= 0 || positionEnd > wordCount) Log(STDUSERLOG, "(index:%d)",positionEnd);
-					else Log(STDUSERLOG,(char*)"(word:%s index:%d)",wordStarts[positionEnd],positionEnd);
-				}
 				else if (*word == '$' && matched) 
 				{
 					Log(STDUSERLOG,(char*)"(%s)",GetUserVariable(word));
@@ -1056,7 +1085,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					positionStart = INFINITE_MATCH; 
 					gap = 0;
 					wildcardSelector = 0;
-					statusBits &= -1 ^ (NOT_BIT | FREEMODE_BIT);
+					statusBits &= -1 ^ (NOT_BIT | FREEMODE_BIT | NOTNOT_BIT);
 					argumentText = NULL; 
 					continue;
 				}

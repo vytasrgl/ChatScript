@@ -521,9 +521,9 @@ char* GetTimeInfo() //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm 
 	ptm = localtime (&curr);
 
 	char* utcoffset = GetUserVariable((char*)"$cs_utcoffset");
-	if (*utcoffset) // report relative time
+	if (*utcoffset) // report UTC relative time - so if time is 1PM and offset is -1:00, time reported to user is 12 PM.  
 	{
-		ptm = gmtime (&curr); // UTC time reference structure
+		ptm = gmtime (&curr); 
 
 		// determine leap year status
 		int year = ptm->tm_year + 1900;
@@ -651,6 +651,7 @@ char* GetMyTime(time_t curr)
 	char *mytime = ctime(&curr); //	Www Mmm dd hh:mm:ss yyyy
 	static char when[40];
 	strncpy(when,mytime+4,3); // mmm
+	if (mytime[8] == ' ') mytime[8] = '0';
 	strncpy(when+3,mytime+8,2); // dd
 	when[5] = '\'';
 	strncpy(when+6,mytime+22,2); // yy

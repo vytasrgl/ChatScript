@@ -962,6 +962,21 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 
 	char* ptr = GetPattern(rule,NULL,NULL);  // go to output
 
+	if (trace & TRACE_FLOW)
+	{
+		char output[MAX_WORD_SIZE];
+		char pattern[MAX_WORD_SIZE];
+		char label[MAX_WORD_SIZE];
+		char* output1 = SkipWhitespace(GetPattern(rule,label,pattern));
+		size_t len = strlen(output1);
+		if (len < 50) strcpy(output,output1);
+		else strncpy(output,output1,50);
+		output[50] = 0;
+		pattern[30] = 0;
+		if (*label) Log(STDUSERTABLOG, "%s rule %c:%d.%d %s %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(currentTopicID),REJOINDERID(currentTopicID),label,pattern,output); //  \\  blocks linefeed on next Log call
+		else  Log(STDUSERTABLOG, "%s rule %c:%d.%d %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(currentTopicID),REJOINDERID(currentTopicID),pattern,output); //  \\  blocks linefeed on next Log call
+	}
+
    //   now process response
     FunctionResult result;
 
@@ -1829,9 +1844,16 @@ void CreateFakeTopics(char* data) // ExtraTopic can be used to test this, naming
 	}
 }
 
-static void LoadTopicData(const char* name,unsigned int build,int layer,bool plan)
+static void LoadTopicData(const char* name,const char* layerid,unsigned int build,int layer,bool plan)
 {
-	FILE* in = FopenReadOnly(name); // TOPIC folder
+	char word[MAX_WORD_SIZE];
+	sprintf(word,"TOPIC/%s",name);
+	FILE* in = FopenReadOnly(word); // TOPIC folder
+	if (!in && layerid) 
+	{
+		sprintf(word,"TOPIC/BUILD%s/%s",layerid,name);
+		in = FopenReadOnly(word);
+	}
 	if (!in) return;
 
 	char count[MAX_WORD_SIZE];
@@ -1953,10 +1975,16 @@ static void LoadTopicData(const char* name,unsigned int build,int layer,bool pla
 	fclose(in);
 }
 
-static void ReadPatternData(const char* name,unsigned int build)
+static void ReadPatternData(const char* name,const char* layer,unsigned int build)
 {
-    FILE* in = FopenReadOnly(name); // TOPIC folder
     char word[MAX_WORD_SIZE];
+	sprintf(word,"TOPIC/%s",name);
+    FILE* in = FopenReadOnly(name); // TOPIC folder
+	if (!in && layer) 
+	{
+		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		in = FopenReadOnly(word);
+	}
 	if (!in) return;
 	currentFileLine = 0;
 	WORDP base = dictionaryFree;
@@ -2069,11 +2097,17 @@ static void AddRecursiveFlag(WORDP D,uint64 type,bool buildingDictionary,unsigne
 	}
 }
 
-void InitKeywords(const char* name,unsigned int build,bool buildDictionary,bool concept)
+void InitKeywords(const char* name,const char* layer,unsigned int build,bool buildDictionary,bool concept)
 { 
-	FILE* in = FopenReadOnly(name); //  TOPICS keywords files
+	char word[MAX_WORD_SIZE];
+	sprintf(word,"TOPIC/%s",name);
+	FILE* in = FopenReadOnly(word); //  TOPICS keywords files
+	if (!in && layer) 
+	{
+		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		in = FopenReadOnly(word);
+	}
 	if (!in) return;
-
 	WORDP holdset[10000];
 	uint64 holdprop[10000];
 	uint64 holdsys[10000];
@@ -2275,9 +2309,16 @@ void InitKeywords(const char* name,unsigned int build,bool buildDictionary,bool 
 	fclose(in);
 }
 
-static void InitMacros(const char* name,unsigned int build)
+static void InitMacros(const char* name,const char* layer,unsigned int build)
 {
-	FILE* in = FopenReadOnly(name); // TOPICS macros
+ 	char word[MAX_WORD_SIZE];
+	sprintf(word,"TOPIC/%s",name);
+	FILE* in = FopenReadOnly(word); // TOPICS macros
+	if (!in && layer) 
+	{
+		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		in = FopenReadOnly(word);
+	}
 	if (!in) return;
 	currentFileLine = 0;
 	while (ReadALine(readBuffer, in)>= 0) //   ^showfavorite O 2 _0 = ^0 _1 = ^1 ^reuse (~xfave FAVE ) 
@@ -2376,13 +2417,18 @@ bool ReadUserContext()
 	return true;
 }
 
-static void InitLayerMemory(char* name, int layer)
+static void InitLayerMemory(const char* name, int layer)
 {
 	int total;
 	int counter = 0;
 	char filename[MAX_WORD_SIZE];
 	sprintf(filename,(char*)"TOPIC/script%s.txt",name);
 	FILE* in = FopenReadOnly(filename); // TOPICS
+	if (!in) 
+	{
+		sprintf(filename,(char*)"TOPIC/BUILD%s/script%s.txt",name,name);
+		in = FopenReadOnly(filename);
+	}
 	if (in)
 	{
 		ReadALine(readBuffer,in);
@@ -2392,6 +2438,11 @@ static void InitLayerMemory(char* name, int layer)
 	}
 	sprintf(filename,(char*)"TOPIC/plans%s.txt",name);
 	in = FopenReadOnly(filename); 
+	if (!in)
+	{
+		sprintf(filename,(char*)"TOPIC/BUILD%s/plans%s.txt",name,name);
+		in = FopenReadOnly(filename); 	
+	}
 	if (in)
 	{
 		ReadALine(readBuffer,in);
@@ -2452,7 +2503,7 @@ topicBlock* TI(int topicid)
 	return NULL;
 }
 	
-FunctionResult LoadLayer(int layer,char* name,unsigned int build)
+FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 {
 	UnlockLevel();
 	//  if (layer == 2) ReturnToAfterLayer(1,false); // Warning - erases user facts and variables, etc. 
@@ -2461,25 +2512,25 @@ FunctionResult LoadLayer(int layer,char* name,unsigned int build)
 	InitLayerMemory(name,layer);
 	int expectedTopicCount = numberOfTopics;
 	numberOfTopics = originalTopicCount;
-	sprintf(filename,(char*)"TOPIC/patternWords%s.txt",name );
-	ReadPatternData(filename,build); // sets the PATTERN_WORD flag on a dictionary entry
-	sprintf(filename,(char*)"TOPIC/keywords%s.txt",name);
-	InitKeywords(filename,build);
-	sprintf(filename,(char*)"TOPIC/macros%s.txt",name);
-	InitMacros(filename,build);
-	sprintf(filename,(char*)"TOPIC/dict%s.txt",name);
-	ReadFacts(filename,build);
-	sprintf(filename,(char*)"TOPIC/facts%s.txt",name );
-	ReadFacts(filename,build);
-	sprintf(filename,(char*)"TOPIC/script%s.txt",name);
-	LoadTopicData(filename,build,layer,false);
-	sprintf(filename,(char*)"TOPIC/plans%s.txt",name );
-	LoadTopicData(filename,build,layer,true);
+	sprintf(filename,(char*)"patternWords%s.txt",name );
+	ReadPatternData(filename,name,build); // sets the PATTERN_WORD flag on a dictionary entry
+	sprintf(filename,(char*)"keywords%s.txt",name);
+	InitKeywords(filename,name,build);
+	sprintf(filename,(char*)"macros%s.txt",name);
+	InitMacros(filename,name,build);
+	sprintf(filename,(char*)"dict%s.txt",name);
+	ReadFacts(filename,name,build);
+	sprintf(filename,(char*)"facts%s.txt",name );
+	ReadFacts(filename,name,build);
+	sprintf(filename,(char*)"script%s.txt",name);
+	LoadTopicData(filename,name,build,layer,false);
+	sprintf(filename,(char*)"plans%s.txt",name );
+	LoadTopicData(filename,name,build,layer,true);
 
-	sprintf(filename,(char*)"TOPIC/private%s.txt",name);
-	ReadSubstitutes(filename,DO_PRIVATE,true);
-	sprintf(filename,(char*)"TOPIC/canon%s.txt",name );
-	ReadCanonicals(filename);
+	sprintf(filename,(char*)"private%s.txt",name);
+	ReadSubstitutes(filename,name,DO_PRIVATE,true);
+	sprintf(filename,(char*)"canon%s.txt",name );
+	ReadCanonicals(filename,name);
 	WalkDictionary(IndirectMembers,build); // having read in all concepts, handled delayed word marks
 	
 	if (layer != 2)

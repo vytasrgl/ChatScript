@@ -635,7 +635,25 @@ static char* SoriginalInput(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    return mainInputBuffer;
+	char* at = SkipWhitespace(mainInputBuffer); 
+	if (*at == '[') // skip oob data
+	{
+		int depth = 1;
+		bool quote = false;
+		while (++at)
+		{
+			if (*at != '"' && quote) continue; // swallow stuff in quotes
+			if (*at == '"' && *(at-1) != '\\') quote = !quote;
+			else if (*at == '[' && *(at-1) != '\\') ++depth;
+			else if (*at == ']' && *(at-1) != '\\') --depth;
+			if (depth == 0)
+			{
+				++at;
+				break;
+			}
+		}
+	}
+    return at;
 }   
 
 static char* SoriginalSentence(char* value)

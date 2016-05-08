@@ -128,7 +128,7 @@ FunctionResult TestRule(int responderID,char* ptr,char* buffer);
 FunctionResult PerformTopic(int active,char* buffer,char* rule = NULL,unsigned int id = 0);
 bool Repeatable(char* rule);
 void CleanOutput(char* word);
-FunctionResult LoadLayer(int layer, char* name,unsigned int build);
+FunctionResult LoadLayer(int layer, const char* name,unsigned int build);
 void ResetTopicReply();
 void SetRejoinder(char* rule);
 void SetErase(bool force = false);
@@ -143,6 +143,7 @@ unsigned int EstablishTopicTrace();
 char* GetRuleIDFromText(char* ptr, int & id);
 char* GetVerify(char* tag,int & topicid, int &id);//  ~topic.#.#=LABEL<~topic.#.#  is a maximally complete why
 void UnwindLayer2Protect();
+void InitKeywords(const char* name,const char* layer,unsigned int build,bool mark=false,bool concept=true);
 
 // encoding
 void DummyEncode(char* &data);
@@ -209,7 +210,6 @@ void LoadTopicSystem();
 void ResetTopicSystem(bool safe);
 void ResetTopics();
 void ResetTopic(int id);
-void InitKeywords(const char* name,unsigned int build,bool mark=false,bool concept=true);
 
 // Interesting topics
 unsigned int GetPendingTopicUnchanged();

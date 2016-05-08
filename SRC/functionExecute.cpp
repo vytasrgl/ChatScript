@@ -1242,7 +1242,7 @@ static FunctionResult GambitCode(char* buffer)
 				F = GetSubjectNondeadNext(F);
 			} 
 		}
-			currentTopicID = oldCurrentTopic; // this is where we were
+		currentTopicID = oldCurrentTopic; // this is where we were
 
 	}
 	if (fail  && responseIndex <= oldIndex)  result = FAILRULE_BIT; // report failure
@@ -1373,6 +1373,7 @@ static FunctionResult DoRefine(char* buffer,char* arg1, bool fail, bool all)
 	char* rule;
     int id = currentRuleID;
 	int topic = currentTopicID;
+	int originalTopic = topic;
 	char level = *currentRule;
 
 	if (!*arg1) 
@@ -1424,6 +1425,15 @@ static FunctionResult DoRefine(char* buffer,char* arg1, bool fail, bool all)
 		}
     }
 	if (outputRejoinderRuleID == NO_REJOINDER) outputRejoinderRuleID = BLOCKED_REJOINDER; // refine values exist instead of real rejoinders, dont let calling rule do set rejoinder
+	if (result == RETRYTOPIC_BIT) // retry the topic of THIS rejoinder, not of the caller
+	{
+		if (originalTopic != currentTopicID) // it was not us, so need to gambit or rejoinder on this topic that we are in now
+		{
+			strcpy(ARGUMENT(1),GetTopicName(currentTopicID));
+			*ARGUMENT(2) = 0;
+			GambitCode(buffer+strlen(buffer));
+		}
+	}
 	RESTOREOLDCONTEXT()
 
 	trace = oldTrace;
@@ -1545,6 +1555,15 @@ static FunctionResult RejoinderCode(char* buffer)
         }
        ptr = FindNextRule(NEXTRULE,ptr,id); //   wrong or failed responder, swallow this subresponder whole
     }
+	if (result == RETRYTOPIC_BIT) // retry the topic of THIS rejoinder, not of the caller who is likely just the control script topic
+	{
+		if (pushed) // it was not us, so need to gambit or rejoinder on this topic that we are in now
+		{
+			strcpy(ARGUMENT(1),GetTopicName(currentTopicID));
+			*ARGUMENT(2) = 0;
+			GambitCode(buffer+strlen(buffer));
+		}
+	}
 	if (pushed) PopTopic(); 
 	ChangeDepth(-1,(char*)"RejoinderCode");
 
@@ -1751,7 +1770,7 @@ static FunctionResult ReuseCode(char* buffer)
 	}
 
 	bool found = false;
-	unsigned int locator = 0;
+	int locator = 0;
 	for (locator = 0; locator < reuseIndex; ++locator)
 	{
 		if (reuseSafety[locator] == rule) 
@@ -8791,6 +8810,61 @@ static FunctionResult JSONArraySizeCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+static FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index	
+{
+	FACT* stack[JSON_LIMIT];
+	char arrayname[MAX_WORD_SIZE];
+	int index = 0;
+	MEANING object = 0;
+	char* arg1 = ARGUMENT(1);
+	bool useIndex = true;
+
+	// check mode of use 
+	if (!strnicmp(arg1,"INDEX",5)) index = atoi(ARGUMENT(3)); 
+	else if (!strnicmp(arg1,"VALUE",5))
+	{
+		char* match = ARGUMENT(3);
+		WORDP D = FindWord(match);
+		if (!D) return FAILRULE_BIT;
+		object = MakeMeaning(D);
+		useIndex = false;
+	}
+	else return FAILRULE_BIT; 
+
+	// get array and prove it legal
+	strcpy(arrayname,ARGUMENT(2));
+	if (strnicmp(arrayname,(char*)"ja-",3)) return FAILRULE_BIT;
+	WORDP O = FindWord(arrayname);
+	if (!O) return FAILRULE_BIT;
+	
+	// find the fact we want (we only delete 1 fact per call) if you have dups, thats your problem
+	FACT* F = GetSubjectNondeadHead(O);
+	while (F) 
+	{
+		if (useIndex)
+		{
+			int val = atoi(Meaning2Word(F->verb)->word);
+			if (val == index) break;	// found it
+		}
+		else if (object == F->object) break;
+		F = GetSubjectNondeadNext(F);
+	}
+	if (!F) return FAILRULE_BIT;		// not findable.
+
+	int indexsize = orderJsonArrayMembers(O, stack); 
+	KillFact(F);		// delete it, not recursive json structure, just array element
+	for (int i = index+1; i < indexsize; ++i) // renumber these downwards
+	{
+		FACT* F = stack[i];
+		strcpy(ARGUMENT(2),arrayname);
+		sprintf(ARGUMENT(1),"%d",Fact2Index(F));
+		sprintf(ARGUMENT(3),"%d",i-1);
+		sprintf(ARGUMENT(4),Meaning2Word(F->object)->word);
+		FunctionResult result = ReviseFactCode(buffer);
+	}
+	return NOPROBLEM_BIT;
+}
+
 static FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectvalue  BEFORE/AFTER 
 {	
 	int index = JSONArgs();
@@ -9073,6 +9147,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ "^jsongather", JSONGatherCode, 2, 0, "stores the json facts referred to by the name into a fact set" },
 	{ "^jsonarraysize", JSONArraySizeCode, 1, 0, "given name of json array fact, count how many elements it has" },
 	{ "^jsonarrayinsert", JSONArrayInsertCode, VARIABLE_ARG_COUNT, 0, "given name of json array fact, adds given  value BEFORE or AFTER the given" },
+	{ "^jsonarraydelete", JSONArrayDeleteCode, 3, 0, "given name of json array and index of fact to remove, removes it and renumbers all after it down" },
 	{ "^jsonobjectinsert", JSONObjectInsertCode, VARIABLE_ARG_COUNT, 0, "given name of json object, adds given key and value" },
 	{ "^jsonparse", JSONParseCode, VARIABLE_ARG_COUNT, 0, "parses the provided string argument to a set of facts accessible from ChatScript code" },
 	{ "^jsonparsefile", JSONParseFileCode, VARIABLE_ARG_COUNT, 0, "parses the provided filename to a set of facts accessible from ChatScript code" },

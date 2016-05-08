@@ -35,16 +35,16 @@ unsigned int buildID = 0;
 
 static char* topicFiles[] = //   files created by a topic refresh from scratch 
 {
-	(char*)"TOPIC/describe",		//   document variables functions concepts topics etc
-	(char*)"TOPIC/facts",			//   hold facts	
-	(char*)"TOPIC/keywords",		//   holds topic and concepts keywords
-	(char*)"TOPIC/macros",			//   holds macro definitions
-	(char*)"TOPIC/script",			//   hold topic definitions
-	(char*)"TOPIC/plans",			//   hold plan definitions
-	(char*)"TOPIC/patternWords",	//   things we want to detect in patterns that may not be normal words
-	(char*)"TOPIC/dict",			//   dictionary changes	
-	(char*)"TOPIC/private",		//   private substitutions changes	
-	(char*)"TOPIC/canon",			//   private canonical values 	
+	(char*)"describe",		//   document variables functions concepts topics etc
+	(char*)"facts",			//   hold facts	
+	(char*)"keywords",		//   holds topic and concepts keywords
+	(char*)"macros",			//   holds macro definitions
+	(char*)"script",			//   hold topic definitions
+	(char*)"plans",			//   hold plan definitions
+	(char*)"patternWords",	//   things we want to detect in patterns that may not be normal words
+	(char*)"dict",			//   dictionary changes	
+	(char*)"private",		//   private substitutions changes	
+	(char*)"canon",			//   private canonical values 	
 
 	"TOPIC/missingLabel.txt",	//   reuse/unerase needing delayed testing for label
 	"TOPIC/missingSets.txt",	//   sets needing delayed testing
@@ -96,7 +96,9 @@ void EraseTopicFiles(unsigned int build,char* name)
 	while (topicFiles[++i])
 	{
 		char word[MAX_WORD_SIZE];
-		sprintf(word,(char*)"%s%s.txt",topicFiles[i],name);
+		sprintf(word,(char*)"TOPIC/%s%s.txt",topicFiles[i],name);
+		remove(word);
+		sprintf(word,(char*)"TOPIC/BUILD%s/%s%s.txt",name,topicFiles[i],name);
 		remove(word);
 	}
 }
@@ -107,6 +109,7 @@ static char* FindComparison(char* word)
 	if (*word == '.') return NULL; //  .<_3 is not a comparison
 	if (*word == '\\') return NULL; // escaped is not a comparison
 	char* at = strchr(word+1,'!'); 
+	if (at && *word == '!') at = NULL;	 // ignore !!
 	if (!at) at = strchr(word+1,'<');
 	if (!at) at = strchr(word+1,'>');
 	if (!at) 
@@ -323,7 +326,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 	FindDeprecated(ptr,(char*)"$control_main",(char*)"Deprecated $control_main need to be $cs_control_main");
 	FindDeprecated(ptr,(char*)"$control_pre",(char*)"Deprecated $control_pre need to be $cs_control_pre");
 	FindDeprecated(ptr,(char*)"$control_post",(char*)"Deprecated $control_post need to be $cs_control_post");
-
 #ifdef INFORMATION
 	A token is nominally a contiguous collection of characters broken off by tab or space (since return and newline are stripped off).
 	Tokens to include whitespace are encased in doublequotes.
@@ -788,22 +790,22 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		char* at = hat;
 		while (*++at && (IsAlphaUTF8(*at)  || *at == '_' || IsDigit(*at))){;}
 		char c = *at;
-		*at = 0;
-		char trial[MAX_WORD_SIZE];
-		strcpy(trial,hat);
+		*at = 0; // terminate it so internal ^ is recognized uniquely
+		char functionvar[MAX_WORD_SIZE];
+		strcpy(functionvar,hat);
 		*at = c;
-		
-		while (*trial)
+
+		while (*functionvar)
 		{
-			int index = GetFunctionArgument(trial);
+			int index = GetFunctionArgument(functionvar);
 			if (index >= 0) 
 			{
-				char tmp[MAX_WORD_SIZE];
-				strcpy(tmp,at); // protect chunk
-				sprintf(hat,(char*)"^%d%s%s",index,hat+strlen(trial),tmp);
+				char remainder[MAX_WORD_SIZE];
+				strcpy(remainder,at); // protect chunk AFTER this
+				sprintf(hat,(char*)"^%d%s",index,remainder);
 				break;
 			}
-			else trial[0] = 0;	// just abort it for now shrink it smaller, to handle @9subject kinds of behaviors 
+			else functionvar[0] = 0;	// just abort it for now shrink it smaller, to handle @9subject kinds of behaviors 
 		}
 	}
 
@@ -1225,6 +1227,11 @@ static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[50][MAX_
 		if (stricmp(arg1,(char*)"RESPONDER") && stricmp(arg1,(char*)"LOOP") && stricmp(arg1,(char*)"REJOINDER") && stricmp(arg1,(char*)"RULE") && stricmp(arg1,(char*)"GAMBIT") && stricmp(arg1,(char*)"INPUT") && stricmp(arg1,(char*)"FACT")) 
 			BADSCRIPT((char*)"CALL- 62 1st argument to ^next must be FACT OR LOOP OR INPUT or RULE or GAMBIT or RESPONDER or REJOINDER - %s",arg1)
 	}	
+	else if(!stricmp(D->word,(char*)"^jsonarraydelete"))
+	{
+		if (stricmp(arg1,(char*)"INDEX") && stricmp(arg1,(char*)"VALUE") )
+			BADSCRIPT((char*)"CALL- ? 1st argument to ^jsonarraydelete must be INDEX or VALUE - %s",arg1)
+	}
 	else if(!stricmp(D->word,(char*)"^keephistory"))
 	{
 		if (stricmp(arg1,(char*)"USER") && stricmp(arg1,(char*)"BOT") )
@@ -1781,7 +1788,7 @@ static char* ReadDescribe(char* ptr, FILE* in,unsigned int build)
 				BADSCRIPT((char*)"Described entity %s is not legal to describe- must be variable or function or concept/topic",word)
 		ptr = ReadNextSystemToken(in,ptr,description,false);
 		char file[MAX_WORD_SIZE];
-		sprintf(file,(char*)"TOPIC/describe%s.txt",baseName);
+		sprintf(file,(char*)"TOPIC/BUILD%s/describe%s.txt",baseName,baseName);
 		FILE* out = FopenUTF8WriteAppend(file);
 		fprintf(out,(char*)" %s %s\r\n",word,description);
 		fclose(out);
@@ -1848,6 +1855,7 @@ name of topic  or concept
 	bool memorizeSeen = false; // memorization pending
 	bool quoteSeen = false;	// saw '
 	bool notSeen = false;	 // saw !
+	bool doubleNotSeen = false; // saw !!
 	size_t len;
 	bool startSeen = false; // starting token or not
 	char* start = data;
@@ -1878,9 +1886,12 @@ name of topic  or concept
 				if (!word[1]) 
 					BADSCRIPT((char*)"PATTERN-4 Must attach ! to next token. If you mean exclamation match, use escaped ! \r\n %s",ptr)
 				notSeen = true;
+				if (word[1] == '!') 
+					doubleNotSeen = true;
 				if (comparison) *comparison = c;
 				ptr -= strlen(word);  // safe
 				if (*ptr == '!') ++ptr;
+				if (*ptr == '!') ++ptr;	// possible !! allowed
 				continue;
 			case '_':	//   memorize OR var reference
 				if (quoteSeen && !IsDigit(word[1])) BADSCRIPT((char*)"PATTERN-1 Cannot have ' and _ in succession except when quoting a match variable. Need to reverse them")
@@ -2196,7 +2207,8 @@ name of topic  or concept
 			if (notSeen) 
 			{
 				*data++ = '!';
-				notSeen = false;
+				if (doubleNotSeen) *data++ = '!';
+				doubleNotSeen = notSeen = false;
 			}
 			if (memorizeSeen) 
 			{
@@ -2228,7 +2240,8 @@ name of topic  or concept
 		{
 			if (memorizeSeen) BADSCRIPT((char*)"PATTERN-67 Cannot have ! and _ together")
 			*data++ = '!';
-			notSeen = false;
+			if (doubleNotSeen) *data++ = '!';
+			doubleNotSeen = notSeen = false;
 		}
 		if (quoteSeen) 
 		{
@@ -2534,7 +2547,8 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 		*data++ = ' ';
 		ptr =  ReadNextSystemToken(in,ptr,word,false,false); //   swallow value
 		if (*word == '~') CheckSetOrTopic(word);
-		if (*word == '^' && !IsDigit(word[1])) BADSCRIPT((char*)"IF-9 not allowed function call in relation as 2nd arg - %s",word)
+		if (*word == '^' && !IsDigit(word[1])) 
+			BADSCRIPT((char*)"IF-9 not allowed function call in relation as 2nd arg - %s",word)
 		strcpy(data,word);
 		data += strlen(word);
 	}
@@ -2829,7 +2843,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 				if (*word == ')') break;
 				strcpy(display[displayIndex],word);
 				if (*word != '$' && *word != '(') BADSCRIPT("Display argument must be uservar: %s",word)
-				if (++displayIndex >= MAX_DISPLAY) BADSCRIPT("Display argumenlimited to 10:  %s",word)
+				if (++displayIndex >= MAX_DISPLAY) BADSCRIPT("Display argumenlimited to %d:  %s",MAX_DISPLAY,word)
 			}
 			ptr = ReadNextSystemToken(in,ptr,word,false);
 		}
@@ -3320,7 +3334,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	if (!table) // tables are not real macros, they are temporary
 	{
 		char filename[MAX_WORD_SIZE];
-		sprintf(filename,(char*)"TOPIC/macros%s.txt",baseName);
+		sprintf(filename,(char*)"TOPIC/BUILD%s/macros%s.txt",baseName,baseName);
 		//   write out definition -- this is the real save of the data
 		FILE* out = FopenUTF8WriteAppend(filename);
 		if ((D->internalBits & FUNCTION_BITS) ==  IS_TABLE_MACRO) fprintf(out,(char*)"%s T %d %d %s\r\n",macroName,D->x.macroFlags,functionArgumentCount,data);
@@ -3873,7 +3887,7 @@ static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
     SetJumpOffsets(data); 
 	if (len >= (MAX_TOPIC_SIZE-100)) BADSCRIPT((char*)"TOPIC-7 Too much data in one topic")
 	char filename[MAX_WORD_SIZE];
-	sprintf(filename,(char*)"TOPIC/script%s.txt",baseName);
+	sprintf(filename,(char*)"TOPIC/BUILD%s/script%s.txt",baseName,baseName);
 	FILE* out = FopenUTF8WriteAppend(filename);
 	
 	// write out topic data
@@ -4068,14 +4082,14 @@ static char* ReadPlan(char* ptr, FILE* in,unsigned int build)
 	//   write how many plans were found (for when we preload during normal startups)
 	if (hasPlans == 0)
 	{
-		FILE* out = FopenUTF8Write(build == BUILD0 ? (char*)"TOPIC/plans0.txt" : (char*)"TOPIC/plans1.txt");
+		FILE* out = FopenUTF8Write(build == BUILD0 ? (char*)"TOPIC/BUILD0/plans0.txt" : (char*)"TOPIC/BUILD1/plans1.txt");
 		fprintf(out,(char*)"%s",(char*)"0     \r\n"); //   reserve 5-digit count for number of plans
 		fclose(out);
 	}
 	++hasPlans;
 
 	// write out plan data
-	FILE* out = FopenUTF8WriteAppend(build == BUILD0 ? (char*)"TOPIC/plans0.txt" : (char*)"TOPIC/plans1.txt");
+	FILE* out = FopenUTF8WriteAppend(build == BUILD0 ? (char*)"TOPIC/BUILD0/plans0.txt" : (char*)"TOPIC/BUILD1/plans1.txt");
 	char* restriction =  (char*)"all";
 	unsigned int len1 = (unsigned int)strlen(restriction);
 	fprintf(out,(char*)"PLAN: %s %d %d %d %s\r\n",planName,(unsigned int) functionArgumentCount,(unsigned int) toplevelrules,(unsigned int)(len + len1 + 7),currentFilename); 
@@ -4133,7 +4147,7 @@ static char* ReadReplace(char* ptr, FILE* in, unsigned int build)
 			break; 
 		}
 		char filename[MAX_WORD_SIZE];
-		sprintf(filename,(char*)"TOPIC/private%s.txt",baseName);
+		sprintf(filename,(char*)"TOPIC/BUILD%s/private%s.txt",baseName,baseName);
 		FILE* out = FopenUTF8WriteAppend(filename);
 		fprintf(out,(char*)" %s %s\r\n",word,replace);
 		fclose(out);
@@ -4144,7 +4158,7 @@ static char* ReadReplace(char* ptr, FILE* in, unsigned int build)
 void SaveCanon(char* word, char* canon)
 {
 	char filename[MAX_WORD_SIZE];
-	sprintf(filename,(char*)"TOPIC/canon%s.txt",baseName);
+	sprintf(filename,(char*)"TOPIC/BUILD%s/canon%s.txt",baseName,baseName);
 	FILE* out = FopenUTF8WriteAppend(filename);
 	fprintf(out,(char*)" %s %s\r\n",word,canon);
 	fclose(out);
@@ -4402,7 +4416,7 @@ static void WriteConcepts(WORDP D, uint64 build)
 	// write out keywords 
 	FILE* out = NULL;
 	char filename[MAX_WORD_SIZE];
-	sprintf(filename,(char*)"TOPIC/keywords%s.txt",baseName);
+	sprintf(filename,(char*)"TOPIC/BUILD%s/keywords%s.txt",baseName,baseName);
 	out = FopenUTF8WriteAppend(filename);
 	fprintf(out,(D->internalBits & TOPIC) ? (char*)"T%s " : (char*)"%s ", D->word);
 
@@ -4739,18 +4753,18 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 	
 	//   store known pattern words in pattern file that we want to recognize (not spellcorrect on input)
 	char filename[MAX_WORD_SIZE];
-	sprintf(filename,(char*)"TOPIC/patternWords%s.txt",baseName);
+	sprintf(filename,(char*)"TOPIC/BUILD%s/patternWords%s.txt",baseName,baseName);
 	patternFile = FopenUTF8Write(filename);
 	if (!patternFile)
 	{
-		printf((char*)"%s",(char*)"Unable to create patternfile  in the TOPIC subdirectory? Make sure this directory exists and is writable.\r\n");
+		printf((char*)"%s",(char*)"Unable to create %s? Make sure this directory exists and is writable.\r\n",filename);
 		return;
 	}
 
 	AllocateOutputBuffer();
 
 	// init the script output file
-	sprintf(filename,(char*)"TOPIC/script%s.txt",baseName);
+	sprintf(filename,(char*)"TOPIC/BUILD%s/script%s.txt",baseName,baseName);
 	FILE* out = FopenUTF8Write(filename);
 	if (strlen(name) > 100) name[99] = 0;
 	if (!strnicmp(name,(char*)"files",5)) name += 5; // dont need the prefix
@@ -4794,7 +4808,7 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 	// write out compiled data
 
 	//   write how many topics were found (for when we preload during normal startups)
-	sprintf(filename,(char*)"TOPIC/script%s.txt",baseName);
+	sprintf(filename,(char*)"TOPIC/BUILD%s/script%s.txt",baseName,baseName);
 	out = FopenUTF8WriteAppend(filename,(char*)"rb+");
 	if (out)
 	{
@@ -4811,7 +4825,7 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 
 	if (hasPlans)
 	{
-		sprintf(filename,(char*)"TOPIC/plans%s.txt",baseName);
+		sprintf(filename,(char*)"TOPIC/BUILD%s/plans%s.txt",baseName,baseName);
 		out = FopenUTF8WriteAppend(filename,(char*)"rb+");
 		if (out)
 		{
@@ -4828,9 +4842,9 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 	WalkDictionary(ClearBeenHere,0);
 
 	// dump variables, dictionary changes, topic facts
-	sprintf(filename,(char*)"TOPIC/facts%s.txt",baseName);
+	sprintf(filename,(char*)"TOPIC/BUILD%s/facts%s.txt",baseName,baseName);
 	char filename1[MAX_WORD_SIZE];
-	sprintf(filename1,(char*)"TOPIC/dict%s.txt",baseName);
+	sprintf(filename1,(char*)"TOPIC/BUILD%s/dict%s.txt",baseName,baseName);
 	WriteExtendedFacts(FopenUTF8Write(filename), FopenUTF8Write(filename1),  build); 
 	
 	// cleanup

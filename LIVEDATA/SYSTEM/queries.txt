@@ -94,28 +94,28 @@ QUERY: exact_o		"1oQ: queue o"							# (? ? cat)
 # 3. there are no constraints to match, so all facts are accepted
 
 # find facts given subject and verb
-QUERY: exact_sv	"1sQ 2vt: queue s: match v2"			# (dog love ?)
+QUERY: exact_sv	"1sQ 2vT: queue s: match v2"			# (dog love ?)
 # 1. tag subject with 1 and queue  that word
 # 2. mark verb with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is subject
 # 4. accept facts where verb is marked with 2
 
 # find facts given verb and object
-QUERY: exact_vo	"1oQ 2vt: queue o: match v2"			# (? love cat)
+QUERY: exact_vo	"1oQ 2vT: queue o: match v2"			# (? love cat)
 # 1. tag object with 1 and queue exact word
 # 2. mark verb with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is object
 # 4. accept facts where verb is marked with 2
 
 # find facts given subject and object
-QUERY: exact_so	"1sQ 2ot: queue s: match o2"			# (dog ? cat)
+QUERY: exact_so	"1sQ 2oT: queue s: match o2"			# (dog ? cat)
 # 1. tag subject with 1 and queue exactly
 # 2. mark object with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is subject
 # 4. accept facts where object is marked with 2
 
 # find facts given subject verb and object
-QUERY: exact_svo	"1oQ 2vt 3st: queue o: match v2 s3"	# (dog love cat)
+QUERY: exact_svo	"1oQ 2vT 3sT: queue o: match v2 s3"	# (dog love cat)
 # 1. tag object with 1 and queue exact
 # 2. mark verb with 2 (no queuing)
 # 3. mark subject with 3 (no queuing)

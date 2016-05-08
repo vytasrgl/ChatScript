@@ -566,8 +566,11 @@ int evsrv_do_chat(Client_t *client)
  	clock_t starttime = ElapsedMilliseconds(); 
     client->prepare_for_chat();
 	size_t len = strlen(client->message);
-	if (len >= MAX_BUFFER_SIZE) client->message[MAX_BUFFER_SIZE-1] = 0;
+	if (len >= MAX_BUFFER_SIZE - 100) client->message[MAX_BUFFER_SIZE-1] = 0;
 	strcpy(ourMainInputBuffer,client->message);
+	echo = false;
+	if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s\r\n",client->user,client->bot,ourMainInputBuffer);
+
     int turn = PerformChat(
         client->user,
         client->bot,

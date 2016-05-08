@@ -382,7 +382,6 @@ static void C_Prepare(char* input)
 			if (*prepassTopic) Log(STDUSERLOG,(char*)"Prepass: %s\r\n", prepass ? (char*)"ON" : (char*)"OFF");
 			PrepareSentence(nextInput,true,true);	
 			prepareMode = NO_MODE;
-			if (!trace) trace = TRACE_OUTPUT | TRACE_MATCH | TRACE_PREPARE;
 			if (prepass && PrepassSentence(prepassTopic)) continue;
 		}
 		trace = oldtrace;
@@ -3875,6 +3874,9 @@ static void C_Build(char* input)
 		if (file[len-1] == '0') buildId = BUILD0;
 		else if  (file[len-1] == '2') buildId = BUILD2;
 		else buildId = BUILD1; // global so SaveCanon can work
+		if (buildId == BUILD0) MakeDirectory("TOPIC/BUILD0");
+		else if (buildId == BUILD1) MakeDirectory("TOPIC/BUILD1");
+		else if (buildId == BUILD2) MakeDirectory("TOPIC/BUILD2");
 		ReadTopicFiles(word,buildId,spell); 
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
 		ClearPendingTopics(); // flush in case topic ids change or go away
@@ -5576,8 +5578,8 @@ static void C_List(char* input)
 		if (sorted) SortFacts((char*)"@4subject",true);
 	}
 
-	LoadDescriptions((char*)"TOPIC/describe0.txt");
-	LoadDescriptions((char*)"TOPIC/describe1.txt");
+	LoadDescriptions((char*)"TOPIC/BUILD0/describe0.txt");
+	LoadDescriptions((char*)"TOPIC/BUILD1/describe1.txt");
 	if (all || strchr(input,'$'))
 	{
 		count = FACTSET_COUNT(0);
@@ -6082,7 +6084,7 @@ static void TraceTopicFunction(WORDP D, uint64 data)
 
 static void ShowTrace(unsigned int bits, bool original)
 {
-	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH);
+	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH|TRACE_FLOW);
 	unsigned int mild = (TRACE_OUTPUT|TRACE_PREPARE|TRACE_PATTERN);
 	unsigned int deep = (TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
 	if (!original) Log(STDUSERLOG,(char*)"  ");
@@ -6092,6 +6094,7 @@ static void ShowTrace(unsigned int bits, bool original)
 	{
 		Log(STDUSERLOG,(char*)"Enabled simple: ");
 		if (bits & TRACE_MATCH) Log(STDUSERLOG,(char*)"match ");
+		if (bits & TRACE_FLOW) Log(STDUSERLOG,(char*)"ruleflow ");
 		if (bits & TRACE_VARIABLE) Log(STDUSERLOG,(char*)"variables ");
 		Log(STDUSERLOG,(char*)"\r\n");
 		if (!original) Log(STDUSERLOG,(char*)"  ");
@@ -6212,6 +6215,7 @@ static void C_Trace(char* input)
 {
 	char word[MAX_WORD_SIZE];
 	unsigned int flags = trace;
+	input = SkipWhitespace(input);
 	if (!*input) 
 	{
 		ShowTrace(trace,true);
@@ -6222,6 +6226,18 @@ static void C_Trace(char* input)
 	{
 		WalkDictionary(ClearTracedFunction,0);
 		WalkDictionary(ClearTracedTopic,0);
+	}
+	if (!strnicmp(input,"factcreate",10)) // tracing on 
+	{
+		input = ReadCompiledWord(input+11,word); 
+		strcpy(traceSubject,word);
+		if (!stricmp(word,"null")) *traceSubject = 0;
+		input = ReadCompiledWord(input,word); 
+		strcpy(traceVerb,word);
+		if (!stricmp(word,"null")) *traceVerb = 0;
+		input = ReadCompiledWord(input,word); 
+		strcpy(traceObject,word);
+		if (!stricmp(word,"null")) *traceObject = 0;
 	}
 
 	while (input) 
@@ -6246,6 +6262,7 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"variables")) flags &= -1 ^ TRACE_VARIABLE; 
 			else if (!stricmp(word,(char*)"simple")) flags &= -1 ^ (TRACE_MATCH|TRACE_VARIABLE); 
 			else if (!stricmp(word,(char*)"input")) flags &= -1 ^ TRACE_INPUT;
+			else if (!stricmp(word,(char*)"ruleflow")) flags &= -1 ^ TRACE_FLOW;
 
 			else if (!stricmp(word,(char*)"prepare")) flags &= -1 ^ TRACE_PREPARE; 
 			else if (!stricmp(word,(char*)"output")) flags &= -1 ^ TRACE_OUTPUT;
@@ -6268,7 +6285,7 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"sql")) flags &= -1 ^  TRACE_SQL;
 			else if (!stricmp(word,(char*)"label")) flags &= -1 ^  TRACE_LABEL;
 			else if (!stricmp(word,(char*)"topic")) flags &= -1 ^  TRACE_TOPIC;
-			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
+			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
 		}
 		else if (IsNumberStarter(*word)) 
 		{
@@ -6280,6 +6297,7 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"variables")) flags |= TRACE_VARIABLE; 
 		else if (!stricmp(word,(char*)"simple")) flags |= (TRACE_MATCH|TRACE_VARIABLE); 
 		else if (!stricmp(word,(char*)"input")) flags |= TRACE_INPUT;
+		else if (!stricmp(word,(char*)"ruleflow")) flags |= TRACE_FLOW;
 
 		else if (!stricmp(word,(char*)"prepare")) flags |= TRACE_PREPARE; 
 		else if (!stricmp(word,(char*)"output")) flags |= TRACE_OUTPUT;
@@ -6302,7 +6320,7 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"sql")) flags |= TRACE_SQL;
 		else if (!stricmp(word,(char*)"label")) flags |= TRACE_LABEL;
 		else if (!stricmp(word,(char*)"topic")) flags |= TRACE_TOPIC;
-		else if (!stricmp(word,(char*)"deep")) flags |= (TRACE_JSON|TRACE_TOPIC|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
+		else if (!stricmp(word,(char*)"deep")) flags |= (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
 		else if (!stricmp(word,(char*)"notthis")) flags |=  TRACE_NOT_THIS_TOPIC;
 
 		else if (!stricmp(word,(char*)"0") || !stricmp(word,(char*)"clear")) trace = 0;

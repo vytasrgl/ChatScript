@@ -418,7 +418,6 @@ void CloseServer() {
 	}
 }
 
-
 void* RegressLoad(void* junk)// test load for a server
 {
 	FILE* in = FopenReadOnly((char*)"REGRESS/bigregress.txt");
@@ -515,8 +514,8 @@ void LogChat(clock_t starttime,char* user,char* bot,char* IP, int turn,char* inp
 	else Log(SERVERLOG,(char*)"Start: user:%s bot:%s ip:%s (%s) %d ==> %s  When:%s %dms Version:%s Build0:%s Build1:%s %s\n", user,bot,IP,activeTopic,turn,Purify(output),date,(int)(endtime - starttime),version,timeStamp[0],timeStamp[1],why);
 }
 
-#ifndef EVSERVER
-static void Crash()
+#ifndef EVSERVER // til end of file
+void Crash()
 {
     time_t now = time(0);
     unsigned int delay = (unsigned int) difftime(now,lastCrash);
@@ -1031,19 +1030,6 @@ void GrabPort() // enable server port if you can... if not, we cannot run.
 #endif
 }
 
-void StallTest(bool startTest,char* label)
-{
-	static  clock_t start;
-	if (startTest) start = ElapsedMilliseconds();
-	else
-	{
-		clock_t now = ElapsedMilliseconds();
-		if ((now-start) > 40) 
-			printf((char*)"%d %s\r\n",(unsigned int)(now-start),label);
-		//else printf((char*)"ok %d %s\r\n",now-start,label);
-	}
-}
-
 static void* MainChatbotServer()
 {
 	ServerStartup(); //   get initial control over the mutex so we can start. - on linux if thread dies, we must reacquire here 
@@ -1100,8 +1086,7 @@ static void* MainChatbotServer()
 		if (test >= (MAX_BUFFER_SIZE - 100)) strcpy(ourMainInputBuffer,(char*)"too much data");
 		else strcpy(ourMainInputBuffer,ptr); // xfer user message to our incoming feed
 		echo = false;
-		if (serverPreLog) 
-			Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s\r\n",user,bot,ourMainInputBuffer);
+		if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s\r\n",user,bot,ourMainInputBuffer);
 
 		*((int*) clientBuffer) = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
 		ServerTransferDataToClient();
@@ -1116,8 +1101,5 @@ static void* MainChatbotServer()
 #endif
 	return NULL;
 }
-
-#endif /* EVSERVER */
-
-
+#endif // ndef EVSERVER
 #endif

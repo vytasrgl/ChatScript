@@ -629,7 +629,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		else if (kind == FRACTION_NUMBER && strchr(original,'%'))
 		{
 			int64 val1 = atoi(original);
-			float val = (float)((float)val1) / 100.0;
+			float val = (float)(val1 / 100.0);
 			sprintf(number,(char*)"%1.2f",val );
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
 			entry = StoreWord(original,properties);

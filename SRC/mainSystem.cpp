@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.4";
+char* version = "6.5";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -379,13 +379,13 @@ void ReloadSystem()
 	if (!ReadBinaryFacts(FopenStaticReadOnly(UseDictionaryFile((char*)"facts.bin"))))  // DICT
 	{
 		WORDP safeDict = dictionaryFree;
-		ReadFacts(UseDictionaryFile((char*)"facts.txt"),0);
+		ReadFacts(UseDictionaryFile((char*)"facts.txt"),NULL,0);
 		if ( safeDict != dictionaryFree) myexit((char*)"dict changed on read of facts");
 		WriteBinaryFacts(FopenBinaryWrite(UseDictionaryFile((char*)"facts.bin")),factBase);
 	}
 	char name[MAX_WORD_SIZE];
 	sprintf(name,(char*)"%s/systemfacts.txt",systemFolder);
-	ReadFacts(name,0); // part of wordnet, not level 0 build 
+	ReadFacts(name,NULL,0); // part of wordnet, not level 0 build 
 	ReadLiveData();  // considered part of basic system before a build
 	WordnetLockDictionary();
 }

@@ -1,4 +1,15 @@
-version 6.3b  4/30/2016
+version 6.5 -- 5-7-2016  WARNING- change of directory structure in TOPIC
+0. TOPIC now gets subdirectories for each of the build layers. While it will work with content in the old format (all at top level)
+or the new format (subdivided into BUILD0 and BUILD1 subdirectories, it will only :build into the new format. If you have
+deployment scripts, make sure when they perform builds that CS can create these subdirectories.
+
+1. when using pattern-  u: ($$test?)  which would see if word was found in sentence,
+if it is a quoted string "buy me" it will be able to find that sequence as matching.
+2. ^jsonarraydelete([INDEX,VALUE] array index) to remove element and renumber later ones down
+3.  while !not in pattern checks that not doesnt appear later in the sentence, !!not checks that it is not the next word
+4.  :trace RULEFLOW will just show the rules as it does their outputs. It is a terse flow of control view.
+
+version 6.4  4/30/2016
 1. ^importfacts may have null as its set value. It wont store the facts created in a factset.
 2. ^conceptlist takes optional 3rd arg, prefix to filter by
 3. ^words(word) get all dictionary entries with this spelling, upper and lower case, spaces vs underscores

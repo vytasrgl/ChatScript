@@ -171,7 +171,7 @@ void SetPlural(WORDP D,MEANING M);
 #define AccessCanonical(D) ((MEANING*)Index2String(D->extensions))[CANONICALFIELD]
 #define SetCanonical(D,M) {PrepareConjugates(D); AccessCanonical(D) = M; }
 char* GetCanonical(WORDP D);
-void ReadSubstitutes(char* name,unsigned int fileFlag,bool filegiven = false);
+void ReadSubstitutes(const char* name,const char* layer,unsigned int fileFlag,bool filegiven = false);
 
 // memory data
 extern WORDP dictionaryBase;
@@ -261,7 +261,7 @@ void ReadLivePosData();
 WORDP GetSubstitute(WORDP D);
 void ShowStats(bool reset);
 MEANING FindChild(MEANING who,int n);
-void ReadCanonicals(char* file);
+void ReadCanonicals(const char* file,const char* layer);
 
 // adjust data on a dictionary entry
 void AddProperty(WORDP D, uint64 flag);
