@@ -155,8 +155,8 @@ snake grass \n rattlesnake grass \n rat walls \n beaver pond \n
 concept: ~newspaper()
 concept: ~airline()
 
-table: ~manmade ( ^role ^object)
-^createfact(^object member ^role)
+table: ~manmade ( ^roleitem ^object)
+^createfact(^object member ^roleitem)
 DATA:
 
 ~videogame [Bioshock  "CounterStrike" "Counter Strike"]
@@ -180,8 +180,8 @@ DATA:
 ~university ["Emory University" "Rice University" "University of Virginia"]
 ~newspaper [Newsweek USA_Today Wall_Street_Journal The_Times Associated_Press ]
 
-table: ~items (^role ^name ^item)
-^createfact(^name member ^role)
+table: ~items (^roleitem ^name ^item)
+^createfact(^name member ^roleitem)
 if (^item != * ) {^createfact(^item exemplar ^name) } # [Evanstan,ILL exemplar Northwestern]
 DATA:
 ~university "University_of_Exeter"  "Exeter, England"
@@ -257,10 +257,10 @@ DATA:
 ~airline Korean_Air    Republic_of_Korea
 
 
-table: ~companies  (^company ^field)
+table: ~companies  (^company ^fieldname)
 ^createfact(^company member ~company)
 ^Addproperty(^company NOUN NOUN_PROPER_SINGULAR )
-if (^field != * ) { ^createfact(^field exemplar ^company) }
+if (^fieldname != * ) { ^createfact(^fieldname exemplar ^company) }
 
 DATA:
   General_Electric *

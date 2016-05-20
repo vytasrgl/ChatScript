@@ -5,16 +5,16 @@
 Facts are added as layers. You remove facts by unpeeling a layer. You can "delete" a fact merely by
 marking it dead.
 
-Layer1:  facts resulting from wordnet dictionary  (wordnetFacts)
-Layer2:	 facts resulting from topic system build0
-Layer3:	 facts resulting from topic system build1
-Layer4:	 facts created by user
+Layer-1:  facts resulting from wordnet dictionary  (wordnetFacts)
+Layer0:	 facts resulting from topic system build0
+Layer1:	 facts resulting from topic system build1
+Layer2:	 facts created by user
 
-Layer 4 is always unpeeled after an interchange with the chatbot, in preparation for a new user who may chat with a different persona.
-Layers 2 and 3 are unpeeled if you want to restart the topic system to read in new topic data on the fly or rebuild 0.
-Layer 3 is unpeeled for a new build 1.
+Layer 2 is always unpeeled after an interchange with the chatbot, in preparation for a new user who may chat with a different persona.
+Layers 0 and 1 are unpeeled if you want to restart the topic system to read in new topic data on the fly or rebuild 0.
+Layer 1 is unpeeled for a new build 1.
 
-Layer 1 is never unpeeled. If you want to modify the dictionary, you either restart the chatbot entirely
+Layer -1 is never unpeeled. If you want to modify the dictionary, you either restart the chatbot entirely
 or patch in data piggy backing on facts (like from the topic system).
 
 Unpeeling a layer implies you will also reset dictionary/stringspace pointers back to levels at the

@@ -1,3 +1,14 @@
+Version 6.5a
+1. ChatScript now enforces a rule that a function variable name should not be the name of an existing function (hides the function).
+This may cause your builds to break until you rename your variables in question.
+2. :trace full -- when set, disables NOTRACE() so everything is traced using all flags
+   :trace ignorenotrace just turns on the flag, leaving your other bits intact
+   :trace none turns off all bits and any ignorenotrace flag
+3. PRIVATE_CODE now requires PrivateInit() and PrivateRestart() and PrivateShutdown() functions and
+file privatetestingtable.cpp  for any :test overrides, a command line paramemter private= passes its value
+thru to PrivateInit
+4. ResponseRuleID(-1) does all to date
+
 version 6.5 -- 5-7-2016  WARNING- change of directory structure in TOPIC
 0. TOPIC now gets subdirectories for each of the build layers. While it will work with content in the old format (all at top level)
 or the new format (subdivided into BUILD0 and BUILD1 subdirectories, it will only :build into the new format. If you have

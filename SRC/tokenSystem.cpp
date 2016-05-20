@@ -825,7 +825,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 			continue;
 		}
 		//   handle symbols for feet and inches by expanding them
-		if (!(tokenControl & TOKEN_AS_IS) &&  startc == '"' && len == 1 && count && IsDigit(words[count-1][0]))
+		if (!(tokenControl & TOKEN_AS_IS) &&  startc == '"' && len == 1 && count > 1 && IsDigit(words[count-1][0]))
 		{
 			words[count] = reuseAllocation(0,(char*)"inches",0); // spell out the notation
 			ptr = SkipWhitespace(end);
@@ -1586,7 +1586,7 @@ void ReplaceWords(int i, int oldlength,int newlength,char** tokens)
 	unsigned int end = derivationIndex[i+oldlength-1] & 0x0ff;
 	unsigned int derivation = (start << 16) | end;
 	int endAt = (i + newlength);
-	for (int at = i; at < endAt; ++at) derivationIndex[at] = derivation;
+	for (int at = i; at <= endAt; ++at) derivationIndex[at] = derivation;
 
 	// now restore the trailing data.
 	memcpy(wordStarts+i+newlength,backupTokens,sizeof(char*) * afterCount);

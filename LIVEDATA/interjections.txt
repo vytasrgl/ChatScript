@@ -12,6 +12,8 @@
  <rarely ~no
  <barely ~no
  <continue ~yes
+ <make_it_so> ~yes
+ <do_it> ~yes
  <I_guess_so ~yes
  <no_way> ~no
  <neah ~no

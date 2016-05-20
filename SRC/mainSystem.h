@@ -31,8 +31,6 @@ typedef struct RESPONSE
 #define MAX_SENTENCE_LENGTH 256 // room for +4 after content 
 #define REAL_SENTENCE_LIMIT 252 // stay under char size boundary and leave excess room
 
-#define MAX_MESSAGE     1500
-
 #define TIMEOUT_INSTANCE 1000000
 
 #define START_BIT 0x8000000000000000ULL	// used looping thru bit masks
@@ -168,7 +166,7 @@ void CloseSystem();
 void PartiallyCloseSystem();
 int main(int argc, char * argv[]);
 void ProcessOOB(char* buffer);
-void ComputeWhy(char* buffer);
+void ComputeWhy(char* buffer, int n);
 void SaveTracedFunctions();
 
 // Input processing

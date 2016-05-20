@@ -73,7 +73,7 @@ FunctionResult InitWinsock();
 #endif
 
 #ifndef DISCARDPOSTGRES
-void DBShutDown();
+void PostgresShutDown();
 void PGUserFilesCode();
 void PGUserFilesCloseCode();
 void pguserLog(const void* buffer,size_t size);
@@ -90,6 +90,7 @@ extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
 
 extern bool planning;
+extern bool blocknotrace;
 extern bool nobacktrack;
 FunctionResult MemoryMarkCode(char* buffer);
 FunctionResult MemoryFreeCode(char* buffer);

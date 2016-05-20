@@ -1578,7 +1578,6 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
     int n = MAX_WORD_SIZE-10;		// quote must close within this limit
 	char* start = ptr;
 	char* original = buffer;
-
 	// "` is an internal marker of argument passed from TCPOPEN   "'arguments'" ) , return the section untouched as one lump 
 	if (ptr[1] == ENDUNIT)
 	{
@@ -1616,7 +1615,7 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 			return ptr;
 		}
 		if (!n) Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
-		else Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
+		else Log(STDUSERLOG,(char*)"bad double-quoting1?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
 		return NULL;	// no closing quote... refuse
 	}
 

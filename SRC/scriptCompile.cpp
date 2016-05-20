@@ -48,6 +48,7 @@ static char* topicFiles[] = //   files created by a topic refresh from scratch
 
 	"TOPIC/missingLabel.txt",	//   reuse/unerase needing delayed testing for label
 	"TOPIC/missingSets.txt",	//   sets needing delayed testing
+
 	0
 };
 static void WritePatternWord(char* word);
@@ -2408,7 +2409,7 @@ static char* ReadChoice(char* word, char* ptr, FILE* in, char* &data,char* rejoi
 		ptr = ReadNextSystemToken(in,ptr,word,false);
 	}
 	ptr = GatherChunk(ptr, in, choice,false); 
-	ReadOutput(choice,NULL,data,rejoinders,NULL,false);
+	ReadOutput(choice,NULL,data,rejoinders,NULL,NULL,false);
 	*data++ = ']';
 	*data++ = ' ';
 	*data = 0;
@@ -2591,7 +2592,7 @@ static char* ReadBody(char* word, char* ptr, FILE* in, char* &data,char* rejoind
 	bool oldContext = patternContext;
 	patternContext = false;
 	ptr = GatherChunk(ptr, in, body,true); 
-	ReadOutput(body+2,NULL,data,rejoinders,NULL,false); 
+	ReadOutput(body+2,NULL,data,rejoinders,NULL,NULL,false); 
 	patternContext = oldContext;
 	*data++ = '}'; //   body has no blank after it, done by higher level
 	FreeBuffer();
@@ -2656,7 +2657,8 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 			patternContext = false;
 		}
 		else ReadIfTest(ptr, in, data); // starts by reading the ( and ends having read )
-		Encode((unsigned int)(data-testbase),testbase);	// offset to after pattern
+		Encode((unsigned int)(data-testbase),testbase);	// offset to after pattern    
+		//--- format:  branch to after pattern, pattern, branch around next pattern, pattern, branch around next pattern or to end of if code
 	
 		// now done reading test, go onto body.
 		ptr = endptr; // resume from normal reading of if test
@@ -2680,7 +2682,8 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 		DummyEncode(data); //   reserve space for offset after the closing ), which is how far to go past body
 		*data++ = ' ';
 		Encode((unsigned int)(data-ifbase),ifbase);	// offset to ELSE or ELSE IF from body start 
-		
+	//	*data++ = ' '; // to insure we can detect else or not?
+			
 		//   now see if ELSE branch exists
 		ReadNextSystemToken(in,ptr,word,false,true); //   else?
 		if (stricmp(word,(char*)"else"))  break; //   caller will add space after our jump index
@@ -2952,7 +2955,8 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 				strcpy(assignKind,word); // verify usage fact retrieved from set
 			if (*nextToken == '=' || *nextToken == '<' || *nextToken == '>')
 			{
-				if (!IsAlphaUTF8(nextToken[1])) WARNSCRIPT((char*)"Possibly assignment followed by another binary operator")
+				if (!IsAlphaUTF8(nextToken[1])) 
+					WARNSCRIPT((char*)"Possibly assignment followed by another binary operator")
 			}
 			continue;
 		}
@@ -2999,7 +3003,8 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 		if (*word == '^' && !IsDigit(word[1]) && word[1] != '^'&& word[1] != '=' && word[1] != '"' && word[1] != '\'' && word[1] != '$' && word[1] != '_' && word[1] && *nextToken == '(' )
 		{
 			WORDP D = FindWord(word,0,LOWERCASE_LOOKUP);
-			if ((!D || !(D->internalBits & FUNCTION_NAME))) BADSCRIPT((char*)"OUTPUT-5 Apparent call to %s is not yet defined",word)
+			if ((!D || !(D->internalBits & FUNCTION_NAME))) 
+				BADSCRIPT((char*)"OUTPUT-5 Apparent call to %s is not yet defined",word)
 			ptr = ReadCall(word,ptr,in,data,*nextToken == '('); //   add function call 
 			*assignKind = 0;
 		}
@@ -3168,7 +3173,7 @@ Then one of 3 kinds of character:
 		} //   END OF WHILE
 		if (patternDone) 
 		{
-			ptr = ReadOutput(ptr,in,data,rejoinders,word,false);
+			ptr = ReadOutput(ptr,in,data,rejoinders,word,NULL,false);
 	
 			//   data points AFTER last char added. Back up to last char, if blank, leave it to be removed. else restore it.
 			while (*--data == ' '); 
@@ -3310,6 +3315,10 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 				}
 				else  // default for quoted strings on argumet is UNDERSCORE
 				{
+				}
+				{
+					WORDP X = FindWord(word);
+					if (X && X->internalBits & FUNCTION_NAME) BADSCRIPT((char*)"MACRO-8 Function argument %s is also name of a function",word);
 				}
 				strcpy(functionArguments[functionArgumentCount++],word);
 				if (functionArgumentCount > MAX_ARG_LIMIT)  BADSCRIPT((char*)"MACRO-7 Too many callArgumentList to %s - max is %d",macroName,MAX_ARG_LIMIT)
@@ -4692,17 +4701,29 @@ static void EmptyVerify(char* name, uint64 junk)
 	if (x[2] == c) unlink(name);
 }
 
-void ReadTopicFiles(char* name,unsigned int build,int spell)
+int ReadTopicFiles(char* name,unsigned int build,int spell)
 {
+	int resultcode = 0;
 	overrriding = false;
 	if (build == BUILD2) // for dynamic segment, we are allowed full names
 	{
 		strcpy(baseName,name+5);
 		char* dot = strchr(baseName,'.');
-		*dot = 0;
+		*--dot = 0; // remove the 2 at the end
+		char dir[MAX_WORD_SIZE];
+		sprintf(dir,"TOPIC/BUILD%s",baseName);
+		MakeDirectory(dir);
 	}
-	else if (build == BUILD1) strcpy(baseName,(char*)"1");
-	else strcpy(baseName,(char*)"0");
+	else if (build == BUILD1) 
+	{
+		strcpy(baseName,(char*)"1");
+		MakeDirectory("TOPIC/BUILD1");
+	}
+	else 
+	{
+		MakeDirectory("TOPIC/BUILD0");
+		strcpy(baseName,(char*)"0");
+	}
 
 	char* output = testOutput;
 	testOutput = NULL;
@@ -4723,7 +4744,7 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 				if (!in)
 				{
 					printf((char*)"%s not found\r\n",name);
-					return;
+					return 4;
 				}
 			}
 		}
@@ -4758,7 +4779,7 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 	if (!patternFile)
 	{
 		printf((char*)"%s",(char*)"Unable to create %s? Make sure this directory exists and is writable.\r\n",filename);
-		return;
+		return 4;
 	}
 
 	AllocateOutputBuffer();
@@ -4864,6 +4885,7 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 		if (missingFiles) Log(STDUSERLOG,(char*)"%d topic files were missing.\r\n",missingFiles);
 		Log(STDUSERLOG,(char*)"r\n%d errors - press Enter to quit. Then fix and try again.\r\n",hasErrors);
 		if (!server && !commandLineCompile) ReadALine(readBuffer,stdin);
+		resultcode = 4; // error
 	}
 	else if (hasWarnings) 
 	{
@@ -4881,6 +4903,7 @@ void ReadTopicFiles(char* name,unsigned int build,int spell)
 	}
 	ReturnDictionaryToWordNet();
 	Log(STDUSERLOG,(char*)"\r\n\r\nFinished compile\r\n\r\n");
+	return resultcode;
 }
 
 char* CompileString(char* ptr) // incoming is:  ^"xxx"
@@ -4899,7 +4922,7 @@ char* CompileString(char* ptr) // incoming is:  ^"xxx"
 	*pack++ = ':'; // a internal marker that is has in fact been compiled - otherwise it is a format string whose spaces count but cant fully execute
 
 	if (tmp[2] == '(')  ReadPattern(tmp+2,NULL,pack,false,false); // incoming is:  ^"(xxx"
-	else ReadOutput(tmp+2,NULL,pack,NULL,false);
+	else ReadOutput(tmp+2,NULL,pack,NULL,NULL,NULL,false);
 
 	TrimSpaces(data,false);
 	len = strlen(data);

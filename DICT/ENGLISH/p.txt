@@ -5354,7 +5354,7 @@
     separate~14v 
     start~17v 
     separate~15v 
-    split_up~3v 
+    split~16v 
  portfolio ( meanings=4 glosses=4 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 posdefault:NOUN ) 
     portfolio~1nz (^office~2) the role of the head of a government department
     portfolio~2nz (^case~2) a large, flat, thin case for carrying loose papers or drawings or maps

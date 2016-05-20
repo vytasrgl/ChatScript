@@ -1141,7 +1141,7 @@ retry:
 				Log(STDUSERTABLOG,(char*)"  Wildcards: ");
 				for (int i = 0; i < wildcardIndex; ++i)
 				{
-					if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s   ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
+					if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s (%d-%d)  ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
 					else Log(STDUSERLOG,(char*)"_%d=  ",i);
 				}
 			}
@@ -1177,7 +1177,17 @@ retry:
 				start = 0; // never matched internal words - is at infinite start -- WHY allow this?
 			}
 			else  oldstart = start+1;	// continue from last start match location + 1
-			if (end != NORETRY) goto retry;
+			if (end != NORETRY) 
+			{
+				if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() )
+				{
+					Log(STDUSERTABLOG,"RetryRule on sentence at word %d: ",start+1);
+					for (int i = 1; i <= wordCount; ++i) Log(STDUSERLOG,"%s ",wordStarts[i]);
+					Log(STDUSERLOG,"\n");
+				}
+
+				goto retry;
+			}
 		}
 	}
 exit:
@@ -1910,9 +1920,9 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 			return;
 		}
 		compiling = true;
-		int topic = FindTopicIDByName(name,true); // may preexist
+		int topic = FindTopicIDByName(name,true); // may preexist (particularly if this is layer 2)
 		compiling = false;
-		if (!topic) topic = ++numberOfTopics;
+		if (!topic || build == BUILD2) topic = ++numberOfTopics;
 		else if (plan) myexit((char*)"duplicate plan name");
 		
 		topicBlock* block = TI(topic);
@@ -1944,7 +1954,6 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 			ReportBug((char*)"failed to read all of topic/plan %s read: %d wanted: %d \r\n",name,didread,datalen)
 			break;
 		}
-		char* x = strstr(space,"NOTEX");
 
 		// read \r\n or \n carefully, since windows and linux do things differently
 		char c = 0;
@@ -2193,16 +2202,17 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 			if (*word == ')' ||  !*word  ) break; // til end of keywords or end of line
 			MEANING U;
 			char* p1 = word;
+			bool original = false;
+			if (*p1 == '\'' && p1[1]) // quoted value but not standalone '   
+			{
+				++p1;
+				original = true;
+			}
+			if (*p1 == '\\' && p1[1] == '\'') ++p1;  // protected \'s or similar
 			if (*word == '!' && word[1]) 
 			{
 				++p1;
 				AddInternalFlag(set,HAS_EXCLUDE);
-			}
-			bool original = false;
-			if (*p1 == '\'') 
-			{
-				++p1;
-				original = true;
 			}
 			U = ReadMeaning(p1,true,true);
 

@@ -504,9 +504,26 @@ bool SpellCheckSentence()
 			continue; // ignore hypenated errors that we couldnt solve, because no one mistypes a hypen
 		}
 		
-		// leave uppercase in first position if not adjusted yet
+		// leave uppercase in first position if not adjusted yet... but check for lower case spell error
 		if (IsUpperCase(word[0])  && tokenControl & NO_PROPER_SPELLCHECK) 
+		{
+			char lower[MAX_WORD_SIZE];
+			MakeLowerCopy(lower,word);
+			WORDP D = FindWord(lower,0,LOWERCASE_LOOKUP);
+			if (!D && i == startWord)
+			{
+				char* okword = SpellFix(lower,i,PART_OF_SPEECH,language); 
+				if (okword)
+				{
+					char* tokens[2];
+					WORDP E = StoreWord(okword);
+					tokens[1] = E->word;
+					ReplaceWords(i,1,1,tokens);
+					fixedSpell = true;
+				}
+			}
 			continue; 
+		}
 
 		if (*word != '\'' && (!FindCanonical(word, i,true) || IsUpperCase(word[0]))) // dont check quoted or findable words unless they are capitalized
 		{
@@ -527,7 +544,9 @@ bool SpellCheckSentence()
 			}
 			if (word) 
 			{
-				wordStarts[i] = StoreWord(word)->word;
+				char* tokens[2];
+				tokens[1] = word;
+				ReplaceWords(i,1,1,tokens);
 				fixedSpell = true;
 				continue;
 			}

@@ -22,9 +22,10 @@ extern jmp_buf scriptJump[5];
 extern int jumpIndex;
 
 void JumpBack();
-void myexit(char* msg);
+void myexit(char* msg, int code = 4);
 
 extern bool logged;
+extern bool filesystemOverride;
 
 // MEMORY SYSTEM
 

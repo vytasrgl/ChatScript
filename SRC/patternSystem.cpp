@@ -6,8 +6,8 @@
 #define NOT_BIT			0X00010000
 #define FREEMODE_BIT	0X00020000
 #define QUOTE_BIT		0X00080000
-#define WILDGAP			0X00100000
-#define WILDSPECIFIC	0X00200000
+#define WILDMEMORIZEGAP			0X00100000
+#define WILDMEMORIZESPECIFIC	0X00200000
 #define NOTNOT_BIT		0X00400000
 
 bool matching = false;
@@ -264,7 +264,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
 				{
 					matched = MatchTest(reverse,FindWord(word),(positionEnd < basicStart && firstMatched < 0) ? basicStart : positionEnd,NULL,NULL,
 						statusBits & QUOTE_BIT,uppercasematch,positionStart,positionEnd);
-					if (!matched || !(wildcardSelector & WILDSPECIFIC)) uppercasematch = false;
+					if (!matched || !(wildcardSelector & WILDMEMORIZESPECIFIC)) uppercasematch = false;
 					if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart;
 					break;
 				}
@@ -289,9 +289,15 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
 				if ((positionStart - positionEnd) == 1 && !reverse) positionEnd = positionStart; // If currently matched a phrase, move to end. 
 				else if ((positionEnd - positionStart) == 1 && reverse) positionStart = positionEnd; // If currently matched a phrase, move to end. 
 				uppercasematch = false;
-				if (word[1] != '*' || IsDigit(word[2]) || word[2] == '-' || (word[2] && word[3] != '*' && word[2] != '~' )) wildcardSelector |= WILDSPECIFIC; // no gap or specific gap
-				else if (word[1] == '*' && IsAlphaUTF8(word[2]))  wildcardSelector |= WILDSPECIFIC; // *dda* pattern
-				else wildcardSelector |=  WILDGAP;
+
+				// specifics are fixed values in length, gaps are unknown lengths
+
+				if (ptr[0] != '*') wildcardSelector |= WILDMEMORIZESPECIFIC; // no wildcard
+				else if (IsDigit(ptr[1])) wildcardSelector |= WILDMEMORIZESPECIFIC; // specific gap like *2
+				else if (ptr[1] == '~') wildcardSelector |= WILDMEMORIZEGAP; // variable gap like *~2
+				else if ( ptr[1] == '-') wildcardSelector |= WILDMEMORIZESPECIFIC; // backwards specific gap like *-4
+				else if (ptr[0] == '*' && IsAlphaUTF8(ptr[1]))  wildcardSelector |= WILDMEMORIZESPECIFIC; // *dda* pattern
+				else wildcardSelector |=  WILDMEMORIZEGAP; // variable gap
 				if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDUSERLOG,(char*)"_");
 				continue;
 			case '@': // factset ref
@@ -309,13 +315,13 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
   						if ((positionStart + 1 - start) > limit) //   too long til end
 						{
 							matched = false;
- 							wildcardSelector &= -1 ^ WILDGAP;
+ 							wildcardSelector &= -1 ^ WILDMEMORIZEGAP;
 							break;
 						}
-						if (wildcardSelector & WILDGAP) 
+						if (wildcardSelector & WILDMEMORIZEGAP) 
 						{
 							SetWildCard(start,wordCount,true);  //   legal swallow of gap //   request memorize
- 							wildcardSelector &= -1 ^ WILDGAP;
+ 							wildcardSelector &= -1 ^ WILDMEMORIZEGAP;
 						}
 					}
 
@@ -363,7 +369,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
 					{
 						gap = 0;  
 						matched = false;
- 						wildcardSelector &= -1 ^ WILDGAP;
+ 						wildcardSelector &= -1 ^ WILDMEMORIZEGAP;
 					}
 					else { // match can FORCE it to go to start from any direction
 						positionStart = positionEnd = 0; //   idiom < * and < _* handled under *
@@ -380,7 +386,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
 				{
 					gap = 0;  
 					matched = false;
- 					wildcardSelector &= -1 ^ WILDGAP;
+ 					wildcardSelector &= -1 ^ WILDMEMORIZEGAP;
 				}
 				else if (gap || positionEnd == wordCount)// you can go to end from anywhere if you have a gap OR you are there
 				{
@@ -611,7 +617,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				ptr = nextTokenStart;
 				hold = wildcardIndex;
 				{
-					if (wildcardSelector & WILDSPECIFIC) 
+					if (wildcardSelector & WILDMEMORIZESPECIFIC) 
 					{
 						pendingMatch = wildcardIndex;	// on match later, use this matchvar 
 						SetWildCard(1,1,true); // dummy match
@@ -635,6 +641,8 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						type = "<<";
 						positionEnd = startposition;  //   allowed to pick up after here - oldStart/oldEnd synch automatically works
 						positionStart = INFINITE_MATCH;
+						rEnd = 0;
+						rStart = INFINITE_MATCH; 
 					}
 					matched = Match(ptr,depth+1,positionEnd,type, positionStart == INFINITE_MATCH,gap,wildcardSelector,returnStart,
 						returnEnd,uppercasemat,whenmatched,positionStart,positionEnd,reverse); //   subsection ok - it is allowed to set position vars, if ! get used, they dont matter because we fail
@@ -645,6 +653,11 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						positionStart = returnStart;
 						if (positionStart == INFINITE_MATCH && returnStart > 0 &&  returnStart != INFINITE_MATCH) positionStart = returnEnd;
 						positionEnd = returnEnd;
+						if (*word == '<') // allows thereafter to be anywhere
+						{
+							positionStart = INFINITE_MATCH;
+							oldEnd = oldStart = positionEnd = 0;
+						}
 						if (wildcardSelector) gap = oldgap;	 // to size a gap
 						uppercasematch = uppercasemat;
 						// The whole thing matched but if @_ was used, which way it ran and what to consider the resulting zone is completely confused.
@@ -654,6 +667,10 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 							positionEnd = positionStart = (reverse) ? (oldStart - 1) : (oldEnd + 1) ;  // claim we only moved 1 unit
 						}
 						else if (positionEnd) oldEnd = (reverse) ? (positionEnd + 1) : (positionEnd - 1); //   nested checked continuity, so we allow match whatever it found - but not if never set it (match didnt have words)
+						if (*word == '{') 
+						{
+							gap = oldgap; // restore any pending gap we didnt plug  (eg *~2 {xx yy zz} a )
+						}
 					}
 					else if (*word == '{') 
 					{
@@ -670,9 +687,9 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
                 {
   				    if (*word == '{') 
                     {
-						if (wildcardSelector & WILDSPECIFIC) //   we need to memorize failure because optional cant fail
+						if (wildcardSelector & WILDMEMORIZESPECIFIC) //   we need to memorize failure because optional cant fail
 						{
-							wildcardSelector ^= WILDSPECIFIC;
+							wildcardSelector ^= WILDMEMORIZESPECIFIC;
 							SetWildCardGiven(0, wordCount,true,pendingMatch); 
 						}
 						pendingMatch = -1;
@@ -824,7 +841,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 			default: //   ordinary words, concept/topic, numbers, : and ~ and | and & accelerator
 				matched = MatchTest(reverse,FindWord(word),(positionEnd < basicStart && firstMatched < 0) ? basicStart : positionEnd,NULL,NULL,
 					statusBits & QUOTE_BIT,uppercasematch,positionStart,positionEnd);
-				if (!matched || !(wildcardSelector & WILDSPECIFIC)) uppercasematch = false;
+				if (!matched || !(wildcardSelector & WILDMEMORIZESPECIFIC)) uppercasematch = false;
 				if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart;
          } 
 		statusBits &= -1 ^ QUOTE_BIT; // turn off any pending quote
@@ -849,10 +866,11 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 		if (!reverse) started = (positionStart < REAL_SENTENCE_LIMIT) ? positionStart : 0; // position start may be the unlimited access value
 		else started = (positionStart < REAL_SENTENCE_LIMIT) ? positionEnd : wordCount; // position start may be the unlimited access value
 		bool legalgap = false;
+		unsigned int memorizationStart = positionStart;
         if (gap && matched) // test for legality of gap
         {
 			unsigned int begin = started; // where we think we are now
-			started = (gap & 0x000000ff); // actual word we started at
+			memorizationStart = started = (gap & 0x000000ff); // actual word we started at
 			unsigned int ignore = started;
 			int x;
 			int limit = gap >> 8;
@@ -876,14 +894,14 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 			else  
 			{
 				matched = false;  // more words than limit
-				wildcardSelector &= -1 ^ WILDGAP; //   turn off any save flag
+				wildcardSelector &= -1 ^ WILDMEMORIZEGAP; //   turn off any save flag
 			}
 		}
 		if (matched) // perform any memorization
 		{
 			if (oldEnd == positionEnd && oldStart == positionStart) // something like function call or variable existence, didnt change position
 			{
-				if (wildcardSelector == WILDSPECIFIC)
+				if (wildcardSelector == WILDMEMORIZESPECIFIC)
 				{
 					if (*word == '$')
 					{
@@ -895,18 +913,18 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 			else if (wildcardSelector) //   memorize ONE or TWO things 
 			{
 				if (started == INFINITE_MATCH) started = 1;
-				if (wildcardSelector & WILDGAP) //   would be first if both
+				if (wildcardSelector & WILDMEMORIZEGAP) //   would be first if both
 				{
 					if (reverse)
 					{
 						if ((started - positionEnd) == 0) SetWildCard((char*)"",(char*)"",0,positionEnd+1); // empty gap
 						else SetWildCard(positionEnd + 1,oldStart-1,true);  //   wildcard legal swallow between elements
 					}	
-					else if ((positionStart - started) == 0) SetWildCard((char*)"",(char*)"",0,oldEnd+1); // empty gap
-					else SetWildCard(started,positionStart-1,true);  //   wildcard legal swallow between elements
+					else if ((positionStart - memorizationStart) == 0) SetWildCard((char*)"",(char*)"",0,oldEnd+1); // empty gap
+					else SetWildCard(memorizationStart,positionStart-1,true);  //   wildcard legal swallow between elements
 				}
 				if (positionStart == INFINITE_MATCH) positionStart = 1;
-				if (wildcardSelector & WILDSPECIFIC) 
+				if (wildcardSelector & WILDMEMORIZESPECIFIC) 
 				{
 					int windex = wildcardIndex; // track where we do this
 					if (pendingMatch != -1) 
@@ -969,7 +987,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				if (statusBits & GAPPASSBACK ) //   passing back a gap at end of nested (... * )
 				{
 					gap = statusBits & GAPPASSBACK;
-					wildcardSelector =  statusBits & (WILDSPECIFIC|WILDGAP);
+					wildcardSelector =  statusBits & (WILDMEMORIZESPECIFIC|WILDMEMORIZEGAP);
 				}
 			}
 			success = matched != 0; 

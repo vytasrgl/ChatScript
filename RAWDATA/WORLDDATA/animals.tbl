@@ -1,5 +1,3 @@
-
-
 table: ~adultchild(^child ^adult)
 createfact(^child child ^adult)
 ^addproperty(^child NOUN NOUN_SINGULAR)

@@ -10226,7 +10226,7 @@
     part~14v 
     part~15v 
     separate~16v 
-    split~17v 
+    split_up~4v 
     separate~20v 
  danger_zone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     danger_zone~1nz (^zone~2) a dangerous area

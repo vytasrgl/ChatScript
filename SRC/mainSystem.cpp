@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.5";
+char* version = "6.5a";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -14,6 +14,7 @@ int timerLimit = 0;						// limit time per volley
 int timerCheckRate = 0;					// how often to check calls for time
 int volleyStartTime = 0;
 int timerCheckInstance = 0;
+char* privateParams = NULL;
 char hostname[100];
 char users[100];
 char logs[100];
@@ -249,7 +250,11 @@ void CreateSystem()
 		UnlockLevel(); // unlock it to add stuff
 		FACT* F = factFree;
 		Callback(boot,(char*)"()",true); // do before world is locked
-		while (++F <= factFree) F->flags |= FACTBUILD1; // convert these to level 1
+		while (++F <= factFree) 
+		{
+			if (F->flags & FACTTRANSIENT) F->flags |= FACTDEAD;
+			F->flags |= FACTBUILD1; // convert these to level 1
+		}
 		NoteBotVariables(); // convert user variables read into bot variables
 		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
 	}
@@ -354,9 +359,13 @@ void CreateSystem()
 	printf((char*)"%s",(char*)"    JSON access disabled.\r\n");
 #endif
 
-#ifdef DISCARDPOSTGRES
-	if(server) Log(SERVERLOG,(char*)"    Postgres disabled.\r\n");
-	else printf((char*)"%s",(char*)"    Postgres disabled.\r\n");
+#ifndef DISCARDPOSTGRES
+	if (server) Log(SERVERLOG,(char*)"    Postgres enabled.\r\n");
+	else printf((char*)"%s",(char*)"    Postgres enabled.\r\n");
+#endif
+#ifndef DISCARDPOSTGRES
+	if (server) Log(SERVERLOG,(char*)"    Mongo enabled.\r\n");
+	else printf((char*)"%s",(char*)"    Mongo enabled.\r\n");
 #endif
 	printf((char*)"%s",(char*)"\r\n");
 	loading = false;
@@ -491,6 +500,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		else if (!stricmp(argv[i],(char*)"nodebug")) authorizations = (char*) 1; 
 		else if (!strnicmp(argv[i],(char*)"users=",6 )) strcpy(users,argv[i]+6);
 		else if (!strnicmp(argv[i],(char*)"logs=",5 )) strcpy(logs,argv[i]+5);
+		else if (!strnicmp(argv[i],(char*)"private=",8)) privateParams = argv[i]+8;
 		else if (!strnicmp(argv[i],(char*)"livedata=",9) ) 
 		{
 			strcpy(livedata,argv[i]+9);
@@ -590,8 +600,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 			FILE* in = FopenUTF8Write(logFilename);
 			if (in) fclose(in);
 			commandLineCompile = true;
-			ReadTopicFiles(argv[i]+7,BUILD0,NO_SPELL);
- 			myexit((char*)"build0 complete");
+			int result = ReadTopicFiles(argv[i]+7,BUILD0,NO_SPELL);
+ 			myexit((char*)"build0 complete",result);
 		}  
 		if (!strnicmp(argv[i],(char*)"build1=",7))
 		{
@@ -599,8 +609,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 			FILE* in = FopenUTF8Write(logFilename);
 			if (in) fclose(in);
 			commandLineCompile = true;
-			ReadTopicFiles(argv[i]+7,BUILD1,NO_SPELL);
- 			myexit((char*)"build1 complete");
+			int result = ReadTopicFiles(argv[i]+7,BUILD1,NO_SPELL);
+ 			myexit((char*)"build1 complete",result);
 		}  
 #endif
 		if (!strnicmp(argv[i],(char*)"timer=",6))
@@ -641,7 +651,13 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 	InitStandalone();
 #ifndef DISCARDPOSTGRES
-	if (pguserdb) PGUserFilesCode();
+	if (pguserdb) 
+	{
+		PGUserFilesCode();
+	}
+#endif
+#ifdef PRIVATE_CODE
+	PrivateInit(privateParams); 
 #endif
 	return 0;
 }
@@ -657,7 +673,10 @@ void PartiallyCloseSystem()
 	CloseBuffers();		// memory system
 	DeletePermanentJavaScript(); // javascript permanent system
 #ifndef DISCARDPOSTGRES
-	DBShutDown();
+	PostgresShutDown();
+#endif
+#ifdef PRIVATE_CODE
+	PrivateRestart();
 #endif
 }
 
@@ -671,6 +690,9 @@ void CloseSystem()
 	// user file rerouting stays up on a restart
 #ifndef DISCARDPOSTGRES
 	PGUserFilesCloseCode();
+#endif
+#ifdef PRIVATE_CODE
+	PrivateShutdown();
 #endif
 }
 
@@ -966,11 +988,18 @@ void ResetSentence() // read for next sentence to process from raw system level 
 	ruleErased = false;	
 }
 
-void ComputeWhy(char* buffer)
+void ComputeWhy(char* buffer,int n)
 {
 	strcpy(buffer,(char*)"Why:");
 	buffer += strlen(buffer);
-	for (int i = 0; i < responseIndex; ++i) 
+	int start = 0;
+	int end = responseIndex;
+	if (n >= 0) 
+	{
+		start = n;
+		end = n + 1;
+	}
+	for (int i = start; i < end; ++i) 
 	{
 		unsigned int order = responseOrder[i];
 		int topic = responseData[order].topic;
@@ -1045,7 +1074,7 @@ void FinishVolley(char* incoming,char* output,char* postvalue)
 			*time15 = 0;
 			if (volleyCount == 15 && timeturn15[1]) sprintf(time15,(char*)" F:%s ",timeturn15);
 			*buff = 0;
-			if (responseIndex && regression != NORMAL_REGRESSION) ComputeWhy(buff);
+			if (responseIndex && regression != NORMAL_REGRESSION) ComputeWhy(buff,-1);
 
 			if (*incoming && regression == NORMAL_REGRESSION) Log(STDUSERLOG,(char*)"(%s) %s ==> %s %s\r\n",activeTopic,TrimSpaces(incoming),Purify(output),buff); // simpler format for diff
 			else if (!*incoming) 
@@ -1218,7 +1247,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output)
 	strcpy(copy,incoming); // so input trace not contaminated by input revisions -- mainInputBuffer is "incoming"
 
 	ok = ProcessInput(copy);
-	
+
 	if (!ok) return 0; // command processed
 	
 	if (!server) // refresh prompts from a loaded bot since mainloop happens before user is loaded
@@ -1234,7 +1263,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output)
 	char* after = output + strlen(output) + 1;
 	*after++ = (char)0xfe; // positive termination
 	*after++ = (char)0xff; // positive termination for servers
-	ComputeWhy(after);
+	ComputeWhy(after,-1);
 	after += strlen(after) + 1;
 	strcpy(after,activeTopic); // currently the most interesting topic
 	DeleteTransientJavaScript(); // unload context if there
@@ -1276,7 +1305,7 @@ unsigned int ProcessInput(char* input)
 	strcpy(inputCopy,input);
 	char* buffer = inputCopy;
 	size_t len = strlen(input);
-	if (len >= MAX_MESSAGE) buffer[MAX_MESSAGE-1] = 0; 
+	if (len >= MAX_BUFFER_SIZE) buffer[MAX_BUFFER_SIZE-1] = 0; 
 
 #ifndef DISCARDTESTING
 	char* at = SkipWhitespace(buffer);
@@ -1339,7 +1368,6 @@ unsigned int ProcessInput(char* input)
 	}
 #endif
 	
-	
 	if (!documentMode) 
 	{
 		responseIndex = 0;	// clear out data (having left time for :why to work)
@@ -1350,7 +1378,6 @@ unsigned int ProcessInput(char* input)
 	if (*buffer) ++volleyCount;
 	int oldVolleyCount = volleyCount;
 	bool startConversation = !*buffer;
-
 loopback:
 	inputNest = 0; // all normal user input to start with
 	lastInputSubstitution[0] = 0;
@@ -1364,7 +1391,6 @@ loopback:
 	char prepassTopic[MAX_WORD_SIZE];
 	strcpy(prepassTopic,GetUserVariable((char*)"$cs_prepass"));
 	nextInput = buffer;
-
 	if (!documentMode)  AddHumanUsed(buffer);
  	int loopcount = 0;
 	while (((nextInput && *nextInput) || startConversation) && loopcount < 50) // loop on user input sentences
@@ -1409,7 +1435,6 @@ loopback:
 		startConversation = false;
 		++loopcount;
 	}
-	if (++loopcount > 50) ReportBug((char*)"loopcount excess %d %s",loopcount,nextInput)
 	return true;
 }
 
@@ -1964,9 +1989,6 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set curre
 		}
 	}
 
-	if (tokenControl & DO_PROPERNAME_MERGE && wordCount  && !oobExists)  ProperNameMerge();   
-	if (tokenControl & DO_DATE_MERGE && wordCount  && !oobExists)  ProcessCompositeDate();   
- 	if (tokenControl & DO_NUMBER_MERGE && wordCount && !oobExists)  ProcessCompositeNumber(); //   numbers AFTER titles, so they dont change a title
 	int i;
  	for (i = 1; i <= wordCount; ++i)  originalCapState[i] = IsUpperCase(*wordStarts[i]); // note cap state
  	if (mytrace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
@@ -2008,6 +2030,9 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set curre
 			}
 		}
 	}
+	if (tokenControl & DO_PROPERNAME_MERGE && wordCount  && !oobExists)  ProperNameMerge();   
+	if (tokenControl & DO_DATE_MERGE && wordCount  && !oobExists)  ProcessCompositeDate();   
+ 	if (tokenControl & DO_NUMBER_MERGE && wordCount && !oobExists)  ProcessCompositeNumber(); //   numbers AFTER titles, so they dont change a title
 	
 	if (!analyze) nextInput = ptr;	//   allow system to overwrite input here
 

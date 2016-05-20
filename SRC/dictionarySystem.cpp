@@ -443,7 +443,7 @@ char* reuseAllocation(char* old, char* word)
 
 char* reuseAllocation(char* old, char* word,int size)
 {
-	if (size == 0) size = strlen(word);
+	if (size == 0  && word) size = strlen(word);
 	size_t len = 0;
 	if (old && !planning  && !compiling && !loading) 
 	{
@@ -2252,8 +2252,8 @@ void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,b
 	
 			D = StoreWord(copy,0);
 			AddInternalFlag(D,fileFlag|HAS_SUBSTITUTE);
- 			D->w.substitutes = S;
 			D->w.glosses = NULL;
+ 			D->w.substitutes = S;
 			if (GetPlural(D)) SetPlural(D,0);
 			if (GetComparison(D)) SetComparison(D,0);
 			if (GetTense(D)) SetTense(D,0);

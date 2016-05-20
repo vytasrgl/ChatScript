@@ -17,6 +17,7 @@ bool oob = false;							// show oob data
 bool silent = false;						// dont display outputs of chat
 bool logged = false;
 bool showmem = false;
+bool filesystemOverride = false;
 bool inLog = false;
 char* testOutput = NULL;					// testing commands output reroute
 
@@ -100,17 +101,17 @@ void JumpBack()
 	longjmp(scriptJump[jumpIndex], 1);
 }
 
-void myexit(char* msg)
+void myexit(char* msg, int code)
 {	
 	char name[MAX_WORD_SIZE];
 	sprintf(name,(char*)"%s/exitlog.txt",logs);
 	FILE* in = FopenUTF8WriteAppend(name);
 	if (in) 
 	{
-		fprintf(in,(char*)"%s - called myexit\r\n",msg);
+		fprintf(in,(char*)"%s %d - called myexit\r\n",msg,code);
 		fclose(in);
 	}
-	exit(0);
+	exit(code);
 }
 
 /////////////////////////////////////////////////////////
@@ -121,7 +122,7 @@ void ResetBuffers()
 {
 	globalDepth = 0;
 	bufferIndex = baseBufferIndex;
-	memset(memDepth,0,511); 
+	memset(memDepth,0,sizeof(memDepth)); 
 }
 
 void CloseBuffers()
@@ -499,12 +500,12 @@ char* GetUserPath(char* login)
 #ifdef USERPATHPREFIX
 	if (server)
 	{
-#ifndef DISCARDPOSTGRES
-		if (pguserdb) return path; // do not use this with postgres storage
-#endif
-		userPath = GetUserPathString(login);
-		MakePath(users, userPath);
-		path = (char*) userPath.c_str();
+		if (!filesystemOverride)  // do not use this with db storage
+		{
+			userPath = GetUserPathString(login);
+			MakePath(users, userPath);
+			path = (char*) userPath.c_str();
+		}
 	}
 #endif
 	return path;
@@ -847,6 +848,7 @@ void ChangeDepth(int value,char* where)
 
 unsigned int Log(unsigned int channel,const char * fmt, ...)
 {
+
 	static unsigned int id = 1000;	if (quitting) return id;
 	logged = true;
 	bool localecho = false;
@@ -987,7 +989,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
     *at = 0;
     va_end(ap); 
 
-	last = *(at-1); //   ends on NL?
+	last = (at > logmainbuffer) ? *(at-1) : 0; //   ends on NL?
 	if (fmt && !*fmt) last = 1; // special marker 
 	if (last == '\\') *--at = 0;	//   dont show it (we intend to merge lines)
 	logUpdated = true; // in case someone wants to see if intervening output happened

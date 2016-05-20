@@ -254,7 +254,7 @@ void Client(char* login)// test client for a server
 	FILE* source = stdin;
 
 	char* from = login;
-	*input = false;
+	*input = 0;
 	if (*from == '*') // let user go first.
 	{
 		++from;
@@ -275,10 +275,10 @@ restart: // start with user
 
 	// message to server is 3 strings-   username, botname, null (start conversation) or message
 	char* ptr = data;
-	strcpy(ptr,from);
+	strcpy(ptr,from); // username
 	ptr += strlen(ptr) + 1;
 	strcpy(ptr,bot);
-	ptr += strlen(ptr) + 1;
+	ptr += strlen(ptr) + 1; // botname
 	strcpy(ptr,input);  // null message - start conversation or given message, user starts first
 	try 
 	{

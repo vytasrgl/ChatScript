@@ -281,8 +281,8 @@ Whitney_Houston
 Zoe_Kravitz
 
 
-table: ~men (^role ^male ^kind ^item)
-^createfact(^male member ^role)
+table: ~men (^roleitem ^male ^kind ^item)
+^createfact(^male member ^roleitem)
 if (^kind != *) {^createfact(^item member ^kind)}
 if (^item != *) {^createfact(^item sing ^male)}
 ^addproperty(^male NOUN_MALEHUMAN )
@@ -315,8 +315,8 @@ DATA:
 ~musician "Daniel Powter" ~song "Bad Day"
 ~musician "Tom Petty" ~song "Free Fallin'"
 
-table: ~women (^role ^female ^kind ^item)
-^createfact(^female member ^role)
+table: ~women (^roleitem ^female ^kind ^item)
+^createfact(^female member ^roleitem)
 ^createfact(^item member ^kind)
 ^createfact(^item sing ^female)
 ^addproperty(^female NOUN_FEMALEHUMAN )

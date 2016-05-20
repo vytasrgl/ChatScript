@@ -4619,13 +4619,13 @@
  Branor ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Beardsley ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Berde ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- burst ( meanings=12 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=burst 
+ burst ( meanings=12 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=burst 
     explosion~1n 
     fit~1nz (^activity~1) a sudden flurry of activity 
     salvo~1nz (^fire~1) rapid simultaneous discharge of firearms
     flare-up~1nz (^natural_event~1) a sudden intense happening
     explode~2v 
-    split~13v 
+    break_open~2vz come open suddenly and violently, as if from internal pressure
     bust~6v 
     burst~8vz emerge suddenly
     break~52v 
@@ -22606,7 +22606,7 @@
     escape~12v 
  break_open ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT VERB_CONJUGATE1 ) 
     flare_up~1v 
-    burst~6v 
+    split~13v 
     break_open~3vz open with force
  burst_out ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_TAKES_GERUND VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     break_open~1v 

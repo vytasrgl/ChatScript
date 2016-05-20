@@ -633,7 +633,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 			ptr =  DoFunction(word,ptr,buffer,result); 
 
 			if (result == UNDEFINED_FUNCTION) result = NOPROBLEM_BIT;
-			else if (space && *buffer && *buffer != ' ') // we need to add a space
+			else if (space && *buffer && *buffer != ' ' && result != ENDCALL_BIT) // we need to add a space, but not if requesting a call return ^return
 			{
 				memmove(buffer+1,buffer,strlen(buffer) + 1);
 				*buffer = ' ';
@@ -869,17 +869,17 @@ static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsig
 		{
 			char* value = GetUserVariable(word);
 			StdNumber(value,buffer,controls, value && *value && space);
-			if (controls & OUTPUT_NOQUOTES && *buffer == '"') // remove quotes from variable data
+			char* at = SkipWhitespace(buffer);
+			if (controls & OUTPUT_NOQUOTES && *at == '"') // remove quotes from variable data
 			{
-				size_t len = strlen(buffer);
-				if (buffer[len-1] == '"')
+				size_t len = strlen(at);
+				if (at[len-1] == '"')
 				{
-					buffer[len-1] = 0;
-					memmove(buffer,buffer+1,len);
+					at[len-1] = 0;
+					memmove(at,at+1,len);
 				}
 			}
-			if (*buffer == '"' && buffer[1] == FUNCTIONSTRING) *word = ENDUNIT; // reeval the function string
-			else if (*buffer == '^' && IsAlphaUTF8(buffer[1]) && *SkipWhitespace(ptr) == '(') *word = ENDUNIT; // if fn call substituted, force reeval
+			if (*at == '"' && at[1] == FUNCTIONSTRING) *word = ENDUNIT; // reeval the function string
 		}
 	}	
     else StdNumber(word,buffer,controls, space); // money or simple $
@@ -1077,7 +1077,7 @@ retry:
 			else if (once && (word[1] != '$' && word[1] != '_' && word[1] != '\'' && word[1] != '^')){;}	// have our answer (unless it was a function variable substitution)
 			else
 			{
-				strcpy(word,buffer);
+				strcpy(word,SkipWhitespace(buffer));
 				*buffer = 0;
 				goto retry; 
 			}

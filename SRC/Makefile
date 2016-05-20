@@ -34,11 +34,11 @@ pgserver: INCLUDEDIRS=-Ievserver -Ipostgres
 pgserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
 
-mongoserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DMONGO=1
+mongoserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DPRIVATECODE=1
 mongoserver: PGLOAD= -lpq -pthread
 mongoserver: all
-mongoserver: EXECUTABLE=../BINARIES/ChatScriptmongo
-mongoserver: INCLUDEDIRS=-Ievserver 
+mongoserver: EXECUTABLE=../BINARIES/ChatScriptMongo
+mongoserver: INCLUDEDIRS=-Ievserver -Imongo -I/usr/local/include/libbson-1.0 -I/usr/local/include/libmongoc-1.0
 mongoserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
 UNAME := $(shell uname)
@@ -47,7 +47,8 @@ CC=g++
 
 ifeq ($(UNAME), Linux)
 $(info ************ LINUX VERSION ************)
-LDFLAGS= -lrt -lcurl --verbose $(PGLOAD) 
+LDFLAGS= -L/usr/lib64 -lrt -lcurl  --verbose $(PGLOAD)
+mongoserver: LDFLAGS+= -lcrypt -lsasl2 -L/usr/local/lib -lmongoc-1.0 -lbson-1.0 
 endif
 
 ifeq ($(UNAME), Darwin)

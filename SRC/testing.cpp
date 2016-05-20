@@ -1170,7 +1170,7 @@ static void C_TestPattern(char* input)
 				Log(STDUSERLOG,(char*)" wildcards: (");
 				for (int i = 0; i < wildcardIndex; ++i)
 				{
-					if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
+					if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s (%d-%d) ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
 					else Log(STDUSERLOG,(char*)"_%d=  ",i);
 				}
 			}
@@ -3874,9 +3874,6 @@ static void C_Build(char* input)
 		if (file[len-1] == '0') buildId = BUILD0;
 		else if  (file[len-1] == '2') buildId = BUILD2;
 		else buildId = BUILD1; // global so SaveCanon can work
-		if (buildId == BUILD0) MakeDirectory("TOPIC/BUILD0");
-		else if (buildId == BUILD1) MakeDirectory("TOPIC/BUILD1");
-		else if (buildId == BUILD2) MakeDirectory("TOPIC/BUILD2");
 		ReadTopicFiles(word,buildId,spell); 
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
 		ClearPendingTopics(); // flush in case topic ids change or go away
@@ -3940,7 +3937,7 @@ static void C_User(char* username)
 static void C_Crash(char* x)
 {
 	int xx = 0;
-	xx = xx / xx;
+	xx = 1 / xx;
 }
 
 static void C_Flush(char* x)
@@ -4645,6 +4642,10 @@ static void FindConceptWord(WORDP D, uint64 pattern)
 	char* prefix = (char*) pattern;
 	if (D->internalBits & CONCEPT && !(D->internalBits & TOPIC))
 	{
+		if (!stricmp(D->word,"~state_abbreviations"))
+		{
+			int xx = 0;
+		}
 		if (!*prefix) Log(STDUSERLOG,(char*)"%s\r\n",D->word);
 		else if ( MatchesPattern(D->word,prefix)) Log(STDUSERLOG,(char*)"%s\r\n",D->word);
 	}
@@ -4843,6 +4844,7 @@ void InitCommandSystem() // set dictionary to match builtin functions
 TestMode Command(char* input,char* output,bool scripted)
 {
 	char word[MAX_WORD_SIZE];
+	*word = 0;
 	fromScript = scripted;
 	bool oldecho = echo;
 	if (!scripted) echo = true;	// see outputs sent to log file on console also
@@ -4883,13 +4885,7 @@ TestMode Command(char* input,char* output,bool scripted)
 		CommandInfo* info;
 		info = &commandSet[i];
 		input = SkipWhitespace(input+strlen(info->word));
-		char data[MAX_WORD_SIZE];
-		if (strlen(input) > (MAX_WORD_SIZE-1)) 
-		{
-			ReportBug((char*)"Command data too large- %s %s\r\n",word,input)
-			echo = oldecho;
-			return COMMANDED; // ignore it
-		}
+		char* data = AllocateBuffer();
 		strcpy(data,input);
 		TrimSpaces(data,false); // safe from change
 		wasCommand = COMMANDED;
@@ -4897,6 +4893,7 @@ TestMode Command(char* input,char* output,bool scripted)
 		if (output) *output = 0;
 		(*info->fn)(data);
 		testOutput = NULL;
+		FreeBuffer();
 		if (strcmp(info->word,(char*)":trace")   && strcmp(info->word,(char*)":echo") && !prepareMode) echo = oldecho;
 		if (scripted && strcmp(info->word,(char*)":echo")) echo = oldecho;
 		return wasCommand;
@@ -5838,7 +5835,7 @@ static void C_Do(char* input)
 	char* answer = AllocateBuffer();
 #ifndef DISCARDSCRIPTCOMPILER
 	hasErrors = 0;
-	ReadOutput(input, NULL,out,NULL,false);
+	ReadOutput(input, NULL,out,NULL,NULL,NULL,false);
 	if (hasErrors) Log(STDUSERLOG,(char*)"\r\nScript errors prevent execution.");
 	else 
 	{
@@ -6224,9 +6221,11 @@ static void C_Trace(char* input)
 	ReadCompiledWord(input,word);
 	if (!stricmp(word,(char*)"none")) // turn off all topics and macros as well
 	{
+		blocknotrace = false;
 		WalkDictionary(ClearTracedFunction,0);
 		WalkDictionary(ClearTracedTopic,0);
 	}
+	
 	if (!strnicmp(input,"factcreate",10)) // tracing on 
 	{
 		input = ReadCompiledWord(input+11,word); 
@@ -6250,8 +6249,14 @@ static void C_Trace(char* input)
 			if (word[1]) memmove(word,word+1,strlen(word));
 			else continue;
 		}
-
-		if (!stricmp(word,(char*)"all")) flags = (unsigned int)-1;
+		
+		if (!stricmp(word,(char*)"ignorenotrace")) blocknotrace = 1;
+		else if (!stricmp(word,(char*)"all") ) flags = (unsigned int)-1;
+		else if (!stricmp(word,(char*)"full"))
+		{
+			flags = (unsigned int)-1;
+			blocknotrace = 1;
+		}
 		else if (!stricmp(word,(char*)"none")) flags = 0;
 		else if (*word == '-') // remove this flag
 		{
@@ -6393,8 +6398,6 @@ static void C_Trace(char* input)
 		SaveTracedFunctions();
 		WalkDictionary(TracedTopic,0);
 		echo = oldecho;
-		if (trace == 0) echo = false;
-
 	}	
 	else echo = true;
 }
@@ -7851,7 +7854,10 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":verifyspell",C_VerifySpell,(char*)"Regress spell checker against file"}, 
 	{ (char*)":verifysubstitutes",C_VerifySubstitutes,(char*)"Regress test substitutes of all kinds"}, 
 	{ (char*)":worddump",C_WordDump,(char*)"show words via hardcoded test"}, 
-
+	
+#ifdef PRIVATE_CODE
+#include "../privatecode/privatetestingtable.cpp"
+#endif
 	{0,0,(char*)""},	
 };
 

@@ -165,12 +165,12 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 
 		if (*ptr == '(') // old format - std if internals
 		{
-			endptr = strchr(ptr,'{') - 3;
+			endptr = strchr(ptr,'{') - 3; // offset to jump past pattern
 		}
 		else // new format, can use std if or pattern match
 		{
 			endptr = ptr + Decode(ptr);
-			ptr += 3; // skip jump to end of pattern
+			ptr += 3; // skip jump to end of pattern and point to pattern
 		}
 
 		//   Perform TEST condition
@@ -203,7 +203,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 						Log(STDUSERTABLOG,(char*)"  Wildcards: (");
 						for (int i = 0; i < wildcardIndex; ++i)
 						{
-							if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s   ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
+							if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s (%d-%d)   ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
 							else Log(STDUSERLOG,(char*)"_%d=  ",i);
 						}
 					}
@@ -213,7 +213,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			result = (failed) ? FAILRULE_BIT : NOPROBLEM_BIT;
 		}
 		else TestIf(ptr+2,result); 
-		ptr = endptr; // the end on accelerator of body
+		ptr = endptr; // now after pattern, pointing to the skip data to go past body.
 						
 		//   perform SUCCESS branch and then end if
 		if (!(result & ENDCODES)) //   IF test success - we choose this branch
@@ -223,6 +223,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			ptr = Output(ptr+5,buffer,result); //   skip accelerator-3 and space and { and space - returns on next useful token
 			ChangeDepth(-1,(char*)"HandleIf");
 			ptr += Decode(ptr);	//   offset to end of if entirely
+			if (*(ptr-1) == 0)  --ptr;// no space after?
 			ChangeDepth(-1,(char*)"HandleIf");
 			break;
 		}
@@ -230,9 +231,10 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			result = NOPROBLEM_BIT;		//   test result is not the IF result
 	
 		//   On fail, move to next test
-		ptr += Decode(ptr);
+		ptr +=  Decode(ptr);
+		if (*(ptr-1) == 0) return --ptr; // the if ended abruptly as a stream like in NOTRACE, and there is no space here
 		if (strncmp(ptr,(char*)"else ",5))  break; //   not an ELSE, the IF is over. 
-		ptr += 5; //   skip over ELSE space, aiming at the (of the condition
+		ptr += 5; //   skip over ELSE space, aiming at the ( of the next condition condition
 	}
 	return ptr;
 } 
@@ -326,7 +328,8 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 				int junk;
 				if (GetNextSpot(D,index-1,junk,junk) == index) result = NOPROBLEM_BIT; // otherwise failed and we would have known
 			}
-			if (result == FAILRULE_BIT && !index) // laborious match try now
+			char* was = wildcardOriginalText[GetWildcardID(word1)];
+			if (result == FAILRULE_BIT && (!index || strchr(was,'_') || strchr(was,' '))) // laborious match try now
 			{
 				D1 = FindWord(val1);
 				if (D1 && D)

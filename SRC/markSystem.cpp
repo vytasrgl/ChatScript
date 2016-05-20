@@ -216,6 +216,10 @@ void MarkWordHit(WORDP D, int start,int end)
 	// track the actual sets done matching start word location (good for verbs, not so good for nouns)
 	if (*D->word == '~')
 	{
+		if (!stricmp(D->word,"~ignorereadwords"))
+		{
+			int xx = 0;
+		}
 		if (!(D->internalBits & TOPIC))
 		{
 			unsigned int* entry = (unsigned int*) AllocateString(NULL,2, sizeof(MEANING),false); // ref and link
@@ -674,9 +678,10 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 		*original = 0;
 		while (at && !(posValues[--at] & (VERB_BITS|NOUN_INFINITIVE|NOUN_GERUND|ADJECTIVE_PARTICIPLE))){;} // find the verb
 		if (!at) continue; // failed to find match  "in his early work *on von neuman...
-
+		strcpy(original,wordStarts[at]);
+		strcpy(canonical, wordCanonical[at]);
 		unsigned int end = i;
-		i = at; // resume later from here
+		i = at; // resume out loop later from here
 		while (++at <= end)
 		{
 			if (posValues[at] & (VERB_BITS|PARTICLE|NOUN_INFINITIVE|NOUN_GERUND|ADJECTIVE_PARTICIPLE))
@@ -709,7 +714,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 			}
 		}
 	}
-	Log(STDUSERLOG,(char*)"\r\n"); // if we logged something, separate
+	if (trace) Log(STDUSERLOG,(char*)"\r\n"); // if we logged something, separate
 
 	trace = oldtrace;
 	FreeBuffer();

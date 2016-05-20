@@ -1026,7 +1026,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		WORDP Y = FindWord(hyphen+1,0,LOWERCASE_LOOKUP);
 		*hyphen = '-';
 		// adjective made from counted singular noun:  6-month
-		if (Y && IsNumber(X->word,false))
+		if (X && Y && IsNumber(X->word,false))
 		{
 			if (Y->properties & NOUN && !stricmp(Y->word,GetSingularNoun(Y->word, false, true))) // number with singular noun cant be anything but adjective
 			{
@@ -1406,7 +1406,11 @@ void SetSentenceTense(int start, int end)
 			if ( bitCounts[i] != 1) break;	// all bets about structure are now off
 			if (posValues[i] & AUX_VERB)
 			{
-				if (i == startSentence) // its a question because AUX or VERB comes before MAINSUBJECT
+				size_t len = strlen(wordStarts[i]);
+				bool normalAux = true;
+				if (len > 3 && !stricmp(wordStarts[i]+len-3,"ing")) normalAux = false; // not Getting or gets in present tense
+				if (!normalAux){;}
+				else if (i == startSentence) // its a question because AUX or VERB comes before MAINSUBJECT
 				{
 					tokenFlags |= QUESTIONMARK;
 					break;
@@ -1414,7 +1418,7 @@ void SetSentenceTense(int start, int end)
 				else if (!subjectFound && !foundVerb) // its a question because AUX or VERB comes before MAINSUBJECT unless we have a command before
 				{
 					// EXCEPT for negative adverb starter: (char*)"never can I go home"
-					if (parseFlags[i-1] & NEGATIVE_ADVERB_STARTER) {;}
+					if (parseFlags[i-1] & NEGATIVE_ADVERB_STARTER ) {;}
 					else
 					{
 						tokenFlags |= QUESTIONMARK;
