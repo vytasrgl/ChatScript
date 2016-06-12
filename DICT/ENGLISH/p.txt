@@ -910,7 +910,6 @@
  positive_chemotaxis ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     positive_chemotaxis~1nz (^chemotaxis~1) movement toward a chemical stimulus
  Pigg ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Prior ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  pervaporation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     pervaporation~1nz (^concentration~1) the concentration of a colloidal solution whose colloid will not pass through a semipermeable membrane
  plane ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) comparative=planer 

@@ -1,12 +1,12 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.5a";
+char* version = "6.5b";
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
 char revertBuffer[MAX_BUFFER_SIZE];			// copy of user input so can :revert if desired
-static int argc;
-static char ** argv;
+int argc;
+char ** argv;
 char* postProcessing = 0;						// copy of output generated during MAIN control. Postprocessing can prepend to it
 unsigned int tokenCount;						// for document performc
 bool callback = false;						// when input is callback,alarm,loopback, dont want to enable :retry for that...
@@ -33,7 +33,7 @@ bool docstats = false;
 unsigned int docSentenceCount = 0;
 char rawSentenceCopy[MAX_BUFFER_SIZE]; // current raw sentence
 
-unsigned int derivationIndex[256];
+unsigned short int derivationIndex[256];
 
 #define MAX_TRACED_FUNCTIONS 50
 static char tracedFunctions[MAX_TRACED_FUNCTIONS][100];
@@ -205,10 +205,10 @@ void CreateSystem()
 	sprintf(data,(char*)"          buffer:%dx%dkb cache:%dx%dkb userfacts:%d\r\n",(int)maxBufferLimit,(int)(maxBufferSize/1000),(int)userCacheCount,(int)(userCacheSize/1000),(int)userFactCount);
 	if (server) Log(SERVERLOG,(char*)"%s",data);
 	else printf((char*)"%s",data);
-
+	
 	InitScriptSystem();
 	InitVariableSystem();
-	ReloadSystem();			// builds layer1 facts and dictionary (from wordnet)
+	ReloadSystem();			// builds base facts and dictionary (from wordnet)
 	LoadTopicSystem();		// dictionary reverts to wordnet zone
 	InitSpellCheck();
 	*currentFilename = 0;
@@ -402,6 +402,8 @@ void ReloadSystem()
 unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* readablePath, char* writeablePath, USERFILESYSTEM* userfiles)
 { // this work mostly only happens on first startup, not on a restart
 	strcpy(hostname,(char*)"local");
+	MakeDirectory((char*)"TMP");
+
 	argc = argcx;
 	argv = argvx;
 	InitFileSystem(unchangedPath,readablePath,writeablePath);
@@ -964,6 +966,8 @@ void ResetToPreUser() // prepare for multiple sentences being processed - data l
 	totalCounter = 0;
 	itAssigned = theyAssigned = 0;
 	memset(wordStarts,0,sizeof(char*)*MAX_SENTENCE_LENGTH); // reinit for new volley - sharing of word space can occur throughout this volley
+	ClearWhereInSentence();
+	ResetTokenSystem();
 
 	//  Revert to pre user-loaded state, fresh for a new user
 	ReturnToAfterLayer(1,false);  // dict/fact/strings reverted and any extra topic loaded info  (but CSBoot process NOT lost)
@@ -971,7 +975,6 @@ void ResetToPreUser() // prepare for multiple sentences being processed - data l
 	ResetTopicSystem(false);
 	ResetUserChat();
 	ResetFunctionSystem();
-	ResetTokenSystem();
 	ResetTopicReply();
 
  	//   ordinary locals
@@ -980,6 +983,7 @@ void ResetToPreUser() // prepare for multiple sentences being processed - data l
 
 void ResetSentence() // read for next sentence to process from raw system level control only
 {
+	ClearWhereInSentence(); 
 	ResetFunctionSystem();
 	respondLevel = 0; 
 	currentRuleID = NO_REJOINDER;	//   current rule id
@@ -1104,6 +1108,7 @@ void FinishVolley(char* incoming,char* output,char* postvalue)
 		}
 	}
 	else *output = 0;
+	ClearVolleyWordMaps(); 
 	if (!documentMode) 
 	{
 		ShowStats(false);
@@ -1296,6 +1301,29 @@ FunctionResult Reply()
 	return result;
 }
 
+static void Restart()
+{
+	char us[MAX_WORD_SIZE];
+	strcpy(us,loginID);
+	trace = 0;
+	ClearUserVariables();
+	PartiallyCloseSystem();
+	CreateSystem();
+	InitStandalone();
+	if (!server)
+	{
+		echo = false;
+		char initialInput[MAX_WORD_SIZE];
+		*initialInput = 0;
+		PerformChat(us,computerID,initialInput,callerIP,mainOutputBuffer);
+	}
+	else 
+	{
+		strcpy(ourMainOutputBuffer,"Restarted server"); // same as mainOutputbuffer but not relocated code
+		Log(STDUSERLOG,(char*)"System restarted\r\n");
+	}
+}
+
 unsigned int ProcessInput(char* input)
 {
 	startTimeInfo =  ElapsedMilliseconds();
@@ -1337,6 +1365,11 @@ unsigned int ProcessInput(char* input)
 			strcpy(inputCopy,mainInputBuffer);
 			buffer = inputCopy;
 		}
+		else if (commanded == RESTART)
+		{
+			Restart();
+			return 0;	// nothing more can be done here.
+		}
 		else if (commanded == BEGINANEW)  
 		{ 
 			int BOMvalue = -1; // get prior value
@@ -1361,6 +1394,7 @@ unsigned int ProcessInput(char* input)
 		}
 		else if (commanded == COMMANDED ) 
 		{
+			ResetToPreUser(); // back to empty state before any user
 			return false; 
 		}
 		else if (commanded == OUTPUTASGIVEN) return true; 
@@ -1406,6 +1440,11 @@ loopback:
 
 		topicIndex = currentTopicID = 0; // precaution
 		FunctionResult result = DoSentence(prepassTopic); // sets nextInput to next piece
+		if (result == RESTART_BIT)
+		{
+			Restart();
+			return 0;	// nothing more can be done here.
+		}
 		if (result == FAILSENTENCE_BIT) // usually done by substituting a new input
 		{
 			inputRejoinderTopic  = inputRetryRejoinderTopic; 
@@ -1456,7 +1495,7 @@ bool PrepassSentence(char* prepassTopic)
 			ChangeDepth(-1,(char*)"PrepassSentence");
 			if (pushed) PopTopic();
 			//   subtopic ending is not a failure.
-			if (result & (ENDSENTENCE_BIT | FAILSENTENCE_BIT| ENDINPUT_BIT | FAILINPUT_BIT )) 
+			if (result & (RESTART_BIT|ENDSENTENCE_BIT | FAILSENTENCE_BIT| ENDINPUT_BIT | FAILINPUT_BIT )) 
 			{
 				if (result & ENDINPUT_BIT) nextInput = "";
 				--inputSentenceCount; // abort this input
@@ -1491,7 +1530,6 @@ FunctionResult DoSentence(char* prepassTopic)
 
 retry:  
 	char* start = nextInput; // where we read from
-	ResetSentence();			//   ready to accept interjection data from raw system control level
 	if (trace & TRACE_INPUT) Log(STDUSERLOG,(char*)"\r\n\r\nInput: %s\r\n",input);
  	if (trace && sentenceRetry) DumpUserVariables(); 
 	PrepareSentence(nextInput,true,true); // user input.. sets nextinput up to continue
@@ -1838,13 +1876,13 @@ char* ConcatResult()
     return result;
 }
 
-void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set currentInput and nextInput
+void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart) // set currentInput and nextInput
 {
 	char* original[MAX_SENTENCE_LENGTH];
 	unsigned int mytrace = trace;
 	if (prepareMode == PREPARE_MODE) mytrace = 0;
-  	ClearWhereInSentence(); // tally temps will linger
-	memset(unmarked,0,MAX_SENTENCE_LENGTH);
+	ResetSentence();
+	ClearWhereInSentence();
 	ResetTokenSystem();
 
 	char* ptr = input;
@@ -1854,10 +1892,10 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set curre
 	ptr = SkipWhitespace(ptr);
 	if (!strncmp(ptr,(char*)"... ",4)) ptr += 4;  
 
-    ptr = Tokenize(ptr,wordCount,wordStarts); 
+    ptr = Tokenize(ptr,wordCount,wordStarts,false,false,oobstart); 
 
 	// get derivation data
-	for (int i = 1; i <= wordCount; ++i) derivationIndex[i] = (i << 16) | i; // track where substitutions come from
+	for (int i = 1; i <= wordCount; ++i) derivationIndex[i] = (i << 8) | i; // track where substitutions come from
 	memcpy(derivationSentence+1,wordStarts+1,wordCount * sizeof(char*));
 	derivationLength = wordCount;
 	derivationSentence[wordCount+1] = NULL;
@@ -2041,11 +2079,11 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set curre
 		// formulate an input insertion
 		char buffer[BIG_WORD_SIZE];
 		*buffer = 0;
-		int more = (derivationIndex[1] & 0x00ff) + 1;
+		int more = (derivationIndex[1] & 0x000f) + 1; // at end
 		if (more <= derivationLength && *derivationSentence[more] == ',') // swallow comma into original
 		{
 			++more;	// dont add comma onto input
-			derivationIndex[1]++;	// extend onto comma
+			derivationIndex[1]++;	// extend end onto comma
 		}
 		for (int i = more; i <= derivationLength; ++i) // rest of data after input.
 		{
@@ -2077,7 +2115,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set curre
 	int reach = 0;
 	for (int i = 1; i <= wordCount; ++i)
 	{
-		int start = derivationIndex[i] >> 16;
+		int start = derivationIndex[i] >> 8;
 		int end = derivationIndex[i] & 0x00ff;
 		if (start > reach)
 		{
@@ -2098,18 +2136,18 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze) // set curre
 		for (int i = 1; i <= wordCount; ++i) 
 		{
 			Log(STDUSERLOG,(char*)"%s",wordStarts[i]);
-			int start = derivationIndex[i] >> 16;
+			int start = derivationIndex[i] >> 8;
 			int end = derivationIndex[i] & 0x00ff;
 			if (start == end && wordStarts[i] == derivationSentence[start]) {;} // unchanged from original
 			else // it came from somewhere else
 			{
-				int start = derivationIndex[i] >> 16;
+				int start = derivationIndex[i] >> 8;
 				int end = derivationIndex[i] & 0x00Ff;
 				Log(STDUSERLOG,(char*)"(");
 				for (int j = start; j <= end; ++j)
 				{
 					if (j != start) Log(STDUSERLOG,(char*)" ");
-					Log(STDUSERLOG,derivationSentence[j]);
+					Log(STDUSERLOG,(char*)"%s",derivationSentence[j]);
 				}
 				Log(STDUSERLOG,(char*)")");
 			}

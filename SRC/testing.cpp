@@ -142,8 +142,7 @@ static bool DumpOne(WORDP S,int all,int depth,bool shown)
 			{
 				if (!data)
 				{
-					AllocateWhereInSentence(S);
-					data = GetWhereInSentence(S);
+					data = (unsigned char*) AllocateWhereInSentence(S);
 					if (!data) return false;
 					*data = 0;
 					data[1] = 0;
@@ -376,11 +375,13 @@ static void C_Prepare(char* input)
 		strcpy(prepassTopic, GetUserVariable((char*)"$cs_prepass"));
 		unsigned int oldtrace = trace;
 		nextInput = input;
+		bool oobstart = (*nextInput == '[');
 		while (*nextInput)
 		{
 			prepareMode = PREPARE_MODE;
 			if (*prepassTopic) Log(STDUSERLOG,(char*)"Prepass: %s\r\n", prepass ? (char*)"ON" : (char*)"OFF");
-			PrepareSentence(nextInput,true,true);	
+			PrepareSentence(nextInput,true,true,false,oobstart);
+			oobstart = false;
 			prepareMode = NO_MODE;
 			if (prepass && PrepassSentence(prepassTopic)) continue;
 		}
@@ -3861,7 +3862,6 @@ static void C_Build(char* input)
 		}
 	}
 	size_t len = strlen(file);
-	ClearTemps();
 	if (!*file) Log(STDUSERLOG,(char*)"missing build label");
 	else
 	{
@@ -3874,9 +3874,11 @@ static void C_Build(char* input)
 		if (file[len-1] == '0') buildId = BUILD0;
 		else if  (file[len-1] == '2') buildId = BUILD2;
 		else buildId = BUILD1; // global so SaveCanon can work
+		ClearVolleyWordMaps();
 		ReadTopicFiles(word,buildId,spell); 
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
 		ClearPendingTopics(); // flush in case topic ids change or go away
+		ClearVolleyWordMaps();
 		CreateSystem();
 		systemReset = (reset) ? 2 : 1;
 	}
@@ -3897,29 +3899,26 @@ static void C_Quit(char* input)
 
 static void C_Restart(char* input)
 {
-	char initialInput[MAX_WORD_SIZE];
-	*initialInput = 0;
-	trace = 0;
-	ClearUserVariables();
-	PartiallyCloseSystem();
-	CreateSystem();
-	InitStandalone();
-	if (!server)
+	static char arg0[200];
+	static char arg1[200];
+	static char arg2[200];
+	static char arg3[200];
+	static char* arglist[5];
+	arglist[1] = arg1;
+	arglist[2] = arg2;
+	arglist[3] = arg3;
+	arglist[4] = arg0;
+	if (*input) // change params
 	{
-		printf("%s",(char*)"\r\nEnter user name: ");
-		ReadALine(mainInputBuffer,stdin);
-		printf("%s",(char*)"\r\n");
-		if (*mainInputBuffer == '*') // let human go first
+		argv = arglist;
+		argc = 1;
+		while (*input && argc < 5)
 		{
-			memmove(mainInputBuffer,mainInputBuffer+1,strlen(mainInputBuffer));
-			printf("%s",(char*)"\r\nEnter starting input: ");
-			ReadALine(initialInput,stdin);
-			printf("%s",(char*)"\r\n");
+			input = ReadCompiledWord(input,arglist[argc++]);
 		}
-		echo = false;
-		PerformChat(mainInputBuffer,computerID,initialInput,callerIP,mainOutputBuffer);
 	}
-	else Log(STDUSERLOG,(char*)"System restarted\r\n");
+
+	wasCommand = RESTART;
 }
 
 static void C_User(char* username)
@@ -4607,6 +4606,55 @@ static void WordDump(WORDP D,uint64 flags)
 {
 	if (!strstr(D->word,(char*)"_music")) return;
 	Log(STDUSERLOG,(char*)"%s %d\r\n",D->word,GetMeaningCount(D));
+}
+
+static void C_VerifySentence(char* input)
+{
+	printf((char*)"\r\nMarkings: \r\n");
+	for (unsigned int i = 1; i <= wordCount; ++i)
+	{
+		printf((char*)"%s",wordStarts[i]);
+		int start = derivationIndex[i] >> 8;
+		int end = derivationIndex[i] & 0x00ff;
+		if (start == end && wordStarts[i] == derivationSentence[start]) {;} // unchanged from original
+		else // it came from somewhere else
+		{
+			int start = derivationIndex[i] >> 8;
+			int end = derivationIndex[i] & 0x00Ff;
+			printf((char*)"(");
+			for (int j = start; j <= end; ++j)
+			{
+				if (j != start) printf((char*)" ");
+				printf("%s",derivationSentence[j]);
+			}
+			printf((char*)")");
+		}
+		printf((char*)" %s ",wordCanonical[i]);
+	
+		char* invert[10000];
+		int index = 0;
+		int list = concepts[i];
+		while (list)
+		{
+			MEANING* data = (MEANING*) Index2String(list);
+			MEANING M = *data;
+			WORDP D = Meaning2Word(M);
+			invert[index++] = D->word;
+			list = data[1];
+		}
+
+		list = topics[i];
+		while (list)
+		{
+			MEANING* data = (MEANING*) Index2String(list);
+			MEANING M = *data;
+			WORDP D = Meaning2Word(M);
+			invert[index++] = D->word;
+			list = data[1];
+		}
+		while (index--) printf("%s, ",invert[index]);
+		printf("\r\n\r\n");
+	}
 }
 
 static void C_WordDump(char* input)
@@ -7854,6 +7902,7 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":verifyspell",C_VerifySpell,(char*)"Regress spell checker against file"}, 
 	{ (char*)":verifysubstitutes",C_VerifySubstitutes,(char*)"Regress test substitutes of all kinds"}, 
 	{ (char*)":worddump",C_WordDump,(char*)"show words via hardcoded test"}, 
+	{ (char*)":verifySentence",C_VerifySentence,(char*)"verification data"}, 
 	
 #ifdef PRIVATE_CODE
 #include "../privatecode/privatetestingtable.cpp"

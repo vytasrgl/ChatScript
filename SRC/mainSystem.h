@@ -28,7 +28,7 @@ typedef struct RESPONSE
 
 
 #define MAX_RESPONSE_SENTENCES 20
-#define MAX_SENTENCE_LENGTH 256 // room for +4 after content 
+#define MAX_SENTENCE_LENGTH 256 // room for +4 after content (keep a power of 4 for savesentence code)
 #define REAL_SENTENCE_LIMIT 252 // stay under char size boundary and leave excess room
 
 #define TIMEOUT_INSTANCE 1000000
@@ -59,7 +59,8 @@ typedef struct RESPONSE
 	SOURCE_ECHO_LOG = 2,
 };
  
-extern unsigned int derivationIndex[256];
+extern unsigned short int derivationIndex[256];
+extern int derivationLength;
 extern char* derivationSentence[MAX_SENTENCE_LENGTH];
 extern bool docstats;
 extern unsigned int docSentenceCount;
@@ -76,6 +77,8 @@ extern unsigned int volleyCount;
 extern FILE* sourceFile;
 extern bool oobExists;
 extern char hostname[100];
+extern int argc;
+extern char** argv;
 extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;
@@ -183,7 +186,7 @@ int PerformChatGivenTopic(char* user, char* usee, char* incoming,char* ip,char* 
 #endif
 void ResetSentence();
 void ResetToPreUser();
-void PrepareSentence(char* input,bool mark = true,bool user=true, bool analyze = false);
+void PrepareSentence(char* input,bool mark = true,bool user=true, bool analyze = false, bool oobstart = false);
 bool PrepassSentence(char* presspassTopic);
 FunctionResult Reply();
 void OnceCode(const char* var,char* topic = NULL);

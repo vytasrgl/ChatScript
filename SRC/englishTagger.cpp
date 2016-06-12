@@ -523,7 +523,7 @@ static void PerformPosTag(int start, int end)
     {
 		char* original =  wordStarts[i];
 		if (!*original) continue; // bug?
-		if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original)) 
+		if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original)  && (*original != 'I' || original[1])) 
 			MakeLowerCase(original);
 		
 /* SHOULD BE CONTROLLABLE AND ONLY UNDER THE PROPER NAME MERGING CODE
@@ -558,8 +558,8 @@ static void PerformPosTag(int start, int end)
 		}
 */
 
-		WORDP entry;
-		WORDP canonical;
+		WORDP entry = NULL;
+		WORDP canonical = NULL;
 		uint64 sysflags = 0;
 		uint64 cansysflags = 0;
 		uint64 flags = GetPosData(i,original,entry,canonical,sysflags,cansysflags,true,false,start); // flags will be potentially beyond what is stored on the word itself (like noun_gerund) but not adjective_noun
@@ -6425,7 +6425,7 @@ static unsigned int GuessAmbiguousNoun(int i, bool &changed)
 		if (LimitValues(i,-1 ^ NORMAL_NOUN_BITS,(char*)"undetermined home will not be a noun",changed)) return GUESS_RETRY;
 	}
 	
-	if (needRoles[roleIndex] & (OBJECT2|MAINOBJECT) && posValues[i] & NORMAL_NOUN_BITS) // "she was a big *apple"
+	if (needRoles[roleIndex] & (OBJECT2|MAINOBJECT) && posValues[i] & NORMAL_NOUN_BITS && !(posValues[i+1] & NORMAL_NOUN_BITS)) // "she was a big *apple"
 	{
 		// if this is a number and next could be adjective, lets just wait "I have *3 purple mugs"
 		if (posValues[i] & NOUN_NUMBER && posValues[i] & ADJECTIVE_NUMBER && posValues[NextPos(i)] & (ADJECTIVE_BITS|NORMAL_NOUN_BITS)) {;}

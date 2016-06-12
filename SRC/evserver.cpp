@@ -577,7 +577,8 @@ int evsrv_do_chat(Client_t *client)
         ourMainInputBuffer, // input
         (char*)client->ip.c_str(),
         client->data); // where output goes
-	 
+	if (!stricmp(ourMainOutputBuffer,"Restarted server")) strcpy(client->data,ourMainOutputBuffer);
+		
 	if (*client->data == 0) 
 	{
 		client->data[0] = ' ';

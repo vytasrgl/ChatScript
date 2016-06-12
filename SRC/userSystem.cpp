@@ -31,6 +31,15 @@ char callerIP[ID_SIZE];
 char timeturn15[100];
 char timeturn0[20];
 char timePrior[20];
+char userFilename[500];
+
+void ExtractUser(char* name)
+{
+	char* lastslash = strrchr((char*)name,'/');
+	strcpy(userFilename,(lastslash) ? (lastslash+1) : name);
+	char* lastperiod = strrchr(userFilename,'.');
+	*lastperiod = 0;
+}
 
 void PartialLogin(char* caller,char* ip)
 {
@@ -271,6 +280,7 @@ static char* WriteRecentMessages(char* ptr,bool sharefile)
 	{
 		size_t len = strlen(humanSaid[i]);
 		if (len == 0) continue;
+		if (len > 200) humanSaid[i][200] = 0;
 		ptr =  OverflowProtect(ptr);
 		if (!ptr) return NULL;
 		sprintf(ptr,(char*)"%s\r\n",SafeLine(humanSaid[i]));
@@ -286,6 +296,7 @@ static char* WriteRecentMessages(char* ptr,bool sharefile)
 	{
 		size_t len = strlen(chatbotSaid[i]);
 		if (len == 0) continue;
+		if (len > 200) chatbotSaid[i][200] = 0;
 		ptr =  OverflowProtect(ptr);
 		if (!ptr) return NULL;
 		sprintf(ptr,(char*)"%s\r\n",SafeLine(chatbotSaid[i]));
@@ -434,7 +445,7 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 {
 	char* start = ptr;
 	if (!timeturn15[1] && volleyCount >= 15 && responseIndex) sprintf(timeturn15,(char*)"%lu-%d%s",(unsigned long)curr,responseData[0].topic,responseData[0].id); // delimit time of turn 15 and location...
-	sprintf(ptr,(char*)"%s %s %s %s |\n",saveVersion,timeturn0,timePrior,timeturn15); 
+	sprintf(ptr,(char*)"%s %s %s %s |\r\n",saveVersion,timeturn0,timePrior,timeturn15); 
 	ptr += strlen(ptr);
 	ptr = WriteUserTopics(ptr,sharefile);
 	

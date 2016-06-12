@@ -182,7 +182,7 @@ static bool FindPhrase(char* word, int start,bool reverse, int & actualStart, in
 	int oldend;
 	oldend = start = 0; // allowed to match anywhere or only next
 
-	unsigned int n = BurstWord(word);
+	int n = BurstWord(word);
 	for (int i = 0; i < n; ++i) // use the set of burst words - but "Andy Warhol" might be a SINGLE word.
 	{
 		WORDP D = FindWord(GetBurstWord(i));
@@ -337,8 +337,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, bool wi
 					else if (*end == '-') 
 					{
 						reverse = true;
-						positionStart = WILDCARD_END(wild);
-						positionEnd = WILDCARD_START(wild); 
+						positionEnd = positionStart = WILDCARD_START(wild);
 					}
 					if (!positionEnd) break;
 					oldEnd = positionEnd; // forced match ok
@@ -852,7 +851,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				if (statusBits & NOTNOT_BIT) // is match immediately after or not
 				{
 					if (!reverse && positionStart == (oldEnd + 1)) matched = uppercasematch = false;
-					else if (reverse && positionEnd == (oldStart + 1)) matched = uppercasematch = false;
+					else if (reverse && positionEnd == (oldStart - 1)) matched = uppercasematch = false;
 				}
 				else uppercasematch = matched = false; 
 				statusBits &= -1 ^ (NOT_BIT|NOTNOT_BIT);

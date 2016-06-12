@@ -320,7 +320,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 	if (!wordStarts[at-1]) wordStarts[at-1] = reuseAllocation(wordStarts[at-1],(char*)""); // protection
 	if (!wordStarts[at+1]) wordStarts[at+1] = reuseAllocation(wordStarts[at+1],(char*)"");	// protection
 
-	if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original)) MakeLowerCase(original);
+	if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original) && (*original != 'I' || original[1])) MakeLowerCase(original);
 
 	entry = FindWord(original,0,PRIMARY_CASE_ALLOWED);
 	if (entry && entry->systemFlags & CONDITIONAL_IDIOM) 

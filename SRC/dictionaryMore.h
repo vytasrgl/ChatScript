@@ -135,6 +135,10 @@
 
 #define VERB_PROPERTIES (  VERB_BITS )
 
+#define COMPARISONFIELD 1
+#define TENSEFIELD 2
+#define PLURALFIELD 3
+
 #define Index2Word(n) (dictionaryBase+n)
 #define Word2Index(D) ((uint64) (D-dictionaryBase))
 #define GetMeanings(D) ((MEANING*) Index2String(D->meanings))
@@ -142,37 +146,27 @@
 #define GetMeaningsFromMeaning(T) (GetMeanings(Meaning2Word(T)))
 #define Meaning2Index(x) ((int)((x & INDEX_BITS) >> INDEX_OFFSET)) //   which dict entry meaning
 
-#define GetFactBack(D) ((D->temps) ? GetTemps(D)[FACTBACK] : 0) // transient per search
 unsigned char* GetWhereInSentence(WORDP D); // always skips the linking field at front
-#define USEDTEMPSLIST 3
-#define TRIEDBITS 2
-#define WORDVALUE 1
-#define FACTBACK 0
 
 #define OOB_START '['
 #define OOB_END ']'
 void LockLevel();
 void UnlockLevel();
 
-void PrepareConjugates(WORDP D);
-#define PLURALFIELD 0
-#define AccessPlural(D) ((MEANING*)Index2String(D->extensions))[PLURALFIELD]
-#define GetPlural(D) ((D->extensions) ? Meaning2Word(AccessPlural(D)) : 0)
+WORDP GetPlural(WORDP D);
 void SetPlural(WORDP D,MEANING M);
-#define COMPARISONFIELD 1
-#define AccessComparison(D) ((MEANING*)Index2String(D->extensions))[COMPARISONFIELD]
-#define GetComparison(D) ((D->extensions) ? Meaning2Word(AccessComparison(D)) : 0)
-#define SetComparison(D,M) { PrepareConjugates(D); AccessComparison(D) = M; }
-#define TENSEFIELD 2
-#define AccessTense(D) ((MEANING*)Index2String(D->extensions))[TENSEFIELD]
-#define GetTense(D) ((D->extensions) ? Meaning2Word(AccessTense(D)) : 0)
-#define SetTense(D,M) {PrepareConjugates(D); AccessTense(D) = M; }
-#define CANONICALFIELD 3
-#define AccessCanonical(D) ((MEANING*)Index2String(D->extensions))[CANONICALFIELD]
-#define SetCanonical(D,M) {PrepareConjugates(D); AccessCanonical(D) = M; }
+WORDP GetComparison(WORDP D);
+void SetComparison(WORDP D,MEANING M);
+WORDP GetTense(WORDP D);
+void SetTense(WORDP D,MEANING M);
 char* GetCanonical(WORDP D);
+void SetCanonical(WORDP D,MEANING M);
+uint64 GetTriedMeaning(WORDP D);
+void SetTriedMeaning(WORDP D,uint64 bits);
 void ReadSubstitutes(const char* name,const char* layer,unsigned int fileFlag,bool filegiven = false);
+void Add2ConceptTopicList(int list[256], WORDP D,int index,bool unique);
 
+extern unsigned int savedSentences;
 // memory data
 extern WORDP dictionaryBase;
 extern char* stringBase;
@@ -241,18 +235,27 @@ extern char systemFolder[500];
 char* expandAllocation(char* old, char* word,int size);
 char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false);
 WORDP StoreWord(int);
+void ClearWordMaps();
 void WriteDictDetailsBeforeLayer(int layer);
 WORDP StoreWord(char* word, uint64 properties = 0);
 WORDP StoreWord(char* word, uint64 properties, uint64 flags);
 WORDP FindWord(const char* word, int len = 0,uint64 caseAllowed = STANDARD_LOOKUP);
 WORDP FullStore(char* word, uint64 properties, uint64 flags);
 unsigned char BitCount(uint64 n);
+void ClearVolleyWordMaps();
+void ClearBacktracks();
+unsigned int* AllocateWhereInSentence(WORDP D);
+MEANING GetFactBack(WORDP D);
+void SetFactBack(WORDP D, MEANING M);
 int GetWords(char* word, WORDP* set,bool strict);
 void ReadQueryLabels(char* file);
+void ClearWordWhere(WORDP D,int at);
+void RemoveConceptTopic(int list[256],WORDP D, int at);
 char* reuseAllocation(char* old, char* word);
 char* reuseAllocation(char* old, char* word,int len);
 char* UseDictionaryFile(char* name);
 char* Index2String(unsigned int offset);
+void ClearWhereInSentence();
 inline unsigned int String2Index(char* str) {return (!str) ? 0 : (stringBase - str);}
 inline unsigned int GlossIndex(MEANING M) { return M >> 24;}
 void ReadAbbreviations(char* file);

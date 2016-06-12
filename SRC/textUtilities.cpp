@@ -1614,7 +1614,7 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 			*buffer = 0;
 			return ptr;
 		}
-		if (!n) Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
+ 		if (!n) Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
 		else Log(STDUSERLOG,(char*)"bad double-quoting1?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
 		return NULL;	// no closing quote... refuse
 	}

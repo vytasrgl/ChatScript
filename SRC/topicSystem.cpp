@@ -1233,7 +1233,7 @@ static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,i
 		ruleID = *++map;
 		result = NOPROBLEM_BIT;
 	}
-	if (result & (ENDINPUT_BIT|FAILINPUT_BIT|FAILSENTENCE_BIT|ENDSENTENCE_BIT|RETRYSENTENCE_BIT|RETRYTOPIC_BIT|RETRYINPUT_BIT)) return result; // stop beyond mere topic
+	if (result & (RESTART_BIT|ENDINPUT_BIT|FAILINPUT_BIT|FAILSENTENCE_BIT|ENDSENTENCE_BIT|RETRYSENTENCE_BIT|RETRYTOPIC_BIT|RETRYINPUT_BIT)) return result; // stop beyond mere topic
 	return (result & (ENDCODES-ENDTOPIC_BIT)) ? FAILTOPIC_BIT : NOPROBLEM_BIT; 
 }
 
@@ -1398,7 +1398,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 		else result = FindTypedResponse((active == QUESTION || active == STATEMENT || active == STATEMENT_QUESTION ) ? (char)active : GAMBIT,buffer,id,rule);
 
 		//   flush any deeper stack back to spot we started
-		if (result & (FAILRULE_BIT | FAILTOPIC_BIT | FAILSENTENCE_BIT | RETRYSENTENCE_BIT | RETRYTOPIC_BIT|RETRYINPUT_BIT)) topicIndex = tindex; 
+		if (result & (RESTART_BIT| FAILRULE_BIT | FAILTOPIC_BIT | FAILSENTENCE_BIT | RETRYSENTENCE_BIT | RETRYTOPIC_BIT|RETRYINPUT_BIT)) topicIndex = tindex; 
 		//   or remove topics we matched on so we become the new master path
 	}
 	if (!limit) ReportBug((char*)"Exceeded retry topic limit");
@@ -1418,7 +1418,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	}
 	trace = oldtrace;
 	currentTopicID = oldTopic;
-	return (result & (ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYINPUT_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|FAILINPUT_BIT|FAILRULE_BIT)) ? result : NOPROBLEM_BIT;
+	return (result & (RESTART_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYINPUT_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|FAILINPUT_BIT|FAILRULE_BIT)) ? result : NOPROBLEM_BIT;
 }
 
 ///////////////////////////////////////////////////////

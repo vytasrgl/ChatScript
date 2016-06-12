@@ -53,10 +53,6 @@ unsigned int NextInferMark() // set up for a new inference
     return ++inferMark;
 }
 
-#define MAX_BACKTRACK 5000
-static MEANING backtracks[MAX_BACKTRACK+1];
-static int backtrackIndex = 0;
-
 FACT* IsConceptMember(WORDP D)
 {
 	if (!D) return NULL;
@@ -67,30 +63,6 @@ FACT* IsConceptMember(WORDP D)
 		F = GetSubjectNondeadNext(F);
 	}
 	return NULL;
-}
-
-static void SetFactBack(WORDP D, MEANING M)
-{
-	MEANING* set = GetTemps(D);
-	if (set && !set[FACTBACK]) 
-	{
-		if (backtrackIndex < MAX_BACKTRACK)
-		{
-			set[FACTBACK] = M; 
-			backtracks[backtrackIndex++] = MakeMeaning(D);
-		}
-	}
-}
-
-static void ClearBacktracks()
-{
-	while (backtrackIndex && backtrackIndex-- > 0) 
-	{
-		MEANING temp = backtracks[backtrackIndex];
-		WORDP D = Meaning2Word(temp);
-		MEANING* set = GetTemps(D);
-		if (set) set[FACTBACK] = 0;
-	}
 }
 
 static bool IsExcluded(WORDP set,WORDP item)

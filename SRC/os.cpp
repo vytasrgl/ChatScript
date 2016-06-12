@@ -111,7 +111,8 @@ void myexit(char* msg, int code)
 		fprintf(in,(char*)"%s %d - called myexit\r\n",msg,code);
 		fclose(in);
 	}
-	exit(code);
+	if (code == 0) exit(0);
+	else exit(EXIT_FAILURE);
 }
 
 /////////////////////////////////////////////////////////
@@ -300,10 +301,10 @@ FILE* FopenReadNormal(char* name) // normal C read unrelated to special paths
 	return fopen(name,(char*)"rb");
 }
 
-size_t FileSize(FILE* in)
+int FileSize(FILE* in, char* buffer, size_t allowedSize)
 {
 	fseek(in, 0, SEEK_END);
-	unsigned int actualSize = (unsigned int) ftell(in);
+	int actualSize = (int) ftell(in);
 	fseek(in, 0, SEEK_SET);
 	return actualSize;
 }

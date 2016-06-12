@@ -648,7 +648,7 @@ typedef unsigned int FACTOID_OR_MEANING;	// a fact or a meaning (same representa
 typedef struct WORDENTRY //   a dictionary entry  - starred items are written to the dictionary
 {
 	uint64  properties;				//   main language description of this node 
-	uint64	hash;					//   we presume 2 hashs never collide, so we dont check the string for matching
+	uint64	hash;					
 	uint64  systemFlags;			//   additional dictionary and non-dictionary properties
 	char*     word;					//   entry name
 	unsigned int internalBits;
@@ -664,17 +664,12 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
 		MEANING*  glosses;			//   for ordinary words: list of glosses for synset head meanings - is offset to allocstring and id index of meaning involved.
 		char* conditionalIdiom;		//  test code headed by ` for accepting word as an idiom instead of its individual word components
 	}w;
-		
-
-	// potential hole of 32bit on 64 bit machine
 
 	FACTOID subjectHead;		//  start threads for facts run thru here 
 	FACTOID verbHead;			//  start threads for facts run thru here 
 	FACTOID objectHead;			//  start threads for facts run thru here 
-	
-  	MEANING  meanings;			//  list of meanings (synsets) of this word - Will be wordnet synset id OR self ptr -- 1-based since 0th meaning means all meanings
-	MEANING extensions;			//  ONLY CREATABLE IN WORDNET BASE AREA-  assigned from permanent string space for 4 things: irregular nouns, irregular verbs,  irregular adjective/adverbs and canonicals  (8K of 200K have this filled in)
-	MEANING	temps;				//	assigned from transient string space - 3 things: backtrace thread on search, where xref markings, and tried bits (all transient per sentence, cleared via ClearWhereInSentence)
+  	
+	MEANING  meanings;			//  list of meanings (synsets) of this word - Will be wordnet synset id OR self ptr -- 1-based since 0th meaning means all meanings
 
     union {
           unsigned short topicIndex;	//   for a ~topic or %systemVariable or plan, this is its id

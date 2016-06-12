@@ -332,7 +332,29 @@ void KillFact(FACT* F)
 		Log(STDUSERLOG,(char*)"Kill: ");
 		TraceFact(F);
 	}
-	F->flags |= FACTDEAD;
+	F->flags |= FACTDEAD; 
+	// recurse on JSON datastructures below if they are being deleted on right side
+	if (F->flags & JSON_ARRAY_VALUE)
+	{
+		WORDP jsonarray = Meaning2Word(F->object);
+		FACT* G = GetSubjectNondeadHead(jsonarray);
+		while (G)
+		{
+			KillFact(G);
+			G = GetSubjectNondeadNext(G);
+		}
+	}
+	if (F->flags & JSON_OBJECT_VALUE)
+	{
+		WORDP jsonobject = Meaning2Word(F->object);
+		FACT* G = GetSubjectNondeadHead(jsonobject);
+		while (G)
+		{
+			KillFact(G);
+			G = GetSubjectNondeadNext(G);
+		}
+	}
+
 	if (planning) SpecialFact(Fact2Index(F),0,0); // save to restore
 
 	// if this fact has facts depending on it, they too must die
@@ -453,6 +475,7 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 		ReportBug((char*)"bad choice in fact object")
 		return NULL;
 	}
+
 	// convert any restricted meaning
 	MEANING other;
 	char* word;

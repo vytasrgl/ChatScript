@@ -551,6 +551,8 @@
     low_comedy~1nz (^comedy~2) a comedy characterized by slapstick and burlesque
  Laniidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Laniidae~1nz (^bird_family~1) shrikes
+ Louis_Antoine_de_Bougainville ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Bougainville~2nz (^adventurer~2) French explorer who circumnavigated the globe accompanied by scientists
  Lael ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Lexann ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  looking_for ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -9443,8 +9445,6 @@
     Boltzmann~1nz (^physicist~1) Austrian physicist who contributed to the kinetic theory of gases
  Lucrezia_Borgia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Duchess_of_Ferrara~1n 
- Louis_Antoine_de_Bougainville ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Bougainville~2nz (^adventurer~2) French explorer who circumnavigated the globe accompanied by scientists
  Louis_Braille ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Braille~1nz (^pedagogue~1) French educator who lost his sight at the age of three and who invented a system of writing and printing for sightless people
  Leonid_Brezhnev ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 

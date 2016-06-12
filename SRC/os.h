@@ -55,7 +55,7 @@ extern struct tm* ptm;
 void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath);
 void C_Directories(char* x);
 void StartFile(const char* name);
-size_t FileSize(FILE* in);
+int FileSize(FILE* in,char* buffer,size_t allowedSize);
 FILE* FopenStaticReadOnly(const char* name);
 FILE* FopenReadOnly(const char* name);
 FILE* FopenReadNormal(char* name);
@@ -80,7 +80,7 @@ typedef FILE* (*UserFileOpen)(const char* name);
 typedef int (*UserFileClose)(FILE*);
 typedef size_t (*UserFileRead)(void* buffer,size_t size, size_t count, FILE* file);
 typedef size_t (*UserFileWrite)(const void* buffer,size_t size, size_t count, FILE* file);
-typedef size_t (*UserFileSize)(FILE* file);
+typedef int (*UserFileSize)(FILE* file, char* buffer, size_t allowedSize);
 
 typedef struct USERFILESYSTEM //  how to access user topic data
 {

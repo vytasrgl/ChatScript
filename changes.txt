@@ -1,4 +1,13 @@
-Version 6.5a
+Version 6.5b 6-11-2016
+1. ^serialize(@set) ^deserialize(string)  convert factset to a string and back out again.
+2. ^query can now also directly return a field value from a match by naming field on the TO argument
+	$$tmp = ^query(exact_sv meat eat ? 1 ? @1object)
+3: :restart now accepts up to 4 commandline parameters
+4. ^savesentence(label) and ^restoresentence(label) will save and restore an entire
+   sentence preparation, so you can jump back and forth between sentences in pattern matching w/o real cost.
+
+
+Version 6.5a 5-18-2016
 1. ChatScript now enforces a rule that a function variable name should not be the name of an existing function (hides the function).
 This may cause your builds to break until you rename your variables in question.
 2. :trace full -- when set, disables NOTRACE() so everything is traced using all flags

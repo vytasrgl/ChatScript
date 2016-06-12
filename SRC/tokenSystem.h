@@ -28,7 +28,7 @@ int BurstWord(char* word, int contractionStyle = 0);
 char* GetBurstWord(unsigned int n);
 char* JoinWords(unsigned int n,bool output = false);
 
-char* Tokenize(char* input,int& count,char** words,bool all = false, bool nomodify = false);
+char* Tokenize(char* input,int& count,char** words,bool all = false, bool nomodify = false,bool oobstart = false);
 int ValidPeriodToken(char* start, char* end, char next,char next2);
 
 void ProcessSubstitutes();

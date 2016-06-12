@@ -13,7 +13,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #endif
 
 #define HIDDEN_OVERLAP 103	// hidden ctrlz and why data
-
 extern bool echoServer;
 #ifdef WIN32
   #pragma warning(push,1)

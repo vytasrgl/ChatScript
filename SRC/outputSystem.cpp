@@ -331,6 +331,27 @@ void StdNumber(char* word,char* buffer,int controls, bool space) // text numbers
     if ( IsAlphaUTF8(*ptr) ||  !IsDigitWord(word) || strchr(word,':')) // either its not a number or its a time - leave unchanged
     {
         strcpy(buffer,word);  
+		// but if we have newline formatting data, we need to obey
+		char* at = buffer;
+		while ((at = strchr(at,'\\')))
+		{
+			if (at[1] == 'n')
+			{
+				*at = '\n';
+				memmove(at+1,at+2,strlen(at+1));
+			}
+			else if (at[1] == 'r')
+			{
+				*at = '\r';
+				memmove(at+1,at+2,strlen(at+1));
+			}
+			else if (at[1] == 't')
+			{
+				*at = '\t';
+				memmove(at+1,at+2,strlen(at+1));
+			}
+			++at;
+		}
 
 		if (controls & OUTPUT_NOUNDERSCORE)
 		{
@@ -1051,6 +1072,7 @@ retry:
 			char* c = ptr - strlen(word);
 			while (*c != ':') {--c;}
 			TestMode answer = Command(c,NULL,true);
+			if (answer == RESTART) result = RESTART_BIT;	// end it all now
 			currentTopicID = oldtopicid;
 			currentRule = oldrule;
 			currentRuleID = oldruleid;
@@ -1113,7 +1135,7 @@ retry:
 		if (result & (RETRYRULE_BIT|RETRYTOPRULE_BIT|ENDCODES))
 		{
 			if (result & FAILCODES && !(controls & OUTPUT_LOOP)) *start = 0; //  kill output
-			if (!once) ptr = BalanceParen(ptr,true); // swallow excess input BUG - does anyone actually care
+			if (!once && ptr) ptr = BalanceParen(ptr,true); // swallow excess input BUG - does anyone actually care
 			break;
 		}
 		if (once) break;    

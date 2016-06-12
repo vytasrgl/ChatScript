@@ -59,34 +59,32 @@ typedef unsigned int MEANING;					//   a flagged indexed dict ptr
 //   DoFunction results
  enum FunctionResult {
 	NOPROBLEM_BIT = 0,
-	ENDRULE_BIT = 1,
-	FAILRULE_BIT  = 2,
+	ENDRULE_BIT = 0x00000001,
+	FAILRULE_BIT  = 0x00000002,
 
-	RETRYRULE_BIT =  4,
-	RETRYTOPRULE_BIT =  8,
+	RETRYRULE_BIT =  0x00000004,
+	RETRYTOPRULE_BIT =  0x00000008,
 
-	ENDTOPIC_BIT =  16,
-	FAILTOPIC_BIT  = 32,
-	RETRYTOPIC_BIT  = 64,
+	ENDTOPIC_BIT =  0x00000010,
+	FAILTOPIC_BIT  = 0x00000020,
+	RETRYTOPIC_BIT  = 0x00000040,
 
-	ENDSENTENCE_BIT =  128,
-	FAILSENTENCE_BIT =  256,
-	RETRYSENTENCE_BIT =  512,
+	ENDSENTENCE_BIT =  0x00000080,
+	FAILSENTENCE_BIT =  0x00000100,
+	RETRYSENTENCE_BIT =  0x00000200,
 
-	ENDINPUT_BIT  = 1024,
-	FAILINPUT_BIT  = 2048,
-	RETRYINPUT_BIT = 4096,
+	ENDINPUT_BIT  = 0x00000400,
+	FAILINPUT_BIT  = 0x00000800,
+	RETRYINPUT_BIT = 0x00001000,
 
-	FAILMATCH_BIT  = 8192,			// transient result of TestRule, converts to FAILRULE_BIT
-	FAILLOOP_BIT  = 16384,
-	ENDLOOP_BIT  = 32768,
+	FAILMATCH_BIT  = 0x00002000,			// transient result of TestRule, converts to FAILRULE_BIT
+	FAILLOOP_BIT  = 0x00004000,
+	ENDLOOP_BIT  = 0x00008000,
 
-	UNDEFINED_FUNCTION  = 65536, //   potential function call has no definition so isnt
-	ENDCALL_BIT  =    131072,
-
-	NEXTLOOP_BIT = 262144,
-
-	NOREJOINDER = 262144,	// can be ored on
+	UNDEFINED_FUNCTION = 0x00010000, //   potential function call has no definition so isnt
+	ENDCALL_BIT  =		0x00020000,
+	NEXTLOOP_BIT =		0x00040000,
+	RESTART_BIT =	0x00080000
 };
  FunctionResult JavascriptArgEval(unsigned int index, char* buffer);
 #endif

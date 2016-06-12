@@ -92,11 +92,173 @@ char systemFolder[500];		// where is the livedata system folder
 MEANING posMeanings[64];				// concept associated with propertyFlags of WORDs
 MEANING sysMeanings[64];				// concept associated with systemFlags of WORDs
 
+#include <map>
+using namespace std;
+std::map <WORDP, WORDP> irregularNouns;
+std::map <WORDP, WORDP> irregularVerbs;
+std::map <WORDP, WORDP> irregularAdjectives;
+std::map <WORDP, WORDP> canonicalWords;
+std::map <WORDP, int> wordValues; // per volley
+std::map <WORDP, MEANING> backtracks; // per volley
+std::map <WORDP, int> triedData; // per volley index into string space
+
+unsigned int savedSentences = 0;
+
+int concepts[MAX_SENTENCE_LENGTH];  // concept chains per word
+int topics[MAX_SENTENCE_LENGTH];  // topics chains per word
+
 bool fullDictionary = true;				// we have a big master dictionary, not a mini dictionary
 
 #ifndef DISCARDDICTIONARYBUILD
 void LoadRawDictionary(int mini);
 #endif
+
+void RemoveConceptTopic(int list[256], WORDP D,int index)
+{
+	MEANING M = MakeMeaning(D);
+	int at = list[index];
+	MEANING* prior = NULL;
+	while (at)
+	{
+		MEANING* mlist = (MEANING*) Index2String(at);
+		if (M == mlist[0])
+		{
+			if (prior == NULL) list[index] = mlist[1]; // list head
+			else prior[1] = mlist[1];
+			return;	// assumed only on list once
+		}
+		prior = mlist;
+		at = mlist[1];
+	}
+}
+
+void Add2ConceptTopicList(int list[256], WORDP D,int index,bool unique)
+{
+	MEANING M = MakeMeaning(D);
+	if (unique)
+	{
+		int at = list[index];
+		while (at)
+		{
+			MEANING* mlist = (MEANING*) Index2String(at);
+			if (M == mlist[0]) return;	// already on list
+			at = mlist[1];
+		}
+	}
+
+	unsigned int* entry = (unsigned int*) AllocateString(NULL,2, sizeof(MEANING),false); // ref and link
+	entry[1] = list[index];
+	list[index] = String2Index((char*) entry);
+	entry[0] = M;
+}
+
+void ClearVolleyWordMaps()
+{
+	wordValues.clear();
+	backtracks.clear();
+	savedSentences = 0;
+	ClearWhereInSentence();
+}
+
+void ClearWordMaps() // both static for whole dictionary and dynamic per volley
+{
+	irregularNouns.clear();
+	irregularVerbs.clear();
+	irregularAdjectives.clear();
+	canonicalWords.clear();
+
+	ClearVolleyWordMaps(); 
+}
+
+void ClearWordWhere(WORDP D,int at)
+{
+	triedData.erase(D);
+
+	// also remove from concepts/topics lists
+	if (at == -1)
+	{
+		for (int i = 1; i <= wordCount; ++i)
+		{
+			RemoveConceptTopic(concepts,D,i);
+			RemoveConceptTopic(topics,D,i);		
+		}
+	}
+}
+
+void ClearWhereInSentence() // erases  the WHEREINSENTENCE and the TRIEDBITS
+{
+	memset(concepts,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH);
+	memset(topics,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH);
+	triedData.clear();
+	memset(unmarked,0,MAX_SENTENCE_LENGTH);
+}
+
+void SetFactBack(WORDP D, MEANING M)
+{
+	if (GetFactBack(D) == NULL)
+	{
+		backtracks[D] = M;
+	}
+}
+
+MEANING GetFactBack(WORDP D)
+{
+	std::map<WORDP,MEANING>::iterator it;
+	it = backtracks.find(D);
+	return (it != backtracks.end())	? it->second  : NULL;
+}
+
+void ClearBacktracks()
+{
+	backtracks.clear();
+}
+
+unsigned char* GetWhereInSentence(WORDP D) // [0] is the meanings bits,  the rest are start/end bytes for 8 locations
+{
+	std::map<WORDP,int>::iterator it;
+	it = triedData.find(D);
+	if (it == triedData.end()) return NULL;
+	char* data = Index2String(it->second);
+	if (data == 0) return NULL;
+	return (unsigned char*) (data + 8);	// skip over 64bit tried by meaning field
+}
+
+unsigned int* AllocateWhereInSentence(WORDP D)
+{
+	unsigned int* data = (unsigned int*) AllocateString(NULL, ((sizeof(uint64) + maxRefSentence)+3)/4,4,false); // 64 bits (2 words) + 64 bytes (16 words) = 18 words  BUG?
+	if (!data) return NULL;
+	*data = 0; // clears the tried meanings list
+	data[1] = 0;
+	memset(data+2,0xff,maxRefSentence); // clears sentence xref start/end bits
+	// store where in the temps data
+	int index = String2Index((char*) data);
+	triedData[D] = index;
+	return data + 2; // analogous to GetWhereInSentence
+}
+
+void SetTriedMeaning(WORDP D,uint64 bits)
+{
+	unsigned int* data = (unsigned int*) GetWhereInSentence(D); 
+	if (!data) 
+	{
+		data = AllocateWhereInSentence(D);
+		if (!data) return; // failed to allocate
+	}
+	data[-2] = (unsigned int) (bits >> 32);
+	*(data - 1) = (unsigned int) (bits & 0x0000ffff);	// back up to the tried meaning area
+}
+
+uint64 GetTriedMeaning(WORDP D) // which meanings have been used (up to 64)
+{
+	std::map<WORDP,int>::iterator it;
+	it = triedData.find(D);
+	if (it == triedData.end())	return 0;
+	unsigned int* data = (unsigned int*)Index2String(it->second);
+	if (!data) return NULL; // shouldnt happen
+	uint64 value = ((uint64)(data[-2])) << 32;
+	value |= (uint64)data[-1];
+	return value; // back up to the correct meaning zone
+}
 
 char* Index2String(unsigned int offset) 
 { 
@@ -117,36 +279,62 @@ char* Index2String(unsigned int offset)
 
 void SetPlural(WORDP D,MEANING M) 
 {
-	PrepareConjugates(D); 
-	AccessPlural(D) = M; 
+	irregularNouns[D] = dictionaryBase + M; // must directly assign since word on load may not exist
 }
 
-void PrepareConjugates(WORDP D) 
+void SetComparison(WORDP D,MEANING M) 
 {
-	if (!D->extensions) 
-	{
-		if (dictionaryLocked)
-		{
-			ReportBug((char*)"Attempt to set extension during chat\r\n");
-			return;
-		}
-
-		D->extensions = String2Index(AllocateString(NULL,4, sizeof(MEANING),true));
-	}
+	irregularAdjectives[D] = dictionaryBase + M; // must directly assign since word on load may not exist
 }
 
+void SetTense(WORDP D,MEANING M) 
+{
+	irregularVerbs[D] = dictionaryBase + M; // must directly assign since word on load may not exist
+}
+
+void SetCanonical(WORDP D,MEANING M) 
+{
+	canonicalWords[D] = dictionaryBase + M;  // must directly assign since word on load may not exist
+}
+
+char* GetCanonical(WORDP D)
+{
+	std::map<WORDP,WORDP>::iterator it;
+	it = canonicalWords.find(D);
+	return (it != canonicalWords.end())	? it->second->word  : NULL;
+}
+
+WORDP GetTense(WORDP D)
+{
+	std::map<WORDP,WORDP>::iterator it;
+	it = irregularVerbs.find(D);
+	return (it != irregularVerbs.end())	? it->second : NULL;
+}
+
+WORDP GetPlural(WORDP D)
+{
+	std::map<WORDP,WORDP>::iterator it;
+	it = irregularNouns.find(D);
+	return (it != irregularNouns.end())	? it->second  : NULL;
+}
+
+WORDP GetComparison(WORDP D)
+{
+	std::map<WORDP,WORDP>::iterator it;
+	it = irregularAdjectives.find(D);
+	return (it != irregularAdjectives.end())	? it->second  : NULL;
+}
 
 void SetWordValue(WORDP D, int x)
 {
-	MEANING* set = GetTemps(D);
-	if (set) set[WORDVALUE] = x;
+	wordValues[D] = x;
 }
 
 int GetWordValue(WORDP D)
 {
-	if (!D->temps) return 0;
-	MEANING* set = GetTemps(D);
-	return set[WORDVALUE];
+	std::map<WORDP,int>::iterator it;
+	it = wordValues.find(D);
+	return (it != wordValues.end())	? it->second  : 0;
 }
 
 // start and ends of space allocations
@@ -688,15 +876,6 @@ void RemoveProperty(WORDP D, uint64 flags)
 	}
 }
 
-char* GetCanonical(WORDP D)
-{
-	if (!D->extensions) return NULL;
-	unsigned int x = AccessCanonical(D);
-	if (!x) return NULL;
-	WORDP X = Meaning2Word(x);
-	return  X->word;
-}
-
 int GetWords(char* word, WORDP* set,bool strictcase)
 {
 	int index = 0;
@@ -901,25 +1080,52 @@ WORDP StoreWord(char* word, uint64 properties)
     return D;
 }
 
-//   insert entry into a circular list, initializing if need be
 void AddCircularEntry(WORDP base, unsigned int field,WORDP entry)
 {
 	if (!base) return;
-	PrepareConjugates(base);
-	PrepareConjugates(entry);
+	WORDP D;
+	WORDP old;
 
 	//   verify item to be added not already in circular list of this kind - dont add if it is
-	char* con = Index2String(entry->extensions);
-	MEANING* mean = (MEANING*) con;
-	if (!mean[field]) 
+	if (field == COMPARISONFIELD) 
 	{
-		char* conb = Index2String(base->extensions);
-		MEANING* meanb = (MEANING*) conb;
-		if (!meanb[field]) meanb[field] = MakeMeaning(base); // if set base not initialized, make it loop to self
-		mean[field] = meanb[field];
-		meanb[field] = MakeMeaning(entry);
+		D = GetComparison(entry);
+		old = GetComparison(base);
 	}
-	else printf((char*)"%s already on circular list of %s\r\n",entry->word, base->word);
+	else if (field == TENSEFIELD) 
+	{
+		D = GetTense(entry);
+		old = GetTense(base);
+	}
+	else if (field == PLURALFIELD) 
+	{
+		D = GetPlural(entry);
+		old = GetPlural(base);
+	}
+	else return;
+	if (D) 
+	{
+		printf((char*)"%s already on circular list of %s\r\n",entry->word, base->word);
+		return;
+	}
+
+	if (!old) old = base; // init to self
+
+	if (field == COMPARISONFIELD)
+	{
+		irregularAdjectives[base] = entry;
+		irregularAdjectives[entry] = old;
+	}
+	else if (field == TENSEFIELD) 
+	{
+		irregularVerbs[base] = entry;
+		irregularVerbs[entry] = old;
+	}
+	else if  (field == PLURALFIELD)
+	{
+		irregularNouns[base] = entry;
+		irregularNouns[entry] = old;
+	}
 }
 
 void WalkDictionary(DICTIONARY_FUNCTION func,uint64 data)
@@ -1057,7 +1263,6 @@ void WordnetLockDictionary() // dictionary and facts before build0 layer
 
 void ReturnDictionaryToWordNet() // drop all memory allocated after the wordnet freeze
 {
-	ClearTemps();
 	ReturnBeforeLayer(0,true); // unlock it to add stuff
 }
 
@@ -1100,7 +1305,6 @@ void ReturnToAfterLayer(int layer, bool unlocked)
 	if (layer == 1)
 	{
 		ClearUserVariables();
-		ClearTemps();
 
 		// unwind any layer2 protection
 		UnwindLayer2Protect();
@@ -1126,7 +1330,6 @@ void ReturnToAfterLayer(int layer, bool unlocked)
 void ReturnBeforeLayer(int layer, bool unlocked) 
 {
 	ClearUserVariables();
-	ClearTemps();
 	UnwindLayer2Protect();
 	while (factFree > factsPreBuild[layer]) FreeFact(factFree--); //   restore back to facts alone
 	DictionaryRelease(dictionaryPreBuild[layer],stringsPreBuild[layer]);
@@ -1292,7 +1495,12 @@ static void WriteBinaryEntry(WORDP D, FILE* out)
 		c = (unsigned char)GETMULTIWORDHEADER(D);
 		Write8(c,0); //   limit 255 no problem
 	}
-	if (GetTense(D)) Write32(MakeMeaning(GetTense(D)),0);
+	if (GetTense(D)) 
+	{
+		WORDP X = GetTense(D);
+		MEANING M = MakeMeaning(X);
+		Write32(M,0);
+	}
 	if (GetPlural(D)) Write32(MakeMeaning(GetPlural(D)),0);
 	if (GetComparison(D)) Write32(MakeMeaning(GetComparison(D)),0);
 	if (GetMeaningCount(D)) 
@@ -1510,7 +1718,7 @@ static WORDP ReadBinaryEntry(FILE* in)
 		unsigned char c = Read8(0);
 		SETMULTIWORDHEADER(D,c);
 	}
-	if (bits & (1 << 1)) SetTense(D,Read32(0));
+	if (bits & (1 << 1))  SetTense(D,Read32(0));
 	if (bits & (1 << 2)) SetPlural(D,Read32(0));
 	if (bits & (1 << 3)) SetComparison(D,Read32(0));
 	if (bits & (1 << 4)) 
@@ -1562,6 +1770,7 @@ bool ReadBinaryDictionary()
 		ReportBug((char*)"Binary dictionary uses hash=%d but system is using %d -- rebuilding binary dictionary\r\n",size,maxHashBuckets)
 		return false;
 	}
+
 	dictionaryFree = dictionaryBase + 1;
 	while (ReadBinaryEntry(in));
 	fread(dictionaryTimeStamp,1,20,in);
@@ -2615,6 +2824,7 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 
 void LoadDictionary()
 {
+	ClearWordMaps();
 	if (!ReadBinaryDictionary()) //   if binary form not there or wrong hash, use text form (slower)
 	{
 		InitFactWords(); 
@@ -2951,7 +3161,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	{
 		Log(STDUSERLOG,(char*)"  ConjugationLoop= ");
 		WORDP E = GetTense(D);
-		while (E != D)
+		while (E && E != D)
 		{
 			Log(STDUSERLOG,(char*)"-> %s ",E->word);
 			E = GetTense(E);
@@ -2962,7 +3172,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	{
 		Log(STDUSERLOG,(char*)"  PluralLoop= ");
 		WORDP E = GetPlural(D);
-		while (E != D)
+		while (E && E != D)
 		{
 			Log(STDUSERLOG,(char*)"-> %s ",E->word);
 			E = GetPlural(E);
@@ -2973,7 +3183,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	{
 		Log(STDUSERLOG,(char*)"  comparativeLoop= ");
 		WORDP E = GetComparison(D);
-		while (E != D)
+		while (E && E != D)
 		{
 			Log(STDUSERLOG,(char*)"-> %s ",E->word);
 			E = GetComparison(E);

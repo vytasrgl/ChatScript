@@ -2046,6 +2046,8 @@ name of topic  or concept
 				}
 				else if (word[1] == '~') // close-range gap
 				{
+					if (nestKind[nestIndex-1] == '{' || nestKind[nestIndex-1] == '[')
+						BADSCRIPT((char*)"PATTERN-5? cannot stick %s wildcard inside {} or []",word)
 					variableGapSeen = true;
 					int n = word[2] - '0';
 					if (!word[2]) BADSCRIPT((char*)"PATTERN-52 *~ is not legal, you need a digit after it")
@@ -2053,7 +2055,12 @@ name of topic  or concept
 					else if (word[3]) BADSCRIPT((char*)"PATTERN-54 *~9 is the largest close-range gap or bad stuff is stuck to your token- %s",word)
 				}
 				else if (word[1]) BADSCRIPT((char*)"PATTERN-55 * jammed against some other token- %s",word)
-				else variableGapSeen = true; // std * unlimited wildcard
+				else 
+				{
+					if (nestKind[nestIndex-1] == '{' || nestKind[nestIndex-1] == '[')
+						BADSCRIPT((char*)"PATTERN-5? cannot stick * wildcard inside {} or []")
+					variableGapSeen = true; // std * unlimited wildcard
+				}
 				startSeen = true;
 				break;
 			case '?': //   question input ?   
@@ -4486,7 +4493,7 @@ static void WriteConcepts(WORDP D, uint64 build)
 				char* dict = strchr(word+1,'~'); // has a wordnet attribute on it
 				if (*word == '~' || dict  ) // concept or full wordnet word reference
 				{
-					if (E->inferMark != inferMark) SetTried(D,0);
+					if (E->inferMark != inferMark) SetTriedMeaning(D,0);
 					E->inferMark = inferMark; 
 					if (dict)
 					{
@@ -4494,7 +4501,7 @@ static void WriteConcepts(WORDP D, uint64 build)
 						if (which) // given a meaning index, mark it
 						{
 							uint64 offset = 1ull << which;
-							SetTried(E,GetTried(E) | offset);	
+							SetTriedMeaning(E,GetTriedMeaning(E) | offset);	
 						}
 					}
 				}
@@ -4540,7 +4547,11 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 		in = FopenReadWritten((char*)"TMP/prebuild2.bin");
 		layer = 2;
 	}
-	if (!in)  ReportBug((char*)"prebuild bin not found")
+	if (!in)  
+	{
+		ReportBug((char*)"prebuild bin not found")
+		return;
+	}
 	for (WORDP D = dictionaryBase+1; D < dictionaryFree; ++D) 
 	{
 		uint64 oldproperties = 0;

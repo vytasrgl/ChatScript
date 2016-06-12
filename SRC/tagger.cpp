@@ -10,13 +10,13 @@ char** comments = NULL;
 static char* Describe(int i,char* buffer);
 
 char* wordCanonical[MAX_SENTENCE_LENGTH]; //   chosen canonical form
-WORDP originalLower[MAX_SENTENCE_LENGTH];
-WORDP originalUpper[MAX_SENTENCE_LENGTH];
-WORDP canonicalLower[MAX_SENTENCE_LENGTH];
-WORDP canonicalUpper[MAX_SENTENCE_LENGTH];
-uint64 finalPosValues[MAX_SENTENCE_LENGTH];
-uint64 allOriginalWordBits[MAX_SENTENCE_LENGTH];	// starting pos tags in this word position
-uint64 lcSysFlags[MAX_SENTENCE_LENGTH];      // current system tags lowercase in this word position (there are no interesting uppercase flags)
+WORDP originalLower[MAX_SENTENCE_LENGTH]; // transient during marking
+WORDP originalUpper[MAX_SENTENCE_LENGTH]; // transient during marking
+WORDP canonicalLower[MAX_SENTENCE_LENGTH]; // transient during marking
+WORDP canonicalUpper[MAX_SENTENCE_LENGTH]; // transient during marking
+uint64 finalPosValues[MAX_SENTENCE_LENGTH]; // needed during execution
+uint64 allOriginalWordBits[MAX_SENTENCE_LENGTH];	// starting pos tags in this word position -- should merge some to finalpos
+uint64 lcSysFlags[MAX_SENTENCE_LENGTH];      // transient current system tags lowercase in this word position (there are no interesting uppercase flags)
 uint64 posValues[MAX_SENTENCE_LENGTH];			// current pos tags in this word position
 uint64 canSysFlags[MAX_SENTENCE_LENGTH];		// canonical sys flags lowercase in this word position 
 unsigned int parseFlags[MAX_SENTENCE_LENGTH];

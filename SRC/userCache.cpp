@@ -1,6 +1,6 @@
 #include "common.h"
 
-#define DEFAULT_USER_CACHE 400000
+#define DEFAULT_USER_CACHE 800000
 #define NO_CACHEID -1
 
 static unsigned int cacheHead = 0;		// our marker for last allocated cache, used to find next free one
@@ -266,12 +266,12 @@ char* GetFileRead(char* user,char* computer)
 
 	if (in) // read in data if file exists
 	{
-		unsigned int actualSize = userFileSystem.userSize(in);
-		if ((int)actualSize != -1) 
+		int actualSize = (int) userFileSystem.userSize(in,buffer,userCacheSize);
+		if (actualSize >= 0) 
 		{
-			if (actualSize >= userCacheSize) // emergency read issue
+			if (actualSize >= (int)userCacheSize) // emergency read issue
 			{
-				if (actualSize < safespace) {;} // prior write use is fine, avoid memory fragmentation
+				if (actualSize < (int)safespace) {;} // prior write use is fine, avoid memory fragmentation
 				else if (actualSize < 200000) safespace = 2000000;
 				else 
 				{
@@ -288,11 +288,12 @@ char* GetFileRead(char* user,char* computer)
 					return NULL;
 				}
 			}
-
-
-			size_t readit = userFileSystem.userRead(buffer,1,actualSize,in);	// read it all in, including BOM
-			buffer[readit] = 0;
-			if (readit != actualSize) *buffer = 0; // read failure
+			if ((int)actualSize > 0) // we still need to read it
+			{
+				size_t readit = userFileSystem.userRead(buffer,1,actualSize,in);	// read it all in, including BOM
+				buffer[readit] = 0;
+				if ((int)readit != actualSize) *buffer = 0; // read failure
+			}
 		}
 		userFileSystem.userClose(in);
 		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"read in %s cache (%d)\r\n",word,currentCache);

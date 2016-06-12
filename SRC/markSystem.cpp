@@ -35,9 +35,7 @@ the actual word gets to see what sets it is in directly.
 Thereafter the system chases up the synset hierarchy fanning out to sets marked from synset nodes.
 
 #endif
-static MEANING tempList = 0;
-static MEANING freeMark = 0;
-int maxRefSentence = MAX_XREF_SENTENCE  * 2;
+int maxRefSentence = (((MAX_XREF_SENTENCE  * 2) + 3) / 4) * 4; // start+end offsets for this many entries + alignment slop
 
 // mark debug tracing
 bool showMark = false;
@@ -45,149 +43,6 @@ static unsigned int markLength = 0; // prevent long lines in mark listing trace
 #define MARK_LINE_LIMIT 80
 
 char unmarked[MAX_SENTENCE_LENGTH]; // can completely disable a word from mark recognition
-unsigned int tempc = 0;
-#ifdef JUNK
-Temps (D->temps) are extra data slots attached to words that only last during the volley. The 4 temps are:
-	FACTBACK,  USEDTEMPSLIST,  TRIEDBITS, WORDVALUE 
-TRIEDBITS is cleared and reallocated every sentence, not every volley.
-
-Tallying - ^tally() - uses WORDVALUE to add a counter to words. Only happens from scripting.
-USEDTEMPSLIST is a threaded list ptr for all allocated temps. It allows clearing of the triedbits while leaving the temps intact
-TRIEDBITS is 64 bits defining meaning used after which  is used for marking words in current prepared input.
-	Its a string of 32 entries (each entry a start and end index) where the word can be found.
-
-#endif
-
-unsigned int concepts[MAX_SENTENCE_LENGTH];  // concept chains per word
-int topics[MAX_SENTENCE_LENGTH];  // topics chains per word
-
-MEANING* GetTemps(WORDP D)
-{
-	if (D->temps) return (MEANING*) Index2String(D->temps); // we have an active temp (valid for duration of VOLLEY)
-
-	MEANING* temps = (MEANING*) AllocateString(NULL,4, sizeof(MEANING),true);  
-	if (!temps) return NULL;
-	D->temps = String2Index((char*)temps);
-	temps[USEDTEMPSLIST] = tempList;		// link back - we have a list threaded thru the temps triples (clearable at end of volley)
-	tempList = MakeMeaning(D);  
-	++tempc; // tally of allocated temps
-	return temps;
-}
-	
-static void ClearTemps(WORDP D, uint64 junk)
-{
-	D->temps = 0;
-}
-
-void AllocateWhereInSentence(WORDP D)
-{
-	MEANING* set = GetTemps(D); // allocates if need be
-	if (!set) return;
-
-	uint64* data;
-	if (freeMark) // reuse free list
-	{
-		data = (uint64*) Index2String(freeMark);
-		freeMark = *(MEANING*)data;
-	}
-	else // get where chunk
-	{
-		data  = (uint64*) AllocateString(NULL, sizeof(uint64) + maxRefSentence,1,false); // 64 bytes (16 words) + 64 bits (2 words) = 18 words  BUG?
-		if (!data) return;
-	}
-	*data = 0;
-	memset(data+1,0xff,maxRefSentence);
-	// store where in the temps data
-	int index = String2Index((char*) data);
-	set[TRIEDBITS] = index; // 64 bits to enable
-}
-
-unsigned char* GetWhereInSentence(WORDP D) 
-{
-	MEANING* set =  (MEANING*)Index2String(D->temps); // 438707  ~about_you
-	if (!set) return NULL;
-	unsigned int index =  set[TRIEDBITS]; // string index of where information, skip over 4 byte tried field
-	if (!index) return NULL;
-	return ((unsigned char*) Index2String(index)) + 8; 
-}
-
-void ClearTemps() // release temps that may exist on base dictionary words 
-{
-	memset(concepts,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH); // precautionary, not required in theory
-	memset(topics,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH); // precautionary, not required in theory
-	while (tempList && tempc--) // list of words that have templist attached (some have where info and some may have factback info) allowing us to clear triedbits
-	{
-		WORDP D = Meaning2Word(tempList);
-		MEANING* tempset = (MEANING*) Index2String(D->temps); // the temp set
-		D->temps = 0;
-		if (!tempset) break; // bug not expected
-		tempList = tempset[USEDTEMPSLIST]; // next one in list to consider
-	}
-
-	if (tempList) // we failed to properly release the tried bits, instead release all temps as an emergency
-	{
-		ReportBug((char*)"ClearTemps didnt finish\r\n");
-		WalkDictionary(ClearTemps,0); // drop all transient data completely
-		tempList = tempc =  0;
-	}
-	freeMark = 0;
-}
-
-void ClearWhereInSentence() // erases  the WHEREINSENTENCE and the TRIEDBITS 
-{
-	memset(concepts,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH);
-	memset(topics,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH);
-	
-	MEANING xlist = tempList;
-	unsigned int x = tempc; // safety limit in case of bugs
-	while (xlist && x--) // list of words that have templist attached (some have where info and some may have factback info) allowing us to clear triedbits
-	{
-		WORDP D = Meaning2Word(xlist);
-		MEANING* tempset = (MEANING*) Index2String(D->temps); // the temp set 
-		if (!tempset) break; // bug
-
-		xlist = tempset[USEDTEMPSLIST]; // next one in list to consider
-
-		unsigned int datum = tempset[TRIEDBITS];
-		MEANING* data = (MEANING*)Index2String(datum);
-		if (data) // save them for reuse
-		{
-			*data = freeMark;
-			freeMark = datum;
-		}
-		tempset[TRIEDBITS] = 0; 
-	}
-
-	if (xlist) // we failed to properly release the tried bits, instead release all temps as an emergency
-	{
-		ReportBug((char*)"ClearWhere didnt finish\r\n");
-		WalkDictionary(ClearTemps,0); // drop all transient data completely
-		tempList = tempc =  0;
-		freeMark = 0;
-	}
-}
-
-void SetTried(WORDP D,uint64 bits)
-{
-	MEANING* list = GetTemps(D); // allocate if needed
-	if (!list) return;
-	uint64*  data = (uint64*) Index2String(list[TRIEDBITS]);
-	if (!data) // allocate a new one both where and bits
-	{
-		AllocateWhereInSentence(D);
-		data = (uint64*) Index2String(list[TRIEDBITS]);
-		if (!data) return;
-	}
-	*data = bits;
-}
-
-uint64 GetTried(WORDP D)
-{
-	MEANING* set =  (MEANING*)Index2String(D->temps);
-	if (!set) return 0;
-	uint64* data = (uint64*) Index2String(set[TRIEDBITS]); 
-	return (!data) ? 0 : *data;
-}
 
 void RemoveMatchValue(WORDP D, int position)
 {
@@ -216,32 +71,13 @@ void MarkWordHit(WORDP D, int start,int end)
 	// track the actual sets done matching start word location (good for verbs, not so good for nouns)
 	if (*D->word == '~')
 	{
-		if (!stricmp(D->word,"~ignorereadwords"))
-		{
-			int xx = 0;
-		}
-		if (!(D->internalBits & TOPIC))
-		{
-			unsigned int* entry = (unsigned int*) AllocateString(NULL,2, sizeof(MEANING),false); // ref and link
-			entry[1] = concepts[start];
-			concepts[start] = String2Index((char*) entry);
-			entry[0] = MakeMeaning(D);
-		}
-		else {
-			unsigned int* entry = (unsigned int*) AllocateString(NULL,2,sizeof(MEANING),false); // ref and link
-			entry[1] = topics[start];
-			topics[start] = String2Index((char*) entry);
-			entry[0] = MakeMeaning(D);
-		}
+		if (!(D->internalBits & TOPIC)) Add2ConceptTopicList(concepts, D,start,false);
+		else Add2ConceptTopicList(topics, D,start,false);
 	}
 	// diff < 0 means peering INSIDE a multiword token before last word
 	// we label END as the word before it (so we can still see next word) and START as the actual multiword token
  	unsigned char* data = GetWhereInSentence(D);
-    if (!data) 
-	{
-		AllocateWhereInSentence(D);
-		data = GetWhereInSentence(D);
-	}
+    if (!data)  data = (unsigned char*) AllocateWhereInSentence(D);
 	if (!data) return;
 
 	bool added = false;
@@ -356,7 +192,7 @@ static int MarkSetPath(MEANING M, int start, int end, unsigned int depth, bool c
 	unsigned int index = Meaning2Index(M); // always 0 for a synset or set
 	// check for any repeated accesses of this synset or set or word
 	uint64 offset = 1ull << index;
-	uint64 tried = GetTried(D);
+	uint64 tried = GetTriedMeaning(D);
  	if (D->inferMark == inferMark) // been thru this word recently
 	{
 		if (*D->word == '~') return -1;	// branch is marked
@@ -367,11 +203,11 @@ static int MarkSetPath(MEANING M, int start, int end, unsigned int depth, bool c
 		D->inferMark = inferMark;
 		if (*D->word != '~') 
 		{
-			SetTried(D,0);
+			SetTriedMeaning(D,0);
 			tried = 0;
 		}
 	}
- 	if (*D->word != '~') SetTried(D,tried |offset);
+ 	if (*D->word != '~') SetTriedMeaning(D,tried |offset);
 	int result = NOPROBLEM_BIT;
 	FACT* F = GetSubjectNondeadHead(D); 
 	while (F)
@@ -614,7 +450,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 		strcpy(rawbuffer,wordStarts[i]);
 		strcpy(canonbuffer,wordCanonical[i]);
 		*originalbuffer = 0;
-		start = derivationIndex[i] >> 16; // from here
+		start = derivationIndex[i] >> 8; // from here
 		end = derivationIndex[i] & 0x00ff;  // to here
 		for (int j = start; j <= end; ++j)
 		{
@@ -643,7 +479,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 			strcat(canonbuffer,wordCanonical[i+k]);
 
 			strcat(originalbuffer,(char*)"_");
-			start = derivationIndex[i+k] >> 16; // from here
+			start = derivationIndex[i+k] >> 8; // from here
 			end = derivationIndex[i+k] & 0x00ff;  // to here
 			for (int j = start; j <= end; ++j)
 			{
@@ -730,12 +566,9 @@ static void StdMark(MEANING M, unsigned int start, unsigned int end, bool canoni
 	if (D->systemFlags & TIMEWORD && !(D->properties & PREPOSITION)) MarkFacts(MakeMeaning(Dtime),start,end);
 }
 
-
 void MarkAllImpliedWords()
 {
 	ChangeDepth(1,(char*)"MarkAllImpliedWords");
-	memset(concepts,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH); // precautionary, not required in theory
-	memset(topics,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH); // precautionary, not required in theory
 
 	int i;
  	for (i = 1; i <= wordCount; ++i)  capState[i] = IsUpperCase(*wordStarts[i]); // note cap state
@@ -895,7 +728,9 @@ void MarkAllImpliedWords()
 			else if (CU && CU->properties & (NOUN_FIRSTNAME|NOUN_HUMAN)) CU = NULL;	// remove accidental names 
 			else if (CU && !CU->properties && !(CU->systemFlags & PATTERN_WORD)) CU = NULL; // there is no use for this (maybe only a sequence head)
 		}
-	
+		if (!(finalPosValues[i] & NOUN_BITS))
+			CU = OU = NULL;	// cannot be upper case
+
 		if (CL && CL == DunknownWord) // allow unknown proper names to be marked unknown
 		{
 			MarkFacts(MakeMeaning(Dunknown),i,i); // unknown word
@@ -917,10 +752,12 @@ void MarkAllImpliedWords()
 			else StdMark(MakeTypedMeaning(OU,0,restriction), i, i,false);
        	}
 		
+		if (CL) wordCanonical[i] = CL->word; //    original meanings lowercase
+		else wordCanonical[i] = (CU) ? CU->word : (char*)"";
+
 		if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
 		{
-			if (CL) Log(STDUSERLOG,(char*)"\r\n%d: %s (canonical): ", i,CL->word ); //    original meanings lowercase
-			else Log(STDUSERLOG,(char*)"\r\n%d: %s (canonical): ", i,(CU) ? CU->word : (char*)"" ); //    original meanings uppercase
+			Log(STDUSERLOG,(char*)"\r\n%d: %s (canonical): ", i,wordCanonical[i] ); //    original meanings lowercase
 		}
 
 		//   canonical word

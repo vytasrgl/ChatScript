@@ -312,6 +312,7 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 			 if (*at != '0') break; // not pure
 		}
 		if (!*at) *loc = 0; // switch to integer
+ 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)" %s   ",result);
     }
     else
     {
@@ -323,11 +324,14 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
         else if (minusflag == '*') newval *= more;
         else if (minusflag == '/') 
 		{
-			if (more == 0) 
-				return; // cannot divide by 0
+			if (more == 0)  return; // cannot divide by 0
 			newval /= more;
 		}
-        else if (minusflag == '%') newval %= more;
+        else if (minusflag == '%') 
+		{
+			if (more == 0) return;
+			newval %= more;
+		}
         else if (minusflag == '|') 
 		{
 			newval |= more;
@@ -338,18 +342,23 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
         else if (minusflag == '<') newval <<= more;
         else if (minusflag == '>') newval >>= more;
        else newval += more;
+	   char tracex[MAX_WORD_SIZE];
 #ifdef WIN32
-		 sprintf(result,(char*)"%I64d",newval); 
+		sprintf(result,(char*)"%I64d",newval); 
 #else
-		 sprintf(result,(char*)"%lld",newval); 
+		sprintf(result,(char*)"%lld",newval); 
 #endif        
-    }
+  		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
+		{
+			sprintf(tracex,"0x%016llx",newval);
+			Log(STDUSERLOG,(char*)" %s/%s   ",result,tracex);
+		}
+	}
 
 	// store result back
 	if (*var == '_')  SetWildCard(result,result,var,0); 
 	else if (*var == '$') SetUserVariable(var,result);
 	else if (*var == '^') strcpy(callArgumentList[atoi(var+1)+fnVarBase],result); 
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)" %s/0x%x   ",result,atoi(result));
 }
 
 void ReestablishBotVariables() // refresh bot variables in case user overwrote them

@@ -34,7 +34,6 @@ serverFinishedBy is what time the answer must be delivered (1 second before the 
 bool echoServer = false;
 
 char serverIP[100];
-
 #ifndef DISCARDSERVER
 
 #ifdef EVSERVER
@@ -362,6 +361,8 @@ SOURCE:
 #endif
 
 #ifndef DISCARDSERVER
+
+
 
 #define SERVERTRANSERSIZE 10000 // no more than 10K coming in
 #ifdef WIN32
@@ -821,7 +822,7 @@ void InternetServer()
 
 static void ServerTransferDataToClient()
 {
-    strcpy(clientBuffer+SERVERTRANSERSIZE,mainOutputBuffer);
+    strcpy(clientBuffer+SERVERTRANSERSIZE,ourMainOutputBuffer);
     clientBuffer[sizeof(int)] = 0; // mark we are done.... 
 #ifndef WIN32
     pendingClients--;

@@ -99,7 +99,6 @@ static unsigned int spellSet;			// place to store word-facts on words spelled pe
 char* currentPlanBuffer;
 
 static int rhymeSet;
-static int JsonArrayRenumber(FACT* F);
 static FunctionResult ParseJson(char* buffer, char* message, size_t size);
 
 //////////////////////////////////////////////////////////
@@ -1560,7 +1559,7 @@ static FunctionResult RejoinderCode(char* buffer)
 				unusedRejoinder = false;
 				break; 
 			}
-			if (result & (RETRYTOPIC_BIT|RETRYSENTENCE_BIT|FAILTOPIC_BIT|ENDTOPIC_BIT|FAILSENTENCE_BIT|ENDSENTENCE_BIT|ENDINPUT_BIT|RETRYINPUT_BIT|FAILINPUT_BIT)) break;
+			if (result & (RESTART_BIT|RETRYTOPIC_BIT|RETRYSENTENCE_BIT|FAILTOPIC_BIT|ENDTOPIC_BIT|FAILSENTENCE_BIT|ENDSENTENCE_BIT|ENDINPUT_BIT|RETRYINPUT_BIT|FAILINPUT_BIT)) break;
 			result = NOPROBLEM_BIT;
         }
        ptr = FindNextRule(NEXTRULE,ptr,id); //   wrong or failed responder, swallow this subresponder whole
@@ -1739,6 +1738,7 @@ static FunctionResult RespondCode(char* buffer)
 			result = (FunctionResult)(result & (-1 ^ (ENDTOPIC_BIT|ENDRULE_BIT))); // these are swallowed
 		}
 		currentTopicID = oldCurrentTopic;
+		if (result & RESULTBEYONDTOPIC) break;
 	}
 	currentReuseID = oldreuseid;
 	currentReuseTopic = oldreusetopic;
@@ -2191,13 +2191,7 @@ static FunctionResult MarkCode(char* buffer)
 	// Mark specific thing 
 	WORDP D = StoreWord(word);
 	MEANING M = MakeMeaning(D);
-	if (*D->word != '~') // add ordinary word to concept list directly as WordHit will not store anything but concepts
-	{
-		unsigned int* entry = (unsigned int*) AllocateString(NULL,2, sizeof(MEANING),false); // ref and link
-		entry[1] = concepts[startPosition];
-		concepts[startPosition] = String2Index((char*) entry);
-		entry[0] = M;
-	}
+	if (*D->word != '~') Add2ConceptTopicList(concepts, D,startPosition,true); // add ordinary word to concept list directly as WordHit will not store anything but concepts
 	NextInferMark();
 	if (showMark) Log(ECHOSTDUSERLOG,(char*)"Mark %s: \r\n",D->word);
 	if (trace & TRACE_OUTPUT) Log(STDUSERLOG,(char*)"mark all @word %d ",D->word);
@@ -2460,7 +2454,7 @@ static FunctionResult UnmarkCode(char* buffer)
 	{
 		WORDP D = FindWord(word); //   set or word to unmark
 		if (!D) return FAILRULE_BIT;
-		D->temps = 0; 
+		ClearWordWhere(D,-1);
 		return NOPROBLEM_BIT;
 	}
  	else  return FAILRULE_BIT;
@@ -2478,7 +2472,12 @@ static FunctionResult UnmarkCode(char* buffer)
 	else
 	{
 		WORDP D = FindWord(word); //   set or word to unmark at specific location
-		if (D) RemoveMatchValue(D,startPosition);
+		if (D) 
+		{
+			RemoveMatchValue(D,startPosition);
+			RemoveConceptTopic(concepts,D,startPosition);
+			RemoveConceptTopic(topics,D,startPosition);		
+		}
 	}
 	return NOPROBLEM_BIT;
 }
@@ -2500,7 +2499,7 @@ static FunctionResult OriginalCode(char* buffer)
 	if (x == ILLEGAL_MATCHVARIABLE) return FAILRULE_BIT;
 	int start = WILDCARD_START(wildcardPosition[x]);
 	int end = WILDCARD_END(wildcardPosition[x]);
-	start = derivationIndex[start] >> 16; // from here
+	start = derivationIndex[start] >> 8; // from here
 	end = derivationIndex[end] & 0x00ff;  // to here but not including here  The end may be beyond wordCount if words have been deducted by now
 	if (start == 0) return NOPROBLEM_BIT;	// there is nothing here
 	*buffer = 0;
@@ -3138,8 +3137,8 @@ static FunctionResult ResponseQuestionCode(char* buffer)
 
 static FunctionResult ResponseRuleIDCode(char* buffer)
 {
-	int index = atoi(ARGUMENT(1) - 1); // they say 1, we use 0
-	if (index >= responseIndex || index < 0) return FAILRULE_BIT;
+	int index = atoi(ARGUMENT(1)) - 1; // they say 1, we use 0
+	if (index >= responseIndex) return FAILRULE_BIT;
 	ComputeWhy(buffer,index);
 	return NOPROBLEM_BIT;
 }
@@ -3275,7 +3274,7 @@ static FunctionResult ReturnCode(char* buffer)
 	char* arg = ARGUMENT(1);
 	char* output = AllocateBuffer();
 	FunctionResult result;
-	FreshOutput(arg,output,result,0, MAX_BUFFER_SIZE);
+	FreshOutput(arg,output,result,OUTPUT_NOCOMMANUMBER, MAX_BUFFER_SIZE);
 	FreeBuffer(); // usable still
 	if (result != NOPROBLEM_BIT) return result;
 	if (*output) memmove(buffer,output,strlen(output)+1);
@@ -3434,6 +3433,152 @@ static FunctionResult NoTraceCode(char* buffer)
 	return result; 
 }
 
+#include <map>
+using namespace std;
+extern std::map <WORDP, int> triedData; // per volley index into string space
+static int saveCount = 0;
+
+static FunctionResult SaveSentenceCode(char* buffer)
+{
+	char* arg1 = ARGUMENT(1);
+	MEANING M = MakeMeaning(StoreWord(arg1));
+
+	// compute words needed
+	int size = 2; // basic list
+	size += 2;	// tokenflags
+	++size; // wordcount
+	size += 6 * wordCount;	// wordStarts + wordCanonical + finalpos(2) + topics and concepts
+	size += 1 + derivationLength + 256/2; // derivation count and sentence words and derivation index
+
+	++size;  // map counter
+	for (std::map<WORDP,int>::iterator it=triedData.begin(); it!=triedData.end(); ++it) size += 2; // key and stringspace reference
+	size += MAX_SENTENCE_LENGTH/4;
+	
+	int total = size;
+	if (total & 1) ++total; // round to even set of words, for int64 align
+
+	unsigned int* memory = (unsigned int*) AllocateString(NULL,total/2,8,false); // int64 aligned
+	memory[0] = savedSentences;
+	memory[1] = M;
+	savedSentences = String2Index((char*) memory);
+	((uint64*)memory)[1] = tokenFlags; // 2,3
+	memory[4] = wordCount;
+	int n = 5; // store from here
+	WORDP D;
+	for (int i = 1; i <= wordCount; ++i)
+	{
+		D = StoreWord(wordStarts[i]);
+		M = MakeMeaning(D);
+		memory[n++] = M;
+		D = StoreWord(wordCanonical[i]);
+		M = MakeMeaning(D);
+		memory[n++] = M;
+
+		memory[n++] = finalPosValues[i] >> 32;
+		memory[n++] = finalPosValues[i] & 0x00000000ffffffff;
+
+		// concepts and topics lists are threaded links in string space. [0] is the concept/topic, [1] is next link
+		// that list will be valid later on restore
+		memory[n++] = concepts[i];
+		memory[n++] = topics[i];
+	}
+
+	// store derivation data
+	memory[n++] = derivationLength;
+	for (int i = 1; i <= derivationLength; ++i)
+	{
+		D = StoreWord(derivationSentence[i]);
+		M = MakeMeaning(D);
+		memory[n++] = M;
+	}
+	memmove(memory+n,derivationIndex,sizeof(short int) * 256); // why is this so big, could be half size?
+	n += 256/2;
+
+	unsigned int* counterLocation = memory + n++;
+	int counter = 0;
+	for (std::map<WORDP,int>::iterator it=triedData.begin(); it!=triedData.end(); ++it)
+	{
+		++counter;
+		memory[n++] = MakeMeaning(it->first); // key
+		memory[n++] = it->second;
+	}
+	*counterLocation = counter; // backfill with number to do
+
+	memmove(memory+n,unmarked,sizeof(char) * MAX_SENTENCE_LENGTH); // clear all mark suppression
+	n += MAX_SENTENCE_LENGTH/4;
+
+	if (n != size)
+	{
+		int xx = 0; // TROUBLE
+	}
+	saveCount = n;
+	return NOPROBLEM_BIT;
+}
+
+static FunctionResult RestoreSentenceCode(char* buffer)
+{
+	char* arg1 = ARGUMENT(1);
+	MEANING M = MakeMeaning(StoreWord(arg1));
+
+	unsigned int list = savedSentences;
+	unsigned int* memory = NULL;
+	while (list) // find the sentence referred to
+	{
+		memory = (unsigned int*) Index2String(list);
+		if (memory[1] == M) break; // found it
+		list = memory[0];
+	}
+	if (!list) return FAILRULE_BIT;
+
+	ClearWhereInSentence();
+	tokenFlags = ((uint64*)memory)[2]; // 2,3
+	wordCount = memory[4];
+	int n = 5; 
+	WORDP D;
+	for (int i = 1; i <= wordCount; ++i)
+	{
+		M = memory[n++];
+		D = Meaning2Word(M);
+		wordStarts[i] = D->word;
+		M = memory[n++];
+		D = Meaning2Word(M);
+		wordCanonical[i] = D->word;
+		finalPosValues[i] = memory[n++];
+		finalPosValues[i] <<= 32;
+		finalPosValues[i] |= memory[n++];
+		concepts[i] = memory[n++]; // contain string space indices that are still valid
+		topics[i] = memory[n++];
+	}
+	
+	// get derivation data
+	derivationLength = memory[n++];
+	for (int i = 1; i <= derivationLength; ++i)
+	{
+		M = memory[n++];
+		D = Meaning2Word(M);
+		derivationSentence[i] = D->word;
+	}
+	memmove(derivationIndex,memory+n,sizeof(short int) * 256);
+	n += 256/2;
+
+	// fill in WHERE data on recorded words
+	int counter = memory[n++];
+	for (int i = 0; i < counter; ++i)
+	{
+		WORDP key = Meaning2Word(memory[n++]);
+		triedData[key] = memory[n++];
+	}
+	memmove(unmarked,memory+n,sizeof(char) * MAX_SENTENCE_LENGTH);
+	n += MAX_SENTENCE_LENGTH/4;
+
+	if (n != saveCount)
+	{
+		int xx = 0; // inconsistent
+	}
+
+	return NOPROBLEM_BIT;
+}
+
 static FunctionResult NoFailCode(char* buffer)
 {      
 	char word[MAX_WORD_SIZE];
@@ -3442,9 +3587,10 @@ static FunctionResult NoFailCode(char* buffer)
 	ChangeDepth(1,(char*)"noFailCode");
 	Output(ptr,buffer,result);
 	ChangeDepth(-1,(char*)"noFailCode");
-	if (!stricmp(word,(char*)"RULE")) return (FunctionResult) (result & (ENDTOPIC_BIT|FAILTOPIC_BIT|RETRYTOPIC_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|ENDINPUT_BIT|RETRYSENTENCE_BIT));
-	else if (!stricmp(word,(char*)"TOPIC")) return (FunctionResult) ( result & (ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|RETRYINPUT_BIT));
-	else if (!stricmp(word,(char*)"LOOP")) return (FunctionResult) ( result & (ENDTOPIC_BIT|FAILTOPIC_BIT|RETRYTOPIC_BIT| ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYSENTENCE_BIT| ENDINPUT_BIT|RETRYINPUT_BIT));
+	if (result == RESTART_BIT) return result;
+	else if (!stricmp(word,(char*)"RULE")) return (FunctionResult) (result & (RESTART_BIT|ENDTOPIC_BIT|FAILTOPIC_BIT|RETRYTOPIC_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|ENDINPUT_BIT|RETRYSENTENCE_BIT|ENDCALL_BIT));
+	else if (!stricmp(word,(char*)"TOPIC")) return (FunctionResult) ( result & (RESTART_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|RETRYINPUT_BIT|ENDCALL_BIT));
+	else if (!stricmp(word,(char*)"LOOP")) return (FunctionResult) ( result & (RESTART_BIT|ENDTOPIC_BIT|FAILTOPIC_BIT|RETRYTOPIC_BIT| ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYSENTENCE_BIT| ENDINPUT_BIT|RETRYINPUT_BIT|ENDCALL_BIT));
 	else if (!stricmp(word,(char*)"SENTENCE") || !stricmp(word,(char*)"INPUT")) return NOPROBLEM_BIT;
 	return FAILRULE_BIT; // not a legal choice
 }
@@ -3462,6 +3608,7 @@ static FunctionResult ResultCode(char* buffer)
 {
 	FunctionResult result;
 	Output(ARGUMENT(1),buffer,result);
+	if (result == RESTART_BIT) return result;
 	*buffer = 0;
 	strcpy(buffer,ResultCode(result));
 	return NOPROBLEM_BIT;
@@ -3505,7 +3652,6 @@ void ResetBaseMemory()
 {
 	ClearUserVariables(memoryTextBase); // reset any above and delete from list but leave alone ones below
 	ResetFactSystem(memoryFactBase);// empties all fact sets and releases facts above marker
-	ClearTemps();
 	DictionaryRelease(memoryDictBase,memoryTextBase); // word & text
 	ReportBug((char*)"Emergency Memory Reset\r\n");
 	echo = true;
@@ -3524,7 +3670,6 @@ FunctionResult MemoryFreeCode(char* buffer)
 	}
 	ClearUserVariables(memoryText); // reset any above and delete from list but leave alone ones below
 	ResetFactSystem(memoryFact);// empties all fact sets and releases facts above marker
-	ClearTemps();
 	DictionaryRelease(memoryDict,memoryText); // word & text
 	return NOPROBLEM_BIT;
 }
@@ -3688,7 +3833,6 @@ static FunctionResult DBInitCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
-char pguserFilename[500];
 char hexbytes[] =  {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 static FunctionResult DBExecuteCode(char* buffer);
 
@@ -3757,24 +3901,16 @@ void PGUserFilesCloseCode()
 	pgfilesbuffer = 0;
 }
 
-static void ExtractUser(char* name)
-{
-	char* lastslash = strrchr((char*)name,'/');
-	strcpy(pguserFilename,(lastslash) ? (lastslash+1) : name);
-	char* lastperiod = strrchr(pguserFilename,'.');
-	*lastperiod = 0;
-}
-
 FILE* pguserCreate(const char* name)
 {
 	ExtractUser((char*)name);
-	return (FILE*)pguserFilename;
+	return (FILE*)userFilename;
 }
 
 FILE* pguserOpen(const char* name)
 {
 	ExtractUser((char*)name);
-	return (FILE*)pguserFilename;
+	return (FILE*)userFilename;
 }
 
 int pguserClose(FILE*)
@@ -3792,7 +3928,7 @@ size_t pguserRead(void* buffer,size_t size, size_t count, FILE* file)
 static void convert2Hex(unsigned char* ptr, size_t len, unsigned char* buffer, unsigned int & before, unsigned int& after)
 {
 	unsigned char* start = buffer;
-	sprintf((char*)buffer,(char*)"INSERT into userfiles VALUES ('%s', ",pguserFilename); // learn the space needed
+	sprintf((char*)buffer,(char*)"INSERT into userfiles VALUES ('%s', ",userFilename); // learn the space needed
 	buffer += strlen((char*) buffer);
 	before = buffer - start;
 	strcpy((char*)buffer,(char*)"E'\\\\x");
@@ -3825,7 +3961,7 @@ size_t pguserWrite(const void* buffer,size_t size, size_t count, FILE* file)
 		char* val = "UPDATE userfiles SET mydata = ";
 		int len = strlen(val);
 		strncpy(pgfilesbuffer,val,len);
-		sprintf((char*) pgfilesbuffer + after,(char*)"WHERE username = '%s';",pguserFilename);
+		sprintf((char*) pgfilesbuffer + after,(char*)"WHERE username = '%s';",userFilename);
 		res = PQexec(usersconn,pgfilesbuffer);  
 		status = (int) PQresultStatus(res);
 		msg = PQerrorMessage(usersconn);
@@ -3856,7 +3992,7 @@ void pguserLog(const void* buffer,size_t size)
 		return; // cannot log here
 	}
 	AdjustQuotes((char*)buffer,true);
-	sprintf((char*)pgfilesbuffer,(char*)"INSERT into userlogs VALUES ('%s','%s');",pguserFilename,buffer);
+	sprintf((char*)pgfilesbuffer,(char*)"INSERT into userlogs VALUES ('%s','%s');",userFilename,buffer);
 	PGresult   *res = PQexec(usersconn, pgfilesbuffer );  
 	int status = (int) PQresultStatus(res);
 	char* msg = PQerrorMessage(usersconn);
@@ -3865,15 +4001,15 @@ void pguserLog(const void* buffer,size_t size)
 	//PGresult   *res = PQexec(usersconn, pgfilesbuffer);
     if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
     {
-		ReportBug((char*)"Failed to write %s to postgres user log entry- %s",pguserFilename,buffer);
+		ReportBug((char*)"Failed to write %s to postgres user log entry- %s",userFilename,buffer);
 		myexit((char*)"failed to write user log to postgres");
 	}
 }
 
-size_t pguserSize(FILE* file)
+int pguserSize(FILE* file,char* buffer, size_t allowedSize)
 {
 	char query[MAX_WORD_SIZE];
-	sprintf(query, "SELECT mydata FROM userfiles WHERE  username = '%s'",pguserFilename);
+	sprintf(query, "SELECT mydata FROM userfiles WHERE  username = '%s'",userFilename);
 	PGresult   *res = PQexec(usersconn, query);
 	int status = (int) PQresultStatus(res);
 	if (status != PGRES_TUPLES_OK)    
@@ -3883,11 +4019,11 @@ size_t pguserSize(FILE* file)
 		return (size_t)-1;
 	}
 	unsigned int limit = (unsigned int) PQntuples(res);
-	size_t len = (size_t) -1;
+	int len = -1; // nothing there
 	if (limit != 0)
 	{
 		char* val = PQgetvalue(res, 0,0);
-		len = convertFromHex((unsigned char*)pgfilesbuffer,(unsigned char*) val);
+		len = (int) convertFromHex((unsigned char*)pgfilesbuffer,(unsigned char*) val);
 	}
 
 	PQclear(res);
@@ -4567,7 +4703,7 @@ static FunctionResult PhraseCode(char* buffer)
 	{
 		if (canonical) strcat(buffer,wordCanonical[i]);
 		else strcat(buffer,wordStarts[i]);
-		if (i != n) strcat(buffer,(char*)"_");
+		if (i != n) strcat(buffer,wildcardSeparator);
 	}
 	return NOPROBLEM_BIT;
 }
@@ -6628,6 +6764,28 @@ static FunctionResult ReviseFactCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+static void GenerateConceptList(int list, int set,char* filter,char* position,size_t len)
+{
+	while (list)
+	{
+		MEANING* at = (MEANING*)Index2String(list);
+		MEANING M = *at;
+		WORDP X = Meaning2Word(M);
+		if (!(X->systemFlags & NOCONCEPTLIST) && (!len || !strnicmp(X->word,filter,len))) 
+		{
+			FACT* F = CreateFact(M,Mconceptlist,MakeMeaning(StoreWord(position)),FACTTRANSIENT);
+			int n = FACTSET_COUNT(set);
+			int i;
+			for (i = n; i > 0; --i)
+			{
+				if (factSet[set][i] == F) break; // repeated
+			}
+			if (!i) AddFact(set,F);
+		}
+		list = (unsigned int) at[1];
+	}
+}
+
 static FunctionResult ConceptListCode(char* buffer)
 {
 	int set = (impliedSet == ALREADY_HANDLED) ? 0 : impliedSet;
@@ -6656,6 +6814,7 @@ static FunctionResult ConceptListCode(char* buffer)
 	char filter[MAX_WORD_SIZE];
 	FunctionResult result;
 	ReadCommandArg(arg,filter,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT); // possible filter
+	if (*word == '_' || *word == '$' || IsDigit(*word) || !*word) {;} // normal expected
 
 	int start = 1;
 	int end = 1;
@@ -6670,53 +6829,12 @@ static FunctionResult ConceptListCode(char* buffer)
 	if (start < 1 || start > wordCount) return FAILRULE_BIT;
 
 	char position[MAX_WORD_SIZE];
-	unsigned int list;
 	size_t len = strlen(filter);
 	for (int i = start; i <= end; ++i)
 	{
 		sprintf(position,(char*)"%d",i);
-		if (how & 1)
-		{
-			list = concepts[i];
-			while (list)
-			{
-				MEANING* at = (MEANING*)Index2String(list);
-				WORDP X = Meaning2Word(*at);
-				if (!(X->systemFlags & NOCONCEPTLIST) && (!len || !strnicmp(X->word,filter,len))) 
-				{
-					FACT* F = CreateFact(*at,Mconceptlist,MakeMeaning(StoreWord(position)),FACTTRANSIENT);
-					int n = FACTSET_COUNT(set);
-					int i;
-					for (i = n; i > 0; --i)
-					{
-						if (factSet[set][i] == F) break; // repeated
-					}
-					if (!i) AddFact(set,F);
-				}
-				list = (unsigned int) at[1];
-			}
-		}
-		if (how & 2)
-		{
-			list = topics[i];
-			while (list)
-			{
-				MEANING* at = (MEANING*)Index2String(list);
-				WORDP X = Meaning2Word(*at);
-				if (!(X->systemFlags & NOCONCEPTLIST)  && (!len || !strnicmp(X->word,filter,len))) 
-				{
-					FACT* F = CreateFact(*at,Mconceptlist,MakeMeaning(StoreWord(position)),FACTTRANSIENT|FACTDUPLICATE);
-					int i;
-					int n = FACTSET_COUNT(set);
-					for (i = n; i > 0; --i)
-					{
-						if (factSet[set][i] == F) break; // repeated
-					}
-					if (!i) AddFact(set,F);
-				}
-				list = (unsigned int) at[1];
-			}
-		}
+		if (how & 1) GenerateConceptList(concepts[i], set,filter,position,len);
+		if (how & 2) GenerateConceptList(topics[i], set,filter,position,len);
 	}
 	if (impliedSet == ALREADY_HANDLED && FACTSET_COUNT(set) == 0) return FAILRULE_BIT;
 	impliedSet = ALREADY_HANDLED;
@@ -6748,7 +6866,6 @@ static FunctionResult DeleteCode(char* buffer) //   delete all facts in collecti
 		for (unsigned int i = 1; i <= count; ++i) 
 		{
 			FACT* F = factSet[store][i];
-			if (i == 1 && F->flags & JSON_ARRAY_FACT && JsonArrayRenumber(F) < 0) return FAILRULE_BIT; // protect json array structure
 			KillFact(F);
 		}
 	}
@@ -7255,7 +7372,8 @@ static FunctionResult QueryCode(char* buffer)
 		if (*word != '\'' || word[1] == '_') // quoted var or such but not quoted matchvar
 		{
 			FunctionResult result = NOPROBLEM_BIT;
-			ReadShortCommandArg(word,ARGUMENT(argcount),result);
+			if (*word == '@') strcpy(ARGUMENT(argcount),word); // no eval of such
+			else ReadShortCommandArg(word,ARGUMENT(argcount),result);
 			if (result != NOPROBLEM_BIT) return result;
 		}
 		else strcpy(ARGUMENT(argcount),word);
@@ -7281,13 +7399,38 @@ static FunctionResult QueryCode(char* buffer)
 		sprintf(set,(char*)"@%d",impliedSet); 
 		to = set;
 	}
+
+	char splitoff[MAX_WORD_SIZE];
+	*splitoff = 0;
+	char* at = to;
+	if (*at == '@') // get any special assignment data
+	{
+		while (IsDigit(*++at));
+		strcpy(splitoff,at);
+	}
+	
 	count = Query(arg1, subject, verb, object, count, from, to,arg8, arg9);
 	
 	// result was a count. now convert to a fail code
 	FunctionResult result;
 	if (impliedSet != ALREADY_HANDLED) result = NOPROBLEM_BIT;
+	else if (*splitoff) result = NOPROBLEM_BIT;
 	else result = (count != 0) ? NOPROBLEM_BIT : FAILRULE_BIT; 
 	impliedSet = ALREADY_HANDLED;
+
+	// split off?
+	if (*splitoff && count != 0)
+	{
+		int store = GetSetID(to);
+		if (store == ILLEGAL_FACTSET) return FAILRULE_BIT;
+
+		FACT* F = factSet[store][1];
+		if (*splitoff == 'o' || *splitoff == 'O') sprintf(buffer,"%s",Meaning2Word(F->object)->word);
+		else if (*splitoff == 'v' || *splitoff == 'V') sprintf(buffer,"%s",Meaning2Word(F->verb)->word);
+		else if (*splitoff == 's' || *splitoff == 'S') sprintf(buffer,"%s",Meaning2Word(F->subject)->word);
+		else if (*splitoff == 'f' || *splitoff == 'F') sprintf(buffer,"%s",Fact2Index(F));
+		else if (*splitoff == 'a' || *splitoff == 'A') return FAILRULE_BIT;
+	}
 	return result;
 }
 
@@ -7882,6 +8025,7 @@ static FunctionResult JSONOpenCode(char* buffer)
 	url = ARGUMENT(index++);
 
 	// Now fix starting and ending quotes around url if there are any
+
 	if (*url == '"') ++url;
 	len = strlen(url);
 	if (url[len - 1] == '"') url[len - 1] = 0;
@@ -8365,6 +8509,44 @@ static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bo
 	return NOPROBLEM_BIT;
 }
 
+static FunctionResult SerializeCode(char* buffer)
+{
+	int store = GetSetID(ARGUMENT(1));
+	if (store == ILLEGAL_FACTSET) return FAILRULE_BIT;
+	int n = FACTSET_COUNT(store);
+	for (int i = 1; i <= n; ++i)
+	{
+		FACT* F = factSet[store][i];
+		WriteFact(F,false,buffer);
+		buffer += strlen(buffer);
+		*buffer++ = ' ';
+		*buffer = 0;
+		unsigned int size = (buffer - currentOutputBase);
+		if (size >= (currentOutputLimit - 400)) return FAILRULE_BIT; // too close
+	}
+	return NOPROBLEM_BIT;
+}
+
+static FunctionResult DeserializeCode(char* buffer)
+{
+	if (impliedSet == ALREADY_HANDLED) return FAILRULE_BIT;
+	int store = impliedSet;
+	if (store == ILLEGAL_FACTSET) return FAILRULE_BIT;
+	SET_FACTSET_COUNT(store,0);
+	char* arg = ARGUMENT(1);
+	int n = 0;
+	while (arg && *arg)
+	{
+		arg = SkipWhitespace(arg);
+		if (*arg++ != '(') return FAILRULE_BIT;
+		arg = EatFact(arg);
+		factSet[store][++n] = currentFact;
+	}
+	SET_FACTSET_COUNT(store,n);
+	impliedSet = ALREADY_HANDLED;
+	return NOPROBLEM_BIT;
+}
+
 static FunctionResult JSONPathCode(char* buffer)
 {
 	char* path = ARGUMENT(1);
@@ -8737,22 +8919,6 @@ static FunctionResult JSONFormatCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
-static void jsonRenumberDown(FACT* F, MEANING newverb) // decrment index
-{
-	WORDP oldverb = Meaning2Word(F->verb);
-	WORDP D = Meaning2Word(newverb);
-	FACT* X = DeleteFromList(GetVerbHead(oldverb),F,GetVerbNext,SetVerbNext);  // dont use nondead
-	SetVerbHead(oldverb,X);
-	X = AddToList(GetVerbHead(D),F,GetVerbNext,SetVerbNext);  // dont use nondead
-	SetVerbHead(D,X);
-	F->verb = newverb;
-	if (trace & TRACE_JSON) 
-	{
-		Log(STDUSERLOG,(char*)"Renumbered fact: ");
-		TraceFact(F);
-	}
-}
-
 static MEANING jsonValue(char* value, unsigned int& flags) 
 {
 	bool number = true;
@@ -8947,23 +9113,6 @@ static FunctionResult JSONCreateCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
-static int JsonArrayRenumber(FACT* F) 
-{
-	// need to renumber array facts which may not be in order, make them in order
-	int size = 0;
-	int max = 0;
-	WORDP D = Meaning2Word(F->subject);
-	size = orderJsonArrayMembers(D,factSet[jsonStore]);
-	if (size <= 0) return size; // illegally deleted array member
-	int start = atoi(Meaning2Word(F->verb)->word);
-	while (--size > start)  // now renumber
-	{
-		FACT* G = factSet[jsonStore][size];
-		jsonRenumberDown(G, factSet[jsonStore][size-1]->verb); 
-	}
-	return size;
-}
-
 static FunctionResult JSONDeleteCode(char* buffer) 
 {
 	char* arg = ARGUMENT(1);
@@ -9085,6 +9234,8 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^retry",RetryCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"reexecute a rule with a later match or retry  input"},
 	{ (char*)"^return",ReturnCode,STREAM_ARG,SAMELINE,(char*)"return this value from current user function call"}, 
 	{ (char*)"^notrace",NoTraceCode,STREAM_ARG,0,(char*)"execute code with trace off (except for topics and functions)"}, 
+	{ (char*)"^savesentence",SaveSentenceCode,1,0,(char*)"memorize current sentence analysis given label"}, 
+	{ (char*)"^restoresentence",RestoreSentenceCode,1,0,(char*)"recover prior saved sentence analysis given label"}, 
 
 #ifndef DISCARDPOSTGRES
 	{ (char*)"\r\n---- Database",0,0,0,(char*)""},
@@ -9133,6 +9284,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^createattribute",CreateAttributeCode,STREAM_ARG,0,(char*)"create a triple where the 3rd field is exclusive"}, 
 	{ (char*)"^createfact",CreateFactCode,STREAM_ARG,0,(char*)"create a triple"}, 
 	{ (char*)"^delete",DeleteCode,1,0,(char*)"delete all facts in factset or delete named fact"}, 
+	{ (char*)"^deserialize", DeserializeCode, 1, 0, "transcribes a string into a factset" },
 	{ (char*)"^field",FieldCode,2,0,(char*)"get a field of a fact"}, 
 	{ (char*)"^find",FindCode,2,0,(char*)"Given set or factset, find ordinal position of item within it"},
 	{ (char*)"^findfact",FindFactCode,3,0,(char*)"given simple non-facts subject verb object, see if fact exists of it"},
@@ -9147,6 +9299,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^uniquefacts",UniqueFactsCode,STREAM_ARG,0,(char*)"find facts in first set not found in second"},
 	{ (char*)"^last",FLRCodeL,STREAM_ARG,0,(char*)"get last element of a factset and remove it"},
 	{ (char*)"^query",QueryCode,STREAM_ARG,0,(char*)"hunt for fact in fact database"},
+	{ (char*)"^serialize", SerializeCode, 1, 0, "transcribes a factset into a string" },
 	{ (char*)"^sort",SortCode,STREAM_ARG,0,(char*)"sort facts on named set-field (presumed number) low to high"},
 	{ (char*)"^unduplicate",UnduplicateCode,1,0,(char*)"remove duplicate facts"},
 	{ (char*)"^unpackfactref",UnpackFactRefCode,1,0,(char*)"copy out fields which are facts"}, 

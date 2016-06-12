@@ -673,10 +673,14 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				else if (next == '-' ) 
 					break; // the anyways-- break 
 			}
-			// number before things? 8months but not 24%
-			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(c) && c != '%')
+			// number before things? 8months but not 24%  And dont split 1.23
+			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(c) && c != '%' && c != '.')
 			{
-				return ptr;
+				if (c == 's' && ptr[1] == 't'){;} // 1st
+				else if (c == 'n' && ptr[1] == 'd'){;} // 2nd
+				else if (c == 'r' && ptr[1] == 'd'){;} // 3rd
+				else if (c == 't' && ptr[1] == 'h'){;} // 5th
+				else return ptr;
 			}
 			if ( c == ']' || c == ')') break; //closers
 			if (c == '&') break; // must represent "and" 
@@ -710,13 +714,11 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
     return ptr;
 }
 
-char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) //   return ptr to stuff to continue analyzing later
+char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool oobStart) //   return ptr to stuff to continue analyzing later
 {	// all is true if to pay no attention to end of sentence -- eg for a quoted string
 	// nomodify is true on analyzing outputs into sentences, because user format may be fixed
     char* ptr = SkipWhitespace(input);
 	int count = 0;
-
-	bool oobStart = true;
 
 	if (tokenControl == UNTOUCHED_INPUT)
 	{
@@ -751,6 +753,13 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 		}
 		else ++html;
 	}
+	html = input;
+	while ((html = strstr(html,(char*)"&quot;")) != 0) // &quot;
+	{
+		*html = '"';
+		memmove(html+1,html+6,strlen(html+5));
+	}
+
 	unsigned int quoteCount = 0;
 	char priorToken[MAX_WORD_SIZE];
 	*priorToken = 0;
@@ -790,6 +799,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify) // 
 		size_t len = end - ptr;
 		strncpy(priorToken,ptr,len);
 		priorToken[len] = 0;
+		
 		char lastc = *(end-1);
 		if (*priorToken == '(') ++paren;
 		else if (*priorToken && paren) --paren;
@@ -1442,7 +1452,14 @@ static void MergeNumbers(int& start,int& end) //   four score and twenty = four-
         *ptr = 0;
         if (i != start) //   prove not mixing types digits and words
         {
-            if (*word == '-' && !IsDigit(*item)) 
+  			int64 power1 = NumberPower(wordStarts[i-1]);
+			int64 power2 = NumberPower(wordStarts[i]);
+			if (power1 == power2)
+			{
+				end = start = (unsigned int)UNINIT; // dont merge one two
+				return;
+			}
+	        if (*word == '-' && !IsDigit(*item)) 
 			{
 				end = start = (unsigned int)UNINIT;
 				return; //   - not a sign? CANCEL MERGE
@@ -1574,23 +1591,23 @@ void ReplaceWords(int i, int oldlength,int newlength,char** tokens)
 	// protect old values after our patch area
 	int afterCount = wordCount - i - oldlength + 1;
 	char* backupTokens[MAX_SENTENCE_LENGTH];	// place to copy the old tokens
-	unsigned int backupDerivations[MAX_SENTENCE_LENGTH];	// place to copy the old derivations
+	unsigned short int backupDerivations[MAX_SENTENCE_LENGTH];	// place to copy the old derivations
 	memcpy(backupTokens,wordStarts + i + oldlength,sizeof(char*) * afterCount); // save old tokens
-	memcpy(backupDerivations,derivationIndex + i + oldlength,sizeof(int) * afterCount); // save old derivations
+	memcpy(backupDerivations,derivationIndex + i + oldlength,sizeof(short int) * afterCount); // save old derivations
 
 	// move in new tokens which are insured to be in dictionary.
 	for (int j = 1; j <= newlength; ++j) wordStarts[i + j - 1] = StoreWord(tokens[j])->word;
 
 	// the derivations of each new token is from the range of derviations of the old
-	unsigned int start = derivationIndex[i] >> 16;
+	unsigned int start = derivationIndex[i] >> 8;
 	unsigned int end = derivationIndex[i+oldlength-1] & 0x0ff;
-	unsigned int derivation = (start << 16) | end;
+	unsigned int derivation = (start << 8) | end;
 	int endAt = (i + newlength);
 	for (int at = i; at <= endAt; ++at) derivationIndex[at] = derivation;
 
 	// now restore the trailing data.
 	memcpy(wordStarts+i+newlength,backupTokens,sizeof(char*) * afterCount);
-	memcpy(derivationIndex+i+newlength,backupDerivations,sizeof(int) * afterCount);
+	memcpy(derivationIndex+i+newlength,backupDerivations,sizeof(short int) * afterCount);
 
 	wordCount += newlength - oldlength;
 	wordStarts[wordCount+1] = NULL;
