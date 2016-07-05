@@ -122,7 +122,7 @@ extern char logs[100];
 extern int systemReset;
 extern bool quitting;
 extern bool unusedRejoinder;
-
+extern bool overrideAuthorization;
 extern bool noReact;
 
 // server
@@ -154,6 +154,7 @@ extern unsigned long alarmDelay;
 
 void ProcessInputFile();
 bool ProcessInputDelays(char* buffer,bool hitkey);
+char* SkipOOB(char* buffer);
 
 // startup
 #ifdef DLL

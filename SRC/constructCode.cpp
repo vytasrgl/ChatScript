@@ -184,10 +184,8 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			bool uppercasem = false;
 			int positionStart, positionEnd;
 			int whenmatched = 0;
-			++globalDepth; // indent pattern
 			bool failed = false;
-			if (!Match(ptr+10,0,start,(char*)"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
-			--globalDepth;
+			if (!Match(ptr+10,0,start,(char*)"(",true,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
 			if (clearUnmarks) // remove transient global disables.
 			{
 				clearUnmarks = false;

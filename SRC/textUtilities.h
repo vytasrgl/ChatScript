@@ -159,7 +159,7 @@ char* ReadArgument(char* ptr, char* buffer);
 
 int ReadALine(char* buf,FILE* file,unsigned int limit = maxBufferSize,bool returnEmptyLines = false);
 char* SkipWhitespace(char* ptr);
-char* BalanceParen(char* ptr,bool within=true);
+char* BalanceParen(char* ptr,bool within=true,bool wildcards=false);
 int64 NumberPower(char* number);
 int64 Convert2Integer(char* word);
 

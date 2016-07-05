@@ -94,7 +94,7 @@ Rules are executed in forward order only, so later rules can presume earlier rul
 
 #endif
 
-uint64* data;
+uint64* dataBuf;
 char** commentsData;
 
 static void DropLevel();
@@ -704,14 +704,14 @@ static void PerformPosTag(int start, int end)
 	}
 	idiomed = false;
 	tokenFlags &= -1 ^ FAULTY_PARSE;
-	if ((wordCount < 3 && posValues[start] & VERB_INFINITIVE) || !ApplyRules()) tokenFlags |= FAULTY_PARSE; // dont pos 1 or 2 word sentences.... not likely to get it right
+	if ((wordCount < 2 && posValues[start] & VERB_INFINITIVE) || !ApplyRules()) tokenFlags |= FAULTY_PARSE; // dont pos 1 or 2 word sentences.... not likely to get it right
 	if (prepareMode == POSTIME_MODE) posTiming += ElapsedMilliseconds() - startTime;
 
 	unsigned int foreign = 0;
 	for (int i = start; i <= end; ++i) 
 	{
 		if (ignoreWord[i]) continue;
-		if (posValues[i] & FOREIGN_WORD && !(posValues[i] & PART_OF_SPEECH)) foreign *= 10;
+		if (posValues[i] & FOREIGN_WORD && !(posValues[i] & PART_OF_SPEECH)) foreign += 10;
 	}
 	bool noparse = false;
 	if (foreign > 20 &&  (foreign  / (endSentence-startSentence)) >= 5) 
@@ -850,7 +850,7 @@ void ReadPosPatterns(char* file,uint64 junk)
 	if (!in) return;
 	uint64* dataptr;
 	
-	dataptr = data + (tagRuleCount * MAX_TAG_FIELDS);
+	dataptr = dataBuf + (tagRuleCount * MAX_TAG_FIELDS);
 	memset(dataptr,0,sizeof(uint64) * MAX_TAG_FIELDS);
 	commentsData[tagRuleCount] = AllocateString(file); // put in null change of file marker for debugging
 	++tagRuleCount;
@@ -881,7 +881,7 @@ void ReadPosPatterns(char* file,uint64 junk)
 		unsigned int limit = MAX_TAG_FIELDS;
 		bool big = false;
 
-		dataptr = data + (tagRuleCount * MAX_TAG_FIELDS);
+		dataptr = dataBuf + (tagRuleCount * MAX_TAG_FIELDS);
 		uint64* base = dataptr;
 		memset(base,0,sizeof(uint64) * 8);	// clear all potential rule info for a double rule
 		bool skipped = false;
@@ -2519,7 +2519,8 @@ static void WordIdioms(bool &changed)
 			if (!priorPhrasalVerb)
 			{
 				// if we dont recognize the verb but it can only be a particle, we are stuck with it: formerly "I hate what I have to contend *with, but I will survive"
-				if (posValues[i] != PARTICLE) LimitValues(i,-1 ^ PARTICLE,(char*)"verb before potential particle cant have one, dont be one",changed); 
+				if (posValues[i] != PARTICLE) 
+					LimitValues(i,-1 ^ PARTICLE,(char*)"verb before potential particle cant have one, dont be one",changed); 
 			}
 			else 
 			{
@@ -2531,7 +2532,8 @@ static void WordIdioms(bool &changed)
 					phrasalVerb[i+1] = (unsigned char)priorPhrasalVerb;
 				}
 				else phrasalVerb[i] = (unsigned char)priorPhrasalVerb;
-				if (bitCounts[priorPhrasalVerb] == 1) LimitValues(i,PARTICLE,(char*)"verb before potential particle has one, be particle",changed);
+				if (bitCounts[priorPhrasalVerb] == 1) 
+					LimitValues(i,PARTICLE,(char*)"verb before potential particle has one, be particle",changed);
 	
 				// revise objects of verb to be that of phrasal
 				canSysFlags[priorPhrasalVerb] &= -1 ^ (VERB_DIRECTOBJECT|VERB_NOOBJECT);
@@ -2621,8 +2623,13 @@ retry:
 			ParseSentence(resolved,modified);
 			parsed = true;
 			if (resolved) break; // we completed
-			else if (changed) ambiguous = 1; // force it to continue
-			else if (!changed && ambiguous) break; // nothing else we can do, quit
+			else if (modified) 
+			{
+				parsed = false;
+				changed = true;
+				ambiguous = 1; // force it to continue
+			}
+			else if (!modified && ambiguous) break; // nothing else we can do, quit
 #endif
 		}
 	}
@@ -3368,12 +3375,13 @@ static bool ResolveByStatistic(int i,bool &changed)
 	{
 		LimitValues(i,PREPOSITION,(char*)"statistic force preposition",changed);
 	}
-	if (posValues[i] & CONJUNCTION_SUBORDINATE)
+	if (posValues[i] & CONJUNCTION_SUBORDINATE && !(posValues[i] & DETERMINER)) // but not I cant cut *that tree down with
 	{
 		int at = i;
 		while (++at <= endSentence)
 		{
 			if (ignoreWord[at]) continue;
+			if (posValues[at] & PREPOSITION) break; 
 			if (posValues[at] & VERB_BITS) 
 			{
 				LimitValues(i,CONJUNCTION_SUBORDINATE,(char*)"statistic force subord conjuct",changed);
@@ -3414,11 +3422,15 @@ static bool ResolveByStatistic(int i,bool &changed)
 	{
 		LimitValues(i,VERB_PAST,(char*)"statistic force past tense",changed);
 	}
-	if (posValues[i] & CONJUNCTION_SUBORDINATE) // vs subject
+	if (posValues[i] & CONJUNCTION_SUBORDINATE && !(posValues[i] & DETERMINER)) // vs subject -- not "I can cut *that tree down"
 	{
 		LimitValues(i,CONJUNCTION_SUBORDINATE,(char*)"statistic force subordinate conjunction and see what happens",changed);
 	}
-	if (posValues[i] & PRONOUN_OBJECT) // vs subject
+	if (posValues[i] & DETERMINER && posValues[i+1] & (NOUN_BITS | ADJECTIVE_BITS)) // vs subject "I can cut *that tree down"
+	{
+		LimitValues(i,DETERMINER,(char*)"statistic force determiner",changed);
+	}
+	if (posValues[i] & PRONOUN_OBJECT && !(posValues[i] & DETERMINER)) // vs subject "I can cut *that tree down"
 	{
 		LimitValues(i,PRONOUN_OBJECT,(char*)"statistic force object pronoun",changed);
 	}
@@ -5627,9 +5639,14 @@ static void HandleComplement( int i,bool & changed)
 	// indirect object in normal speech must be an animate being.  But "I told the mountain my name" would be legal, just uncommon.
 	if (indirectObject )
 	{
-		//if (posValues[NextPos(i)] == VERB_INFINITIVE ) indirectObject = 0;	// cannot be an indirect object
-		//else 
-		if (originalLower[i] && originalLower[i]->properties & (NOUN_PROPER_SINGULAR | NOUN_PROPER_PLURAL | NOUN_HUMAN | PRONOUN_SUBJECT | PRONOUN_OBJECT )) // proper names are good as are pronouns
+		// is next thing compatible with the kind of direct object allowed?
+		uint64 verbFlags = canSysFlags[currentVerb];
+		bool allowed = false;
+		if (verbFlags & VERB_INDIRECTOBJECT) allowed = true; // generic is allowed
+		else if (verbFlags & VERB_TAKES_INDIRECT_THEN_TOINFINITIVE && !stricmp(wordStarts[NextPos(i)],"to")) allowed = true;  // "I allowed John *to run"
+		else if (verbFlags & VERB_TAKES_INDIRECT_THEN_VERBINFINITIVE && posValues[NextPos(i)] & VERB_INFINITIVE) allowed = true; // "he made John *run"
+		if (!allowed) indirectObject = 0; 
+		else if (originalLower[i] && originalLower[i]->properties & (NOUN_PROPER_SINGULAR | NOUN_PROPER_PLURAL | NOUN_HUMAN | PRONOUN_SUBJECT | PRONOUN_OBJECT )) // proper names are good as are pronouns
 		{
 		}
 		else if (canSysFlags[i] & ANIMATE_BEING) // animate beings are good
@@ -6442,9 +6459,9 @@ static unsigned int GuessAmbiguousNoun(int i, bool &changed)
 		if (LimitValues(i,-1 ^ (NOUN_INFINITIVE|NOUN_SINGULAR),(char*)"if can be adjective as subject complement, dont be noun infintive or singular",changed)) return GUESS_RETRY;
 	}
 
-	// if seeking object for main or clause and noun is not determined, kill it
+	// if seeking object for main or clause and noun is not determined, kill it unless there is a potential verb after it "bob likes to play"
 	int det;
-	if (needRoles[roleIndex] & (MAINOBJECT|OBJECT2|MAINSUBJECT|SUBJECT2) && !(needRoles[roleIndex] & PHRASE) && !IsDeterminedNoun(i,det))
+	if (needRoles[roleIndex] & (MAINOBJECT|OBJECT2|MAINSUBJECT|SUBJECT2) && !(needRoles[roleIndex] & PHRASE) && !IsDeterminedNoun(i,det) && !(posValues[i+1] & VERB_BITS))
 	{
 		if (LimitValues(i,-1 ^ NOUN_BITS,(char*)"undetermined noun cannot be subject or object",changed)) return GUESS_RETRY;
 	}
@@ -8511,7 +8528,7 @@ static void StartImpliedClause( int i,bool & changed)
 			}
 			return;
 		}
-		// could be a clause as object:  "I say *he should go home"
+		// could be a clause as object:  "I say *he should go home" But not "do you know what *game Harry likes"
 		if (roleIndex == MAINLEVEL && needRoles[MAINLEVEL] & MAINOBJECT && verbStack[MAINLEVEL] && parseFlags[verbStack[MAINLEVEL]] & OMITTABLE_THAT_VERB && !(posValues[i] & (PRONOUN_OBJECT|NORMAL_NOUN_BITS)))
 		{//not "I have a friend named Harry who likes to play tennis"
 			int at = i;
@@ -8519,11 +8536,12 @@ static void StartImpliedClause( int i,bool & changed)
 			{
 				if (posValues[at] & (PRONOUN_SUBJECT|NORMAL_NOUN_BITS))
 				{
+					if (posValues[at] & (PRONOUN_SUBJECT|NORMAL_NOUN_BITS)) break; // not "do you know what *game harry likes"
 					if (allOriginalWordBits[at+1] & (QWORD|CONJUNCTION_SUBORDINATE)) break;
 					if (allOriginalWordBits[at+2] & (QWORD|CONJUNCTION_SUBORDINATE)) break;
 					if (allOriginalWordBits[at+3] & (QWORD|CONJUNCTION_SUBORDINATE)) break;
 					if (allOriginalWordBits[at+4] & (QWORD|CONJUNCTION_SUBORDINATE)) break;
-						if (posValues[at+1] & (AUX_VERB_TENSES|VERB_PRESENT | VERB_PRESENT_3PS | VERB_PAST)) // have subject and verb, good enough
+					if (posValues[at+1] & (AUX_VERB_TENSES|VERB_PRESENT | VERB_PRESENT_3PS | VERB_PAST)) // have subject and verb, good enough
 					{
 						SetRole(at,MAINOBJECT,true);
 						AddClause(at,(char*)"omitted that clause0 as object ");
@@ -8562,7 +8580,8 @@ static void StartImpliedClause( int i,bool & changed)
 			SetRole(i-1,MAINOBJECT,true);	// force prior to be main object 
 			needRoles[roleIndex] = 0;	// we are fulfilled. Do not take an object complement as well.
 			AddClause(i-1,(char*)"omitted that clause as main object ");
-			SetRole(i-1,SUBJECT2);
+			roles[i-1] |= SUBJECT2; // assign secondary role characteristic
+			if (trace & TRACE_POS) Log(STDUSERLOG,(char*)"   +%s->%s\r\n",wordStarts[i],GetRole(roles[i]));
 			return;
 		}
 	}

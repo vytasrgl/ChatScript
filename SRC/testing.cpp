@@ -11,6 +11,7 @@ static int itemcount = 0;
 static char* abstractBuffer;
 static int longLines;
 static uint64 verifyToken;
+static bool isTracing = false;
 
 static WORDP dictUsedG;
 static FACT* factUsedG;
@@ -1148,7 +1149,6 @@ static void C_TestPattern(char* input)
 	PrepareSentence(ptr,true,true);	
 	PrepassSentence(prepassTopic);
 
-	unsigned int gap = 0;
 	unsigned int wildcardSelector = 0;
 	wildcardIndex = 0;
 	int junk1;
@@ -1157,26 +1157,24 @@ static void C_TestPattern(char* input)
 	bool uppercasem = false;
 	int whenmatched = 0;
 	SetContext(true);
+	int wildstart = 1;
 	int positionStart,positionEnd;
-	bool result =  Match(data+2,0,0,(char*)"(",true,gap,wildcardSelector,junk1,junk1,uppercasem,whenmatched,positionStart,positionEnd);
+	bool result =  Match(data+2,0,0,(char*)"(",wildstart,wildcardSelector,junk1,junk1,uppercasem,whenmatched,positionStart,positionEnd);
 	SetContext(false);
 	trace = oldtrace;
 	if (result) 
 	{
 		Log(STDUSERLOG,(char*)" Matched\r\n");
-		if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE) ) //   display the entire matching responder and maybe wildcard bindings
+		if (wildcardIndex)
 		{
-			if (wildcardIndex)
+			Log(STDUSERLOG,(char*)" wildcards: (");
+			for (int i = 0; i < wildcardIndex; ++i)
 			{
-				Log(STDUSERLOG,(char*)" wildcards: (");
-				for (int i = 0; i < wildcardIndex; ++i)
-				{
-					if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s (%d-%d) ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
-					else Log(STDUSERLOG,(char*)"_%d=  ",i);
-				}
+				if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s (%d-%d) ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
+				else Log(STDUSERLOG,(char*)"_%d=  ",i);
 			}
-			Log(STDUSERLOG,(char*)"\r\n");
 		}
+		Log(STDUSERLOG,(char*)"\r\n");
 	}
 	else 
 	{
@@ -3827,6 +3825,7 @@ static void C_Bot(char* name)
 static void C_Build(char* input)
 {
 #ifndef DISCARDSCRIPTCOMPILER
+	mystart(input);
 	char oldlogin[MAX_WORD_SIZE];
 	char oldbot[MAX_WORD_SIZE];
 	char oldbotspace[MAX_WORD_SIZE];
@@ -4611,7 +4610,7 @@ static void WordDump(WORDP D,uint64 flags)
 static void C_VerifySentence(char* input)
 {
 	printf((char*)"\r\nMarkings: \r\n");
-	for (unsigned int i = 1; i <= wordCount; ++i)
+	for (int i = 1; i <= wordCount; ++i)
 	{
 		printf((char*)"%s",wordStarts[i]);
 		int start = derivationIndex[i] >> 8;
@@ -4801,7 +4800,7 @@ static void C_Queries(char* input)
 	WalkDictionary(ShowQuery,0);
 }
 
-static void TracedFunction(WORDP D,uint64 junk)
+static void TracedFunction(WORDP D,uint64 junk) // functions and variables
 {
 	if (D->internalBits & MACRO_TRACE) Log(STDUSERLOG,(char*)"%s\r\n",D->word);
 }
@@ -4818,7 +4817,10 @@ static void TracedTopic(WORDP D,uint64 junk)
 		int topic = FindTopicIDByName(D->word);
 		topicBlock* block = TI(topic);
 		if (block->topicDebug) 
+		{
 			Log(STDUSERLOG,(char*)"%s %d\r\n",D->word,block->topicDebug);
+			isTracing = true;
+		}
 		if (D->internalBits & NOTRACE_TOPIC) 
 			Log(STDUSERLOG,(char*)"Not tracing %s\r\n",D->word);
 	}
@@ -6259,6 +6261,9 @@ static void C_NoTrace(char* input)
 static void C_Trace(char* input)
 {
 	char word[MAX_WORD_SIZE];
+	isTracing = false;
+	bool full = false;
+	if (trace && !(trace & TRACE_NOTFULL)) full = true;	// already on full
 	unsigned int flags = trace;
 	input = SkipWhitespace(input);
 	if (!*input) 
@@ -6269,7 +6274,6 @@ static void C_Trace(char* input)
 	ReadCompiledWord(input,word);
 	if (!stricmp(word,(char*)"none")) // turn off all topics and macros as well
 	{
-		blocknotrace = false;
 		WalkDictionary(ClearTracedFunction,0);
 		WalkDictionary(ClearTracedTopic,0);
 	}
@@ -6298,12 +6302,12 @@ static void C_Trace(char* input)
 			else continue;
 		}
 		
-		if (!stricmp(word,(char*)"ignorenotrace")) blocknotrace = 1;
-		else if (!stricmp(word,(char*)"all") ) flags = (unsigned int)-1;
+		if (!stricmp(word,(char*)"all") ) flags = (unsigned int)-1;
 		else if (!stricmp(word,(char*)"full"))
 		{
 			flags = (unsigned int)-1;
-			blocknotrace = 1;
+			flags -= TRACE_NOTFULL;
+			full = true; // requested full
 		}
 		else if (!stricmp(word,(char*)"none")) flags = 0;
 		else if (*word == '-') // remove this flag
@@ -6340,7 +6344,7 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"topic")) flags &= -1 ^  TRACE_TOPIC;
 			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
 		}
-		else if (IsNumberStarter(*word)) 
+		else if (IsNumberStarter(*word) && !IsAlphaUTF8(word[1])) 
 		{
 			ReadInt(word,*(int*)&flags);
 			break; // there wont be morez flags -- want :trace -1 in a table to be safe from reading the rest
@@ -6400,6 +6404,17 @@ static void C_Trace(char* input)
 			}
 			else Log(STDUSERLOG,(char*)"No such function %s\r\n",word);
 		}
+		else if (*word == '$')
+		{
+			WORDP D = StoreWord(word);
+			D->internalBits |= MACRO_TRACE;
+			PrepareVariableChange(D,"",false);
+			if (!fromScript)
+			{
+				echo = true;
+				Log(STDUSERLOG,(char*)" tracing %s %s\n",word, (D->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
+			}
+		}
 		else if (*word == '~') // tracing a topic or rule by label
 		{
 			char* period = strchr(word,'.');
@@ -6437,6 +6452,8 @@ static void C_Trace(char* input)
 		}
 	}
 	trace = flags;
+	if (trace && full) trace &= -1 ^ TRACE_NOTFULL;
+	if (trace && !full) trace |= TRACE_NOTFULL;
 	if (!fromScript)
 	{
 		bool oldecho = echo;
@@ -6446,8 +6463,15 @@ static void C_Trace(char* input)
 		SaveTracedFunctions();
 		WalkDictionary(TracedTopic,0);
 		echo = oldecho;
+		if (!trace && !isTracing) echo = false;
 	}	
 	else echo = true;
+	wasCommand = TRACECMD; // save results to user file
+}
+
+void C_Authorize(char* buffer)
+{
+	overrideAuthorization = (*buffer) ? true : false;
 }
 
 void C_Why(char* buffer)
@@ -6968,12 +6992,12 @@ static void DisplayTopic(char* name,int spelling)
 				{
 					output = ReadCompiledWord(output,word); // assign op
 					output = ReadCompiledWord(output,word); // rhs item
-					if (*word == '^' && *output == '(') output = BalanceParen(output+1); // rhs function call
+					if (*word == '^' && *output == '(') output = BalanceParen(output+1,true,false); // rhs function call
 					while (IsArithmeticOperator(output)) // arithmetic with assignment
 					{
 						output = ReadCompiledWord(output,word); // op
 						output = ReadCompiledWord(output,word);  // next rhs item
-						if (*word == '^' && *output == '(') output = BalanceParen(output+1); // rhs function call
+						if (*word == '^' && *output == '(') output = BalanceParen(output+1,true,false); // rhs function call
 					}
 					continue;
 				}
@@ -7004,7 +7028,7 @@ static void DisplayTopic(char* name,int spelling)
 					output = strchr(output,'{') + 2;
 					continue;
 				}
-				else if (*output == '(') output = BalanceParen(output+1); //  end call
+				else if (*output == '(') output = BalanceParen(output+1,true,false); //  end call
 				break;
 			case ':':  // shouldnt be label inside []
 				break;
@@ -7814,7 +7838,8 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":show",C_Show,(char*)"All, Input, Mark, Number, Pos, Stats, Topic, Topics, Why, Reject, Newlines"},
 	{ (char*)":trace",C_Trace,(char*)"Set trace variable (all none basic prepare match output pattern infer query substitute hierarchy fact control topic pos)"},
 	{ (char*)":why",C_Why,(char*)"Show rules causing most recent output"}, 
-	
+	{ (char*)":authorize",C_Authorize,(char*)"Flip authorization for all debug commands"},
+
 	{ (char*)"\r\n---- Fact info",0,(char*)""}, 
 	{ (char*)":allfacts",C_AllFacts,(char*)"Write all facts to TMP/facts.tmp"}, 
 	{ (char*)":facts",C_Facts,(char*)"Display all facts with given word or meaning or fact set"}, 
@@ -7912,6 +7937,8 @@ CommandInfo commandSet[] = // NEW
 
 bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 {
+	if (overrideAuthorization) return true; // commanded from script
+
 	char buffer[MAX_WORD_SIZE];
 	if ( authorizations == (char*)1) // command line does not authorize
 	{
@@ -7921,15 +7948,16 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 
 	//  check command line params
 	char* at = authorizations;
+	char word[MAX_WORD_SIZE];
 	if (at) // command line given
 	{
 		if (*at == '"') ++at;
 		while (*at)
 		{
-			at = ReadCompiledWord(at,buffer);
-			size_t len = strlen(buffer);
-			if (at[len-1] == '"') at[len-1] = 0;
-			if (!stricmp(buffer,(char*)"all") || !stricmp(buffer,callerIP) || (*buffer == 'L' && buffer[1] == '_' && !stricmp(buffer+2,loginID))) //   allowed by IP or L_loginname
+			at = ReadCompiledWord(at,word);
+			size_t len = strlen(word);
+			if (word[len-1] == '"') word[len-1] = 0;
+			if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
 			{
 				if (in) fclose(in);
 				return true;
@@ -7942,7 +7970,8 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 	bool result = false;
 	while (ReadALine(buffer,in) >= 0 )
     {
-		if (!stricmp(buffer,(char*)"all") || !stricmp(buffer,callerIP) || (*buffer == 'L' && buffer[1] == '_' && !stricmp(buffer+2,loginID))) //   allowed by IP or L_loginname
+		ReadCompiledWord(buffer,word);
+		if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
 		{ 
 			result = true;
 			break;

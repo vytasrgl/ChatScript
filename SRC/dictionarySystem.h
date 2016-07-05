@@ -438,7 +438,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 // TRACE FLAGS
 // simple
-// 1	
+#define TRACE_NOTFULL		0x00000001	
 #define TRACE_MATCH 		0x00000002
 #define TRACE_VARIABLE		0x00000004
 
@@ -469,6 +469,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define TRACE_JSON			0x01000000
 #define TRACE_NOT_THIS_TOPIC 0x02000000
 #define TRACE_FLOW			0x04000000
+#define TRACE_COVERAGE		0x08000000
 // pos tagger result operators
 #define DISCARD 1
 #define KEEP 2
@@ -550,7 +551,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define DO_PRIVATE				0x0000000000000100ULL	// 256
 #define DO_NUMBER_MERGE			0x0000000000000200ULL	// 512
 #define DO_PROPERNAME_MERGE		0x0000000000000400ULL	// 1024
-#define DO_SPELLCHECK			0x0000000000000800ULL	// 2048
+#define DO_SPELLCHECK				0x0000000000000800ULL	// 2048
 #define DO_INTERJECTION_SPLITTING	0x0000000000001000ULL  // 4096
 
 // this do not echo into tokenFlags
@@ -598,8 +599,10 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define NOT_SENTENCE			0x0000004000000000ULL   
 
 // in tokencontrol, not tokenflags
-#define NO_PROPER_SPELLCHECK	0x0000008000000000ULL   
+#define NO_PROPER_SPELLCHECK		0x0000008000000000ULL   
 #define NO_LOWERCASE_PROPER_MERGE	0x0000010000000000ULL   
+#define DO_SPLIT_UNDERSCORE			0x0000020000000000ULL   
+#define MARK_LOWER					0x0000040000000000ULL   
 
 // these change from parsing
 #define SENTENCE_TOKENFLAGS  ( QUOTATION | COMMANDMARK | IMPLIED_YOU | FOREIGN_TOKENS | FAULTY_PARSE  | NOT_SENTENCE | PRESENT | PAST | FUTURE | PRESENT_PERFECT | CONTINUOUS | PERFECT | PASSIVE )

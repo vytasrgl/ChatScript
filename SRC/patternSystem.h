@@ -19,7 +19,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define NORETRY 10000
 
 bool MatchesPattern(char* word, char* pattern);
-bool Match(char* ptr, unsigned int depth, int startposition,char* kind,bool wildstart,unsigned int& gap,unsigned int& wildcardSelector, 
+void GetPatternData(char* buffer);
+bool Match(char* ptr, unsigned int depth, int startposition,char* kind,int wildstart,unsigned int& wildcardSelector, 
 	int &returnStart,int& returnEnd,bool& uppercasem , int& firstmatched,int& positionStart,int & positionEnd,
 	bool reverse = false);
 extern bool matching;

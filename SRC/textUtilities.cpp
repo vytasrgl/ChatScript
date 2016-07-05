@@ -835,7 +835,10 @@ unsigned int IsNumber(char* word,bool placeAllowed) // simple digit number or wo
 	{
 		char c = *cur;
 		*cur = 0;
+		char* at = strchr(number,'.');
+		if (at) *at = 0;
 		int64 val = Convert2Integer(number);
+		if (at) *at = '.';
 		*cur = c;
 		return (val != NOT_A_NUMBER) ? CURRENCY_NUMBER : 0 ;
 	}
@@ -1748,7 +1751,7 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 	return ptr;	
 }
 
-char* BalanceParen(char* ptr,bool within) // text starting with ((unless within is true), find the closing ) and point to next item after
+char* BalanceParen(char* ptr,bool within,bool wildcards) // text starting with ((unless within is true), find the closing ) and point to next item after
 {
 	int paren = 0;
 	if (within) paren = 1;
@@ -1767,6 +1770,10 @@ char* BalanceParen(char* ptr,bool within) // text starting with ((unless within 
 			continue;
 		}
 		if (quoting) continue;	// stuff in quotes is safe 
+		if (wildcards && *ptr == '_' && !IsDigit(ptr[1]) && *(ptr-1) == ' ')
+		{
+			SetWildCardNull();
+		}
 		int value = nestingData[(unsigned char)*ptr];
 		if (*ptr == '<' && ptr[1] == '<' && ptr[2] != '<') value = 1;
 		if (*ptr == '>' && ptr[1] == '>' && ptr[2] != '>') 

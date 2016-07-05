@@ -525,9 +525,9 @@ char* roleSets[] =
 	(char*)"~whenunit",(char*)"~whereunit",(char*)"~howunit",(char*)"~whyunit",
 	(char*)"~subject2",(char*)"~verb2",(char*)"~object2",(char*)"~indirectobject2",(char*)"~byobject2",(char*)"~ofobject2",
 	(char*)"~appositive",(char*)"~adverbial",(char*)"~adjectival",
-	(char*)"~subjectcomplement",(char*)"~objectcomplement",(char*)"~address",(char*)"~postnominal_adjective",(char*)"adjective_complement",(char*)"omitted_time_prep",(char*)"omitted_of_prep",
-	(char*)"~comma_phrase",(char*)"tagquestion",(char*)"~absolute_phrase",(char*)"~omitted_subject_verb",(char*)"~reflexive",(char*)"~DISTANCE_NOUN_MODIFY_ADVERB",(char*)"~DISTANCE_NOUN_MODIFY_ADJECTIVE",(char*)"~TIME_NOUN_MODIFY_ADVERB",(char*)"~TIME_NOUN_MODIFY_ADJECTIVE",
-	(char*)"~conjunct_noun",(char*)"~conjunct_verb",(char*)"~conjunct_adjective",(char*)"conjunct_adverb",(char*)"conjunct_phrase",(char*)"conjunct_clause",(char*)"conjunct_sentence",
+	(char*)"~subjectcomplement",(char*)"~objectcomplement",(char*)"~address",(char*)"~postnominal_adjective",(char*)"~adjective_complement",(char*)"~omitted_time_prep",(char*)"~omitted_of_prep",
+	(char*)"~comma_phrase",(char*)"~tagquestion",(char*)"~absolute_phrase",(char*)"~omitted_subject_verb",(char*)"~reflexive",(char*)"~DISTANCE_NOUN_MODIFY_ADVERB",(char*)"~DISTANCE_NOUN_MODIFY_ADJECTIVE",(char*)"~TIME_NOUN_MODIFY_ADVERB",(char*)"~TIME_NOUN_MODIFY_ADJECTIVE",
+	(char*)"~conjunct_noun",(char*)"~conjunct_verb",(char*)"~conjunct_adjective",(char*)"~conjunct_adverb",(char*)"~conjunct_phrase",(char*)"~conjunct_clause",(char*)"~conjunct_sentence",
 	NULL
 };
 	

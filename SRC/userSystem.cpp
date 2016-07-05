@@ -49,7 +49,7 @@ void PartialLogin(char* caller,char* ip)
 	char c;
 	while ((c = *++at)) 
 	{
-		if (IsAlphaUTF8OrDigit(c) || c == '-' || c == '_' ) *id++ = c;
+		if (IsAlphaUTF8OrDigit(c) || c == '-' || c == '_'  || c == '+') *id++ = c;
 		else if (c == ' ') *id++ = '_';
 	}
 	*id = 0;
@@ -86,7 +86,7 @@ void Login(char* caller,char* usee,char* ip) //   select the participants
 	char* ptr = caller-1;
 	while (*++ptr) 
 	{
-		if (!IsAlphaUTF8OrDigit(*ptr) && *ptr != '-' ) *ptr = '_'; // require simple file names
+		if (!IsAlphaUTF8OrDigit(*ptr) && *ptr != '-' && *ptr != '+') *ptr = '_'; // require simple file names
 	}
 
     //   prepare for chat
@@ -113,6 +113,7 @@ void ResetUserChat()
 
 static char* SafeLine(char* line) // erase cr/nl to keep reads safe
 {
+	if (!line) return line; // null variable (traced)
 	char* start = line;
 	char c;
     while ((c = *++line))
@@ -194,11 +195,13 @@ static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT|FACTBUILD2))) --limit; // we will write this
 	}
 	// ends on factlocked, which is not to be written out
+	int counter = 0;
  	while (++F <= factFree)  // factfree is a valid fact
 	{
 		if (shared && !sharefile)  continue;
 		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT|FACTBUILD2))) 
 		{
+			++counter;
 			WriteFact(F,true,ptr,false,true);
 			ptr += strlen(ptr);
 			ptr =  OverflowProtect(ptr);
@@ -206,7 +209,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 		}
 	}
 	//ClearUserFacts();
-	strcpy(ptr,(char*)"#`end user facts\r\n");
+	sprintf(ptr,(char*)"#`end user facts %d\r\n",counter);
 	ptr += strlen(ptr);
 
 	return ptr;
@@ -259,7 +262,7 @@ static bool ReadUserFacts()
 		}
 		
 	}	
-    if (strcmp(readBuffer,(char*)"#`end user facts")) 
+    if (strncmp(readBuffer,(char*)"#`end user facts",16)) 
 	{
 		ReportBug((char*)"Bad user facts alignment\r\n")
 		return false;
@@ -382,6 +385,11 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
 {
 	if (!ptr) return NULL;
 	unsigned int index = userVariableIndex;
+	if (index == 0 && !compiling) 
+	{
+		ReportBug("No user variables in file write of %s",loginID);
+		return NULL;
+	}
     while (index)
     {
         WORDP D = userVariableList[--index];
@@ -389,17 +397,17 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
 		if (*D->word != '$') ReportBug((char*)"Bad user variable to save %s\r\n",D->word)
 		else if (shared && !sharefile && !strnicmp(D->word,(char*)"$share_",7)) continue;
   		else if (shared && sharefile && strnicmp(D->word,(char*)"$share_",7)) continue;
-        else if (D->word[1] !=  '$' && D->w.userValue) // transients not dumped, nor are NULL values
+		else if (D->word[1] !=  '$' && (D->w.userValue || (D->internalBits & MACRO_TRACE))) // transients not dumped, nor are NULL values
 		{
 			char* val = D->w.userValue;
-			while ((val = strchr(val,'\n'))) *val = ' '; //  clean out newlines
 			if (!stricmp(D->word,(char*)"$cs_trace")) 
 			{
-				sprintf(ptr,(char*)"%s=%d\r\n",D->word,trace);
-				trace = 0;
+				trace = 0; // assume no trace for next user
 				echo = false;
 			}
-			else sprintf(ptr,(char*)"%s=%s\r\n",D->word,SafeLine(D->w.userValue));
+			if (!val) val = ""; // for null variables being marked as traced
+			if (D->internalBits & MACRO_TRACE) sprintf(ptr,(char*)"%s=`%s\r\n",D->word,SafeLine(val));
+			else sprintf(ptr,(char*)"%s=%s\r\n",D->word,SafeLine(val));
 			ptr += strlen(ptr);
 			if (!compiling)
 			{
@@ -423,10 +431,17 @@ static bool ReadUserVariables()
 		if (*readBuffer != '$') break; // end of variables
         char* ptr = strchr(readBuffer,'=');
         *ptr = 0; // isolate user var name from rest of buffer
+		bool traceit = ptr[1] == '`';
+		if (traceit)  ++ptr;
         SetUserVariable(readBuffer,ptr+1);
-		if (!stricmp(readBuffer,(char*)"$cs_trace")) 
+		if (traceit) 
+		{ 
+			WORDP D = StoreWord(readBuffer);
+			D->internalBits |= MACRO_TRACE;
+		}
+ 		if (!stricmp(readBuffer,(char*)"$cs_trace")) 
 		{
-			trace = atoi(ptr+1);
+			trace = atoi(ptr+1); // trace now on this user
 			echo = true;
 		}
 

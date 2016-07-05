@@ -68,7 +68,7 @@ but is needed when seeing the dictionary definitions (:word) and if one wants to
 bool dictionaryBitsChanged = false;
 static unsigned int propertyRedefines = 0;	// property changes on locked dictionary entries
 static unsigned int flagsRedefines = 0;		// systemflags changes on locked dictionary entries
-
+static int freeTriedList = 0;
 bool buildDictionary = false;				// indicate when building a dictionary
 char dictionaryTimeStamp[20];		// indicate when dictionary was built
 char language[40];							// indicate current language used
@@ -157,7 +157,9 @@ void ClearVolleyWordMaps()
 	wordValues.clear();
 	backtracks.clear();
 	savedSentences = 0;
+	triedData.clear(); // prevent document reuse
 	ClearWhereInSentence();
+	freeTriedList = 0;
 }
 
 void ClearWordMaps() // both static for whole dictionary and dynamic per volley
@@ -166,7 +168,7 @@ void ClearWordMaps() // both static for whole dictionary and dynamic per volley
 	irregularVerbs.clear();
 	irregularAdjectives.clear();
 	canonicalWords.clear();
-
+	triedData.clear(); // prevent document reuse
 	ClearVolleyWordMaps(); 
 }
 
@@ -189,6 +191,15 @@ void ClearWhereInSentence() // erases  the WHEREINSENTENCE and the TRIEDBITS
 {
 	memset(concepts,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH);
 	memset(topics,0, sizeof(unsigned int) * MAX_SENTENCE_LENGTH);
+
+	// be able to reuse memory
+	if (documentMode) for (std::map<WORDP,int>::iterator it=triedData.begin(); it!=triedData.end(); ++it)
+	{
+		MEANING* data = (MEANING*) Index2String(it->second);
+		*data = freeTriedList;
+		freeTriedList = it->second;
+	}
+
 	triedData.clear();
 	memset(unmarked,0,MAX_SENTENCE_LENGTH);
 }
@@ -225,7 +236,13 @@ unsigned char* GetWhereInSentence(WORDP D) // [0] is the meanings bits,  the res
 
 unsigned int* AllocateWhereInSentence(WORDP D)
 {
-	unsigned int* data = (unsigned int*) AllocateString(NULL, ((sizeof(uint64) + maxRefSentence)+3)/4,4,false); // 64 bits (2 words) + 64 bytes (16 words) = 18 words  BUG?
+	unsigned int* data = NULL;
+	if (documentMode && freeTriedList) // reuse memory
+	{
+		MEANING* data = (MEANING*) Index2String(freeTriedList);
+		freeTriedList = *data;
+	}
+	if (!data) data = (unsigned int*) AllocateString(NULL, ((sizeof(uint64) + maxRefSentence)+3)/4,4,false); // 64 bits (2 words) + 64 bytes (16 words) = 18 words  BUG?
 	if (!data) return NULL;
 	*data = 0; // clears the tried meanings list
 	data[1] = 0;
@@ -886,6 +903,7 @@ int GetWords(char* word, WORDP* set,bool strictcase)
 	char* at = commonword;
 	while ((at = strchr(at,' '))) *at = '_';	 // match as underscores whenever spaces occur (hash also treats them the same)
 
+	WORDP E = FindWord(word);
 	bool hasUpperCharacters;
 	bool hasUTF8Characters;
 	uint64 fullhash = Hashit((unsigned char*) word,len,hasUpperCharacters,hasUTF8Characters); //   sets hasUpperCharacters and hasUTF8Characters 
@@ -906,7 +924,9 @@ int GetWords(char* word, WORDP* set,bool strictcase)
 		}
 		D = dictionaryBase + GETNEXTNODE(D);
 	}
-	D = dictionaryBase + hash + 1; // upper case bucket
+
+	// upper case bucket
+	D = dictionaryBase + hash + 1; 
 	if (strictcase && !hasUpperCharacters) D = dictionaryBase; // upper case not allowed to match lowercase input
 	while (D != dictionaryBase)
 	{
@@ -1347,6 +1367,7 @@ void ReturnBeforeLayer(int layer, bool unlocked)
 
 void CloseDictionary()
 {
+	ClearWordMaps();
 	CloseTextUtilities();
 	dictionaryBase = NULL;
 	CloseCache(); // actual memory space of the dictionary
@@ -1456,6 +1477,8 @@ static void WriteBinaryEntry(WORDP D, FILE* out)
 {
 	unsigned char c;
 	writePtr = (unsigned char*)(readBuffer+2); // reserve size space
+
+	int x = MakeMeaning(D);
 	if (!D->word) // empty entry
 	{
 		c = 0;
@@ -2332,10 +2355,14 @@ MEANING FindSetParent(MEANING T,int n) //   next set parent
 
 char* WriteMeaning(MEANING T,bool withPos)
 {
-	if (!T) return "";
+	if (!T) return "deadcow";
     WORDP D = Meaning2Word(T);
-
-	if ((T & MEANING_BASE) == T) return D->word; 
+	if (!D->word)
+	{
+		ReportBug("Missing word on D (T=%d)\r\n",T);
+		return "deadcow";
+	}
+	if ((T & MEANING_BASE) == T)  return D->word; 
 
 	//   need to annotate the value
     static char mybuffer[150];
@@ -2576,7 +2603,7 @@ void ReadLivePosData()
 	// read pos rules of english langauge
 	uint64 xdata[MAX_POS_RULES * MAX_TAG_FIELDS];
 	char*  xcommentsData[MAX_POS_RULES];
-	data = xdata;
+	dataBuf = xdata;
 	commentsData = xcommentsData;
 	tagRuleCount = 0;
 	char word[MAX_WORD_SIZE];
@@ -3195,7 +3222,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	unsigned int count = GetMeaningCount(D);
 	if (count) Log(STDUSERLOG,(char*)"  Meanings:");
 	uint64 kind = 0;
-	for (unsigned int i = 1; i <= count; ++i)
+	for ( int i = count; i >= 1; --i)
 	{
 		if (index && i != index) continue;
 		MEANING M = GetMeaning(D,i);

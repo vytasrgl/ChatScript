@@ -505,7 +505,7 @@ void* RegressLoad(void* junk)// test load for a server
 
 void LogChat(clock_t starttime,char* user,char* bot,char* IP, int turn,char* input,char* output)
 {
-	char* date = GetTimeInfo()+SKIPWEEKDAY;
+	char* date = GetTimeInfo(true)+SKIPWEEKDAY;
 	date[15] = 0;	// suppress year
 	memmove(date+3,date+4,13); // compress out space
 	char* why = output + strlen(output) + 3; //skip terminator + 2 ctrl z end marker
@@ -835,7 +835,7 @@ static void* AcceptSockets(void*) // accepts incoming connections from users
    try {
         while(1)
         {  
-            char* time = GetTimeInfo()+SKIPWEEKDAY;
+            char* time = GetTimeInfo(true)+SKIPWEEKDAY;
             TCPSocket *sock = serverSocket->accept();
 			LaunchClient((void*)sock);
          }
@@ -947,7 +947,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 				return Done(sock,memory);
 			}
 
-			//ReportBug((char*)"%s %s bot: %s msg: %s  NO USER ID \r\n",IP,GetTimeInfo()+SKIPWEEKDAY,bot,msg)
+			//ReportBug((char*)"%s %s bot: %s msg: %s  NO USER ID \r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY,bot,msg)
 			strcpy(output,(char*)"[you have no user id]\r\n"); 
 			return Done(sock,memory);
 		}
@@ -972,7 +972,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 
 	  } catch (...)  
 	  {
-			ReportBug((char*)"***%s client presocket failed %s\r\n",IP,GetTimeInfo()+SKIPWEEKDAY)
+			ReportBug((char*)"***%s client presocket failed %s\r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY)
  			return Done(sock,memory);
 	  }
 
@@ -1000,7 +1000,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		sock->send(output, len);
 } catch (...)  {
 		printf((char*)"%s",(char*)"client socket fail\r\n");
-		ReportBug((char*)"***%s client socket failed %s \r\n",IP,GetTimeInfo()+SKIPWEEKDAY)}
+		ReportBug((char*)"***%s client socket failed %s \r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY)}
 
 	delete sock;
 
@@ -1076,6 +1076,7 @@ static void* MainChatbotServer()
 		char user[MAX_WORD_SIZE];
 		char bot[MAX_WORD_SIZE];
 		char* ip = clientBuffer + sizeof(unsigned int); // skip fileread data buffer id(not used)
+		char* returnData = clientBuffer+SERVERTRANSERSIZE;
 		char* ptr = ip;
 		// incoming is 4 strings together:  ip, username, botname, message
 		ptr += strlen(ip) + 1;	// ptr to username

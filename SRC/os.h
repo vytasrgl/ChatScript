@@ -23,6 +23,7 @@ extern int jumpIndex;
 
 void JumpBack();
 void myexit(char* msg, int code = 4);
+void mystart(char* msg);
 
 extern bool logged;
 extern bool filesystemOverride;
@@ -56,6 +57,7 @@ void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath);
 void C_Directories(char* x);
 void StartFile(const char* name);
 int FileSize(FILE* in,char* buffer,size_t allowedSize);
+void FileDelete(const char* filename);
 FILE* FopenStaticReadOnly(const char* name);
 FILE* FopenReadOnly(const char* name);
 FILE* FopenReadNormal(char* name);
@@ -81,6 +83,7 @@ typedef int (*UserFileClose)(FILE*);
 typedef size_t (*UserFileRead)(void* buffer,size_t size, size_t count, FILE* file);
 typedef size_t (*UserFileWrite)(const void* buffer,size_t size, size_t count, FILE* file);
 typedef int (*UserFileSize)(FILE* file, char* buffer, size_t allowedSize);
+typedef void (*UserFileDelete)(const char* name);
 
 typedef struct USERFILESYSTEM //  how to access user topic data
 {
@@ -90,6 +93,7 @@ typedef struct USERFILESYSTEM //  how to access user topic data
 	UserFileRead userRead;
 	UserFileWrite userWrite;
 	UserFileSize userSize;
+	UserFileDelete userDelete;
 
 } USERFILESYSTEM;
 
@@ -103,7 +107,7 @@ char* GetUserPath(char* name);
 
 #define SKIPWEEKDAY 4 // from gettimeinfo
 
-char* GetTimeInfo();
+char* GetTimeInfo(bool nouser=false);
 char* GetMyTime(time_t curr);
 
 #ifdef __MACH__
@@ -139,7 +143,7 @@ extern char* testOutput;
 
 extern char logFilename[MAX_WORD_SIZE];
 extern bool logUpdated;
-extern char* logmainbuffer;
+extern char logmainbuffer[MAX_BUFFER_SIZE]; // no dynamic allocate. Know its there
 extern char serverLogfileName[200];
 extern int userLog;
 extern int serverLog;

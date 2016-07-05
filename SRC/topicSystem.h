@@ -124,7 +124,7 @@ extern int pendingTopicList[MAX_TOPIC_STACK+1];
 extern int originalPendingTopicList[MAX_TOPIC_STACK+1];
 void SetSampleFile(int topic);
 FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer);
-FunctionResult TestRule(int responderID,char* ptr,char* buffer);
+FunctionResult TestRule(int responderID,char* ptr,char* buffer,bool refine=false);
 FunctionResult PerformTopic(int active,char* buffer,char* rule = NULL,unsigned int id = 0);
 bool Repeatable(char* rule);
 void CleanOutput(char* word);

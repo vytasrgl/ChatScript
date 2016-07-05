@@ -39,7 +39,7 @@ char* SystemVariable(char* word,char* value)
 	unsigned int index = (D) ? D->x.topicIndex : 0;
 	if (!index) 
 	{
-		ReportBug((char*)"No system variable %s",word)
+		ReportBug((char*)"No system variable %s  ",word)
 		return "";
 	}
 	return (*sysvars[index].address)(value);

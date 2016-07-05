@@ -403,7 +403,8 @@ static void HuntMatch(char* word,bool strict,int start, int end, unsigned int& u
 	{
 		D = set[--i];
 		trace = (D->subjectHead || D->systemFlags & PATTERN_WORD || D->properties & PART_OF_SPEECH)  ? usetrace : 0; // being a subject head means belongs to some set. being a marked word means used as a keyword
-		MarkFacts(MakeMeaning(D),start,end,false,true); 
+		if (*D->word == 'I' && !D->word[1]){;}
+		else MarkFacts(MakeMeaning(D),start,end,false,true); 
 	}
 }
 
@@ -422,7 +423,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 	}
 	uint64 logbase = logCount; // see if we logged anything
 
-	//   consider all sets of up to 3-in-a-row 
+	//   consider all sets of up to 5-in-a-row 
 	for (int i = startSentence; i <= (int)endSentence; ++i)
 	{
 		if (!IsAlphaUTF8OrDigit(*wordStarts[i]) ) continue; // we only composite words, not punctuation or quoted stuff
@@ -463,10 +464,11 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 		NextInferMark();
 		//if (strchr(rawbuffer,'_') || strchr(rawbuffer,' ') || IsUpperCase(*rawbuffer)) 
 			HuntMatch(rawbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i,usetrace);
-		if (strchr(canonbuffer,'_')|| strchr(canonbuffer,' ')) HuntMatch(canonbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i,usetrace);
+		//if (strchr(canonbuffer,'_')|| strchr(canonbuffer,' ')) 
+			HuntMatch(canonbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i,usetrace);
 		//if (strchr(originalbuffer,'_')|| strchr(originalbuffer,' ') || IsUpperCase(*originalbuffer)) 
 			HuntMatch(originalbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i,usetrace);
-	
+
 		//   fan out for addon pieces
 		int k = 0;
 		int index = 0;
@@ -591,7 +593,7 @@ void MarkAllImpliedWords()
 		char* original =  wordStarts[i];
 		if (!*original)
 			continue;	// ignore this
-		if (!wordCanonical[i]) wordCanonical[i] = original; // in case failure below
+		if (!wordCanonical[i] || !*wordCanonical[i]) wordCanonical[i] = original; // in case failure below
 
 		if (showMark) Log(ECHOSTDUSERLOG,(char*)"\r\n");
 		NextInferMark(); // blocks circular fact marking.
@@ -728,7 +730,7 @@ void MarkAllImpliedWords()
 			else if (CU && CU->properties & (NOUN_FIRSTNAME|NOUN_HUMAN)) CU = NULL;	// remove accidental names 
 			else if (CU && !CU->properties && !(CU->systemFlags & PATTERN_WORD)) CU = NULL; // there is no use for this (maybe only a sequence head)
 		}
-		if (!(finalPosValues[i] & NOUN_BITS))
+		if (!(finalPosValues[i] & (NOUN_BITS | ADJECTIVE_NOUN | IDIOM)))
 			CU = OU = NULL;	// cannot be upper case
 
 		if (CL && CL == DunknownWord) // allow unknown proper names to be marked unknown
@@ -739,8 +741,14 @@ void MarkAllImpliedWords()
 
 		// note "bank teller" we want bank to have recognizion of its noun meaning in concepts - must do FIRST as noun, since adjective value is abnormal
 		unsigned int restriction = (unsigned int)(finalPosValues[i] & BASIC_POS);
-		if (finalPosValues[i] & ADJECTIVE_NOUN) StdMark(MakeTypedMeaning(OL,0,NOUN), i, i,false); //  mark word as a noun
-		else StdMark(MakeTypedMeaning(OL,0,restriction), i, i,false);
+		if (finalPosValues[i] & ADJECTIVE_NOUN) 
+		{
+			StdMark(MakeTypedMeaning(OL,0,NOUN), i, i,false); //  mark word as a noun
+		}
+		else 
+		{
+			StdMark(MakeTypedMeaning(OL,0,restriction), i, i,false);
+		}
 
         if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)" // "); //   close original meanings lowercase
 
@@ -772,6 +780,7 @@ void MarkAllImpliedWords()
  		else if (finalPosValues[i] & ADJECTIVE_NOUN)
 		{
 			StdMark(MakeTypedMeaning(CL,0,NOUN), i, i,true);
+			StdMark(MakeTypedMeaning(CU,0,NOUN), i, i,true);
 		}
 		else StdMark(MakeTypedMeaning(CL,0, (unsigned int)(finalPosValues[i] & BASIC_POS)), i, i,true);
 		
@@ -851,6 +860,19 @@ void MarkAllImpliedWords()
 		if (D->internalBits & UPPERCASE_HASH && D->length > 1)  MarkFacts(MakeMeaning(Dpropername),i,i);  // historical - internal is uppercase
 
         if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"\r\n");
+
+		D = FindWord(wordStarts[i]);
+		if (*wordStarts[i] == 'I' && !wordStarts[i][1]) {;} // ignore "I"
+		else if (D && D->internalBits & UPPERCASE_HASH && tokenControl & MARK_LOWER)
+		{
+			char word[MAX_WORD_SIZE];
+			MakeLowerCopy(word,D->word);
+			if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"%d: %s (lower): ", i,word ); //    original meanings lowercase
+			D = StoreWord(word);
+			StdMark(MakeMeaning(D), i, i,true);
+			if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"\r\n");
+		}
+	
     }
  
 	//   check for repeat input by user - but only if more than 2 words or are unknown (we dont mind yes, ok, etc repeated)

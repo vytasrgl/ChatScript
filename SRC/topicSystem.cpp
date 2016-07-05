@@ -656,7 +656,7 @@ char* GetPattern(char* ptr,char* label,char* pattern)
 	else ptr += 3; // why ever true?
 	char* patternStart = ptr;
 	// acquire the pattern data of this rule
-	if (*patternStart == '(') ptr = BalanceParen(patternStart+1); // go past pattern to new token
+	if (*patternStart == '(') ptr = BalanceParen(patternStart+1,true,false); // go past pattern to new token
 	int patternlen = ptr - patternStart;
 	if (pattern)
 	{
@@ -674,7 +674,7 @@ char* GetOutputCopy(char* ptr)
 	else ptr += 3; // why ever true?
 	char* patternStart = ptr;
 	// acquire the pattern data of this rule
-	if (*patternStart == '(') ptr = BalanceParen(patternStart+1); // go past pattern to new token
+	if (*patternStart == '(') ptr = BalanceParen(patternStart+1,true,false); // go past pattern to new token
 	char* end = strchr(ptr,ENDUNIT);
 	if (end)
 	{
@@ -1061,7 +1061,7 @@ FunctionResult DoOutput(char* buffer,char* rule, unsigned int id)
 	return result;
 }
 
-FunctionResult TestRule(int ruleID,char* rule,char* buffer)
+FunctionResult TestRule(int ruleID,char* rule,char* buffer,bool refine)
 {
 	SAVEOLDCONTEXT()
 	unsigned int oldIterator = currentIterator;
@@ -1110,13 +1110,13 @@ retry:
 	if (*ptr == '(') // pattern requirement
 	{
 		unsigned int wildcardSelector = 0;
-		unsigned int gap = 0;
 		wildcardIndex = 0;
 		bool uppercasem = false;
 		int positionStart, positionEnd;
 		whenmatched = 0;
+		int wildstart = 1;
 		++globalDepth; // indent pattern
- 		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
+ 		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",wildstart,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
 		--globalDepth;
 		if (clearUnmarks) // remove transient global disables.
 		{
@@ -1156,7 +1156,7 @@ retry:
 		{
 			result = DoOutput(buffer,currentRule,currentRuleID);
 		}
-		if (result & RETRYRULE_BIT || (result & RETRYTOPRULE_BIT && TopLevelRule(rule)) ) 
+		if (result & RETRYRULE_BIT || (result & RETRYTOPRULE_BIT && TopLevelRule(rule))) 
 		{
 			if (--limit == 0)
 			{
@@ -1188,6 +1188,12 @@ retry:
 
 				goto retry;
 			}
+		}
+		// we (a responder) called ^retry(TOPRULE) but were not ourselves called from refine. Make it a ^reuse()
+		else if (result & RETRYTOPRULE_BIT && !refine && !TopLevelRule(rule)) 
+		{
+			char* rule = GetRule(currentTopicID, TOPLEVELID(currentRuleID));
+			result = RegularReuse(currentTopicID, TOPLEVELID(currentRuleID), rule,buffer,"",false);
 		}
 	}
 exit:

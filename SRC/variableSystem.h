@@ -50,10 +50,13 @@ void ClearBotVariables();
 void ReestablishBotVariables();
 void NoteBotVariables();
 void InitVariableSystem();
+void SetWildCardGivenValue(char* original, char* canonical,int start, int end, int index);
 
 // debug data
 void ShowChangedVariables();
 void DumpUserVariables();
+void SetWildCardNull();
+void PrepareVariableChange(WORDP D,char* word,bool init);
 
 // user variable accessors
 void ClearUserVariableSetFlags();

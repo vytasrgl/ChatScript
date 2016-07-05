@@ -46,7 +46,7 @@
 #define VAR_CHANGED				0x00004000		// $variable has changed value this volley
 #define NOTRACE_TOPIC			VAR_CHANGED		// dont trace this topic (topic names)
 #define WORDNET_ID				0x00008000		// a wordnet synset header node (MASTER w gloss ) only used when building a dictionary -- or transient flag for unduplicate
-#define MACRO_TRACE				WORDNET_ID		// turn on tracing for this function (only used when live running)
+#define MACRO_TRACE				WORDNET_ID		// turn on tracing for this function or variable (only used when live running)
 #define INTERNAL_MARK			0x00010000		// transient marker for Intersect coding and Country testing in :trim
 #define FROM_FILE				INTERNAL_MARK	//  for scriptcompiler to tell stuff comes from FILE not DIRECTORY
 #define BEEN_HERE				0x00020000		// used in internal word searches that might recurse

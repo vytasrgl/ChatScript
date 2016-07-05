@@ -1,6 +1,6 @@
 #include "common.h"
 
-#define DEFAULT_USER_CACHE 800000
+#define DEFAULT_USER_CACHE 1200000
 #define NO_CACHEID -1
 
 static unsigned int cacheHead = 0;		// our marker for last allocated cache, used to find next free one
@@ -310,7 +310,7 @@ void Cache(char* buffer, size_t size) // save into cache
 {
 	if (!buffer) // ran out of room
 	{
-		ReportBug("User write failed, too big");
+		ReportBug("User write failed, too big for %s", loginID);
 		OverflowRelease();
 		return;
 	}

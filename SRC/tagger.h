@@ -67,7 +67,7 @@ extern  uint64 posValues[MAX_SENTENCE_LENGTH];			// current pos tags in this wor
 extern unsigned int lowercaseWords;
 extern unsigned int knownWords;
 extern char* roleSets[];
-extern uint64* data;
+extern uint64* dataBuf;
 extern char** commentsData;
 
 extern  char** comments;

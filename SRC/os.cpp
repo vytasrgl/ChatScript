@@ -4,7 +4,7 @@ bool showDepth = false;
 char serverLogfileName[200];				// file to log server to
 char logFilename[MAX_WORD_SIZE];			// file to user log to
 bool logUpdated = false;					// has logging happened
-char* logmainbuffer = 0;					// where we build a log line
+char logmainbuffer[MAX_BUFFER_SIZE];					// where we build a log line
 static bool pendingWarning = false;			// log entry we are building is a warning message
 static bool pendingError = false;			// log entry we are building is an error message
 struct tm* ptm;
@@ -108,11 +108,23 @@ void myexit(char* msg, int code)
 	FILE* in = FopenUTF8WriteAppend(name);
 	if (in) 
 	{
-		fprintf(in,(char*)"%s %d - called myexit\r\n",msg,code);
+		fprintf(in,(char*)"%s %d - called myexit at %s\r\n",msg,code,GetTimeInfo(true));
 		fclose(in);
 	}
 	if (code == 0) exit(0);
 	else exit(EXIT_FAILURE);
+}
+
+void mystart(char* msg)
+{	
+	char name[MAX_WORD_SIZE];
+	sprintf(name,(char*)"%s/startlog.txt",logs);
+	FILE* in = FopenUTF8WriteAppend(name);
+	if (in) 
+	{
+		fprintf(in,(char*)"System startup %s %s\r\n",msg,GetTimeInfo(true));
+		fclose(in);
+	}
 }
 
 /////////////////////////////////////////////////////////
@@ -140,7 +152,7 @@ void CloseBuffers()
 char* AllocateBuffer()
 {// CANNOT USE LOG INSIDE HERE, AS LOG ALLOCATES A BUFFER
 	char* buffer = buffers + (maxBufferSize * bufferIndex); 
-	if (showmem) Log(STDUSERLOG,(char*)"BUff alloc %d\r\n",bufferIndex);
+	if (showmem) Log(STDUSERLOG,(char*)"New BUff alloc %d\r\n",bufferIndex+1);
 	if (++bufferIndex >= maxBufferLimit ) // want more than nominally allowed
 	{
 		if (bufferIndex > (maxBufferLimit+2) || overflowIndex > 20) 
@@ -199,6 +211,7 @@ void InitUserFiles()
 	userFileSystem.userRead = fread;
 	userFileSystem.userWrite = fwrite;
 	userFileSystem.userSize = FileSize;
+	userFileSystem.userDelete = FileDelete;
 }
 
 int MakeDirectory(char* directory)
@@ -299,6 +312,10 @@ FILE* FopenReadNormal(char* name) // normal C read unrelated to special paths
 {
 	StartFile(name);
 	return fopen(name,(char*)"rb");
+}
+
+void FileDelete(const char* name)
+{
 }
 
 int FileSize(FILE* in, char* buffer, size_t allowedSize)
@@ -516,13 +533,13 @@ char* GetUserPath(char* login)
 /// TIME FUNCTIONS
 /////////////////////////////////////////////////////////
 
-char* GetTimeInfo() //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
+char* GetTimeInfo(bool nouser) //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
 {
     time_t curr = time(0); // local machine time
     if (regression) curr = 44444444; 
 	ptm = localtime (&curr);
 
-	char* utcoffset = GetUserVariable((char*)"$cs_utcoffset");
+	char* utcoffset = (nouser) ? (char*)"" : GetUserVariable((char*)"$cs_utcoffset");
 	if (*utcoffset) // report UTC relative time - so if time is 1PM and offset is -1:00, time reported to user is 12 PM.  
 	{
 		ptm = gmtime (&curr); 
@@ -827,15 +844,15 @@ void ChangeDepth(int value,char* where)
 	{
 		if (memDepth[globalDepth] != bufferIndex)
 		{
-			ReportBug((char*)"depth %d not closing bufferindex correctly at %s\r\n",globalDepth,where);
+			ReportBug((char*)"depth %d not closing bufferindex correctly at %s bufferindex now %d was %d\r\n",globalDepth,where,bufferIndex,memDepth[globalDepth]);
 			memDepth[globalDepth] = 0;
 		}
 		globalDepth += value;
-		if (showDepth) Log(STDUSERLOG,(char*)"-depth after %s %d\r\n", where, globalDepth);
+		if (showDepth) Log(STDUSERLOG,(char*)"-depth %d after %s bufferindex %d\r\n", globalDepth,where, bufferIndex);
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDUSERLOG,(char*)"+depth before %s %d\r\n", where, globalDepth);
+		if (showDepth) Log(STDUSERLOG,(char*)"+depth %d before %s bufferindex %d\r\n",globalDepth, where, bufferIndex);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 	}
@@ -859,7 +876,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		channel = STDUSERLOG;
 	}
 	if (!userLog && (channel == STDUSERLOG || channel > 1000 || channel == id) && !testOutput) return id;
-    if (!fmt || !logmainbuffer)  return id; // no format or no buffer to use
+    if (!fmt)  return id; // no format or no buffer to use
 	if ((channel == BUGLOG || channel == SERVERLOG) && server && !serverLog)  return id; // not logging server data
 
 	static char last = 0;
@@ -1033,7 +1050,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (bug) //   write to a bugs file
 		{
 			if (*currentFilename) fprintf(bug,(char*)"   in %s at %d: %s\r\n",currentFilename,currentFileLine,readBuffer);
-			if (channel == BUGLOG && *currentInput) fprintf(bug,(char*)"input:%d %s %s caller:%s callee:%s in sentence: %s at %s\r\n",volleyCount,GetTimeInfo(),logmainbuffer,loginID,computerID,currentInput,located);
+			if (channel == BUGLOG && *currentInput) fprintf(bug,(char*)"%s: input:%d %s %s caller:%s callee:%s in sentence: %s at %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logmainbuffer,loginID,computerID,currentInput,located);
 			fwrite(logmainbuffer,1,bufLen,bug);
 			fclose(bug);
 
@@ -1041,7 +1058,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if ((echo||localecho) && !silent && !server)
 		{
 			if (*currentFilename) fprintf(stdout,(char*)"\r\n   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(),currentInput);
+			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
 		strcat(logmainbuffer,(char*)"\r\n");	//   end it
 		channel = STDUSERLOG;	//   use normal logging as well
@@ -1094,7 +1111,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			fwrite(logmainbuffer,1,bufLen,out);
 			if (!bugLog);
  			else if (*currentFilename) fprintf(out,(char*)"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(),currentInput);
+			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
 		fclose(out);
 		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logmainbuffer);

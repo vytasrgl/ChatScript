@@ -888,7 +888,7 @@ char* ReadDisplayOutput(char* ptr,char* buffer) // locate next output fragment t
 		}
 		else if (*buffer == '^' && *next == '(') // function call
 		{
-			char* end = BalanceParen(ptr+1); // function call args
+			char* end = BalanceParen(ptr+1,true,false); // function call args
 			strncpy(out,ptr,end-ptr);
 			out += end-ptr;
 			*out = 0;
@@ -911,7 +911,7 @@ char* ReadDisplayOutput(char* ptr,char* buffer) // locate next output fragment t
 				// if value is a function call, get the whole call
 				if (*next == '^' && *ptr == '(')
 				{
-					char* end = BalanceParen(ptr+1); // function call args
+					char* end = BalanceParen(ptr+1,true,false); // function call args
 					strncpy(out,ptr,end-ptr);
 					out += end-ptr;
 					*out = 0;
@@ -2556,7 +2556,7 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 		ptr =  ReadNextSystemToken(in,ptr,word,false,false); //   swallow value
 		if (*word == '~') CheckSetOrTopic(word);
 		if (*word == '^' && !IsDigit(word[1])) 
-			BADSCRIPT((char*)"IF-9 not allowed function call in relation as 2nd arg - %s",word)
+			BADSCRIPT((char*)"IF-9 not allowed function call or active string in relation as 2nd arg - %s",word)
 		strcpy(data,word);
 		data += strlen(word);
 	}
@@ -4789,7 +4789,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	patternFile = FopenUTF8Write(filename);
 	if (!patternFile)
 	{
-		printf((char*)"%s",(char*)"Unable to create %s? Make sure this directory exists and is writable.\r\n",filename);
+		printf((char*)"Unable to create %s? Make sure this directory exists and is writable.\r\n",filename);
 		return 4;
 	}
 

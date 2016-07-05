@@ -431,7 +431,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
     char* endptr = 0;
 
 	//   gather choices
-	while (*ptr == '[') // get next choice for block   may not nest choice blocks...
+	while (*ptr && *ptr == '[') // get next choice for block   may not nest choice blocks...
 	{
 		//   find closing ]
 		endptr = ptr-1;
@@ -498,7 +498,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 			break; // if choice didnt fail, it has completed, even if it generates no output
 		}
 	}
-	return endptr+2; //   skip to end of rand past the ] and space
+	return (endptr[1]) ? (endptr+2) : (endptr+1); //   skip to end of rand past the ] and space
 }
 
 char* FreshOutput(char* ptr,char* buffer,FunctionResult &result,int controls,unsigned int limit)
@@ -1135,7 +1135,7 @@ retry:
 		if (result & (RETRYRULE_BIT|RETRYTOPRULE_BIT|ENDCODES))
 		{
 			if (result & FAILCODES && !(controls & OUTPUT_LOOP)) *start = 0; //  kill output
-			if (!once && ptr) ptr = BalanceParen(ptr,true); // swallow excess input BUG - does anyone actually care
+			if (!once && ptr) ptr = BalanceParen(ptr,true,false); // swallow excess input BUG - does anyone actually care
 			break;
 		}
 		if (once) break;    

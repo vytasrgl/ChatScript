@@ -10,8 +10,6 @@ Bob paid for Charlie’s college education, but now Charlie acts as though it neve
 Sam pulled up a chair to the piano, but it was broken, so he had to stand instead. What was broken? 
 	Sam pulled up a chair to the piano, but it was broken, so 	he had to sing instead. What was broken? 
 
-:quit
-
 John hired Bill to take care of him. Who is taking care of whom? 
 	John hired himself out to Bill to take care of him. Who is taking care of whom? 
 

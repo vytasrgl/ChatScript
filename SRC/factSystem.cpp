@@ -840,6 +840,11 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 		return NULL;
 	}
 	currentFact = factFree;
+	int index = Fact2Index(currentFact); // for debugging
+	if (index == 416)
+	{
+		int xx = 0;
+	}
 
 	//   init the basics
 	memset(currentFact,0,sizeof(FACT));
@@ -984,6 +989,7 @@ char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead,bool eol)
 	char* start = buffer;
 	*buffer = 0;
 	if (!F || !F->subject) return start; // never write special facts out
+	int index = Fact2Index(F); // for debugging
 	if (F->flags & FACTDEAD) // except for user display THIS shouldnt happen to real fact writes
 	{
 		if (ignoreDead)

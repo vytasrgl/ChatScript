@@ -50,6 +50,7 @@ enum TestMode {
 	BEGINANEW = 3,
 	OUTPUTASGIVEN = 4,
 	RESTART = 5,
+	TRACECMD = 6,
 };
 
 //   argument data for system calls
@@ -91,7 +92,6 @@ extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
 
 extern bool planning;
-extern bool blocknotrace;
 extern bool nobacktrack;
 FunctionResult MemoryMarkCode(char* buffer);
 FunctionResult MemoryFreeCode(char* buffer);
@@ -102,6 +102,7 @@ void DumpFunctions();
 unsigned int Callback(WORDP D,char* arguments,bool boot);
 void ResetFunctionSystem();
 void SaveMark(char* buffer,unsigned int iterator);
+FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg3,bool crosstopic);
 
 FunctionResult KeywordTopicsCode(char* buffer);
 void SetBaseMemory();

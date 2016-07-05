@@ -63,6 +63,8 @@ void DumpTokenControls(uint64 val)
 	if (val & NO_LOWERCASE_PROPER_MERGE) Log(STDUSERLOG,(char*)"NO_LOWERCASE_PROPER_MERGE ");
 	if (val & DO_SPELLCHECK) Log(STDUSERLOG,(char*)"DO_SPELLCHECK ");
 	if (val & DO_INTERJECTION_SPLITTING) Log(STDUSERLOG,(char*)"DO_INTERJECTION_SPLITTING ");
+	if (val & DO_SPLIT_UNDERSCORE) Log(STDUSERLOG,(char*)"DO_SPLIT_UNDERSCORE ");
+	if (val & MARK_LOWER) Log(STDUSERLOG,(char*)"MARK_LOWER ");
 
 	if ((val & DO_PARSE) == DO_PARSE) Log(STDUSERLOG,(char*)"DO_PARSE ");
 	else if (val & DO_POSTAG) Log(STDUSERLOG,(char*)"DO_POSTAG ");
@@ -77,6 +79,7 @@ void DumpTokenControls(uint64 val)
 	if (val & ONLY_LOWERCASE) Log(STDUSERLOG,(char*)"ONLY_LOWERCASE ");
 	if (val & TOKEN_AS_IS) Log(STDUSERLOG,(char*)"TOKEN_AS_IS ");
 	if (val & SPLIT_QUOTE) Log(STDUSERLOG,(char*)"SPLIT_QUOTE ");
+	if (val & LEAVE_QUOTE) Log(STDUSERLOG,(char*)"LEAVE_QUOTE ");
 	if (val & UNTOUCHED_INPUT) Log(STDUSERLOG,(char*)"UNTOUCHED_INPUT ");
 }
 
@@ -354,6 +357,8 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 	char c = *ptr; // kind of quoter
 	char* end = strchr(ptr+1,c); // find matching end?
 	if (!end) return NULL; 
+	if (tokenControl & LEAVE_QUOTE) return end+1;
+
 	char pastEnd = IsPunctuation(end[1]); // what comes AFTER quote
 	if (!(pastEnd & (SPACES|PUNCTUATIONS|ENDERS))) return NULL;	// doesnt end cleanly
 
@@ -401,16 +406,55 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 	return  end + 1;
 }
 
-static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool nomodify, bool oobStart)
+static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool nomodify, bool oobStart, bool oobJson)
 {
  	char c = *ptr; 
 	unsigned char kind = IsPunctuation(c);
 	char* end  = NULL;
 	static bool quotepending = false;
+	
+	// OOB which has { or [ inside starter, must swallow all as one string lest reading JSON blow token limit on sentence. And we can do jsonparse.
+	if (oobStart && oobJson) // support JSON parsing
+	{
+		if (count == 0 && *ptr == '[') return ptr + 1;	// start of oob
+		int level = 0;
+		--ptr;
+		bool quote = false;
+		while (*++ptr)
+		{
+			if (*ptr == '"' && *(ptr-1) != '\\') quote = !quote;
+			if (quote) {} // ignore content for level counting
+			else if (*ptr == '{' || *ptr == '[')
+			{
+				if (*(ptr-1) != '\\') ++level;
+			}
+			else if (*ptr == ']' || *ptr == ']')
+			{
+				if (*(ptr-1) != '\\') --level;
+				if (level == 0) break;
+			}
+		}
+		return ptr;
+	}
+	// OOB only separates ( [ { ) ] }   - the rest remain joined as given
+	if (oobStart) 
+	{
+		if (*ptr == '(' || *ptr == ')' || *ptr == '[' || *ptr == ']' || *ptr == '{' || *ptr == '}'  || *ptr == ',' ) return ptr + 1;
+		bool quote = false;
+		while (*++ptr)
+		{
+			if (*ptr == '"' && *(ptr-1) != '\\') quote = !quote;
+			if (quote) continue;
+			if (*ptr != ' ' &&  *ptr != '(' && *ptr != ')' && *ptr != '[' && *ptr != ']'  && *ptr != '{' && *ptr != '}') continue;
+			break;
+		}
+		return ptr;
+	}
+
 	if (kind & QUOTERS) // quoted strings 
 	{
 		if (c == '\'' && ptr[1] == 's' && !IsAlphaUTF8(ptr[2])) return ptr+2;	// 's directly
-		if (c == '"' ) 
+		if (c == '"') 
 		{
 			if (tokenControl & SPLIT_QUOTE) return ptr + 1; // split up quote marks
 			else // see if merely highlighting a word
@@ -427,7 +471,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				}
 			}
 		}
-		if (c == '\'' && tokenControl & SPLIT_QUOTE ) // 'enemies of the state'
+		if (c == '\'' && tokenControl & SPLIT_QUOTE) // 'enemies of the state'
 		{
 			if (quotepending) quotepending = false;
 			else if (strchr(ptr+1,'\'')) quotepending = true;
@@ -441,14 +485,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			char* end = HandleQuoter(ptr,words,count);
 			if (end)  return end;
 		}
-	}
-
-	// OOB only separates ( [ { ) ] }   - the rest remain joined as given
-	if (oobStart) // support JSON parsing
-	{
-		if (*ptr == '(' || *ptr == ')' || *ptr == '[' || *ptr == ']' || *ptr == '{' || *ptr == '}'  || *ptr == ',' ) return ptr + 1;
-		while (*++ptr && *ptr != ' ' &&  *ptr != '(' && *ptr != ')' && *ptr != '[' && *ptr != ']'  && *ptr != '{' && *ptr != '}');
-		return ptr;
 	}
 
 	// single letter abbreviaion period like H.
@@ -497,11 +533,16 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	int index = 0;
 	int letters = 0;
 	char* at = ptr-1;
-	while (*++at && *at != ' ')
+	if (!IsAlphaUTF8OrDigit(at[1]))  while (*++at && *at != ' ') // dont check on T?
 	{
 		emote[index++] = *at;
 		if (IsAlphaUTF8(*at) || IsDigit(*at)) ++letters;
 		if (letters > 1) break; // to many to be emoticon
+		if (*at == '?' || *at == '!' || *at == '.')
+		{
+			letters = 5;
+			break;	// punctuation we dont want to lose
+		}
 	}
 	if (letters < 2 && (at-ptr) >= 2 && emote[0] != '.' && emote[0] != ',' && emote[0] != '?' && emote[0] != '!' ) // presumed emoticon
 	{
@@ -615,11 +656,13 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	if (!stricmp(place,"st") || !stricmp(place,"nd") || !stricmp(place,"rd")) return end;
 	int len = end - ptr;
 	char next2;
+	if (*ptr == '/') return ptr+1; // split of things separated
 	while (++ptr && !IsWordTerminator(*ptr)) // now scan to find end of token one by one, stopping where appropriate
     {
 		c = *ptr;
 		kind = IsPunctuation(c);
 		next = ptr[1];
+		if (c == ',' && (!IsDigit(ptr[1]) || !IsDigit(*(ptr-1)))) break; // comma in number may remain
 		if (c == '\'' && next == '\'') break;	// '' marker or ''' or ''''
 		else if (c == '=' && next == '=') break; // swallow headers == ==== ===== etc
 		next2 = (next) ? *SkipWhitespace(ptr+2) : 0; // start of next token
@@ -673,8 +716,8 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				else if (next == '-' ) 
 					break; // the anyways-- break 
 			}
-			// number before things? 8months but not 24%  And dont split 1.23
-			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(c) && c != '%' && c != '.')
+			// number before things? 8months but not 24%  And dont split 1.23 or time words 10:30 and 30:20:20
+			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(c) && c != '%' && c != '.' && c != ':')
 			{
 				if (c == 's' && ptr[1] == 't'){;} // 1st
 				else if (c == 'n' && ptr[1] == 'd'){;} // 2nd
@@ -699,7 +742,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			if (tokenControl & TOKEN_AS_IS && next == ' ' && ptr[1] && !IsWhiteSpace(ptr[2])) return ptr + 1; // our token ends and there is more text to come
 			if (!(tokenControl & TOKEN_AS_IS)) break; // funny things at end of word
 		}
-		if (c == '/' && IsNumericDate(start,end)) return end; //  return entire token as date   12/20/1993  
+		if (c == '/') return ptr; //  separate out / items like john/bob or 12/21/45  or 1/2
 
 		// special interpretations of period
 		if (c == '.') 
@@ -759,7 +802,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		*html = '"';
 		memmove(html+1,html+6,strlen(html+5));
 	}
-
+	bool oobJson = false;
 	unsigned int quoteCount = 0;
 	char priorToken[MAX_WORD_SIZE];
 	*priorToken = 0;
@@ -780,14 +823,30 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		if (!(tokenControl & TOKEN_AS_IS)) while (*ptr == ptr[1] && !IsAlphaUTF8OrDigit(*ptr)  && *ptr != '-' && *ptr != '.' && *ptr != '[' && *ptr != ']' && *ptr != '(' && 
 			*ptr != ')' && *ptr != '{' && *ptr != '}') 
 			++ptr; // ignore repeated non-alpha non-digit characters -   - but NOT -- and not ...
-		if (count == 0 && *ptr != '[' ) oobStart = false;
+		if (count == 0)
+		{
+			if (*ptr != '[' ) oobStart = false;
+			else // is this oob json?
+			{
+				char* at = SkipWhitespace(ptr+1);
+				if (*at == '[' || *at == '{') oobJson = true;
+			}
+		}
+		else if (oobStart && *ptr == ']') oobStart = false; // end of oob
 		if (*ptr == '"' && !strchr(ptr+1,'"') && !(tokenControl & TOKEN_AS_IS) && ptr[1])  ++ptr; // ignore single starting quote?  "hi   -- but if it next sentence line was part like POS tagging, would be a problem  and beware of 5' 11"
 
 		// find end of word 
 		int oldCount = count;
 		if (!*ptr) break; 
-		char* end = FindWordEnd(ptr,priorToken,words,count,nomodify,oobStart);
-		if ((end-ptr) > (MAX_WORD_SIZE-3)) end = ptr + MAX_WORD_SIZE - 3; // abort, too much jammed together. no token to reach MAX_WORD_SIZE
+		char* end = FindWordEnd(ptr,priorToken,words,count,nomodify,oobStart,oobJson);
+		if ((end-ptr) > (MAX_WORD_SIZE-3)) 
+		{
+			char word[MAX_WORD_SIZE];
+			strncpy(word,ptr,MAX_WORD_SIZE - 5);
+			word[MAX_WORD_SIZE-5] = 0;
+			ReportBug("Token too big: %s size %d limited to %d\r\n",word, (end-ptr), MAX_WORD_SIZE-3);
+			end = ptr + MAX_WORD_SIZE - 3; // abort, too much jammed together. no token to reach MAX_WORD_SIZE
+		}
 		if (count != oldCount || *ptr == ' ')	// FindWordEnd performed allocation already or removed stage direction start
 		{
 			if (count > 0) strcpy(priorToken,words[count]);
@@ -898,18 +957,18 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 			else if (startc == ':' && !paren)
 			{
 				if (!strstr(ptr,(char*)" and ") || strchr(ptr,',')) {;}	// guess : is a list - could be wrong guess
-				else if (!(tokenControl & NO_COLON_END))			// we dont want colon to end it anyway
+				else if (!(tokenControl & NO_COLON_END)) 			// we dont want colon to end it anyway
 				{
-					tokenFlags |= NO_COLON_END;
+					tokenFlags |= NO_COLON_END; 
 					break;
 				}
 			}
 			else if (startc == ';'  && !paren)
 			{
-				if (!(tokenControl & NO_SEMICOLON_END))  // we dont want semicolon to end it anyway
+				if (!(tokenControl & NO_SEMICOLON_END))
 				{
-					tokenFlags |= NO_SEMICOLON_END;
-					break;
+					tokenFlags |= NO_SEMICOLON_END;// we dont want semicolon to end it anyway
+					 break;
 				}
 			}
 			else if (*ptr == '"' || *ptr == '\'') continue;
@@ -1325,7 +1384,7 @@ void ProperNameMerge()
 				if (nextWord && nextWord->properties & NOUN_TITLE_OF_ADDRESS) nextWord = NULL;	//  a title of address cannot be here
 				if (nextWord && nextWord->systemFlags & NO_PROPER_MERGE) nextWord = NULL;
 	
-                if (nextWord || IsUpperCase(*wordStarts[i+1])) //   it's either capitalized or we know it is capitalizable
+                if (IsUpperCase(*wordStarts[i+1])) //   it's  capitalized --but not just capitalizabile else "Alex lent" would match
                 {
 					upperStart = true;	//   must be valid
 					if (IsLowerCase(*wordStarts[i])) //   make current word upper case, do not overwrite its shared ptr
@@ -1482,6 +1541,32 @@ static void MergeNumbers(int& start,int& end) //   four score and twenty = four-
     end = start = (unsigned int)UNINIT;
 }
 
+void ProcessSplitUnderscores()
+{
+	char* tokens[10];
+	for (int i = FindOOBEnd(1); i <= wordCount; ++i) 
+    {
+		char* original = wordStarts[i];
+		char* at = original;
+		char* under = strchr(original,'_');
+		if (!under) continue;
+
+		int index = 1;
+		while (under)
+		{
+			*under = 0;
+			tokens[index++] = StoreWord(at)->word;
+			*under = '_';
+			at = ++under;
+			under = strchr(at,'_');
+			if (index > 9) return;	// give up, bad data
+		}
+		tokens[index] = StoreWord(at)->word;
+		ReplaceWords(i,1,index,tokens);
+		i += index - 1; // skip over what we did
+	}
+}
+
 void ProcessCompositeNumber() 
 {
     //  convert a series of numbers into one hypenated one and remove commas from a comma-digited string.
@@ -1603,7 +1688,7 @@ void ReplaceWords(int i, int oldlength,int newlength,char** tokens)
 	unsigned int end = derivationIndex[i+oldlength-1] & 0x0ff;
 	unsigned int derivation = (start << 8) | end;
 	int endAt = (i + newlength);
-	for (int at = i; at <= endAt; ++at) derivationIndex[at] = derivation;
+	for (int at = i; at <= endAt; ++at) derivationIndex[at] = (unsigned short)derivation;
 
 	// now restore the trailing data.
 	memcpy(wordStarts+i+newlength,backupTokens,sizeof(char*) * afterCount);
@@ -1690,6 +1775,10 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 		char* tokens[15];
 		tokens[1] = wordStarts[i+erasing+1]; // the word after the erase zone
 		int extra = (tokens[1] && *tokens[1]) ? 1 : 0;
+
+		int newWordCount =  wordCount - (erasing+1);
+		if (newWordCount == 0) return false;	// dont erase sentence completely
+
 		if (i != wordCount)	ReplaceWords(i,erasing+1 + extra,extra,tokens); // remove the removals + the one after if there is one. replace with just the one
 		else 	ReplaceWords(i,erasing+1,erasing,tokens); // remove 1, add 0
 		return true;

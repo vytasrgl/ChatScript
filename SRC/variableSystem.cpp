@@ -133,6 +133,50 @@ void SetWildCardGiven(int start, int end, bool inpattern, int index)
 	}
 }
 
+void SetWildCardNull()
+{
+	SetWildCardGivenValue((char*)"", (char*)"",0,0, wildcardIndex);
+	CompleteWildcard();
+}
+
+void SetWildCardGivenValue(char* original, char* canonical,int start, int end, int index)
+{
+	if (end < start) end = start;				// matched within a token
+	if (end > wordCount && start != end) end = wordCount; // for start==end we allow being off end, eg _>
+    wildcardPosition[index] = start | (end << 16);
+    *wildcardOriginalText[index] = 0;
+    *wildcardCanonicalText[index] = 0;
+    if (start == 0 || wordCount == 0 || (end == 0 && start != 1) ) // null match, like _{ .. }
+	{
+	}
+	else // did match
+	{
+		// concatenate the match value
+		bool started = false;
+		for (int i = start; i <= end; ++i)
+		{
+			char* word = wordStarts[i];
+			// if (*word == ',') continue; // DONT IGNORE COMMAS, needthem
+			if (started) 
+			{
+				strcat(wildcardOriginalText[index],wildcardSeparator);
+				strcat(wildcardCanonicalText[index],wildcardSeparator);
+			}
+			else started = true;
+			strcat(wildcardOriginalText[index],word);
+			if (wordCanonical[i]) strcat(wildcardCanonicalText[index],wordCanonical[i]);
+			else 
+				strcat(wildcardCanonicalText[index],word);
+		}
+ 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"_%d=%s/%s ",index,wildcardOriginalText[index],wildcardCanonicalText[index]);
+		WORDP D = FindWord(wildcardCanonicalText[index]);
+		if (D && D->properties & D->internalBits & UPPERCASE_HASH)  // but may not be found if original has plural or such or if uses _
+		{
+			strcpy(wildcardCanonicalText[index],D->word);
+		}
+	}
+}
+
 void SetWildCardIndexStart(int index)
 {
 	 wildcardIndex = index;
@@ -199,6 +243,26 @@ void ShowChangedVariables()
 	}
 }
 
+void PrepareVariableChange(WORDP D,char* word,bool init)
+{
+	if (!(D->internalBits & VAR_CHANGED))	// not changed already this volley
+    {
+		unsigned int i;
+		for (i = 0; i < userVariableIndex; ++i)
+		{
+			if (userVariableList[i] == D) break;
+		}
+        if (i >= userVariableIndex) userVariableList[userVariableIndex++] = D;
+        if (userVariableIndex == MAX_USER_VARS) // if too many variables, discard one (wont get written)  earliest ones historically get saved (like $cs_token etc)
+        {
+            --userVariableIndex;
+            ReportBug((char*)"too many user vars at %s value: %s\r\n",D->word,word);
+        }
+		if (init) D->w.userValue = NULL; 
+		D->internalBits |= VAR_CHANGED; // bypasses even locked preexisting variables
+	}
+}
+
 void SetUserVariable(const char* var, char* word, bool reuse)
 {
 	char varname[MAX_WORD_SIZE];
@@ -223,22 +287,8 @@ void SetUserVariable(const char* var, char* word, bool reuse)
 		}
 	}
 
-    if (!(D->internalBits & VAR_CHANGED))	// not changed already this volley
-    {
-		unsigned int i;
-		for (i = 0; i < userVariableIndex; ++i)
-		{
-			if (userVariableList[i] == D) break;
-		}
-        if (i >= userVariableIndex) userVariableList[userVariableIndex++] = D;
-        if (userVariableIndex == MAX_USER_VARS) // if too many variables, discard one (wont get written)  earliest ones historically get saved (like $cs_token etc)
-        {
-            --userVariableIndex;
-            ReportBug((char*)"too many user vars at %s value: %s\r\n",var,word);
-        }
-		D->w.userValue = NULL; 
-		D->internalBits |= VAR_CHANGED; // bypasses even locked preexisting variables
-	}
+	PrepareVariableChange(D,word,true);
+	
 	if (planning && !documentMode) // handle undoable assignment (cannot use text sharing as done in document mode)
 	{
 		if (D->w.userValue == NULL) SpecialFact(MakeMeaning(D),(MEANING)1,0);
@@ -268,6 +318,12 @@ void SetUserVariable(const char* var, char* word, bool reuse)
 		*wildcardSeparator = (*word == '"') ? word[1] : *word; // 1st char in string if need be
 	}	
 	if (trace == TRACE_VARIABLESET) Log(STDUSERLOG,(char*)"Var: %s -> %s\r\n",D->word,word);
+	else if (D->internalBits & MACRO_TRACE) 
+	{
+		char ruleLabel[MAX_WORD_SIZE];
+		GetLabel(currentRule,ruleLabel);
+		Log(STDUSERLOG," Var: %s -> %s at topic %s.%d.%d %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),ruleLabel);
+	}
 }
 
 void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
