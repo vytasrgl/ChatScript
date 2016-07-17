@@ -71,7 +71,7 @@ void MarkWordHit(WORDP D, int start,int end)
 	// track the actual sets done matching start word location (good for verbs, not so good for nouns)
 	if (*D->word == '~')
 	{
-		if (!(D->internalBits & TOPIC)) Add2ConceptTopicList(concepts, D,start,false);
+		if (!(D->internalBits & TOPIC)) Add2ConceptTopicList(concepts, D,start,false); // DOESNT need to be be marked as concept
 		else Add2ConceptTopicList(topics, D,start,false);
 	}
 	// diff < 0 means peering INSIDE a multiword token before last word
@@ -166,12 +166,13 @@ unsigned int GetNextSpot(WORDP D,int start,int &startPosition,int& endPosition, 
 		if (unmarked[at]){;}
 		else if (reverse)
 		{
-			if (at < start) 
+			if (at < start) // valid. but starts far from where we are
 			{
 				startPosition = at;
 				endPosition = end;
+				continue; // find the CLOSEST without going over
 			}
-			else return startPosition;
+			else if (at >= start) break;
 		}
 		else if (at > start)
 		{
@@ -181,6 +182,7 @@ unsigned int GetNextSpot(WORDP D,int start,int &startPosition,int& endPosition, 
 			return startPosition;
 		}
 	}
+	if (reverse) return startPosition; // we have a closest or we dont
     return 0;
 }
 

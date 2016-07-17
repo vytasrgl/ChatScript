@@ -1,13 +1,16 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.6";
+char* version = "6.61";
+
+// std::atomic<bool> pendingRestart = false;
+volatile bool pendingRestart = false;
 
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
 char revertBuffer[MAX_BUFFER_SIZE];			// copy of user input so can :revert if desired
 int argc;
 char ** argv;
-char* postProcessing = 0;						// copy of output generated during MAIN control. Postprocessing can prepend to it
+char postProcessing = 0;						// copy of output generated during MAIN control. Postprocessing can prepend to it
 unsigned int tokenCount;						// for document performc
 bool callback = false;						// when input is callback,alarm,loopback, dont want to enable :retry for that...
 int timerLimit = 0;						// limit time per volley
@@ -211,7 +214,6 @@ void CreateSystem()
 	InitVariableSystem();
 	ReloadSystem();			// builds base facts and dictionary (from wordnet)
 	LoadTopicSystem();		// dictionary reverts to wordnet zone
-	InitSpellCheck();
 	*currentFilename = 0;
 	computerID[0] = 0;
 	loginName[0] = loginID[0] = 0;
@@ -259,6 +261,7 @@ void CreateSystem()
 		NoteBotVariables(); // convert user variables read into bot variables
 		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
 	}
+	InitSpellCheck(); // after boot vocabulary added
 
 	unsigned int factUsedMemKB = ( factFree-factBase) * sizeof(FACT) / 1000;
 	unsigned int factFreeMemKB = ( factEnd-factFree) * sizeof(FACT) / 1000;
@@ -890,7 +893,6 @@ void ProcessInputFile()
 
 			if (showWhy) printf((char*)"%s",(char*)"\r\n"); // line to separate each chunk
 
-			if (loopBackDelay) loopBackTime = ElapsedMilliseconds() + loopBackDelay; // resets every output
 
 			//output user prompt
 			if (documentMode || silent) {;} // no prompt in document mode
@@ -899,6 +901,8 @@ void ProcessInputFile()
 			
 			*ourMainInputBuffer = ' '; // leave space at start to confirm NOT a null init message, even if user does only a cr
 			ourMainInputBuffer[1] = 0;
+			if (pendingRestart) Restart();
+			if (loopBackDelay) loopBackTime = ElapsedMilliseconds() + loopBackDelay; // resets every output
 inputRetry:
 			if (ProcessInputDelays(ourMainInputBuffer+1,KeyReady())) goto inputRetry; // use our fake callback input? loop waiting if no user input found
 	
@@ -924,7 +928,6 @@ inputRetry:
 				if (echoSource == SOURCE_ECHO_USER) printf((char*)"< %s\r\n",ourMainInputBuffer);
 			}
 		}
-		
 		if (!server && extraTopicData) PerformChatGivenTopic(loginID,computerID,ourMainInputBuffer,NULL,ourMainOutputBuffer,extraTopicData); 
 		else PerformChat(loginID,computerID,ourMainInputBuffer,NULL,ourMainOutputBuffer); // no ip
     }
@@ -1051,11 +1054,124 @@ void ComputeWhy(char* buffer,int n)
 		buffer += strlen(buffer);
 	}
 }
+
+void PrepareResult() // takes the initial given result
+{
+	unsigned int size = 0;
+	char* copy = AllocateBuffer();
+	uint64 control = tokenControl;
+	tokenControl |= LEAVE_QUOTE;
+	for (int i = 0; i < responseIndex; ++i) 
+    {
+		unsigned int order = responseOrder[i];
+        if (!*responseData[order].response) continue;
+		size_t len = strlen((const char*) responseData[order].response);
+		if ((len + size) >= OUTPUT_BUFFER_SIZE) continue;
+		char* ptr = responseData[order].response;
+		
+		// each sentence becomes a transient fact
+		while (ptr && *ptr) // find sentences of response
+		{
+			char* old = ptr;
+			int count;
+			char* starts[MAX_SENTENCE_LENGTH];
+			memset(starts,0,sizeof(char*)*MAX_SENTENCE_LENGTH);
+			ptr = Tokenize(ptr,count,(char**) starts,false,true);   //   only used to locate end of sentence but can also affect tokenFlags (no longer care)
+			char c = *ptr; // is there another sentence after this?
+			char c1 = 0;
+			if (c)  
+			{
+				c1 = *(ptr-1);
+				*(ptr-1) = 0; // kill the separator 
+			}
+
+			//   save sentences as facts
+			char* out = copy;
+			char* at = old-1;
+			while (*++at) // copy message and alter some stuff like space or cr lf
+			{
+				if (*at == '\r' || *at == '\n') {;}
+				else *out++ = *at;  
+			}
+			*out = 0;
+			if ((out-copy) > 2) // we did copy something, make a fact of it
+			{
+				char name[MAX_WORD_SIZE];
+				sprintf(name,(char*)"%s.%s",GetTopicName(responseData[order].topic),responseData[order].id);
+				CreateFact(MakeMeaning(StoreWord(copy,AS_IS)),Mchatoutput,MakeMeaning(StoreWord(name)),FACTTRANSIENT);
+			}
+			if (c) *(ptr-1) = c1;
+		}	
+	}
+	tokenControl = control;
+}
+
+char* ConcatResult()
+{
+    static char  result[OUTPUT_BUFFER_SIZE];
+  	unsigned int oldtrace = trace;
+	trace = 0;
+	result[0] = 0;
+	if (timerLimit && timerCheckInstance == TIMEOUT_INSTANCE)
+	{
+		responseIndex = 0;
+		currentRule = 0;
+		AddResponse((char*)"Time limit exceeded.", 0);
+	}
+	for (int i = 0; i < responseIndex; ++i) 
+    {
+		unsigned int order = responseOrder[i];
+        if (responseData[order].response[0]) 
+		{
+			char* reply = responseData[order].response;
+			size_t len = strlen(reply);
+			if (len >= OUTPUT_BUFFER_SIZE)
+			{
+				ReportBug((char*)"overly long reply %s",reply)
+				reply[OUTPUT_BUFFER_SIZE-50] = 0;
+			}
+			AddBotUsed(reply,len);
+		}
+    }
+
+	//   now join up all the responses as one output into result
+	unsigned int size = 0;
+	uint64 control = tokenControl;
+	tokenControl |= LEAVE_QUOTE;
+	for (int i = 0; i < responseIndex; ++i) 
+    {
+		unsigned int order = responseOrder[i];
+        if (!*responseData[order].response) continue;
+		size_t len = strlen((const char*) responseData[order].response);
+		if ((len + size) >= OUTPUT_BUFFER_SIZE) break;
+		
+		char piece[OUTPUT_BUFFER_SIZE];
+		strcpy(piece,responseData[order].response);
+		if (*result) 
+		{
+			result[size++] = ENDUNIT; // add separating item from last unit for log detection
+			result[size] = 0;
+		}
+		strcpy(result+size,piece);
+		size += len;
+	}
+	trace = oldtrace;
+	tokenControl = control;
+    return result;
+}
+
 void FinishVolley(char* incoming,char* output,char* postvalue)
 {
 	// massage output going to user
 	if (!documentMode)
 	{
+		PrepareResult();
+		postProcessing = 1;
+		++outputNest; // this is not generating new output
+		OnceCode((char*)"$cs_control_post",postvalue);
+		--outputNest;
+		postProcessing = 0;
+
 		char* at = output;
 		if (autonumber)
 		{
@@ -1063,12 +1179,7 @@ void FinishVolley(char* incoming,char* output,char* postvalue)
 			at += strlen(at);
 		}
 		strcpy(at,ConcatResult());
-		postProcessing = at;
-		++outputNest; // this is not generating new output
-		OnceCode((char*)"$cs_control_post",postvalue);
-		--outputNest;
-		postProcessing = 0;
-	
+		
 		time_t curr = time(0);
 		if (regression) curr = 44444444; 
 		char* when = GetMyTime(curr);
@@ -1193,6 +1304,8 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 		fakeContinue = true;
 	}
     Login(caller,callee,ip); //   get the participants names
+	if (!*computerID && *incoming != ':') ReportBug("No computer id before user load?")
+
 	if (systemReset) // drop old user
 	{
 		if (systemReset == 2) 
@@ -1221,8 +1334,23 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	if (fakeContinue) return volleyCount;
 	if (!*computerID && *incoming != ':')  // a  command will be allowed to execute independent of bot- ":build" works to create a bot
 	{
-		strcpy(output,(char*)"No such bot\r\n");
-		ReportBug((char*) "No such bot  %s - %s - %s ", user, usee, incoming);
+		strcpy(output,(char*)"No such bot.\r\n");
+		char* fact = "no default fact";
+		WORDP D = FindWord((char*)"defaultbot");
+		if (!D) fact = "defaultbot word not found";
+		else
+		{
+			FACT* F = GetObjectHead(D);
+			if (!F)  fact = "defaultbot fact not found";
+			else if (F->flags & FACTDEAD) fact = "dead default fact";
+			else fact = Meaning2Word(F->subject)->word;
+		}
+
+		ReportBug((char*) "No such bot  %s - %s - %s status: %s", user, usee, incoming,fact);
+		if (server) strcpy(ourMainOutputBuffer,"$#$No such bot.");
+		ReadComputerID(); // presume default bot log file
+		CopyUserTopicFile("nosuchbot");
+		pendingRestart = true;
 		return 0;	// no such bot
 	}
 
@@ -1250,6 +1378,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 		incoming[1] = 0;
 	}
 
+	// change out special or illegal characters
 	static char copy[INPUT_BUFFER_SIZE];
 	char* p = incoming;
 	while ((p = strchr(p,ENDUNIT))) *p = '\''; // remove special character used by system in various ways. Dont allow it.
@@ -1257,6 +1386,16 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	while ((p = strchr(p,'\n'))) *p = ' '; // remove special character used by system in various ways. Dont allow it.
 	p = incoming;
 	while ((p = strchr(p,'\r'))) *p = ' '; // remove special character used by system in various ways. Dont allow it.
+	p = incoming;
+	while ((p = strchr(p,(char)-30))) // handle curved quote
+	{
+		if (p[1] == (char)-128 && p[2] == (char)-103)
+		{
+			*p = '\'';
+			memmove(p+1,p+3,strlen(p+2));
+		}
+		++p;
+	}
 	strcpy(copy,incoming); // so input trace not contaminated by input revisions -- mainInputBuffer is "incoming"
 
 	ok = ProcessInput(copy);
@@ -1311,7 +1450,7 @@ FunctionResult Reply()
 	return result;
 }
 
-static void Restart()
+void Restart()
 {
 	char us[MAX_WORD_SIZE];
 	strcpy(us,loginID);
@@ -1320,6 +1459,7 @@ static void Restart()
 	PartiallyCloseSystem();
 	CreateSystem();
 	InitStandalone();
+	pendingRestart = false;
 	if (!server)
 	{
 		echo = false;
@@ -1329,7 +1469,7 @@ static void Restart()
 	}
 	else 
 	{
-		strcpy(ourMainOutputBuffer,"Restarted server"); // same as mainOutputbuffer but not relocated code
+		strcpy(ourMainOutputBuffer,"$#$Restarted server"); // same as mainOutputbuffer but not relocated code
 		Log(STDUSERLOG,(char*)"System restarted %s\r\n",GetTimeInfo(true)); // shows user requesting restart.
 	}
 }
@@ -1410,7 +1550,8 @@ unsigned int ProcessInput(char* input)
 		else if (commanded == OUTPUTASGIVEN) return true; 
 		else if (commanded == TRACECMD) 
 		{
-			WriteUserData(time(0)); 
+			WriteUserData(time(0)); // writes out data in case of tracing variables
+			ResetToPreUser(); // back to empty state before any user
 			return false; 
 		}
 		// otherwise FAILCOMMAND
@@ -1457,7 +1598,7 @@ loopback:
 		FunctionResult result = DoSentence(prepassTopic); // sets nextInput to next piece
 		if (result == RESTART_BIT)
 		{
-			Restart();
+			pendingRestart = true;
 			return 0;	// nothing more can be done here.
 		}
 		else if (result == FAILSENTENCE_BIT) // usually done by substituting a new input
@@ -1528,6 +1669,8 @@ bool PrepassSentence(char* prepassTopic)
 FunctionResult DoSentence(char* prepassTopic)
 {
 	char input[INPUT_BUFFER_SIZE];  // complete input we received
+	int len = strlen(nextInput);
+	if (len >= (INPUT_BUFFER_SIZE)-100) nextInput[INPUT_BUFFER_SIZE-100] = 0;
 	strcpy(input,nextInput);
 	ambiguousWords = 0;
 
@@ -1773,10 +1916,11 @@ bool AddResponse(char* msg, unsigned int responseControl)
 		strcpy(msg+OUTPUT_BUFFER_SIZE-5,(char*)"..."); //   prevent trouble
 		len = strlen(msg);
 	}
+	
 
+	// Do not change any oob data or test for repeat
     strcpy(buffer,msg);
 	char* at = SkipOOB(buffer);
-
 	if (responseControl & RESPONSE_REMOVETILDE) RemoveTilde(at);
 	if (responseControl & RESPONSE_ALTERUNDERSCORES)
 	{
@@ -1802,11 +1946,12 @@ bool AddResponse(char* msg, unsigned int responseControl)
 		}
 	}
 
-    if (all || HasAlreadySaid(at) ) // dont really do this, either because it is a repeat or because we want to see all possible answers
+	if (!*at){} // we only have oob?
+    else if (all || HasAlreadySaid(at) ) // dont really do this, either because it is a repeat or because we want to see all possible answers
     {
 		if (all) Log(ECHOSTDUSERLOG,(char*)"Choice %d: %s  why:%s %d.%d %s\r\n\r\n",++choiceCount,at,GetTopicName(currentTopicID,false),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),ShowRule(currentRule));
-        else if (trace) Log(STDUSERLOG,(char*)"Rejected: %s already said\r\n",at);
-		else if (showReject) Log(ECHOSTDUSERLOG,(char*)"Rejected: %s already said\r\n",at);
+        else if (trace) Log(STDUSERLOG,(char*)"Rejected: %s already said\r\n",buffer);
+		else if (showReject) Log(ECHOSTDUSERLOG,(char*)"Rejected: %s already said\r\n",buffer);
         memset(msg,0,len+1); //   kill partial output
 		FreeBuffer();
         return false;
@@ -1817,92 +1962,6 @@ bool AddResponse(char* msg, unsigned int responseControl)
     if (!timerLimit || timerCheckInstance != TIMEOUT_INSTANCE) memset(msg,0,len+1); // erase all of original message, +  1 extra as leading space
 	FreeBuffer();
     return true;
-}
-
-char* ConcatResult()
-{
-    static char  result[OUTPUT_BUFFER_SIZE];
-  	unsigned int oldtrace = trace;
-	trace = 0;
-	result[0] = 0;
-	if (timerLimit && timerCheckInstance == TIMEOUT_INSTANCE)
-	{
-		responseIndex = 0;
-		currentRule = 0;
-		AddResponse((char*)"Time limit exceeded.", 0);
-	}
-	for (int i = 0; i < responseIndex; ++i) 
-    {
-		unsigned int order = responseOrder[i];
-        if (responseData[order].response[0]) 
-		{
-			char* reply = responseData[order].response;
-			size_t len = strlen(reply);
-			if (len >= OUTPUT_BUFFER_SIZE)
-			{
-				ReportBug((char*)"overly long reply %s",reply)
-				reply[OUTPUT_BUFFER_SIZE-50] = 0;
-			}
-			AddBotUsed(reply,len);
-		}
-    }
-
-	//   now join up all the responses as one output into result
-	unsigned int size = 0;
-	char* copy = AllocateBuffer();
-	uint64 control = tokenControl;
-	tokenControl |= LEAVE_QUOTE;
-	for (int i = 0; i < responseIndex; ++i) 
-    {
-		unsigned int order = responseOrder[i];
-        if (!responseData[order].response[0]) continue;
-		char* piece = responseData[order].response;
-		size_t len = strlen(piece);
-		if ((len + size) >= OUTPUT_BUFFER_SIZE) break;
-		if (*result) 
-		{
-			result[size++] = ENDUNIT; // add separating item from last unit for log detection
-			result[size] = 0;
-		}
-		strcpy(result+size,piece);
-		size += len;
-
-		// each sentence becomes a transient fact
-		char* start = piece;
-		char* ptr = piece;
-
-		while (ptr && *ptr) // find sentences of response
-		{
-			start = ptr;
-			char* old = ptr;
-			int count;
-			char* starts[MAX_SENTENCE_LENGTH];
-			memset(starts,0,sizeof(char*)*MAX_SENTENCE_LENGTH);
-			ptr = Tokenize(ptr,count,(char**) starts,false,true);   //   only used to locate end of sentence but can also affect tokenFlags (no longer care)
-			char c = *ptr; // is there another sentence after this?
-			if (c)  *(ptr-1) = 0; // kill the separator 
-
-			//   save sentences as facts
-			char* out = copy;
-			char* at = old-1;
-			while (*++at) // copy message and alter some stuff like space or cr lf
-			{
-				if (*at == '\r' || *at == '\n') {;}
-				else *out++ = *at;  
-			}
-			*out = 0;
-			if ((out-copy) > 2) // we did copy something, make a fact of it
-			{
-				char name[MAX_WORD_SIZE];
-				sprintf(name,(char*)"%s.%s",GetTopicName(responseData[order].topic),responseData[order].id);
-				CreateFact(MakeMeaning(StoreWord(copy,AS_IS)),Mchatoutput,MakeMeaning(StoreWord(name)),FACTTRANSIENT);
-			}
-		}	
-	}
-	trace = oldtrace;
-	tokenControl = control;
-	FreeBuffer();
-    return result;
 }
 
 void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart) // set currentInput and nextInput

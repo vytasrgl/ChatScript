@@ -563,6 +563,10 @@ void LogChat(clock_t starttime,char* user,char* bot,char* IP, int turn,char* inp
 
 int evsrv_do_chat(Client_t *client)
 {
+	while (pendingRestart) // wait up for new server
+	{
+		sleep(1);
+	}
  	clock_t starttime = ElapsedMilliseconds(); 
     client->prepare_for_chat();
 	size_t len = strlen(client->message);
@@ -577,9 +581,14 @@ int evsrv_do_chat(Client_t *client)
         ourMainInputBuffer, // input
         (char*)client->ip.c_str(),
         client->data); // where output goes
-	if (!stricmp(ourMainOutputBuffer,"Restarted server")) 
+	if (!strnicmp(ourMainOutputBuffer,"$#$",3)) // special messages
 	{
-		strcpy(client->data,ourMainOutputBuffer);
+		strcpy(client->data,ourMainOutputBuffer+3);
+		if (pendingRestart)
+		{
+			strcat(client->data," Restarting server. Please try again in a minute.\r\n");
+			Restart();
+		}
 		*ourMainOutputBuffer = 0;
 	}
 		

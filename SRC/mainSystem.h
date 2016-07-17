@@ -79,6 +79,9 @@ extern bool oobExists;
 extern char hostname[100];
 extern int argc;
 extern char** argv;
+// #include <atomic>
+// extern std::atomic<bool> pendingRestart;
+extern volatile bool pendingRestart;
 extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;
@@ -90,7 +93,7 @@ extern bool commandLineCompile;
 extern int inputCounter,totalCounter;
 extern int inputSentenceCount;  
 extern char* extraTopicData;
-extern char* postProcessing;
+extern char postProcessing;
 extern char rawSentenceCopy[MAX_BUFFER_SIZE];
 extern char* authorizations;
 extern uint64 tokenControl;
@@ -151,7 +154,7 @@ extern unsigned long loopBackTime;
 extern unsigned long loopBackDelay;
 extern unsigned long alarmTime;
 extern unsigned long alarmDelay;
-
+void Restart();
 void ProcessInputFile();
 bool ProcessInputDelays(char* buffer,bool hitkey);
 char* SkipOOB(char* buffer);
@@ -195,6 +198,5 @@ void AddBotUsed(const char* reply,unsigned int len);
 void AddHumanUsed(const char* reply);
 bool HasAlreadySaid(char* msg);
 bool AddResponse(char* msg, unsigned int controls);
-char* ConcatResult();
 
 #endif

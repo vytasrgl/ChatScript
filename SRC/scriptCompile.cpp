@@ -46,8 +46,8 @@ static char* topicFiles[] = //   files created by a topic refresh from scratch
 	(char*)"private",		//   private substitutions changes	
 	(char*)"canon",			//   private canonical values 	
 
-	"TOPIC/missingLabel.txt",	//   reuse/unerase needing delayed testing for label
-	"TOPIC/missingSets.txt",	//   sets needing delayed testing
+	(char*)"TOPIC/missingLabel.txt",	//   reuse/unerase needing delayed testing for label
+	(char*)"TOPIC/missingSets.txt",	//   sets needing delayed testing
 
 	0
 };
@@ -1221,8 +1221,16 @@ static void NoteUse(char* label,char* topic)
 	}
 }
 
-static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[50][MAX_WORD_SIZE])
+static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[ARGSETLIMIT][MAX_WORD_SIZE], bool needToField)
 {
+	if (needToField) // assigning query to var, must give TO field value
+	{
+		if (!*argset[1] || !*argset[2] || !*argset[3] || !*argset[4] || !*argset[5] || !*argset[6])
+			BADSCRIPT((char*)"CALL- 62 query assignment to variable requires TO field")
+		char* p = argset[7];
+		while (IsDigit(*++p)){} // skip 
+		if (!*p) WARNSCRIPT((char*)"Query assignment requires field name in %s, I don't see one.\r\n",argset[7])
+	}
 	if (!stricmp(D->word,(char*)"^next"))
 	{	
 		if (stricmp(arg1,(char*)"RESPONDER") && stricmp(arg1,(char*)"LOOP") && stricmp(arg1,(char*)"REJOINDER") && stricmp(arg1,(char*)"RULE") && stricmp(arg1,(char*)"GAMBIT") && stricmp(arg1,(char*)"INPUT") && stricmp(arg1,(char*)"FACT")) 
@@ -1417,9 +1425,7 @@ static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[50][MAX_
 	}
 }
 
-#define ARGSETLIMIT 50
-
-static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call)
+static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bool needTofield)
 {	//   returns with no space after it
 	//   ptr is just after the ^name -- user can make a call w/o ^ in name but its been patched. Or this is function argument
 	char reuseTarget1[MAX_WORD_SIZE];
@@ -1447,6 +1453,9 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call)
 	{
 		info = &systemFunctionSet[D->x.codeIndex];
 		if (info->argumentCount == STREAM_ARG) isStream = true;
+
+		if (!stricmp(name,"^jsonarraysize")) WARNSCRIPT((char*)"^jsonarraysize deprecated in favor of ^length\r\n")
+		if (!stricmp(name,"^jsondelete")) WARNSCRIPT((char*)"^jsondelete deprecated in favor of ^delete\r\n")
 	}
 	else if (patternContext && !(D->internalBits & IS_PATTERN_MACRO)) BADSCRIPT((char*)"CALL-2 Can only call patternmacro or dual macro from pattern area - %s",name)
 	else if (!patternContext && !(D->internalBits &  (IS_OUTPUT_MACRO | IS_TABLE_MACRO))) BADSCRIPT((char*)"CALL-3 Cannot call pattern or table macro from output area - %s",name)
@@ -1539,7 +1548,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call)
 					if (*nextToken != '(' && !IsDigit(word[1])) BADSCRIPT((char*)"CALL-? Unknown function variable %s",word)
 
 					char* arg = mydata;
-					ptr = ReadCall(word,ptr,in,mydata,*nextToken == '(');
+					ptr = ReadCall(word,ptr,in,mydata,*nextToken == '(',false);
 					*mydata = 0;
 					strcpy(argset[++argumentCount],arg);
 					*mydata++ = ' ';
@@ -1609,7 +1618,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call)
 		else if (*arg2 != '~' || strchr(arg2,'.'))  MakeUpperCopy(reuseTarget1,arg2); // topic names & labels must be upper case 
 	}
 
-	ValidateCallArgs(D,arg1,arg2,argset);
+	ValidateCallArgs(D,arg1,arg2,argset,needTofield);
 
 	if (parenLevel != 0) BADSCRIPT((char*)"CALL-59 Failed to properly close (or [ in call to %s",D->word)
 
@@ -1798,7 +1807,7 @@ static char* ReadDescribe(char* ptr, FILE* in,unsigned int build)
 }
 
 
-char* ReadPattern(char* ptr, FILE* in, char* &data,bool macro, bool ifstatement)
+char* ReadPattern(char* ptr, FILE* in, char* &data,bool macro, bool ifstatement, bool livecall)
 { //   called from topic or patternmacro
 #ifdef INFORMATION //   meaning of leading characters
 < >	 << >>	sentence start & end boundaries, any 
@@ -2077,8 +2086,8 @@ name of topic  or concept
 					// you can quote a string, because you are quoting its members
 					variableGapSeen = false;
 					strcpy(word,JoinWords(BurstWord(word,CONTRACTIONS)));// change from string to std token
-					WritePatternWord(word); 
-					WriteKey(word);
+					if (!livecall) WritePatternWord(word); 
+					if (!livecall) WriteKey(word);
 					unsigned int n = 0;
 					char* ptr = word;
 					while ((ptr = strchr(ptr,'_')))
@@ -2101,8 +2110,11 @@ name of topic  or concept
 				variableGapSeen = false;
 				if (quoteSeen) BADSCRIPT((char*)"PATTERN-61 cannot quote set %s because it can't be determined if set comes from original or canonical form",word)
 				startSeen = true;
-				WriteKey(word);
-				CheckSetOrTopic(word); // set or topic
+				if (!livecall) 
+				{
+					WriteKey(word);
+					CheckSetOrTopic(word); // set or topic
+				}
 				break;
 			default: //   normal token ( and anon function call)
 
@@ -2171,11 +2183,18 @@ name of topic  or concept
 			sprintf(rhs,(char*)"%lld",(long long int) n); 
 #endif	
 			}
-			else if (IsAlphaUTF8DigitNumeric(*rhs)  ) {WriteKey(rhs); WritePatternWord(rhs);	}	//   ordinary token
+			else if (IsAlphaUTF8DigitNumeric(*rhs)  ) 
+			{
+				if (!livecall) 
+				{
+					WriteKey(rhs); 
+					WritePatternWord(rhs);		//   ordinary token
+				}
+			}
 			else if (*rhs == '~') 
 			{
 				MakeLowerCase(rhs);
-				CheckSetOrTopic(rhs);	
+				if (!livecall) CheckSetOrTopic(rhs);	
 			}
 			else if (*rhs == '_' || *rhs == '@');	// match variable or factset variable
 			else if (*rhs == '$' || *rhs == '%') MakeLowerCase(rhs);	// user variable or system variable
@@ -2196,8 +2215,10 @@ name of topic  or concept
 			strcpy(tmp+2,word); //   copy left side over
 			strcpy(word,tmp);	//   replace original token
 		}
-		else if (*word == '~') CheckSetOrTopic(word); 
-
+		else if (*word == '~') 
+		{
+			if (!livecall) CheckSetOrTopic(word); 
+		}
 		ReadNextSystemToken(in,ptr,nextToken,true,true);
 		
 		//   see if we have an implied call (he omitted the ^)
@@ -2231,7 +2252,7 @@ name of topic  or concept
 			}
 			else 
 			{
-				ptr = ReadCall(word,ptr,in,data,*nextToken == '(');
+				ptr = ReadCall(word,ptr,in,data,*nextToken == '(',false);
 				if (PatternRelationToken(ptr)) // immediate relation bound to call?
 				{
 					ptr = ReadNextSystemToken(in,ptr,word);
@@ -2279,24 +2300,32 @@ name of topic  or concept
 				unsigned int ignore = 0;
 				if (len > 1 && word[len-1] == '\'' && word[len-2] != '_') // ending ' possessive plural
 				{
-					WritePatternWord(word);
-					WriteKey(word);
+					if (!livecall)
+					{
+						WritePatternWord(word);
+						WriteKey(word);
+					}
 					word[--len] = 0;
 					ignore = 1;
 				}
 				else if (len > 2 && word[len-1] == 's' && word[len-2] == '\'' && word[len-3] != '_') // ending 's possessive singular
 				{
-					WriteKey(word);
-					WritePatternWord(word);
+					if (!livecall)
+					{
+						WriteKey(word);
+						WritePatternWord(word);
+					}
 					len -= 2;
 					word[len] = 0;
 					ignore = 2;
 				}
 				strcpy(word,JoinWords(BurstWord(word,CONTRACTIONS))); // change to std token
-				if (spellCheck) SpellCheckScriptWord(word,startSeen ? 1 : 0,false);
-				WriteKey(word);
-				WritePatternWord(word); //   memorize it to know its important
-
+				if (!livecall && spellCheck) SpellCheckScriptWord(word,startSeen ? 1 : 0,false);
+				if (!livecall)
+				{
+					WriteKey(word);
+					WritePatternWord(word); //   memorize it to know its important
+				}
 				if (ignore)
 				{
 					strcpy(data,word);
@@ -2317,7 +2346,8 @@ name of topic  or concept
 	*data = 0;
 
 	//   leftovers?
-	if (macro && nestIndex != 1) BADSCRIPT((char*)"PATTERN-68 Failed to balance ( or [ or { properly in macro")
+	if (macro && nestIndex != 1) 
+		BADSCRIPT((char*)"PATTERN-68 Failed to balance ( or [ or { properly in macro")
 	else if (!macro && nestIndex != 0) 
 		BADSCRIPT((char*)"PATTERN-69 Failed to balance ( or [ or { properly");
 
@@ -2326,23 +2356,32 @@ name of topic  or concept
 	return ptr;
 }
 
-static char* GatherChunk(char* ptr, FILE* in, char* save, bool body) // get unformated data til closing marker
+static char* GatherChunk(char* ptr, FILE* in, char* save, char body) // get unformated data til closing marker
 {
 	char* original = save;
 	char word[MAX_WORD_SIZE];
 	char* start = save;
-	unsigned int bracket = 0;
-	unsigned int paren = 0;
-	unsigned int squiggle = 0;
-	char* startparen;
-	unsigned int startpline = 0;
-	unsigned int startbline = 0;
+	int bracket =  body == '[' ? 1 : 0;
+	int paren = 0;
+	int squiggle = 0;
+	char* startparen = 0;
+	char* startsquiggle = 0;
+	int startpline = 0;
+	int startbline = 0;
+	int startsline = 0;
 	char* startbracket = 0;
-	int level = (body) ? 0 : 1;
+	int level = bracket ? 1 : 0; // start with the { or [ from readchoice already swallowed?
 	while (ALWAYS)
 	{
 		ptr = ReadNextSystemToken(in,ptr,word,false); 
 		MakeLowerCopy(lowercaseForm,word);
+		if (*word == '_' && (word[1] == '[' || word[1] == '(' || word[1] == '{'))
+		{
+			size_t len = strlen(word);
+			strcpy(save,"_");
+			++save;
+			memmove(word,word+1,strlen(word)); // in case we have _( or _[ or such, we need to not swallow them
+		}
 		if (*word == '[' ) 
 		{
 			if (!bracket) 
@@ -2352,7 +2391,15 @@ static char* GatherChunk(char* ptr, FILE* in, char* save, bool body) // get unfo
 			}
 			++bracket; 
 		}
-		else if (*word == ']')  --bracket;
+		else if (*word == ']')  
+		{
+			--bracket; // allow to underflow
+			if (!bracket && body == '[') // closing level
+			{
+				if (paren)  BADSCRIPT((char*)"BODY-3 Fail to close ( on line %d - (%s ",startpline,startparen)
+				if (squiggle) BADSCRIPT((char*)"BODY-2 Fail to close { on line %d - [%s ",startsline,startsquiggle)
+			}
+		}
 		else if (*word == '(' ) 
 		{
 			if (!paren) 
@@ -2363,12 +2410,19 @@ static char* GatherChunk(char* ptr, FILE* in, char* save, bool body) // get unfo
 			++paren;
 		}
 		else if (*word == ')') --paren;
-		else if (*word == '{' ) 
+		else if (*word == '{' )
+		{
 			++squiggle;
+			if (!squiggle) 
+			{
+				startsquiggle = ptr;
+				startsline = currentFileLine;
+			}
+		}
 		else if (*word == '}') 
 		{
 			--squiggle;
-			if (!squiggle)
+			if (!squiggle && body == '{') // closing level
 			{
 				if (paren)  BADSCRIPT((char*)"BODY-3 Fail to close ( on line %d - (%s ",startpline,startparen)
 				if (bracket) BADSCRIPT((char*)"BODY-2 Fail to close [ on line %d - [%s ",startbline,startbracket)
@@ -2388,7 +2442,8 @@ static char* GatherChunk(char* ptr, FILE* in, char* save, bool body) // get unfo
 		int prior = level;
 		level += GetNestingData(c);
 		if (body && level == 1 && prior == 0) start = save; 
-		if (level == 0) break; //   end of stream of if body
+		if (level == 0) 
+			break; //   end of stream of if body
 
 		size_t len = strlen(word);
 		if ((len + (save - original) + 3) >= maxBufferSize) BADSCRIPT((char*)"BODY-4 Body exceeding limit of %d bytes",maxBufferSize)
@@ -2415,7 +2470,7 @@ static char* ReadChoice(char* word, char* ptr, FILE* in, char* &data,char* rejoi
 		*data++ = ' ';
 		ptr = ReadNextSystemToken(in,ptr,word,false);
 	}
-	ptr = GatherChunk(ptr, in, choice,false); 
+	ptr = GatherChunk(ptr, in, choice,'['); 
 	ReadOutput(choice,NULL,data,rejoinders,NULL,NULL,false);
 	*data++ = ']';
 	*data++ = ' ';
@@ -2506,7 +2561,7 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 			strcpy(rename+1,word);	//   in case user omitted the ^
 			strcpy(word,rename);
 		}
-		ptr = ReadCall(word,ptr,in,data,true);  //   read call
+		ptr = ReadCall(word,ptr,in,data,true,false);  //   read call
 		ReadNextSystemToken(in,ptr,nextToken,false,true); 
 		if (RelationToken(nextToken))
 		{
@@ -2590,6 +2645,7 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 	return ptr;
 }
 
+char* xx = NULL;
 
 static char* ReadBody(char* word, char* ptr, FILE* in, char* &data,char* rejoinders)
 {	//    stored data starts with the {
@@ -2598,7 +2654,7 @@ static char* ReadBody(char* word, char* ptr, FILE* in, char* &data,char* rejoind
 	*data++ = ' ';
 	bool oldContext = patternContext;
 	patternContext = false;
-	ptr = GatherChunk(ptr, in, body,true); 
+	ptr = GatherChunk(ptr, in, body,'{'); 
 	ReadOutput(body+2,NULL,data,rejoinders,NULL,NULL,false); 
 	patternContext = oldContext;
 	*data++ = '}'; //   body has no blank after it, done by higher level
@@ -2659,6 +2715,7 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 
 		if (!strnicmp(patternInfo,(char*)"( pattern ",10))
 		{
+			char* original = data;
 			patternContext = true;
 			ReadPattern(ptr,in,data,false,true); //   read ( for real in the paren for pattern
 			patternContext = false;
@@ -2813,6 +2870,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 	int displayIndex = 0;
 	*hold = 0;
 	bool start = true;
+	bool needtofield = false;
 	bool javascript = false;
 	while (ALWAYS) //   read as many tokens as needed to complete the responder definition
 	{
@@ -2940,7 +2998,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 		char* nakedWord = word;
 		if (*nakedWord == '^') ++nakedWord;	// word w/o ^ 
 		
-		if (*word == '^' && *nextToken != '(' && word[1] != '^' && word[1] != '$' && word[1] != '_' && word[1] != '"' && !IsDigit(word[1])) BADSCRIPT((char*)"%s either references a function w/o arguments or names a function variable that doesn't exist",word)
+		if (*word == '^' && *nextToken != '(' && word[1] != '^'  && word[1] != '=' && word[1] != '$' && word[1] != '_' && word[1] != '"' && !IsDigit(word[1])) BADSCRIPT((char*)"%s either references a function w/o arguments or names a function variable that doesn't exist",word)
 	
 		// note left hand of assignment
 		if (!stricmp(nextToken,(char*)"|^=") || !stricmp(nextToken,(char*)"&=") || !stricmp(nextToken,(char*)"|=") || !stricmp(nextToken,(char*)"^=") || !stricmp(nextToken,(char*)"=") || !stricmp(nextToken,(char*)"+=") || !stricmp(nextToken,(char*)"-=") || !stricmp(nextToken,(char*)"/=") || !stricmp(nextToken,(char*)"*="))  strcpy(assignlhs,word);
@@ -2965,6 +3023,9 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 				if (!IsAlphaUTF8(nextToken[1])) 
 					WARNSCRIPT((char*)"Possibly assignment followed by another binary operator")
 			}
+			// assigning to variable only works if tofield value is given
+			if (*word == '$' && (!stricmp(nextToken,"^query") || !stricmp(nextToken,"query"))) 
+				needtofield = true;
 			continue;
 		}
 		else if (*nextToken == '{' && !stricmp(nakedWord,(char*)"loop"))  // loop missing () 
@@ -3012,7 +3073,8 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 			WORDP D = FindWord(word,0,LOWERCASE_LOOKUP);
 			if ((!D || !(D->internalBits & FUNCTION_NAME))) 
 				BADSCRIPT((char*)"OUTPUT-5 Apparent call to %s is not yet defined",word)
-			ptr = ReadCall(word,ptr,in,data,*nextToken == '('); //   add function call 
+			ptr = ReadCall(word,ptr,in,data,*nextToken == '(',needtofield); //   add function call
+			needtofield = false;
 			*assignKind = 0;
 		}
 		else if (*word == '^' && IsDigit(word[1]) ) // fn var

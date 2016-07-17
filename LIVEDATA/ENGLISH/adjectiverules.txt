@@ -506,6 +506,13 @@ DISCARD
 	IS NORMAL_NOUN_BITS
 DISCARD
 
+# after determiner and before insured noun, wont be noun - the/a (Determiner)  monthly (Noun_singular +Adjective_normal Adverb)  sales (+Noun_plural +Noun_singular) 
+-1 IS DETERMINER
+	INCLUDE * ADJECTIVE_BITS
+	STAY HAS NOUN_BITS
+	CANONLYBE NOUN_BITS
+DISCARD
+
 # the/a (Determiner)  sand (+Noun_singular Adjective_normal)  , (Comma)  keeping/keep (+Noun_gerund +Adjective_participle)  cannot have adj after det before comma where after comma is not useful
 -1 IS DETERMINER
 	INCLUDE * ADJECTIVE_NORMAL

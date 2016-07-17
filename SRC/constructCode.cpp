@@ -191,6 +191,8 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 				clearUnmarks = false;
 				for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
 			}
+			ShowMatchResult((failed) ? FAILRULE_BIT : NOPROBLEM_BIT, ptr+10,NULL);
+
 			if (!failed) 
 			{
 				if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() ) //   display the entire matching responder and maybe wildcard bindings

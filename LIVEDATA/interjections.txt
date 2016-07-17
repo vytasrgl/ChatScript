@@ -7,7 +7,9 @@
  have_to_leave> ~emogoodbye
  <oh? why?
  <never ~no 
- <no ~no 
+ <no_, ~no 
+ <no> ~no 
+ <no_- ~no 
  <none ~no 
  <rarely ~no
  <barely ~no
@@ -200,7 +202,9 @@
  <greetings ~emohello
  <grin ~emolaugh
  <grins ~emolaugh
- <gross ~emodisgust
+ <gross_- ~emodisgust
+ <gross_, ~emodisgust
+ <gross> ~emodisgust
  <ha-ha-ha ~emolaugh
  <ha-ha ~emolaugh
  <ha ~emolaugh
@@ -448,7 +452,6 @@
  <nighty-night ~emogoodbye
  <nite-nite ~emogoodbye
  <no_! ~no
- <no_, ~no
  <no_. ~no
  <no_can_do ~no
  <no_chance> ~no
@@ -459,14 +462,6 @@
  <no_thank_you ~no
  <no_thanks ~no
  <no_way ~no
- <no> ~no
- <no_I ~no+I
- <no_you ~no+you
- <no_he ~no+he
- <no_she ~no+she
- <no_it ~no+it
- <no_we ~no+we
- <no_they ~no+they
  <nod ~yes
  <nods ~yes
  <non_comprende ~emomisunderstand
@@ -525,7 +520,7 @@
  <pardon_me> ~emoapology
  <perfect> ~yes
  <perhaps> ~emomaybe
- <please_do ~yes
+ <please_do> ~yes
  <please_excuse_me ~emoapology
  <please_forgive_me ~emoapology
  <please> ~emobeg
@@ -785,7 +780,6 @@
  <it_is> ~yes
  okay ~yes
  okey ~yes
- oops ~yes
  right-o ~yes
  see_you_later ~emogoodbye
  <she_does_not> ~no

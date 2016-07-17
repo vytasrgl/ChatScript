@@ -60,7 +60,11 @@ static void CompleteWildcard()
 void SetWildCard(int start, int end, bool inpattern)
 {
 	if (end < start) end = start;				// matched within a token
-	if (end > wordCount && start != end) end = wordCount; // for start==end we allow being off end, eg _>
+	if (end > wordCount)
+	{
+		if (start != end) end = wordCount; // for start==end we allow being off end, eg _>
+		else start = end = wordCount;
+	}
 	while (unmarked[start]) ++start; // skip over unmarked words at start
 	while (unmarked[end]) --end; // skip over unmarked words at end
     wildcardPosition[wildcardIndex] = start | (end << 16);
@@ -98,10 +102,16 @@ void SetWildCard(int start, int end, bool inpattern)
 void SetWildCardGiven(int start, int end, bool inpattern, int index)
 {
 	if (end < start) end = start;				// matched within a token
-	if (end > wordCount && start != end) end = wordCount; // for start==end we allow being off end, eg _>
-    wildcardPosition[index] = start | (end << 16);
+	if (end > wordCount)
+	{
+		if (start != end) end = wordCount + 1; // for start==end we allow being off end, eg _>
+		else start = end = wordCount + 1;
+	}
     *wildcardOriginalText[index] = 0;
     *wildcardCanonicalText[index] = 0;
+ 	while (unmarked[start]) ++start; // skip over unmarked words at start
+	while (unmarked[end]) --end; // skip over unmarked words at end
+	wildcardPosition[index] = start | (end << 16);
     if (start == 0 || wordCount == 0 || (end == 0 && start != 1) ) // null match, like _{ .. }
 	{
 	}
@@ -111,6 +121,8 @@ void SetWildCardGiven(int start, int end, bool inpattern, int index)
 		bool started = false;
 		for (int i = start; i <= end; ++i)
 		{
+			if (i < 1 || i > wordCount) continue;	// ignore off end
+			if (unmarked[i]) continue;
 			char* word = wordStarts[i];
 			// if (*word == ',') continue; // DONT IGNORE COMMAS, needthem
 			if (started) 
@@ -131,7 +143,7 @@ void SetWildCardGiven(int start, int end, bool inpattern, int index)
 			strcpy(wildcardCanonicalText[index],D->word);
 		}
 	}
-}
+ }
 
 void SetWildCardNull()
 {
@@ -352,9 +364,13 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 		float more = (float)atof(moreValue);
         if (minusflag == '-') newval -= more;
         else if (minusflag == '*') newval *= more;
-        else if (minusflag == '/') newval /= more;
+        else if (minusflag == '/') {
+			if (more == 0) return; // cannot divide by 0
+        	newval /= more;
+        }
 		else if (minusflag == '%') 
 		{
+			if (more == 0) return;
 			int64 ivalue = (int64) newval;
 			int64 morval = (int64) more;
 			newval = (float) (ivalue % morval);
@@ -396,9 +412,9 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
         else if (minusflag == '&') newval &= more;
         else if (minusflag == '^') newval ^= more;
         else if (minusflag == '<') newval <<= more;
-        else if (minusflag == '>') newval >>= more;
-       else newval += more;
-	   char tracex[MAX_WORD_SIZE];
+		else if (minusflag == '>') newval >>= more;
+		else newval += more;
+		char tracex[MAX_WORD_SIZE];
 #ifdef WIN32
 		sprintf(result,(char*)"%I64d",newval); 
 #else

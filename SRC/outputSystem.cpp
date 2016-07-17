@@ -216,7 +216,7 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 			if (*value) output = AddFormatOutput(value, output,controls); 
 			else if (!FindWord(var)) output = AddFormatOutput(var, output,controls); // not a system variable
 		}
-		else if (*input == '_' && IsDigit(input[1])) // canonical match variable
+		else if (*input == '_' && IsDigit(input[1]) && *(input-1) != '@') // canonical match variable
 		{
 			input = ReadMatchVariable(input,var); // end up after the var
 			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);

@@ -1124,29 +1124,9 @@ retry:
 			for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
 		}
 	}
-	
-	if (trace & TRACE_LABEL && *label && !(trace & TRACE_PATTERN)  && CheckTopicTrace())
-	{
-		if (result == NOPROBLEM_BIT) Log(STDUSERTABLOG,(char*)"  **  Match: %s\r\n",ShowRule(rule));
-		else Log(STDUSERTABLOG,(char*)"  **fail: %s\r\n",ShowRule(rule));
-	}
+	ShowMatchResult(result, rule,label);
 	if (result == NOPROBLEM_BIT) // generate output
 	{
-		if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() ) //   display the entire matching responder and maybe wildcard bindings
-		{
-			if (!(trace & (TRACE_PATTERN|TRACE_SAMPLE))) Log(STDUSERTABLOG, "Try %s",ShowRule(rule)); 
-			Log(STDUSERTABLOG,(char*)"  **  Match: %s",ShowRule(rule)); //   show abstract result we will apply
-			if (wildcardIndex)
-			{
-				Log(STDUSERTABLOG,(char*)"  Wildcards: ");
-				for (int i = 0; i < wildcardIndex; ++i)
-				{
-					if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s (%d-%d)  ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
-					else Log(STDUSERLOG,(char*)"_%d=  ",i);
-				}
-			}
-			Log(STDUSERLOG,(char*)"\r\n");
-		}
 		if (sampleTopic && sampleTopic == currentTopicID && sampleRule == ruleID) // sample testing wants to find this rule got hit
 		{
 			result = FAILINPUT_BIT;

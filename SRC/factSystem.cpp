@@ -332,28 +332,19 @@ void KillFact(FACT* F)
 		Log(STDUSERLOG,(char*)"Kill: ");
 		TraceFact(F);
 	}
-	F->flags |= FACTDEAD; 
 	// recurse on JSON datastructures below if they are being deleted on right side
 	if (F->flags & JSON_ARRAY_VALUE)
 	{
 		WORDP jsonarray = Meaning2Word(F->object);
-		FACT* G = GetSubjectNondeadHead(jsonarray);
-		while (G)
-		{
-			KillFact(G);
-			G = GetSubjectNondeadNext(G);
-		}
+		jkillfact(jsonarray);
 	}
 	if (F->flags & JSON_OBJECT_VALUE)
 	{
 		WORDP jsonobject = Meaning2Word(F->object);
-		FACT* G = GetSubjectNondeadHead(jsonobject);
-		while (G)
-		{
-			KillFact(G);
-			G = GetSubjectNondeadNext(G);
-		}
+		jkillfact(jsonobject);
 	}
+	if (F->flags & JSON_ARRAY_FACT) JsonRenumber(F);// have to renumber this array
+	F->flags |= FACTDEAD; 
 
 	if (planning) SpecialFact(Fact2Index(F),0,0); // save to restore
 
@@ -968,7 +959,12 @@ static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead)
 		}
 		char* answer = WriteMeaning(T,true);
 		bool embedded = *answer != '"' && (strchr(answer,' ') != NULL || strchr(answer,'(') != NULL) ; // does this need protection? blanks or function call maybe
-		if (embedded) sprintf(buffer,(char*)"`%s`",answer); // has blanks, use internal string notation
+		bool embeddedbacktick = strchr(answer,'`') ? true : false;
+		if (embeddedbacktick) // uses our own marker,
+		{
+			sprintf(buffer,(char*)"`*^%s`*^",answer); 
+		}
+		else if (embedded) sprintf(buffer,(char*)"`%s`",answer); // has blanks, use internal string notation
 		else strcpy(buffer,answer); // use normal notation
 		// INSURE no cr or newline within it. as that will blow things up by moving saved user data to next line
 		char* at = buffer - 1;
@@ -1060,6 +1056,27 @@ char* ReadField(char* ptr,char* field,char fieldkind, unsigned int& flags)
 	}
 	else if (*ptr == ENDUNIT) // internal string token (fact read)
 	{
+		if (ptr[1] == '*' && ptr[2] == '^') // they use our ` in their field - we use `*^%s`*^
+		{
+			char* at = ptr+3;
+			while ((at = strchr(at,'^')))
+			{
+				if (*(at-1) == '*' && *(at-2) == '`') // found our close
+				{
+					break; 
+				}
+				++at;
+			}
+			if (!at)
+			{
+				ReportBug("No end found");
+				return NULL;
+			}
+			*(at-2) = 0;
+			strcpy(field,ptr+3);
+			return at+2; // point AFTER the space after the `*^ closer
+		}
+
 		char* end = strchr(ptr+1,ENDUNIT); // find corresponding end
 		if (!*end)
 		{

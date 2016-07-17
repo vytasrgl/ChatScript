@@ -900,10 +900,9 @@ static void ReadNextDocument(char* name,uint64 value) // ReadDocument(inBuffer,s
 		echo = oldecho;
 	}
 	// do post process on document
-	postProcessing = AllocateBuffer();
+	postProcessing = 1;
 	FinishVolley((char*)" ",mainOutputBuffer,(char*)"~document_post"); // per document post process and will write out stuff  and reset user memory and ...
 	ReadUserData();	// read user info back in so we can continue (a form of garbage collection)
-	FreeBuffer();
 	postProcessing = 0;
 	if (*mainOutputBuffer) printf((char*)"%s\r\n",UTF2ExtendedAscii(mainOutputBuffer));
 	documentMode = false;
@@ -947,7 +946,7 @@ static void C_Document(char* input)
 	else ReadNextDocument(name,0);
 	echo = false;
 	
-	postProcessing = documentBuffer; // dedicate buffer to alternate use
+	postProcessing = 1; // dedicate buffer to alternate use
 	documentBuffer = 0;
 	FinishVolley((char*)" ",mainOutputBuffer,NULL); // bots post processing step
 	FreeBuffer(); // release document buffer
@@ -1160,6 +1159,12 @@ static void C_TestPattern(char* input)
 	int wildstart = 1;
 	int positionStart,positionEnd;
 	bool result =  Match(data+2,0,0,(char*)"(",wildstart,wildcardSelector,junk1,junk1,uppercasem,whenmatched,positionStart,positionEnd);
+	if (clearUnmarks) // remove transient global disables.
+	{
+		clearUnmarks = false;
+		for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
+	}
+	
 	SetContext(false);
 	trace = oldtrace;
 	if (result) 
@@ -3874,6 +3879,8 @@ static void C_Build(char* input)
 		else if  (file[len-1] == '2') buildId = BUILD2;
 		else buildId = BUILD1; // global so SaveCanon can work
 		ClearVolleyWordMaps();
+		remove((char*)"TOPIC/missingSets.txt"); // precautionary
+		remove((char*)"TOPIC/missingLabel.txt");
 		ReadTopicFiles(word,buildId,spell); 
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
 		ClearPendingTopics(); // flush in case topic ids change or go away

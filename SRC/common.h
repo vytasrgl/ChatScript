@@ -43,7 +43,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //#define USERPATHPREFIX 1
 #define DISCARDPOSTGRES 1
 #define DISCARDDICTIONARYBUILD 1 // only a windows version can build a dictionary from scratch
-//#define PRIVATE_CODE 1
+
 #elif IOS
 #define DISCARDCOUNTER 1
 #define DISCARDDICTIONARYBUILD 1 
@@ -74,6 +74,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DISCARDDICTIONARYBUILD 1  
 #define SEPARATE_STRING_SPACE 1
 
+#endif
+
+#ifdef KORE
+#define PRIVATE_CODE 1
 #endif
 
 // These can be used to include LINUX EVSERVER component - this is automatically done by the makefile in src - EV Server does not work under windows
@@ -126,6 +130,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 	#include <mach/clock.h>
 	#include <mach/mach.h>
 	#define DISCARDPOSTGRES 1
+//    #define PRIVATE_CODE 1
 #else  // LINUX
 	#include <dirent.h>
 	#ifndef LINUX

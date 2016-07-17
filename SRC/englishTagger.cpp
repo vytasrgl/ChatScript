@@ -501,15 +501,8 @@ static void PerformPosTag(int start, int end)
 		}
 	}
 	if (contigLower > maxContigLower) maxContigLower = contigLower;
-	if (contigLower >= 3 || majorLower) // trust casing when in upper case since enough lower in a row, any upper case will be real
-	{
-		if (upperCount) tokenControl |= STRICT_CASING;
-	}
-	else // decide how to handle casing
-	{
-		if (upperCount > 3 && upperCount > (total/2)) tokenControl &= -1 ^ STRICT_CASING;
-//		if (total > 4 && (total-upperCount) <= 2) tokenControl |= ONLY_LOWERCASE; // dont believe the upper case - but address input
-	}
+	// DO NOT FORCE STRICT CASING WHEN uppercase given
+
 	if (oobExists) noPosTagging = true; // no out-of-band parsetagging
 	else if (prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == POSVERIFY_MODE){;} // told to try regardless
 	else if (tokenControl & DO_PARSE ) {;} // pos tag at a minimum

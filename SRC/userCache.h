@@ -19,7 +19,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define TIMESTAMP(x) ( ( 3 * (x)) + 2)
 #define VOLLEYCOUNT(x) (cacheIndex[TIMESTAMP(x)] >> 24)
 #define DEFAULT_VOLLEY_LIMIT 0 // write always and read always
-#define OVERFLOW_SAFETY_MARGIN 800
+#define OVERFLOW_SAFETY_MARGIN 5000
 
 extern unsigned int userCacheCount,userCacheSize;
 extern bool cacheUsers;

@@ -9,13 +9,13 @@
 	 IS COMMA
 DISCARD
 
-# obvious that phrase -  I believe that it can
-USED -1 IS VERB_BITS
-	INCLUDE * CONJUNCTION_SUBORDINATE
-	STAY ISORIGINAL that
-	HAS NOUN_BITS PRONOUN_BITS DETERMINER
-	STAY POSTPOS VERB_BITS
-KEEP
+# obvious that phrase -  I believe that it can  -- but not "I can't cut *that tree down"
+# USED -1 IS VERB_BITS
+#	INCLUDE * CONJUNCTION_SUBORDINATE
+#	STAY ISORIGINAL that
+#	HAS NOUN_BITS PRONOUN_BITS DETERMINER
+#	STAY POSTPOS VERB_BITS
+# KEEP
 
 # obvious conjunt starter - when (Adverb Conjunction_subordinate)  night (Noun_singular)  fell/fall (Noun_singular +Verb_past)  , (Comma)  
 0	INCLUDE * CONJUNCTION_SUBORDINATE

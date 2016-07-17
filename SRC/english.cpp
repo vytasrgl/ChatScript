@@ -2083,7 +2083,7 @@ char* GetInfinitive(char* word, bool nonew)
 
 	char last = word[len-1];  
     char prior = (len > 2) ? word[len-2] : 0;  //   Xs
-    char prior1 = (len > 3) ? word[len-3] : 0; //   Xes
+    char prior1 = (len > 3) ? word[len-3] : 0; //   Xes (but not nes)
     char prior2 = (len > 4) ? word[len-4] : 0; //   Xhes
 	char prior3 = (len > 5) ? word[len-5] : 0; //   Xhes
 
@@ -2278,7 +2278,7 @@ char* GetInfinitive(char* word, bool nonew)
 		D = FindWord(word,len-1,UPPERCASE_LOOKUP); // if word exists in upper case, this is a plural and NOT a verb with s
 		if (D) return NULL;
 
-		if (!buildDictionary && !nonew)
+		if (!buildDictionary && !nonew && prior != 's') // not consciousness
 		{
 			char wd[MAX_WORD_SIZE];
 			strcpy(wd,word);

@@ -90,7 +90,8 @@ void DeleteTransientJavaScript();
 //   argument data for user calls
 extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
-
+void JsonRenumber(FACT* F);
+void jkillfact(WORDP D);
 extern bool planning;
 extern bool nobacktrack;
 FunctionResult MemoryMarkCode(char* buffer);

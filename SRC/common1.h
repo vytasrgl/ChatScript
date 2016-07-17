@@ -13,7 +13,7 @@ extern unsigned int callArgumentBase;
 #define ARGUMENT(n) callArgumentList[callArgumentBase+n]
 char* ReadCompiledWord(char* ptr, char* word,bool noquote = false,bool var = false);
 
-#define INPUT_BUFFER_SIZE   4000
+#define INPUT_BUFFER_SIZE   80000
 #define MAX_BUFFER_SIZE		80000
 
 #define NUMBER_OF_LAYERS 3

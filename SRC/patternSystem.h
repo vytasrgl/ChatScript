@@ -26,4 +26,5 @@ bool Match(char* ptr, unsigned int depth, int startposition,char* kind,int wilds
 extern bool matching;
 extern bool clearUnmarks;
 extern bool deeptrace;
+void ShowMatchResult(FunctionResult result, char* rule,char* label);
 #endif

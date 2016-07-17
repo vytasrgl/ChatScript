@@ -19,6 +19,7 @@
  a.i. artificial+intelligence
  wifi wi-fi
  touring_test Turing+test
+ im I+am
  1am 1+am
  2am 2+am
  3am 3+am
@@ -188,7 +189,6 @@ prof. professor
  <ourself_we we
  <ourselves_,_we we
  <should_you_not should+you
- <tell_me_more> continue
  <themself_,_they they
  <themselves_,_they they
  <themselves_they they
@@ -470,7 +470,6 @@ prof. professor
  at_this_point_in_time at+this+time
  atleast at+least
  ATM_machine ATM
- atm> at+the+moment
  atthe at+the
  autobiography_of_her_life autobiography
  autobiography_of_his_life autobiography
@@ -896,7 +895,6 @@ prof. professor
  is_able_to can
  is_certain_to will
  is_comprised_of comprises
- is_lead is+led
  is_ran is+run
  is_renown is+renowned
  is_setup is+set+up

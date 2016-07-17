@@ -824,9 +824,11 @@ bool IsRomanNumeral(char* word, uint64& val)
 	return (!*word); // finished or not
 }
  
-unsigned int IsNumber(char* word,bool placeAllowed) // simple digit number or word number or currency number
+unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or word number or currency number
 {
-	if (!*word) return false;
+	if (!*num) return false;
+	char word[MAX_WORD_SIZE];
+	MakeLowerCopy(word,num); // accept number words in upper case as well
 	if (word[1] && (word[1] == ':' || word[2] == ':')) return false;	// 05:00 // time not allowed
  	
 	char* number = NULL;

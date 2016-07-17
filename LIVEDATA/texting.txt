@@ -42,7 +42,6 @@
  <ta ~emothanks
  <ta_ta ~emogoodbye
  <ta_very_much ~emothanks
- <tata ~emogoodbye
  <tnt ~emogoodbye
  <tnx ~emothanks
  <ttfn ~emogoodbye

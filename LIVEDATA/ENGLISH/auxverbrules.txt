@@ -58,9 +58,10 @@ KEEP
 #	POSSIBLEINFINITIVE
 # KEEP
 
-#! "will " at start is always aux question -  but "be" "have" "do" aux may be commands 
+# will at start is always aux question -  but "be" "have" "do" aux may be commands  - but not "is snow cold"
 0	INCLUDE * AUX_VERB
 	STAY START
+	STAY !HAS AUX_BE
 KEEP
 
 # possible AUX_VERB_FUTURE not question (not at start or after qword) followed by adverb and possible noun/verbinfintive will be verb "can (Aux_verb_present +Verb_infinitive +Verb_present)  actually (Adverb)  see (Noun_singular +Verb_infinitive +Verb_present)" 

@@ -47,7 +47,7 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling);
 void RecoverUser();
 void ExtractUser(char* name);
 extern char userFilename[500];
-
+void CopyUserTopicFile(char* newname);
 // login
 void ReadComputerID();
 void Login(char* ptr,char* callee,char* ip);

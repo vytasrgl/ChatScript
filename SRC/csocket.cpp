@@ -452,7 +452,7 @@ void* RegressLoad(void* junk)// test load for a server
 	int counter = 0;
 	while (1)
 	{
-		if (ReadALine(revertBuffer+1,in,INPUT_BUFFER_SIZE) < 0) break; // end of input
+		if (ReadALine(revertBuffer+1,in,INPUT_BUFFER_SIZE-100) < 0) break; // end of input
 		// when reading from file, see if line is empty or comment
 		char word[MAX_WORD_SIZE];
 		ReadCompiledWord(revertBuffer+1,word);
@@ -596,7 +596,7 @@ static bool ClientGetChatLock()  //LINUX
 
 static bool ClientWaitForServer(char* data,char* msg,unsigned long& timeout) //LINUX
 {
-	timeout = GetFutureSeconds(10);
+	timeout = GetFutureSeconds(120);
 	serverFinishedBy = timeout - 1;
 	
     pendingClients++;
@@ -750,7 +750,7 @@ static bool ClientWaitForServer(char* data,char* msg,unsigned long& timeout) // 
 {
 	bool result;
 	DWORD startTime = ElapsedMilliseconds();
-	timeout = startTime + (10 * 1000);
+	timeout = startTime + (120 * 1000);
 	serverFinishedBy = timeout - 1000;
 
 	ReleaseMutex(hChatLockMutex); // chatbot server can start processing my request now
@@ -791,7 +791,7 @@ static void ServerStartup()
 static void ServerGetChatLock() // WINDOWS
 {
 	chatWanted = false;		
-    while (!chatWanted) //   dont exit unless someone actually wanted us
+    while (!chatWanted || pendingRestart) //   dont exit unless someone actually wanted us
     {
 		ReleaseMutex(hChatLockMutex);
  		WaitForSingleObject( hChatLockMutex, INFINITE );
@@ -1055,16 +1055,15 @@ static void* MainChatbotServer()
 	Log(SERVERLOG,(char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
 	printf((char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
 	serverLog = oldserverlog;
+	int returnValue = 0;
+	while (1)
+	{
 #ifdef WIN32
 	_try { // catch crashes in windows
 #else
 	try {
 #endif
-	int counter = 0;
-	while (1)
-	{
-		if (quitting) 
-			return NULL; 
+		if (quitting) return NULL; 
 		ServerGetChatLock();
 		startServerTime = ElapsedMilliseconds(); 
 
@@ -1090,17 +1089,41 @@ static void* MainChatbotServer()
 		echo = false;
 		if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s\r\n",user,bot,ourMainInputBuffer);
 
-		*((int*) clientBuffer) = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
-		ServerTransferDataToClient();
+		returnValue = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
+	} // end try block on calling cs performchat
+#ifdef WIN32
+	_except(true)
+#else
+	catch (...) 
+#endif
+	{ ReportBug((char*)"Server exception\r\n") Crash();}
+
+#ifdef WIN32
+	_try { // catch crashes in windows
+#else
+	try {
+#endif
+		*((int*)clientBuffer) = returnValue;
+
+		// special controls
+		if (!strnicmp(ourMainOutputBuffer,"$#$",3)) // special messages
+		{
+			memmove(ourMainOutputBuffer,ourMainOutputBuffer+3,strlen(ourMainOutputBuffer)-2);
+			if (pendingRestart) strcat(ourMainOutputBuffer," Restarting server. Please try again in a minute.\r\n");
 		}
+
+		ServerTransferDataToClient();
+		if (pendingRestart) Restart();
 	}
 #ifdef WIN32
-	_except(true) {ReportBug((char*)"Server exception\r\n") 
-			Crash();}
+	_except(true) 
 #else
-	catch (...) {ReportBug((char*)"Server exception\r\n") 
-			Crash();}
+	catch (...) 
 #endif
+	{
+		ReportBug((char *) "clientBuffer is no longer valid.  Server probably closed socket because it was open too long.  Ignoring and continuing.\r\n");
+	}
+	}
 	return NULL;
 }
 #endif // ndef EVSERVER

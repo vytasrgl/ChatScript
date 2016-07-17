@@ -593,10 +593,10 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define USERINPUT				0x0000000100000000ULL  
 #define COMMANDMARK 			0x0000000200000000ULL
 #define IMPLIED_YOU 			0x0000000400000000ULL // commands and some why questions where you is implied
-#define FOREIGN_TOKENS			0x0000000800000000ULL
+#define FOREIGN_TOKENS				0x0000000800000000ULL
 #define FAULTY_PARSE			0x0000001000000000ULL   
 #define QUOTATION				0x0000002000000000ULL
-#define NOT_SENTENCE			0x0000004000000000ULL   
+#define NOT_SENTENCE				0x0000004000000000ULL   
 
 // in tokencontrol, not tokenflags
 #define NO_PROPER_SPELLCHECK		0x0000008000000000ULL   

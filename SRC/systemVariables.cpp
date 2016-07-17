@@ -912,7 +912,7 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%crosstalk",ScrossTalk,(char*)"cross bot/cross document variable storage"}, 
 	{ (char*)"%document",Sdocument,(char*)"Boolean - is :document flag on"}, 
 	{ (char*)"%fact",Sfact,(char*)"Most recent fact id"}, 
-	{ (char*)"%freetext",SfreeText,(char*)"bytes of available text space"}, 
+	{ (char*)"%freetext",SfreeText,(char*)"Kbytes of available text space"}, 
 	{ (char*)"%freeword",SfreeWord,(char*)"number of available unused words"}, 
 	{ (char*)"%freefact",SfreeFact,(char*)"number of available unused facts"}, 
 	{ (char*)"%regression",Sregression,(char*)"Boolean - is regression flag on"}, 

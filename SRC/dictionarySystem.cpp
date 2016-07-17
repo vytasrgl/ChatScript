@@ -79,7 +79,7 @@ static unsigned int rawWords = 0;
 static unsigned char* writePtr;				// used for binary dictionary writes
 
 // memory data
-#define MAX_STRING_SPACE 35000000  // transient string space 35MB
+#define MAX_STRING_SPACE 70000000  // transient string space 70MB
 unsigned long maxHashBuckets = MAX_HASH_BUCKETS;
 bool setMaxHashBuckets = false;
 uint64 maxDictEntries = MAX_ENTRIES;

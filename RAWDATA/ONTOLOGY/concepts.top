@@ -1,4 +1,4 @@
-ï»¿concept: ~cartoon_character ( )
+concept: ~cartoon_character ( )
  concept: ~architect ( )
 concept: ~athlete UPPERCASE_MATCH()
 concept: ~author UPPERCASE_MATCH()
@@ -105,9 +105,9 @@ concept: ~amplifiers (amplifier ballast binoculars blinder candle contacts crutc
           photograph pole_lamp projector slide_projector snorkel snorkeler step_ladder stethoscope sunlamp surfboard table_lamp telescope thesaurus vibrator wings )
 concept: ~angryevent (betrayed_me cheated_me cheated_on deception disgusting embezzlement hurtful injustice outrage outrageous revolting scandalous spiteful stealing stolen stupid uncalled_for 
           violence violent wasteful )
-concept: ~animal_kingdoms NOUN NOUN_SINGULAR ANIMATE_BEING (~animals ~microlife ~plants )
+concept: ~animal_kingdoms   ANIMATE_BEING (~animals ~microlife ~plants )
 concept: ~animal_product (animal_product~1 cowhide rawhide )
-concept: ~animals NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~bird ~fishes ~insects ~mammals ~pet_animals ~reptiles bitch boy girl hack human man woman )
+concept: ~animals   PROBABLE_NOUN ANIMATE_BEING (~bird ~fishes ~insects ~mammals ~pet_animals ~reptiles bitch boy girl hack human man woman )
 concept: ~animals_generic (~animals beast bird creature fish mammal reptile )
 concept: ~animate_thing (~beings ~bodyparts ~microlife ~plants )
 concept: ~appliance_store (appliance dryer freezer refrigerator TV washer )
@@ -130,7 +130,7 @@ concept: ~artifacts (~amplifiers ~appliances ~building ~cleaners ~clothes ~commu
           ~weapon ~xmeasurers )
 concept: ~artist (~glassblower ~painter ~sculptor )
 concept: ~arts (paint play~40 sculpt sing )
-concept: ~assassin NOUN NOUN_SINGULAR PROBABLE_NOUN (assassin gunman hit_man hitman kill killer mercenary murderer )
+concept: ~assassin   PROBABLE_NOUN (assassin gunman hit_man hitman kill killer mercenary murderer )
 concept: ~astrology_signs (Aquarius Aries Cancer Capricorn Gemini Leo Libra Pisces Sagittarius Scorpio Taurus Virgo )
 concept: ~astronautics (astronautics launchpad NASA space_probe space_shuttle space_station spacesuit )
 concept: ~attaches (~fasteners )
@@ -144,7 +144,7 @@ concept: ~awards (~degrees award bonus crown fame honor legend medal prize recog
 concept: ~bad_weather (deluge downpour frost gale hail hailstorm ice_storm icicle mist precipitation rain rainfall rainstorm rainy sleet snow snowstorm snowy stormy )
 concept: ~bad_words (~emocurse ~hatewords asshat bastard bloody bullshit clusterfuck cockfucker crap dumb_ass dumbass dumbfuck dumbshit fucker fuckhead fuckwit God_damn goddamn goddamnit 
           hell jackass piss pissed pissed_off shit turd )
-concept: ~baked_goods NOUN NOUN_SINGULAR (baked_goods~1 )
+concept: ~baked_goods   (baked_goods~1 )
 concept: ~bakery (~baked_goods bakery pastry_shop )
 concept: ~bank (ATM bank cash checking_account credit_card currency_conversion deposit deposit_slip loan loan_application money money_order monthly_statement overdraw personal_check 
           safety_deposit_box saving savings_account traveler_'s_check withdrawl_slip )
@@ -153,40 +153,40 @@ concept: ~baseball_teams NOUN NOUN_PROPER_SINGULAR (Angels Braves Brewers Clevel
           White_Sox Yankees )
 concept: ~baseorgans (gut heart heartbeat intestine kidney liver lung pancreas )
 concept: ~basic_degrees (Associate B.A. B.S. BA Bachelor BASc BS BSc Diploma R.N. RN )
-concept: ~bathroom_items NOUN NOUN_SINGULAR (band_aid bath bathtub cologne conditioner deodorant medicine_cabinet shampoo shaving_cream shower shower_curtain soap soap_dish tile toilet 
+concept: ~bathroom_items   (band_aid bath bathtub cologne conditioner deodorant medicine_cabinet shampoo shaving_cream shower shower_curtain soap soap_dish tile toilet 
           toilet_paper toilet_seat toothbrush toothpaste towel )
-concept: ~beach NOUN NOUN_SINGULAR (beach )
+concept: ~beach   (beach )
 concept: ~beauty_salon (beauty_salon eyebrow_waxing facial_wrap makeover manicure pedicure )
 concept: ~bedding (blanket duvet sheet throw )
-concept: ~bedroom_items NOUN NOUN_SINGULAR (bed bedspread blanket box_spring brush chest closet curtain drawer dresser mattress mirror pillowcase rug shade sheet )
+concept: ~bedroom_items   (bed bedspread blanket box_spring brush chest closet curtain drawer dresser mattress mirror pillowcase rug shade sheet )
 concept: ~beer (a_coldie beer Coors Foster_'s Guinness lager Lion_Nathan Miller_Lite stout West_End )
 concept: ~being_conduit (border door entrance entranceway exit opening passage path )
 concept: ~beings PROBABLE_NOUN (~animals ~fairytale_characters ~fishes ~groups ~insects ~intelligent_being ~mammals ~mythical_creatures ~noun_human ~reptiles ~role )
 concept: ~beverage (~alcoholic_beverage ~caffinated_drinks ~juice_drinks ~milk_drinks ~softdrinks ~water_drinks cream drink milk milkshake water )
 concept: ~bioarmor (biohazard_suit hazmat_suit spacesuit )
 concept: ~biome (biome~1 )
-concept: ~bird NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (bird_family~1 bird~1 blue_jay bluebird chicken~1 crow~1 duck~1 eagle~1 finch game_bird~1 goose~1 hawk~1 ostrich~1 owl 
+concept: ~bird   PROBABLE_NOUN ANIMATE_BEING (bird_family~1 bird~1 blue_jay bluebird chicken~1 crow~1 duck~1 eagle~1 finch game_bird~1 goose~1 hawk~1 ostrich~1 owl 
           parrot~1 partridge peacock~1 pelican penguin pigeon raven~1 roadrunner robin rooster sparrow stork turkey vulture woodpecker wren young_bird~1 )
 concept: ~birth_defect (abnormality~4 birth_defect congenital_abnormality~1 defect_of_speech~1 glandular_disease glandular_disorder~1 metabolic_disorder~1 nervous_disorder neurological_disorder~1 
           speech_disorder )
 concept: ~birthlocationnoun (be_from born_in born_near come_from )
 concept: ~black (black blackish ebony jet_black licorice melanic morel nigrine piceous )
 concept: ~black_hackers (Adrian_Lamo Jonathan_James Kevin_Mitnick Kevin_Poulsen Robert_Tappan_Morris )
-concept: ~bladed_weapon NOUN NOUN_SINGULAR (axe backsword bayonet bayonnet blade bodkin broadsword butterfly_knife cavalry_sword chainsaw cleaver crease creese cutlas cutlass dagger 
+concept: ~bladed_weapon   (axe backsword bayonet bayonnet blade bodkin broadsword butterfly_knife cavalry_sword chainsaw cleaver crease creese cutlas cutlass dagger 
           dirk epee Excalibur falchion fencing_sword foil halberd hatchet katana khukuri kirpan knife~2 kris kunai machete matchet panga poniard rapier saber sabre scimitar scythe shiv 
           sickle steel~2 sticker stiletto sword tomahawk~1 trench_knife yataghan )
 concept: ~blemishmark (dimple freckle mole wart )
 concept: ~blue (~blue_other aqua aquamarine azuline azure blue blueish cerulean cyaneous indigo mazarine navy pavonated porceline royal teal turquoise ultramarine watchet )
 concept: ~blue_other (aquamarine cobalt peacock periwinkle sapphire sky steel )
 concept: ~bluray (blu blu-ray blu_ray blue-ray blue_ray blueray bluray BR ray )
-concept: ~board_games NOUN NOUN_SINGULAR (backgammon board_game~1 checkers chess Clue D_and_D dice dominoes Dungeons_and_Dragons mahjong Monopoly Pente Risk Scrabble shogi Stratego 
+concept: ~board_games   (backgammon board_game~1 checkers chess Clue D_and_D dice dominoes Dungeons_and_Dragons mahjong Monopoly Pente Risk Scrabble shogi Stratego 
           Sudoku tic-tac-toe tic_tac_toe tiddlywinks )
 concept: ~bodily_states (ache asleep awake blind bloated chastity chill chilly cold comfort conscious content contentment cool cough dead deaf dehydration doziness dozy famished fever 
           feverish heat heavy horny hot hunger hungry irritate itch itchy lassitude obesity pain painful parched pleasure quiet relaxation relaxed satiated sensation sex-deprived sex-starved 
           sexy shock sleepiness sleepy smell smelly sniff starvation starve stifling stink stinky stuffed stun suffer sweating sweaty sweet taste tense tension thirst thirsty tired 
           unconscious warm warmth )
 concept: ~body_container (casket coffin iron_maiden sarcophagus )
-concept: ~bodyarmor NOUN NOUN_SINGULAR (armor armour battledress breastplate bullet_proof_vest chain_mail cuirass helmet jousting_mail kevlar kevlar_jacket kevlar_vest linothorax shield )
+concept: ~bodyarmor   (armor armour battledress breastplate bullet_proof_vest chain_mail cuirass helmet jousting_mail kevlar kevlar_jacket kevlar_vest linothorax shield )
 concept: ~bodyparts (~baseorgans ~blemishmark ~extremities ~headpart ~spiritpart ~torso )
 concept: ~bone (bone carpus coccyx cranium femur fibula humerus metatarsus patella phalanges pubis radius rib sacrum sternum tarsus tibia ulna )
 concept: ~book_genre (art autobiographical autobiography biography chicklit cyberpunk fantasy fiction horror mystery non-fiction non_fiction poetry romance sci-fi science_fantasy science_fiction 
@@ -196,10 +196,10 @@ concept: ~bookmagazine (autobiography biography book chapter hardback library li
 concept: ~bookstore (Barnes_and_Noble bookstore Borders )
 concept: ~boutique (~clothes boutique handbag )
 concept: ~bowling_alley (bowling bowling_alley bowling_ball lane pin )
-concept: ~breakfast_items NOUN NOUN_SINGULAR (apple_juice bacon butter cantaloupe cereal cocoa cream cream_cheese_danish egg french_toast fried_egg ham hard-boiled_egg home_fries jam 
+concept: ~breakfast_items   (apple_juice bacon butter cantaloupe cereal cocoa cream cream_cheese_danish egg french_toast fried_egg ham hard-boiled_egg home_fries jam 
           jelly margarine melon milk muffin oatmeal orange_juice pancake poached_egg sausage scrambled_egg syrup toast waffle )
 concept: ~bridal_store (bridal_salon bridal_store wedding_dress )
-concept: ~brother NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (bro brother male_sibling~1 )
+concept: ~brother   PROBABLE_NOUN ANIMATE_BEING (bro brother male_sibling~1 )
 concept: ~brown (~brown_other amber bronze brown brownish brunette buff fuscous infuscate mahogany russet rust sandy sepia sienna sinopia sorrel tan taupe terracotta Titian umbra )
 concept: ~brown_other (almond chocolate cinnamon coffee copper hazel honey khaki nutmeg rainbow walnut )
 concept: ~browsers (Chrome Firefox IE Internet_Explorer Mozilla Netscape Safari )
@@ -218,12 +218,12 @@ concept: ~butt NOUN (ahole anal anus arse arsehole ass assclown asscracker asses
           rectum shitspitter )
 concept: ~cafe (breakfast cafe dinner food lunch )
 concept: ~caffinated_drinks (~coffees chai Coca_Cola Dr._Pepper energy_drink iced_tea Pepsi_Cola Red_Bull tea )
-concept: ~candy NOUN NOUN_SINGULAR (candy~1 )
+concept: ~candy   (candy~1 )
 concept: ~car (auto automobile car limo limousine SUV truck vehicle )
 concept: ~car_brands (Acura Alfa_Romeo American_Motors Aston_Martin Audi Bentley BMW Bugatti Buick Cadillac Chevrolet Chevy Chrysler Citroen Daewoo Daihatsu Dodge Ferrari Fiat Ford 
           General_Motors GM GMC Honda Hummer Hyundai Infiniti Invicta Isuzu Jaguar Jeep jeep Kia Lamborghini Land_Rover Lexus Lincoln Lotus Maserati Mazda Mercedes Mercedes_Benz Mercury 
           Mitsubishi Nissan Oldsmobile Opel Peugeot Pontiac Porsche Renault Rolls_Royce Saab Saturn Scion Shelby Subaru Suzuki Tata Tesla Toyota Vauxhall Volkswagen VW Volvo )
-concept: ~car_vehicles NOUN NOUN_SINGULAR (4WD aerial_ladder_truck ambulance amphibious_vehicle armored_car armored_combat_vehicle armored_personnel_carrier armored_vehicle armoured_car 
+concept: ~car_vehicles   (4WD aerial_ladder_truck ambulance amphibious_vehicle armored_car armored_combat_vehicle armored_personnel_carrier armored_vehicle armoured_car 
           armoured_combat_vehicle armoured_personnel_carrier armoured_vehicle army_tank articulated_lorry ATV auto autobus automobile automotive_vehicle~1 bloodmobile bookmobile bus 
           cab Cabriolet Cadillac camper camper_trailer camping_bus car car_transporter caravan cement_truck compact_car convertible coupe cruiser delivery_truck delivery_van dump_truck 
           electric_automobile electric_car estate_car fire_engine fire_truck flying_car garbage_truck gas_guzzler hatchback hearse hot-rod hot_rod house_trailer Humvee ice-wagon ice_cream_truck 
@@ -236,28 +236,28 @@ concept: ~cardgame (ace card_game~1 clubs diamonds flush full_house hearts Jack 
 concept: ~carnivore (alligator badger cat cheetah crocodile dog dolphin eagle falcon foxhawk hyena lion orca owl polar-bear puma salmon scorpion shark spider tiger whale wolf )
 concept: ~carryable (~nutrient )
 concept: ~cashable_item (cash coin money treasure )
-concept: ~cat_breeds NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (Abysinnian Aegean Americal_Curl American_Bobtail American_Shorthair American_Wirehair Arabian_Mau Asian Asian_Semi-longhair 
+concept: ~cat_breeds   PROBABLE_NOUN ANIMATE_BEING (Abysinnian Aegean Americal_Curl American_Bobtail American_Shorthair American_Wirehair Arabian_Mau Asian Asian_Semi-longhair 
           Australian_Mist Balinese Bambino Bengal Birman Bombay Brazilian_Shorthair British_Longhair British_Semi-longhair British_Shorthair coon kitten kitty maine Mau Persian siamese 
           tabby Toybob )
 concept: ~category (brand breed breed_of category class class_of division flavor_of genre grouping kind kind_of kind_of_stuff kinds_of make_of model sort_of species style_of subdivision 
           type type_of )
-concept: ~celestial_body NOUN NOUN_SINGULAR (asteroid black_dwarf black_hole celestial_body~1 comet galaxy meteor meteorite moon neutron_star planet pulsar quark quasar shooting_star 
+concept: ~celestial_body   (asteroid black_dwarf black_hole celestial_body~1 comet galaxy meteor meteorite moon neutron_star planet pulsar quark quasar shooting_star 
           solar_system star sun supergiant supernova white_dwarf world )
 concept: ~celestial_observation (constellation eclipse observatory Perseid planetarium stargazing telescope )
 concept: ~ceo (CEO )
 concept: ~chatbotlist (AI AIML Alicebot artificial artificial_intelligence automaton bot chat-program chat_bot chat_box chatbot chatbox chatterbot chatterbox nonhuman NPC program robot 
           Smarterchild talk_bot unhuman Verbot )
-concept: ~cheeses NOUN NOUN_SINGULAR (blue_cheese Boursin Brie Cambozola Camembert cheddar Colby cream_cheese Danish_blue feta Gorgonzola Gouda Gruyere havarti Limburger Monterey_Jack 
-          mozzarella Muenster munster Parmesan pepper_jack provolone quark ricotta Rochefort Roquefort Stilton Swiss_cheese Tilsit blue_cheese Boursin Brie Brie_de_Meaux Cambozola Camembert cheddar Chevre ChÃ¨vre Colby cream_cheese Danish_blue Epoisses feta fromage Gorgonzola Gouda Gruyere 
-          havarti Limburger Monterey_Jack mozzarella muenster munster Parmesan pepper_jack Pont_l'Eveque Pont_l'Ã‰vÃªque provolone quark Reblochon ricotta Rochefort Roquefort Stilton 
-          Swiss_cheese Tilsit Tomme_de_Savoie yogurt Ã‰poisses)
+concept: ~cheeses   (blue_cheese Boursin Brie Cambozola Camembert cheddar Colby cream_cheese Danish_blue feta Gorgonzola Gouda Gruyere havarti Limburger Monterey_Jack 
+          mozzarella Muenster munster Parmesan pepper_jack provolone quark ricotta Rochefort Roquefort Stilton Swiss_cheese Tilsit blue_cheese Boursin Brie Brie_de_Meaux Cambozola Camembert cheddar Chevre Chèvre Colby cream_cheese Danish_blue Epoisses feta fromage Gorgonzola Gouda Gruyere 
+          havarti Limburger Monterey_Jack mozzarella muenster munster Parmesan pepper_jack Pont_l'Eveque Pont_l'Évêque provolone quark Reblochon ricotta Rochefort Roquefort Stilton 
+          Swiss_cheese Tilsit Tomme_de_Savoie yogurt Époisses)
 concept: ~chemicals (chemical compound~3 organic_compound~1 )
 concept: ~chinese_cooking_styles (Cantonese Chinese Hunan Mongolian Sichuan Szechuan )
 concept: ~christmas_words (Christmas Christmas_Day Christmas_Eve Xmas )
 concept: ~cinema (cinema film movie theater )
 concept: ~citytype (city hamlet metropolis municipality town village )
 concept: ~classactions (argue come_in cry draw erase frown go_out laugh listen look read shake_hands sit sleep smile speak stand study talk think walk wave worry write yawn )
-concept: ~classhate NOUN NOUN_SINGULAR (bitter-clinger chink_a_billy hick hoosier hoser redneck rube SAWCSM shant shit_kicker stump_jumper teabagger trailer_park_trash trailer_trash 
+concept: ~classhate   (bitter-clinger chink_a_billy hick hoosier hoser redneck rube SAWCSM shant shit_kicker stump_jumper teabagger trailer_park_trash trailer_trash 
           tree_jumper white_trash )
 concept: ~classroom (board book ceiling chair chalk classroom clock desk door eraser floor map notebook paper pen pencil student table teacher wall window )
 concept: ~cleaners (bathtub bidet broom brush dental_floss dish_towel face_cloth floss hand_towel mop napkin paper_towel rag rake scrub_brush shower sink toothbrush towel tub washcloth )
@@ -301,7 +301,7 @@ concept: ~color_words (color hue shade )
 concept: ~colors (~black ~blue ~brown ~gray ~green ~metallic ~orange ~purple ~red ~white ~yellow reflective transparent )
 concept: ~combat_sports (aikido boxing capoeira fencing judo jujitsu jujutsu karate kendo kung_fu martial_art~1 shinjutsu sumo wrestling )
 concept: ~comic (comic )
-concept: ~communication_artifacts NOUN NOUN_SINGULAR (cellphone chalk computer Google mic microphone mike pen pencil phone smartphone telegraph telephone )
+concept: ~communication_artifacts   (cellphone chalk computer Google mic microphone mike pen pencil phone smartphone telegraph telephone )
 concept: ~communications (message signal )
 concept: ~communicators (~communication_artifacts ~gesturelist ~sounds )
 concept: ~company (company )
@@ -325,7 +325,7 @@ concept: ~cooklocation (burner oven stove_top toaster toaster_oven )
 concept: ~cookware (angel_food_cake_pan baking_pan bread_pan cake_pan casserole casserole_dish cookie_sheet Dutch_oven frying_pan frypan griddle loaf_pan omelet_pan pan pie_pan pot 
           roasting_pan sauce_pot saute_pan sieve skillet soup_pot stockpot wok )
 concept: ~cool (cold cool )
-concept: ~cosmetics NOUN NOUN_SINGULAR (cosmetic cosmetic~1 lipstick perfume )
+concept: ~cosmetics   (cosmetic cosmetic~1 lipstick perfume )
 concept: ~cost (cheap cost expense expensive price )
 concept: ~count_collection (couple dozen duet duo gross octet pair quartet quintet quintuplet score septet sextet trilogy trio triplet )
 concept: ~counting_quantity (armload boundless boundlessly bunch bundle centesimal cluster dab dozen duo endless finitely gross half handful haul heap immeasurably infinite infinitely 
@@ -352,30 +352,30 @@ concept: ~crustaceans (crustacean~1 shellfish~1 shrimp starfish )
 concept: ~dairyitems (~milk ~milk_drinks butter cheese dairy egg )
 concept: ~dance (ballet choreography dance modern_dance stage_dancing~1 )
 concept: ~dance_stuff (~dance ~dances )
-concept: ~dances NOUN NOUN_SINGULAR (ballet belly_dance can-can cha-cha-cha cha_cha_cha clogging contra folk foxtrot hip_hop hokey_pokey hully_gully jig jitterbug lambada limbo line 
+concept: ~dances   (ballet belly_dance can-can cha-cha-cha cha_cha_cha clogging contra folk foxtrot hip_hop hokey_pokey hully_gully jig jitterbug lambada limbo line 
           macarena mambo minuet modern_dance Morris polka salsa samba shimmy swing swingsquare tango tap twist two_step waltz )
 concept: ~dangerous_job PROBABLE_NOUN (bomb-disposal circus miner oil_rig racecar_driver Special_Forces stuntperson suicide_bomber terrorist test_pilot )
 concept: ~data (data database diagnosis info information )
-concept: ~datatype NOUN NOUN_SINGULAR (bool boolean character character_string double float int long_int short_integer string unsigned_int )
+concept: ~datatype   (bool boolean character character_string double float int long_int short_integer string unsigned_int )
 concept: ~dating_friend PROBABLE_NOUN (~girlfriend beau boyfriend ex-boyfriend ex-girlfriend ex-partner fiance fiancee fuck_buddy fuckbuddy gigolo girlfriend lover paramour prostitute 
           swain sweetheart trollop )
 concept: ~day_care_center (babysitting child_care day_care_center )
-concept: ~dayname (Friday Monday Saturday Sunday Thursday Tuesday Wednesday )
-concept: ~dayindex DUPLICATE (5 1 6 0 4 2 3 )
-concept: ~decorations NOUN NOUN_SINGULAR (~cosmetics ~jewelry_items bracelet Christmas_tree_ball Christmas_tree_light cologne crayon decoration dye earring eyeliner eyeshadow fragrance 
+concept: ~dayname (Friday Fri Fr fri fr Monday Mon Mo mon mo Saturday sat sa Sat Sa Sunday sun su Sun Su Thursday thu thur th Thu Thur Th Tuesday tue tues tu Tue Tues Tu Wednesday wed we Wed We)
+concept: ~dayindex DUPLICATE (5 5 5 5 5 1 1 1 1 1 6 6 6 6 6 0 0 0 0 0 4 4 4 4 4 4 4 2 2 2 2 2 2 2 3 3 3 3 3)
+concept: ~decorations   (~cosmetics ~jewelry_items bracelet Christmas_tree_ball Christmas_tree_light cologne crayon decoration dye earring eyeliner eyeshadow fragrance 
           glitter gloss lacquer lipstick mascara nail_polish nose_ring ornament paint perfume plaster popcorn_string ring scent stain tinsel varnish wallpaper )
-concept: ~defender NOUN NOUN_SINGULAR PROBABLE_NOUN (angel defender guardian parent protector )
+concept: ~defender   PROBABLE_NOUN (angel defender guardian parent protector )
 concept: ~degrees (~advanced_degrees ~basic_degrees ~medium_degrees )
-concept: ~deli NOUN NOUN_SINGULAR (~sandwich cheese deli meat soup )
+concept: ~deli   (~sandwich cheese deli meat soup )
 concept: ~dentist_items (abscess brace caries cavity clean denture filling floss tooth tooth_decay toothbrush )
 concept: ~department_store (~clothes department_store )
 concept: ~desert (desert )
-concept: ~dessert NOUN NOUN_SINGULAR (brownie~1 cake candy caramel chocolate~2 cookie creme_caramel crumble dessert~1 donut doughnut~1 flan fudge~1 honey~1 hot_chocolate ice_cream ice~4 
+concept: ~dessert   (brownie~1 cake candy caramel chocolate~2 cookie creme_caramel crumble dessert~1 donut doughnut~1 flan fudge~1 honey~1 hot_chocolate ice_cream ice~4 
           jam~2 Jell-O jello jelly lollipop marzipan meringue mousse~3 parfait pie popsickle pudding sherbert sorbet syrup taffy treacle trifle~3 yoghurt )
 concept: ~diet (Atkins diet Jenny_Craig low_carb Weight_Watchers )
 concept: ~different (contrast contrasting differ difference different differentiation differentiator disparate dissimilar divergent incomparable opposed unalike unrelated )
-concept: ~dining_room_items NOUN NOUN_SINGULAR (bowl fork glass knife napkin pepper_shaker pitcher plate salt_shaker silverware spoon table tablecloth tablespoon teaspoon )
-concept: ~dinosaur NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (allosaur allosaurus anatotitan ankylosaur ankylosaurus apatosaur apatosaurus Apatosaurus_excelsus argentinosaur armored_dinosaur 
+concept: ~dining_room_items   (bowl fork glass knife napkin pepper_shaker pitcher plate salt_shaker silverware spoon table tablecloth tablespoon teaspoon )
+concept: ~dinosaur   PROBABLE_NOUN ANIMATE_BEING (allosaur allosaurus anatotitan ankylosaur ankylosaurus apatosaur apatosaurus Apatosaurus_excelsus argentinosaur armored_dinosaur 
           barosaur barosaurus bird-footed_dinosaur bone-headed_dinosaur brontosaur brontosaurus carnosaur ceratopsian ceratosaur ceratosaurus coelophysis compsognathus corythosaur corythosaurus 
           deinocheirus deinonychus dinosaur dinosaur~1 diplodocus dromaeosaur duck-billed_dinosaur Edmontonia edmontosaurus eoraptor genus_Argentinosaurus ground-shaker hadrosaur hadrosaurus 
           herrerasaur herrerasaurus horned_dinosaur iguanodon maniraptor megalosaur megalosaurus Mononychus_olecranus ornithischian ornithischian_dinosaur ornithomimid ornithopod ornithopod_dinosaur 
@@ -384,7 +384,7 @@ concept: ~dinosaur NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (allosaur allo
           theropod_dinosaur thunder_lizard titanosaur titanosaurian trachodon trachodont tRex triceratops tyrannosaur tyrannosaurus Tyrannosaurus_rex utahraptor velociraptor )
 concept: ~directions (across ahead aim aside away back backward course direction down downstairs east forward from into left north out right south through to toward up upstairs way 
           west )
-concept: ~disabilityhate NOUN NOUN_SINGULAR (cripple mong retard sperg )
+concept: ~disabilityhate   (cripple mong retard sperg )
 concept: ~diseaselist (AIDS Alzheimer_'s asthma avian_flu bipolar bird_flu Black_Death broken_bone cancer chicken_pox chlamydia cystic_fibrosis dengue depressed depression diphtheria 
           disease Ebola Epstein_barr flu German_measles gonorrhea H1N1 hangnail hemorrhagic_fever herpes infestation~2 influenza lupus Lyme_disease measles meningitis mitochondrial 
           mono mumps obsessive OCD pancreatitis pathological_state~1 pox psoriasis scarlet_fever sexually_transmitted_disease sickness sleep_apnea STD swine_flu syphilis tetanus trichomoniasis 
@@ -398,18 +398,18 @@ concept: ~division (division out_of per percent quotient_of ratio_of )
 concept: ~do_with_titles (~buy ~hear ~like ~own ~read ~watch )
 concept: ~doctor PROBABLE_NOUN (acupuncturist audiologist chiropractor coroner doctor Dr kinesiologist medical_doctor oncologist optometrist pathologist physician podiatrist psychiatrist 
           psychologist shaman surgeon therapist vet veterinarian veterinary_surgeon )
-concept: ~dog_breeds NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (basset beagle bulldog collie colly dachshund dalmatian Dalmation Doberman hound poodle spaniel terrier )
+concept: ~dog_breeds   PROBABLE_NOUN ANIMATE_BEING (basset beagle bulldog collie colly dachshund dalmatian Dalmation Doberman hound poodle spaniel terrier )
 concept: ~dominance_words (assertive dominance dominant independent inferior passive predominant subordinate superior )
 concept: ~draper (clothes draper nightclothes )
 concept: ~drinkstuff (drinker~2 )
 concept: ~druglist (~drugs_depressive ~drugs_hallucinogen ~drugs_illegal ~drugs_legal ~drugs_narcotic ~drugs_stimulant )
-concept: ~drugs_depressive NOUN NOUN_SINGULAR (alcohol analgesic antidiabetic aspirin barbituate downer Excedrin ludes Nembutal pain_pill Seconal sedative )
-concept: ~drugs_hallucinogen NOUN NOUN_SINGULAR (acid cannabis LSD magic_mushroom marijuana mesc mescaline PCP peyote phencyclidine pot psilocybin )
-concept: ~drugs_illegal NOUN NOUN_SINGULAR (acid blow cannabis cocaine codeine coke crack ecstasy gamja ganja hemp heroin LSD magic_mushrooms marijuana MDMA mescaline meth methamphetamine 
+concept: ~drugs_depressive   (alcohol analgesic antidiabetic aspirin barbituate downer Excedrin ludes Nembutal pain_pill Seconal sedative )
+concept: ~drugs_hallucinogen   (acid cannabis LSD magic_mushroom marijuana mesc mescaline PCP peyote phencyclidine pot psilocybin )
+concept: ~drugs_illegal   (acid blow cannabis cocaine codeine coke crack ecstasy gamja ganja hemp heroin LSD magic_mushrooms marijuana MDMA mescaline meth methamphetamine 
           opiate peyote pot reefer shroom smack )
-concept: ~drugs_legal NOUN NOUN_SINGULAR (acetaminephin alcohol aspirin caffeine codeine downers nicotine Prozac Tylenol uppers )
-concept: ~drugs_narcotic NOUN NOUN_SINGULAR (codeine heroin opiate )
-concept: ~drugs_stimulant NOUN NOUN_SINGULAR (~tobacco amphetamine Benzedrine caffeine cocaine coffee coke Dexedrine diet_pill ecstasy freebase nicotine pep_pill tobacco )
+concept: ~drugs_legal   (acetaminephin alcohol aspirin caffeine codeine downers nicotine Prozac Tylenol uppers )
+concept: ~drugs_narcotic   (codeine heroin opiate )
+concept: ~drugs_stimulant   (~tobacco amphetamine Benzedrine caffeine cocaine coffee coke Dexedrine diet_pill ecstasy freebase nicotine pep_pill tobacco )
 concept: ~drugstore (~cosmetics ~hair_products ~vitamin antacid blade chapstick cold_medicine cold_remedy comb cosmetics cough_syrup diapers drugstore film lipstick lotion medicine 
           mouthwash nail_polish ointment razor sunglasses sunscreen tissues toothpaste vitamins )
 concept: ~dry_cleaner (dry_cleaner dry_cleaning )
@@ -419,8 +419,8 @@ concept: ~earthmedia_words (above_ground aerial buoyant buried floating flying m
 concept: ~eatable (~animals ~nutrient )
 concept: ~eatery (brewpub cafe cafeteria diner eatery kitchen pub restaurant tavern )
 concept: ~economic_troubles (bubble crash crisis decline deteriorate disaster downturn drop fall recession slide slump woe )
-concept: ~electronic_furniture NOUN NOUN_SINGULAR (CD_player computer gramophone hard_drive keyboard monitor mouse phonograph piano player_piano radio robot stereo television TV wireless_set )
-concept: ~electronic_items NOUN NOUN_SINGULAR (~electronic_furniture adding_machine boombox calculator camcorder computer digital_camera dryer electronics fax_machine freezer fridge 
+concept: ~electronic_furniture   (CD_player computer gramophone hard_drive keyboard monitor mouse phonograph piano player_piano radio robot stereo television TV wireless_set )
+concept: ~electronic_items   (~electronic_furniture adding_machine boombox calculator camcorder computer digital_camera dryer electronics fax_machine freezer fridge 
           headphones home_theater keyboard lamp light light_bulb modem phone printer radio sound_system stereo telephone television tumble-dryer TV washer )
 concept: ~element (element~6 )
 concept: ~emocurse (~sexualhate **itch arsehole ass_hole asshole b**tch crap dickhead eat_shit f#*k f*#k f*** f**k f*ck f_u_c_k fet_fucked fu fu*k fuck fuck_my fuck_off fuck_out fuck_you 
@@ -441,7 +441,7 @@ concept: ~entertainment_stuff (~art_stuff ~dance_stuff ~film_stuff ~hobby ~music
 concept: ~entirety_words (complete deficient entire entirety incomplete partial piecemeal whole wholesale )
 concept: ~equals (are equals gives is sold_for was were will_be yields )
 concept: ~equestrian_sports (dressage harness_racing horse_racing polo riding show_jumping )
-concept: ~ethnichate NOUN NOUN_SINGULAR (abbo  border_hopper border_jumper border_nigger Bounty_bar Buddhahead bug_eater bunga burrhead cab_nigger camel_cowboy camel_humper camel_jacker 
+concept: ~ethnichate   (abbo  border_hopper border_jumper border_nigger Bounty_bar Buddhahead bug_eater bunga burrhead cab_nigger camel_cowboy camel_humper camel_jacker 
           camel_jockey can_eater carpet_pilot chee_chee chi_chi chili_shitter Chinese_wetback ching_chong chinig chink_a_billy chonky cocolo coolie coon coon_ass cotton_picker cowboy_killer 
           curry_muncher curry_slurper curry_stinker Cushi Cushite dago darkey darkie darky dego diaper_head dinge dink dot_head dune_coon dune_nigger eurotrash eyetie fog_nigger gator_bait 
           gew ghetto_hamster gin_jockey ginzo gipp gippo house_nigger Hunkie hymie ice_nigger ikey ikey_mo iky injun island_nigger Jap japie jigaboo jigarooni jigg jigga jiggabo Jihadi 
@@ -477,23 +477,23 @@ concept: ~extremities (ankle arm claw elbow feet finger fist foot hand heel hip 
 concept: ~fabric_store (~clothing_material fabric_store )
 concept: ~fairytale_characters PROBABLE_NOUN (dragon frog king knight prince princess queen wizard )
 concept: ~fake_religious_sect (Christian_Science Christian_Scientist Freemason Freemasonry Moonie Satanism Satanist Scientologist Scientology Unification_Church Wicca Wiccan Witch Witchcraft )
-concept: ~family_adult NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~family_adult_female ~family_adult_generic ~family_adult_male )
-concept: ~family_adult_female NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~mother aunt daughter-in-law ex-wife fiancee girlfriend godmother gran grandma grandmom grandmother granny 
+concept: ~family_adult   PROBABLE_NOUN ANIMATE_BEING (~family_adult_female ~family_adult_generic ~family_adult_male )
+concept: ~family_adult_female   PROBABLE_NOUN ANIMATE_BEING (~mother aunt daughter-in-law ex-wife fiancee girlfriend godmother gran grandma grandmom grandmother granny 
           matriarch mistress mother-in-law partner spinster step-mother stepmother widow wife )
-concept: ~family_adult_generic NOUN_HUMAN NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (ancestor clan cousin descendant descendent elders folks grandparent heir parent partner spouse 
+concept: ~family_adult_generic NOUN_HUMAN PROBABLE_NOUN ANIMATE_BEING (ancestor clan cousin descendant descendent elders folks grandparent heir parent partner spouse 
           stepparent tribe )
-concept: ~family_adult_male NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~brother ~family_grandfather ~father boyfriend brother-in-law ex-husband father-in-law fiance hubby husband 
+concept: ~family_adult_male PROBABLE_NOUN ANIMATE_BEING (~brother ~family_grandfather ~father boyfriend brother-in-law ex-husband father-in-law fiance hubby husband 
           patriarch scion son-in-law step-father stepfather uncle widower )
-concept: ~family_children NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~family_children_female ~family_children_generic ~family_children_male )
-concept: ~family_children_female NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~sister daughter granddaughter grandniece niece sister sister-in-law step-daughter step-sister stepdaughter 
+concept: ~family_children  PROBABLE_NOUN ANIMATE_BEING (~family_children_female ~family_children_generic ~family_children_male )
+concept: ~family_children_female  PROBABLE_NOUN ANIMATE_BEING (~sister daughter granddaughter grandniece niece sister sister-in-law step-daughter step-sister stepdaughter 
           stepsister )
-concept: ~family_children_generic NOUN_HUMAN NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (baby child cousin grandchild grandkid infant kid offspring progeny sibling step-child stepchild 
+concept: ~family_children_generic NOUN_HUMAN  PROBABLE_NOUN ANIMATE_BEING (baby child cousin grandchild grandkid infant kid offspring progeny sibling step-child stepchild 
           teen teenager toddler tot twin ward youth nephling)
-concept: ~family_children_male NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~brother brother grandnephew grandson nephew scion son sstep-son step-brother stepson )
-concept: ~family_grandfather NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (granddad granddaddy grandfather grandpa grandpaw grandpop )
-concept: ~family_members NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~family_adult ~family_children relative twin )
-concept: ~farm_animals NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (boar bull calf chick cow duck duckling ewe foal goose gosling hen mare pig piglet ram rooster stallion )
-concept: ~farm_items NOUN NOUN_SINGULAR (~farm_animals barn barnyard corn corral crop hay silo sow wheat )
+concept: ~family_children_male PROBABLE_NOUN ANIMATE_BEING (~brother brother grandnephew grandson nephew scion son sstep-son step-brother stepson  )
+concept: ~family_grandfather  PROBABLE_NOUN ANIMATE_BEING (granddad granddaddy grandfather grandpa grandpaw grandpop )
+concept: ~family_members  PROBABLE_NOUN ANIMATE_BEING (~family_adult ~family_children relative twin )
+concept: ~farm_animals  PROBABLE_NOUN ANIMATE_BEING (boar bull calf chick cow duck duckling ewe foal goose gosling hen mare pig piglet ram rooster stallion )
+concept: ~farm_items (~farm_animals barn barnyard corn corral crop hay silo sow wheat )
 concept: ~fashionlist (~clothes )
 concept: ~fast (bolt bounce brisk briskly careen chase dart dash dive drive drop fast flick fly gallop hurl hurry plummet propel quick quickly race ram rapid rapidly rip run rush sail 
           scamper scramble shove skip smash speed spin spring sprint streak stride swat swerve swing swoop trot whisk zip )
@@ -501,7 +501,7 @@ concept: ~fasteners (adhesive bolt brad buckle button cable chain clamp clothesp
           paste peg pin ribbon rivet riveter rope safety_pin scotch_tape screw shoe_lace shoelace shoestring spike stake staple stitch strap string tape tent_peg thread thumbtack twine 
           welder zipper )
 concept: ~fastfood_place (breakfast burger dinner food french_fries fried_chicken fries hamburger lunch milk_shake )
-concept: ~father NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (dad dada daddy father old_man pa papa pappy pop step-father )
+concept: ~father  PROBABLE_NOUN ANIMATE_BEING (dad dada daddy father old_man pa papa pappy pop step-father )
 concept: ~favorite (best coolest fave favorite greatest like_most like_the_most love_the_most most_beloved most_like most_liked most_love most_loved )
 concept: ~feeling_adequate (adequate capable competent composed confident encouraged excited in_control organized proud responsible satisfied )
 concept: ~feeling_admiration (admiration amazed amazement )
@@ -572,7 +572,7 @@ concept: ~feeling_words (~emodisgust ~emopain ~emosurprise ~feeling_adequate ~fe
           ~feeling_singledout ~feeling_surprise ~feeling_sympathy ~feeling_trapped )
 concept: ~female (babe bachelorette chick chix cocotte dame damsel doxy dudette female femme gal girl girlfriend harlot hoyden lady lass lassie lesbian lesbo prostitute spinster vixen 
           whore woman )
-concept: ~femalesexanimals NOUN_SHE NOUN NOUN_SINGULAR (cow hen )
+concept: ~femalesexanimals NOUN_SHE  (cow hen )
 concept: ~fertilizer (fertilizer fertilizer~1 )
 concept: ~field_events (broad_jump decathlon discus hammer_throw heptathlon high_jump javalin_throwing javelin long_jump pole_vault shot_put triple_jump )
 concept: ~film_stuff (~acting cinema film movie theater )
@@ -580,7 +580,7 @@ concept: ~fine_arts (drawing fine_arts painting wood_carving )
 concept: ~fire_department (fire fire_brigade fire_department fire_truck )
 concept: ~fire_force (blaze fire flame spark )
 concept: ~firearmor (asbestos_suit fire_fighter_suit fire_suit )
-concept: ~fishes NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (A._testudineus abalone Abramis_brama Abudefduf_saxatilis Acanthocybium_solandri acanthopterygian Acanthuridae Acanthurus_chirurgus 
+concept: ~fishes  PROBABLE_NOUN ANIMATE_BEING (A._testudineus abalone Abramis_brama Abudefduf_saxatilis Acanthocybium_solandri acanthopterygian Acanthuridae Acanthurus_chirurgus 
           Achoerodus_gouldii Acipenser_huso Acipenser_transmontanus Acipenseridae Aetobatus_narinari agnathan Agonidae Agonus_cataphractus Alaska_cod albacore Albula_vulpes Albulidae 
           Alectis_ciliaris alewife allice allice_shad alligatorfish allis allis_shad allmouth Alopiidae Alopius_vulpinus Alosa_alosa Alosa_chrysocloris Alosa_pseudoharengus Alosa_sapidissima 
           amberfish amberjack Ambloplites_rupestris Ameiuridae Ameiurus_Melas American_flagfish American_plaice American_smelt American_smooth_dogfish Amia_calva Amiidae Ammodytidae 
@@ -702,7 +702,7 @@ concept: ~flavors (almond apple banana blueberry butterscotch caramel cherry che
           orange peach pecan peppermint pineapple pistachio praline pumpkin raspberry strawberry vanilla walnut )
 concept: ~flexibility_words (bendable flexible inflexible pliable pliant rigid stiff )
 concept: ~florist (~flowers bouquet floral_arrangement florist )
-concept: ~flowers NOUN NOUN_SINGULAR ANIMATE_BEING (bluebell camelia flower~2 forget-me-not gardenia hibiscus hydrangea iris lilac lily peony poppy rose roses sunflower tulip violet )
+concept: ~flowers  ANIMATE_BEING (bluebell camelia flower~2 forget-me-not gardenia hibiscus hydrangea iris lilac lily peony poppy rose roses sunflower tulip violet )
 concept: ~fnfactotum (color metrology number person quality time_period )
 concept: ~focus (about among any background base center clue concentrate concern detail distract feature focus from general issue local main major matter mental natural nature of purpose 
           random social subject that these this those to topic within )
@@ -715,7 +715,7 @@ concept: ~food PROBABLE_NOUN (~baked_goods ~breakfast_items ~candy ~cheeses ~del
           steak stroganoff sushi sustenance~2 T-bone tapioca tarte_flambe tater waffle xiaolong xingal xiu_cai yogurt )
 concept: ~food_container (cauldron doggy_bag lunch_box lunch_pail pan picnic_basket pot tin_box )
 concept: ~foodbeverage (~beverage ~food )
-concept: ~foodgroup NOUN NOUN_SINGULAR (bread carb carbohydrate dessert fast_food fruit meat vegetable )
+concept: ~foodgroup  (bread carb carbohydrate dessert fast_food fruit meat vegetable )
 concept: ~force_containers (battery Leyden_jar )
 concept: ~forces (~energy_force ~fire_force ~land_force ~magic_force ~water_force ~wind_force force )
 concept: ~format_words (audio DVD ebook edition EPUB format hardback hardcover iBook kindle Kindle mass-market_paperback Mobipocket MP3 paperback PDF softback softcover trade_paperback 
@@ -723,18 +723,18 @@ concept: ~format_words (audio DVD ebook edition EPUB format hardback hardcover i
 concept: ~frenchwords FOREIGN_WORD (bon bonsoir je jour parle parlez quelle soir suis voulez vous )
 concept: ~frequency_words (annual biannual bicentennial bimonthly biweekly centennial daily diurnal fortnightly frequent hourly immediate imminent monthly occasional perennial quarterly 
           recurrent recurring semiannual triennial weekly yearly )
-concept: ~friend NOUN NOUN_SINGULAR PROBABLE_NOUN (acquaintance ally beau best_friend boyfriend buddy chum close_friend colleague comrade confidant friend girlfriend kith lover pal 
+concept: ~friend   PROBABLE_NOUN (acquaintance ally beau best_friend boyfriend buddy chum close_friend colleague comrade confidant friend girlfriend kith lover pal 
           partner sidekick swain )
-concept: ~fruit NOUN NOUN_SINGULAR (breadfruit edible_fruit~1 grapefruit )
+concept: ~fruit   (breadfruit edible_fruit~1 grapefruit )
 concept: ~functions (~burnable ~carryable ~closeable ~contains ~eatable ~enterable ~flammable ~immovable ~lockable ~noisy ~rideable ~shootable ~supports ~switchable ~throwable ~toyable 
           ~unreachable ~wearable )
-concept: ~fungi NOUN NOUN_SINGULAR ANIMATE_BEING (fungus_family~1 fungus~1 )
+concept: ~fungi   ANIMATE_BEING (fungus_family~1 fungus~1 )
 concept: ~furnishings (picture rug sculpture wall_hanging )
 concept: ~furniture (~container_furniture ~surface_furniture furnishing~2 furniture~1 )
 concept: ~furniture_store (~furniture furniture_store )
 concept: ~game (~board_games ~games_kid ~word_games D_and_D Dungeons_and_Dragons game~1 guessing_game~1 jigsaw_puzzle parlour_game )
 concept: ~gamelist (~game game )
-concept: ~games_kid NOUN NOUN_SINGULAR (7-up blind_man_'s_bluff capture_the_flag cat_'s_cradle child_'s_game~1 dodge_ball duck_duck_goose follow_the_leader hopscotch I_spy jump_rope 
+concept: ~games_kid   (7-up blind_man_'s_bluff capture_the_flag cat_'s_cradle child_'s_game~1 dodge_ball duck_duck_goose follow_the_leader hopscotch I_spy jump_rope 
           keep_away kickball leapfrog mother_may_I musical_chairs red_light,_green_light red_rover rock_paper_scissors Simon_says spud tag thumb_war tug-o-war )
 concept: ~gas_station (auto_repair diesel full_service gas gas_pump gas_station gasoline high_test octane oil unleaded )
 concept: ~gas_weapon (blistering_agent bug_spray chemical_bomb Chemical_Mace chemical_weapon chloroacetophenone chlorobenzylidenemalononitrile CN_gas CS_gas dichloroethyl_sulfide gas_bomb 
@@ -757,7 +757,7 @@ concept: ~germanwords FOREIGN_WORD (auf bisschen du ein geht gehts guten heil kl
 concept: ~gesturelist (blink clap cuddle fluster frown gag glance grimace gulp hug jab leer limp nip nod peck push quiver rub scowl shake shiver slap smile sneer spanking squirm startle 
           stomp stroke tremble twiddle twinge twirl twitch wiggle wink )
 concept: ~gift_shop (card gift gift_shop )
-concept: ~girlfriend NOUN NOUN_SINGULAR PROBABLE_NOUN (companion concubine girlfriend heartthrob lover sweetheart )
+concept: ~girlfriend   PROBABLE_NOUN (companion concubine girlfriend heartthrob lover sweetheart )
 concept: ~godnames (Allah G_d God Yahweh )
 concept: ~good_weather (cold hot humid muggy rain Showers sunny sunshine warm windy )
 concept: ~grains (flax hay straw )
@@ -794,7 +794,7 @@ concept: ~height_words (foot inch m meter shorts tall )
 concept: ~heightnoun (centimeter feet height inch meter )
 concept: ~herbivore (~insects african_buffalo ant beaver buffalo bull butterfly cattle ceratops chinchilla cockatoo cow deer earthworms elephant gazelle giraffe goat goose grasshopper 
           guinea_pig hippopotamus horse kangaroo katydid koala llama manatee mastodon monkey moth panda parakeet parrot rabbit rhinoceros slug snail tortoise worm yak zebra )
-concept: ~herbspice NOUN NOUN_SINGULAR PROBABLE_NOUN (ajwain akudjura alkanet allspice anardana anise aniseed_myrtle annatto apple_mint asafoetida asarabacca avocado_leaf barberry basil 
+concept: ~herbspice   PROBABLE_NOUN (ajwain akudjura alkanet allspice anardana anise aniseed_myrtle annatto apple_mint asafoetida asarabacca avocado_leaf barberry basil 
           bay_leaf bergamot black_cardamom black_mustard blue_fenugreek blue_melilot boldo borage brow_mustard calendula camphor_laurel candle_nut Capers caraway cardamom carob cassia 
           catnip cayenne cayenne_pepper celery_seed charoli chervil chicory chili_pepper chipotle chives Cicely cilantro cinnamon clove coriander coriander_seed costmary cudweed cumin 
           curry_leaf dill dill_seed elderflower elephant_garlic fennel fenugreek fingerroot garlic herb~1 hops horseradish jasmine juniper_berry kaffir_lime lavender lemo_verbena lemon_balm 
@@ -848,7 +848,7 @@ concept: ~hockey_teams NOUN NOUN_PROPER_SINGULAR ALWAYS_PROPER_NAME_MERGE LOCATI
 concept: ~holdable (abacus axe bat bazooka bow brass_knuckles broadsword brush bug_spray chainsaw cheese crowbar donut Excalibur fedora fishing_pole flamethrower flugelhorn football 
           fudge garlic grappling_hook grenade guitar gun gyrojet gyroscope haggis insect_spray lasso mace magazine necronomicon night_vision_goggles ocarina pamphlet paper_clip pistol 
           pitchfork ray_gun salad saw scalpel scissors shiv shotgun shuriken sickle stethoscope trash trumpet umbrella volleyball wand whip )
-concept: ~holiday (~christmas_words ~hanukkah_words ~new_years_words Easter Halloween Independence_Day July_4 July_4th Kwanzaa Labor_Day Memorial_Day Thanksgiving )
+concept: ~holiday (~christmas_words ~hanukkah_words ~new_years_words Easter Halloween Independence_Day Kwanzaa Labor_Day Memorial_Day Thanksgiving )
 concept: ~hospital (ambulance disease emergency hospital illness medicine surgery )
 concept: ~hotel (bed food hotel restaurant sleep )
 concept: ~house_problems (drip flooded_basement frozen_pipe leak leaking_roof no_heat roof_leak stopped_up_toilet termite )
@@ -861,12 +861,12 @@ concept: ~ice_cream_store (ice_cream ice_cream_store )
 concept: ~identity (name role status wealth )
 concept: ~if (assume hypothetically if imagine pretend suppose )
 concept: ~illevent (crippled hurt ill illness injured injury sick )
-concept: ~image_websites NOUN NOUN_SINGULAR (4chan Flickr Instagram )
+concept: ~image_websites   (4chan Flickr Instagram )
 concept: ~immediate (at_once currently directly forthwith immediate immediately instantaneously instantly now pronto right_away straight_away this_instant this_minute )
 concept: ~immovable (~building ~scenery )
 concept: ~industrial_substances (brass bronze ceramic coal iron petroleum rubber steel )
 concept: ~information_center (information information_center tourist_attraction )
-concept: ~insects NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (Acanthoscelides_obtectus acarid acarine acarus Acherontia_atropos Acheta_assimilis Acheta_domestica acridid Actias_luna 
+concept: ~insects   PROBABLE_NOUN ANIMATE_BEING (Acanthoscelides_obtectus acarid acarine acarus Acherontia_atropos Acheta_assimilis Acheta_domestica acridid Actias_luna 
           Adalia_bipunctata Adelges_abietis Adelges_piceae adelgid admiral Aedes_aegypti Aedes_albopictus Africanized_bee Africanized_honey_bee ailanthus_silkworm alder_fly alderfly 
           alkali_bee almond_moth Alsophila_pometaria Amazon_ant American_blight American_cockroach American_copper American_dog_tick Anabrus_simplex Anagasta_kuehniella Anasa_tristis 
           andrena andrenid anglewing angoumois_grain_moth angoumois_moth Anomala_orientalis anopheline Anoplophora_glabripennis ant ant_cow ant_lion Antheraea_mylitta Antheraea_pernyi 
@@ -962,7 +962,7 @@ concept: ~japanese_universities (Chuo_University Doshisha_University Hiroshima_U
           Nihon_University Osaka_University The_University_of_Tokyo Tohoku_University Tokai_University University_of_Tsukuba Waseda_University )
 concept: ~japanesewords FOREIGN_WORD (arigato )
 concept: ~jeweller (~jewelry_items jeweller )
-concept: ~jewelry_items NOUN NOUN_SINGULAR (bauble bead bracelet charms diamond earring emerald gem gem~2 gold jewel jewelry jewelry~1 medallion necklace pendant quartz ring ruby sapphire 
+concept: ~jewelry_items   (bauble bead bracelet charms diamond earring emerald gem gem~2 gold jewel jewelry jewelry~1 medallion necklace pendant quartz ring ruby sapphire 
           silver topaz trinket )
 concept: ~job (a_career a_job career dream_job earn employ employment ideal_job job livelihood living make_a_buck occupation perfect_job profession vocation work )
 concept: ~job_fields (~job_fields_medicine ~wnapplied_science ~wndoctrines ~wnengineering ~wnmedicine ~wnsocial_science accounting acting advertising agriculture alchemy archaeology 
@@ -976,7 +976,7 @@ concept: ~juice_drinks (apple_juice cider juice~2 lemonade orange_juice pineappl
 concept: ~junk_food (bubble_gum candy_bar chocolate_bar cracker donut gum junk_food popcorn potato_chip pretzel snack soda tortilla_chip )
 concept: ~kitchen_appliances (beater blender can_opener coffee_maker compactor cooktop Cuisinart dishwasher electric_mixer food_processor freezer garbage_disposal homogenizer microwave 
           mixer oven refrigerator stove toaster trash_compactor waffle_iron )
-concept: ~kitchen_items NOUN NOUN_SINGULAR (burner cabinet can_opener coffee_pot cupboard dishpan dishwasher dryer electric_mixer faucet freezer fridge frying_pan microwave microwave_oven 
+concept: ~kitchen_items   (burner cabinet can_opener coffee_pot cupboard dishpan dishwasher dryer electric_mixer faucet freezer fridge frying_pan microwave microwave_oven 
           oven pot refrigerator sink stove tea_kettle toaster washing_machine )
 concept: ~land_force (erosion )
 concept: ~landscape_materials (boulder gravel limestone pebble rock stone )
@@ -1002,7 +1002,7 @@ concept: ~liquid_poisons (bleach cyanide furniture_polish gas gasoline hemlock k
 concept: ~liquid_quantity (cup gal gallon liter litre milliliter pint pt quart tablespoon teaspoon )
 concept: ~liquids (~liquid_poisons coffee cola drink humor~3 milk oil soda tea water )
 concept: ~liquor_store (~alcoholic_beverage )
-concept: ~living_room_items NOUN NOUN_SINGULAR (armchair bookcase carpet CD_player coffee_table couch drape floor_lamp lamp lampshade picture plant radio sofa speaker stereo table_lamp 
+concept: ~living_room_items   (armchair bookcase carpet CD_player coffee_table couch drape floor_lamp lamp lampshade picture plant radio sofa speaker stereo table_lamp 
           television throw_pillow TV VCR )
 concept: ~locatedentity (~building ~citytype ~geographical_areas ~locationnames ~locationword ~planet ~politicalarea ~scenery farm )
 concept: ~locationnames NOUN NOUN_PROPER_SINGULAR PROBABLE_NOUN ALWAYS_PROPER_NAME_MERGE LOCATIONWORD (Africa Agreste Alabama Alberta Aleppo Antigua Arctic Arizona Arkansas Arusha Asia 
@@ -1028,7 +1028,7 @@ concept: ~loud (bang bark bedlam blare boom brawl bray chime clamor clap crash d
 concept: ~luggage (briefcase flight_bag footlocker knapsack luggage suitcase )
 concept: ~luggage_shop (~luggage luggage_shop )
 concept: ~lumberyard (lumber lumberyard lumber~1 nail plank screw wood )
-concept: ~lunch_items NOUN NOUN_SINGULAR (bologna cheese cold_cuts ham hero ketchup mustard peanut_butter potato_chips sandwich soup )
+concept: ~lunch_items   (bologna cheese cold_cuts ham hero ketchup mustard peanut_butter potato_chips sandwich soup )
 concept: ~magazine NOUN NOUN_PROPER_SINGULAR (~magazines_for_men ~magazines_for_women Consumers_Reports Ebony Newsweek PC_Magazine PC_Today Popular_Mechanics Scientific_American WIRED )
 concept: ~magazines_for_men NOUN NOUN_PROPER_SINGULAR (FHM Juggs Maxim Penthouse Playboy )
 concept: ~magazines_for_women NOUN NOUN_PROPER_SINGULAR (Cosmopolitan Elle Entertainment_Weekly Family_Circle Glamour Good_Housekeeping Harper_'s_Bazaar House_Beautiful InStyle Ladies_Home_Journal 
@@ -1038,8 +1038,8 @@ concept: ~magic_weapon (magic_orb magic_wand spell_book spellbook wand )
 concept: ~magicians (Circe Criss_Angel David_Blaine David_Copperfield Doug_Henning Faust Harry_Blackstone Harry_Houdini Hecate Houdini Lance_Burton Mark_Wilson Medea Merlin Nostradamus 
           Penn_and_Teller Siegfried_and_Roy )
 concept: ~male (bachelor beau bloke boy boyfriend chap dandy dude fellow gay gent gentleman guy lad laddie male man Mister Mr. swain )
-concept: ~malesexanimals NOUN_HE NOUN NOUN_SINGULAR (bull rooster )
-concept: ~mammals NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~cat_breeds ~dog_breeds ~farm_animals aardvark aardwolf Aberdeen_Angus abrocome Abyssinian Abyssinian_cat Acinonyx_jubatus 
+concept: ~malesexanimals NOUN_HE   (bull rooster )
+concept: ~mammals   PROBABLE_NOUN ANIMATE_BEING (~cat_breeds ~dog_breeds ~farm_animals aardvark aardwolf Aberdeen_Angus abrocome Abyssinian Abyssinian_cat Acinonyx_jubatus 
           addax Addax_nasomaculatus Adenota_vardoni Aegyptopithecus Aepyceros_melampus affenpinscher Affirmed Afghan Afghan_hound African_elephant African_green_monkey African_hunting_dog 
           African_wild_ass Africander agouti ai Ailuropoda_melanoleuca Ailuropodidae Ailurus_fulgens Airedale Airedale_terrier Alaska_fur_seal Alaskan_brown_bear Alaskan_malamute Alces_alces 
           Algeripithecus_minutus alley_cat alligator Alopex_lagopus alpaca alsatian American_antelope American_badger American_bison American_black_bear American_buffalo American_elk 
@@ -1241,14 +1241,14 @@ concept: ~meaningless_praise_words (admirable amazing best certified champion ch
 concept: ~measurelist (~moneynumber amp caliber calibre cm cup day decade foot gallon gram hour HP inch kilogram kilometer kph liter mcg meter mg mile minute ml mm month mph ounce pint 
           pound quart second volt week yard year )
 concept: ~measurement (~area_quantity ~distance_quantity ~liquid_quantity ~temperature_quantity ~velocity_quantity ~xweightnouns )
-concept: ~meat NOUN NOUN_SINGULAR (bacon beef brain chicken flesh ham hamburger lamb meat~2 pork sausage steak veal )
+concept: ~meat   (bacon beef brain chicken flesh ham hamburger lamb meat~2 pork sausage steak veal )
 concept: ~mechanic (auto_repair garage mechanic )
 concept: ~medical_substances (~druglist antidote antiseptic cure drug medicine pill prescription remedy shot tablet vaccine )
 concept: ~medium_degrees (M.A. M.S M.Sc MA Master Masters Ms MSc )
 concept: ~mental_illnesses (anxiety~1 delusion illusion~2 mental_disorder mental_illness mental_illness~1 psychological_disorder~1 )
 concept: ~metal (aluminum bronze copper gold iron lead magnesium metal pewter platinum silver steel tin titanium tungsten zinc )
 concept: ~metallic (argent brass bronze copper gold metallic platinum silver )
-concept: ~microlife NOUN NOUN_SINGULAR ANIMATE_BEING (~monera ~protista )
+concept: ~microlife   ANIMATE_BEING (~monera ~protista )
 concept: ~military_groups (army battalion brigade corps defense_force militia patrol phalanx platoon posse regiment squad squadron troop )
 concept: ~military_man (military_man )
 concept: ~milk (milk~1 milk~2 )
@@ -1257,20 +1257,20 @@ concept: ~minerals (mineral~1 )
 concept: ~INDOOR_ACTIVITIES ( gallery hobby museum theater ~arts )
 concept: ~minor_outdoor_activities (~water_sports archery backpack badminton bird_watching birding camping caving climbing cycling fencing glide golf hang_gliding hike horseback horseshoes 
           hunt paintball skate skateboard ski snowboard spelunk tennis track walk )
-concept: ~misc_websites NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR (Amazon.com eBay Encyclopedia_Dramatica Google_Maps IRC MapQuest match.com Netflix Thesaurus.com Ticketmaster Weather.com 
+concept: ~misc_websites   NOUN_PROPER_SINGULAR (Amazon.com eBay Encyclopedia_Dramatica Google_Maps IRC MapQuest match.com Netflix Thesaurus.com Ticketmaster Weather.com 
           Wikipedia Yahoo )
 concept: ~mobility_words (anchored immobile immovable mobile movable portable quiescent sessile stationary tethered wheeled )
 concept: ~moisture_words (damp dampness dehydrated desicated dried dry flooded humid moist muggy soaked soaking wet wetness )
-concept: ~monera NOUN NOUN_SINGULAR ANIMATE_BEING (bacteria bacteria_family~1 Filoviridae~1 germ microbe probiotic_microflora~1 true_bacteria~1 virus )
+concept: ~monera   ANIMATE_BEING (bacteria bacteria_family~1 Filoviridae~1 germ microbe probiotic_microflora~1 true_bacteria~1 virus )
 concept: ~money_container (alms_box coin_purse donation_box money_belt money_box moneybag penny_bank piggy_bank poor_box )
 concept: ~month_names (Apr April Aug August Dec December Feb February Jan January Jul July Jun June Mar March May may Nov November Oct October Sep Sept September )
 concept: ~month_names_index DUPLICATE (3 3 7 7 11 11 1 1 0 0 6 6 5 5 2 2 4 4 10 10 9 9 8 8 8  )
 concept: ~daysinmonth DUPLICATE (30 30 31 31 31 31 28 28 31 31 31 31 30 30 31 31 31 31 30 30 31 31 30 30  30) # 0-based
-concept: ~month_proper_names DUPLICATE (April April August August Decemeber December February February January January July July June June March March May May November November October October September September September )
+concept: ~month_proper_names DUPLICATE (April April August August December December February February January January July July June June March March May May November November October October September September September )
 
 concept: ~more (again another continue do_it_again further go_on more repeat resume what_else )
 concept: ~morningthings (~groom arise awake breakfast dawn daylight dress get_up go_to_the_office go_to_work morning shave shower wake )
-concept: ~mother NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (ma mama mamma mammy mom momma mommy mother mother-in-law mum mummy mummy~2 step-mother )
+concept: ~mother   PROBABLE_NOUN ANIMATE_BEING (ma mama mamma mammy mom momma mommy mother mother-in-law mum mummy mummy~2 step-mother )
 concept: ~mountain (mountain )
 concept: ~mountain_sports (climbing hiking mountain_biking mountain_climbing mountaineering )
 concept: ~movers (box_wrench chopstick crescent_wrench crowbar dustpan elevator fan flat-nosed_pliers fork hammer ladle lever mallet monkey_wrench needle-nosed_pliers open-end_wrench 
@@ -1298,7 +1298,7 @@ concept: ~musical_instruments_woodwind (bassoon clarinet contrabassoon English_h
 concept: ~musician (~singer )
 concept: ~musiciantype PROBABLE_NOUN (bassist clarinet_player guitarist pianist piano_player piper timpanist trombonist )
 concept: ~mythical_being (~mythical_creatures ~mythical_intelligent_being )
-concept: ~mythical_creatures NOUN NOUN_SINGULAR PROBABLE_NOUN (abominable_snowman Achilles Aegisthus Aeneas Agamemnon Ajax Alcides Alcyone alien Amazon amphisbaena Andromeda Antigone 
+concept: ~mythical_creatures   PROBABLE_NOUN (abominable_snowman Achilles Aegisthus Aeneas Agamemnon Ajax Alcides Alcyone alien Amazon amphisbaena Andromeda Antigone 
           Argus Arjuna Atreus Augeas basilisk Behemoth Bellerophon Big_Foot Bigfoot Blob bogeyman booger boogeyman Brunhild Brunnhilde Brynhild bugaboo bugbear Cadmus Cassiopeia Cecealia 
           centaur Cepheus Cerberus character Chimaera Chimera chimera Chiron Chupecabra Clytemnestra cockatrice Creon Cthulhu cyclops Cyclops Daedal Daedalus Dardanus Death doppelganger 
           Dracula dragon Easter_bunny Electra Enkidu ettin Euryale Eurydice extraterrestrial extraterrestrial_being Fafnir Father_Christmas Fenrir firedrake Flatwoods_Monster Frankenstein_'s_monster 
@@ -1311,12 +1311,12 @@ concept: ~mythical_creatures NOUN NOUN_SINGULAR PROBABLE_NOUN (abominable_snowma
           Perseus phoenix Priam Procrustes Psyche psychopomp Pygmalion pythoness Reaper Remus robot roc Romulus Saint_Nicholas Saint_Nick salamander sand_worm Santa Santa_Claus Sarpedon 
           Sasquatch Scylla sea_serpent shambler shoggoth Siegfried Sigurd Siren Sisyphus Sita snowman Sphinx St_._Nick Stentor Stheno sylph Tantalus Theseus Tiresias troll Ulysses unicorn 
           Valkyrie Volund warlock Wayland Wayland_the_Smith werewolf Wieland witch wivern wolfman wurm wyvern xenomorph yeti Ygdrasil Yggdrasil Ymir zombie )
-concept: ~mythical_intelligent_being NOUN NOUN_SINGULAR PROBABLE_NOUN (alien angel Anubis banshee Cupid Death dwarf elf fairy_godmother Frost_Giant ghost ghost_hunter ghoul giant gnome 
+concept: ~mythical_intelligent_being   PROBABLE_NOUN (alien angel Anubis banshee Cupid Death dwarf elf fairy_godmother Frost_Giant ghost ghost_hunter ghoul giant gnome 
           God hag imp kobold leprechaun Martian mermaid merman necromancer necromancersuperhero ogre robot Santa Santa_Claus Satan Siren succubus superhero superman Tooth_Fairy troll 
           vampire vampire_hunter villain warlock werewolf witch wizard wraith zombie )
 concept: ~name (call identify last_name moniker name nickname surname )
 concept: ~nanowords (MEMS nanotech nanotechnology quantum )
-concept: ~nationalityhate NOUN NOUN_SINGULAR (bans_and_cans bhrempti black_dago blockhead Bog_Irish bog_trotter bogan book_book boxhead bozgor buckethead cheese_eating_surrender_monkey 
+concept: ~nationalityhate   (bans_and_cans bhrempti black_dago blockhead Bog_Irish bog_trotter bogan book_book boxhead bozgor buckethead cheese_eating_surrender_monkey 
           Chinaman Chinese_wetback chinig chink chink_a_billy chonky cow_kisser dink dogan dogun dot_head dyke_jumper Hun knacker kraut Leb Lebbo limey lowlander lugan Merkin mick mung 
           ocker paddy paki pikey piky plastic_paddy pogue pohm polack pom pommie pommie_grant pommy Punjab Rhine_monkey roofucker sawney seppo shant sheepfucker Shelta sideways_cooter 
           sideways_pussy sideways_vagina smoked_Irish smoked_Irishman soup_taker spink squarehead tunnel_digger wexican whigger white_nigger wigga wigger wiggerette wog wop Yankee yardie 
@@ -1461,7 +1461,7 @@ concept: ~orange (auburn orange orangish )
 concept: ~papercanvascraft (bookbinding calligraphy collage decoupage draw origami paint paper-mache papercraft scrapbook stamping tole watercolor )
 concept: ~party_store (balloon confetti favor party_store streamer )
 concept: ~people_groups (mob team crowd army legion horde masses rabble throng)
-concept: ~penetrators NOUN NOUN_SINGULAR (adze auger awl ax axe back_saw baller band_saw bandsaw blade bolt_cutter brace broadsword can_opener chain_saw chisel chopper churchkey circular_saw 
+concept: ~penetrators   (adze auger awl ax axe back_saw baller band_saw bandsaw blade bolt_cutter brace broadsword can_opener chain_saw chisel chopper churchkey circular_saw 
           cleaver cookie_cutter coping_saw corer corkscrew crosscut_saw cutter digger drawknife drill driver edge electric_razor gimlet glass_cutter gouge grater hack_saw hacksaw hatchet 
           hoe jackknife jig knife loper machete mandoline mattock mincer needle opener paperknife peeler penknife pickax pickaxe pipe_cutter pneumatic_drill pocketknife point press 
           pruner punch rawknife razor reamer router saber_saw saw scissors scythe shaver shear shovel shreader shredded shredder sickle slicer snip spade switchblade sword table_saw 
@@ -1470,7 +1470,7 @@ concept: ~performing_arts (~acting ~dance ~instrumenting ~performlist ~singingli
           the_play theater to_juggle )
 concept: ~performlist (dance juggle play~40 sing to_act to_sing )
 concept: ~personal_article (comb contact_lenses eyeglasses hairbrush handbag luggage personal_article razor toothbrush tweezer umbrella )
-concept: ~pet_animals NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~bird angelfish animal bird canary catfish cat~1 cat~2 chameleon chicken~1 colt dog~1 dolphin donkey~1 ferret fish 
+concept: ~pet_animals   PROBABLE_NOUN ANIMATE_BEING (~bird angelfish animal bird canary catfish cat~1 cat~2 chameleon chicken~1 colt dog~1 dolphin donkey~1 ferret fish 
           frog~1 gerbil goldfish guinea_pig hamster hedgehog horse~1 iguana kitten lizard monkey~1 mouse~1 mule parakeet parrot pig~1 rabbit~1 raccoon rattlesnake rat~1 salamander~1 
           snake spider~1 turtle~1 )
 concept: ~pet_cage (aquarium aviary barn bird-house bird_cage bird_house birdcage birdhouse cage coop dog-house doghouse fish_tank hutch kennel stable sty terrarium vivarium )
@@ -1491,12 +1491,12 @@ concept: ~placesetting (dessert_fork dinner_fork dinner_knife dinner_plate dish 
 concept: ~plan (plan strategy tactic )
 concept: ~planet (Earth Jupiter Mars Mercury Neptune Pluto Saturn Uranus Venus )
 concept: ~plantlist (~plants annual glad perennial sequoia )
-concept: ~plants NOUN NOUN_SINGULAR ANIMATE_BEING (~flowers ~fungi cactus cryptogam~1 epiphytic_plant~1 fern_family~1 flora flowering_maple~1 gametophyte~1 houseplant~1 perennial~1 
+concept: ~plants   ANIMATE_BEING (~flowers ~fungi cactus cryptogam~1 epiphytic_plant~1 fern_family~1 flora flowering_maple~1 gametophyte~1 houseplant~1 perennial~1 
           phytoplankton~1 plant plant_family~1 rock_plant~1 sporophyte~1 succulent vascular_plant~1 wild_flower~1 )
 concept: ~plot (plot plot_line precis summary )
 concept: ~plural (~noun_plural ~noun_proper_plural )
 concept: ~poet (poet )
-concept: ~pointed_weapon NOUN NOUN_SINGULAR (assegai battering_ram gaff_hook harpoon javelin lance partizan pike~3 pitchfork sai spear spear~1 trident vouge )
+concept: ~pointed_weapon   (assegai battering_ram gaff_hook harpoon javelin lance partizan pike~3 pitchfork sai spear spear~1 trident vouge )
 concept: ~poison (arsenic curare fumigant~1 hemlock insecticide lye pesticide~1 poison venom weed_killer~1 )
 concept: ~police_station (crime criminal jail police police_station )
 concept: ~political_groups PROBABLE_NOUN (bureaucracy cabal coalition colony committee delegation jury league political_party retinue trade_union tribe welcoming_committee )
@@ -1511,11 +1511,11 @@ concept: ~politician (~dictator ~president Al_Gore Anwar_Sadat Arafat Ataturk Bi
           Joe_Biden John_F_Kennedy John_Kennedy John_Major John_McCain Lincoln Maggie_Thatcher Mandela Mao Mao_Tsetung Martin_Luther_King McCain Millard_Fillmore Mussolini Nader Napoleon 
           Nelson_Mandela Nero Obama Osama_bin_Laden Palin Paula_Jones politician President_Bush Prince_William Princess_Diana Putin Ralph_Nader Reagan Richard_Nixon Ron_Paul Sarah_Palin 
           Stalin Tony_Blair Vladimir_Putin )
-concept: ~popstar (popstar )
+concept: ~popstar ()
 concept: ~positivevalue (appreciate enjoy good like nice )
 concept: ~post_office (air_mail envelope first_class letter mail package parcel parcel_post phone-card post_card post_office postcard scale stamp )
 concept: ~potency_words (crippled dilute diluted feeble full_strength impotent maximum_strength potent strong super_strength weak whole_bean )
-concept: ~precision_sports NOUN NOUN_SINGULAR (archery billiards bowling golf lawn_bowling marksmanship petanque pistol_shooting pool~1 rifle_shooting shotgun_shooting )
+concept: ~precision_sports   (archery billiards bowling golf lawn_bowling marksmanship petanque pistol_shooting pool~1 rifle_shooting shotgun_shooting )
 concept: ~president (president )
 concept: ~priceabove (above beyond higher higher_than in_excess_of more more_than to_exceed )
 concept: ~priceaverage (average median )
@@ -1526,7 +1526,7 @@ concept: ~priceexpensive (dear expensive extravagant spendy )
 concept: ~probability_words (implausible impossible improbable likely plausible possible probable unlikely )
 concept: ~problem (bugging_me complaint dilemma in_a_pickle in_trouble predicament problem quandary troubling_me )
 concept: ~processes (~time_instant ~time_unit ~weatherprocess )
-concept: ~projectile_weapon NOUN NOUN_SINGULAR (.22 ack-ack ack-ack_gun air_gun air_rifle airgun antiaircraft antiaircraft_gun arquebus arrow assault_gun assault_rifle automatic automatic_firearm 
+concept: ~projectile_weapon   (.22 ack-ack ack-ack_gun air_gun air_rifle airgun antiaircraft antiaircraft_gun arquebus arrow assault_gun assault_rifle automatic automatic_firearm 
           automatic_gun automatic_pistol automatic_rifle automatic_weapon ballista BAR BB_gun blowgun blunderbuss Bofors_gun bow breechloader Bren Bren_gun Browning_automatic_rifle 
           Browning_machine_gun burp_gun cannon carbine catapult Colt culverin dartgun derringer Dragunov exploding_barrel_gun firearm firelock flack flak flintlock forty-five fowling_piece 
           fusil Garand Garand_rifle gas_gun gat Gatling_gun gun~5 hackbut hagbut hand_cannon handgun harquebus horse-pistol horse_pistol howitzer Kalashnikov light_machine_gun Luger 
@@ -1535,7 +1535,7 @@ concept: ~projectile_weapon NOUN NOUN_SINGULAR (.22 ack-ack ack-ack_gun air_gun 
           semiautomatic_firearm semiautomatic_pistol set_gun shooting_iron shotgun side_arm siege_engine six-gun six-shooter sling_shot sling~2 small-arm smoothbore sniper_rifle Spandau 
           spring_gun squirt_gun Sten_gun submachine_gun super_gun Thompson_submachine_gun Tommy_gun tranquilizer_gun turret twenty-two twenty-two_pistol twenty-two_rifle Uzi Verey_pistol 
           Very_pistol whaling_gun Winchester zip_gun )
-concept: ~protista NOUN NOUN_SINGULAR ANIMATE_BEING (algae protoctist_family~1 protoctist~1 protozoa )
+concept: ~protista   ANIMATE_BEING (algae protoctist_family~1 protoctist~1 protozoa )
 concept: ~psychality (~hattributes )
 concept: ~pub (breakfast dinner food lunch pub )
 concept: ~purple (~purple_other amaranthine heliotrope hyacinthine ianthine magenta mauve orchid porphyrous puce purple purplish purpure purpureal rhodopsin )
@@ -1548,10 +1548,10 @@ concept: ~racial (~race desegregation discrimination ethnic Jew negro nigger pre
 concept: ~rarity_words (abundant ample bountiful endangered enough exotic insufficient obscure plentiful plenty prevalent rare scare sufficient )
 concept: ~reading_stuff (~book ~bookmagazine author newsstand )
 concept: ~real_estate (home house real_estate )
-concept: ~reallybadweather NOUN NOUN_SINGULAR (blizzard cyclone firestorm hurricane northeaster storm thunder_snowstorm thunderhead thunderstorm tornado twister waterspout windstorm )
+concept: ~reallybadweather   (blizzard cyclone firestorm hurricane northeaster storm thunder_snowstorm thunderhead thunderstorm tornado twister waterspout windstorm )
 concept: ~recentlist (brand-new contemporary current just_published latest modern most_recent new recent young )
 concept: ~recentwords (at_present currently freshly last lately new newly now past presently prior recent recently )
-concept: ~recorders NOUN NOUN_SINGULAR (answering_machine camcorder camera CD_burner diary Dictaphone digital_camera DVD_burner ECG EEG EKG electrocardiograph electroencephalograph 
+concept: ~recorders   (answering_machine camcorder camera CD_burner diary Dictaphone digital_camera DVD_burner ECG EEG EKG electrocardiograph electroencephalograph 
           journal movie_camera notebook seismograph SLR tape_recorder tv_camera typewriter )
 concept: ~recreation (amusement free_time hobby interest like_to_do pastime play playtime recreation relax relaxation spare_time )
 concept: ~red (~red_other cardinal cerise cinnabar coccineous coquelicot cramoisy crimson cyan erythraean flammeous fuchsia garnet haematic incarnadine kermes lateritious madder magenta 
@@ -1565,18 +1565,18 @@ concept: ~region (airfield area camp city colony continental cosmic country coun
 concept: ~related_list (ancestor ancestral ancestry clan descendant descended_from descendent family kin kith related_to relative tribe )
 concept: ~reliability_words (accurate dishonest honest inaccurate reliable trustworthy unreliable untrustworthy )
 concept: ~religion_kind (~fake_religious_sect ~religious_sect )
-concept: ~religionhate NOUN NOUN_SINGULAR (Amo Christ_killer clamhead dogan dogun Gerudo gew hebe hebro heeb higger hymie Jihadi khazar muzzie Orangie papist proddy_dog proddywhoddy 
+concept: ~religionhate   (Amo Christ_killer clamhead dogan dogun Gerudo gew hebe hebro heeb higger hymie Jihadi khazar muzzie Orangie papist proddy_dog proddywhoddy 
           proddywoddy Russellite soup_taker )
-concept: ~religious_buildings NOUN NOUN_SINGULAR (abbey cathedral church minaret mosque synagogue tabernacle temple vicarage )
-concept: ~religious_groups NOUN NOUN_SINGULAR PROBABLE_NOUN (congregation fellowship )
-concept: ~religious_leaders NOUN NOUN_SINGULAR (~religious_leader bishop Brother Buddha chaplain Christ clergy cleric Dalai_Lama god Holy_Order Jesus_Christ Krishna Mohammed Monseigneur 
+concept: ~religious_buildings   (abbey cathedral church minaret mosque synagogue tabernacle temple vicarage )
+concept: ~religious_groups   PROBABLE_NOUN (congregation fellowship )
+concept: ~religious_leaders   (~religious_leader bishop Brother Buddha chaplain Christ clergy cleric Dalai_Lama god Holy_Order Jesus_Christ Krishna Mohammed Monseigneur 
           mullah nun Pope priest rabbi Rev Revd Reverend Reverend_Father Satan vicar Vishnu )
 
 
-concept: ~religious_sect NOUN NOUN_SINGULAR (agnostic Anglican Anglicanism atheism atheist Baha'i Baptist Buddhism Buddhist Calvinism Catholic Catholicism Christian Christianity Church_of_Christ 
+concept: ~religious_sect   (agnostic Anglican Anglicanism atheism atheist Baha'i Baptist Buddhism Buddhist Calvinism Catholic Catholicism Christian Christianity Church_of_Christ 
           disciple~1 Episcopal faith~3 faith~4 Hindu Hinduism Islam Jehovah_'s_Witness Jehovah_Witness Jew Jewish Judaism Lutheran Methodist Mormon Mormonism order pagan Paganism Pentecostal 
           Protestant Reformed_Church Russian_Orthodox Seventh-Day_Adventist Shinto Shism Sunnism Swedenborgian Swedenborgism Tao Taoism Taoist Unitarian United_Church_of_Christ )
-concept: ~reptiles NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (~dinosaur Acanthophis_antarcticus Acris_crepitans Acris_gryllus adder African_chameleon African_clawed_frog African_coral_snake 
+concept: ~reptiles   PROBABLE_NOUN ANIMATE_BEING (~dinosaur Acanthophis_antarcticus Acris_crepitans Acris_gryllus adder African_chameleon African_clawed_frog African_coral_snake 
           African_crocodile African_monitor agama agamid agamid_lizard Agamidae Agkistrodon_contortrix Agkistrodon_piscivorus agua agua_toad alligator alligator_lizard Alligator_mississipiensis 
           Alligator_sinensis alligator_snapper alligator_snapping_turtle Alligatoridae allosaur allosaurus alpine_salamander Alytes_cisternasi Alytes_obstetricans Amblyrhynchus_cristatus 
           Ambystoma_maculatum Ambystoma_mexicanum Ambystoma_talpoideum Ambystoma_tigrinum Ambystomatidae ambystomid ambystomid_salamander American_alligator American_chameleon American_green_toad 
@@ -1653,23 +1653,23 @@ concept: ~rideable (~animals ~vehicle )
 concept: ~rock_shop (crystal fossil geode mineral~1 rock rock_shop )
 concept: ~role PROBABLE_NOUN (~occupation ~role_accomodation ~role_ally ~role_criminal ~role_economic ~role_enemy ~role_family ~role_heroic ~role_knowledge ~role_medical ~role_member 
           ~role_misc ~role_politics ~role_romantic ~role_worship )
-concept: ~role_accomodation NOUN NOUN_SINGULAR PROBABLE_NOUN (flatmate housemate roommate suitemate )
-concept: ~role_ally NOUN NOUN_SINGULAR PROBABLE_NOUN (~friend acquaintance aide ally colleague confederate friend guest helper neighbor subordinate teammate visitor )
+concept: ~role_accomodation   PROBABLE_NOUN (flatmate housemate roommate suitemate )
+concept: ~role_ally   PROBABLE_NOUN (~friend acquaintance aide ally colleague confederate friend guest helper neighbor subordinate teammate visitor )
 concept: ~role_criminal PROBABLE_NOUN (~role_legalbadguy ~role_legalgoodguy )
-concept: ~role_economic NOUN NOUN_SINGULAR PROBABLE_NOUN (beggar buyer client clientele consumer creator creditor customer maker owner slave trader tycoon )
-concept: ~role_enemy NOUN NOUN_SINGULAR PROBABLE_NOUN (enemy foe frenemy opponent rival )
-concept: ~role_family NOUN NOUN_SINGULAR PROBABLE_NOUN (~family_members adolescent baby child grown-up relative )
-concept: ~role_heroic NOUN NOUN_SINGULAR PROBABLE_NOUN (~defender champion coward hero heroine underdog )
-concept: ~role_knowledge NOUN NOUN_SINGULAR PROBABLE_NOUN (adept advisor amateur beginner counsellor expert faculty freshman genius graduate idiot instructor journeyman junior layman 
+concept: ~role_economic   PROBABLE_NOUN (beggar buyer client clientele consumer creator creditor customer maker owner slave trader tycoon )
+concept: ~role_enemy   PROBABLE_NOUN (enemy foe frenemy opponent rival )
+concept: ~role_family   PROBABLE_NOUN (~family_members adolescent baby child grown-up relative )
+concept: ~role_heroic   PROBABLE_NOUN (~defender champion coward hero heroine underdog )
+concept: ~role_knowledge   PROBABLE_NOUN (adept advisor amateur beginner counsellor expert faculty freshman genius graduate idiot instructor journeyman junior layman 
           lecturer master principal professional professor pupil savant senior sensei sophomore specialist student teacher virtuoso )
-concept: ~role_legalbadguy NOUN NOUN_SINGULAR PROBABLE_NOUN (~assassin accomplice arsonist assassin bad_guy bastard bully con_artist confidence_man criminal crook culprit delinquent 
+concept: ~role_legalbadguy   PROBABLE_NOUN (~assassin accomplice arsonist assassin bad_guy bastard bully con_artist confidence_man criminal crook culprit delinquent 
           fiend fugitive jerk killer malefactor menace militant murderer pilferer predator prey prisoner pyromaniac rebel sociopath suspect swindler thief threat traitor trickster troublemaker 
           villain )
-concept: ~role_legalgoodguy NOUN NOUN_SINGULAR PROBABLE_NOUN (barrister defendant hostage juror plaintiff victim witness )
-concept: ~role_medical NOUN NOUN_SINGULAR PROBABLE_NOUN (patient )
+concept: ~role_legalgoodguy   PROBABLE_NOUN (barrister defendant hostage juror plaintiff victim witness )
+concept: ~role_medical   PROBABLE_NOUN (patient )
 concept: ~role_member PROBABLE_NOUN (~role_nationality_member ~role_political_member ~role_religious_member citizen civilian foreigner immigrant local member native passenger pilgrim 
           refugee resident settler stranger tourist traveler )
-concept: ~role_misc NOUN NOUN_SINGULAR PROBABLE_NOUN (adult altar_boy audience bum character disciplinarian fellow fool hippie hobo human individual mutant peer player predecessor scavenger 
+concept: ~role_misc   PROBABLE_NOUN (adult altar_boy audience bum character disciplinarian fellow fool hippie hobo human individual mutant peer player predecessor scavenger 
           scout servant spokespersonstick-in-the-mud spokeswoman sponsor stakeholder stooge stoolie stoolpigeon straggler supplicant surfboarder survivalist survivor swinger sympathizer 
           tattletale taxpayer techie technophile technophobe teetotalist teetotaller telepathist tempter temptress third-rater thrill-seeker throwback thrower toastmaster tomboy weirdo )
 concept: ~role_nationality_member PROBABLE_NOUN (African Algerian alien American Andorrian Arab Argentinian Armenian Asian Athenian Australian Austrian Bolivian Bosnian Brazilian Brit 
@@ -1683,40 +1683,40 @@ concept: ~role_politics PROBABLE_NOUN (~ruler aristocrat candidate congressman c
 concept: ~role_religious_member PROBABLE_NOUN (Bhuddist Catholic Christian Christian_Scientist Freemason Hindu Jew Jewish Lutheran Moonie Muslim Orthodox Presbyterian Protestant Satanist 
           Scientologist Sikh Unitarian Wiccan )
 concept: ~role_romantic PROBABLE_NOUN (~dating_friend ~sexual_preference_nouns ~spouse bachelor bride bridegroom confidant Mr. Mrs. )
-concept: ~role_worship NOUN NOUN_SINGULAR PROBABLE_NOUN (deity fan follower groupie idol spectator )
-concept: ~roman_gods NOUN NOUN_SINGULAR (Apollo Ceres Cupid Diana god_Mars Janus Jove Juno Jupiter Mercury Minerva Neptune Pluto Venus Vesta Vulcan )
-concept: ~roomlist NOUN NOUN_SINGULAR (atrium attic basement bathroom bedroom closet conservatory den dining_room entryway foyer garage garden greenhouse hall hallway kitchen laundry 
+concept: ~role_worship   PROBABLE_NOUN (deity fan follower groupie idol spectator )
+concept: ~roman_gods   (Apollo Ceres Cupid Diana god_Mars Janus Jove Juno Jupiter Mercury Minerva Neptune Pluto Venus Vesta Vulcan )
+concept: ~roomlist   (atrium attic basement bathroom bedroom closet conservatory den dining_room entryway foyer garage garden greenhouse hall hallway kitchen laundry 
           laundry_room library living_room nursery pantry patio study sunroom vestibule )
 concept: ~royalty PROBABLE_NOUN (~royalty_female ~royalty_male )
-concept: ~royalty_female NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (Archduchess Baronne Comtesse countess Dame duchess Duchesse empress Jewess Ladyship Marquise princess queen 
+concept: ~royalty_female   PROBABLE_NOUN ANIMATE_BEING (Archduchess Baronne Comtesse countess Dame duchess Duchesse empress Jewess Ladyship Marquise princess queen 
           Reverend_Mother )
-concept: ~royalty_male NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (Archduke Baron Comte Duc Duke Earl Esquire king Knight lord Lordship Marquis prince )
-concept: ~ruler NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (emir emperor king pharoh president prince Shah sultan tsar )
+concept: ~royalty_male   PROBABLE_NOUN ANIMATE_BEING (Archduke Baron Comte Duc Duke Earl Esquire king Knight lord Lordship Marquis prince )
+concept: ~ruler   PROBABLE_NOUN ANIMATE_BEING (emir emperor king pharoh president prince Shah sultan tsar )
 concept: ~running_events (cross_country_running dash marathon mountain_running race race_walking relay_race road_race road_running sprint steeplechase )
 concept: ~salary (bread crust dinero dollar earnings living money salary wage )
-concept: ~sandwich NOUN NOUN_SINGULAR (Croque_Monsieur sandwich~1 )
+concept: ~sandwich   (Croque_Monsieur sandwich~1 )
 concept: ~scenery (~biome ~scenery_air ~scenery_land ~scenery_of_humans ~scenery_outer_space ~scenery_water nature scenery )
-concept: ~scenery_air NOUN NOUN_SINGULAR (aurora_australis aurora_borealis aurorae blizzard cloud cyclone dancing_devil dust_devil dust_storm dust_whirl electrical_storm hurricane lightning 
+concept: ~scenery_air   (aurora_australis aurora_borealis aurorae blizzard cloud cyclone dancing_devil dust_devil dust_storm dust_whirl electrical_storm hurricane lightning 
           lightning_storm mirage moonbow north_polar_lights northern_lights northern_polar_lights polar_lights rain rain_cloud rainbow raindrop sand_auger shelf_cloud sky snow snow_storm 
           south_polar_lights southern_lights spray_bow storm_cloud sunbeam sunset supercell tempest thunder thunder_cloud whirlwind winter_storm )
-concept: ~scenery_bridges NOUN NOUN_SINGULAR (bascule bascule_bridge beam_bridge bridge cable-stayed_bridge cantilever drawbridge footbridge lift_bridge pontoon_bridge suspension_bridge )
-concept: ~scenery_crust_openings NOUN NOUN_SINGULAR (canyon crater dale dell dingle ditch fault fisure glen gorge gully hollow pumarole ravine trench valley vent volcano )
-concept: ~scenery_land NOUN NOUN_SINGULAR (~scenery_crust_openings abyss ait archipelago arid_region backwoods beach chasm cliff coastline continent coppice countryside crag crater 
+concept: ~scenery_bridges   (bascule bascule_bridge beam_bridge bridge cable-stayed_bridge cantilever drawbridge footbridge lift_bridge pontoon_bridge suspension_bridge )
+concept: ~scenery_crust_openings   (canyon crater dale dell dingle ditch fault fisure glen gorge gully hollow pumarole ravine trench valley vent volcano )
+concept: ~scenery_land   (~scenery_crust_openings abyss ait archipelago arid_region backwoods beach chasm cliff coastline continent coppice countryside crag crater 
           depression desert dirt dune escarpment eyot field foothill forest fosse geological_formation~1 grassland hedge hill hole incline inclined_plane island isle islet jungle key 
           land landmass lava lava_flow lava_spout llano maar magma mesa molten_rock mount mountain outback pampas pasture peak peninsula pit plain plateau portrero prairie precipice 
           quarry quicksand ramp range rise sabbulonarium sand_dune scarp silt sink_hole skerry slipway slope soil steel_rock steppe sward swarth tableland tectonic_plate terrain territory 
           thujas timberland top_soil topiary tundra vacuity valley veldt vineyard void weald wilderness wildwood winery woodland woodlot woods )
 concept: ~scenery_of_humans (~scenery_bridges ~scenery_of_transport park playground telephone_pole )
-concept: ~scenery_of_transport NOUN NOUN_SINGULAR (alley boardwalk byway car_park catwalk crawlway dock dragway driveway expressway freeway highway landing_strip lane overpass parking_lot 
+concept: ~scenery_of_transport   (alley boardwalk byway car_park catwalk crawlway dock dragway driveway expressway freeway highway landing_strip lane overpass parking_lot 
           parkway pier platform railroad_track road road_hump roadway route rumble_strip runway sidewalk sleeping_policeman speed_bump speed_cushion speed_hump speed_ramp speed_table 
           street superhighway throughway thruway toll_road tunnel underpass wharf )
-concept: ~scenery_outer_space NOUN NOUN_SINGULAR (~celestial_body antimatter asteroid_belt blue_giant brown_dwarf comet constellation crescent_moon dark_matter dwarf_star eclipse exoplanet 
+concept: ~scenery_outer_space   (~celestial_body antimatter asteroid_belt blue_giant brown_dwarf comet constellation crescent_moon dark_matter dwarf_star eclipse exoplanet 
           extrasolar_planet full_moon hypergiant magnetar meteroid moonbeam nebula protostar pulsar quark red_giant shooting_star space star sun supergiant supernova universe white_dwarf 
           worm_hole )
-concept: ~scenery_water NOUN NOUN_SINGULAR (~beach ~scenery_water_bodies beach breaker briny dike Everglade fen firth fish_ladder fish_steps fishway flood geyser glacier glade haven 
+concept: ~scenery_water   (~beach ~scenery_water_bodies beach breaker briny dike Everglade fen firth fish_ladder fish_steps fishway flood geyser glacier glade haven 
           Holm hot_spring ice_berg ice_shelf iceberg levee marshland milldam mineral_spring muskeg natural_spring polar_cap polder port rapids river_bed shoreline swampland tarn tidal_bore 
           tidal_wave tsunami warm_spring water_spout waterfall wave weir )
-concept: ~scenery_water_bodies NOUN NOUN_SINGULAR (arroyo basin bay bayou beck bight bog bounding_main briny_deep brook canal channel cistern creek dam drave estuary fjord gulf harbor 
+concept: ~scenery_water_bodies   (arroyo basin bay bayou beck bight bog bounding_main briny_deep brook canal channel cistern creek dam drave estuary fjord gulf harbor 
           harbour inlet lagoon lake lily_pond loch marsh moat ocean peat_bog pond pool puddle quag quagmire rapid rapids reservoir rill rindle river rivulet run runnel salt_marsh sea 
           slough sound strait stream streamlet subglacial_pond swale swamp swimming_hole tidal_basin tide_pool tributary vernal_pool wading_pool wash water_hole watercourse waterhole 
           watering_hole wetland )
@@ -1728,7 +1728,7 @@ concept: ~school_types (charter_school college grad_school graduate_school high_
           university )
 concept: ~science_subjects (~geology_subjects ~life_science ~physics_field aerodynamics astronomy chemistry science )
 concept: ~scientist (scientist )
-concept: ~search_engines NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR (Alexa Alexa.com Ask.com Baidu Baidu.com Cuil Google Google.com QQ.com Yahoo )
+concept: ~search_engines   NOUN_PROPER_SINGULAR (Alexa Alexa.com Ask.com Baidu Baidu.com Cuil Google Google.com QQ.com Yahoo )
 concept: ~seasons (autumn fall spring springtime summer summertime winter wintertime )
 concept: ~sensations (~bodily_states ~emotions )
 concept: ~sense (eyesight hear hearing see sight smell taste touch vision )
@@ -1742,23 +1742,23 @@ concept: ~sex (~make_love ~sex_stuff adult_bookstore adult_news adultery aftergl
           sexual_addict slut sperm spermicide spunk STD Sylvester_Graham threesome tramp tryst Viagra virgin virginity wanker well-hung wife_swapping )
 concept: ~sex_shop (condom dildo porno_magazine sex_shop sybian vibrator )
 concept: ~sex_stuff (~sex_toy ~sexual_act ~sexual_fetish ~sexual_liquid ~sexual_part ~sexual_position ~sexual_titillation )
-concept: ~sex_toy NOUN NOUN_SINGULAR (anal_bead butt_plug buttplug cock_ring dild0 dild0s dildo dilld0 sex_toy strap-on sybian vibrator )
+concept: ~sex_toy   (anal_bead butt_plug buttplug cock_ring dild0 dild0s dildo dilld0 sex_toy strap-on sybian vibrator )
 concept: ~sexual_act (~make_love a_bj anal analingus assfuck autoeroticism blow_job blowjob boffing bugger buggery clitfuck consummate cunnilingus cybersex deflower felching fellate 
           fellatio finger_in_you finger_you fist_you fornication fuck fucked fuckin fucking fucks get_dirty_with go_to_bed handjob humping jerk-off jerk_off massterbait masstrbait masstrbate 
           masterbate masterbates masturbation masturbatory menage_a_trois munging nookie onanism oral_sex pussylicking rim_job rimjob rimming screwing titfuck tittyfuck to_cyber touching_yourself 
           tug_job tugjob wank wankjob wet_dream )
-concept: ~sexual_fetish NOUN NOUN_SINGULAR (autoerotic BDSM bestiality bondage bukake chains dominatrix femdom fetish gang_bang glory_hole golden_shower incest infantilism latex leather 
+concept: ~sexual_fetish   (autoerotic BDSM bestiality bondage bukake chains dominatrix femdom fetish gang_bang glory_hole golden_shower incest infantilism latex leather 
           lick_my necrophilia pedophilia pervert rape roped s_and_m sadomasochism sadomasochistic scat sodomy whip )
-concept: ~sexual_liquid NOUN NOUN_SINGULAR (cum jisim jiss jizm jizz semen spunk )
-concept: ~sexual_part NOUN NOUN_SINGULAR (ass boner boob bosom breast cleavage clit clitoris cock cunt dick glans groin hymen jugs love_muscle maidenhead my_dick my_willie nipple penis 
+concept: ~sexual_liquid   (cum jisim jiss jizm jizz semen spunk )
+concept: ~sexual_part   (ass boner boob bosom breast cleavage clit clitoris cock cunt dick glans groin hymen jugs love_muscle maidenhead my_dick my_willie nipple penis 
           private_bits private_member private_part private_parts privates pubes pubic pubis pussy scrotum tit vagina vulva your_balls your_nuts )
-concept: ~sexual_position NOUN NOUN_SINGULAR (69 anal_penetration cowboy_position cowgirl_position deep_throat doggy_position doggy_style leapfrog_position missionary_position rear_entry 
+concept: ~sexual_position   (69 anal_penetration cowboy_position cowgirl_position deep_throat doggy_position doggy_style leapfrog_position missionary_position rear_entry 
           spoons_position woman_on_top )
 concept: ~sexual_preference_nouns PROBABLE_NOUN (asexual bisexual dyke fag faggot femme gay heterosexual homo homosexual lesbian lesbo queer transvestite )
 concept: ~sexual_titillation (a_boner arousal arouse bodice come-on coming_on_to erection erogenous erotic erotica exhibitionism foreplay get_hard getting_hard grope hard_on hardon 
           hentai horny hot_body latex lingerie lust make_out my_panties naked nude nudity obscene obscenity peignoir phone_sex porno pornography randy sexting strip strip_tease striptease 
           take_off talk_dirty talk_naughty topless turn_me_on turn_you_on turned_on unbutton undress voyeur voyeurism wet_T-shirt your_panties )
-concept: ~sexualhate NOUN NOUN_SINGULAR (bitch buttfucker cis_male cocksucker cunt dike dyke fag faggit faggot homo lesbian lesbo lezzie motherfucker muffdiver queer slut tranny whore screw_you
+concept: ~sexualhate   (bitch buttfucker cis_male cocksucker cunt dike dyke fag faggit faggot homo lesbian lesbo lezzie motherfucker muffdiver queer slut tranny whore screw_you
           you_cunt you_dick you_dickhead you_whore cunt fag fink asshole ass_hole dickface dick_face dickhead dick_head up_your_ass up_yours whore you_cunt you_dick you_dickhead )
 concept: ~shapers (cookie_cutter file grinder rasp rolling_pin sander sanding_block sandpaper sharpener )
 concept: ~shapes (amorphous circular cube cuboid cylinder cylindrical decagon decahedron dodecagon dodecahedron elliptical enneagon flat hendecagon hexagon hexagonal hexagram hexahedron 
@@ -1778,7 +1778,7 @@ concept: ~sicknesses (~birth_defect ~diseaselist ~mental_illnesses ~symptom ailm
 concept: ~similar (akin alike analogous comparable compare congruent congruous identical in_common like much_the_same relate resemble same similar similarity the_same )
 concept: ~singinglist (choral_group kibuki musical musical_theater~1 opera )
 concept: ~singular (~noun_proper_singular ~noun_singular )
-concept: ~sister NOUN NOUN_SINGULAR PROBABLE_NOUN ANIMATE_BEING (sis sister )
+concept: ~sister   PROBABLE_NOUN ANIMATE_BEING (sis sister )
 concept: ~skate_sports (in-line_skating roller_skate roller_skating skate skateboarding )
 concept: ~slow (amble bend canter crawl creep drag drift droop edge heave lazily lift loiter lope lumber plod saunter slink slouch slow slowly sneak soar stagger stalk stray sway tiptoe 
           waddle )
@@ -1790,7 +1790,7 @@ concept: ~social_issues (abortion affirmative_action AIDS alcohol animal_rights 
           creationism drinking drug_abuse drugs drunk_driving ecology environment environmental_protection euthanasia evolution famine flag_burning gangs gender_issues genetic_engineering 
           global_warming gun_control homelessness homosexuality human_rights immigration marijuana nuclear_proliferation nuclear_weapons organ_donation organ_donor overpopulation poverty 
           prayer_in_school racial_profiling religion same_sex_marriage school_prayer smoking sweatshop terrorism tobacco violence welfare world_population )
-concept: ~social_network_sites NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR (Badoo Bebo BlackPlanet Busuu Buzznet Care2 Caringbrige Classmates Classmates.com Cyworld deviantArt douban eGenki 
+concept: ~social_network_sites   NOUN_PROPER_SINGULAR (Badoo Bebo BlackPlanet Busuu Buzznet Care2 Caringbrige Classmates Classmates.com Cyworld deviantArt douban eGenki 
           FaceBook Flickr Flixster Formspring Fotolog Foursqare Friends_Reunited Friendster Gaia_Online Geni.com Google+ Habbo hi5 Hyves Ibibo Instagram Itsmy Last.fm LinkedIn LiveJournal 
           Livemocha Meetup.com Mixi MyLife MySpace Netlog Odnoklassniki Open_Diary Orkut Pinterest Plaxo Qzone Renren Ryze Sina_Weibo Skype Skyrock Sonico.com SoundCloud Stickam StudiVZ 
           StumbleuUpon Taringa Tuenti Tumblr Twitter Viadeo Vkontakte WAYN We_Heart_It WeeWorld Xanga XING Yelp YouTube )
@@ -1878,7 +1878,7 @@ concept: ~textile_crafts (crochet cross-stitch embroidery knit macrame millinery
 concept: ~texture_words (abrasive bumpy coarse crunchy polished rough sensual shaggy smooth smoothed unsmooth unsmoothed waxy )
 concept: ~than (than then )
 concept: ~theatrical_groups (cast troupe )
-concept: ~therapist NOUN NOUN_SINGULAR (psychiatrist psychologist psychotherapist shrink therapist )
+concept: ~therapist   (psychiatrist psychologist psychotherapist shrink therapist )
 concept: ~there (~locatedentity ~shelter )
 concept: ~they (~band ~company ~country agency beings brigade committee company council crew Democratic_Party Democrats gang group House_of_Commons House_of_Lords House_of_Representatives 
           humans organization Parliament patrol people platoon Republican_Party Republicans Roman_Catholic_Church school_board Senate Supreme_Court tribunal )
@@ -1906,7 +1906,7 @@ concept: ~timebasedreference (~actual_time ~dayname ~month_names ~number day hou
 concept: ~timeearlier (ago anon back back_when before beforehand earlier last previous previously prior )
 concept: ~timelater (after afterward ere follow from hence later next post since subsequent subsequently )
 concept: ~timenopreposition (all any every last next this )
-concept: ~tobacco NOUN NOUN_SINGULAR (nicotine tobacco~1 )
+concept: ~tobacco   (nicotine tobacco~1 )
 concept: ~tool (tool~2 )
 concept: ~torso (abdomen back belly body bottom breast buttock chest genitals heart lap penis scrotum shoulder skeleton spine stomach testicle tummy tush vagina waist )
 concept: ~tow_service (road_service tow tow_service )
@@ -1918,7 +1918,7 @@ concept: ~tradegoods (cash coin currency~1 diamond dollar emerald fortune gold m
 concept: ~transmuters (diesel_fuel electrolysis electromagnet fire_extinguisher gas gasoline generator lighter match )
 concept: ~transport_vehicles (public_transport~1 tramline tramway vehicle~1 wheeled_vehicle~1 )
 concept: ~travel_agency (ticket travel_agency vacation )
-concept: ~travel_websites NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR (Expedia Expedia.com Hotwire Metacafe Orbitz Priceline Priceline.com Travelocity )
+concept: ~travel_websites   NOUN_PROPER_SINGULAR (Expedia Expedia.com Hotwire Metacafe Orbitz Priceline Priceline.com Travelocity )
 concept: ~treatments (catharsis diagnosis healing operation physiotherapy recuperation therapy transplant treatment )
 concept: ~tv_genre (action~7 adult_movie attorney cartoon comedy cop court crime current_affairs detective doctor documentary drama fashion game_show hospital judge law lawyer legal 
           medical medicine news police quiz quiz_show reality sci-fi science_fiction serial shopping sitcom soap )
@@ -1927,17 +1927,17 @@ concept: ~tvstuff (broadcast~1 program variety_show )
 concept: ~unfocused_groups (bevy crowd drove flock folk gang herd huddle mob pack pool swarm throng )
 concept: ~unitmeasure (article assortment bag bar bottle box can carton case casket collection count crate CT handful jug pack packet pair piece plateful rasher set skein square tin )
 concept: ~university (university )
-concept: ~unknownsexhuman NOUN_HUMAN NOUN NOUN_SINGULAR ANIMATE_BEING (~family_adult_generic ~family_children_generic acquaintance admirer anybody anyone believer buddy devotee disciple 
+concept: ~unknownsexhuman NOUN_HUMAN   ANIMATE_BEING (~family_adult_generic ~family_children_generic acquaintance admirer anybody anyone believer buddy devotee disciple 
           enemy foe friend groupie human human_being junkie kin kith lover nobody pal paramour person police resident suitor sweetheart wooer worshiper )
 concept: ~unreachable (~scenery_air ~scenery_outer_space )
 concept: ~us_minorities (African-American~1 Asian Asiatic~1 Black Hispanic~2 Indian Mexican_American Native_American )
 concept: ~usefulfactverb (~bodily_activities_verbs ~bodily_function_verbs ~exercise_verbs ~sport be )
-concept: ~vegetable NOUN NOUN_SINGULAR (artichoke arugula beet bok_choy broccoli brussel_sprout cabbage carrot cauliflower celery corn endive green_bean kale lettuce lima_bean onion 
+concept: ~vegetable   (artichoke arugula beet bok_choy broccoli brussel_sprout cabbage carrot cauliflower celery corn endive green_bean kale lettuce lima_bean onion 
           pea potato purslane radish spinach tomato turnip watercress yarrow )
 concept: ~vehicle (~transport_vehicles ~vehicles_air ~vehicles_land ~vehicles_sea ~vehicles_space convoy )
 concept: ~vehicle_conduit (avenue boulevard drawbridge driveway expressway highway path road roadway street tollgate turnpike )
 concept: ~vehicle_weapons (aircraft_carrier bomber fighter_jet half-track submarine tank )
-concept: ~vehicles_air NOUN NOUN_SINGULAR (747 aeroplane airbus aircraft airline airliner airplane airship amphibious_aircraft attack_aircraft autogiro autogyro B-52 ballistic_capsule 
+concept: ~vehicles_air   (747 aeroplane airbus aircraft airline airliner airplane airship amphibious_aircraft attack_aircraft autogiro autogyro B-52 ballistic_capsule 
           balloon barrage_balloon biplane blimp Boeing_747 bogey bogie bogy bomber cargo_helicopter chopper coleopter cruise_missile delta_wing dirigible dive_bomber double-prop double-propeller_plane 
           drone eggbeater fan-jet fanjet fighter fighter_aircraft fighter_jet floatplane flying_boat flying_broom flying_car glider Graf_Zeppelin ground-effect_machine gyroplane hang_glider 
           hangar_queen heavier-than-air_craft helicopter hot-air_balloon hovercraft hydroplane interceptor jet jet-propelled_plane jet_plane jetliner jumbo_jet jumbojet kamikaze kite 
@@ -1946,7 +1946,7 @@ concept: ~vehicles_air NOUN NOUN_SINGULAR (747 aeroplane airbus aircraft airline
           propjet radio-controlled_aircraft reconnaissance_plane roflcopter sailplane sausage_balloon seaplane shuttle_helicopter single-propeller_plane single-rotor_helicopter single_prop 
           ski-plane skyhook stealth_aircraft stealth_bomber stealth_fighter STOL tanker_plane trial_balloon triplane turbo-propeller_plane turbofan turbojet turboprop twin-aisle_airplane 
           twin-prop twin-propeller-plane twinjet VSTOL VTOL warplane whirlybird wide-body wide-body_aircraft widebody_aircraft zeppelin )
-concept: ~vehicles_land NOUN NOUN_SINGULAR (~car_vehicles all-terrain_bike angledozer APC applecart baby_buggy baby_carriage baggage_car bandwagon barouche barrow bassinet beach_buggy 
+concept: ~vehicles_land   (~car_vehicles all-terrain_bike angledozer APC applecart baby_buggy baby_carriage baggage_car bandwagon barouche barrow bassinet beach_buggy 
           beach_wagon bicycle bicycle-built-for-two bike Black_Maria boat_train bob bobsled bobsleigh boxcar brougham buckboard buffet_car buggy bulldozer bullet_train bumper_car burro 
           cabin_car cable_car caboose camel camion car_train caroche carriage carrier cart cattle_car chair_car chaise charabanc chariot cherry_picker choo-choo chuck_wagon clarence 
           clown_car club_car coach coach-and-four coal_car coaster_wagon commuter_train Conestoga Conestoga_wagon covered_wagon crane cycle cycle_rickshaw diesel-electric_locomotive 
@@ -1966,7 +1966,7 @@ concept: ~vehicles_land NOUN NOUN_SINGULAR (~car_vehicles all-terrain_bike angle
           tank_locomotive tea_cart tea_trolley tea_wagon teacart technical test_instrument_vehicle test_rocket tobaggan toboggan tracked_vehicle trackless_trolley traction_engine tractor 
           tractor_trailer trail_bike train train_car tram tramcar transport transporter trencher tricycle trike trolley trolley_car trolley_coach trolleybus tub-cart tumbril two-seater 
           unicycle velocipede wagon wain water_cart water_waggon water_wagon watering_cart weapons_carrier welcome_wagon wheel wheelbarrow wheelchair wheeled_vehicle wood_chipper )
-concept: ~vehicles_sea NOUN NOUN_SINGULAR (abandoned_ship aircraft_carrier amphibian ark attack_aircraft_carrier attack_submarine auxiliary_research_submarine banana_boat bareboat barge 
+concept: ~vehicles_sea   (abandoned_ship aircraft_carrier amphibian ark attack_aircraft_carrier attack_submarine auxiliary_research_submarine banana_boat bareboat barge 
           bark barque battle_cruiser battleship battlewagon birch_bark birchbark birchbark_canoe blockade-runner boat Bounty brig brigantine bumboat cabin_cruiser cabin_liner caisson 
           canal_boat canoe capital_ship car-ferry carack cargo_liner cargo_ship cargo_vessel carrack catamaran catboat cattle_boat cattleship Chinese_junk clipper clipper_ship cockleshell 
           cogship combat_ship Constitution container_ship container_vessel containership coracle corsair corvette cruise_liner cruise_ship cutter dandy derelict destroyer destroyer_escort 
@@ -1993,7 +1993,7 @@ concept: ~videogame (Bejeweled Bomberman Command_and_Conquer Crash_Bandicoot Dan
 concept: ~videogame_genre (action-adventure action~7 adventure casual dance educational fantasy fight first-person_shooter god management maze pinball platform puzzle real-time_strategy 
           role-playing RPG RTS shooter side_scroller simulation simulator sports strategy )
 concept: ~videogame_hardware_companies NOUN NOUN_PROPER_SINGULAR (Coleco Microsoft Nintendo Sony )
-concept: ~videogame_machines NOUN NOUN_SINGULAR (arcade_machine DreamCast DS Gamecube N64 Nintendo_DS Playstation Playstation_2 Playstation_3 PS2 PS3 PSP SNES Wii Xbox Xbox_360 )
+concept: ~videogame_machines   (arcade_machine DreamCast DS Gamecube N64 Nintendo_DS Playstation Playstation_2 Playstation_3 PS2 PS3 PSP SNES Wii Xbox Xbox_360 )
 concept: ~videogame_software_companies NOUN NOUN_PROPER_SINGULAR (2K_Games 3DO Acclaim_Entertainment Accolade Activision Atari Bandai Blizzard Blizzard_Entertainment Broderbund Bungie 
           Capcom Coleco Crystal_Dynamics Disney_Interactive Eidos Electronic_Arts Enix GT_Interactive Hudson_Soft LucasArts Nintendo Radical Sega Telltale_Games Vivendi )
 concept: ~virtual_pets (Furby Hatchi Pou tamagochi virtual_pet )
@@ -2010,8 +2010,8 @@ concept: ~weapon (~bladed_weapon ~explosive_weapon ~flame_weapon ~hitting_weapon
 concept: ~weapon_ammo (ammo ammunition arrow ball banderilla BB BB_shot bird_shot broad_arrow buckshot bullet butt_shaft cannon_ball cannonball dart duck_shot dumdum dumdum_bullet full_metal_jacket 
           grapeshot musket_ball pellet projectile quarrel rifle_ball round_shot rubber_bullet shot slug spitball )
 concept: ~weapon_biological (aflatoxin anthrax_bacillus Bacillus_anthracis bioarm biological_weapon bioweapon botulin botulinus_toxin botulismotoxin clostridium_perfringens staphylococcal_enterotoxin_B )
-concept: ~weapon_future NOUN NOUN_SINGULAR (blaster disruptor freeze_ray laser_sword phaser ray_gun raygun shrink_ray )
-concept: ~weapon_magical NOUN NOUN_SINGULAR (Medusa_'s_head wand wizard_staff )
+concept: ~weapon_future   (blaster disruptor freeze_ray laser_sword phaser ray_gun raygun shrink_ray )
+concept: ~weapon_magical   (Medusa_'s_head wand wizard_staff )
 concept: ~weapon_massdestruction (~weapon_biological ~weapon_nuclear W.M.D. weapon_of_mass_destruction~1 WMD )
 concept: ~weapon_medieval (arrow axe ballista battering_ram blade blowgun bludgeon bokken boomerang bow bow_and_arrow broadsword catapult club crossbow cudgel Cupid_'s_bow cupid_bow 
           dagger Excalibur flameberge flintlock grappling_hook halberd handbow harpoon javelin katana katar knife lance longbow longsword mace medieval_weapon medieval_weaponry morning_star 
@@ -2026,10 +2026,10 @@ concept: ~weapon_stun (stun_baton stun_gun taser )
 concept: ~wearable (~all_shields ~clothes )
 concept: ~weatherkinds (~bad_weather ~good_weather ~reallybadweather climate dew weather )
 concept: ~weatherprocess (~natural_disasters ~seasons ~weather_verbs )
-concept: ~web_filesharing_sites NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR (Bittorrent RapidShare The_Pirate_bay Thepiratebay )
-concept: ~webmail_services NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR (AOL Eudora Gmail Gmail.com Hotmail Hotmail.com MSN )
-concept: ~webnews_sites NOUN NOUN_SINGULAR NOUN_PROPER_SINGULAR (BoingBoing Del.icio.us Digg Digg.com Diggdot.us Drudge_Report Fark Slashdot )
-concept: ~websites NOUN NOUN_SINGULAR (~image_websites ~misc_websites ~search_engines ~social_network_sites ~travel_websites ~web_filesharing_sites ~webmail_services ~webnews_sites )
+concept: ~web_filesharing_sites   NOUN_PROPER_SINGULAR (Bittorrent RapidShare The_Pirate_bay Thepiratebay )
+concept: ~webmail_services   NOUN_PROPER_SINGULAR (AOL Eudora Gmail Gmail.com Hotmail Hotmail.com MSN )
+concept: ~webnews_sites   NOUN_PROPER_SINGULAR (BoingBoing Del.icio.us Digg Digg.com Diggdot.us Drudge_Report Fark Slashdot )
+concept: ~websites   (~image_websites ~misc_websites ~search_engines ~social_network_sites ~travel_websites ~web_filesharing_sites ~webmail_services ~webnews_sites )
 concept: ~weekday (Friday Monday Thursday Tuesday Wednesday )
 concept: ~weight_words (~body_weight_adjectives body_type build ectomorph endomorph figure mesomorph physique weigh weight )
 concept: ~what (what which )
@@ -2039,8 +2039,8 @@ concept: ~why (how_come how_do_you_mean how_so what_do_you_mean what_for why Y y
 concept: ~wildness_words (civilized cultivated feral savage tame uncivilized uncultivated undomesticated untamed wild )
 concept: ~wind_force (breeze draft dust_devil gust wind )
 concept: ~wine (~wine_red ~wine_white wine )
-concept: ~wine_red NOUN NOUN_SINGULAR (Cabernet_Sauvignon Chianti Lambrusco Merlot Pinot_noir red_wine Shiraz Syrah Tempranillo zinfandel )
-concept: ~wine_white NOUN NOUN_SINGULAR (Chardonnay Chenin_blanc gewurztrauminer Pinot_blanc pinot_grigio Riesling Sauvignon_blanc viognier white_wine )
+concept: ~wine_red   (Cabernet_Sauvignon Chianti Lambrusco Merlot Pinot_noir red_wine Shiraz Syrah Tempranillo zinfandel )
+concept: ~wine_white   (Chardonnay Chenin_blanc gewurztrauminer Pinot_blanc pinot_grigio Riesling Sauvignon_blanc viognier white_wine )
 concept: ~winter_sports (alpine_skiing bobsled cross-country_skiing curling figure_skating freestyle_skiing ice_hocket luge ski ski_jumping ski_resort skiing snowboarding snowshoe speed_skating 
           speed_skiing )
 concept: ~wnapplied_science (agriculture alimentation architecture computer_science engineering medicine veterinary )

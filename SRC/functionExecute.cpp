@@ -99,7 +99,7 @@ char* currentPlanBuffer;
 
 static int rhymeSet;
 static FunctionResult ParseJson(char* buffer, char* message, size_t size);
-
+static FunctionResult JSONDeleteCode(char* buffer); 
 //////////////////////////////////////////////////////////
 /// BASIC FUNCTION CODE
 //////////////////////////////////////////////////////////
@@ -1028,6 +1028,12 @@ bool RuleTest(char* data) // see if pattern matches
 	int positionStart,positionEnd;
 	int wildstart = 1;
 	bool answer =  Match(pattern+2,0,0,(char*)"(",wildstart,wildcardSelector,junk,junk,uppercasem,matched,positionStart,positionEnd); // start past the opening paren
+	if (clearUnmarks) // remove transient global disables.
+	{
+		clearUnmarks = false;
+		for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
+	}
+	ShowMatchResult(answer ? NOPROBLEM_BIT : FAILRULE_BIT, pattern+2,NULL);
 	return answer;
 }
 
@@ -2536,7 +2542,7 @@ static FunctionResult InputCode(char* buffer)
 	FunctionResult result;
 	char* word = ARGUMENT(1);
 	Output(word,buffer,result);
-	if (strlen(buffer) >= INPUT_BUFFER_SIZE) buffer[INPUT_BUFFER_SIZE-1] = 0;	// might be smaller buffer
+	if (strlen(buffer) >= (INPUT_BUFFER_SIZE - 100)) buffer[INPUT_BUFFER_SIZE-100] = 0;	// might be smaller buffer
 	Convert2Blanks(buffer); // break apart underscored words
 
 	// put possessives back together.
@@ -2944,11 +2950,6 @@ static FunctionResult LogCode(char* buffer)
 static FunctionResult FlushOutputCode(char* buffer)
 {
 	if (planning) return FAILRULE_BIT;
-	if (postProcessing)
-	{
-		ReportBug((char*)"Illegal to use ^FlushOutput during postprocessing");
-		return FAILRULE_BIT;
-	}
 	if (!AddResponse(currentOutputBase,responseControl)) return FAILRULE_BIT;
 	return NOPROBLEM_BIT;
 }
@@ -2970,11 +2971,6 @@ static FunctionResult InsertOutput(char* stream, char* buffer, int index)
 static FunctionResult InsertPrintCode(char* buffer) 
 {     
 	if (planning) return FAILRULE_BIT;
-	if (postProcessing)
-	{
-		ReportBug((char*)"Illegal to use ^InsertPrePrint during postprocessing");
-		return FAILRULE_BIT;
-	}
 	char* stream = ARGUMENT(1);
 	uint64 flags;
 	bool bad = false;
@@ -3006,11 +3002,6 @@ static FunctionResult InsertPrintCode(char* buffer)
 static FunctionResult PrintCode(char* buffer) 
 {     
 	if (planning) return FAILRULE_BIT;
-	if (postProcessing)
-	{
-		ReportBug((char*)"Illegal to use ^Print during postprocessing");
-		return FAILRULE_BIT;
-	}
 	char* stream = ARGUMENT(1);
 	uint64 flags;
 	bool bad = false;
@@ -3027,11 +3018,6 @@ static FunctionResult PrintCode(char* buffer)
 static FunctionResult PrePrintCode(char* buffer)
 {
 	if (planning) return FAILRULE_BIT;
-	if (postProcessing)
-	{
-		ReportBug((char*)"Illegal to use ^PrePrint during postprocessing");
-		return FAILRULE_BIT;
-	}
 	char* stream = ARGUMENT(1); 
 	uint64 flags;
 	bool bad = false;
@@ -3201,9 +3187,12 @@ static FunctionResult PostPrintBeforeCode(char* buffer) // only works if post pr
 	Output(stream,buffer,result,OUTPUT_EVALCODE| (unsigned int)flags);
 
 	// prepend output 
-	strcat(buffer,(char*)" ");
-	strcat(buffer,postProcessing);
-	strcpy(postProcessing,buffer);
+	if (AddResponse(buffer,responseControl))
+	{
+		memmove(&responseOrder[0+1],&responseOrder[0],responseIndex - 0); // shift order out 1
+		responseOrder[0] = (unsigned char)(responseIndex-1);
+	}
+
 	*buffer = 0;
 	return result;
 }
@@ -3227,17 +3216,14 @@ static FunctionResult PostPrintAfterCode(char* buffer) // only works if post pro
 	Output(stream,buffer,result,OUTPUT_EVALCODE| (unsigned int)flags);
 
 	// postpend output 
-	size_t len = strlen(postProcessing);
-	char* end = postProcessing + len;
-	if (len > 0) *end++ = ENDUNIT; // add separating item from last unit for log detection
-	strcpy(end,buffer);
+	AddResponse(buffer,responseControl);
 	*buffer = 0;
 	return result;
 }
 
 static FunctionResult ReviseOutputCode(char* buffer)
 {
-	if (postProcessing) return FAILRULE_BIT;
+	// if (postProcessing) return FAILRULE_BIT;
 	char* arg1 = ARGUMENT(1); // index first, rest is output
 	if (!IsDigit(*arg1)) return FAILRULE_BIT;
 	int index = atoi(arg1) - 1;
@@ -3406,6 +3392,12 @@ FunctionResult MatchCode(char* buffer)
 		}
 		if (*ptr == FUNCTIONSTRING) ++ptr;	// skip compiled string mark
 		while (*ptr == ' ') ++ptr;	// prepare for start
+		if (*ptr != '(') // insure it has a pattern start
+		{
+			memmove(ptr+1,ptr,strlen(ptr)+1);
+			*ptr = '(';
+		}
+
 		at = pack;
 		*at = 0;
 	#ifdef DISCARDSCRIPTCOMPILER 
@@ -3420,7 +3412,7 @@ FunctionResult MatchCode(char* buffer)
 		}
 		char junk[MAX_WORD_SIZE];
 		ReadNextSystemToken(NULL,NULL,junk,false,false); // flush cache
-		ReadPattern(ptr, NULL, at,false,false); // compile the pattern
+		ReadPattern(ptr, NULL, at,false,false,true); // compile the pattern
 		strcat(at,(char*)" )");
 		at = pack; // for debug retry
 		base = pack; // the compiled pattern
@@ -3438,6 +3430,12 @@ FunctionResult MatchCode(char* buffer)
 	if (*base == '(') ++base;		// skip opening paren of a pattern
  	if (*base == ' ') ++base;		// skip opening space of a pattern
     bool match = Match(base,0,0,(char*)"(",wildstart,wildcardSelector,junk,junk,uppercasem,matched,positionStart,positionEnd) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
+	if (clearUnmarks) // remove transient global disables.
+	{
+		clearUnmarks = false;
+		for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
+	}
+	ShowMatchResult(!match ? FAILRULE_BIT : NOPROBLEM_BIT ,base,NULL);
 	if (!match) return FAILRULE_BIT;
 	return NOPROBLEM_BIT;
 }
@@ -3471,7 +3469,7 @@ static FunctionResult SaveSentenceCode(char* buffer)
 {
 	if (documentMode) return FAILRULE_BIT;
 	char* arg1 = ARGUMENT(1);
-	MEANING M = MakeMeaning(StoreWord(arg1));
+	MEANING M = MakeMeaning(StoreWord(arg1,AS_IS));
 
 	// compute words needed
 	int size = 2; // basic list
@@ -3497,10 +3495,10 @@ static FunctionResult SaveSentenceCode(char* buffer)
 	WORDP D;
 	for (int i = 1; i <= wordCount; ++i)
 	{
-		D = StoreWord(wordStarts[i]);
+		D = StoreWord(wordStarts[i],AS_IS);
 		M = MakeMeaning(D);
 		memory[n++] = M;
-		D = StoreWord(wordCanonical[i]);
+		D = StoreWord(wordCanonical[i],AS_IS);
 		M = MakeMeaning(D);
 		memory[n++] = M;
 
@@ -3517,7 +3515,7 @@ static FunctionResult SaveSentenceCode(char* buffer)
 	memory[n++] = derivationLength;
 	for (int i = 1; i <= derivationLength; ++i)
 	{
-		D = StoreWord(derivationSentence[i]);
+		D = StoreWord(derivationSentence[i],AS_IS);
 		M = MakeMeaning(D);
 		memory[n++] = M;
 	}
@@ -3550,7 +3548,7 @@ static FunctionResult RestoreSentenceCode(char* buffer)
 {
 	if (documentMode) return FAILRULE_BIT;
 	char* arg1 = ARGUMENT(1);
-	MEANING M = MakeMeaning(StoreWord(arg1));
+	MEANING M = MakeMeaning(StoreWord(arg1,AS_IS));
 
 	unsigned int list = savedSentences;
 	unsigned int* memory = NULL;
@@ -4383,7 +4381,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 				if (impliedWild != ALREADY_HANDLED)  SetWildCard(word,word,0,0);
 				else if (impliedSet != ALREADY_HANDLED)
 				{
-					MEANING T = MakeMeaning(StoreWord(word));
+					MEANING T = MakeMeaning(StoreWord(word,AS_IS));
 					FACT* F = CreateFact(T, verb,object,FACTTRANSIENT|FACTDUPLICATE);
 					AddFact(impliedSet,F);
 				}
@@ -4402,7 +4400,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 			}
 			else if (impliedSet != ALREADY_HANDLED)
 			{
-				if (*ptr) AddFact(impliedSet,CreateFact(MakeMeaning(StoreWord(ptr)), verb,object,FACTTRANSIENT|FACTDUPLICATE));
+				if (*ptr) AddFact(impliedSet,CreateFact(MakeMeaning(StoreWord(ptr,AS_IS)), verb,object,FACTTRANSIENT|FACTDUPLICATE));
 			}
 			else if (!*buffer) strcpy(buffer,ptr);
 
@@ -4443,7 +4441,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 		{
 			if (*ptr)
 			{
-				MEANING T = MakeMeaning(StoreWord(ptr));
+				MEANING T = MakeMeaning(StoreWord(ptr,AS_IS));
 				FACT* F = CreateFact(T, verb,object,FACTTRANSIENT|FACTDUPLICATE);
 				AddFact(impliedSet,F);
 			}
@@ -4455,6 +4453,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 		}
 
 		ptr = hold + scanlen; //   ptr after scan marker
+		if (!*ptr) hold = 0;
 		while (*ptr)
 		{
 			hold = strstr(ptr,scan);
@@ -4482,7 +4481,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 	}
 	else if (impliedSet != ALREADY_HANDLED)
 	{
-		if (*ptr) AddFact(impliedSet,CreateFact(MakeMeaning(StoreWord(ptr)), verb,object,FACTTRANSIENT|FACTDUPLICATE));
+		if (*ptr) AddFact(impliedSet,CreateFact(MakeMeaning(StoreWord(ptr,AS_IS)), verb,object,FACTTRANSIENT|FACTDUPLICATE));
 	}
 	else if (!*buffer) strcpy(buffer,ptr);
 
@@ -5579,17 +5578,16 @@ static FunctionResult WordInConceptCode(char* buffer)
 	{
 		MEANING M = MakeMeaning(set[--i]); 
 		WORDP D = Meaning2Word(M);
-		FACT* F = GetSubjectHead(D);
+		FACT* F = GetSubjectNondeadHead(D);
 		// propogate to find set
 		while(F) 
 		{
-			TraceFact(F);
 			if (F->verb == Mmember && WordPropogate(F->object,find))
 			{
 				sprintf(buffer,"%s",Meaning2Word(F->subject)->word);
 				return NOPROBLEM_BIT;
 			}
-			F = GetSubjectNext(F);
+			F = GetSubjectNondeadNext(F);
 		}
 	}
 	if (ARGUMENT(3)) return FAILRULE_BIT;
@@ -6111,13 +6109,14 @@ static FunctionResult LengthCode(char* buffer)
 		WORDP D = FindWord(word);
 		if (D)
 		{
-			FACT* F = GetSubjectHead(D); // dont use nondead
+			FACT* F = GetSubjectNondeadHead(D); 
 			while (F)
 			{
 				++count;
-				F = GetSubjectNext(F); // dont use nondead
+				F = GetSubjectNondeadNext(F); 
 			}
 		}
+		else return FAILRULE_BIT;	// it doesnt exist
 		sprintf(buffer,(char*)"%d",count);
 	}
 	else if (!*word) strcpy(buffer,(char*)"0"); // NULL has 0 length (like a null value array)
@@ -6960,17 +6959,19 @@ static FunctionResult CreateAttributeCode(char* buffer)
 	return (currentFact) ? NOPROBLEM_BIT : FAILRULE_BIT; // fails if pre-existing fact cant be killed because used in fact
 }
 
-static FunctionResult DeleteCode(char* buffer) //   delete all facts in collection
+static FunctionResult DeleteCode(char* buffer) //   delete all facts in collection or named fact or named json object/array
 {
 	char* arg1 = ARGUMENT(1);
-	if (IsDigit(*arg1))
+	if (!*arg1) return NOPROBLEM_BIT;
+	else if (IsDigit(*arg1))
 	{
 		FACT* F = Index2Fact(atoi(arg1));
 		if (F) KillFact(F);
 	}
-	else
+	else if (!strnicmp(arg1,"ja-",3) || !strnicmp(arg1,"jo-",3)) return JSONDeleteCode(buffer);
+	else if (*arg1 == '@') // factset
 	{
-		int store = GetSetID(ARGUMENT(1));
+		int store = GetSetID(arg1);
 		if (store == ILLEGAL_FACTSET) return FAILRULE_BIT;
 		unsigned int count = FACTSET_COUNT(store);
 		for (unsigned int i = 1; i <= count; ++i) 
@@ -6979,6 +6980,7 @@ static FunctionResult DeleteCode(char* buffer) //   delete all facts in collecti
 			KillFact(F);
 		}
 	}
+	else return FAILRULE_BIT;
 	return NOPROBLEM_BIT;
 }
 
@@ -7929,23 +7931,29 @@ int factsPreBuildFromJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken
 }
 
 MEANING factsPreBuildFromJson(char *jsontext, jsmntok_t *tokens) {
-	MEANING retToken = 0;
+	MEANING retMeaning = 0;
 	int flags = 0;
-	factsPreBuildFromJsonHelper(jsontext, tokens, 0, &retToken, &flags,false);
-	return retToken;
+	int X = factsPreBuildFromJsonHelper(jsontext, tokens, 0, &retMeaning, &flags,false);
+	if (!X)
+	{
+		int xx = 0;
+		return 0;
+	}
+	currentFact = NULL;	 // used up by putting into json
+	return retMeaning;
 }
 
 #ifndef DISCARDJSON // ---------------------------- CURL/JSON related code donated by anonymous user and revised by wilcox  ---------------------
 
 #ifdef WIN32
 #include "curl.h"
-#ifdef DEBUG
-#pragma comment(lib, "../SRC/curl/libcurld.lib")
+	#ifdef DEBUG
+		#pragma comment(lib, "../SRC/curl/libcurld.lib")#else
+	#else
+		#pragma comment(lib, "../SRC/curl/libcurl.lib")
+	#endif
 #else
-#pragma comment(lib, "../SRC/curl/libcurl.lib")
-#endif
-#else
-#include <curl/curl.h>
+	#include <curl/curl.h>
 #endif
 
 
@@ -8362,9 +8370,16 @@ static FunctionResult JSONOpenCode(char* buffer)
 	ChangeDepth(-1,(char*)"ParseJson");
 	if (trace & TRACE_JSON)
 	{
+		char c;
+		if (output.size > (MAX_BUFFER_SIZE - 100)) // too much to log completely
+		{
+			c = output.buffer[MAX_BUFFER_SIZE - 10];
+			output.buffer[MAX_BUFFER_SIZE - 10] = 0;
+		}
 		Log(STDUSERLOG,(char*)"\r\n");
 		Log(STDUSERTABLOG,(char*)"Json response code: %d size: %d %s\r\n",http_response,output.size,buffer);
 		Log(STDUSERTABLOG,(char*)"");
+		if (output.size > (MAX_BUFFER_SIZE - 100)) output.buffer[MAX_BUFFER_SIZE - 10] = c; // too much to log completely
 	}
 
 	return result;
@@ -8375,7 +8390,11 @@ static FunctionResult JSONOpenCode(char* buffer)
 static FunctionResult ParseJson(char* buffer, char* message, size_t size)
 {
 	*buffer = 0;
-	if (trace & TRACE_JSON) Log(STDUSERTABLOG, "JsonParse Call: %s", message);
+	if (trace & TRACE_JSON) 
+	{
+		if (size < (MAX_BUFFER_SIZE - 100)) Log(STDUSERTABLOG, "JsonParse Call: %s", message);
+		else Log(STDUSERTABLOG, "JsonParse Call: %d-byte message too big to show\r\n",size);
+	}
 	if (size < 1) return NOPROBLEM_BIT; // nothing to parse
 
 	jsmn_parser parser;
@@ -8414,7 +8433,7 @@ static int orderJsonArrayMembers(WORDP D, FACT** store)
 	FACT* G = GetSubjectNondeadHead(D);	
 	while (G) // get facts in order - but if user manually deleted externally, we will have a hole.
 	{
-		if (G->flags & JSON_ARRAY_FACT) // in case of accidental collisions with normal words
+			if (G->flags & JSON_ARRAY_FACT) // in case of accidental collisions with normal words
 		{
 			int index = atoi(Meaning2Word(G->verb)->word);
 			store[index] = G;
@@ -8717,7 +8736,7 @@ static MEANING jcopy(WORDP D)
 	return composite;
 }
 
-static void jkillfact(WORDP D)
+void jkillfact(WORDP D)
 {
 	if (!D) return;
 	FACT* F = GetSubjectNondeadHead(D);
@@ -9042,20 +9061,26 @@ static MEANING jsonValue(char* value, unsigned int& flags)
 	char* at = value;
 	if (*at == '+') ++at;
 	else if (*at == '-') ++at;
+	int exponent = 0;
 	while (*at) 
 	{  
-		if (*at != '.' && !IsDigit(*at)) break;
+		if (*at == 'e' || *at == 'E')
+		{
+			if (IsDigit(*at-1)) ++exponent;
+			else break;
+		}
 		if (*at == '.') ++decimal;
+		else if (!IsDigit(*at)) break; // end of a number maybe
 		++at;
 	}
-	if (!IsDigit(*(at-1)) || decimal > 1) number = false;
+	if (*at  || decimal > 1 || exponent > 1) number = false;
 
 	if (*value == '"') // explicit string
 	{
 		flags |= JSON_STRING_VALUE;
 		size_t len = strlen(value);
 		if (value[len-1] == '"') value[--len] = 0;
-		++value;
+		++value; // strip off quotes for CS, replace later in jsonwrite for output
 	}
 	else if (!strnicmp(value,(char*)"jo-",3)) flags |= JSON_OBJECT_VALUE;
 	else if (!strnicmp(value,(char*)"ja-",3))  flags |= JSON_ARRAY_VALUE;
@@ -9063,7 +9088,7 @@ static MEANING jsonValue(char* value, unsigned int& flags)
 	else if (!stricmp(value,(char*)"false"))  flags |= JSON_PRIMITIVE_VALUE;
 	else if (!stricmp(value,(char*)"null"))  flags |= JSON_PRIMITIVE_VALUE;
 	else if (number) flags |= JSON_PRIMITIVE_VALUE;
-	// else flags |= JSON_STRING_VALUE; // all others are also strings but without quotes
+	else flags |= JSON_STRING_VALUE; // all others are also strings but without quotes
 
 	WORDP V = StoreWord(value,AS_IS); // new value
 	return MakeMeaning(V);
@@ -9089,27 +9114,29 @@ static FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectke
 	WORDP keyvalue = StoreWord(keyname,AS_IS); // new key
 	char* val = ARGUMENT(index);
 	MEANING key = MakeMeaning(keyvalue);
+	MEANING object = MakeMeaning(D);
+
+	// remove old value if it exists, do not allow multiple values
+	FACT* F = GetSubjectNondeadHead(D);
+	while (F)	// already there, delete it
+	{
+		if (F->verb == key)
+		{
+			KillFact(F);
+			break;
+		}
+		F = GetSubjectNondeadNext(F);
+	}
+
 	MEANING value = jsonValue(val,flags);
-	CreateFact(MakeMeaning(D), key,value, flags);
+	CreateFact(object, key,value, flags);
+	currentFact = NULL;	 // used up by putting into json
 	return NOPROBLEM_BIT;
 }
 
-static FunctionResult JSONArraySizeCode(char* buffer)
+static FunctionResult JSONArraySizeCode(char* buffer) // like ^length()
 {
-	char* arrayname = ARGUMENT(1);
-	if (strnicmp(arrayname,(char*)"ja-",3)) return FAILRULE_BIT; // not a json array
-	WORDP O = FindWord(arrayname);
-	if (!O) return FAILRULE_BIT;
-	// how many existing elements
-	FACT* F = GetSubjectNondeadHead(O);
-	int count = 0;
-	while (F) 
-	{
-		++count;
-		F = GetSubjectNondeadNext(F);
-	}
-	sprintf(buffer,(char*)"%d",count);
-	return NOPROBLEM_BIT;
+	return LengthCode(buffer); // a rename only
 }
 
 static FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index	
@@ -9196,6 +9223,7 @@ static FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectval
 
 	// create fact
 	CreateFact(MakeMeaning(O), MakeMeaning(Idex),value, flags);
+	currentFact = NULL;	 // used up by putting into json
 	return NOPROBLEM_BIT;
 }
 
@@ -9207,6 +9235,7 @@ static FunctionResult JSONCopyCode(char* buffer)
 	if (!D) return FAILRULE_BIT;
 	if (strncmp(D->word,(char*)"ja-",3) && strncmp(D->word,(char*)"jo-",3)) return FAILRULE_BIT;
 	MEANING M = jcopy(D);
+	currentFact = NULL; // used up in json
 	D = Meaning2Word(M);
 	strcpy(buffer,D->word);
 	return NOPROBLEM_BIT;
@@ -9230,21 +9259,54 @@ static FunctionResult JSONCreateCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+void JsonRenumber(FACT* F) // given array fact dying, renumber after it
+{
+	char buffer[MAX_WORD_SIZE];
+	FACT* stack[JSON_LIMIT];
+	WORDP D = Meaning2Word(F->subject);
+	int index = atoi(Meaning2Word(F->verb)->word);
+	int indexsize = orderJsonArrayMembers(D, stack); 
+	for (int i = index+1; i < indexsize; ++i) // renumber these downwards
+	{
+		FACT* F = stack[i];
+		sprintf(ARGUMENT(1),"%d",Fact2Index(F));
+		strcpy(ARGUMENT(2),D->word);
+		sprintf(ARGUMENT(3),"%d",i-1);
+		strcpy(ARGUMENT(4),Meaning2Word(F->object)->word);
+		ReviseFactCode(buffer);
+	}
+}
+
 static FunctionResult JSONDeleteCode(char* buffer) 
 {
-	char* arg = ARGUMENT(1);
+	char* arg = ARGUMENT(1); // a json object or array
 	WORDP D = FindWord(arg);
 	if (!D)  return NOPROBLEM_BIT;
-	FACT* F = GetSubjectNondeadHead(D);
-	if (!F) return NOPROBLEM_BIT;	// has no data on it so word will die on its own
-	if (!(F->flags & JSON_FLAGS)) 
-		return FAILRULE_BIT;
-	jkillfact(D);
+
+	FACT* F = GetSubjectNondeadHead(D); // if we have someone below us, not json, thats a problem
+	if (F && !(F->flags & JSON_FLAGS)) return FAILRULE_BIT;
+	if (F) jkillfact(D); // kill everything we own
+
+	// remove upper link to us if someone above us uses us JSON wise
+	F = GetObjectNondeadHead(D); // who are we the object of, can only be one
+	while (F)
+	{
+		if (F->flags & (JSON_ARRAY_FACT | JSON_OBJECT_FACT)) // we are object of array or json object
+		{
+			KillFact(F); 
+			break;
+		}
+		F = GetObjectNondeadNext(F);
+	}
+	
+	// now confirm we have nothing left
+	F = GetSubjectNondeadHead(D); // should all be dead now
+	if (F && !(F->flags & JSON_FLAGS)) return FAILRULE_BIT;
 	return NOPROBLEM_BIT;
 }
 
 #ifdef PRIVATE_CODE
-#include "../privatecode/privatesrc.cpp"
+	#include "../privatecode/privatesrc.cpp"
 #endif
 
 SystemFunctionInfo systemFunctionSet[] =
@@ -9402,7 +9464,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^conceptlist",ConceptListCode,STREAM_ARG,0,(char*)"create facts of the concepts or topics or both triggers by word at position or overall"}, 
 	{ (char*)"^createattribute",CreateAttributeCode,STREAM_ARG,0,(char*)"create a triple where the 3rd field is exclusive"}, 
 	{ (char*)"^createfact",CreateFactCode,STREAM_ARG,0,(char*)"create a triple"}, 
-	{ (char*)"^delete",DeleteCode,1,0,(char*)"delete all facts in factset or delete named fact"}, 
+	{ (char*)"^delete",DeleteCode,1,0,(char*)"delete all facts in factset or delete named fact or delete named json object or array"}, 
 	{ (char*)"^deserialize", DeserializeCode, 1, 0, "transcribes a string into a factset" },
 	{ (char*)"^field",FieldCode,2,0,(char*)"get a field of a fact"}, 
 	{ (char*)"^find",FindCode,2,0,(char*)"Given set or factset, find ordinal position of item within it"},
@@ -9434,9 +9496,9 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ "\r\n---- JSON Related", 0, 0, 0, "" },
 	{ "^jsoncopy", JSONCopyCode, VARIABLE_ARG_COUNT, 0, "given json array or json object, creates a duplicate copy" },
 	{ "^jsoncreate", JSONCreateCode, VARIABLE_ARG_COUNT, 0, "given array or object, creates a new one" },
-	{ "^jsondelete", JSONDeleteCode, 1, 0, "json composite name, delete fact and all subsidiary facts" },
+	{ "^jsondelete", JSONDeleteCode, 1, 0, "deprecated in favor of ^delete" },
 	{ "^jsongather", JSONGatherCode, 2, 0, "stores the json facts referred to by the name into a fact set" },
-	{ "^jsonarraysize", JSONArraySizeCode, 1, 0, "given name of json array fact, count how many elements it has" },
+	{ "^jsonarraysize", JSONArraySizeCode, 1, 0, "deprecated in favor of ^length" },
 	{ "^jsonarrayinsert", JSONArrayInsertCode, VARIABLE_ARG_COUNT, 0, "given name of json array fact, adds given  value BEFORE or AFTER the given" },
 	{ "^jsonarraydelete", JSONArrayDeleteCode, 3, 0, "given name of json array and index of fact to remove, removes it and renumbers all after it down" },
 	{ "^jsonobjectinsert", JSONObjectInsertCode, VARIABLE_ARG_COUNT, 0, "given name of json object, adds given key and value" },
@@ -9452,7 +9514,7 @@ SystemFunctionInfo systemFunctionSet[] =
 #endif
 
 #ifdef PRIVATE_CODE
-#include "../privatecode/privatetable.cpp"
+	#include "../privatecode/privatetable.cpp"
 #endif
 
 	{0,0,0,0,(char*)""}	

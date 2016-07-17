@@ -326,32 +326,6 @@ char* JoinWords(unsigned int n,bool output)
 // BASIC TOKENIZING CODE
 ////////////////////////////////////////////////////////////////////////
 
-static void TokenizeQuoteToUnderscore(char* start, char* end, char* buffer)
-{//   start and end are the marker characters
-	*end = 0;	//   remove trailing quote
-	char* tmp = AllocateBuffer();
-	strcpy(tmp,start);
-	start = tmp;
-	char* wordlist[MAX_SENTENCE_LENGTH];
-	memset(wordlist,0,sizeof(char*)*MAX_SENTENCE_LENGTH); // empty it
-	++start; // past the " start
-	unsigned int loops = 0;
-	while (start && *start)
-	{
-		int index;
-		char* rest = Tokenize(start,index,wordlist,true);
-		for (int i = 1; i <= index; ++i)
-		{
-			strcpy(buffer,wordlist[i]);
-			buffer += strlen(buffer);
-			if (i != index) *buffer++ = '_'; 
-		}
-		start = rest;
-		++loops;
-	}
-	FreeBuffer();
-}
-
 static char* HandleQuoter(char* ptr,char** words, int& count)
 {
 	char c = *ptr; // kind of quoter
@@ -391,7 +365,7 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 				++end; // subsume the closing marker
 				strncpy(word,ptr,end-ptr);
 				word[end-ptr] = 0;
-				TokenizeQuoteToUnderscore(word,end-ptr-1+word,buf);
+				// TokenizeQuoteToUnderscore(word,end-ptr-1+word,buf);
 				++count;
 				words[count] = reuseAllocation(words[count],buf); 
 				if (!words[count]) words[count] = reuseAllocation(words[count],(char*)"a"); // safe replacement
@@ -1547,6 +1521,7 @@ void ProcessSplitUnderscores()
 	for (int i = FindOOBEnd(1); i <= wordCount; ++i) 
     {
 		char* original = wordStarts[i];
+		if (*original == '\'' || *original == '"') continue;	// quoted expression, do not split
 		char* at = original;
 		char* under = strchr(original,'_');
 		if (!under) continue;
@@ -1829,7 +1804,14 @@ static WORDP ViableIdiom(char* text,int i,unsigned int n,unsigned int caseform)
 	// DONT convert plural to singular here
 
 	WORDP word = FindWord(text,0,caseform);
-    if (!word) return 0; // can not 
+    if (!word) 
+	{
+		if (i != 1 || !IsUpperCase(*text)) return 0;
+		char lower[MAX_WORD_SIZE];
+		MakeLowerCopy(lower,text);
+		word = FindWord(lower,0,caseform);
+		if (!word) return 0;
+	}
     if (word->systemFlags & CONDITIONAL_IDIOM) //  dare not unless there are no conditions
 	{
 		char* script = word->w.conditionalIdiom;

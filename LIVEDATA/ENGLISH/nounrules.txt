@@ -26,6 +26,11 @@
 
 # more likely verb than noun day (Noun_singular)  goes/go (Noun_plural +Verb_present_3ps)  by (Particle Adverb)
 
+# command followed by noun "*Buy shoes"
+0	INCLUDE * NOUN_INFINITIVE # though may be noun, lacks determiner
+	STAY START
+DISCARD
+
 # wont be noun if could be adjective before an adjective and then a noun (wont be postpositive) - large (Noun_singular Adverb)  burlap (Adjective_normal)  sacks/sack (Noun_plural)
  0	INCLUDE * NOUN_SINGULAR
 	STAY HAS ADVERB
@@ -65,12 +70,6 @@ DISCARD
 	IS NOUN_PLURAL
 KEEP
 
-# after determiner and before insured noun, wont be noun - the/a (Determiner)  monthly (Noun_singular +Adjective_normal Adverb)  sales (+Noun_plural +Noun_singular) 
--1 IS DETERMINER
-	INCLUDE * NOUN_BITS
-	STAY HAS ADJECTIVE_BITS
-	CANONLYBE NOUN_BITS
-DISCARD
 
 # number only, before possible adjective, will be adjective 17 (Noun_number Adjective_number)  big (+Adjective_normal Adverb)
 0 INCLUDE * NOUN_NUMBER

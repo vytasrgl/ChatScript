@@ -47,6 +47,30 @@ static int baseStack[MAX_PAREN_NEST];
 static int fnVarBaseStack[MAX_PAREN_NEST];
 static uint64 matchedBits[20][4];	 // nesting level zone of bit matches
 
+void ShowMatchResult(FunctionResult result, char* rule,char* label)
+{
+	if (trace & TRACE_LABEL && label && *label && !(trace & TRACE_PATTERN)  && CheckTopicTrace())
+	{
+		if (result == NOPROBLEM_BIT) Log(STDUSERTABLOG,(char*)"  **  Match: %s\r\n",ShowRule(rule));
+		else Log(STDUSERTABLOG,(char*)"  **fail: %s\r\n",ShowRule(rule));
+	}
+	if (result == NOPROBLEM_BIT && trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() ) //   display the entire matching responder and maybe wildcard bindings
+	{
+		if (!(trace & (TRACE_PATTERN|TRACE_SAMPLE)) && label) Log(STDUSERTABLOG, "Try %s",ShowRule(rule)); 
+		Log(STDUSERTABLOG,(char*)"  **  Match: %s",(label) ? ShowRule(rule) : ""); //   show abstract result we will apply
+		if (wildcardIndex)
+		{
+			Log(STDUSERTABLOG,(char*)"  Wildcards: ");
+			for (int i = 0; i < wildcardIndex; ++i)
+			{
+				if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s (%d-%d)  ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
+				else Log(STDUSERLOG,(char*)"_%d=  ",i);
+			}
+		}
+		Log(STDUSERLOG,(char*)"\r\n");
+	}
+}
+
 static void MarkMatchLocation(int start, int end, int depth)
 {
 	for (int i = start; i <= end; ++i)
@@ -449,6 +473,12 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
 				{
 					matched = false;
  					wildcardSelector &= -1 ^ (WILDMEMORIZEGAP | WILDGAP);
+				}
+				else if (reverse)
+				{				
+					// match can FORCE it to go to end from any direction
+					positionStart = positionEnd = wordCount + 1; 
+					matched = true;
 				}
 				else if ((wildcardSelector & WILDGAP) || positionEnd == wordCount)// you can go to end from anywhere if you have a gap OR you are there
 				{
@@ -920,7 +950,11 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 		//   prove any wild gap was legal, accounting for ignored words if needed
  		unsigned int started;
 		if (!reverse) started = (positionStart < REAL_SENTENCE_LIMIT) ? positionStart : 0; // position start may be the unlimited access value
-		else started = (positionStart < REAL_SENTENCE_LIMIT) ? positionEnd : wordCount; // position start may be the unlimited access value
+		else 
+		{
+			if (positionEnd > wordCount) positionEnd = wordCount;
+			started = (positionStart < REAL_SENTENCE_LIMIT) ? positionEnd : wordCount; // position start may be the unlimited access value
+		}
 		if (started == INFINITE_MATCH) started = 1;
 		bool legalgap = false;
 		unsigned int memorizationStart = positionStart;
@@ -947,7 +981,8 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					if (unmarked[ignore++]) --x; 
 				}
 			}
-  			if (x <= limit) legalgap = true;   //   we know this was legal, so allow advancement test not to fail- matched gap is started...oldEnd-1
+			if (x < 0) legalgap = false; // if searched _@10- *~4 > 
+  			else if (x <= limit) legalgap = true;   //   we know this was legal, so allow advancement test not to fail- matched gap is started...oldEnd-1
 			else  
 			{
 				matched = false;  // more words than limit
@@ -1056,7 +1091,8 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 		if (legalgap || !matched  || positionStart == INFINITE_MATCH || oldStart == INFINITE_MATCH) {;}
 		else if (reverse)
 		{
-			if (oldStart < oldEnd && positionEnd >= (oldStart - 1) ){;} // legal move ahead given matched WITHIN last time
+			if (*kind == '[' || *kind == '}') {;} // all movement is legal until we return to caller context
+			else if (oldStart < oldEnd && positionEnd >= (oldStart - 1) ){;} // legal move ahead given matched WITHIN last time
 			else if (positionEnd < (oldStart - 1 ))  // failed to match position advance
 			{
 				int ignored = oldStart - 1;
@@ -1189,7 +1225,8 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 	
 	if (success)
 	{
-		returnstart = (firstMatched > 0) ? firstMatched : positionStart; // if never matched a real token, report 0 as start
+		if (!reverse) returnstart = (firstMatched > 0) ? firstMatched : positionStart; // if never matched a real token, report 0 as start
+		else returnstart = positionStart;
 		returnend = positionEnd;
 	}
 

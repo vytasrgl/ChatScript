@@ -49,7 +49,7 @@ void InitSpellCheck()
 	WORDP D = dictionaryBase;
 	while (++D <= dictionaryFree)
 	{
-		if (!D->word || !IsAlphaUTF8(*D->word) || D->length >= 100 || strchr(D->word,'~') || strchr(D->word,'$') || strchr(D->word,'^')) continue; 
+		if (!D->word || !IsAlphaUTF8(*D->word) || D->length >= 100 || strchr(D->word,'~') || strchr(D->word,'$') || strchr(D->word,'^') || strchr(D->word,' ')  || strchr(D->word,'_')) continue; 
 		if (D->properties & PART_OF_SPEECH || D->systemFlags & PATTERN_WORD)
 		{
 			D->spellNode = lengthLists[D->length];
@@ -1031,9 +1031,11 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 		{
 			D = Meaning2Word(offset);
 			offset = D->spellNode;
-			if (!(D->properties & posflags)) continue; // wrong kind of word
+			if (PART_OF_SPEECH == posflags  && D->systemFlags & PATTERN_WORD){;} // legal generic match
+			else if (!(D->properties & posflags)) continue; // wrong kind of word
 			if (*D->word != letterLow && *D->word != letterHigh && language == ENGLISH) continue;	// we assume no one misspells starting letter
 			char* under = strchr(D->word,'_');
+			// SPELLING lists have no underscore or space words in them
 			if (hasUnderscore && !under) continue;	 // require keep any underscore
 			if (!hasUnderscore && under) continue;	 // require not have any underscore
 			if (isUpper && !(D->internalBits & UPPERCASE_HASH) && start != 1) continue;	// dont spell check to lower a word in upper

@@ -1,6 +1,6 @@
 #include "common.h"
 
-#define DEFAULT_USER_CACHE 1200000
+#define DEFAULT_USER_CACHE 1500000
 #define NO_CACHEID -1
 
 static unsigned int cacheHead = 0;		// our marker for last allocated cache, used to find next free one
@@ -224,6 +224,15 @@ char* FindUserCache(char* word)
 	return NULL;
 }
 
+void CopyUserTopicFile(char* newname)
+{
+	char file[MAX_WORD_SIZE];
+	sprintf(file,(char*)"%s/topic_%s_%s.txt",users,loginID,computerID);
+
+	char newfile[MAX_WORD_SIZE];
+	sprintf(newfile,(char*)"LOGS/%s-topic_%s_%s.txt",newname,loginID,computerID);
+	CopyFile2File(file,newfile,false);	
+}
 
 char* GetFileRead(char* user,char* computer)
 {
@@ -272,18 +281,18 @@ char* GetFileRead(char* user,char* computer)
 			if (actualSize >= (int)userCacheSize) // emergency read issue
 			{
 				if (actualSize < (int)safespace) {;} // prior write use is fine, avoid memory fragmentation
-				else if (actualSize < 200000) safespace = 2000000;
+				else if (actualSize < (userCacheSize + 1000000)) safespace = (userCacheSize + 1000000);
 				else 
 				{
-					ReportBug((char*)"Overflow read buffer unexpectedly huge\r\n");
+					ReportBug((char*)"Overflow read buffer unexpectedly huge for %s\r\n",loginID);
 					userFileSystem.userClose(in);
 					return NULL;
 				}
-				if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"Allocating overflow read for %s\r\n",word);
+				if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"Allocating overflow read of user %s for %s\r\n",loginID,word);
 				overflowBuffer = buffer = (char*) malloc(safespace);
 				if (!overflowBuffer) // couldnt malloc
 				{
-					ReportBug((char*)"Could not allocate overflow read buffer\r\n");
+					ReportBug((char*)"Could not allocate overflow read buffer for %s\r\n",loginID);
 					userFileSystem.userClose(in);
 					return NULL;
 				}
