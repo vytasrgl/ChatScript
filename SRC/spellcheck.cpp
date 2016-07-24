@@ -137,7 +137,7 @@ static char* SpellCheck( int i, int language)
 	// now imagine partial runtogetherness, like "talkab out fingers"
 	if (i < wordCount)
 	{
-		char tmp[MAX_WORD_SIZE];
+		char tmp[MAX_WORD_SIZE*2];
 		strcpy(tmp,word);
 		strcat(tmp,wordStarts[i+1]);
 		breakAt = SplitWord(tmp);
@@ -168,7 +168,19 @@ static char* SpellCheck( int i, int language)
 
 	//   now use word spell checker 
     char* d = SpellFix(word,i,PART_OF_SPEECH,language); 
-    return (d) ? d : NULL;
+	if (d) return d;
+
+	// if is is a misspelled plural?
+	char plural[MAX_WORD_SIZE];
+	if (word[len-1] == 's')
+	{
+		strcpy(plural,word);
+		plural[len-1] = 0;
+		d = SpellFix(plural,i,PART_OF_SPEECH,language); 
+		if (d) return d; // dont care that it is plural
+	}
+
+    return NULL;
 }
 
 char* ProbableKnownWord(char* word)
@@ -223,7 +235,7 @@ char* ProbableKnownWord(char* word)
 	expectedBase = 0;
 	if (ProbableAdverb(word,len,expectedBase) && expectedBase) return word;
 	// is it a verb form
-	char* verb = GetInfinitive(lower,false);
+	char* verb = GetInfinitive(lower,true); // no new verbs
 	if (verb) 
 	{
 		WORDP D =  StoreWord(lower,0); // verb form recognized
@@ -236,13 +248,15 @@ char* ProbableKnownWord(char* word)
 		WORDP E = FindWord(lower,len-1,LOWERCASE_LOOKUP);
 		if (E && E->properties & NOUN) 
 		{
-			return word;	
+			E = StoreWord(word,NOUN|NOUN_PLURAL);
+			return E->word;	
 		}
 		E = FindWord(lower,len-1,UPPERCASE_LOOKUP);
 		if (E && E->properties & NOUN) 
 		{
 			*word = toUppercaseData[*word];
-			return word;	
+			E = StoreWord(word,NOUN|NOUN_PROPER_PLURAL);
+			return E->word;	
 		}
 	}
 

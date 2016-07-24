@@ -314,19 +314,19 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
     if (!ptr)  return 0;
     char* start = word;
     ptr = SkipWhitespace(ptr);
-	FindDeprecated(ptr,(char*)"$bot",(char*)"Deprecated $bot need to be $cs_bot");
-	FindDeprecated(ptr,(char*)"$login",(char*)"Deprecated $login need to be $cs_login");
-	FindDeprecated(ptr,(char*)"$userfactlimit",(char*)"Deprecated $userfactlimit need to be $cs_userfactlimit");
-	FindDeprecated(ptr,(char*)"$crashmsg",(char*)"Deprecated $crashmsg need to be $cs_crashmsg");
-	FindDeprecated(ptr,(char*)"$token",(char*)"Deprecated $token need to be $cs_token");
-	FindDeprecated(ptr,(char*)"$response",(char*)"Deprecated $response need to be $cs_response");
-	FindDeprecated(ptr,(char*)"$randindex",(char*)"Deprecated $randindex need to be $cs_randindex");
-	FindDeprecated(ptr,(char*)"$wildcardseparator",(char*)"Deprecated $wildcardseparator need to be $cs_wildcardseparator");
-	FindDeprecated(ptr,(char*)"$abstract",(char*)"Deprecated $abstract need to be $cs_abstract");
-	FindDeprecated(ptr,(char*)"$prepass",(char*)"Deprecated $prepass need to be $cs_prepass");
-	FindDeprecated(ptr,(char*)"$control_main",(char*)"Deprecated $control_main need to be $cs_control_main");
-	FindDeprecated(ptr,(char*)"$control_pre",(char*)"Deprecated $control_pre need to be $cs_control_pre");
-	FindDeprecated(ptr,(char*)"$control_post",(char*)"Deprecated $control_post need to be $cs_control_post");
+	FindDeprecated(ptr,(char*)"$bot",(char*)"Deprecated $bot needs to be $cs_bot");
+	FindDeprecated(ptr,(char*)"$login",(char*)"Deprecated $login needs to be $cs_login");
+	FindDeprecated(ptr,(char*)"$userfactlimit",(char*)"Deprecated $userfactlimit needs to be $cs_userfactlimit");
+	FindDeprecated(ptr,(char*)"$crashmsg",(char*)"Deprecated $crashmsg needs to be $cs_crashmsg");
+	FindDeprecated(ptr,(char*)"$token",(char*)"Deprecated $token needs to be $cs_token");
+	FindDeprecated(ptr,(char*)"$response",(char*)"Deprecated $response needs to be $cs_response");
+	FindDeprecated(ptr,(char*)"$randindex",(char*)"Deprecated $randindex needs to be $cs_randindex");
+	FindDeprecated(ptr,(char*)"$wildcardseparator",(char*)"Deprecated $wildcardseparator needs to be $cs_wildcardseparator");
+	FindDeprecated(ptr,(char*)"$abstract",(char*)"Deprecated $abstract needs to be $cs_abstract");
+	FindDeprecated(ptr,(char*)"$prepass",(char*)"Deprecated $prepass needs to be $cs_prepass");
+	FindDeprecated(ptr,(char*)"$control_main",(char*)"Deprecated $control_main needs to be $cs_control_main");
+	FindDeprecated(ptr,(char*)"$control_pre",(char*)"Deprecated $control_pre needs to be $cs_control_pre");
+	FindDeprecated(ptr,(char*)"$control_post",(char*)"Deprecated $control_post needs to be $cs_control_post");
 #ifdef INFORMATION
 	A token is nominally a contiguous collection of characters broken off by tab or space (since return and newline are stripped off).
 	Tokens to include whitespace are encased in doublequotes.
@@ -347,7 +347,7 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 #endif
 
 	// strings
-	if (*ptr == '"' || ( *ptr  == '^' && ptr[1] == '"') || (*ptr == '\\' && ptr[1] == '"')) //   doublequote maybe with functional heading
+	if (*ptr == '"' || ( *ptr  == '^' && ptr[1] == '"') || ( *ptr  == '^' && ptr[1] == '\'') || (*ptr == '\\' && ptr[1] == '"')) //   doublequote maybe with functional heading
 	{
 		// simple \"
 		if (*ptr == '\\' && (!ptr[2] || ptr[2] == ' ' || ptr[2] == '\t' || ptr[2] == ENDUNIT)) 
@@ -379,9 +379,9 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 			// when seeing ^, see if it remaps as a function argument
 			// check for internal ^ also...
 			char* hat = word-1;
-			if (*word == '"' && functionString) hat = word; // came before
+			if ((*word == '"' || *word == '\'') && functionString) hat = word; // came before
 			else if (*word == '"' && word[1] == FUNCTIONSTRING) hat = word+1;
-			else if (word[1] == '"' && *word == FUNCTIONSTRING) hat = word;
+			else if ((word[1] == '"' || word[1] == '\'') && *word == FUNCTIONSTRING) hat = word;
 			
 			while ( (hat = strchr(hat+1,'^'))) // find a hat within
 			{
@@ -2434,8 +2434,8 @@ static char* GatherChunk(char* ptr, FILE* in, char* save, char body) // get unfo
 			{
 				*save = 0;
 				start[50] = 0;
-				if (!body) BADSCRIPT((char*)"CHOICE-2 Fail to close code started with %s ",start)
-				else BADSCRIPT((char*)"BODY-1 Fail to close code started with %s ",start)
+				if (!body) BADSCRIPT((char*)"CHOICE-2 Fail to close code started with %s upon seeing %s",start,word)
+				else BADSCRIPT((char*)"BODY-1 Fail to close code started with %s upon seeing %s",start,word)
 			}
 		}
 		char c = *word;
@@ -2998,7 +2998,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 		char* nakedWord = word;
 		if (*nakedWord == '^') ++nakedWord;	// word w/o ^ 
 		
-		if (*word == '^' && *nextToken != '(' && word[1] != '^'  && word[1] != '=' && word[1] != '$' && word[1] != '_' && word[1] != '"' && !IsDigit(word[1])) BADSCRIPT((char*)"%s either references a function w/o arguments or names a function variable that doesn't exist",word)
+		if (*word == '^' && *nextToken != '(' && word[1] != '^'  && word[1] != '=' && word[1] != '$' && word[1] != '_' && word[1] != '"' && word[1] != '\'' && !IsDigit(word[1])) BADSCRIPT((char*)"%s either references a function w/o arguments or names a function variable that doesn't exist",word)
 	
 		// note left hand of assignment
 		if (!stricmp(nextToken,(char*)"|^=") || !stricmp(nextToken,(char*)"&=") || !stricmp(nextToken,(char*)"|=") || !stricmp(nextToken,(char*)"^=") || !stricmp(nextToken,(char*)"=") || !stricmp(nextToken,(char*)"+=") || !stricmp(nextToken,(char*)"-=") || !stricmp(nextToken,(char*)"/=") || !stricmp(nextToken,(char*)"*="))  strcpy(assignlhs,word);
@@ -3515,7 +3515,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 				FunctionResult result;
 				char* oldoutputbase = currentOutputBase;
 				currentOutputBase = systemArgumentList;
-				ReformatString(args[i]+2,systemArgumentList,result);
+				ReformatString(args[i][1],args[i]+2,systemArgumentList,result);
 				currentOutputBase = oldoutputbase;
 			}
 			else strcpy(systemArgumentList,args[i]);

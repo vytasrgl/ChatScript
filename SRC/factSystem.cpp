@@ -933,6 +933,7 @@ bool ReadBinaryFacts(FILE* in) //   read binary facts
 
 static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead)
 {
+	char* start = buffer;
 	// a field is either a contiguous mass of non-blank tokens, or a user string "xxx" or an internal string `xxx`  (internal removes its ends, user doesnt)
     if (flags ) //   fact reference
     {
@@ -958,21 +959,23 @@ static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead)
 			return buffer; //   cancels print
 		}
 		char* answer = WriteMeaning(T,true);
-		bool embedded = *answer != '"' && (strchr(answer,' ') != NULL || strchr(answer,'(') != NULL) ; // does this need protection? blanks or function call maybe
 		bool embeddedbacktick = strchr(answer,'`') ? true : false;
-		if (embeddedbacktick) // uses our own marker,
+		bool embeddedspace = *answer != '"' && strchr(answer,' ')  || strchr(answer,'(') || strchr(answer,')'); // does this need protection? blanks or function call maybe
+		bool safe = true; 
+		if (strchr(answer,'\n') || strchr(answer,'\r') || strchr(answer,'\t') || strchr(answer,'\\') || strchr(answer,'/')) safe = false;
+		// json must protect: " \ /  nl cr tab  we are not currently protecting bs ff
+		if (embeddedbacktick || !safe) // uses our own marker and can escape data
 		{
-			sprintf(buffer,(char*)"`*^%s`*^",answer); 
+			if (embeddedbacktick) strcpy(buffer,(char*)"`*^"); 
+			else strcpy(buffer,(char*)"`"); // has blanks or paren, use internal string notation
+			buffer += strlen(buffer);
+			AddEscapes(buffer,answer,false); // facts are not normal
+			buffer += strlen(buffer);
+			if (embeddedbacktick) strcpy(buffer,(char*)"`*^"); // add closer marker
+			else strcpy(buffer,(char*)"`");
 		}
-		else if (embedded) sprintf(buffer,(char*)"`%s`",answer); // has blanks, use internal string notation
-		else strcpy(buffer,answer); // use normal notation
-		// INSURE no cr or newline within it. as that will blow things up by moving saved user data to next line
-		char* at = buffer - 1;
-		while (*++at)
-		{
-			if (*at == '\n') *at = ' ';
-			else if (*at == '\r') *at = ' ';
-		}
+		else if (embeddedspace) sprintf(buffer,(char*)"`%s`",answer); // has blanks, use internal string notation
+		else  strcpy(buffer,answer); // use normal notation
 		buffer += strlen(buffer);
 	}
 	*buffer++ = ' ';
@@ -1056,41 +1059,39 @@ char* ReadField(char* ptr,char* field,char fieldkind, unsigned int& flags)
 	}
 	else if (*ptr == ENDUNIT) // internal string token (fact read)
 	{
+		char* end;
+		char* start;
 		if (ptr[1] == '*' && ptr[2] == '^') // they use our ` in their field - we use `*^%s`*^
 		{
-			char* at = ptr+3;
-			while ((at = strchr(at,'^')))
+			start = end = ptr+3;
+			while ((end = strchr(end,'^')))
 			{
-				if (*(at-1) == '*' && *(at-2) == '`') // found our close
-				{
-					break; 
-				}
-				++at;
+				if (*(end-1) == '*' && *(end-2) == '`') break;  // found our close
+				++end;
 			}
-			if (!at)
+			if (!end)
 			{
 				ReportBug("No end found");
 				return NULL;
 			}
-			*(at-2) = 0;
-			strcpy(field,ptr+3);
-			return at+2; // point AFTER the space after the `*^ closer
+			*(end-2) = 0; // terminate string with null
 		}
-
-		char* end = strchr(ptr+1,ENDUNIT); // find corresponding end
-		if (!*end)
+		else
 		{
-			ReportBug("No end found");
-			return NULL;
+			end = strchr(ptr+1,ENDUNIT); // find corresponding end
+			start = ptr + 1;
+			if (!*end)
+			{
+				ReportBug("No end found");
+				return NULL;
+			}
+			*end = 0;
 		}
-		*end = 0;
-		strcpy(field,ptr+1);
-		return end+2; // point AFTER the space after the `
+		
+		CopyRemoveEscapes(field,start,90000);	// we only remove ones we added
+		return end+2; // point AFTER the space after the closer
 	}
-    else 
-	{
-		ptr = ReadCompiledWord(ptr,field); 
-	}
+    else  ptr = ReadCompiledWord(ptr,field); // no escaping or anything weird needed
 	if (field[0] == '~') MakeLowerCase(field);	// all concepts/topics are lower case
 	return ptr; //   return at new token
 }

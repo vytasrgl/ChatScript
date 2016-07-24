@@ -9,6 +9,8 @@ uint64* tags = NULL;
 char** comments = NULL;
 static char* Describe(int i,char* buffer);
 
+WORDP wordTag[MAX_SENTENCE_LENGTH]; 
+WORDP wordRole[MAX_SENTENCE_LENGTH];
 char* wordCanonical[MAX_SENTENCE_LENGTH]; //   chosen canonical form
 WORDP originalLower[MAX_SENTENCE_LENGTH]; // transient during marking
 WORDP originalUpper[MAX_SENTENCE_LENGTH]; // transient during marking

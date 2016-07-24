@@ -1,3 +1,11 @@
+Version 6.62   7-24-2016
+WARNING- USER TOPIC FILE FORMAT CHANGED, old ones will self destruct and clear to empty
+1 :restart can take a 1st argument of "erase" which means system should erase topic file of current user (changing systems)
+	and it can take up to 4 replacement command line parameters
+2. ^jsonlabel(label)
+3. ^jsonundecodeString(field)
+4. $cs_externaltag ^setoriginal, ^setcanon, ^settag, ^setrole
+
 Version 6.61 7-17-2016
 1. jsonobjectinsert will delete old value if exists, then insert replacement.
 2. ^jsonarraysize is now deprecated in favor of ^length - you get nonfatal warning messages

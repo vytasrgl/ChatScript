@@ -244,7 +244,9 @@ static void C_Common(char* input)
 		NextInferMark();
 		while (F)
 		{
-			if (F->verb == Mmember) MarkUp(Meaning2Word(F->object)); // mark all on this path as seen
+			TraceFact(F);
+			if (F->verb == Mmember) 
+				MarkUp(Meaning2Word(F->object)); // mark all on this path as seen
 			F = GetSubjectNondeadNext(F);
 		}
 	}
@@ -3914,6 +3916,13 @@ static void C_Restart(char* input)
 	arglist[2] = arg2;
 	arglist[3] = arg3;
 	arglist[4] = arg0;
+	char word[MAX_WORD_SIZE];
+	char* hold = ReadCompiledWord(input,word);
+	if (!stricmp(word,"erase"))
+	{
+		input = hold;
+		pendingUserReset = true;
+	}
 	if (*input) // change params
 	{
 		argv = arglist;

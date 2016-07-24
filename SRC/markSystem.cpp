@@ -203,7 +203,7 @@ static int MarkSetPath(MEANING M, int start, int end, unsigned int depth, bool c
 	else //   first time accessing, note recency and clear tried bits
 	{
 		D->inferMark = inferMark;
-		if (*D->word != '~') 
+		if (D && *D->word != '~') 
 		{
 			SetTriedMeaning(D,0);
 			tried = 0;
@@ -572,16 +572,14 @@ static void StdMark(MEANING M, unsigned int start, unsigned int end, bool canoni
 
 void MarkAllImpliedWords()
 {
-	ChangeDepth(1,(char*)"MarkAllImpliedWords");
-
 	int i;
  	for (i = 1; i <= wordCount; ++i)  capState[i] = IsUpperCase(*wordStarts[i]); // note cap state
 	TagIt(); // pos tag and maybe parse
 	if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) 
 	{
-		ChangeDepth(-1,(char*)"MarkAllImpliedWords");
 		return;
 	}
+	ChangeDepth(1,(char*)"MarkAllImpliedWords");
 	WORDP pos = FindWord((char*)"~pos");
 	WORDP sys = FindWord((char*)"~sys");
 	WORDP role = FindWord((char*)"~grammar_role");
@@ -604,7 +602,7 @@ void MarkAllImpliedWords()
 		role->inferMark = inferMark; // dont mark these supersets of pos-tagging stuff
 
  		if (trace  & (TRACE_HIERARCHY | TRACE_PREPARE) || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"\r\n%d: %s (raw): ",i,original);
-	
+
 		uint64 flags = posValues[i];
 		//if (flags & ADJECTIVE_NOUN) // transcribe back to adjective
 		//{
@@ -645,9 +643,12 @@ void MarkAllImpliedWords()
 			}
 		}
 
-		MarkTags(i);
+		if (!wordTag[i]) MarkTags(i);
+		else MarkFacts(MakeMeaning(wordTag[i]),i,i);
+
+		if (wordRole[i]) MarkFacts(MakeMeaning(wordRole[i]),i,i);
 #ifndef DISCARDPARSER
-		MarkRoles(i);
+		else MarkRoles(i);
 #endif
 
 		if ((*wordStarts[i] == '@' || *wordStarts[i] == '#')  && strlen(wordStarts[i]) > 2)

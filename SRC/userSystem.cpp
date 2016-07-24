@@ -16,7 +16,7 @@ char humanSaid[MAX_USED+1][SAID_LIMIT+3]; //   tracks last n messages sent by us
 int humanSaidIndex;
 int chatbotSaidIndex;
 
-static char* saveVersion = "may1015";	// format of save file
+static char* saveVersion = "jul2116";	// format of save file
 
 int userFirstLine = 0;	// start volley of current conversation
 uint64 setControl = 0;	// which sets should be saved with user
@@ -111,31 +111,6 @@ void ResetUserChat()
 	for (unsigned int i = 0; i <= MAX_FIND_SETS; ++i) SET_FACTSET_COUNT(i,0);
 }
 
-static char* SafeLine(char* line) // erase cr/nl to keep reads safe
-{
-	if (!line) return line; // null variable (traced)
-	char* start = line;
-	char c;
-    while ((c = *++line))
-    {
-        if (c == '\r' && line[1]  == '\n')  // keep pair together
-		{
-			memmove(line+4,line+2,strlen(line+2)+1);
-			line[0] = '\\';
-			line[1] =  'r';
-			line[2] = '\\';
-			line[3] =  'n';
-		}
-		else if (c == '\r' || c == '\n')  // these are stand alones
-		{
-			memmove(line+1,line,strlen(line)+1);
-			line[0] = '\\';
-			line[1] = (c == '\r') ? 'r' : 'n';
-		}
-    }
-	return start;
-}
-
 static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 {
 	if (!ptr) return NULL;
@@ -202,7 +177,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT|FACTBUILD2))) 
 		{
 			++counter;
-			WriteFact(F,true,ptr,false,true);
+			WriteFact(F,true,ptr,false,true); // facts are escaped safe for JSON
 			ptr += strlen(ptr);
 			ptr =  OverflowProtect(ptr);
 			if (!ptr) return NULL;
@@ -271,6 +246,15 @@ static bool ReadUserFacts()
 	return true;
 }
 
+static char* SafeLine(char* line) // be JSON text safe
+{
+	if (!line) return line; // null variable (traced)
+	char* word = AllocateBuffer();
+	AddEscapes(word,line,false);
+	FreeBuffer();
+	return word; // buffer will be used immediately
+}
+
 static char* WriteRecentMessages(char* ptr,bool sharefile)
 {
 	if (!ptr) return NULL; // buffer ran out long ago
@@ -314,12 +298,14 @@ static char* WriteRecentMessages(char* ptr,bool sharefile)
 static bool ReadRecentMessages()
 {
 	char* buffer = AllocateBuffer();
+	char* recover = AllocateBuffer();
 	char* original = buffer;
 	*buffer = 0;
 	buffer[1] = 0;
     for (humanSaidIndex = 0; humanSaidIndex <= MAX_USED; ++humanSaidIndex) 
     {
-        ReadALine(humanSaid[humanSaidIndex], 0);
+        ReadALine(recover, 0);
+		strcpy(humanSaid[humanSaidIndex],RemoveEscapesWeAdded( recover));
 		if (*humanSaid[humanSaidIndex] == '#' && humanSaid[humanSaidIndex][1] == ENDUNIT) break; // #end
 		strcpy(buffer,humanSaid[humanSaidIndex]);
 		buffer += strlen(buffer) + 1;
@@ -336,7 +322,8 @@ static bool ReadRecentMessages()
 
 	for (chatbotSaidIndex = 0; chatbotSaidIndex <= MAX_USED; ++chatbotSaidIndex) 
     {
-        ReadALine(chatbotSaid[chatbotSaidIndex], 0);
+        ReadALine(recover, 0);
+		strcpy(chatbotSaid[chatbotSaidIndex],RemoveEscapesWeAdded( recover));
 		if (*chatbotSaid[chatbotSaidIndex] == '#' && chatbotSaid[chatbotSaidIndex][1] == ENDUNIT) break; // #end
 		strcpy(buffer,chatbotSaid[chatbotSaidIndex]);
 		buffer += strlen(buffer) + 1;
@@ -350,6 +337,7 @@ static bool ReadRecentMessages()
 	else *chatbotSaid[chatbotSaidIndex] = 0;
 	*buffer++ = 0;
 	backupMessages = AllocateString(original,buffer-original); // create a backup copy
+	FreeBuffer();
 	FreeBuffer();
 	return true;
 }
@@ -433,7 +421,7 @@ static bool ReadUserVariables()
         *ptr = 0; // isolate user var name from rest of buffer
 		bool traceit = ptr[1] == '`';
 		if (traceit)  ++ptr;
-        SetUserVariable(readBuffer,ptr+1);
+        SetUserVariable(readBuffer,RemoveEscapesWeAdded(ptr+1));
 		if (traceit) 
 		{ 
 			WORDP D = StoreWord(readBuffer);
@@ -458,20 +446,22 @@ static bool ReadUserVariables()
 
 static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 {
+	// each line MUST end with cr/lf  so it can be made potentially safe for Mongo w/o adjusting size of data (inefficient)
 	char* start = ptr;
 	if (!timeturn15[1] && volleyCount >= 15 && responseIndex) sprintf(timeturn15,(char*)"%lu-%d%s",(unsigned long)curr,responseData[0].topic,responseData[0].id); // delimit time of turn 15 and location...
 	sprintf(ptr,(char*)"%s %s %s %s |\r\n",saveVersion,timeturn0,timePrior,timeturn15); 
 	ptr += strlen(ptr);
+	*ptr = 0;
 	ptr = WriteUserTopics(ptr,sharefile);
 	
 	int count = userFactCount;
 	char* value = GetUserVariable((char*)"$cs_userfactlimit");
 	if (value && *value) count = atoi(value);
 
-	ptr = WriteUserVariables(ptr,sharefile,false);
-	ptr = WriteUserFacts(ptr,sharefile,count);
+	ptr = WriteUserVariables(ptr,sharefile,false);  // json safe
+	ptr = WriteUserFacts(ptr,sharefile,count);  // json safe
 	ptr = WriteUserContext(ptr,sharefile);
-	ptr = WriteRecentMessages(ptr,sharefile);
+	ptr = WriteRecentMessages(ptr,sharefile); // json safe
 	return ptr;
 }
 
@@ -559,6 +549,8 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 		}
 		userRecordSourceBuffer = buffer + len + 1;
 		ReadALine(readBuffer,0);
+		if (*readBuffer == '"' || *readBuffer == '\\') ReadALine(readBuffer, 0); // SKIP doublequote marker
+
 		char* x = ReadCompiledWord(readBuffer,junk);
 		x = ReadCompiledWord(x,timeturn0); // the start stamp id if there
 		x = ReadCompiledWord(x,timePrior); // the prior stamp id if there
@@ -574,11 +566,31 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 	else
 	{
 		if (trace & TRACE_USER) Log(STDUSERLOG,(char*)"loading user\r\n");
-		if (!ReadUserTopics()) return false;
-		if (!ReadUserVariables()) return false;
-		if (!ReadUserFacts()) return false;
-		if (!ReadUserContext()) return false;
-		if (!ReadRecentMessages()) return false;
+		if (!ReadUserTopics()) 
+		{
+			ReportBug((char*)"User data file TOPICS inconsistent\r\n");
+			return false;
+		}
+		if (!ReadUserVariables()) 
+		{
+			ReportBug((char*)"User data file VARIABLES inconsistent\r\n");
+			return false;
+		}
+		if (!ReadUserFacts()) 
+		{
+			ReportBug((char*)"User data file FACTS inconsistent\r\n");
+			return false;
+		}
+		if (!ReadUserContext()) 
+		{
+			ReportBug((char*)"User data file CONTEXT inconsistent\r\n");
+			return false;
+		}
+		if (!ReadRecentMessages()) 
+		{
+			ReportBug((char*)"User data file MESSAGES inconsistent\r\n");
+			return false;
+		}
 		if (trace & TRACE_USER) Log(STDUSERLOG,(char*)"user load completed normally\r\n");
 		oldRandIndex = randIndex = atoi(GetUserVariable((char*)"$cs_randindex")) + (volleyCount % MAXRAND);	// rand base assigned to user
 	}

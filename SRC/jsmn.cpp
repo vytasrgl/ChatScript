@@ -217,14 +217,14 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len, jsmntok_t 
 				}
 #endif
 				break;
-			case '\"':
+			case '\t' : case '\r' : case '\n' : case ':' : case ',': case ' ': 
+				break;
+			case '"':
 				r = jsmn_parse_string(parser, js, len, tokens, num_tokens);
 				if (r < 0) 
 					return r;
 				count++;
 				if (parser->toksuper != -1 && tokens != NULL) tokens[parser->toksuper].size++;
-				break;
-			case '\t' : case '\r' : case '\n' : case ':' : case ',': case ' ': 
 				break;
 			default:
 				r = jsmn_parse_primitive(parser, js, len, tokens, num_tokens);

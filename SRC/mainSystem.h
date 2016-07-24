@@ -79,9 +79,8 @@ extern bool oobExists;
 extern char hostname[100];
 extern int argc;
 extern char** argv;
-// #include <atomic>
-// extern std::atomic<bool> pendingRestart;
 extern volatile bool pendingRestart;
+extern volatile bool pendingUserReset;
 extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;

@@ -162,7 +162,7 @@ static char* ReadMatchVariable(char* input, char* var)
 	return input;
 }
 
-void ReformatString(char* input,char* output, FunctionResult& result,unsigned int controls, bool space) // take ^"xxx" format string and perform substitutions on variables within it
+void ReformatString(char starter, char* input,char* output, FunctionResult& result,unsigned int controls, bool space) // take ^"xxx" format string and perform substitutions on variables within it
 {
 	controls |= OUTPUT_NOCOMMANUMBER; // never reformat a number from here
 	if (space) {*output++ = ' '; *output = 0;}
@@ -180,33 +180,32 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		input[len] = c;
 		return;
 	}
-
 	char* start = output;
 	*output = 0;
 	char mainValue[3];
 	mainValue[1] = 0;
 	char var[MAX_WORD_SIZE];
-	char ans[MAX_WORD_SIZE];
+	char* ans = AllocateBuffer();
 	while (input && *input)
 	{
 		if (*input == '^' && input[1] == '$' && (IsAlphaUTF8(input[2]) ||  input[2] == '$')) // ^ user variable
 		{
 			var[0] = '^';
 			input = ReadUserVariable(input+1,var+1); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '^' && input[1] == '_' && IsDigit(input[2])) // ^ canonical match variable
 		{
 			var[0] = '^';
 			input = ReadMatchVariable(input+1,var+1); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '$' && (IsAlphaUTF8(input[1]) ||  input[1] == '$')) // user variable
 		{
 			input = ReadUserVariable(input,var); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '%' && IsAlphaUTF8(input[1])) // system variable
@@ -219,14 +218,14 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		else if (*input == '_' && IsDigit(input[1]) && *(input-1) != '@') // canonical match variable
 		{
 			input = ReadMatchVariable(input,var); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '\'' && input[1] == '_' && IsDigit(input[2])) // quoted match variable
 		{
 			var[0] = '\'';
 			input = ReadUserVariable(input+1,var+1); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '^' && input[1] == '\'' && input[2] == '_' && IsDigit(input[3])) // ^ quoted match variable
@@ -234,7 +233,7 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 			var[0] = '^';
 			var[1] = '\'';
 			input = ReadUserVariable(input+2,var+2); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '@' && IsDigit(input[1])) // factset
@@ -283,9 +282,9 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 				if (*value) output = AddFormatOutput(value, output,controls); 
 				else if (!FindWord(tmp)) output = AddFormatOutput(tmp, output,controls); // not a system variable
 			}	
-			else if (*tmp == FUNCTIONSTRING && tmp[1] == '"')
+			else if (*tmp == FUNCTIONSTRING && (tmp[1] == '"' || tmp[1] == '\''))
 			{
-				ReformatString(tmp+2,output,result,controls);
+				ReformatString(tmp[1],tmp+2,output,result,controls);
 				output += strlen(output);
 			}
 			else if (!stricmp(tmp,(char*)"null")) {;} // value is to be ignored
@@ -304,11 +303,14 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		}
 		else if (*input == '\\') // protected special character
 		{
-			if (*++input == 'n') *output++ = '\n';
+			++input;
+			if (*input == 'n') *output++ = '\n';
 			else if (*input == 't') *output++ = '\t';
 			else if (*input == 'r') *output++ = '\r';
-			else *output++ = *input; // as is
-			++input;
+			else if (starter == '"') *output++ = *input; // as is
+			else if (*input == '"') {*output++ = '\\'; *output++ = '"';}  // preserve - intended
+			else *output++ = *input; // remove the escape
+			++input; // skip over the specialed character
 		}
 		else // ordinary character
 		{
@@ -320,6 +322,7 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 	original[len] = c;
 	*output = 0; // when failures, return the null string
 	if (trace & TRACE_OUTPUT) Log(STDUSERLOG,(char*)" %s",start);
+	FreeBuffer();
 }
 
 void StdNumber(char* word,char* buffer,int controls, bool space) // text numbers may have sign and decimal
@@ -614,7 +617,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 			}
 		}
 	}
-	else if (word[1] == '"') ReformatString(word+2,buffer,result,space); // functional string, uncompiled.  DO NOT USE function calls within it
+	else if (word[1] == '"' || word[1] == '\'') ReformatString(word[1],word+2,buffer,result,space); // functional string, uncompiled.  DO NOT USE function calls within it
 	else  if (word[1] == '$' || word[1] == '_' || word[1] == '\'' || (word[1] == '^' && IsDigit(word[2]))) // ^$$1 = null or ^_1 = null or ^'_1 = null or ^^which = null is indirect user assignment or retrieval
 	{
 		Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
@@ -826,7 +829,7 @@ static char* Output_String(char* word, char* ptr, bool space,char* buffer, unsig
 	else if (word[1] == FUNCTIONSTRING) // treat as format string   
 	{
 		if (!dictionaryLocked) strcpy(buffer,word); // untouched - function strings passed as arguments to functions are untouched until used up. - need untouched so can create facts from tables with them in it
-		else ReformatString(word+2,buffer,result,controls);
+		else ReformatString(*word,word+2,buffer,result,controls);
 	}
 	else if (controls & OUTPUT_NOQUOTES)
 	{
@@ -950,8 +953,8 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			ptr = SkipWhitespace(hold) + 1;
 			word[1] = 0;
 		}
-		else if (*word == FUNCTIONSTRING && word[1] == '"'  ) {;} // function strings can all sorts of stuff in them
-		else if (*word == '"' && word[1] == FUNCTIONSTRING) {;}   // function strings can all sorts of stuff in them
+		else if (*word == FUNCTIONSTRING && (word[1] == '"' || word[1] == '\'' )  ) {;} // function strings can all sorts of stuff in them
+		else if ((*word == '"') && word[1] == FUNCTIONSTRING) {;}   // function strings can all sorts of stuff in them
 		else // separate closing brackets from token in case not run thru script compilation
 		{
 			bool quote = false;

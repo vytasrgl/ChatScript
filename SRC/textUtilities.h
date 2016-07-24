@@ -20,6 +20,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define TOKEN_EXCLUSIVE 2
 #define TOKEN_INCOMPLETE 4
 
+#define ESCAPE_FLAG 'Z'// 0x7f  // we added an escape for compatibility from ascii, revert it out when reading in
+
 #define SPACES 1			//   \t \r \n 
 #define PUNCTUATIONS 2      //    , | -  (see also ENDERS )
 #define ENDERS	4			//   . ; : ? ! -
@@ -101,6 +103,9 @@ extern int docVolleyStartTime;
 #define IsComparison(c) (isComparatorData[(unsigned char)c])
 WORDP BUILDCONCEPT(char* word) ;
 void RemoveTilde(char* output);
+char* RemoveEscapesWeAdded(char* at);
+char* CopyRemoveEscapes(char* to, char* at,int limit,bool all = false);
+char* AddEscapes(char* to, char* from,bool normal);
 void AcquireDefines(char* fileName);
 void AcquirePosMeanings();
 char* FindNameByValue(uint64 val); // properties

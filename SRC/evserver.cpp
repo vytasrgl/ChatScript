@@ -22,7 +22,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 Copyright (C) 2011-2012Outfit7
 by Igor Lautar <igor.lautar@outfit7.com>
 
-Server implementation uses libev to trigger requests.
+Server implementation uses libev to trigger requests. Each request on a core is single-threaded
+so there are no concurrency issues.
 To compile, define EVSERVER during compilation, otherwise old pthread implementation is used.
 
 Server listener:
@@ -584,12 +585,12 @@ int evsrv_do_chat(Client_t *client)
 	if (!strnicmp(ourMainOutputBuffer,"$#$",3)) // special messages
 	{
 		strcpy(client->data,ourMainOutputBuffer+3);
+		*ourMainOutputBuffer = 0;
 		if (pendingRestart)
 		{
 			strcat(client->data," Restarting server. Please try again in a minute.\r\n");
 			Restart();
 		}
-		*ourMainOutputBuffer = 0;
 	}
 		
 	if (*client->data == 0) 

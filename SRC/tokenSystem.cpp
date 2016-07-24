@@ -819,7 +819,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 			strncpy(word,ptr,MAX_WORD_SIZE - 5);
 			word[MAX_WORD_SIZE-5] = 0;
 			ReportBug("Token too big: %s size %d limited to %d\r\n",word, (end-ptr), MAX_WORD_SIZE-3);
-			end = ptr + MAX_WORD_SIZE - 3; // abort, too much jammed together. no token to reach MAX_WORD_SIZE
+			end = ptr + MAX_WORD_SIZE - 25; // abort, too much jammed together. no token to reach MAX_WORD_SIZE
 		}
 		if (count != oldCount || *ptr == ' ')	// FindWordEnd performed allocation already or removed stage direction start
 		{

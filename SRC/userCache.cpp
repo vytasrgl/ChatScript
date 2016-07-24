@@ -1,6 +1,5 @@
 #include "common.h"
 
-#define DEFAULT_USER_CACHE 1500000
 #define NO_CACHEID -1
 
 static unsigned int cacheHead = 0;		// our marker for last allocated cache, used to find next free one
@@ -313,6 +312,11 @@ char* GetFileRead(char* user,char* computer)
 char* GetCacheBuffer(int which)
 {
 	return (which < 0) ? GetFreeCache() : (cacheBase+(which * userCacheSize)); // NOT from cache system, get a cache buffer
+}
+
+char* GetUserFileBuffer() // when we need a really big buffer (several megabytes)
+{
+	return GetFreeCache();
 }
 
 void Cache(char* buffer, size_t size) // save into cache

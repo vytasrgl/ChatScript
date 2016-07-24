@@ -3041,7 +3041,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	char name[MAX_WORD_SIZE];
 	strcpy(name,word);
 	MEANING M = ReadMeaning(word,false,true);
-	unsigned int index = Meaning2Index(M);
+	int index = Meaning2Index(M);
 	uint64 oldtoken = tokenControl;
 	tokenControl |= STRICT_CASING;
 	WORDP D = Meaning2Word(M);

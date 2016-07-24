@@ -82,14 +82,14 @@ unsigned int xrefCount = 0;			// how many xrefs were created
 unsigned int duplicateCount = 0;	// detecting multiple topics with same name
 
 static unsigned char code[] = {//   value to letter  0-78 (do not use - since topic system cares about it) see uncode
-    '0','1','2','3','4','5','6','7','8','9',
+    '0','1','2','3','4','5','6','7','8','9',  // do not use / or " or \ since JSON doesnt like
     'a','b','c','d','e','f','g','h','i','j',
     'k','l','m','n','o','p','q','r','s','t',
     'u','v','w','x','y','z','A','B','C','D',
     'E','F','G','H','I','J','K','L','M','N',
     'O','P','Q','R','S','T','U','V','W','X',
 	'Y','Z','~','!','@','#','$','%','^','&',
-	'*','?','/','+','=', '<','>',',','.',
+	'*','?','-','+','=', '<','>',',','.',
 };
 
 static unsigned char uncode[] = {//   letter to value - see code[]
@@ -97,7 +97,7 @@ static unsigned char uncode[] = {//   letter to value - see code[]
     0,0,0,0,0,0,0,0,0,0,				// 10
     0,0,0,0,0,0,0,0,0,0,				// 20
     0,0,0,63,0,65,66,67,69,0,			// 30  33=! (63)  35=# (65)  36=$ (66) 37=% (67) 38=& (69)
-    0,0,70,73,77,0,78,72,0,1,			// 40  42=* (70) 43=+ (73) 44=, (77)  46=. (78) 47=/ (72) 0-9 = 0-9
+    0,0,70,73,77,72,78,0,0,1,			// 40  42=* (70) 43=+ (73) 44=, (77) 45=- (72) 46=. (78)  0-9 = 0-9
     2,3,4,5,6,7,8,9,0,0,				// 50
     75,74,76,71,64,36,37,38,39,40,		// 60  60=< (75)  61== (74)  62=> (76) 63=? (71) 64=@ 65=A-Z  (36-61)
     41,42,43,44,45,46,47,48,49,50,		// 70
@@ -1506,7 +1506,7 @@ bool ReadUserTopics()
     char word[MAX_WORD_SIZE];
 	//   flags, status, rejoinder
 	ReadALine(readBuffer, 0);
-	char* ptr = ReadCompiledWord(readBuffer,word); 
+	char* ptr = ReadCompiledWord(readBuffer,word);
     userFirstLine = atoi(word); // share has priority (read last)
     ptr = ReadCompiledWord(ptr,word); 
     volleyCount = atoi(word);
@@ -2403,7 +2403,7 @@ bool ReadUserContext()
 	{
 		ptr = ReadCompiledWord(ptr,word);
 		if (!*word) break;
-		topicContext[contextIndex] = (unsigned short) FindTopicIDByName(word);
+		topicContext[contextIndex] = (unsigned short) FindTopicIDByName(word,true); // exact match
 		if (!topicContext[contextIndex]) return false;
 		ptr = ReadCompiledWord(ptr,word);
 		inputContext[contextIndex] = atoi(word);

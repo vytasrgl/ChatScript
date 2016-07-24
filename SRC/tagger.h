@@ -55,6 +55,8 @@ extern  uint64* tags;
 #define AUXQUESTION 1
 #define QWORDQUESTION 2
 
+extern  WORDP wordTag[MAX_SENTENCE_LENGTH]; 
+extern  WORDP wordRole[MAX_SENTENCE_LENGTH]; 
 extern  char* wordCanonical[MAX_SENTENCE_LENGTH]; //   current sentence tokenization
 extern  WORDP originalLower[MAX_SENTENCE_LENGTH];
 extern  WORDP originalUpper[MAX_SENTENCE_LENGTH];

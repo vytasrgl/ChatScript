@@ -1,10 +1,12 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.61";
+char* version = "6.7";
 
-// std::atomic<bool> pendingRestart = false;
+// Technically using atomic is not helpful here. EVServer runs a single thread per core (excluding the event library)
+// and the alternate server code in csocket has a single thread for the engine so it cannot be out of synch with these variables.
 volatile bool pendingRestart = false;
-
+volatile bool pendingUserReset = false;
+static bool assignedLogin = false;
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
 char revertBuffer[MAX_BUFFER_SIZE];			// copy of user input so can :revert if desired
@@ -216,7 +218,7 @@ void CreateSystem()
 	LoadTopicSystem();		// dictionary reverts to wordnet zone
 	*currentFilename = 0;
 	computerID[0] = 0;
-	loginName[0] = loginID[0] = 0;
+	if (!assignedLogin) loginName[0] = loginID[0] = 0;
 	*botPrefix = *userPrefix = 0;
 
 	char word[MAX_WORD_SIZE];
@@ -246,7 +248,6 @@ void CreateSystem()
 			}
 		}
 	}
-
 	WORDP boot = FindWord((char*)"^csboot");
 	if (boot) // run script on startup of system. data it generates will also be layer 1 data
 	{
@@ -255,8 +256,9 @@ void CreateSystem()
 		Callback(boot,(char*)"()",true); // do before world is locked
 		while (++F <= factFree) 
 		{
-			if (F->flags & FACTTRANSIENT) F->flags |= FACTDEAD;
-			F->flags |= FACTBUILD1; // convert these to level 1
+			if (F->flags & FACTTRANSIENT) 
+				F->flags |= FACTDEAD;
+			else F->flags |= FACTBUILD1; // convert these to level 1
 		}
 		NoteBotVariables(); // convert user variables read into bot variables
 		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
@@ -350,7 +352,7 @@ void CreateSystem()
 	else printf((char*)"    Testing disabled.\r\n");
 #else
 	*callerIP = 0;
-	*loginID = 0;
+	if (!assignedLogin) *loginID = 0;
 	if (server && VerifyAuthorization(FopenReadOnly((char*)"authorizedIP.txt"))) // authorizedIP
 	{
 		Log(SERVERLOG,(char*)"    *** Server WIDE OPEN to :command use.\r\n");
@@ -476,7 +478,11 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 			chdir(argv[i]+5);
 #endif
 		}
-		else if (!strnicmp(argv[i],(char*)"login=",6)) strcpy(loginID,argv[i]+6);
+		else if (!strnicmp(argv[i],(char*)"login=",6)) 
+		{
+			assignedLogin = true;
+			strcpy(loginID,argv[i]+6);
+		}
 		else if (!strnicmp(argv[i],(char*)"output=",7)) outputLength = atoi(argv[i]+7);
 		else if (!strnicmp(argv[i],(char*)"save=",5)) 
 		{
@@ -892,6 +898,7 @@ void ProcessInputFile()
 			if ((!documentMode || *ourMainOutputBuffer) && !silent) printf((char*)"%s",(char*)"\r\n");
 
 			if (showWhy) printf((char*)"%s",(char*)"\r\n"); // line to separate each chunk
+			if (pendingRestart) Restart();
 
 
 			//output user prompt
@@ -901,7 +908,6 @@ void ProcessInputFile()
 			
 			*ourMainInputBuffer = ' '; // leave space at start to confirm NOT a null init message, even if user does only a cr
 			ourMainInputBuffer[1] = 0;
-			if (pendingRestart) Restart();
 			if (loopBackDelay) loopBackTime = ElapsedMilliseconds() + loopBackDelay; // resets every output
 inputRetry:
 			if (ProcessInputDelays(ourMainInputBuffer+1,KeyReady())) goto inputRetry; // use our fake callback input? loop waiting if no user input found
@@ -1243,6 +1249,7 @@ int PerformChatGivenTopic(char* user, char* usee, char* incoming,char* ip,char* 
 
 int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) // returns volleycount or 0 if command done
 { //   primary entrypoint for chatbot -- null incoming treated as conversation start.
+	pendingUserReset = false;
 	volleyStartTime = ElapsedMilliseconds(); // time limit control
 	timerCheckInstance = 0;
 
@@ -1459,7 +1466,6 @@ void Restart()
 	PartiallyCloseSystem();
 	CreateSystem();
 	InitStandalone();
-	pendingRestart = false;
 	if (!server)
 	{
 		echo = false;
@@ -1472,6 +1478,7 @@ void Restart()
 		strcpy(ourMainOutputBuffer,"$#$Restarted server"); // same as mainOutputbuffer but not relocated code
 		Log(STDUSERLOG,(char*)"System restarted %s\r\n",GetTimeInfo(true)); // shows user requesting restart.
 	}
+	pendingRestart = false;
 }
 
 unsigned int ProcessInput(char* input)
@@ -1599,6 +1606,13 @@ loopback:
 		if (result == RESTART_BIT)
 		{
 			pendingRestart = true;
+			if (pendingUserReset)
+			{
+				ResetToPreUser(); // back to empty state before any user
+				ReadNewUser();
+				WriteUserData(time(0)); 
+				ResetToPreUser(); // back to empty state before any user
+			}
 			return 0;	// nothing more can be done here.
 		}
 		else if (result == FAILSENTENCE_BIT) // usually done by substituting a new input
@@ -1773,6 +1787,10 @@ void OnceCode(const char* var,char* function) //   run before doing any of his i
 		if (!stricmp(var,(char*)"$cs_control_pre")) 
 		{
 			Log(STDUSERLOG,(char*)"\r\nPrePass\r\n");
+		}
+		if (!stricmp(var,(char*)"$cs_externaltag")) 
+		{
+			Log(STDUSERLOG,(char*)"\r\nPosTagging\r\n");
 		}
 		else 
 		{
@@ -1980,6 +1998,15 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	if (!strncmp(ptr,(char*)"... ",4)) ptr += 4;  
 
     ptr = Tokenize(ptr,wordCount,wordStarts,false,false,oobstart); 
+	int size;
+	for (int x = 1; x <= wordCount; ++x)
+	{
+		size = strlen(wordStarts[x]);
+		if (size >= MAX_WORD_SIZE)
+		{
+			int xx = 0;
+		}
+	}
 
 	// get derivation data
 	for (int i = 1; i <= wordCount; ++i) derivationIndex[i] = (unsigned short)((i << 8) | i); // track where substitutions come from

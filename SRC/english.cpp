@@ -2509,7 +2509,7 @@ char* GetSingularNoun(char* word, bool initial, bool nonew)
 	if (D && D->properties & AUX_VERB) return NULL; // avoid "is" or "was" as plural noun
 
 	// check known from plural s or es
-	if (len > 2 && word[len-1] == 's')
+	if (len > 2 && word[len-1] == 's' && word[len-2] != 's')
 	{
 		static char mod[MAX_WORD_SIZE]; // we return this sometimes
 		char hold[MAX_WORD_SIZE];

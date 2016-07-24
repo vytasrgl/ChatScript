@@ -298,6 +298,92 @@ void CloseTextUtilities()
 {
 }
 
+char* RemoveEscapesWeAdded(char* at)
+{
+	if (!at || !*at) return at;
+	char* startScan = at;
+	while ((at = strchr(at,'\\'))) // we always add ESCAPE_FLAG backslash   
+	{
+		if (*(at-1) == ESCAPE_FLAG) // alter the escape in some way
+		{
+			if (at[1] == 't')  at[1] = '\t';
+			else if (at[1] == 'n') at[1] = '\n';
+			else if (at[1] == 'r')  at[1] = '\r';
+			// other choices dont translate, eg double quote
+			memmove(at-1,at+1,strlen(at)); // remove the escape flag and the escape
+		}
+		else ++at;
+	}
+	return startScan;
+}
+
+char* CopyRemoveEscapes(char* to, char* at,int limit,bool all) // all includes ones we didnt add as well
+{
+	*to = 0;
+	char* start = to;
+	if (!at || !*at) return to;
+	// need to remove escapes we put there
+	--at;
+	while (*++at)
+	{
+		if (*at == ESCAPE_FLAG && at[1] == '\\') // we added an escape here
+		{
+			at += 2; // move to escaped item
+			if (*(at-1) == ESCAPE_FLAG) // dual escape is special marker, there is no escaped item
+			{
+				*to++ = '\r';
+				*to++ = '\n';
+				--at; // rescan the item
+			}
+			else if (*at == 't') *to++ = '\t';
+			else if (*at == 'n') *to++ = '\n';
+			else if (*at == 'r') *to++ = '\r';
+			else *to++ = *at; // remove our escape pair and pass the item
+		}
+		else if (*at == '\\' && all) // remove ALL other escapes in addition to ones we put there
+		{
+			++at; // move to escaped item
+			if (*at  == 't') *to++ = '\t';
+			else if (*at  == 'n') *to++ = '\n';
+			else if (*at  == 'r') *to++ = '\r';
+			else {*to++ = *at; } // just pass along untranslated
+		}
+		else *to++ = *at;
+		if ((to-start) >= limit) // too much, kill it
+		{
+			*to = 0;
+			break;
+		}
+	}
+	*to = 0;
+	return start;
+}
+
+
+char* AddEscapes(char* to, char* from, bool normal) // normal true means dont flag with extra markers
+{
+	char* start = to;
+	char* at = from - 1;
+	// if we NEED to add an escape, we have to mark it as such so  we know to remove them later.
+	while (*++at)
+	{
+		// convert these
+		if (*at == '\n') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'n';}
+		else if (*at == '\r') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'r';}
+		else if (*at == '\t') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 't';}
+		else if (*at == '"') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = '"';}
+		// detect it is already escaped
+		else if (*at == '\\') // just pass it along
+		{
+			*to++ = '\\';  
+			*to++ = *++at;
+		}
+		// no escape needed
+		else *to++ = *at;
+	}
+	*to = 0;
+	return to; // return where we ended
+}
 void AcquireDefines(char* fileName)
 { // dictionary entries:  `xxxx (property names)  ``xxxx  (systemflag names)  ``` (parse flags values)  -- and flipped:  `nxxxx and ``nnxxxx and ```nnnxxx with infermrak being ptr to original name
 
@@ -1596,12 +1682,16 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 	}
 
 	*buffer++ = *ptr;  // copy over the 1st char
-	
-	if (*ptr == '\\') *buffer++ = *++ptr;	//   swallow \ and "
+	char ender = *ptr; 
+	if (*ptr == '\\') 
+	{
+		*buffer++ = *++ptr;	//   swallow \ and "
+		ender = *ptr;
+	}
 
-	while ((c = *++ptr) && c != '"' && --n) 
+	while ((c = *++ptr) && c != ender && --n) 
     {
-		if (c == '\\' && ptr[1] == '"') // if c is \", means internal quoted expression.
+		if (c == '\\' && ptr[1] == ender) // if c is \", means internal quoted expression.
 		{
 			*buffer++ = '\\';	// preserver internal marking - must stay with string til last possible moment.
 			*buffer++ = *++ptr;
@@ -1625,7 +1715,7 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 	}
 
     // close with ending quote
-    *buffer = *ptr;	
+    *buffer = ender;	
     *++buffer = 0; 
 	return ptr+1;		// after the quote end
 }
@@ -1687,15 +1777,16 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 	*word = 0;
 	if (!ptr) return NULL;
 
-	char c;
+	char c = 0;
 	char* original = word;
 	ptr = SkipWhitespace(ptr);
 	char* start = ptr;
 	char special = 0;
 	if (!var) {;}
 	else if ((*ptr == '%' && IsAlphaUTF8(ptr[1]))  || (*ptr == '@' && IsDigit(ptr[1])) || (*ptr == '$' && (IsAlphaUTF8(ptr[1]) || ptr[1] == '$')) || (*ptr == '_' && IsDigit(ptr[1]))) special = *ptr; // break off punctuation after variable
-
-	if (!noquote && (*ptr == ENDUNIT || *ptr == '"' || (*ptr == FUNCTIONSTRING && ptr[1] == '"'))) //   ends in blank or nul,  might be quoted, doublequoted, or ^"xxx" functional string
+	bool quotedfnvar = false;
+	if (*ptr == '\'' && ptr[1] == FUNCTIONSTRING  && IsDigit(ptr[2])) quotedfnvar = true; 
+	if (!quotedfnvar && !noquote && (*ptr == ENDUNIT || (*ptr == '"' || *ptr == '\'') || (*ptr == FUNCTIONSTRING && (ptr[1] == '"' || ptr[1] == '\'') ))) //   ends in blank or nul,  might be quoted, doublequoted, or ^"xxx" functional string but not a '^0 functionvar
 	{
 		if (*ptr == '^') *word++ = *ptr++;	// move to the actual quote
 		*word++ = *ptr; // keep opener  --- a worst case is "`( \"grow up" ) " from a fact
@@ -1703,7 +1794,7 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 		while ((c = *ptr++)) // run til nul or matching `  -- may have INTERNAL string as well
 		{
 			if ((word-original) > (MAX_WORD_SIZE - 3)) break;
-			if ( c == '\\' && *ptr == '"') // escaped quote, copy both
+			if ( c == '\\' && *ptr == end) // escaped quote, copy both
 			{
 				*word++ = c;
 				*word++ = *ptr++;
@@ -1912,14 +2003,7 @@ void Convert2Underscores(char* output,bool alternewline, bool removeBlanks)
 	bool backslash = false;
     while ((c = *++ptr)) 
     {
-		if ( c == ' ') backslash = false;
-		if ( c == '\\') // protect next always
-		{
-			backslash = true;
-			memmove(ptr,ptr+1,strlen(ptr));
-			--ptr;
-		}
-        else if (!backslash && !removeBlanks &&  c == '_' && ptr[1] != '_') // remove underscores from apostrophe of possession
+		if (!removeBlanks &&  c == '_' && ptr[1] != '_') // remove underscores from apostrophe of possession
         {
 			// remove space on possessives
 			if (ptr[1] == '\'' && ( (ptr[2] == 's' && !IsAlphaUTF8OrDigit(ptr[3]))  || !IsAlphaUTF8OrDigit(ptr[2]) ) )// bob_'s  bobs_'  
@@ -1932,7 +2016,6 @@ void Convert2Underscores(char* output,bool alternewline, bool removeBlanks)
 		else if (alternewline && (c == '\n' || c == '\r')) *ptr = ' ';
     }
 }
-
 
 void RemoveTilde(char* output)
 { 

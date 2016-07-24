@@ -723,7 +723,7 @@ concept: ~format_words (audio DVD ebook edition EPUB format hardback hardcover i
 concept: ~frenchwords FOREIGN_WORD (bon bonsoir je jour parle parlez quelle soir suis voulez vous )
 concept: ~frequency_words (annual biannual bicentennial bimonthly biweekly centennial daily diurnal fortnightly frequent hourly immediate imminent monthly occasional perennial quarterly 
           recurrent recurring semiannual triennial weekly yearly )
-concept: ~friend   PROBABLE_NOUN (acquaintance ally beau best_friend boyfriend buddy chum close_friend colleague comrade confidant friend girlfriend kith lover pal 
+concept: ~friend   PROBABLE_NOUN (acquaintance ally beau  boyfriend buddy chum close_friend colleague comrade confidant friend girlfriend kith lover pal 
           partner sidekick swain )
 concept: ~fruit   (breadfruit edible_fruit~1 grapefruit )
 concept: ~functions (~burnable ~carryable ~closeable ~contains ~eatable ~enterable ~flammable ~immovable ~lockable ~noisy ~rideable ~shootable ~supports ~switchable ~throwable ~toyable 
@@ -1268,7 +1268,7 @@ concept: ~month_names_index DUPLICATE (3 3 7 7 11 11 1 1 0 0 6 6 5 5 2 2 4 4 10 
 concept: ~daysinmonth DUPLICATE (30 30 31 31 31 31 28 28 31 31 31 31 30 30 31 31 31 31 30 30 31 31 30 30  30) # 0-based
 concept: ~month_proper_names DUPLICATE (April April August August December December February February January January July July June June March March May May November November October October September September September )
 
-concept: ~more (again another continue do_it_again further go_on more repeat resume what_else )
+concept: ~more (again another continue do_it_again further go_on more other repeat resume what_else )
 concept: ~morningthings (~groom arise awake breakfast dawn daylight dress get_up go_to_the_office go_to_work morning shave shower wake )
 concept: ~mother   PROBABLE_NOUN ANIMATE_BEING (ma mama mamma mammy mom momma mommy mother mother-in-law mum mummy mummy~2 step-mother )
 concept: ~mountain (mountain )

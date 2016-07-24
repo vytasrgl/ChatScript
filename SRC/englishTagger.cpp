@@ -446,7 +446,7 @@ static bool LimitValues(int i, uint64 bits,char* msg,bool& changed)
 }
 
 static void ParseFlags0(char* buffer,  int i);
-static void PerformPosTag(int start, int end)
+static void PerformPosTag(int start, int end, bool externed)
 {
 	if (start > end) 
 	{
@@ -550,6 +550,7 @@ static void PerformPosTag(int start, int end)
 			continue;
 		}
 */
+		if (externed) continue; // remote pos tagging
 
 		WORDP entry = NULL;
 		WORDP canonical = NULL;
@@ -753,6 +754,8 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 	memset(originalUpper,0,sizeof(WORDP)*(wordCount+2));
 	memset(canonicalLower,0,sizeof(WORDP)*(wordCount+2));
 	memset(canonicalUpper,0,sizeof(WORDP)*(wordCount+2));
+	memset(wordRole,0,sizeof(char*) * (wordCount+2));
+	memset(wordTag,0,sizeof(char*) * (wordCount+2));
 	memcpy(wordCanonical,wordStarts,sizeof(char*) * (wordCount+2));
 	memset(allOriginalWordBits,0,sizeof(uint64)*(wordCount+2));
 	memset(lcSysFlags,0,sizeof(uint64)*(wordCount+2));
@@ -797,6 +800,12 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 	// default in case we dont find anything
 	startSentence = 1;
 	endSentence = wordCount;
+	bool externed = false;
+	if (!(tokenControl & DO_PARSE)) 
+	{
+		if (*GetUserVariable((char*)"$cs_externaltag")) externed = true;
+		OnceCode((char*)"$cs_externaltag");
+	}
 
 	// handle regular area
 	for (i = 1; i <= wordCount; ++i)
@@ -814,7 +823,7 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 		{
 			end = j - 1;
 			tokenFlags &= -1 ^ SENTENCE_TOKENFLAGS; // reset results bits
-			PerformPosTag(i,end); // do this zone
+			PerformPosTag(i,end, externed); // do this zone
 			i = end + 1;
 			originalLower[j] = FindWord(wordStarts[j]);
 			continue;
@@ -831,7 +840,7 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 
 		// bug - make a noun out of 1st quote if part of sentence...
 		tokenFlags &= -1 ^ SENTENCE_TOKENFLAGS; // reset results bits
-		PerformPosTag(i,end); // do this zone
+		PerformPosTag(i,end,externed); // do this zone
 		i = end;
 	}
 }
@@ -1433,7 +1442,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 			if (posValues[i+1] == PARTICLE) //known particle
 			{
 				char* verb = GetInfinitive(wordStarts[i], true);
-				char word[MAX_WORD_SIZE];
+				char word[MAX_WORD_SIZE*2];
 				if (verb)
 				{
 					sprintf(word,(char*)"%s_%s",verb,wordStarts[i+1]);
@@ -1772,7 +1781,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 				if (posValues[at] & VERB_BITS)
 				{
 					char* verb = GetInfinitive(wordStarts[at], true);
-					char word[MAX_WORD_SIZE];
+					char word[MAX_WORD_SIZE*2];
 					if (verb)
 					{
 						sprintf(word,(char*)"%s_%s",verb,wordStarts[i]);
@@ -1790,7 +1799,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		case POSSIBLEPHRASAL:
 			{
 				char* verb = GetInfinitive(wordStarts[i-1], true);
-				char word[MAX_WORD_SIZE];
+				char word[MAX_WORD_SIZE*2];
 				if (verb)
 				{
 					sprintf(word,(char*)"%s_%s",verb,wordStarts[i]);
