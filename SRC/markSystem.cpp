@@ -203,7 +203,7 @@ static int MarkSetPath(MEANING M, int start, int end, unsigned int depth, bool c
 	else //   first time accessing, note recency and clear tried bits
 	{
 		D->inferMark = inferMark;
-		if (D && *D->word != '~') 
+		if (*D->word != '~') 
 		{
 			SetTriedMeaning(D,0);
 			tried = 0;
@@ -302,7 +302,8 @@ static void RiseUp(MEANING M,unsigned int start, unsigned int end,unsigned int d
 	WORDP X;
 	char word[MAX_WORD_SIZE];
 	sprintf(word,(char*)"%s~%d",D->word,index);
-	X = FindWord(word,0,PRIMARY_CASE_ALLOWED);
+	X = StoreWord(word);
+//	X = FindWord(word,0,PRIMARY_CASE_ALLOWED);
 	if (X) 	MarkWordHit(X,start,end); // direct reference in a pattern
 
 	// now spread and rise up

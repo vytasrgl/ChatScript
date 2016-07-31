@@ -25,8 +25,11 @@ void JumpBack();
 void myexit(char* msg, int code = 4);
 void mystart(char* msg);
 
+#define NORMALFILES 0
+#define MONGOFILES 1
+#define POSTGRESFILES 2
 extern bool logged;
-extern bool filesystemOverride;
+extern int filesystemOverride;
 
 // MEMORY SYSTEM
 
@@ -92,7 +95,6 @@ typedef struct USERFILESYSTEM //  how to access user topic data
 	UserFileClose userClose;
 	UserFileRead userRead;
 	UserFileWrite userWrite;
-	UserFileSize userSize;
 	UserFileDelete userDelete;
 
 } USERFILESYSTEM;

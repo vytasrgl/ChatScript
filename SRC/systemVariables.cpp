@@ -25,7 +25,7 @@ void DefineSystemVariables()
 	unsigned int i = 0;
 	while (sysvars[++i].name)
 	{
-		if (sysvars[i].name[0] == '%') 
+		if (sysvars[i].name[0] == SYSVAR_PREFIX) 
 		{
 			StoreWord((char*) sysvars[i].name)->x.topicIndex = (unsigned short) i;  // not a header
 			(*sysvars[i].address)((char*)"."); // force a reset-- testing calls this to reset after changes
@@ -126,7 +126,7 @@ static char* SdayNumberOfWeek(char* value)
 	return systemValue;
 }
 
-static char* SFullTime(char* value)
+char* SFullTime(char* value)
 {
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
@@ -386,7 +386,6 @@ static char* Sbot(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 	strcpy(systemValue,computerID);
-	*systemValue = GetUppercaseData(*systemValue);
     return systemValue;
 }
 
@@ -885,7 +884,7 @@ static char* Sresponse(char* value)
 }   
 
 SYSTEMVARIABLE sysvars[] =
-{ 
+{ // do not use underscores in name
 	{ (char*)"",0,(char*)""},
 
 	{ (char*)"\r\n---- Time, Date, Number variables",0,(char*)""},
@@ -917,7 +916,7 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%freefact",SfreeFact,(char*)"number of available unused facts"}, 
 	{ (char*)"%regression",Sregression,(char*)"Boolean - is regression flag on"}, 
 	{ (char*)"%host",Shost,(char*)"machine ip if a server, else local"}, 
-	{ (char*)"%http_response",ShttpResponse,(char*)"http response code from last call to JsonOpen"}, 
+	{ (char*)"%httpresponse",ShttpResponse,(char*)"http response code from last call to JsonOpen"}, 
 	{ (char*)"%maxmatchvariables",SmaxMatchVariables,(char*)"highest number of legal _match variables"}, 
 	{ (char*)"%maxfactsets",SmaxFactSets,(char*)"highest number of legal @factsets"}, 
 	{ (char*)"%rule",Srule,(char*)"Get a tag to current executing rule or null"}, 

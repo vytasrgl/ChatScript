@@ -283,7 +283,7 @@ int GetWordValue(WORDP D);
 inline int GetMeaningCount(WORDP D) { return (D->meanings) ? GetMeaning(D,0) : 0;}
 inline int GetGlossCount(WORDP D) 
 {
-	return (D->w.glosses && *D->word != '~' && *D->word != '^' && *D->word != '$' && !(D->internalBits & HAS_SUBSTITUTE) && !(D->systemFlags & CONDITIONAL_IDIOM))  ? D->w.glosses[0] : 0;
+	return (D->w.glosses && *D->word != '~' && *D->word != '^' && *D->word != USERVAR_PREFIX && !(D->internalBits & HAS_SUBSTITUTE) && !(D->systemFlags & CONDITIONAL_IDIOM))  ? D->w.glosses[0] : 0;
 }
 char* GetGloss(WORDP D, unsigned int index);
 unsigned int GetGlossIndex(WORDP D,unsigned int index);

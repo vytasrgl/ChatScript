@@ -15,7 +15,7 @@ int docVolleyStartTime = 0;
 char tmpWord[MAX_WORD_SIZE];					// globally visible scratch word
 char* userRecordSourceBuffer = 0;				// input source for reading is this text stream of user file
 
-int BOM = 0;								// current ByteOrderMark
+int BOM = NOBOM;								// current ByteOrderMark
 static char holdc = 0;		//   holds extra character from readahead
 
 unsigned char utf82extendedascii[128];
@@ -831,7 +831,7 @@ char* GetCurrency(char* ptr,char* &number) // does this point to a currency toke
 bool IsLegalName(char* name) // start alpha (or ~) and be alpha _ digit (concepts and topics can use . or - also)
 {
 	char start = *name;
-	if (*name == '~' || *name == '%') ++name;
+	if (*name == '~' || *name == SYSVAR_PREFIX) ++name;
 	if (!IsAlphaUTF8(*name) ) return false;
 	while (*++name)
 	{
@@ -1194,7 +1194,7 @@ char* ReadFlags(char* ptr,uint64& flags,bool &bad, bool &response)
 		ptr = ReadShortCommandArg(ptr,flag,result); // swallows excess )
  		if (result & ENDCODES) return ptr;
 		if (*flag == '(') continue;	 // starter
-		if (*flag == '$') flags |= atoi(GetUserVariable(flag)); // user variable indirect
+		if (*flag == USERVAR_PREFIX) flags |= atoi(GetUserVariable(flag)); // user variable indirect
 		else if (*flag == '0' && (flag[1] == 'x' || flag[1] == 'X')) // literal hex value
 		{
 			uint64 val;
@@ -1328,7 +1328,7 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 	else // get copy and reinit for new file
 	{
 		BOMvalue = BOM;
-		BOM = 0;
+		BOM = NOBOM;
 		oldc = holdc;
 		holdc = 0;
 		oldCurrentLine = currentFileLine;
@@ -1344,7 +1344,7 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines) 
 { //  reads text line stripping of cr/nl
 	
-	if (currentFileLine == 0) BOM = 0; // start of file, set BOM to null
+	if (currentFileLine == 0) BOM = (BOM == BOMSET) ? BOMUTF8 : NOBOM; // start of file, set BOM to null
 	*buffer = 0;
 	buffer[1] = 0;
 	buffer[2] = 1;
@@ -1514,13 +1514,13 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		*buffer = 0;
 		
 		// strip UTF8 BOM marker if any and just keep reading
-		if (hasutf && currentFileLine == 0 && (buffer-start) == 3) 
+		if (hasutf && currentFileLine == 0 && (buffer-start) == 3) // only from file system 
 		{
 			if ((unsigned char) start[0] ==  0xEF && (unsigned char) start[1] == 0xBB && (unsigned char) start[2] == 0xBF) // UTF8 BOM
 			{
 				buffer -= 3;
 				*start = 0;
-				BOM = 1;
+				BOM = BOMUTF8;
 				hasutf = false;
 			}
 		}
@@ -1783,10 +1783,10 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 	char* start = ptr;
 	char special = 0;
 	if (!var) {;}
-	else if ((*ptr == '%' && IsAlphaUTF8(ptr[1]))  || (*ptr == '@' && IsDigit(ptr[1])) || (*ptr == '$' && (IsAlphaUTF8(ptr[1]) || ptr[1] == '$')) || (*ptr == '_' && IsDigit(ptr[1]))) special = *ptr; // break off punctuation after variable
-	bool quotedfnvar = false;
-	if (*ptr == '\'' && ptr[1] == FUNCTIONSTRING  && IsDigit(ptr[2])) quotedfnvar = true; 
-	if (!quotedfnvar && !noquote && (*ptr == ENDUNIT || (*ptr == '"' || *ptr == '\'') || (*ptr == FUNCTIONSTRING && (ptr[1] == '"' || ptr[1] == '\'') ))) //   ends in blank or nul,  might be quoted, doublequoted, or ^"xxx" functional string but not a '^0 functionvar
+	else if ((*ptr == SYSVAR_PREFIX && IsAlphaUTF8(ptr[1]))  || (*ptr == '@' && IsDigit(ptr[1])) || (*ptr == USERVAR_PREFIX && (ptr[1] == LOCALVAR_PREFIX || IsAlphaUTF8(ptr[1]) || ptr[1] == TRANSIENTVAR_PREFIX)) || (*ptr == '_' && IsDigit(ptr[1]))) special = *ptr; // break off punctuation after variable
+	bool jsonactivestring = false;
+	if (*ptr == FUNCTIONSTRING && ptr[1] == '\'') jsonactivestring = true;
+	if (!noquote && (*ptr == ENDUNIT || *ptr == '"' || (*ptr == FUNCTIONSTRING && ptr[1] == '"') || jsonactivestring )) //   ends in blank or nul,  might be quoted, doublequoted, or ^"xxx" functional string or ^'xxx' jsonactivestring
 	{
 		if (*ptr == '^') *word++ = *ptr++;	// move to the actual quote
 		*word++ = *ptr; // keep opener  --- a worst case is "`( \"grow up" ) " from a fact

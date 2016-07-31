@@ -5658,8 +5658,6 @@
     hose_down~1vz water with a hose
  hosiery ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
     hose~3n 
- hospital_bed ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    hospital_bed~1nz (^single_bed~1) a single bed with a frame in three sections so the head or middle or foot can be raised as required
  hospital_room ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     hospital_room~1nz (^room~1) a room in a hospital for the care of patients
  hospital_ship ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 

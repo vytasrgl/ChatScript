@@ -74,23 +74,18 @@ extern int globalDepth;
 FunctionResult InitWinsock();
 #endif
 
-#ifndef DISCARDPOSTGRES
-void PostgresShutDown();
-void PGUserFilesCode();
-void PGUserFilesCloseCode();
-void pguserLog(const void* buffer,size_t size);
-void pguserBug(const void* buffer,size_t size);
-extern char* pguserdb;
-#endif
 
 FunctionResult RunJavaScript(char* definition, char* buffer,unsigned int args);
 void DeletePermanentJavaScript();
 void DeleteTransientJavaScript();
 
 //   argument data for user calls
+char* InitDisplay(char* list, char* display[MAX_DISPLAY]);
+void RestoreDisplay(char* list,char* display[MAX_DISPLAY]);
 extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
 void JsonRenumber(FACT* F);
+
 void jkillfact(WORDP D);
 extern bool planning;
 extern bool nobacktrack;

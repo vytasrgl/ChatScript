@@ -3001,7 +3001,6 @@
 + indris NOUN NOUN_PLURAL 
 + keyboard_cat 
 + long_cat 
-+ puss NOUN NOUN_PLURAL 
 + scottish_fold 
 + tiffany_cat 
 + war_horse 

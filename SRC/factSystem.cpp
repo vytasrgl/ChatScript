@@ -546,26 +546,81 @@ bool ExportFacts(char* name, int set,char* append)
 		size_t len = strlen(name);
 		if (name[len-1] == '"') name[len-1] = 0;
 	}
-	FILE* out = (append && !stricmp(append,(char*)"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
-	if (!out) return false;
 
-	char word[MAX_WORD_SIZE];
+	char* buffer = GetFreeCache();
+	char* base = buffer;
+
+	char* word = AllocateBuffer();
 	unsigned int count = FACTSET_COUNT(set);
 	for (unsigned int i = 1; i <= count; ++i)
 	{
 		FACT* F = factSet[set][i];
-		if (!F) fprintf(out,(char*)"%s",(char*)"null ");
+		if (!F) strcpy(buffer,(char*)"null ");
 		else if ( !(F->flags & FACTDEAD))
+		{
+			unsigned int original = F->flags;
+			F->flags &= -1 ^ FACTTRANSIENT;	// dont pass transient flag out
+			strcpy(buffer,WriteFact(F,false,word,false,true));
+			F->flags = original;
+		}
+		buffer += strlen(buffer);
+	}
+	FreeBuffer();
+	FILE* out = userFileSystem.userOpen(name); // user ltm file
+	if (!out) return false;
+	userFileSystem.userWrite(buffer,1,(buffer-base),out);
+	userFileSystem.userClose(out);
+	FreeUserCache();
+	return true;
+}
+
+static void ExportJson1(char* jsonitem, FILE* out)
+{
+	if (!*jsonitem)
+	{
+		fprintf(out,(char*)"null");
+		return;
+	}
+
+	WORDP D = FindWord(jsonitem);
+	if (!D) return;
+	char* word = AllocateBuffer();
+	FACT* F = GetSubjectNondeadHead(D);
+	while (F)
+	{
+		if ( !(F->flags & FACTDEAD))
 		{
 			unsigned int original = F->flags;
 			F->flags &= -1 ^ FACTTRANSIENT;	// dont pass transient flag out
 			fprintf(out,(char*)"%s",WriteFact(F,false,word,false,true));
 			F->flags = original;
 		}
-	}
+		if (F->flags & (JSON_ARRAY_VALUE|JSON_OBJECT_VALUE)) ExportJson1(Meaning2Word(F->object)->word,out); // on object side of triple
 
+		F = GetSubjectNondeadNext(F);
+	}
+	FreeBuffer();
+}
+
+FunctionResult ExportJson(char* name, char* jsonitem, char* append)
+{
+	WORDP D;
+	if (*jsonitem) 
+	{
+		D = FindWord(jsonitem);
+		if (!D) return FAILRULE_BIT;
+	}
+	if ( *name == '"')
+	{
+		++name;
+		size_t len = strlen(name);
+		if (name[len-1] == '"') name[len-1] = 0;
+	}
+	FILE* out = (append && !stricmp(append,(char*)"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
+	if (!out) return FAILRULE_BIT;
+	ExportJson1(jsonitem, out);
 	fclose(out);
-	return true;
+	return NOPROBLEM_BIT;
 }
 
 char* EatFact(char* ptr,unsigned int flags,bool attribute)
@@ -730,10 +785,10 @@ char* EatFact(char* ptr,unsigned int flags,bool attribute)
 	return (*ptr) ? (ptr + 2) : ptr; //   returns after the closing ) if there is one
 }
 
-bool ImportFacts(char* name, char* set, char* erase, char* transient)
-{
+bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transient)
+{ // if no set is given, return the subject of the 1st fact we read (Json entity name)
 	int store = -1;
-	if (*set)
+	if (*set && *set != '"') // able to pass empty string
 	{
 		store = GetSetID(set);
 		if (store == ILLEGAL_FACTSET) return false;
@@ -745,25 +800,43 @@ bool ImportFacts(char* name, char* set, char* erase, char* transient)
 		size_t len = strlen(name);
 		if (name[len-1] == '"') name[len-1] = 0;
 	}
-	FILE* in = FopenReadWritten(name);
+	FILE* in = userFileSystem.userOpen(name); 
 	if (!in) return false;
+
+	char* filebuffer = GetFreeCache();
+	size_t readit = userFileSystem.userRead(filebuffer,1,userCacheSize,in);	// read it all in, including BOM
+	userFileSystem.userClose(in);
+
+	// set bom
+	currentFileLine = 0;
+	BOM = BOMSET; // will be utf8
+	userRecordSourceBuffer = filebuffer;
+
 	unsigned int flags = 0;
 	if (!stricmp(erase,(char*)"transient") || !stricmp(transient,(char*)"transient")) flags |= FACTTRANSIENT; // make facts transient
-	while (ReadALine(readBuffer, in) >= 0)
+	while (ReadALine(readBuffer, 0) >= 0)
     {
         if (*readBuffer == 0 || *readBuffer == '#') continue; //   empty or comment
 		char word[MAX_WORD_SIZE];
-		char* ptr = ReadCompiledWord(readBuffer,word);
-		if (!stricmp(word,(char*)"null")) AddFact(store,NULL);
+		ReadCompiledWord(readBuffer,word);
+		if (!stricmp(word,(char*)"null")) 
+		{
+			if (store > 0) AddFact(store,NULL);
+		}
 		else if (*word == '(')
 		{
-			EatFact(ptr,flags);
-			if (store > 0) AddFact(store,currentFact);
+			FACT* G = ReadFact(readBuffer,0);
+			G->flags |= flags;
+			if (store > 0) AddFact(store,G);
+			else if (!*buffer) strcpy(buffer,Meaning2Word(G->subject)->word); // to return the name
 		}
 	}
 	fclose(in);
+	FreeUserCache();
+
 	if (!stricmp(erase,(char*)"erase") || !stricmp(transient,(char*)"erase")) remove(name); // erase file after reading
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"[%d] => ",FACTSET_COUNT(store));
+	currentFact = NULL; // we have used up the facts
 	return true;
 }
 
@@ -1194,7 +1267,7 @@ void ReadFacts(const char* name,const char* layer,unsigned int build,bool user) 
 			}
 			else ReadDictionaryFlags(D,at);
 		}
-		else if (*word == '$') // variable
+		else if (*word == USERVAR_PREFIX) // variable
 		{
 			char* eq = strchr(word,'=');
 			if (!eq) ReportBug((char*)"Bad fact file user var assignment %s",word)

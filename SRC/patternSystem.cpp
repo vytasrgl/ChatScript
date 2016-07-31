@@ -109,7 +109,7 @@ void GetPatternData(char* buffer)
 static void DecodeFNRef(char* side)
 {
 	char* at = "";
-	if (side[1] == '$') at = GetUserVariable(side+1); 
+	if (side[1] == USERVAR_PREFIX) at = GetUserVariable(side+1); 
 	else if (IsDigit(side[1])) at = callArgumentList[side[1]-'0'+fnVarBase];
 	at = SkipWhitespace(at);
 	strcpy(side,at);
@@ -306,6 +306,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
 	unsigned int oldtrace = trace;
 	bool oldecho = echo;
 	bool success = false;
+	int at;
     firstMatched = -1; //   ()  should return spot it started (firstMatched) so caller has ability to bind any wild card before it
     if (wildstart == 1)  positionStart = INFINITE_MATCH; //   INFINITE_MATCH means we are in initial startup, allows us to match ANYWHERE forward to start
     positionEnd = startposition; //   we scan starting 1 after this
@@ -448,25 +449,27 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
 				break;
    			case '<': //   sentence start marker OR << >> set
 				if (firstMatched < 0) firstMatched = NORETRY; // cannot retry this match
-				if (word[1] == '<') 
-					goto DOUBLELEFT; //   << 
-                else 
+				if (word[1] == '<')  goto DOUBLELEFT; //   << 
+				at = 0;
+				while (unmarked[++at] && at <= wordCount){;} // skip over hidden data
+				--at; // we perceive the start to be here
+				ptr = nextTokenStart;
+				if ((wildcardSelector & WILDGAP) && !reverse) // cannot memorize going forward to  start of sentence
 				{
-					ptr = nextTokenStart;
-					if ((wildcardSelector & WILDGAP) && !reverse) // cannot memorize going forward to  start of sentence
-					{
-						matched = false;
- 						wildcardSelector &= -1 ^ (WILDMEMORIZEGAP|WILDGAP);
-					}
-					else { // match can FORCE it to go to start from any direction
-						positionStart = positionEnd = 0; //   idiom < * and < _* handled under *
-						matched = true;
-					}
+					matched = false;
+ 					wildcardSelector &= -1 ^ (WILDMEMORIZEGAP|WILDGAP);
+				}
+				else { // match can FORCE it to go to start from any direction
+					positionStart = positionEnd = at; //   idiom < * and < _* handled under *
+					matched = true;
 				}
                 break;
             case '>': //   sentence end marker
-				if (word[1] == '>') 
-					goto DOUBLERIGHT; //   >> closer, and reset to start of sentence wild again...
+				if (word[1] == '>')  goto DOUBLERIGHT; //   >> closer, and reset to start of sentence wild again...
+				at = positionEnd;
+				while (unmarked[++at] && at <= wordCount){;} // skip over hidden data
+				if (at > wordCount) at = positionEnd;	// he was the end
+				else at = wordCount; // the presumed real end
 				
 				ptr = nextTokenStart;
 				if ((wildcardSelector & WILDGAP) && reverse) // cannot memorize going backward to  end of sentence
@@ -480,18 +483,18 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
 					positionStart = positionEnd = wordCount + 1; 
 					matched = true;
 				}
-				else if ((wildcardSelector & WILDGAP) || positionEnd == wordCount)// you can go to end from anywhere if you have a gap OR you are there
+				else if ((wildcardSelector & WILDGAP) || positionEnd == at)// you can go to end from anywhere if you have a gap OR you are there
 				{
 					matched =  true;
-					positionStart = positionEnd = wordCount + 1; //   pretend to match a word off end of sentence
+					positionStart = positionEnd = at + 1; //   pretend to match a word off end of sentence
 				}
 				else if (*kind == '[' || *kind == '{') // nested unit will figure out if legal 
 				{
 					matched =  true;
-					positionStart = positionEnd = wordCount + 1; //   pretend to match a word off end of sentence
+					positionStart = positionEnd = at + 1; //   pretend to match a word off end of sentence
 				}
 				else matched = false;
-                break;
+				break;
              case '*':
 				if (word[1] == '-') //   backward grab, -1 is word before now -- BUG does not respect unmark system
 				{
@@ -569,19 +572,19 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
 					continue;
                 }
                 break;
-            case '$': // is user variable defined
+            case USERVAR_PREFIX: // is user variable defined
 				{
 					char* val = GetUserVariable(word);
 					matched = *val ? true : false;
 				}
                 break;
             case '^': //   function call, function argument  or indirect function variable assign ref like ^$$tmp = null
-                 if  (IsDigit(word[1]) || word[1] == '$' || word[1] == '_') //   macro argument substitution or indirect function variable
+                 if  (IsDigit(word[1]) || word[1] == USERVAR_PREFIX || word[1] == '_') //   macro argument substitution or indirect function variable
                 {
                     argumentText = ptr; //   transient substitution of text
 
 					if (IsDigit(word[1]))  ptr = callArgumentList[word[1]-'0'+fnVarBase];  // nine argument limit
-					else if (word[1] == '$') ptr = GetUserVariable(word+1); // get value of variable and continue in place
+					else if (word[1] == USERVAR_PREFIX) ptr = GetUserVariable(word+1); // get value of variable and continue in place
 					else ptr = wildcardCanonicalText[GetWildcardID(word+1)]; // ordinary wildcard substituted in place (bug)?
 					if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDUSERLOG,(char*)"%s=>",word);
 					continue;
@@ -623,7 +626,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
 						if (*rhs == '^') // local function argument or indirect ^$ var  is LHS. copy across real argument
 						{
 							char* at = "";
-							if (rhs[1] == '$') at = GetUserVariable(rhs+1); 
+							if (rhs[1] == USERVAR_PREFIX) at = GetUserVariable(rhs+1); 
 							else if (IsDigit(rhs[1])) at = callArgumentList[rhs[1]-'0'+fnVarBase];
 							at = SkipWhitespace(at);
 							strcpy(rhs,at);
@@ -808,7 +811,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					positionStart,positionEnd);
 				if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart; //   first SOLID match
 				break;
-            case '%': //   system variable
+            case SYSVAR_PREFIX: //   system variable
 				if (!word[1]) // simple % 
 				{
 					bool junk;
@@ -855,10 +858,10 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					if (*op == '?' && *rhs != '~') // NOT a ? into a set test - means does this thing exist in sentence
 					{
 						char* val = "";
-						if (*lhs == '$') val = GetUserVariable(lhs);
+						if (*lhs == USERVAR_PREFIX) val = GetUserVariable(lhs);
 						else if (*lhs == '_') val = (quoted) ? wildcardOriginalText[GetWildcardID(lhs)] : wildcardCanonicalText[GetWildcardID(lhs)];
 						else if (*lhs == '^' && IsDigit(lhs[1])) val = callArgumentList[lhs[1]-'0'+fnVarBase];  // nine argument limit
-						else if (*lhs == '%') val = SystemVariable(lhs,NULL);
+						else if (*lhs == SYSVAR_PREFIX) val = SystemVariable(lhs,NULL);
 						else val = lhs; // direct word
 
 						if (*val == '"') // phrase requires dynamic matching
@@ -879,7 +882,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					}
 	
 					result = *lhs;
-					if (result == '%' || result == '$' || result == '_' || result == '@' || (*op == '?' && rhs)) // otherwise for words and concepts, look up in sentence and check relation there
+					if (result == SYSVAR_PREFIX || result == USERVAR_PREFIX || result == '_' || result == '@' || (*op == '?' && rhs)) // otherwise for words and concepts, look up in sentence and check relation there
 					{
 						if (result == '_' && quoted) --lhs; // include the quote
 						char word1val[MAX_WORD_SIZE];
@@ -995,7 +998,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 			{
 				if (wildcardSelector == WILDMEMORIZESPECIFIC)
 				{
-					if (*word == '$')
+					if (*word == USERVAR_PREFIX)
 					{
 						char* value = GetUserVariable(word);
 						SetWildCard(value,value, 0,0);  // specific swallow
@@ -1139,7 +1142,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					else if (positionStart != positionEnd) Log(STDUSERLOG,(char*)"(%s-%s)",wordStarts[positionStart],wordStarts[positionEnd]);
 					else Log(STDUSERLOG,(char*)"(%s)",wordStarts[positionStart]);
 				}
-				else if (*word == '$' && matched) 
+				else if (*word == USERVAR_PREFIX && matched) 
 				{
 					Log(STDUSERLOG,(char*)"(%s)",GetUserVariable(word));
 				}

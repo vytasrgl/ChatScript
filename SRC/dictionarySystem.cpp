@@ -156,8 +156,8 @@ void ClearVolleyWordMaps()
 {
 	wordValues.clear();
 	backtracks.clear();
-	savedSentences = 0;
 	triedData.clear(); // prevent document reuse
+	savedSentences = 0;
 	ClearWhereInSentence();
 	freeTriedList = 0;
 }
@@ -596,7 +596,7 @@ void InitDictionary()
 	}
 
 	dictionaryLocked = 0;
-	userTopicStoreSize = userCacheCount * userCacheSize; //  minimum cache spot
+	userTopicStoreSize = userCacheCount * (userCacheSize+2); //  minimum file cache spot
 	userTopicStoreSize /= 64;
 	userTopicStoreSize = (userTopicStoreSize * 64) + 64;
 	
@@ -870,7 +870,7 @@ void AddProperty(WORDP D, uint64 flag)
 	if (flag && flag != (D->properties & flag))
 	{
 		if (D < dictionaryLocked) PreserveProperty(D);
-		if (!(D->properties & PART_OF_SPEECH) && flag & PART_OF_SPEECH && *D->word != '~'  && *D->word != '^' && *D->word != '$')  // not topic,concept,function
+		if (!(D->properties & PART_OF_SPEECH) && flag & PART_OF_SPEECH && *D->word != '~'  && *D->word != '^' && *D->word != USERVAR_PREFIX)  // not topic,concept,function
 		{
 			//   internal use, do not allow idioms on words from #defines or user variables or  sets.. but allow substitutes to do it?
 			unsigned int n = BurstWord(D->word);
@@ -956,7 +956,7 @@ WORDP FindWord(const char* word, int len,uint64 caseAllowed)
 	uint64 fullhash = Hashit((unsigned char*) word,len,hasUpperCharacters,hasUTF8Characters); //   sets hasUpperCharacters and hasUTF8Characters 
 	unsigned int hash  = (fullhash % maxHashBuckets) + 1; // mod by the size of the table
 	if (caseAllowed & LOWERCASE_LOOKUP){;} // stay in lower bucket regardless
-	else if (*word == '%' || *word == '$' || *word == '~'  || *word == '^') 
+	else if (*word == SYSVAR_PREFIX || *word == USERVAR_PREFIX || *word == '~'  || *word == '^') 
 	{
 		if (caseAllowed == UPPERCASE_LOOKUP) return NULL; // not allowed to find
 		caseAllowed = LOWERCASE_LOOKUP; // these are always lower case
@@ -1048,7 +1048,7 @@ WORDP StoreWord(char* word, uint64 properties)
 	bool lowercase = false;
 	//   make all words normalized with no blanks in them.
 	if (*word == '"' || *word == '_' || *word == '`') {;} // dont change any quoted things or things beginning with _ (we use them in facts for a "missing" value) or user var names
-	else if (*word == '%' || *word == '$' || *word == '~'  || *word == '^') lowercase = true; // these are always lower case
+	else if (*word == SYSVAR_PREFIX || *word == USERVAR_PREFIX || *word == '~'  || *word == '^') lowercase = true; // these are always lower case
 	else if (!(properties & (AS_IS|PUNCTUATION_BITS))) 
 	{
 		n = BurstWord(word,0);
@@ -1899,7 +1899,7 @@ static void WriteDictionaryReference(char* label,WORDP D,FILE* out)
 void WriteDictionary(WORDP D,uint64 data)
 {
 	if (D->internalBits & DELETED_MARK) return;
-	if (*D->word == '$' && D->word[1]) return;	// var never and money never, but let $ punctuation through
+	if (*D->word == USERVAR_PREFIX && D->word[1]) return;	// var never and money never, but let $ punctuation through
 	RemoveInternalFlag(D,(unsigned int)(-1 ^ (UTF8|UPPERCASE_HASH|DEFINES)));  // keep only these
 
 	// choose appropriate subfile
@@ -2320,7 +2320,11 @@ MEANING FindSynsetParent(MEANING T,unsigned int which) //  presume we are at the
 		{
 			//   prove indexes mate up
 			if (index && index != Meaning2Index(at->subject)) continue; // must match generic or specific precisely
-			if (count++ == which) return at->object; //   next set/class in line
+			if (count++ == which) 
+			{
+				if (trace == TRACE_HIERARCHY) TraceFact(at);
+				return at->object; //   next set/class in line
+			}
 		}
     }
     return 0;
@@ -3045,7 +3049,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	uint64 oldtoken = tokenControl;
 	tokenControl |= STRICT_CASING;
 	WORDP D = Meaning2Word(M);
-	if (D && IS_NEW_WORD(D) && (*D->word == '~' || *D->word == '$'   || *D->word == '^')) D = 0;	// debugging may have forced this to store, its not in base system
+	if (D && IS_NEW_WORD(D) && (*D->word == '~' || *D->word == USERVAR_PREFIX   || *D->word == '^')) D = 0;	// debugging may have forced this to store, its not in base system
 	if (limit == 0) limit = 5; // default
 	if (D) 	Log(STDUSERLOG,(char*)"\r\n%s (%d):\r\n  Properties: ",name,Word2Index(D));
 	else Log(STDUSERLOG,(char*)"\r\n%s (unknown word):\r\n  Properties: ",name);
@@ -3175,8 +3179,8 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		if (D->internalBits & VARIABLE_ARGS_TABLE) Log(STDUSERLOG,(char*)"variableArgs");
 	}
 	Log(STDUSERLOG,(char*)"\r\n  Other:   ");
-	if (*D->word == '%') Log(STDUSERLOG,(char*)"systemvar ");
-	if (*D->word == '$')
+	if (*D->word == SYSVAR_PREFIX) Log(STDUSERLOG,(char*)"systemvar ");
+	if (*D->word == USERVAR_PREFIX)
 	{
 		char* val = GetUserVariable(D->word);
 		Log(STDUSERLOG,(char*)"VariableValue= \"%s\" ",val);

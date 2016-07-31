@@ -104,7 +104,7 @@ extern EchoSource echoSource;
 extern bool all;
 extern PrepareMode prepareMode;
 extern PrepareMode tmpPrepareMode;
-extern unsigned int startSystem;
+extern clock_t startSystem;
 extern char oktest[MAX_WORD_SIZE];
 extern int timerLimit;
 extern int timerCheckRate;

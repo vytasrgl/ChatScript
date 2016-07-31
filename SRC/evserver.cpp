@@ -45,7 +45,11 @@ Handling client:
  - once data is written, client instance is deregistered from libev, socket closed and object destroyed
 */
 #include "common.h"
-#include "ev.h"
+#ifdef WIN32
+	#include "ev.h"
+#else
+	#include "evserver/ev.h"
+#endif
 #include "evserver.h"
 
 #include <vector>
@@ -564,10 +568,6 @@ void LogChat(clock_t starttime,char* user,char* bot,char* IP, int turn,char* inp
 
 int evsrv_do_chat(Client_t *client)
 {
-	while (pendingRestart) // wait up for new server
-	{
-		sleep(1);
-	}
  	clock_t starttime = ElapsedMilliseconds(); 
     client->prepare_for_chat();
 	size_t len = strlen(client->message);

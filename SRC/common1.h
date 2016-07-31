@@ -51,6 +51,15 @@ typedef unsigned int MEANING;					//   a flagged indexed dict ptr
 #define TYPE_RESTRICTION_SHIFT 0
 #endif
 
+#define SYSVAR_PREFIX '%'
+#define MATCHVAR_PREFIX '_'
+#define USERVAR_PREFIX '$'
+#define TRANSIENTVAR_PREFIX '$'
+#define LOCALVAR_PREFIX '_'
+#define FACTSET_PREFIX '@'
+#define FUNCTIONVAR_PREFIX '^'
+#define TOPICCONCEPT_PREFIX '~'
+
 #define BIG_WORD_SIZE   10000
 #define MAX_WORD_SIZE   1500       
 

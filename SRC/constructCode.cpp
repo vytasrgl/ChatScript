@@ -63,7 +63,7 @@ resume:
 	}
 	else //   existence of non-failure or any content
 	{
-		if (*word1 == '%' || *word1 == '_' || *word1 == '$' || *word1 == '@' || *word1 == '?' || *word1 == '^')
+		if (*word1 == SYSVAR_PREFIX || *word1 == '_' || *word1 == USERVAR_PREFIX || *word1 == '@' || *word1 == '?' || *word1 == '^')
 		{
 			char remap[MAX_WORD_SIZE];
 			strcpy(remap,word1); // for tracing
@@ -72,11 +72,11 @@ resume:
 				strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]); 
 			}
 			char* found;
-			if (*word1 == '%') found = SystemVariable(word1,NULL);
+			if (*word1 == SYSVAR_PREFIX) found = SystemVariable(word1,NULL);
 			else if (*word1 == '_') found = wildcardCanonicalText[GetWildcardID(word1)];
-			else if (*word1 == '$') found = GetUserVariable(word1);
+			else if (*word1 == USERVAR_PREFIX) found = GetUserVariable(word1);
 			else if (*word1 == '?') found = (tokenFlags & QUESTIONMARK) ? (char*) "1" : (char*) "";
-			else if (*word1 == '^' && word1[1] == '$') // indirect var
+			else if (*word1 == '^' && word1[1] == USERVAR_PREFIX) // indirect var
 			{
 				found = GetUserVariable(word1+1);
 				found = GetUserVariable(found);

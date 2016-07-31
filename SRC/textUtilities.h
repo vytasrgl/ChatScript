@@ -20,7 +20,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define TOKEN_EXCLUSIVE 2
 #define TOKEN_INCOMPLETE 4
 
-#define ESCAPE_FLAG 'Z'// 0x7f  // we added an escape for compatibility from ascii, revert it out when reading in
+#define BOMSET 2
+#define BOMUTF8 1
+#define NOBOM 0
+
+#define ESCAPE_FLAG  0x7f  // we added an escape for compatibility from ascii, revert it out when reading in
 
 #define SPACES 1			//   \t \r \n 
 #define PUNCTUATIONS 2      //    , | -  (see also ENDERS )

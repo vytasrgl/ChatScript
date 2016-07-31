@@ -188,7 +188,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 	char* ans = AllocateBuffer();
 	while (input && *input)
 	{
-		if (*input == '^' && input[1] == '$' && (IsAlphaUTF8(input[2]) ||  input[2] == '$')) // ^ user variable
+		if (*input == '^' && input[1] == USERVAR_PREFIX && (IsAlphaUTF8(input[2]) ||  input[2] == '$')) // ^ user variable
 		{
 			var[0] = '^';
 			input = ReadUserVariable(input+1,var+1); // end up after the var
@@ -202,15 +202,19 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == '$' && (IsAlphaUTF8(input[1]) ||  input[1] == '$')) // user variable
+		else if (*input == USERVAR_PREFIX && (IsAlphaUTF8(input[1]) ||  input[1] == TRANSIENTVAR_PREFIX ||  input[1] == LOCALVAR_PREFIX)) // user variable
 		{
 			input = ReadUserVariable(input,var); // end up after the var
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == '%' && IsAlphaUTF8(input[1])) // system variable
+		else if (*input == SYSVAR_PREFIX && IsAlphaUTF8(input[1]))
 		{
 			input = ReadCompiledWord(input,var,false,true);
+			char* at = var;
+			while (*++at && IsAlphaUTF8(*at)){;}
+			input -= strlen(at);
+			*at = 0;
 			char* value = SystemVariable(var,NULL);
 			if (*value) output = AddFormatOutput(value, output,controls); 
 			else if (!FindWord(var)) output = AddFormatOutput(var, output,controls); // not a system variable
@@ -258,7 +262,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 			char* tmp = callArgumentList[atoi(base+1)+fnVarBase];
 			// if tmp turns out to be $var or _var %var, need to recurse to get it
 
-			if (*tmp == '$' && !IsDigit(tmp[1])) // user variable
+			if (*tmp == USERVAR_PREFIX && !IsDigit(tmp[1])) // user variable
 			{
 				char* value = GetUserVariable(tmp);
 				output = AddFormatOutput(value, output,controls); 
@@ -276,7 +280,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 				if (IsDigit(*tmp)) ++tmp; // 2nd digit
 				output = AddFormatOutput(GetwildcardText(GetWildcardID(base),false), output,controls);
 			}
-			else if (*tmp == '%' && IsAlphaUTF8(tmp[1])) // system variable
+			else if (*tmp == SYSVAR_PREFIX && IsAlphaUTF8(tmp[1])) // system variable
 			{
 				char* value = SystemVariable(tmp,NULL);
 				if (*value) output = AddFormatOutput(value, output,controls); 
@@ -304,12 +308,15 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 		else if (*input == '\\') // protected special character
 		{
 			++input;
-			if (*input == 'n') *output++ = '\n';
-			else if (*input == 't') *output++ = '\t';
-			else if (*input == 'r') *output++ = '\r';
-			else if (starter == '"') *output++ = *input; // as is
-			else if (*input == '"') {*output++ = '\\'; *output++ = '"';}  // preserve - intended
-			else *output++ = *input; // remove the escape
+			if (starter == '"' && *input == 'n') *output++ = '\n';
+			else if (starter == '"' && *input == 't') *output++ = '\t';
+			else if (starter == '"' && *input == 'r') *output++ = '\r';
+			else if (starter == '"') *output++ = *input; // just pass along the protected char in ^"xxx" strings
+			else // is ^'xxxx' string - other than our special ' we need, leave all other escapes alone as legal json
+			{
+				if (*input == '\'') *output++ = *input;  // cs required the \, not in final output
+				else {*output++ = '\\'; *output++ = *input;}  // json can escape anything, particularly doublequote
+			}
 			++input; // skip over the specialed character
 		}
 		else // ordinary character
@@ -459,7 +466,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 			notted = true;
 			++var;
 		}
-		if (*var == '$' && (IsAlphaUTF8(var[1]) || var[1] == '$'  )) // user variable given
+		if (*var == USERVAR_PREFIX && (IsAlphaUTF8(var[1]) || var[1] == TRANSIENTVAR_PREFIX   ||  var[1] == LOCALVAR_PREFIX)) // user variable given
 		{
 			ReadCompiledWord(simpleOutput,tmpWord);
 			if (*tmpWord == '=' || tmpWord[1] == '=') choiceset[count++] = base; //  some kind of assignment, it's all simple output
@@ -618,7 +625,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 		}
 	}
 	else if (word[1] == '"' || word[1] == '\'') ReformatString(word[1],word+2,buffer,result,space); // functional string, uncompiled.  DO NOT USE function calls within it
-	else  if (word[1] == '$' || word[1] == '_' || word[1] == '\'' || (word[1] == '^' && IsDigit(word[2]))) // ^$$1 = null or ^_1 = null or ^'_1 = null or ^^which = null is indirect user assignment or retrieval
+	else  if (word[1] == USERVAR_PREFIX || word[1] == '_' || word[1] == '\'' || (word[1] == '^' && IsDigit(word[2]))) // ^$$1 = null or ^_1 = null or ^'_1 = null or ^^which = null is indirect user assignment or retrieval
 	{
 		Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
 		if (!once && IsAssignmentOperator(ptr)) // we are lefthand side indirect
@@ -797,7 +804,7 @@ static char* Output_Quote(char* word, char* ptr, bool space,char* buffer, unsign
 			}
 		}
 	}
-	else if (word[1] == '$' || word[1] == '@' || word[1] == '%')  //    variable or factset or system variable quoted, means dont reeval its content
+	else if (word[1] == USERVAR_PREFIX || word[1] == '@' || word[1] == SYSVAR_PREFIX)  //    variable or factset or system variable quoted, means dont reeval its content
 	{
 		strcpy(buffer,word+1);
 	}
@@ -884,7 +891,7 @@ static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsig
 		if (controls & OUTPUT_EVALCODE && !(controls & OUTPUT_KEEPVAR)) 
 		{
 			char* answer = GetUserVariable(word);
-			if (*answer == '$' && (answer[1] == '$' || IsAlphaUTF8(answer[1]))) strcpy(word,answer); // force nested indirect on var of a var value
+			if (*answer == USERVAR_PREFIX && ( answer[1] == LOCALVAR_PREFIX || answer[1] == TRANSIENTVAR_PREFIX || IsAlphaUTF8(answer[1]))) strcpy(word,answer); // force nested indirect on var of a var value
 		}
 
 		if (!once && IsAssignmentOperator(ptr)) 
@@ -988,7 +995,7 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			else
 			{
 				before = *(buffer-1);
-				// dont space after $  or # or [ or ( or " or / or newline
+				// dont space after $  or # or [ or ( or " or / or newline   USERVAR_PREFIX
 				space = before && before != '(' && before != '[' && before != '{'  && before != '$' && before != '#' && before != '"' && before != '/' && before != '\n';
 				if (before == '"') space = !(CountParens(currentOutputBase) & 1); //   if parens not balanced, add space before opening doublequote
 			}
@@ -1027,13 +1034,13 @@ retry:
 			break;
 
 		// variables of various flavors
-        case '$': //   user variable or money
+        case USERVAR_PREFIX: //   user variable or money
 			ptr = Output_Dollar(word, ptr, space, buffer, controls,result,once);
 			break;
  		case '_': //   wildcard or standalone _ OR just an ordinary token
 			ptr = Output_Underscore(word, ptr, space, buffer, controls,result,once);
 			break;
-        case '%':  //   system variable
+        case SYSVAR_PREFIX:  //   system variable
 	 		ptr = Output_Percent(word, ptr, space, buffer, (quoted) ? (controls | OUTPUT_DQUOTE_FLIP)  : controls,result,once);
 			break;
 		case '@': //   a fact set reference like @9 @1subject @2object or something else
@@ -1080,7 +1087,11 @@ retry:
 			currentRule = oldrule;
 			currentRuleID = oldruleid;
 			currentRuleTopic = oldruletopic;
-			if (quitting == true) myexit((char*)"quit requested from script");
+			if (quitting == true) 
+			{
+				result = FAILINPUT_BIT;
+				return NULL;
+			}
 			if (FAILCOMMAND != answer) 
 			{
 				ptr = NULL;
@@ -1099,7 +1110,7 @@ retry:
 		if (*word == ENDUNIT) 
 		{
 			if (!*buffer) result = FAILRULE_BIT;
-			else if (once && (word[1] != '$' && word[1] != '_' && word[1] != '\'' && word[1] != '^')){;}	// have our answer (unless it was a function variable substitution)
+			else if (once && (word[1] != USERVAR_PREFIX && word[1] != '_' && word[1] != '\'' && word[1] != '^')){;}	// have our answer (unless it was a function variable substitution)
 			else
 			{
 				strcpy(word,SkipWhitespace(buffer));

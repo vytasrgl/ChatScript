@@ -470,7 +470,7 @@ concept: ~use (apply employ exercise handle manipulate operate use utilise utili
 concept: ~vehicle_verbs (balloon boat bobsled bus cab caravan chariot coach dogsled ferry gondola helicopter jeep jet moped motor parachute punt pilot
           rickshaw ride rocket sledge sleigh taxi tram trolley yacht  drive pilot race)
 concept: ~verbal_agree (acknowledge affirm agree approve compromise consent rubberstamp stipulate )
-concept: ~verbal_disagree (argue bicker confute contend contest contradict controvert counter differ disagree dispute dissent nitpick object quarrel 
+concept: ~verbal_disagree (argue bicker confute contend contest contradict controvert counter differ disagree dispute dissent nitpick object~6 object~7 quarrel 
           quibble rebut refute reject squabble veto vie )
 concept: ~verblist ONLY_VERBS (~ANIMATE_VERBS ~INANIMATE_VERBS ~TIME_EVENT_VERBS ~WEATHER_VERBS )
 concept: ~videoing (broadcast film microfilm satellite tape telecast televise )

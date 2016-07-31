@@ -130,6 +130,35 @@ void InitFunctionSystem() // register all functions
 	oldunmarked[0] = 0;	// global unmarking has nothing
 }
 
+char* InitDisplay(char* list, char* display[MAX_DISPLAY])
+{
+	int displayIndex = 0;
+	list += 2;	// skip ( and space
+	char word[MAX_WORD_SIZE];
+	while (1)
+	{
+		list = ReadCompiledWord((char*)list,word); 
+		if (*word == ')') break;
+		char* oldvalue = GetUserVariable(word);
+		display[displayIndex++] = oldvalue; // do not NULL init the var... might have been passed as function argument as well
+		if (word[1] == LOCALVAR_PREFIX) SetUserVariable(word,NULL);
+	}
+	return list;
+}
+
+void RestoreDisplay(char* list,char* display[MAX_DISPLAY])
+{
+	char word[MAX_WORD_SIZE];
+	list += 2;	// skip ( and space
+	int displayIndex = 0;
+	while (1)
+	{
+		list = ReadCompiledWord(list,word); 
+		if (*word == ')') break;
+		SetUserVariable(word,display[displayIndex++],true);
+	}
+}
+
 void ResetFunctionSystem()
 {
 	//   reset function call data
@@ -463,6 +492,11 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				strncpy(callArgumentList[callArgumentIndex],start,len);
 				callArgumentList[callArgumentIndex][len] = 0;
 			}
+			if (callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX && // NOT by reference but by value
+				callArgumentList[callArgumentIndex][1] == LOCALVAR_PREFIX)
+			{
+				strcpy(callArgumentList[callArgumentIndex],GetUserVariable(callArgumentList[callArgumentIndex]));
+			}
 			if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & FN_NO_TRACE)&& CheckTopicTrace()) 
 			{
 				if (info->argumentCount == STREAM_ARG) Log(STDUSERLOG,(char*)"STREAM: ");
@@ -488,22 +522,28 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		char* oldFunctionAnswerName = functionAnswerName;
 		functionAnswerBase = buffer; // let ^return be transparent by only tracking user routines for this data
 		functionAnswerName = D->word;
-		int displayIndex = 0;
-		char* display[MAX_DISPLAY];
 		callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
 		callStack[callIndex++] = D;
 
 		unsigned int oldFnVarBase = fnVarBase;
+		unsigned int args;
 		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE))) && CheckTopicTrace()) 
 			Log(STDUSERTABLOG, "Call %s(",name);
-		if (!D->w.fndefinition)
+		if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
+		{
+			definition = NULL; 
+			args = D->w.planArgCount;
+		}
+		else if (!D->w.fndefinition)
 		{
 			ReportBug((char*)"Missing function definition for %s\r\n",D->word);
 			result = FAILRULE_BIT;
 		}
-		else definition = D->w.fndefinition + 1;
-		unsigned int args = MACRO_ARGUMENT_COUNT(D); // expected args
-
+		else 
+		{
+			definition = D->w.fndefinition + 1;
+			args = MACRO_ARGUMENT_COUNT(D); // expected args
+		}
 		unsigned int argflags = D->x.macroFlags;
 		unsigned int j = 0;
 		char argcopy[MAX_WORD_SIZE];
@@ -564,12 +604,17 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				strcpy(arg,currentOutputBase);
 				FreeOutputBuffer();
 			}
+			if (arg[0] == USERVAR_PREFIX && // NOT by reference but by value
+				arg[1] == LOCALVAR_PREFIX)
+			{
+				strcpy(arg,GetUserVariable(callArgumentList[callArgumentIndex]));
+			}
 			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE)))  && CheckTopicTrace())
 			{
 				if (*argcopy == '^') Log(STDUSERLOG, "%s->%s",argcopy,arg);
 				else if (*argcopy == '"' && argcopy[1] == '^') Log(STDUSERLOG, "  %s",argcopy); // show original format string- but it may be redundant display from evaling it
 				else Log(STDUSERLOG, "%s",arg);
-				if (*arg == '$') Log(STDUSERLOG,(char*)" (%s)",GetUserVariable(arg));
+				if (*arg == USERVAR_PREFIX) Log(STDUSERLOG,(char*)" (%s)",GetUserVariable(arg));
 				else if (*arg == '_' && IsDigit(arg[1])) 
 				{
 					int id = GetWildcardID(arg);
@@ -599,20 +644,14 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			Log(STDUSERTABLOG,(char*)"");
 		}
 		fnVarBase = callArgumentBase = oldArgumentIndex; 
-		char* basedisplay = 0;
+		
 		// handle any display variables
-		if (definition[1] == '(')
+		char* display[MAX_DISPLAY];
+		char* basedisplay = 0;
+		if ((D->internalBits & FUNCTION_BITS) != IS_PLAN_MACRO && definition[0] == '(')
 		{
-			definition += 1;
-			basedisplay = (char*)(++definition);
-			char word[MAX_WORD_SIZE];
-			while (1)
-			{
-				definition = (unsigned char*)ReadCompiledWord((char*)definition,word); 
-				if (*word == ')') break;
-				char* oldvalue = GetUserVariable(word);
-				display[displayIndex++] = oldvalue; // do not NULL init the var... might have been passed as function argument as well
-			}
+			basedisplay = (char*)(definition);
+			definition = (unsigned char*) InitDisplay((char*)definition, display);
 		}
 	
 		//   run the definition
@@ -625,8 +664,9 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			ReportBug((char*)"User function nesting too deep %d",MAX_ARGUMENT_COUNT);
 			result = FAILRULE_BIT;
 		}
-		else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) result = PlanCode(D,buffer); // run a plan
-#ifdef JAVASCRIPT
+		else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
+			result = PlanCode(D,buffer); // run a plan
+#ifndef DISCARDJAVASCRIPT
 		else if (definition && *definition == '*' && !strncmp((char*)definition,"*JavaScript",11))
 		{
 			result = RunJavaScript((char*)definition+11,buffer,args); // point at space after label
@@ -640,17 +680,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		}
 
 		// undo any display variables
-		if (basedisplay)
-		{
-			char word[MAX_WORD_SIZE];
-			displayIndex = 0;
-			while (1)
-			{
-				basedisplay = ReadCompiledWord(basedisplay,word); 
-				if (*word == ')') break;
-				SetUserVariable(word,display[displayIndex++],true);
-			}
-		}
+		if (basedisplay) RestoreDisplay(basedisplay,display);
 
 		trace = oldtrace;
 		fnVarBase = oldFnVarBase;
@@ -2173,7 +2203,7 @@ static FunctionResult MarkCode(char* buffer)
 	}
 	if (IsDigit(*ptr) || *ptr == '_') ptr = ReadCompiledWord(ptr,word1);  // the locator, leave it unevaled as number or match var
 	else ptr = ReadShortCommandArg(ptr,word1,result); // evaluate the locator as a number presumably
-	if (*word1 == '$') strcpy(word1,GetUserVariable(word1));
+	if (*word1 == USERVAR_PREFIX) strcpy(word1,GetUserVariable(word1));
 
 	int startPosition;
 	int endPosition;
@@ -2225,7 +2255,7 @@ static FunctionResult MarkCode(char* buffer)
 static FunctionResult MarkedCode(char* buffer)
 {
 	char* arg1 = ARGUMENT(1);
-	if (*ARGUMENT(1) == '$')  // indirect thru variable
+	if (*ARGUMENT(1) == USERVAR_PREFIX)  // indirect thru variable
 	{
 		char* at = GetUserVariable(ARGUMENT(1));
 		if (at) arg1 = at;
@@ -2315,7 +2345,7 @@ static FunctionResult RoleCode(char* buffer)
 		if (n == 0 || n > wordCount) return FAILRULE_BIT;
 	}
 	else if (*arg == '_') n = WildPosition(arg);
-	else if (*arg == '$') n = atoi(GetUserVariable(arg));
+	else if (*arg == USERVAR_PREFIX) n = atoi(GetUserVariable(arg));
 	else if (*arg == '^') 
 	{
 		char word[MAX_WORD_SIZE];
@@ -2386,7 +2416,7 @@ static FunctionResult PartOfSpeechCode(char* buffer)
 		ReadArgument(arg,word);
 		n = atoi(word);
 	}
-	else if (*arg == '$') n = atoi(GetUserVariable(arg));
+	else if (*arg == USERVAR_PREFIX) n = atoi(GetUserVariable(arg));
 	else return FAILRULE_BIT;
 	uint64 pos = finalPosValues[n];
 	if (pos & (AUX_VERB | ADJECTIVE_PARTICIPLE )) pos |= allOriginalWordBits[n] & VERB_BITS; // supllementatal data
@@ -2499,7 +2529,7 @@ static FunctionResult UnmarkCode(char* buffer)
 	int startPosition = wordCount;
 	int endPosition = 1;
 	if (*word1 == '^' && IsDigit(word1[1])) strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]);
-	if (*word1 == '$') strcpy(word1,GetUserVariable(word1));
+	if (*word1 == USERVAR_PREFIX) strcpy(word1,GetUserVariable(word1));
 
 	if (!*word1) 
 	{
@@ -2563,7 +2593,7 @@ static FunctionResult OriginalCode(char* buffer)
 	if (*arg == '\'') ++arg;
 
 	if (*arg == '^') strcpy(arg,callArgumentList[atoi(arg+1)+fnVarBase]);
-	else if (*arg == '$') strcpy(arg,GetUserVariable(arg));
+	else if (*arg == USERVAR_PREFIX) strcpy(arg,GetUserVariable(arg));
 	if (*arg != '_') return FAILRULE_BIT;
 
 	int x = GetWildcardID(arg);
@@ -3392,7 +3422,7 @@ FunctionResult MatchCode(char* buffer)
 	char pack[MAX_WORD_SIZE];
 	char* base = pack;
 
-	if (*word1 == '$' && !*at) strcpy(word,GetUserVariable(word1)); //   solitary user var, decode it  eg match($var)
+	if (*word1 == USERVAR_PREFIX && !*at) strcpy(word,GetUserVariable(word1)); //   solitary user var, decode it  eg match($var)
 	else if (*word1 == '_' && !*at) strcpy(word,wildcardCanonicalText[GetWildcardID(word1)]); //   solitary user var, decode it  eg match($var)
 	else if (*word1 == '@' && !*at) 
 	{
@@ -3839,501 +3869,6 @@ FunctionResult ArgumentCode(char* buffer)
 /// DATABASE FUNCTIONS
 //////////////////////////////////////////////////////////
 
-#ifndef DISCARDPOSTGRES
-#include "postgres/libpq-fe.h"
-static  PGconn     *conn; // shared db open stuff
-static bool connDummy = false;
-
-// user files stored in postgres instead of file system
-static  PGconn     *usersconn; // shared db open stuff used instead of files for userwrites
-static char* pgfilesbuffer = 0;
-char* pguserdb = 0; // init string for pguser
-
-#ifdef WIN32
-#pragma comment(lib, "../SRC/postgres/libpq.lib")
-#endif
-
-void PostgresShutDown()
-{
-	if (conn) 
-	{
-		PQfinish(conn);
-		FreeBuffer();
-	}
-	conn = NULL;
-}
-
-static FunctionResult DBCloseCode(char* buffer)
-{
-	if (!conn) 
-	{
-		if (connDummy)
-		{
-			connDummy = false;
-			return NOPROBLEM_BIT;
-		}
-		char* msg = "db not open\r\n";
-		SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-		Log(STDUSERLOG,msg);
-		return FAILRULE_BIT;
-	}
-	PostgresShutDown();
-	return (buffer == NULL) ? FAILRULE_BIT : NOPROBLEM_BIT; // special call requesting error return (not done in script)
-}
-
-static FunctionResult DBInitCode(char* buffer)
-{
-	char query[MAX_WORD_SIZE * 2];
-	char* ptr = SkipWhitespace(ARGUMENT(1));
-	if (!strnicmp(ptr,"EXISTS ",7))
-	{
-		ptr = ReadCompiledWord(ptr,query);
-		if (conn) return NOPROBLEM_BIT;
-	}
-	if (conn) 
-	{
-		char* msg = "DB already opened\r\n";
-		SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-		if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG,msg);
- 		return FAILRULE_BIT;
-	}
-	FunctionResult result;
-	*query = 0;
-	FreshOutput(ptr,query,result,0, MAX_WORD_SIZE * 2);
-	if (result != NOPROBLEM_BIT) return result;
-	if (!stricmp(query,(char*)"null"))
-	{
-		connDummy = true;
-		return NOPROBLEM_BIT;
-	}
-
-#ifdef WIN32
-	if (InitWinsock() == FAILRULE_BIT)
-	{
-		if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "WSAStartup failed\r\n");
-		return FAILRULE_BIT;
-	}
-#endif
-
-    /* Make a connection to the database */
-    conn = PQconnectdb(query);
-
-    /* Check to see that the backend connection was successfully made */
-    if (PQstatus(conn) != CONNECTION_OK)
-    {
-		char msg[MAX_WORD_SIZE];
-		sprintf(msg,(char*)"%s - %s\r\n",query,PQerrorMessage(conn));
-		SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-        if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "Connection failed: %s",  msg);
-		return DBCloseCode(NULL);
-    }
-
-	return NOPROBLEM_BIT;
-}
-
-char hexbytes[] =  {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-static FunctionResult DBExecuteCode(char* buffer);
-
-static void AdjustQuotes(char* fix,bool nocloser)
-{
-	char* start = fix;
-	while ((fix = strchr(fix,'\''))) 
-	{
-		char* end = fix + 1;
-		while ((end = strchr(end,'\''))) // finding end
-		{
-			if (end[1] == ' ' || end[1] == ';' || end[1] == '\t' || end[1] == '\n' || end[1]  == '\r' || end[1]  == ')'|| end[1]  == '('|| end[1]  == ',') // real end of token
-			{
-				fix = end;
-			}
-			else // internal ' needs converting
-			{
-				memmove(fix+1,fix,strlen(fix)+1); 
-				fix++; // should we find no real end, this will move us past
-			}
-			break;
-		}
-		if (!end && nocloser)
-		{
-			memmove(fix+1,fix,strlen(fix)+1); 
-			fix++; // should we find no real end, this will move us past
-		}
-		++fix; // always make progress
-	}
-}
-
-static size_t convertFromHex(unsigned char* ptr,unsigned char* from)
-{
-	unsigned char* start = ptr;
-	*ptr = 0;
-	if (!from) return (size_t) -1;
-
-	if (*from++ != '\\') 
-	{
-		strcpy((char*)ptr,(char*)from);
-		return strlen((char*)ptr);
-	}
-	else if (*from++ != 'x') return 0;
-
-	while (*from)
-	{
-		unsigned char c = *from++;
-		unsigned char d = *from++;
-		c = (c <= '9') ? (c - '0') : (c - 'a' + 10); 
-		d = (d <= '9') ? (d - '0') : (d - 'a' + 10); 
-		*ptr++ = (c << 4) | d;
-	}
-	*ptr = 0;
-	return ptr - start;
-}
-
-void PGUserFilesCloseCode()
-{
-	if (!usersconn) return;
-
-	conn = usersconn;
-	FunctionResult result = DBCloseCode(NULL);
-	InitUserFiles(); // default back to normal filesystem
-	usersconn = NULL;
-	FreeBuffer();
-	pgfilesbuffer = 0;
-}
-
-FILE* pguserCreate(const char* name)
-{
-	ExtractUser((char*)name);
-	return (FILE*)userFilename;
-}
-
-FILE* pguserOpen(const char* name)
-{
-	ExtractUser((char*)name);
-	return (FILE*)userFilename;
-}
-
-int pguserClose(FILE*)
-{
-	return 0;
-}
-
-size_t pguserRead(void* buffer,size_t size, size_t count, FILE* file)
-{
-	size *= count;
-	memcpy(buffer,pgfilesbuffer,size);
-	return size;
-}
-
-static void convert2Hex(unsigned char* ptr, size_t len, unsigned char* buffer, unsigned int & before, unsigned int& after)
-{
-	unsigned char* start = buffer;
-	sprintf((char*)buffer,(char*)"INSERT into userfiles VALUES ('%s', ",userFilename); // learn the space needed
-	buffer += strlen((char*) buffer);
-	before = buffer - start;
-	strcpy((char*)buffer,(char*)"E'\\\\x");
-	buffer += strlen((char*) buffer);
-	while (len--)
-	{
-		unsigned char first = (*ptr) >> 4;
-		unsigned char second = *ptr++ & 0x0f;
-		*buffer++ = hexbytes[first];
-		*buffer++ = hexbytes[second];
-	}
-	*buffer++ = '\'';
-	*buffer++ = ' ';
-	*buffer = 0;
-	after = buffer - start;
-	strcpy((char*)pgfilesbuffer + after, ");");
- }
-
-size_t pguserWrite(const void* buffer,size_t size, size_t count, FILE* file)
-{
-	unsigned int before, after;
-	convert2Hex((unsigned char*)buffer, size * count,(unsigned char*) pgfilesbuffer,before,after); // does an update
-	PGresult   *res = PQexec(usersconn, pgfilesbuffer);  // do insert first (which may fail or succeed)-- want upsert pending postgres 9.5
-	int status = (int) PQresultStatus(res);
-	char* msg = PQerrorMessage(usersconn);
-	PQclear(res);
-	if (status == PGRES_FATAL_ERROR) // we already have a record
-	{
-		memset(pgfilesbuffer,' ',before); // clear out old command
-		char* val = "UPDATE userfiles SET mydata = ";
-		int len = strlen(val);
-		strncpy(pgfilesbuffer,val,len);
-		sprintf((char*) pgfilesbuffer + after,(char*)"WHERE username = '%s';",userFilename);
-		res = PQexec(usersconn,pgfilesbuffer);  
-		status = (int) PQresultStatus(res);
-		msg = PQerrorMessage(usersconn);
- 		PQclear(res);
-	}
-	//PGresult   *res = PQexec(usersconn, pgfilesbuffer);
-    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR) myexit((char*)"failed to write user to postgres");
-	return size * count;
-}
-
-void pguserBug(const void* buffer,size_t size)
-{
-	AdjustQuotes((char*)buffer,true);
-	sprintf((char*)pgfilesbuffer,(char*)"INSERT into userbugs VALUES ('%s');",buffer);
-	PGresult   *res = PQexec(usersconn, pgfilesbuffer );  
-	int status = (int) PQresultStatus(res);
-	char* msg = PQerrorMessage(usersconn);
- 	PQclear(res);
- 	
-	//PGresult   *res = PQexec(usersconn, pgfilesbuffer);
-    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR) myexit((char*)"failed to write user bug to postgres");
-}
-
-void pguserLog(const void* buffer,size_t size)
-{
-	if (!pgfilesbuffer) 
-	{
-		return; // cannot log here
-	}
-	AdjustQuotes((char*)buffer,true);
-	sprintf((char*)pgfilesbuffer,(char*)"INSERT into userlogs VALUES ('%s','%s');",userFilename,buffer);
-	PGresult   *res = PQexec(usersconn, pgfilesbuffer );  
-	int status = (int) PQresultStatus(res);
-	char* msg = PQerrorMessage(usersconn);
- 	PQclear(res);
- 	
-	//PGresult   *res = PQexec(usersconn, pgfilesbuffer);
-    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
-    {
-		ReportBug((char*)"Failed to write %s to postgres user log entry- %s",userFilename,buffer);
-		myexit((char*)"failed to write user log to postgres");
-	}
-}
-
-int pguserSize(FILE* file,char* buffer, size_t allowedSize)
-{
-	char query[MAX_WORD_SIZE];
-	sprintf(query, "SELECT mydata FROM userfiles WHERE  username = '%s'",userFilename);
-	PGresult   *res = PQexec(usersconn, query);
-	int status = (int) PQresultStatus(res);
-	if (status != PGRES_TUPLES_OK)    
-	{
-		char*  msg = PQerrorMessage(usersconn);
-		PQclear(res);
-		return (size_t)-1;
-	}
-	unsigned int limit = (unsigned int) PQntuples(res);
-	int len = -1; // nothing there
-	if (limit != 0)
-	{
-		char* val = PQgetvalue(res, 0,0);
-		len = (int) convertFromHex((unsigned char*)pgfilesbuffer,(unsigned char*) val);
-	}
-
-	PQclear(res);
-	return len;
-}
-
-void PGUserFilesCode()
-{
-#ifdef WIN32
-	if (InitWinsock() == FAILRULE_BIT)
-	{
-		ReportBug((char*)"WSAStartup failed\r\n");
-		myexit((char*)"WSAStartup failed\r\n");
-	}
-#endif
-    /* Make a connection to the database */
-	char query[MAX_WORD_SIZE];
-	sprintf(query,(char*)"%s dbname = users ",pguserdb); 
-    usersconn = PQconnectdb(query);
-    if (PQstatus(usersconn) != CONNECTION_OK) // users not there yet...
-    {
-		sprintf(query,(char*)"%s dbname = postgres ",pguserdb);
-		usersconn = PQconnectdb(query);
-		ConnStatusType statusType = PQstatus(usersconn);
-		if (statusType != CONNECTION_OK) // cant reach postgres
-		{
-			DBCloseCode(NULL);
-			ReportBug((char*)"Failed to open postgres db %s and root db postgres",pguserdb);
-			myexit((char*)"Failed to open pg user db");
-		}
-  
-		PGresult   *res  = PQexec(usersconn, "CREATE DATABASE users;");
-		int status = (int) PQresultStatus(res);
-		char* msg;
-		if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR) msg = PQerrorMessage(usersconn);
-		if (PQstatus(usersconn) != CONNECTION_OK) // cant reach postgres
-		{
-			DBCloseCode(NULL);
-			ReportBug((char*)"Failed to open users db %s",pguserdb);
-			myexit((char*)"Failed to create users db");
-		}
-		
-		sprintf(query,(char*)"%s dbname = users ",pguserdb);
-		usersconn = PQconnectdb(query);
-		if (PQstatus(usersconn) != CONNECTION_OK) // users not there yet...
-		{
-			DBCloseCode(NULL);
-			ReportBug((char*)"Failed to open users db %s",pguserdb);
-			myexit((char*)"Failed to create users db");
-		}
-	}
-	
-	// these are dynamically stored, so CS can be a DLL.
-	pgfilesbuffer = AllocateBuffer();  // stays globally locked down
-	userFileSystem.userCreate = pguserCreate;
-	userFileSystem.userOpen = pguserOpen;
-	userFileSystem.userClose = pguserClose;
-	userFileSystem.userRead = pguserRead;
-	userFileSystem.userWrite = pguserWrite;
-	userFileSystem.userSize = pguserSize;
-	userFileSystem.userDelete = NULL;
-	filesystemOverride = true;
-	
-// user file table
-    PGresult   *res  = PQexec(usersconn, "CREATE TABLE userfiles (username varchar(100) PRIMARY KEY, mydata bytea);");
-	int status = (int) PQresultStatus(res);
-	char* msg;
-	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)  msg = PQerrorMessage(usersconn);
-	// make corresponding user log table
-	
-	PGresult   *res1  = PQexec(usersconn, "CREATE TABLE userlogs (username varchar(100),log text,id SERIAL UNIQUE);");
-	status = (int) PQresultStatus(res1);
-	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)  msg = PQerrorMessage(usersconn);
-	res1  = PQexec(usersconn, "CREATE TABLE userbugs(log text,id SERIAL UNIQUE);");
-	status = (int) PQresultStatus(res1);
-	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)  msg = PQerrorMessage(usersconn);
-	msg = NULL;
-}
-
-static FunctionResult DBExecuteCode(char* buffer)
-{
-	if (!conn) 
-	{
-		if (connDummy) return NOPROBLEM_BIT;
-		if (buffer)
-		{
-			char* msg = "DB not opened\r\n";
-			SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG,msg);
-		}
-		return FAILRULE_BIT;
-	}
-
-	char* arg1 = ARGUMENT(1);
-	PGresult   *res;
-	FunctionResult result = NOPROBLEM_BIT;
-
-	char query[MAX_WORD_SIZE * 2];
-	char fn[MAX_WORD_SIZE];
-	char* ptr = ReadCommandArg(arg1,query,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER, MAX_WORD_SIZE * 2); 
-	if (result != NOPROBLEM_BIT) return result;
-	ReadShortCommandArg(ptr,fn,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); 
-	if (result != NOPROBLEM_BIT) return result;
-
-	// convert \" to " within params
-	char* fix;
-	while ((fix = strchr(query,'\\'))) memmove(fix,fix+1,strlen(fix)); // remove protective backslash
-
-	// fix ' to '' inside a param
-	AdjustQuotes(query,false);
-
-	// adjust function reference name
-	char* function = fn;
-	if (*function == '\'') ++function; // skip over the ' 
-
-	unsigned int argflags = 0;
-	WORDP FN = (*function) ? FindWord(function) : NULL;
-	if (FN) argflags = FN->x.macroFlags;
-
-	if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "DBExecute command %s\r\n", query);
-    res = PQexec(conn, query);
-	int status = (int) PQresultStatus(res);
-    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
-    {
-		char* msg = PQerrorMessage(conn);
-		if (buffer)
-		{
-			SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "DBExecute command failed: %s %s status:%d\r\n", arg1,msg,status);
-		}
-        PQclear(res);
-		return FAILRULE_BIT;
-     }
-	if (*function && status == PGRES_TUPLES_OK) // do something with the answers
-	{
-		char psBuffer[MAX_ARG_BYTES];
-		psBuffer[0] = '(';
-		psBuffer[1] = ' ';
-	
-		// process answers
-		unsigned int limit = (unsigned int) PQntuples(res);
-		unsigned int fields = (unsigned int) PQnfields(res);
-
-		for (unsigned int i = 0; i < limit; i++) // for each row
-		{
-			char* at = psBuffer+2;
-			for (unsigned int j = 0; j < fields; j++) 
-			{
-				// char *PQfname(const PGresult *res,int column_number); // get colum name
-				// int PQfnumber(const PGresult *res, const char *column_name);
-				Oid type = PQftype(res, j);
-				bool keepQuotes = (argflags & ( 1 << j)) ? 1 : 0; // want to use quotes 
-
-				*at = 0;
-				char* val = PQgetvalue(res, i, j);
-				size_t len = strlen(val);
-				if (len > (MAX_ARG_BYTES - 100))  // overflow
-				{
-					PQclear(res);
-					return FAILRULE_BIT;
-				}
-				if (keepQuotes)
-				{
-					*at++ = '"';
-					strcpy(at,val);
-					char* x = at;
-					while ((x = strchr(x,'"'))) // protect internal quotes
-					{
-						memmove(x+1,x,strlen(x)+1);
-						*x = '\\';
-						x += 2;
-					}
-					at += strlen(at);
-					*at++ = '"';
-				}
-				else // normal procesing
-				{
-					sprintf(at,(char*)"%s",val);
-					at += strlen(at);
-				}
-				*at++ = ' ';
-
-				if ((at - psBuffer) > (MAX_ARG_BYTES - 100)) 
-				{
-					ReportBug((char*)"postgres answer overflow %s -> %s\r\n",query,psBuffer);
-					break;
-				}
-			}
-			*at = 0;
-			strcpy(at,(char*)")"); //  ending paren
-			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "DBExecute results %s\r\n", psBuffer);
-	
- 			if (stricmp(function,(char*)"null")) DoFunction(function,psBuffer,buffer,result); 
-			buffer += strlen(buffer);
-			if (result != 0) 
-			{
-				if (result == UNDEFINED_FUNCTION) result = FAILRULE_BIT;
-				char msg[MAX_WORD_SIZE];
-				sprintf(msg,(char*)"Failed %s%s\r\n",function,psBuffer);
-				SetUserVariable((char*)"$$db_error",msg);	// pass along the error
- 				if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG,msg);
-				break; // failed somehow
-			}
-		}
-	}
-
-	PQclear(res);
-	return result;
-} 
-
-#endif
-	
 //////////////////////////////////////////////////////////
 /// WORD MANIPULATION
 //////////////////////////////////////////////////////////
@@ -4585,6 +4120,19 @@ static FunctionResult PropertiesCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+static FunctionResult LayerCode(char* buffer)
+{
+	char* arg1 = ARGUMENT(1);
+	WORDP D = FindWord(arg1);
+	if (!D) return FAILRULE_BIT;
+	if (D->internalBits & BUILD0) strcpy(buffer,"0");
+	else if (D->internalBits & BUILD1) strcpy(buffer,"1");
+	else if (D->internalBits & BUILD2) strcpy(buffer,"2");
+	else if (IS_NEW_WORD(D)) strcpy(buffer,"user");
+	else strcpy(buffer,"wordnet");
+	return NOPROBLEM_BIT;
+}
+
 static char* NextWord(char* ptr, WORDP& D,bool canon)
 {
 	char word[MAX_WORD_SIZE];
@@ -4747,7 +4295,7 @@ static FunctionResult PhraseCode(char* buffer)
 		ReadArgument(posn,word);
 		n = atoi(word);
 	}
-	else if (*posn == '$') n = atoi(GetUserVariable(posn));
+	else if (*posn == USERVAR_PREFIX) n = atoi(GetUserVariable(posn));
 	else return FAILRULE_BIT;
 	int i = n;
 	if (!stricmp(type,(char*)"noun")) // noun phrase
@@ -5401,10 +4949,12 @@ static FunctionResult ExtractCode(char* buffer)
 	char* target = ARGUMENT(1);
 	if (!*target) return FAILRULE_BIT;
 	size_t len = strlen(target);
-	if (!IsDigit(*ARGUMENT(2))) return FAILRULE_BIT;
-	if (!IsDigit(*ARGUMENT(3))) return FAILRULE_BIT;
-	unsigned int start = atoi(ARGUMENT(2));
-	unsigned int end = atoi(ARGUMENT(3));
+	char* arg2 = ARGUMENT(2);
+	char* arg3 = ARGUMENT(3);
+	if (!IsDigit(*arg2)) return FAILRULE_BIT;
+	if (!IsDigit(*arg3)) return FAILRULE_BIT;
+	unsigned int start = atoi(arg2);
+	unsigned int end = atoi(arg3);
 	if (start >= len) return FAILRULE_BIT;
 	if (end > ( len +1)) end = len + 1;
 	if (end < start) return FAILRULE_BIT; 
@@ -5663,7 +5213,7 @@ static char* xbuffer;
 
 static void DWalker(WORDP D,uint64 fn)
 {
-	if (*D->word == '$' || *D->word == ':' || *D->word == '^' || *D->word == '~' || *D->word == '%' || *D->word == ENDUNIT || *D->word == '"') return; // not real stuff
+	if (*D->word == USERVAR_PREFIX || *D->word == ':' || *D->word == '^' || *D->word == '~' || *D->word == SYSVAR_PREFIX || *D->word == ENDUNIT || *D->word == '"') return; // not real stuff
 	if (D->internalBits & HAS_SUBSTITUTE) return;
 	if (D->properties & (PUNCTUATION |COMMA|PAREN|QUOTE )) return; // " will cause a crash
 	if (strchr(D->word,' ')) return;
@@ -6254,7 +5804,7 @@ static FunctionResult FLRCodeR(char* buffer)
 	arg = word;
 	strcpy(ARGUMENT(1),arg); // put it back in case it changed
 
-	if (*arg == '$') arg = GetUserVariable(arg);
+	if (*arg == USERVAR_PREFIX) arg = GetUserVariable(arg);
 	else if (*arg == '_') arg =  GetwildcardText(GetWildcardID(arg), true);
 
 	if (*arg == '@') return FLR(buffer,(char*)"r");
@@ -6272,7 +5822,7 @@ static FunctionResult NthCode(char* buffer)
 	ReadCommandArg(arg,arg2,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT); 
 	if (result != NOPROBLEM_BIT) return result;
 
-	if (*arg1 == '$') strcpy(arg1,GetUserVariable(arg1));
+	if (*arg1 == USERVAR_PREFIX) strcpy(arg1,GetUserVariable(arg1));
 	else if (*arg1 == '_') strcpy(arg1, GetwildcardText(GetWildcardID(arg1), true));
 	
 	if (*arg1 == '~') // nth member of set, counting from 0
@@ -6347,66 +5897,69 @@ static FunctionResult ResetCode(char* buffer)
 /// EXTERNAL ACCESS
 //////////////////////////////////////////////////////////
 
-static FunctionResult ExportFactCode(char* buffer)
+static FunctionResult ExportCode(char* buffer)
 {
 	char* set = ARGUMENT(2);
-	if (*set != '@') return FAILRULE_BIT;
-	// optional 3rd argument is append or overwrite
-	char* append = ARGUMENT(3);
-	return (ExportFacts(ARGUMENT(1),GetSetID(set),append)) ? NOPROBLEM_BIT : FAILRULE_BIT;
+	char* append = ARGUMENT(3); // optional 3rd argument is append or overwrite
+	if (*set == '@') return (ExportFacts(ARGUMENT(1),GetSetID(set),append)) ? NOPROBLEM_BIT : FAILRULE_BIT;
+	else if (!strnicmp(set,"ja-",3) || !strnicmp(set,"jo-",3) || !*set) return ExportJson(ARGUMENT(1),set,append);
+	else return FAILRULE_BIT;
 }
 
-static FunctionResult ImportFactCode(char* buffer)
+static FunctionResult ImportCode(char* buffer)
 {
-	return (ImportFacts(ARGUMENT(1),ARGUMENT(2),ARGUMENT(3),ARGUMENT(4))) ? NOPROBLEM_BIT : FAILRULE_BIT;
+	return (ImportFacts(buffer,ARGUMENT(1),ARGUMENT(2),ARGUMENT(3),ARGUMENT(4))) ? NOPROBLEM_BIT : FAILRULE_BIT;
 }
 
 static FunctionResult GetRemoteFileCode(char* buffer)
 {
-	if (userFileSystem.userCreate == FopenBinaryWrite) return FAILRULE_BIT; // not being redirected
+    FunctionResult result = FAILRULE_BIT;
 	char name[MAX_WORD_SIZE];
 	strcpy(name,ARGUMENT(1));
 	char* arg2 = ARGUMENT(2);	// optional specifier - mongo x y z
-	FILE* in; 
-	if (!stricmp(arg2,"mongo"))
+#ifndef DISCARDMONGO
+	if (!stricmp(arg2,"mongo")) // transfer mongo to local
 	{
-#ifdef KOREX
-		strcpy(ARGUMENT(1),ARGUMENT(3));
-		strcpy(ARGUMENT(2),ARGUMENT(4));
-		strcpy(ARGUMENT(3),ARGUMENT(5));
-		FunctionResult result = MongoInit(buffer);
-		if (result != NOPROBLEM_BIT) return result;
+		// get the mongo data.
+		if (filesystemOverride != MONGOFILES) 
+		{
+			strcpy(ARGUMENT(1),ARGUMENT(3)); // set up server init arguments 
+			strcpy(ARGUMENT(2),ARGUMENT(4));
+			strcpy(ARGUMENT(3),ARGUMENT(5));
+			result = MongoInit(NULL); // init filesys collection
+			if (result != NOPROBLEM_BIT) return result;
+		} // Otherwise we are using mongo filesystem values
+		char* buffer = GetFreeCache();
 		
-		mongoFindDocument(NULL);
-		MongoClose(buffer);
-		return result;
-#endif
-	}
-	else in = userFileSystem.userOpen(name); 
-	if (!in) return FAILRULE_BIT;
-	int actualSize = (int) userFileSystem.userSize(in,buffer,userCacheSize);
-	*buffer = 0;
-	size_t readit;
-	if (actualSize >= 0) 
-	{
-		buffer = (char*)malloc(actualSize + 1000);
-		if (buffer == 0) return FAILRULE_BIT;
-		*buffer = 0;
-		readit = userFileSystem.userRead(buffer,1,actualSize,in);	// read it all in, including BOM
-		buffer[readit] = 0;
-		if ((int)readit != actualSize) *buffer = 0; // read failure
-	}
-	userFileSystem.userClose(in);
-	if  (!*buffer) return FAILRULE_BIT;
+		char* dot = strchr(name,'.');
+		if (dot) *dot = 0;	 // terminate any suffix, not legal in mongo key
+		result = mongoGetDocument(name,buffer,(userCacheSize - MAX_USERNAME),false);
+		if (dot) *dot = '.';	 
+		
+		if (result != NOPROBLEM_BIT)
+		{
+			FreeUserCache(); // WE CAN still use the data buffer
+			return result;
+		}
+		if (filesystemOverride != MONGOFILES) MongoClose(NULL); // close filesys collection
 
-	// now write to local file
-	sprintf(name,"USERS/%s.txt",ARGUMENT(1));
-	FILE* out = FopenBinaryWrite(name);
-	if (!out) return FAILRULE_BIT;
-	fwrite(buffer,1,readit,out);
-	fclose(out);
-	free(buffer);
-	return NOPROBLEM_BIT;
+		// write to local filesystem
+		FILE* out = FopenBinaryWrite(name);
+		if (out)
+		{
+			fprintf(out,"%s",ARGUMENT(1));	 // write out the user header (calling mongo removed .xxx)
+			char one[3];
+			*one = 0;
+			fwrite(one,1,1,out); // write out the string end.
+			fwrite(buffer,1,strlen(buffer),out); // write out the actual data.
+			fclose(out);
+		}
+		FreeUserCache(); 
+		return (out) ? NOPROBLEM_BIT : FAILRULE_BIT;
+	}
+	else 
+#endif
+    return result;
 }
 
 static FunctionResult PopenCode(char* buffer)
@@ -7025,14 +6578,14 @@ static FunctionResult ConceptListCode(char* buffer)
 	char filter[MAX_WORD_SIZE];
 	FunctionResult result;
 	ReadCommandArg(arg,filter,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT); // possible filter
-	if (*word == '_' || *word == '$' || IsDigit(*word) || !*word) {;} // normal expected
+	if (*word == '_' || *word == USERVAR_PREFIX || IsDigit(*word) || !*word) {;} // normal expected
 
 	int start = 1;
 	int end = 1;
 	if (*word == '\'') memmove(word,word+1,strlen(word));
 	
 	if (*word == '_') start = end = WildPosition(word);  //  wildcard position designator
-	else if (*word == '$') start = end = atoi(GetUserVariable(word));  //  user var
+	else if (*word == USERVAR_PREFIX) start = end = atoi(GetUserVariable(word));  //  user var
 	else if (IsDigit(*word)) start = end = atoi(word);
 	else if (!*word) end = wordCount; // overall
 	else return FAILRULE_BIT;
@@ -7923,7 +7476,7 @@ int factsPreBuildFromJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken
 		strncpy(str,jsontext + curr.start,size);
 		str[size] = 0;
 		*flags = JSON_PRIMITIVE_VALUE; // json primitive type
-		if (*str == '$' || *str == '%' || *str == '_' || *str == '\'') // variable values from CS
+		if (*str == USERVAR_PREFIX || *str == SYSVAR_PREFIX || *str == '_' || *str == '\'') // variable values from CS
 		{
 			// get path to safety if any
 			char mainpath[MAX_WORD_SIZE];
@@ -8454,17 +8007,30 @@ static FunctionResult JSONOpenCode(char* buffer)
 	curl_easy_cleanup(curl);
 	if (trace & TRACE_JSON && res != CURLE_OK)  
 	{
-		if (res == CURLE_URL_MALFORMAT) { ReportBug((char*)"\r\nJson url malformed "); }
+		char word[MAX_WORD_SIZE * 10];
+		char* at = word;
+		sprintf(at,"Json method/url: %s %s -- ",raw_kind, url);
+		at += strlen(at);
+		if (bIsExtraHeaders) 
+		{
+			sprintf(at,"Json header: %s -- ", extraRequestHeadersRaw);
+			at += strlen(at);
+			if (kind == 'P' || kind == 'U')  sprintf(at,"Json  data: %s\r\n ",arg);
+		}
+
+		if (res == CURLE_URL_MALFORMAT) { ReportBug((char*)"\r\nJson url malformed %s",word); }
+		else if (res == CURLE_GOT_NOTHING) { ReportBug((char*)"\r\nCurl got nothing %s",word); }
+		else if (res == CURLE_UNSUPPORTED_PROTOCOL) { ReportBug((char*)"\r\nCurl unsupported protocol %s",word); }
 		else if (res == CURLE_COULDNT_CONNECT || res == CURLE_COULDNT_RESOLVE_HOST || res ==  CURLE_COULDNT_RESOLVE_PROXY) Log(STDUSERLOG,(char*)"\r\nJson connect failed ");
 		else
 		{ 
 			if (output.buffer && output.size)  
 			{
-				ReportBug((char*)"\r\nOther curl return code %d - %s",(int)res,output.buffer);
+				ReportBug((char*)"\r\nOther curl return code %d %s  - %s ",(int)res,word,output.buffer);
 			}
 			else 
 			{
-				ReportBug((char*)"\r\nOther curl return code %d",(int)res); 
+				ReportBug((char*)"\r\nOther curl return code %d %s",(int)res,word); 
 			}
 		}
 	}
@@ -8605,7 +8171,7 @@ static char* jwritehierarchy(int depth, char* buffer, WORDP D, int subject, int 
 	unsigned int indexsize = 0;
 	bool invert = false;
 	if (F && F->flags & JSON_ARRAY_FACT) indexsize = orderJsonArrayMembers(D, stack); // tests for illegal delete
-	else 
+	else // json object
 	{
 		invert = true; 
 		while (F) // stack object key data
@@ -8726,11 +8292,11 @@ static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bo
 			while (*next && *next != '[' && *next != ']' && *next != '.') ++next; // find token break
 			char c = *next;
 			*next = 0;
-			if (*path == '[' && !IsDigit(path[1]) && path[1] != '$') return FAILRULE_BIT;
+			if (*path == '[' && !IsDigit(path[1]) && path[1] != USERVAR_PREFIX) return FAILRULE_BIT;
 			F = GetSubjectNondeadHead(D);
 			char what[MAX_WORD_SIZE];
 			strcpy(what,path+1);
-			if (*what == '$') strcpy(what,GetUserVariable(what));
+			if (*what == USERVAR_PREFIX) strcpy(what,GetUserVariable(what));
 			M = MakeMeaning(FindWord(what)); // is CASE sensitive
 			if (!M) return FAILRULE_BIT; // cant be in a fact if it cant be found
 			while (F)
@@ -9152,7 +8718,22 @@ static FunctionResult JSONFormatCode(char* buffer)
 			char* start = arg + 1;
 			while (*++arg)
 			{
-				if (*arg == '"' && *(arg-1) != '\\') break;
+				if (*arg == '"') break;
+				if (*arg == '\\') {
+					if (!*(arg+1)) return FAILRULE_BIT;  // nothing left to escape
+					arg++;
+					if (*arg == '\"' || *arg == '/' || *arg == '\\' || *arg == 'b' || *arg == 'f' || *arg == 'r' || *arg == 'n' || *arg == 't') ;
+					else if (*arg == 'u') {
+						arg++;
+						// must have 4 hex digits
+						for (int i = 0; i < 4 && *arg; i++) {
+							char c = GetLowercaseData(*arg++);
+							if (!IsAlphaUTF8OrDigit(c) || c > 'f') return FAILRULE_BIT;  // not a hex character
+						}
+						arg--;
+					}
+					else return FAILRULE_BIT;  // not a valid escaped character
+				}
 			}
 			if (!*arg) return FAILRULE_BIT;
 			*arg = 0; // remove closing quote
@@ -9570,11 +9151,21 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^savesentence",SaveSentenceCode,1,0,(char*)"memorize current sentence analysis given label"}, 
 	{ (char*)"^restoresentence",RestoreSentenceCode,1,0,(char*)"recover prior saved sentence analysis given label"}, 
 
+	{ (char*)"\r\n---- External Databases",0,0,0,(char*)""},
 #ifndef DISCARDPOSTGRES
 	{ (char*)"\r\n---- Database",0,0,0,(char*)""},
 	{ (char*)"^dbinit",DBInitCode,STREAM_ARG,0,(char*)"access a postgres database"}, 
 	{ (char*)"^dbclose",DBCloseCode,0,0,(char*)"close current postgres database"}, 
 	{ (char*)"^dbexecute",DBExecuteCode,STREAM_ARG,0,(char*)"perform postgres transactions"}, 
+#endif
+	
+#ifndef DISCARDMONGO
+	{ (char*)"\r\n---- Mongo Database",0,0,0,(char*)""},
+	{ (char*)"^mongoinit",MongoInit,3,0,(char*)"establish connection to mongo database"}, 
+	{ (char*)"^mongoclose",MongoClose,0,0,(char*)"destroy connection to mongo database"}, 
+	{ (char*)"^mongoinsertdocument",mongoInsertDocument,2,0,(char*)"mongo upsert document"},
+	{ (char*)"^mongodeletedocument",mongoDeleteDocument,1,0,(char*)"mongo delete document"},
+	{ (char*)"^mongofinddocument",mongoFindDocument,1,0,(char*)"mongo find document"},
 #endif
 
 	{ (char*)"\r\n---- Word Manipulation",0,0,0,(char*)""},
@@ -9588,6 +9179,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^hasanyproperty",HasAnyPropertyCode,VARIABLE_ARG_COUNT,0,(char*)"argument 1 has any of property or systemflags of argument2 .. argumentn"}, 
     { (char*)"^hasallproperty",HasAllPropertyCode,VARIABLE_ARG_COUNT,0,(char*)"argument 1 has all of the properties or systemflags of argument2 .. argumentn"}, 
 	{ (char*)"^uppercase",UppercaseCode,1,0,(char*)"boolean return 1 if word was entered uppercase, 0 if not"}, 
+	{ (char*)"^layer",LayerCode,1,0,(char*)"get layer of where word showed up"}, 
 	{ (char*)"^properties",PropertiesCode,1,0,(char*)"get property values of word"}, 
 	{ (char*)"^intersectwords",IntersectWordsCode,VARIABLE_ARG_COUNT,0,(char*)"see if words in arg 1 are in arg2"},
 	{ (char*)"^join",JoinCode,STREAM_ARG,0,(char*)"merge words into one"}, 
@@ -9640,8 +9232,8 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^writefact",WriteFactCode,1,0,(char*)"take fact index and print out the fact suitable to be read again"}, 
 
 	{ (char*)"\r\n---- External Access",0,0,0,(char*)""},
-	{ (char*)"^export",ExportFactCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"write fact set to a file"},
-	{ (char*)"^import",ImportFactCode,4,SAMELINE,(char*)"read fact set from a file"}, 
+	{ (char*)"^export",ExportCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"write fact set to a file"},
+	{ (char*)"^import",ImportCode,4,SAMELINE,(char*)"read fact set from a file"}, 
 	{ (char*)"^system",SystemCode,STREAM_ARG,SAMELINE,(char*)"send command to the operating system"},
 	{ (char*)"^popen",PopenCode,2,SAMELINE,(char*)"send command to the operating system and read reply strings"},
 	{ (char*)"^tcpopen",TCPOpenCode,4,SAMELINE,(char*)"send command to website and read reply strings"},

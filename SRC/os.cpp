@@ -17,7 +17,7 @@ bool oob = false;							// show oob data
 bool silent = false;						// dont display outputs of chat
 bool logged = false;
 bool showmem = false;
-bool filesystemOverride = false;
+int filesystemOverride = NORMALFILES;
 bool inLog = false;
 char* testOutput = NULL;					// testing commands output reroute
 
@@ -210,8 +210,8 @@ void InitUserFiles()
 	userFileSystem.userClose = fclose;
 	userFileSystem.userRead = fread;
 	userFileSystem.userWrite = fwrite;
-	userFileSystem.userSize = FileSize;
 	userFileSystem.userDelete = FileDelete;
+	filesystemOverride = NORMALFILES;
 }
 
 int MakeDirectory(char* directory)
@@ -866,6 +866,9 @@ void ChangeDepth(int value,char* where)
 
 unsigned int Log(unsigned int channel,const char * fmt, ...)
 {
+	int channelID;
+	if (channel == SERVERLOG) channelID = 2;
+	else channelID = 1;
 
 	static unsigned int id = 1000;	if (quitting) return id;
 	logged = true;
@@ -881,7 +884,25 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
 	static char last = 0;
 	static int priordepth = 0;
-    char* at = logmainbuffer;
+	char* logbase = logmainbuffer;
+
+	// for json labelling
+	int jsonlen = 0;
+	char jsonform[MAX_WORD_SIZE];
+#ifndef DISCARDMONGO
+	if (filesystemOverride == MONGOFILES) // hidden json data wrapper
+	{
+		static long iteration = 0; // insures local uniqueness
+		++iteration;
+		sprintf(jsonform,"%d-%s-%s-%ld-%ld",channelID,loginID,SFullTime(NULL),(long)startSystem,iteration); // user, current time, starttime
+		sprintf(logbase,"{\"_id\" : \"%s\", \"time\" : %s,\"user\" : \"%s\", \"volley\" : %d, \"data\" : \"",jsonform,SFullTime(NULL),loginID,volleyCount); 
+		jsonlen = strlen(logbase);
+		logbase += jsonlen;
+	}
+#endif
+
+	// start writing normal data here
+    char* at = logbase;
     *at = 0;
     va_list ap; 
     va_start(ap,fmt);
@@ -1007,29 +1028,29 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
     *at = 0;
     va_end(ap); 
 
-	last = (at > logmainbuffer) ? *(at-1) : 0; //   ends on NL?
+	last = (at > logbase) ? *(at-1) : 0; //   ends on NL?
 	if (fmt && !*fmt) last = 1; // special marker 
 	if (last == '\\') *--at = 0;	//   dont show it (we intend to merge lines)
 	logUpdated = true; // in case someone wants to see if intervening output happened
-	size_t bufLen = at - logmainbuffer;
- 	logmainbuffer[bufLen] = 0;
+	size_t bufLen = at - logbase;
+ 	logbase[bufLen] = 0;
 	inLog = true;
 	bool bugLog = false;
 		
 	if (pendingWarning)
 	{
-		AddWarning(logmainbuffer);
+		AddWarning(logbase);
 		pendingWarning = false;
 	}
-	else if (!strnicmp(logmainbuffer,(char*)"*** Warning",11)) 
+	else if (!strnicmp(logbase,(char*)"*** Warning",11)) 
 		pendingWarning = true;// replicate for easy dump later
 	
 	if (pendingError)
 	{
-		AddError(logmainbuffer);
+		AddError(logbase);
 		pendingError= false;
 	}
-	else if (!strnicmp(logmainbuffer,(char*)"*** Error",9)) 
+	else if (!strnicmp(logbase,(char*)"*** Error",9)) 
 		pendingError = true;// replicate for easy dump later
 
 #ifndef DISCARDSERVER
@@ -1050,8 +1071,8 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (bug) //   write to a bugs file
 		{
 			if (*currentFilename) fprintf(bug,(char*)"   in %s at %d: %s\r\n",currentFilename,currentFileLine,readBuffer);
-			if (channel == BUGLOG && *currentInput) fprintf(bug,(char*)"%s: input:%d %s %s caller:%s callee:%s in sentence: %s at %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logmainbuffer,loginID,computerID,currentInput,located);
-			fwrite(logmainbuffer,1,bufLen,bug);
+			if (channel == BUGLOG && *currentInput) fprintf(bug,(char*)"%s: input:%d %s %s caller:%s callee:%s in sentence: %s at %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,currentInput,located);
+			fwrite(logbase,1,bufLen,bug);
 			fclose(bug);
 
 		}
@@ -1060,12 +1081,12 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (*currentFilename) fprintf(stdout,(char*)"\r\n   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
 			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
-		strcat(logmainbuffer,(char*)"\r\n");	//   end it
+		strcat(logbase,(char*)"\r\n");	//   end it
 		channel = STDUSERLOG;	//   use normal logging as well
 	}
 
 	if (server){} // dont echo  onto server console 
-    else if (((echo||localecho) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) fwrite(logmainbuffer,1,bufLen,stdout);
+    else if (((echo||localecho) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) fwrite(logbase,1,bufLen,stdout);
 	bool doserver = true;
 
     FILE* out = NULL;
@@ -1073,10 +1094,10 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	if (server && trace && !userLog) channel = SERVERLOG;	// force traced server to go to server log since no user log
 
 #ifndef DISCARDPOSTGRES 
-	if (pguserdb)
+	if (postgresparams)
 	{
 		doserver = false;
-		pguserLog(logmainbuffer,bufLen);
+		pguserLog(logbase,bufLen);
 	}
 	else
 #endif
@@ -1092,7 +1113,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (!out && !inLog) ReportBug((char*)"unable to create user logfile %s",logFilename);
 		}
 	}
-    else 
+    else // do server log 
 	{
 		out = FopenUTF8WriteAppend(serverLogfileName); 
  		if (!out) // see if we can create the directory (assuming its missing)
@@ -1108,26 +1129,39 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
     {
 		if (doserver)
 		{
-			fwrite(logmainbuffer,1,bufLen,out);
+			fwrite(logbase,1,bufLen,out);
 			if (!bugLog);
  			else if (*currentFilename) fprintf(out,(char*)"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
 			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
 		fclose(out);
-		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logmainbuffer);
+		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logbase);
     }
 	
 #ifndef DISCARDSERVER
 	if (testOutput && server) // command outputs
 	{
 		size_t len = strlen(testOutput);
-		if ((len + bufLen) < (maxBufferSize - 10)) strcat(testOutput,logmainbuffer);
+		if ((len + bufLen) < (maxBufferSize - 10)) strcat(testOutput,logbase);
 	}
 
 #ifndef EVSERVER
     if (server) ReleaseLogLock();
 #endif
 #endif
+
+#ifndef DISCARDMONGO
+	if (filesystemOverride == MONGOFILES) // filesystem is mongo, copy logs to there (server or user channel)
+	{
+		sprintf(logbase+bufLen," \"} "); // terminate entire json string
+		jsonlen += strlen(logbase+bufLen);
+		FILE* out1 = userFileSystem.userCreate(jsonform);
+		userFileSystem.userWrite(logmainbuffer,1,bufLen+jsonlen,out1);
+		userFileSystem.userClose(out1);
+		logbase[bufLen] = 0;
+	}
+#endif
+
 	inLog = false;
 	return ++id;
 }

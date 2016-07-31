@@ -19550,10 +19550,8 @@
  ammonium ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     ammonium_ion~1n 
  americium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    Am~1nz (^metal~2) a radioactive transuranic metallic element
+    americium~1nz (^metal~2) a radioactive transuranic metallic element
     americium~2az 
- Am ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
-    americium~1n 
  antimony ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     Sb~1nz (^metal~2) a metallic element having four allotropic forms
  argon ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 

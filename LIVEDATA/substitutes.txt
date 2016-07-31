@@ -151,7 +151,6 @@ prof. professor
  <but_why why
  <do_you_know_about_the what+is+the
  <do_you_not do+you
- <how_about I+suggest
  <herself_,_she she
  <herself_she she
  <himself_,_he he

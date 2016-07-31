@@ -472,17 +472,38 @@ void SetTopicData(int topic,char* data)
 	else TI(topic)->topicScript= data; 
 }
 
-char* GetTopicData(int topic)
+static char* GetTopicBlockData(int topic)
 {
 	topicBlock* block = TI(topic);
     if (!topic || !block->topicScript) return NULL;
-    if (topic > numberOfTopics)
-    {
-        ReportBug((char*)"GetTopicData flags id %d out of range",topic)
-        return 0;
-    }
+    if (topic > numberOfTopics) return 0;
     char* data = block->topicScript; //   predefined topic or user private topic
-    return (!data || !*data) ? NULL : (data+JUMP_OFFSET); //   point past accellerator to the t:
+	if (!data || !*data) return NULL;
+	return data;
+}
+
+char* GetTopicData(int topic)
+{
+    char* data = GetTopicBlockData(topic); //   predefined topic or user private topic
+	if (!data || !*data) return NULL;
+	if (data[0] == '(') // has locals
+	{
+		char* at = strchr(data,')');
+		if (!at) return 0;
+		data = at + 2;
+	}
+    return (data+JUMP_OFFSET); //   point past accellerator to the t:
+}
+
+char* GetTopicLocals(int topic)
+{
+    char* data = GetTopicBlockData(topic); //   predefined topic or user private topic
+	if (data && data[0] == '(') // has locals
+	{
+		char* at = strchr(data,')');
+		return (at) ? data : NULL;
+	}
+    return NULL; 
 }
 
 unsigned int FindTopicIDByName(char* name,bool exact)
@@ -1371,6 +1392,11 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	unsigned int oldtrace = EstablishTopicTrace();
 	char value[100];
 	WORDP D = FindWord((char*)"^cs_topic_enter");
+
+	char* display[MAX_DISPLAY];
+	char* locals = GetTopicLocals(currentTopicID);
+	if (locals) InitDisplay(locals, display);
+
 	if (D && !cstopicsystem)  
 	{
 		sprintf(value,(char*)"( %s %c )",topicName,active);
@@ -1402,6 +1428,9 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 		Callback(E,value,false); 
 		cstopicsystem = false;
 	}
+
+	if (locals) RestoreDisplay(locals, display);
+
 	trace = oldtrace;
 	currentTopicID = oldTopic;
 	return (result & (RESTART_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYINPUT_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|FAILINPUT_BIT|FAILRULE_BIT)) ? result : NOPROBLEM_BIT;
@@ -1492,8 +1521,7 @@ char* WriteUserTopics(char* ptr,bool sharefile)
 			ptr = FullEncode(block->topicLastRejoindered,ptr);
 			strcpy(ptr,(char*)"\r\n");
 			ptr += 2;
-			ptr =  OverflowProtect(ptr);
-			if (!ptr) return NULL;
+			if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 		}
     }
 	strcpy(ptr,(char*)"#`end topics\r\n"); 
@@ -1630,6 +1658,7 @@ bool ReadUserTopics()
 void ResetTopicSystem(bool safe)
 {
     ResetTopics();
+	ResetContext();
 	if (!safe) topicIndex = 0;
 	disableIndex = 0;
 	if (!safe) pendingTopicIndex = 0;
@@ -2356,14 +2385,19 @@ void SetContext(bool val)
 unsigned int InContext(int topic, char* label)
 {
 	if (contextResult) return 1; // testing override
-	int i = contextIndex;
-	while (--i != (int)contextIndex)
+	int i = contextIndex; // most recent
+	while (--i != contextIndex) // ring buffer
 	{
-		if (i < 0) i = MAX_RECENT;
+		if (i < 0) i = MAX_RECENT; // loop back
 		if (topicContext[i] == 0) break;	// has no context
 		int delay = volleyCount - inputContext[i];
 		if (delay >= 5) break; //  not close have 5 volleys since 
-		if (topic == topicContext[i] && !stricmp(labelContext[i],label)) return delay;
+		if (delay < 0)
+		{ 
+			int xx = 0;
+		}
+		if (topic == topicContext[i] && !stricmp(labelContext[i],label)) 
+			return delay;
 	}
 	return 0;
 }
@@ -2383,10 +2417,10 @@ char* WriteUserContext(char* ptr,bool sharefile )
 		if ((int)inputContext[i] <= ((int)volleyCount - 5)) break; //  not close 
 		sprintf(ptr,(char*)"%s %d %s ", GetTopicName(topicContext[i]),inputContext[i],labelContext[i]);
 		ptr += strlen(ptr);
+		if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 	}
 	strcpy(ptr,(char*)"\r\n");
-	memset(topicContext,0,sizeof(topicContext));
-	contextIndex = 0;
+	ResetContext();
 	return ptr + strlen(ptr);
 }
 
@@ -2545,12 +2579,18 @@ FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 	return NOPROBLEM_BIT;
 }
 
+void ResetContext()
+{
+	memset(topicContext,0,sizeof(topicContext)); // the history
+	contextIndex = 0;
+}
+
 void LoadTopicSystem() // reload all topic data
 {
 	//   purge any prior topic system - except any patternword marks made on basic dictionary will remain (doesnt matter if we have too many marked)
 	ReturnDictionaryToWordNet(); // return dictionary and string space to pretopic conditions
 	*timeStamp[0] = *timeStamp[1] = *timeStamp[2] =0;
-	memset(topicContext,0,sizeof(topicContext)); // the history
+	ResetContext(); // the history
 	topicStack[0] = 0;
 	currentTopicID = 0;
 	ClearBotVariables();

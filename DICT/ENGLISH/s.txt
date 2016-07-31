@@ -4760,7 +4760,6 @@
     stockpot~1nz (^pot~1) a pot used for preparing soup stock
  Schuller ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Serafim ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Set ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Sippora ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  scentless_false_camomile ( meanings=1 NOUN NOUN_SINGULAR ) 
     scentless_hayweed~1n 

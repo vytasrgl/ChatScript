@@ -49,7 +49,7 @@ void InitSpellCheck()
 	WORDP D = dictionaryBase;
 	while (++D <= dictionaryFree)
 	{
-		if (!D->word || !IsAlphaUTF8(*D->word) || D->length >= 100 || strchr(D->word,'~') || strchr(D->word,'$') || strchr(D->word,'^') || strchr(D->word,' ')  || strchr(D->word,'_')) continue; 
+		if (!D->word || !IsAlphaUTF8(*D->word) || D->length >= 100 || strchr(D->word,'~') || strchr(D->word,USERVAR_PREFIX) || strchr(D->word,'^') || strchr(D->word,' ')  || strchr(D->word,'_')) continue; 
 		if (D->properties & PART_OF_SPEECH || D->systemFlags & PATTERN_WORD)
 		{
 			D->spellNode = lengthLists[D->length];

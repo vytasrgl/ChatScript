@@ -88,10 +88,11 @@ char* GetSetType(char* x);
 int GetSetID(char* x);
 bool GetSetMod(char* x);
 unsigned int AddFact(unsigned int set, FACT* F);
+FunctionResult ExportJson(char* name, char* jsonitem, char* append);
 
 // reading and writing facts to file
 bool ExportFacts(char* name, int set,char* append);
-bool ImportFacts(char* name, char* store, char* erase, char* transient);
+bool ImportFacts(char* buffer,char* name, char* store, char* erase, char* transient);
 
 // debugging
 void TraceFact(FACT* F,bool ignoreDead = true);

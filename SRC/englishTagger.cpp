@@ -913,12 +913,14 @@ void ReadPosPatterns(char* file,uint64 junk)
 			if (!IsDigit(word[0]) && word[0] != '-')
 			{
 				printf((char*)"Missing reverse offset  %s rule: %d comment: %s\r\n",word,tagRuleCount,comment);
+				fclose(in);
 				return;
 			}
 			c = atoi(word);
 			if ( c < -3 || c > 3) // 3 bits
 			{
 				printf((char*)"Bad offset (+-3 max)  %s rule: %d comment: %s\r\n",word,tagRuleCount,comment);
+				fclose(in);
 				return;
 			}
 		}
@@ -929,6 +931,7 @@ void ReadPosPatterns(char* file,uint64 junk)
 			if ( c < -3 || c > 3) // 3 bits
 			{
 				printf((char*)"Bad offset (+-3 max)  %s rule: %d comment: %s\r\n",word,tagRuleCount,comment);
+				fclose(in);
 				return;
 			}
 		}
@@ -991,6 +994,7 @@ resume:
 				{
 					if (!reverse) printf((char*)"Cannot do SKIP before the primary field -- offsets are unreliable (need to use REVERSE) Rule: %d comment: %s at line %d in %s\r\n",tagRuleCount,comment,currentFileLine,currentFilename);
 					else printf((char*)"Cannot do SKIP before the primary field -- offsets are unreliable Rule: %d comment: %s at line %d in %s\r\n",tagRuleCount,comment,currentFileLine,currentFilename);
+					fclose(in);
 					return;
 				}
 
@@ -1006,11 +1010,13 @@ resume:
 				if (!stricmp(word+1,(char*)"ROLE") || !stricmp(word+1,(char*)"NEED"))
 				{
 					printf((char*)"Cannot do !ROLE or !NEED Rule: %d comment: %s at line %d in %s\r\n",tagRuleCount,comment,currentFileLine,currentFilename);
+					fclose(in);
 					return;
 				}
 				if (!stricmp(word+1,(char*)"STAY"))
 				{
 					printf((char*)"Cannot do !STAY (move ! after STAY)  Rule: %d comment: %s at line %d in %s\r\n",tagRuleCount,comment,currentFileLine,currentFilename);
+					fclose(in);
 					return;
 				}
 				val = FindValueByName(word+1);
@@ -1020,12 +1026,14 @@ resume:
 				if ( val == 0)
 				{
 					printf((char*)"Bad notted control word %s rule: %d comment: %s at line %d in %s\r\n",word,tagRuleCount,comment,currentFileLine,currentFilename);
+					fclose(in);
 					return;
 				}
 
 				if (!stricmp(word+1,(char*)"include") )
 				{
 					printf((char*)"Use !has instead of !include-  %s rule: %d comment: %s at line %d in %s\r\n",word,tagRuleCount,comment,currentFileLine,currentFilename);
+					fclose(in);
 					return;
 				}
 				kind |= NOTCONTROL;
@@ -1042,6 +1050,7 @@ resume:
 				if ( val == 0 || val > LASTCONTROL || val > 63)
 				{
 					printf((char*)"Bad control word %s rule: %d comment: %s at line %d in %s\r\n",word,tagRuleCount,comment,currentFileLine,currentFilename);
+					fclose(in);
 					return;
 				}
 				if (!stricmp(word,(char*)"include")) ++includes;
@@ -1085,11 +1094,13 @@ resume:
 						if (offset != 0)
 						{
 							printf((char*)"INCLUDE * must be centered at 0 rule: %d comment: %s at line %d in %s\r\n",tagRuleCount,comment,currentFileLine,currentFilename);
+							fclose(in);
 							return;
 						}
 						if ( resultIndex != -1)
 						{
 							printf((char*)"Already have pattern result bits %s rule: %d comment: %s at line %d in %s\r\n",word,tagRuleCount,comment,currentFileLine,currentFilename);
+							fclose(in);
 							return;
 						}
 						resultIndex = i-1;
@@ -1121,12 +1132,14 @@ resume:
 							if (!v)
 							{
 								printf((char*)"Bad flag word %s rule: %d %s at line %d in %s\r\n",word,tagRuleCount,comment,currentFileLine,currentFilename);
+								fclose(in);
 								return;
 							}
 						}
 						else if (v & (NOUN|VERB|ADJECTIVE) && baseval != HASALLPROPERTIES && baseval != HASPROPERTY && baseval != ISPROBABLE)
 						{
 							printf((char*)"Bad flag word overlaps BASIC bits %s rule: %d %s at line %d in %s\r\n",word,tagRuleCount,comment,currentFileLine,currentFilename);
+							fclose(in);
 							return;
 						}
 						if (baseval == PRIORPOS || baseval == POSTPOS)
@@ -1152,6 +1165,7 @@ resume:
 			if (includes > 1) 
 			{
 				printf((char*)"INCLUDE should only be on primary field - use HAS Rule: %d %s at line %d in %s\r\n",tagRuleCount,comment,currentFileLine,currentFilename);
+				fclose(in);
 				return;
 			}
 			if (i == 2) flags |= offsetValue;	// 2nd field gets offset shift
@@ -1167,6 +1181,7 @@ resume:
 		else 
 		{
 			printf((char*)"Too many fields before result %s: %d %s\r\n",word,tagRuleCount,comment);
+			fclose(in);
 			return;
 		}
 		if (doReverse) base[2] |=  REVERSE_BIT;
@@ -1181,11 +1196,13 @@ resume:
 		else
 		{
 			printf((char*)"Too many fields before result? %s  rule: %d comment: %s  at line %d in %s\r\n",word,tagRuleCount,comment,currentFileLine,currentFilename);
+			fclose(in);
 			return;
 		}
 		if ( resultIndex == -1)
 		{
 			printf((char*)"Needs * on result bits %s rule: %d comment: %s\r\n",word,tagRuleCount,comment);
+			fclose(in);
 			return;
 		}
 
@@ -1200,6 +1217,7 @@ resume:
 			++tagRuleCount;		// double-size rule
 		}
 	}
+	fclose(in);
 }
 
 static char* OpDecode(uint64 field)
@@ -1987,7 +2005,7 @@ static bool ApplyRulesToWord( int j,bool & changed)
 			if (control && !(control & STAY)) // there is a rule and it is not stay marked
 			{
 				start += direction;
-				while (posValues[start] == IDIOM) start += direction; // move off the idiom
+				while (start > 0 && start <= wordCount && posValues[start] == IDIOM) start += direction; // move off the idiom
 			}
 			if (k == resultOffset) result = 1; // the result include is known to match if we are here
 			else if (control) // if we care

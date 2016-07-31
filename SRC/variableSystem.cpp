@@ -344,13 +344,13 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 	char  minusflag = *op;
 	char* oldValue;
     if (*var == '_') oldValue = GetwildcardText(GetWildcardID(var),true); // onto a wildcard
-	else if (*var == '$') oldValue = GetUserVariable(var); // onto user variable
+	else if (*var == USERVAR_PREFIX) oldValue = GetUserVariable(var); // onto user variable
 	else if (*var == '^') oldValue = callArgumentList[atoi(var+1)+fnVarBase]; // onto function argument
 	else return; // illegal
 
 	// get augment value
 	if (*moreValue == '_') moreValue = GetwildcardText(GetWildcardID(moreValue),true); 
-	else if (*moreValue == '$') moreValue = GetUserVariable(moreValue); 
+	else if (*moreValue == USERVAR_PREFIX) moreValue = GetUserVariable(moreValue); 
 	else if (*moreValue == '^') moreValue = callArgumentList[atoi(moreValue+1)+fnVarBase];
 
 	// perform numeric op
@@ -429,7 +429,7 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 
 	// store result back
 	if (*var == '_')  SetWildCard(result,result,var,0); 
-	else if (*var == '$') SetUserVariable(var,result);
+	else if (*var == USERVAR_PREFIX) SetUserVariable(var,result);
 	else if (*var == '^') strcpy(callArgumentList[atoi(var+1)+fnVarBase],result); 
 }
 
@@ -447,7 +447,7 @@ void NoteBotVariables() // system defined variables
 {
 	for (unsigned int i = 0; i < userVariableIndex; ++i)
 	{
-		if (userVariableList[i]->word[1] != '$') // not a transient var
+		if (userVariableList[i]->word[1] != TRANSIENTVAR_PREFIX && userVariableList[i]->word[1] != LOCALVAR_PREFIX) // not a transient var
 		{
 			botVariableList[botVariableIndex] = userVariableList[i];
 			baseVariableValues[botVariableIndex] = userVariableList[i]->w.userValue;
@@ -709,17 +709,17 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 		}
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 	}
-	else if (*word == '$') 
+	else if (*word == USERVAR_PREFIX) 
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 		SetUserVariable(word,word1);
 	}
-	else if (*word == '\'' && word[1] == '$') 
+	else if (*word == '\'' && word[1] == USERVAR_PREFIX) 
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 		SetUserVariable(word+1,word1); // '$xx = value  -- like passed thru as argument
 	}
-	else if (*word == '%') 
+	else if (*word == SYSVAR_PREFIX) 
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 		SystemVariable(word,word1);

@@ -1,5 +1,7 @@
 #include "common.h"
+
 extern int ignoreRule;
+
 #ifndef DISCARDTESTING
 
 static int lineLimit = 0; // in abstract report lines that are longer than this...
@@ -352,7 +354,7 @@ static void C_Prepare(char* input)
 	input = SkipWhitespace(input);
 	static bool prepass = true;
 	char word[MAX_WORD_SIZE];
-	if (*input == '$') // set token control to this
+	if (*input == USERVAR_PREFIX) // set token control to this
 	{
 		char* ptr = ReadCompiledWord(input,word);
 		char* value = GetUserVariable(word);
@@ -978,7 +980,7 @@ static void DoAssigns(char* ptr)  // find variable assignments
 		char* spot = ptr;
 		char* d = ptr;
 		dollar = NULL;
-		while ( (d = strchr(d,'$'))) // find potential variable, not money
+		while ( (d = strchr(d,USERVAR_PREFIX))) // find potential variable, not money
 		{
 			if (IsDigit(d[1])) ++d;
 			else
@@ -1764,7 +1766,7 @@ static void C_Verify(char* input)
 	err = 0;
 	char* ptr = SkipWhitespace(input);
 	// :verify    or    :verify blocking   or  :verify blocking ~family   or  :verify ~family or :verify sample
-	if (*ptr == '$') // tokenize this way
+	if (*ptr == USERVAR_PREFIX) // tokenize this way
 	{
 		ptr = ReadCompiledWord(ptr,tokens);
 		char* value  = GetUserVariable(tokens);
@@ -5529,7 +5531,7 @@ static void FreeDescriptions(WORDP D, uint64 junk)
 {
 	if (D->internalBits & DEFINES)
 	{
-		if (*D->word == '$'  || *D->word == '~' ) 
+		if (*D->word == USERVAR_PREFIX  || *D->word == '~' ) 
 		{
 			D->internalBits ^= DEFINES;
 			D->inferMark = 0;
@@ -5576,7 +5578,7 @@ static void C_List(char* input)
 	char word[MAX_WORD_SIZE];
 	unsigned int count = 0;
 	MEANING verb = MakeMeaning(StoreWord((char*)":list"));
-	if (all || strchr(input,'$')) // do permanent user variables
+	if (all || strchr(input,USERVAR_PREFIX)) // do permanent user variables
 	{
 		NextInferMark();
 		for (int topicid = 1; topicid <= numberOfTopics; ++topicid) 
@@ -5589,7 +5591,7 @@ static void C_List(char* input)
 				data = strstr(data,(char*)"$");
 				if (!data) continue;
 				data = ReadCompiledWord(data,word);
-				if (!word[1] || (word[1] == '$' || IsDigit(word[1]))) continue; // ignore temp vars, $, and money
+				if (!word[1] || (word[1] == LOCALVAR_PREFIX ||  word[1] == TRANSIENTVAR_PREFIX || IsDigit(word[1]))) continue; // ignore temp vars, $, and money
 				char* at = word;
 				while (*++at && (IsAlphaUTF8(*at) || IsDigit(*at) || *at == '-' || *at == '_'));
 				*at = 0;
@@ -5643,7 +5645,7 @@ static void C_List(char* input)
 
 	LoadDescriptions((char*)"TOPIC/BUILD0/describe0.txt");
 	LoadDescriptions((char*)"TOPIC/BUILD1/describe1.txt");
-	if (all || strchr(input,'$'))
+	if (all || strchr(input,USERVAR_PREFIX))
 	{
 		count = FACTSET_COUNT(0);
 		Log(STDUSERLOG,(char*)"User Variables:\r\n");
@@ -6420,7 +6422,7 @@ static void C_Trace(char* input)
 			}
 			else Log(STDUSERLOG,(char*)"No such function %s\r\n",word);
 		}
-		else if (*word == '$')
+		else if (*word == USERVAR_PREFIX)
 		{
 			WORDP D = StoreWord(word);
 			D->internalBits |= MACRO_TRACE;
@@ -6469,7 +6471,8 @@ static void C_Trace(char* input)
 	}
 	trace = flags;
 	if (trace && full) trace &= -1 ^ TRACE_NOTFULL;
-	if (trace && !full) trace |= TRACE_NOTFULL;
+	else if (trace == TRACE_HIERARCHY) {;}
+	else if (trace && !full) trace |= TRACE_NOTFULL;
 	if (!fromScript)
 	{
 		bool oldecho = echo;
@@ -7000,10 +7003,10 @@ static void DisplayTopic(char* name,int spelling)
 					continue;
 				}
 				break;
-			case '$':
+			case USERVAR_PREFIX:
 				if (IsDigit(word[1])) break; // money $
 				// flow into these other variables
-			case '%': case '_': case '@': // match variable or set variable
+			case SYSVAR_PREFIX: case '_': case '@': // match variable or set variable
 				if (*output == '=' || output[1] == '=') // assignment
 				{
 					output = ReadCompiledWord(output,word); // assign op
@@ -7054,7 +7057,7 @@ static void DisplayTopic(char* name,int spelling)
 				if (*old == ' ') // erase left hand of assignment
 				{
 					outputPtr = old + 1;
-					if (*outputPtr == '$' || *outputPtr == '_' || *outputPtr == '@' || *outputPtr == '%') *outputPtr = 0;
+					if (*outputPtr == USERVAR_PREFIX || *outputPtr == '_' || *outputPtr == '@' || *outputPtr == SYSVAR_PREFIX) *outputPtr = 0;
 				}
 				if (*output != '^') output = ReadCompiledWord(output,word);	// swallow next when not a function call
 				break;
@@ -7112,7 +7115,7 @@ static void DisplayTopic(char* name,int spelling)
 						}
 						if (D && (D->properties & PART_OF_SPEECH || D->internalBits & HAS_SUBSTITUTE)){;} //  we know this word
 						else if (D && D->internalBits & QUERY_KIND) {;} // a query
-						else if (IsUrl(copy,0) || apostrophe || copy[0] == '_' || copy[0] == '$' || copy[0] == '%' || copy[0] == '@' || copy[0] == '"') {;} 
+						else if (IsUrl(copy,0) || apostrophe || copy[0] == '_' || copy[0] == USERVAR_PREFIX || copy[0] == SYSVAR_PREFIX || copy[0] == '@' || copy[0] == '"') {;} 
 						else if (!FindCanonical( copy, 1,true)) wrong = badspell = true;
 					}
 					if (wrong) 

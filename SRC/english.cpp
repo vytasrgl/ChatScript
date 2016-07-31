@@ -297,7 +297,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 			return 0;
 		}
 	}
-	if (*original == '~' || (*original == '$' && !IsDigit(original[1])) || *original == '^' || (*original == '%' && original[1]))
+	if (*original == '~' || (*original == USERVAR_PREFIX && !IsDigit(original[1])) || *original == '^' || (*original == SYSVAR_PREFIX && original[1]))
 	{
 		char copy[MAX_WORD_SIZE];
 		MakeLowerCopy(copy,original);
@@ -1345,7 +1345,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		properties |= ADJECTIVE_PARTICIPLE|ADJECTIVE;
 	}
 	if (properties & VERB_PRESENT_PARTICIPLE) properties |= NOUN_GERUND|NOUN;
-	if (*entry->word == '~' || *entry->word == '^' || *entry->word == '$') canonical = entry;	// not unknown, is self
+	if (*entry->word == '~' || *entry->word == '^' || *entry->word == USERVAR_PREFIX) canonical = entry;	// not unknown, is self
 	cansysflags |= canonical->systemFlags;
 	sysflags |= entry->systemFlags;
 	return properties;

@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.7";
+char* version = "6.7a";
 
 // Technically using atomic is not helpful here. EVServer runs a single thread per core (excluding the event library)
 // and the alternate server code in csocket has a single thread for the engine so it cannot be out of synch with these variables.
@@ -21,6 +21,7 @@ int volleyStartTime = 0;
 int timerCheckInstance = 0;
 char* privateParams = NULL;
 char hostname[100];
+bool nosuchbotrestart = false; // restart if no such bot
 char users[100];
 char logs[100];
 char* derivationSentence[MAX_SENTENCE_LENGTH];
@@ -46,7 +47,7 @@ bool overrideAuthorization = false;
 static char tracedFunctions[MAX_TRACED_FUNCTIONS][100];
 static unsigned int tracedFunctionsIndex = 0;
 
-unsigned int startSystem;						// time chatscript started
+clock_t  startSystem;						// time chatscript started
 unsigned int choiceCount = 0;
 int always = 1;									// just something to stop the complaint about a loop based on a constant
 
@@ -239,7 +240,7 @@ void CreateSystem()
 
 				*eq = 0;
 				ReturnToAfterLayer(1,true);
-				*word = '$';
+				*word = USERVAR_PREFIX;
 				SetUserVariable(word,eq+1);
 				if (server) Log(SERVERLOG,(char*)"botvariable: %s = %s\r\n",word,eq+1);
 				else printf((char*)"botvariable: %s = %s\r\n",word,eq+1);
@@ -364,14 +365,18 @@ void CreateSystem()
 #ifdef DISCARDJSON
 	printf((char*)"%s",(char*)"    JSON access disabled.\r\n");
 #endif
-
+	char route[MAX_WORD_SIZE];
 #ifndef DISCARDPOSTGRES
-	if (server) Log(SERVERLOG,(char*)"    Postgres enabled.\r\n");
-	else printf((char*)"%s",(char*)"    Postgres enabled.\r\n");
+	if (postgresparams) sprintf(route,"    Postgres enabled. FileSystem routed to %s\r\n",postgresparams);
+	else sprintf(route,"    Postgres enabled.\r\n"); 
+	if (server) Log(SERVERLOG,route);
+	else printf(route);
 #endif
-#ifndef DISCARDPOSTGRES
-	if (server) Log(SERVERLOG,(char*)"    Mongo enabled.\r\n");
-	else printf((char*)"%s",(char*)"    Mongo enabled.\r\n");
+#ifndef DISCARDMONGO
+	if (mongodbparams) sprintf(route,"    Mongo enabled. FileSystem routed to %s\r\n",mongodbparams);
+	else sprintf(route,"    Mongo enabled.\r\n"); 
+	if (server) Log(SERVERLOG,route);
+	else printf(route);
 #endif
 	printf((char*)"%s",(char*)"\r\n");
 	loading = false;
@@ -518,12 +523,19 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 			sprintf(systemFolder,(char*)"%s/SYSTEM",argv[i]+9);
 			sprintf(englishFolder,(char*)"%s/ENGLISH",argv[i]+9);
 		}
+		else if (!strnicmp(argv[i],(char*)"nosuchbotrestart=",17) ) 
+		{
+			if (!stricmp(argv[i]+17,"true")) nosuchbotrestart = true;
+			else nosuchbotrestart = false;
+		}
 		else if (!strnicmp(argv[i],(char*)"system=",7) )  strcpy(systemFolder,argv[i]+7);
 		else if (!strnicmp(argv[i],(char*)"english=",8) )  strcpy(englishFolder,argv[i]+8);
 #ifndef DISCARDPOSTGRES
-		else if (!strnicmp(argv[i],(char*)"pguser=",7) )  pguserdb = argv[i]+7;
+		else if (!strnicmp(argv[i],(char*)"pguser=",7) )  postgresparams = argv[i]+7;
 #endif
-
+#ifndef DISCARDMONGO
+		else if (!strnicmp(argv[i],(char*)"mongo=",6) )  mongodbparams = argv[i]+6;
+#endif
 #ifndef DISCARDCLIENT
 		else if (!strnicmp(argv[i],(char*)"client=",7)) // client=1.2.3.4:1024  or  client=localhost:1024
 		{
@@ -662,11 +674,12 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 	InitStandalone();
 #ifndef DISCARDPOSTGRES
-	if (pguserdb) 
-	{
-		PGUserFilesCode();
-	}
+	if (postgresparams)  PGUserFilesCode();
 #endif
+#ifndef DISCARDMONGO
+	if (mongodbparams)  MongoSystemInit(mongodbparams);
+#endif
+	
 #ifdef PRIVATE_CODE
 	PrivateInit(privateParams); 
 #endif
@@ -677,7 +690,7 @@ void PartiallyCloseSystem()
 {
 	WORDP shutdown = FindWord((char*)"^csshutdown");
 	if (shutdown)  Callback(shutdown,(char*)"()",false); 
-#ifdef JAVASCRIPT
+#ifndef DISCARDJAVASCRIPT
 	DeleteTransientJavaScript(); // unload context if there
 	DeletePermanentJavaScript(); // javascript permanent system
 #endif
@@ -687,6 +700,9 @@ void PartiallyCloseSystem()
 	CloseBuffers();		// memory system
 #ifndef DISCARDPOSTGRES
 	PostgresShutDown();
+#endif
+#ifndef DISCARDMONGO
+	MongoSystemRestart();
 #endif
 #ifdef PRIVATE_CODE
 	PrivateRestart();
@@ -703,6 +719,9 @@ void CloseSystem()
 	// user file rerouting stays up on a restart
 #ifndef DISCARDPOSTGRES
 	PGUserFilesCloseCode();
+#endif
+#ifndef DISCARDMONGO
+	MongoSystemShutdown();
 #endif
 #ifdef PRIVATE_CODE
 	PrivateShutdown();
@@ -1357,7 +1376,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 		if (server) strcpy(ourMainOutputBuffer,"$#$No such bot.");
 		ReadComputerID(); // presume default bot log file
 		CopyUserTopicFile("nosuchbot");
-		pendingRestart = true;
+		if (nosuchbotrestart) pendingRestart = true;
 		return 0;	// no such bot
 	}
 
@@ -1425,7 +1444,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	ComputeWhy(after,-1);
 	after += strlen(after) + 1;
 	strcpy(after,activeTopic); // currently the most interesting topic
-#ifdef JAVASCRIPT
+#ifndef DISCARDJAVASCRIPT
 	DeleteTransientJavaScript(); // unload context if there
 #endif
 	return volleyCount;
@@ -2338,6 +2357,6 @@ int main(int argc, char * argv[])
     }
 #endif
 	CloseSystem();
-	myexit((char*)"shutdown complete");
+	// myexit((char*)"shutdown complete");
 }
 #endif

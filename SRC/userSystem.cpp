@@ -31,15 +31,6 @@ char callerIP[ID_SIZE];
 char timeturn15[100];
 char timeturn0[20];
 char timePrior[20];
-char userFilename[500];
-
-void ExtractUser(char* name)
-{
-	char* lastslash = strrchr((char*)name,'/');
-	strcpy(userFilename,(lastslash) ? (lastslash+1) : name);
-	char* lastperiod = strrchr(userFilename,'.');
-	*lastperiod = 0;
-}
 
 void PartialLogin(char* caller,char* ip)
 {
@@ -111,10 +102,10 @@ void ResetUserChat()
 	for (unsigned int i = 0; i <= MAX_FIND_SETS; ++i) SET_FACTSET_COUNT(i,0);
 }
 
-static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
+static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
 {
 	if (!ptr) return NULL;
-
+	
     //   write out fact sets first, before destroying any transient facts
 	sprintf(ptr,(char*)"%x #set flags\r\n",(unsigned int) setControl);
 	ptr += strlen(ptr);
@@ -153,8 +144,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 				if (F > factLocked) F->flags |= MARKED_FACT;	 // since we wrote this out here, DONT write out in general writeouts..
 			}
 			ptr += strlen(ptr);
-			ptr =  OverflowProtect(ptr);
-			if (!ptr) return NULL;
+			if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 		}
 		sprintf(ptr,(char*)"%s",(char*)"#end set\n"); 
 		ptr += strlen(ptr);
@@ -166,6 +156,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 	FACT* F = factFree+1; // point to 1st unused fact
 	while (--F > factLocked && limit) // backwards down to base system facts
 	{
+		WORDP D = Meaning2Word(F->subject);
 		if (shared && !sharefile)  continue;
 		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT|FACTBUILD2))) --limit; // we will write this
 	}
@@ -173,14 +164,14 @@ static char* WriteUserFacts(char* ptr,bool sharefile, int limit)
 	int counter = 0;
  	while (++F <= factFree)  // factfree is a valid fact
 	{
+		WORDP D = Meaning2Word(F->subject);
 		if (shared && !sharefile)  continue;
 		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT|FACTBUILD2))) 
 		{
 			++counter;
 			WriteFact(F,true,ptr,false,true); // facts are escaped safe for JSON
 			ptr += strlen(ptr);
-			ptr =  OverflowProtect(ptr);
-			if (!ptr) return NULL;
+			if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 		}
 	}
 	//ClearUserFacts();
@@ -268,10 +259,9 @@ static char* WriteRecentMessages(char* ptr,bool sharefile)
 		size_t len = strlen(humanSaid[i]);
 		if (len == 0) continue;
 		if (len > 200) humanSaid[i][200] = 0;
-		ptr =  OverflowProtect(ptr);
-		if (!ptr) return NULL;
 		sprintf(ptr,(char*)"%s\r\n",SafeLine(humanSaid[i]));
 		ptr += strlen(ptr);
+		if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 	}
 	strcpy(ptr,(char*)"#`end user\r\n");
 	ptr += strlen(ptr);
@@ -284,10 +274,9 @@ static char* WriteRecentMessages(char* ptr,bool sharefile)
 		size_t len = strlen(chatbotSaid[i]);
 		if (len == 0) continue;
 		if (len > 200) chatbotSaid[i][200] = 0;
-		ptr =  OverflowProtect(ptr);
-		if (!ptr) return NULL;
 		sprintf(ptr,(char*)"%s\r\n",SafeLine(chatbotSaid[i]));
 		ptr += strlen(ptr);
+		if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 	}
 	strcpy(ptr,(char*)"#`end chatbot\r\n");
 	ptr += strlen(ptr);
@@ -382,10 +371,10 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
     {
         WORDP D = userVariableList[--index];
         if (!(D->internalBits & VAR_CHANGED) ) continue; 
-		if (*D->word != '$') ReportBug((char*)"Bad user variable to save %s\r\n",D->word)
+		if (*D->word != USERVAR_PREFIX) ReportBug((char*)"Bad user variable to save %s\r\n",D->word)
 		else if (shared && !sharefile && !strnicmp(D->word,(char*)"$share_",7)) continue;
   		else if (shared && sharefile && strnicmp(D->word,(char*)"$share_",7)) continue;
-		else if (D->word[1] !=  '$' && (D->w.userValue || (D->internalBits & MACRO_TRACE))) // transients not dumped, nor are NULL values
+		else if ( (D->word[1] != LOCALVAR_PREFIX && D->word[1] !=  TRANSIENTVAR_PREFIX) && (D->w.userValue || (D->internalBits & MACRO_TRACE))) // transients not dumped, nor are NULL values
 		{
 			char* val = D->w.userValue;
 			if (!stricmp(D->word,(char*)"$cs_trace")) 
@@ -399,8 +388,7 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
 			ptr += strlen(ptr);
 			if (!compiling)
 			{
-				ptr =  OverflowProtect(ptr);
-				if (!ptr) return NULL;
+				if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 			}
 		}
         D->w.userValue = NULL;
@@ -416,7 +404,7 @@ static bool ReadUserVariables()
 {
 	while (ReadALine(readBuffer, 0)>= 0) //   user variables
 	{
-		if (*readBuffer != '$') break; // end of variables
+		if (*readBuffer != USERVAR_PREFIX) break; // end of variables
         char* ptr = strchr(readBuffer,'=');
         *ptr = 0; // isolate user var name from rest of buffer
 		bool traceit = ptr[1] == '`';
@@ -446,6 +434,11 @@ static bool ReadUserVariables()
 
 static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 {
+	// need to get fact limit variable for WriteUserFacts BEFORE writing user variables, which clears them
+	int count = userFactCount;
+	char* value = GetUserVariable("$cs_userfactlimit");
+	if (value && *value) count = atoi(value);
+
 	// each line MUST end with cr/lf  so it can be made potentially safe for Mongo w/o adjusting size of data (inefficient)
 	char* start = ptr;
 	if (!timeturn15[1] && volleyCount >= 15 && responseIndex) sprintf(timeturn15,(char*)"%lu-%d%s",(unsigned long)curr,responseData[0].topic,responseData[0].id); // delimit time of turn 15 and location...
@@ -453,15 +446,35 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 	ptr += strlen(ptr);
 	*ptr = 0;
 	ptr = WriteUserTopics(ptr,sharefile);
-	
-	int count = userFactCount;
-	char* value = GetUserVariable((char*)"$cs_userfactlimit");
-	if (value && *value) count = atoi(value);
-
+	if (!ptr)
+	{
+		ReportBug("User file topic data too big %s",loginID)
+		return NULL;
+	}
 	ptr = WriteUserVariables(ptr,sharefile,false);  // json safe
+	if (!ptr)
+	{
+		ReportBug("User file variable data too big %s",loginID)
+		return NULL;
+	}
 	ptr = WriteUserFacts(ptr,sharefile,count);  // json safe
-	ptr = WriteUserContext(ptr,sharefile);
+	if (!ptr)
+	{
+		ReportBug("User file fact data too big %s",loginID)
+		return NULL;
+	}
+	ptr = WriteUserContext(ptr,sharefile); 
+	if (!ptr)
+	{
+		ReportBug("User file context data too big %s",loginID)
+		return NULL;
+	}
 	ptr = WriteRecentMessages(ptr,sharefile); // json safe
+	if (!ptr)
+	{
+		ReportBug("User file message data too big %s", loginID)
+		return NULL;
+	}
 	return ptr;
 }
 
@@ -470,17 +483,21 @@ void WriteUserData(time_t curr)
 	if (!numberOfTopics)  return; //   no topics ever loaded or we are not responding
 	if (!userCacheCount) return;	// never save users - no history
 	char name[MAX_WORD_SIZE];
+	char filename[MAX_WORD_SIZE];
+	// NOTE mongo does not allow . in a filename
 	sprintf(name,(char*)"%s/%stopic_%s_%s.txt",users,GetUserPath(loginID),loginID,computerID);
+	strcpy(filename,name);
+	strcat(filename,"\r\n");
 	userDataBase = FindUserCache(name); // have a buffer dedicated to him? (cant be safe with what was read in, because share involves 2 files)
 	if (!userDataBase)
 	{
 		userDataBase = GetCacheBuffer(-1); 
 		if (!userDataBase) return;		// not saving anything
-		strcpy(userDataBase,name);
+		strcpy(userDataBase,filename);
 	}
 
 #ifndef DISCARDTESTING
-	if ((!server || serverRetryOK) && !documentMode && !callback)  
+	if (filesystemOverride == NORMALFILES && (!server || serverRetryOK) && !documentMode && !callback)  
 	{
 		char name[MAX_WORD_SIZE];
 		sprintf(name,(char*)"TMP/backup-%s_%s.bin",loginID,computerID);
@@ -493,20 +510,22 @@ void WriteUserData(time_t curr)
 	}
 #endif
 
-	char* ptr = GatherUserData(userDataBase+strlen(userDataBase)+1,curr,false);
-	Cache(userDataBase,ptr-userDataBase);
-	if (shared)
+	char* ptr = GatherUserData(userDataBase+strlen(filename),curr,false);
+	if (ptr) Cache(userDataBase,ptr-userDataBase);
+	if (ptr && shared)
 	{
 		sprintf(name,(char*)"%s/%stopic_%s_%s.txt",users,GetUserPath(loginID),loginID,(char*)"share");
+		strcpy(filename,name);
+		strcat(filename,"\r\n");
 		userDataBase = FindUserCache(name); // have a buffer dedicated to him? (cant be safe with what was read in, because share involves 2 files)
 		if (!userDataBase)
 		{
 			userDataBase = GetCacheBuffer(-1); // cannot fail if we got to here
-			strcpy(userDataBase,name);
+			strcpy(userDataBase,filename);
 		}
 
 #ifndef DISCARDTESTING
-		if ((!server || serverRetryOK)  && !documentMode  && !callback)  
+		if (filesystemOverride == NORMALFILES &&  (!server || serverRetryOK)  && !documentMode  && !callback)  
 		{
 			char name[MAX_WORD_SIZE];
 			sprintf(name,(char*)"TMP/backup-share-%s_%s.bin",loginID,computerID);
@@ -518,8 +537,8 @@ void WriteUserData(time_t curr)
 			}
 		}
 #endif
-		ptr = GatherUserData(userDataBase+strlen(userDataBase)+1,curr,true);
-		Cache(userDataBase,ptr-userDataBase);
+		ptr = GatherUserData(userDataBase+strlen(filename),curr,true);
+		if (ptr) Cache(userDataBase,ptr-userDataBase);
 	}
 	userVariableIndex = 0; // flush all modified variables
 }
@@ -535,27 +554,22 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 	strcpy(timeturn0,(char*)"0");
 
 	// set bom
-	currentFileLine = 1;
-	BOM = 1; 
-
 	if (buffer && *buffer != 0) // readable data
 	{ 
-		len = strlen(buffer);
-		if (len > 100) // supposed to just be user filename info. compensate
+		currentFileLine = 0;
+		BOM = BOMSET;
+		char* at = strchr(buffer,'\r');
+		if (at) // newer format
 		{
-			char junk[MAX_WORD_SIZE];
-			char* p = ReadCompiledWord(buffer,junk);
-			len = p - buffer - 1; 
-		}
-		userRecordSourceBuffer = buffer + len + 1;
-		ReadALine(readBuffer,0);
-		if (*readBuffer == '"' || *readBuffer == '\\') ReadALine(readBuffer, 0); // SKIP doublequote marker
+			userRecordSourceBuffer = at + 2; // skip \r\n
+			ReadALine(readBuffer,0);
 
-		char* x = ReadCompiledWord(readBuffer,junk);
-		x = ReadCompiledWord(x,timeturn0); // the start stamp id if there
-		x = ReadCompiledWord(x,timePrior); // the prior stamp id if there
-		ReadCompiledWord(x,timeturn15); // the timeturn id if there
-		if (stricmp(junk,saveVersion)) *buffer = 0;// obsolete format
+			char* x = ReadCompiledWord(readBuffer,junk);
+			x = ReadCompiledWord(x,timeturn0); // the start stamp id if there
+			x = ReadCompiledWord(x,timePrior); // the prior stamp id if there
+			ReadCompiledWord(x,timeturn15); // the timeturn id if there
+			if (stricmp(junk,saveVersion)) *buffer = 0;// obsolete format
+		}
 	}
     if (!buffer || !*buffer) 
 	{
@@ -595,7 +609,6 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 		oldRandIndex = randIndex = atoi(GetUserVariable((char*)"$cs_randindex")) + (volleyCount % MAXRAND);	// rand base assigned to user
 	}
 	userRecordSourceBuffer = NULL;
-	OverflowRelease();
 	return true;
 }
 
