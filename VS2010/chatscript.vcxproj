@@ -22,6 +22,7 @@
     <ClInclude Include="..\SRC\evserver.h" />
     <ClInclude Include="..\SRC\factSystem.h" />
     <ClInclude Include="..\SRC\jsmn.h" />
+    <ClInclude Include="..\SRC\mongodb.h" />
     <ClInclude Include="..\SRC\os.h" />
     <ClInclude Include="..\SRC\functionExecute.h" />
     <ClInclude Include="..\SRC\infer.h" />
@@ -29,6 +30,7 @@
     <ClInclude Include="..\SRC\markSystem.h" />
     <ClInclude Include="..\SRC\outputSystem.h" />
     <ClInclude Include="..\SRC\patternSystem.h" />
+    <ClInclude Include="..\SRC\postgres.h" />
     <ClInclude Include="..\SRC\privatesrc.h" />
     <ClInclude Include="..\SRC\scriptCompile.h" />
     <ClInclude Include="..\SRC\spellcheck.h" />
@@ -53,6 +55,7 @@
     <ClCompile Include="..\SRC\factSystem.cpp" />
     <ClCompile Include="..\SRC\javascript.cpp" />
     <ClCompile Include="..\SRC\jsmn.cpp" />
+    <ClCompile Include="..\SRC\mongodb.cpp" />
     <ClCompile Include="..\SRC\os.cpp" />
     <ClCompile Include="..\SRC\functionExecute.cpp" />
     <ClCompile Include="..\SRC\infer.cpp" />
@@ -60,6 +63,7 @@
     <ClCompile Include="..\SRC\markSystem.cpp" />
     <ClCompile Include="..\SRC\outputSystem.cpp" />
     <ClCompile Include="..\SRC\patternSystem.cpp" />
+    <ClCompile Include="..\SRC\postgres.cpp" />
     <ClCompile Include="..\SRC\privatesrc.cpp" />
     <ClCompile Include="..\SRC\scriptCompile.cpp" />
     <ClCompile Include="..\SRC\secure.cpp" />
