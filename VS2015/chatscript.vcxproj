@@ -22,6 +22,7 @@
     <ClInclude Include="..\SRC\evserver.h" />
     <ClInclude Include="..\SRC\factSystem.h" />
     <ClInclude Include="..\SRC\jsmn.h" />
+    <ClInclude Include="..\SRC\json.h" />
     <ClInclude Include="..\SRC\mprintf.h" />
     <ClInclude Include="..\SRC\multi.h" />
     <ClInclude Include="..\SRC\os.h" />
@@ -55,6 +56,7 @@
     <ClCompile Include="..\SRC\factSystem.cpp" />
     <ClCompile Include="..\SRC\javascript.cpp" />
     <ClCompile Include="..\SRC\jsmn.cpp" />
+    <ClCompile Include="..\SRC\json.cpp" />
     <ClCompile Include="..\SRC\os.cpp" />
     <ClCompile Include="..\SRC\functionExecute.cpp" />
     <ClCompile Include="..\SRC\infer.cpp" />

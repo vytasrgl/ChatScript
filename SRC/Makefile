@@ -1,30 +1,16 @@
-debugserver: DEFINES+= -DLOCKUSERFILE=1 -DDISCARDPOSTGRES=1 -DDISCARDMONGO=1  -DDEBUG -DEVSERVER=1 -DEVSERVER_FORK=1 
-debugserver: PGLOAD= -pthread
-debugserver: INCLUDEDIRS=-Ievserver
-debugserver: all
-debugserver: EXECUTABLE=../BINARIES/ChatScriptDebug
-debugserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
-
-debugpgserver: DEFINES+= -DLOCKUSERFILE=1  -DDEBUG -DEVSERVER=1 -DEVSERVER_FORK=1  -DDISCARDMONGO=1  
-debugpgserver: PGLOAD= -lpq -pthread
-debugpgserver: INCLUDEDIRS=-Ievserver
-debugpgserver: all
-debugpgserver: EXECUTABLE=../BINARIES/ChatScriptpgDebug
-debugpgserver: CFLAGS=-c  -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
-
-debugmongoserver: DEFINES+= -DLOCKUSERFILE=1  -DDEBUG -DEVSERVER=1 -DEVSERVER_FORK=1  -DDISCARDPOSTGRES=1  
-debugmongoserver: PGLOAD= -lpq -pthread
-debugmongoserver: INCLUDEDIRS=-Ievserver
-debugmongoserver: all
-debugmongoserver: EXECUTABLE=../BINARIES/ChatScriptpgDebug
-debugmongoserver: CFLAGS=-c  -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
-
 server: DEFINES+= -DLOCKUSERFILE=1  -DEVSERVER=1 -DEVSERVER_FORK=1  -DDISCARDPOSTGRES=1 -DDISCARDMONGO=1  
 server: PGLOAD= -pthread
 server: INCLUDEDIRS=-Ievserver
 server: all
 server: EXECUTABLE=../BINARIES/ChatScript
 server: CFLAGS=-c   -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
+
+debugserver: DEFINES+= -DLOCKUSERFILE=1 -DDISCARDPOSTGRES=1 -DDISCARDMONGO=1  -DDEBUG -DEVSERVER=1 -DEVSERVER_FORK=1 
+debugserver: PGLOAD= -pthread
+debugserver: INCLUDEDIRS=-Ievserver
+debugserver: all
+debugserver: EXECUTABLE=../BINARIES/ChatScriptDebug
+debugserver: CFLAGS=-c -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
 
 standalone: DEFINES+=  -DDISCARDSERVER=1 -DDISCARDPOSTGRES=1 -DDISCARDMONGO=1  -DEVSERVER=1 -DEVSERVER_FORK=1
 standalone: PGLOAD= -pthread
@@ -40,12 +26,26 @@ pgserver: EXECUTABLE=../BINARIES/ChatScriptpg
 pgserver: INCLUDEDIRS=-Ievserver -Ipostgres
 pgserver: CFLAGS=-c  -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
 
-mongoserver: DEFINES+= -DLOCKUSERFILE=1  -DPRIVATECODE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDPOSTGRES=1 
+debugpgserver: DEFINES+= -DLOCKUSERFILE=1  -DDEBUG -DEVSERVER=1 -DEVSERVER_FORK=1  -DDISCARDMONGO=1  
+debugpgserver: PGLOAD= -lpq -pthread
+debugpgserver: INCLUDEDIRS=-Ievserver
+debugpgserver: all
+debugpgserver: EXECUTABLE=../BINARIES/ChatScriptpgDebug
+debugpgserver: CFLAGS=-c  -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
+
+mongoserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARDPOSTGRES=1 
 mongoserver: PGLOAD= -pthread
 mongoserver: all
 mongoserver: EXECUTABLE=../BINARIES/ChatScriptMongo
 mongoserver: INCLUDEDIRS=-Iinclude -I/usr/local/include/libbson-1.0 -I/usr/local/include/libmongoc-1.0
-mongoserver: CFLAGS=-c   -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
+mongoserver: CFLAGS=-c   -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
+
+debugmongoserver: DEFINES+= -DLOCKUSERFILE=1  -DDEBUG -DEVSERVER=1 -DEVSERVER_FORK=1  -DDISCARDPOSTGRES=1  
+debugmongoserver: PGLOAD= -lpq -pthread
+debugmongoserver: all
+debugmongoserver: INCLUDEDIRS=-Iinclude -I/usr/local/include/libbson-1.0 -I/usr/local/include/libmongoc-1.0
+debugmongoserver: EXECUTABLE=../BINARIES/ChatScriptMongoDebug
+debugmongoserver: CFLAGS=-c  -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
 
 UNAME := $(shell uname)
 
@@ -63,7 +63,7 @@ LDFLAGS=-mmacosx-version-min=10.7 $(PGLOAD)
 CFLAGS=-mmacosx-version-min=10.7 -c  -Wall  -funsigned-char -Wno-write-strings -Wno-char-subscripts 
 endif
 
-SOURCES=constructCode.cpp evserver.cpp csocket.cpp cs_ev.c dictionarySystem.cpp englishTagger.cpp factSystem.cpp  functionExecute.cpp english.cpp infer.cpp javascript.cpp jsmn.cpp markSystem.cpp mongodb.cpp os.cpp outputSystem.cpp patternSystem.cpp postgres.cpp privatesrc.cpp scriptCompile.cpp spellcheck.cpp secure.cpp systemVariables.cpp tagger.cpp testing.cpp textUtilities.cpp tokenSystem.cpp topicSystem.cpp userCache.cpp userSystem.cpp variableSystem.cpp mainSystem.cpp 
+SOURCES=constructCode.cpp evserver.cpp csocket.cpp cs_ev.c dictionarySystem.cpp englishTagger.cpp factSystem.cpp json.cpp functionExecute.cpp english.cpp infer.cpp javascript.cpp jsmn.cpp markSystem.cpp mongodb.cpp os.cpp outputSystem.cpp patternSystem.cpp postgres.cpp privatesrc.cpp scriptCompile.cpp spellcheck.cpp secure.cpp systemVariables.cpp tagger.cpp testing.cpp textUtilities.cpp tokenSystem.cpp topicSystem.cpp userCache.cpp userSystem.cpp variableSystem.cpp mainSystem.cpp 
 OBJECTS=$(SOURCES:.cpp=.o)
  
 all: $(SOURCES) binary

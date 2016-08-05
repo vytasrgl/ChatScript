@@ -328,7 +328,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 	}
 	original[len] = c;
 	*output = 0; // when failures, return the null string
-	if (trace & TRACE_OUTPUT) Log(STDUSERLOG,(char*)" %s",start);
+	if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)" %s",start);
 	FreeBuffer();
 }
 
@@ -498,7 +498,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 		// is choice a repeat of something already said... if so try again
 		if (*buffer && HasAlreadySaid(buffer)) 
 		{
-			if (trace) Log(STDUSERLOG,(char*)"Choice %s already said\r\n",buffer);
+			if (trace) Log(STDTRACELOG,(char*)"Choice %s already said\r\n",buffer);
 			*buffer = 0;
 			choiceset[r] = choiceset[--count];
 		}
@@ -636,11 +636,11 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 		}
 		*word = ENDUNIT;	// marker for retry
 	}
+	else if (!strcmp(word,(char*)"^if")) ptr = HandleIf(ptr,buffer,result);  
+	else if (!strcmp(word,(char*)"^loop")) ptr = HandleLoop(ptr,buffer,result); 
 	else if (word[1] == '^') // if and loop
 	{
-		if (!strcmp(word,(char*)"^^if")) ptr = HandleIf(ptr,buffer,result);  
-		else if (!strcmp(word,(char*)"^^loop")) ptr = HandleLoop(ptr,buffer,result); 
-		else if (!once && IsAssignmentOperator(ptr))  
+		if (!once && IsAssignmentOperator(ptr))  
 			ptr = PerformAssignment(word,ptr,result); //   =  or *= kind of construction
 		else if (!word[2]) strcpy(buffer,word); // "^^" exponent operator
 		else result = FAILRULE_BIT;
@@ -741,7 +741,7 @@ static char* Output_AtSign(char* word, char* ptr, bool space,char* buffer, unsig
 		}
 		else if (type == 'a' && impliedWild != ALREADY_HANDLED)
 		{
-			strcpy(ARGUMENT(1), word);
+			ARGUMENT(1) = AllocateInverseString(word);
 			result = FLR(buffer,(char*)"l");
 			return ptr;
 		}
@@ -1125,7 +1125,7 @@ retry:
 			{
 				buffer = start;  // debug stop
 			}
-			if (trace & (TRACE_OUTPUT|TRACE_MATCH) &&  !(controls &OUTPUT_SILENT)  && CheckTopicTrace()) Log(STDUSERLOG,(char*)" =:: %s ",buffer);
+			if (trace & (TRACE_OUTPUT|TRACE_MATCH) &&  !(controls &OUTPUT_SILENT)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" =:: %s ",buffer);
 		}
 		//   update location and check for overflow
 		buffer += strlen(buffer);

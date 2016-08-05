@@ -360,7 +360,8 @@ bool SpellCheckSentence()
 				word[len-1] = 0;
 				uint64 sysflags = 0;
 				uint64 cansysflags = 0;
-				GetPosData(i,word,entry,canonical,sysflags,cansysflags,true,true); // dont create a non-existent word
+				WORDP revise;
+				GetPosData(i,word,revise,entry,canonical,sysflags,cansysflags,true,true); // dont create a non-existent word
 				if (entry && entry->properties & PART_OF_SPEECH)
 				{
 					wordStarts[i] = reuseAllocation(wordStarts[i],entry->word);
@@ -990,7 +991,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 	bool hasUnderscore = (strchr(originalWord,'_')) ? true : false;
 	bool isUpper = IsUpperCase(originalWord[0]);
 	if (IsUpperCase(originalWord[1])) isUpper = false;	// not if all caps
-	if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"Spell: %s\r\n",originalWord);
+	if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"Spell: %s\r\n",originalWord);
 
 	char word[MAX_WORD_SIZE];
 	MakeLowerCopy(word,originalWord);
@@ -1040,7 +1041,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 	{
 		if (language == ENGLISH && i >= 3) break;	// only allow +-2 for spanish
 		MEANING offset = lengthLists[len + range[i]];
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"\r\n  Begin offset %d\r\n",i);
+		if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"\r\n  Begin offset %d\r\n",i);
 		while (offset)
 		{
 			D = Meaning2Word(offset);
@@ -1058,11 +1059,11 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 			{
 				if (val < min)
 				{
-					if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Better: %s against %s value: %d\r\n",D->word,originalWord,val);
+					if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"    Better: %s against %s value: %d\r\n",D->word,originalWord,val);
 					index = 0;
 					min = val;
 				}
-				else if ( val == min && trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Equal: %s against %s value: %d\r\n",D->word,originalWord,val);
+				else if ( val == min && trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"    Equal: %s against %s value: %d\r\n",D->word,originalWord,val);
 
 				if (!(D->internalBits & BEEN_HERE)) 
 				{
@@ -1103,7 +1104,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 	for (unsigned int j = 0; j < index; ++j) RemoveInternalFlag(choices[j],BEEN_HERE);
     if (index == 1) 
 	{
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Single best spell: %s\r\n",choices[0]->word);
+		if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"    Single best spell: %s\r\n",choices[0]->word);
 		return choices[0]->word;	// pick the one
 	}
     for (unsigned int j = 0; j < index; ++j) 
@@ -1120,7 +1121,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
     }
 	if (bestGuessindex) 
 	{
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Pick spell: %s\r\n",bestGuess[0]->word);
+		if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"    Pick spell: %s\r\n",bestGuess[0]->word);
 		return bestGuess[0]->word; 
 	}
 	return NULL;

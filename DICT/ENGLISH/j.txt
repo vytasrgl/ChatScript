@@ -1027,8 +1027,6 @@
  Jolanka ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Jeniffer ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Jore ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- June ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
-    June~1nz (^Gregorian_calendar_month~1) the month following May and preceding July
  jabiru ( meanings=3 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     Jabiru_mycteria~1n 
     Ephippiorhynchus_senegalensis~1n 
@@ -1813,6 +1811,8 @@
     Euderma_maculata~1n 
  June_beetle ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     May_beetle~1nz (^scarabaeid_beetle~1) any of various large usually brown North American leaf-eating beetles common in late spring
+ June ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
+    June~1nz (^Gregorian_calendar_month~1) the month following May and preceding July
  June_bug ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     June_beetle~1n 
  jointworm ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 

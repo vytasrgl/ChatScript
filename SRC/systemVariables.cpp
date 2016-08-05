@@ -57,8 +57,8 @@ void DumpSystemVariables()
 			else if (strstr(sysvars[i].comment,(char*)"Numeric")) result = "0";
 			else result = "null";
 		}
-		if (sysvars[i].address) Log(STDUSERLOG,(char*)"%s = %s - %s\r\n",sysvars[i].name, result,sysvars[i].comment);  // actual variable
-		else Log(STDUSERLOG,(char*)"%s\r\n",sysvars[i].name);  // header
+		if (sysvars[i].address) Log(STDTRACELOG,(char*)"%s = %s - %s\r\n",sysvars[i].name, result,sysvars[i].comment);  // actual variable
+		else Log(STDTRACELOG,(char*)"%s\r\n",sysvars[i].name);  // header
 	}
 }
 
@@ -265,6 +265,17 @@ static char* Stime(char* value)
 	if (*hold != '.') return hold;
     strncpy(systemValue,GetTimeInfo()+11,5);
     systemValue[5] = 0;
+    return systemValue;
+}
+
+static char* Szulutime(char* value)
+{
+	static char hold[50] = ".";
+	if (value) return AssignValue(hold,value);
+	if (*hold != '.') return hold;
+    GetTimeInfo(true,true);
+	sprintf(systemValue,(char*)"%d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d.0Z",ptm->tm_year+1900,ptm->tm_mon+1,ptm->tm_mday,
+		ptm->tm_hour,ptm->tm_min,ptm->tm_sec);
     return systemValue;
 }
 
@@ -901,6 +912,7 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%daylightsavings",Sdaylightsavings,(char*)"Boolean is daylight savings in effect"}, 
 	{ (char*)"%second",Ssecond,(char*)"Numeric 2-digit current second"}, 
 	{ (char*)"%time",Stime,(char*)"Current military time (e.g., 21:07)"}, 
+	{ (char*)"%zulutime",Szulutime,(char*)"Time as: 2016-07-27T11:38:35.253Z"}, 
 	{ (char*)"%timenumbers",Stimenumbers,(char*)"numbers, separated by blanks, of sec,min,hr,dayinweek,dayinmonth,month,year"}, 
 	{ (char*)"%week",SweekOfMonth,(char*)"Numeric week of month (1..5)"}, 
 	{ (char*)"%volleytime",Svolleytime,(char*)"Numeric milliseconds since volley start"}, 

@@ -12,12 +12,17 @@
         #pragma comment(lib, "../SRC/mongo/mongoc-1.0.lib")
         #pragma comment(lib, "../SRC/mongo/bson-1.0.lib")
     #else
-        #include <mongo/MongoDBClient.h>
+        // #include <mongo/MongoDBClient.h>
+		#include "mongo/MongoDBClient.h"
     #endif
 
-#include <bson.h>
-#include <bcon.h>
-#include <mongoc.h>
+// #include <bson.h>
+// #include <bcon.h>
+// #include <mongoc.h>
+
+#include "bson.h"
+#include "bcon.h"
+#include "mongoc.h"
 
 static bool mongoInited = false;		// have we inited mongo overall
 static bool mongoShutdown = false;
@@ -118,7 +123,7 @@ FunctionResult MongoClose(char* buffer)
 		if (mongoShutdown) return FAILRULE_BIT;
 		char* msg = "DB is not open\r\n";
 		SetUserVariable((char*)"$$mongo_error",msg);	// pass message along the error
-		Log(STDUSERLOG,msg);
+		Log(STDTRACELOG,msg);
 		return FAILRULE_BIT;
 	}
 
@@ -150,7 +155,7 @@ FunctionResult MongoInit(char* buffer)
 	{
 		char* msg = "DB is already opened\r\n";
 		SetUserVariable((char*)"$$mongo_error",msg);	// pass message along the error
-		Log(STDUSERLOG,msg);
+		Log(STDTRACELOG,msg);
  		return FAILRULE_BIT;
 	}
 
@@ -160,7 +165,7 @@ FunctionResult MongoInit(char* buffer)
     {	
 		char* msg = "DB opening error \r\n";
 		SetUserVariable((char*)"$$mongo_error",msg);	// pass message along the error
-        Log(STDUSERLOG, "Opening connection failed with error: %d",  eRetVal);
+        Log(STDTRACELOG, "Opening connection failed with error: %d",  eRetVal);
 		if ((buffer && g_pClient) || (!buffer && g_filesysClient)) MongoClose(buffer);
 		return FAILRULE_BIT;
 	}
@@ -180,7 +185,7 @@ FunctionResult mongoGetDocument(char* key,char* buffer,int limit,bool user)
     {
         char* msg = "DB is not open\r\n";
         SetUserVariable((char*)"$$mongo_error",msg);
-        Log(STDUSERLOG,msg);
+        Log(STDTRACELOG,msg);
         return FAILRULE_BIT;
     }
     
@@ -240,7 +245,7 @@ FunctionResult mongoGetDocument(char* key,char* buffer,int limit,bool user)
     {
         char* msg = "Error while looking for document \r\n";
         SetUserVariable((char*)"$$mongo_error",msg);	// pass along the error
-        Log(STDUSERLOG, "Find document failed with error: %d",  eRetVal);
+        Log(STDTRACELOG, "Find document failed with error: %d",  eRetVal);
         result = FAILRULE_BIT;
     }
     else if (mongoKeyValue) 
@@ -276,7 +281,7 @@ FunctionResult mongoDeleteDocument(char* buffer)
     {
         char* msg = "DB is not open\r\n";
         SetUserVariable((char*)"$$mongo_error",msg);	// pass along the error
-        Log(STDUSERLOG,msg);
+        Log(STDTRACELOG,msg);
         return FAILRULE_BIT;
     }
     
@@ -315,7 +320,7 @@ FunctionResult mongoDeleteDocument(char* buffer)
     {
         char* msg = "Error while insert document \r\n";
         SetUserVariable((char*)"$$mongo_error",msg);	// pass along the error
-        Log(STDUSERLOG, "Delete document failed with error: %d",  eRetVal);
+        Log(STDTRACELOG, "Delete document failed with error: %d",  eRetVal);
         return FAILRULE_BIT;
     }
     return NOPROBLEM_BIT;
@@ -333,7 +338,7 @@ static FunctionResult MongoUpsertDoc(bool user,char* keyname, char* value)
     {
         char* msg = "DB is not open\r\n";
         SetUserVariable((char*)"$$mongo_error",msg);    // pass along the error
-        Log(STDUSERLOG,msg);
+        Log(STDTRACELOG,msg);
         return FAILRULE_BIT;
     }
     
@@ -416,23 +421,37 @@ size_t mongouserWrite(const void* buffer,size_t size, size_t count, FILE* file)
 
 void MonogoUserFilesInit() // start mongo as fileserver
 {
-	MongoInit(NULL); // files init
-	
-	// these are dynamically stored, so CS can be a DLL.
-	userFileSystem.userCreate = mongouserCreate;
-	userFileSystem.userOpen = mongouserOpen;
-	userFileSystem.userClose = mongouserClose;
-	userFileSystem.userRead = mongouserRead;
-	userFileSystem.userWrite = mongouserWrite;
-	filesystemOverride = MONGOFILES;
+	FunctionResult result = MongoInit(NULL); // files init
+	if (result == NOPROBLEM_BIT)
+	{
+		// these are dynamically stored, so CS can be a DLL.
+		userFileSystem.userCreate = mongouserCreate;
+		userFileSystem.userOpen = mongouserOpen;
+		userFileSystem.userClose = mongouserClose;
+		userFileSystem.userRead = mongouserRead;
+		userFileSystem.userWrite = mongouserWrite;
+		filesystemOverride = MONGOFILES;
+	}
+	else 
+	{
+		ReportBug("Unable to open mongo fileserver");
+		Log(SERVERLOG,"Unable to open mongo fileserver");
+		printf("Unable to open mongo fileserver");
+	}
 }
 
 void MongoSystemInit(char* params) // required
 {
 	if (!params) return;
-	params = ReadCompiledWord(params,ARGUMENT(1));
-	params = ReadCompiledWord(params,ARGUMENT(2));
-	params = ReadCompiledWord(params,ARGUMENT(3));
+	char arg1[MAX_WORD_SIZE];
+	char arg2[MAX_WORD_SIZE];
+	char arg3[MAX_WORD_SIZE];
+	params = ReadCompiledWord(params,arg1);
+	params = ReadCompiledWord(params,arg2);
+	params = ReadCompiledWord(params,arg3);
+	ARGUMENT(1) = arg1;
+	ARGUMENT(2) = arg2;
+	ARGUMENT(3) = arg3;
 	MonogoUserFilesInit();
 }
 

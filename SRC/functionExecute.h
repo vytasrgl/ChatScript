@@ -84,9 +84,7 @@ char* InitDisplay(char* list, char* display[MAX_DISPLAY]);
 void RestoreDisplay(char* list,char* display[MAX_DISPLAY]);
 extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
-void JsonRenumber(FACT* F);
 
-void jkillfact(WORDP D);
 extern bool planning;
 extern bool nobacktrack;
 FunctionResult MemoryMarkCode(char* buffer);
@@ -103,9 +101,12 @@ FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg
 FunctionResult KeywordTopicsCode(char* buffer);
 void SetBaseMemory();
 void ResetBaseMemory();
-void InitJSONNames();
 
 // utilities
+FACT* AddToList(FACT* newlist,FACT* oldfact,GetNextFact getnext,SetNextFact setnext);
+FACT* DeleteFromList(FACT* oldlist,FACT* oldfact,GetNextFact getnext,SetNextFact setnext);
+FunctionResult ReviseFactCode(char* buffer);
+FunctionResult LengthCode(char* buffer);
 char* ResultCode(FunctionResult result);
 FunctionResult FLR(char* buffer,char* which);
 void ResetUser(char* input);

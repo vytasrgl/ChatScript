@@ -94,7 +94,7 @@ void SetWildCard(int start, int end, bool inpattern)
 			if (wordCanonical[i]) strcat(wildcardCanonicalText[wildcardIndex],wordCanonical[i]);
 			else strcat(wildcardCanonicalText[wildcardIndex],word);
 		}
- 		if (trace & TRACE_OUTPUT && !inpattern && CheckTopicTrace()) Log(STDUSERLOG,(char*)"_%d=%s/%s ",wildcardIndex,wildcardOriginalText[wildcardIndex],wildcardCanonicalText[wildcardIndex]);
+ 		if (trace & TRACE_OUTPUT && !inpattern && CheckTopicTrace()) Log(STDTRACELOG,(char*)"_%d=%s/%s ",wildcardIndex,wildcardOriginalText[wildcardIndex],wildcardCanonicalText[wildcardIndex]);
 		CompleteWildcard();
 	}
 }
@@ -136,7 +136,7 @@ void SetWildCardGiven(int start, int end, bool inpattern, int index)
 			else 
 				strcat(wildcardCanonicalText[index],word);
 		}
- 		if (trace & TRACE_OUTPUT && !inpattern && CheckTopicTrace()) Log(STDUSERLOG,(char*)"_%d=%s/%s ",index,wildcardOriginalText[index],wildcardCanonicalText[index]);
+ 		if (trace & TRACE_OUTPUT && !inpattern && CheckTopicTrace()) Log(STDTRACELOG,(char*)"_%d=%s/%s ",index,wildcardOriginalText[index],wildcardCanonicalText[index]);
 		WORDP D = FindWord(wildcardCanonicalText[index]);
 		if (D && D->properties & D->internalBits & UPPERCASE_HASH)  // but may not be found if original has plural or such or if uses _
 		{
@@ -180,7 +180,7 @@ void SetWildCardGivenValue(char* original, char* canonical,int start, int end, i
 			else 
 				strcat(wildcardCanonicalText[index],word);
 		}
- 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"_%d=%s/%s ",index,wildcardOriginalText[index],wildcardCanonicalText[index]);
+ 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"_%d=%s/%s ",index,wildcardOriginalText[index],wildcardCanonicalText[index]);
 		WORDP D = FindWord(wildcardCanonicalText[index]);
 		if (D && D->properties & D->internalBits & UPPERCASE_HASH)  // but may not be found if original has plural or such or if uses _
 		{
@@ -329,12 +329,12 @@ void SetUserVariable(const char* var, char* word, bool reuse)
 	{
 		*wildcardSeparator = (*word == '"') ? word[1] : *word; // 1st char in string if need be
 	}	
-	if (trace == TRACE_VARIABLESET) Log(STDUSERLOG,(char*)"Var: %s -> %s\r\n",D->word,word);
+	if (trace == TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"Var: %s -> %s\r\n",D->word,word);
 	else if (D->internalBits & MACRO_TRACE) 
 	{
 		char ruleLabel[MAX_WORD_SIZE];
 		GetLabel(currentRule,ruleLabel);
-		Log(STDUSERLOG," Var: %s -> %s at topic %s.%d.%d %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),ruleLabel);
+		Log(STDTRACELOG," Var: %s -> %s at topic %s.%d.%d %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),ruleLabel);
 	}
 }
 
@@ -384,7 +384,7 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 			 if (*at != '0') break; // not pure
 		}
 		if (!*at) *loc = 0; // switch to integer
- 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)" %s   ",result);
+ 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s   ",result);
     }
     else
     {
@@ -423,7 +423,7 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
   		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 		{
 			sprintf(tracex,"0x%016llx",newval);
-			Log(STDUSERLOG,(char*)" %s/%s   ",result,tracex);
+			Log(STDTRACELOG,(char*)" %s/%s   ",result,tracex);
 		}
 	}
 
@@ -486,7 +486,7 @@ void DumpUserVariables()
 	for (unsigned int i = 0; i < botVariableIndex; ++i) 
 	{
 		value = botVariableList[i]->w.userValue;
-		if (value && *value)  Log(STDUSERLOG,(char*)"  bot variable: %s = %s\r\n",botVariableList[i]->word,value);
+		if (value && *value)  Log(STDTRACELOG,(char*)"  bot variable: %s = %s\r\n",botVariableList[i]->word,value);
 	}
 
 	
@@ -510,14 +510,14 @@ void DumpUserVariables()
 		{
 			if (!stricmp(D->word, "$cs_token"))
 			{
-				Log(STDUSERLOG, "  variable: decoded %s = ", D->word);
+				Log(STDTRACELOG, "  variable: decoded %s = ", D->word);
 				int64 val;
 				ReadInt64(value, val);
 				DumpTokenControls(val);
 
-				Log(STDUSERLOG, "\r\n");
+				Log(STDTRACELOG, "\r\n");
 			}
-			else Log(STDUSERLOG, "  variable: %s = %s\r\n", D->word, value);
+			else Log(STDTRACELOG, "  variable: %s = %s\r\n", D->word, value);
 		}
 	}
 	FreeBuffer();
@@ -606,7 +606,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 
 	if (*word == '@')
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"%s(%s) %s %s => ",word,GetUserVariable(word),op,originalWord1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s(%s) %s %s => ",word,GetUserVariable(word),op,originalWord1);
 		if (impliedSet == ALREADY_HANDLED){;}
 		else if (!*word1 && *op == '=') // null assign to set as a whole
 		{
@@ -691,8 +691,8 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 		{
-			if (*op == '=') Log(STDUSERTABLOG,(char*)"%s %s %s(%s) => ",word,op,originalWord1,GetUserVariable(originalWord1));
-			else Log(STDUSERTABLOG,(char*)"%s(%s) %s %s(%s) => ",word,GetUserVariable(word),op,originalWord1,GetUserVariable(originalWord1));
+			if (*op == '=') Log(STDTRACETABLOG,(char*)"%s %s %s(%s) => ",word,op,originalWord1,GetUserVariable(originalWord1));
+			else Log(STDTRACETABLOG,(char*)"%s(%s) %s %s(%s) => ",word,GetUserVariable(word),op,originalWord1,GetUserVariable(originalWord1));
 		}
 		Add2UserVariable(word,word1,op,originalWord1);
 	}
@@ -707,31 +707,31 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 			}
 			else SetWildCard(word1,word1,word,0); 
 		}
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 	}
 	else if (*word == USERVAR_PREFIX) 
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 		SetUserVariable(word,word1);
 	}
 	else if (*word == '\'' && word[1] == USERVAR_PREFIX) 
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 		SetUserVariable(word+1,word1); // '$xx = value  -- like passed thru as argument
 	}
 	else if (*word == SYSVAR_PREFIX) 
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 		SystemVariable(word,word1);
 	}
 	else if (*word == '^' && word[1] == '^') // assign onto function var
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s = %s\r\n",word,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s\r\n",word,word1);
 		strcpy(callArgumentList[atoi(word+2)+fnVarBase],word1);
 	}
 	else // if (*word == '^') // cannot touch a function argument, word, or number
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)" %s illegal\r\n",word);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s illegal\r\n",word);
 		result = FAILRULE_BIT;
 		goto exit;
 	}
@@ -745,12 +745,12 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 		if (!stricmp(word1,word)) 
 		{
 			result = FAILRULE_BIT;
-			Log(STDUSERLOG,(char*)"variable assign %s has itself as a term\r\n",word);
+			Log(STDTRACELOG,(char*)"variable assign %s has itself as a term\r\n",word);
 		}
 		if (result & ENDCODES) goto exit; // failed next value
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"    %s(%s) %s %s(%s) =>",word,GetUserVariable(word),op,originalWord1,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"    %s(%s) %s %s(%s) =>",word,GetUserVariable(word),op,originalWord1,word1);
 		Add2UserVariable(word,word1,op,originalWord1);
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"\r\n");
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"\r\n");
 	}
 
 	// debug

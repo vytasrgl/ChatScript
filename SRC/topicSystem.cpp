@@ -541,7 +541,7 @@ unsigned int FindTopicIDByName(char* name,bool exact)
 
 void UndoErase(char* ptr,int topic,int id)
 {
-    if (trace & TRACE_TOPIC && CheckTopicTrace())  Log(STDUSERLOG,(char*)"Undoing erase %s\r\n",ShowRule(ptr));
+    if (trace & TRACE_TOPIC && CheckTopicTrace())  Log(STDTRACELOG,(char*)"Undoing erase %s\r\n",ShowRule(ptr));
 	ClearRuleDisableMark(topic,id);
 }
 
@@ -924,7 +924,7 @@ void SetErase(bool force)
  	if (SetRuleDisableMark(currentTopicID,currentRuleID))
 	{
 		ruleErased = true;
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"**erasing %s  %s\r\n",GetTopicName(currentTopicID),ShowRule(currentRule));
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"**erasing %s  %s\r\n",GetTopicName(currentTopicID),ShowRule(currentRule));
 	}
 }
 
@@ -963,7 +963,7 @@ void SetRejoinder(char* rule)
 
     if (ptr && *ptr == level) //   will be on the level we want
     {
-        if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"  **set rejoinder at %s\r\n",ShowRule(ptr));
+        if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"  **set rejoinder at %s\r\n",ShowRule(ptr));
         outputRejoinderRuleID = rejoinderID; 
  	    outputRejoinderTopic = currentTopicID;
     }
@@ -994,8 +994,8 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 		else strncpy(output,output1,50);
 		output[50] = 0;
 		pattern[30] = 0;
-		if (*label) Log(STDUSERTABLOG, "%s rule %c:%d.%d %s %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(currentTopicID),REJOINDERID(currentTopicID),label,pattern,output); //  \\  blocks linefeed on next Log call
-		else  Log(STDUSERTABLOG, "%s rule %c:%d.%d %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(currentTopicID),REJOINDERID(currentTopicID),pattern,output); //  \\  blocks linefeed on next Log call
+		if (*label) Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(currentTopicID),REJOINDERID(currentTopicID),label,pattern,output); //  \\  blocks linefeed on next Log call
+		else  Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(currentTopicID),REJOINDERID(currentTopicID),pattern,output); //  \\  blocks linefeed on next Log call
 	}
 
    //   now process response
@@ -1115,17 +1115,17 @@ retry:
 	}
 	if (trace & (TRACE_PATTERN | TRACE_SAMPLE )  && CheckTopicTrace())
 	{
-		if (*label) Log(STDUSERTABLOG, "try %c:%d.%d %s @%d: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID),label,start); //  \\  blocks linefeed on next Log call
-		else  Log(STDUSERTABLOG, "try %c:%d.%d @%d: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID),start); //  \\  blocks linefeed on next Log call
+		if (*label) Log(STDTRACETABLOG, "try %c:%d.%d %s @%d: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID),label,start); //  \\  blocks linefeed on next Log call
+		else  Log(STDTRACETABLOG, "try %c:%d.%d @%d: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID),start); //  \\  blocks linefeed on next Log call
 		if (trace & TRACE_SAMPLE && *ptr == '(') TraceSample(currentTopicID,ruleID);// show the sample as well as the pattern
 		if (*ptr == '(')
 		{
 			char pattern[MAX_WORD_SIZE];
 			GetPattern(rule,NULL,pattern);
 			CleanOutput(pattern);
-			Log(STDUSERLOG,(char*)"       pattern: %s",pattern);
+			Log(STDTRACELOG,(char*)"       pattern: %s",pattern);
 		}
-		Log(STDUSERLOG,(char*)"\r\n");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	int whenmatched;
 	if (*ptr == '(') // pattern requirement
@@ -1135,9 +1135,8 @@ retry:
 		bool uppercasem = false;
 		int positionStart, positionEnd;
 		whenmatched = 0;
-		int wildstart = 1;
 		++globalDepth; // indent pattern
- 		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",wildstart,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
+ 		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",1,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
 		--globalDepth;
 		if (clearUnmarks) // remove transient global disables.
 		{
@@ -1182,9 +1181,9 @@ retry:
 			{
 				if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() )
 				{
-					Log(STDUSERTABLOG,"RetryRule on sentence at word %d: ",start+1);
-					for (int i = 1; i <= wordCount; ++i) Log(STDUSERLOG,"%s ",wordStarts[i]);
-					Log(STDUSERLOG,"\n");
+					Log(STDTRACETABLOG,"RetryRule on sentence at word %d: ",start+1);
+					for (int i = 1; i <= wordCount; ++i) Log(STDTRACELOG,"%s ",wordStarts[i]);
+					Log(STDTRACELOG,"\n");
 				}
 
 				goto retry;
@@ -1208,7 +1207,7 @@ exit:
 static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,int topic,char* rule) 
 {
 	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE)  && CheckTopicTrace()) 
-		id = Log(STDUSERTABLOG,(char*)"\r\n\r\nTopic: %s linear %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
+		id = Log(STDTRACETABLOG,(char*)"\r\n\r\nTopic: %s linear %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
 	char* base = GetTopicData(currentTopicID);  
 	int ruleID = 0;
 	topicBlock* block = TI(currentTopicID);
@@ -1225,9 +1224,9 @@ static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,i
 		{
 			if (trace & (TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) 
 			{
-				Log(STDUSERTABLOG,(char*)"try %c%d.%d: linear used up  ",*ptr,TOPLEVELID(ruleID),REJOINDERID(ruleID));
+				Log(STDTRACETABLOG,(char*)"try %c%d.%d: linear used up  ",*ptr,TOPLEVELID(ruleID),REJOINDERID(ruleID));
 				if (trace & TRACE_SAMPLE && !TopLevelGambit(ptr) && CheckTopicTrace()) TraceSample(currentTopicID,ruleID);// show the sample as well as the pattern
-				Log(STDUSERLOG,(char*)"\r\n");
+				Log(STDTRACELOG,(char*)"\r\n");
 			}
 		}
 		else if (rule && ptr < rule) {;} // ignore rule until zone hit
@@ -1246,7 +1245,7 @@ static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,i
 
 static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 {
-	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) id = Log(STDUSERTABLOG,(char*)"\r\n\r\nTopic: %s random %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
+	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) id = Log(STDTRACETABLOG,(char*)"\r\n\r\nTopic: %s random %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
 	char* base = GetTopicData(currentTopicID);  
 	topicBlock* block = TI(currentTopicID);
 	unsigned int ruleID = 0;
@@ -1264,9 +1263,9 @@ static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 		{
 			if (trace & (TRACE_PATTERN|TRACE_SAMPLE)  && CheckTopicTrace()) 
 			{
-				Log(STDUSERTABLOG,(char*)"try %c%d.%d: random used up   ",*ptr,TOPLEVELID(ruleID),REJOINDERID(ruleID));
+				Log(STDTRACETABLOG,(char*)"try %c%d.%d: random used up   ",*ptr,TOPLEVELID(ruleID),REJOINDERID(ruleID));
 				if (trace & TRACE_SAMPLE && !TopLevelGambit(ptr) && CheckTopicTrace()) TraceSample(currentTopicID,ruleID);// show the sample as well as the pattern
-				Log(STDUSERLOG,(char*)"\r\n");
+				Log(STDTRACELOG,(char*)"\r\n");
 			}
 		}
 		else if (type == GAMBIT || (*ptr == type || *ptr == STATEMENT_QUESTION))
@@ -1302,7 +1301,7 @@ static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 
 static FunctionResult FindRandomGambitContinuation(char type, char* buffer, unsigned int& id)
 {
-	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) id = Log(STDUSERTABLOG,(char*)"\r\n\r\nTopic: %s random %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
+	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) id = Log(STDTRACETABLOG,(char*)"\r\n\r\nTopic: %s random %s: \r\n",GetTopicName(currentTopicID),RuleTypeName(type));
 	char* base = GetTopicData(currentTopicID);  
 	topicBlock* block = TI(currentTopicID);
 	unsigned  int* rulemap = block->gambitTag;	// looking for gambits
@@ -1317,7 +1316,7 @@ static FunctionResult FindRandomGambitContinuation(char type, char* buffer, unsi
 		char* ptr = base + block->ruleOffset[gambitID];
 		if (!UsableRule(currentTopicID,gambitID))
 		{
-			if (trace & (TRACE_PATTERN|TRACE_SAMPLE)  && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"try %c%d.%d: randomcontinuation used up\r\n",*ptr,TOPLEVELID(gambitID),REJOINDERID(gambitID));
+			if (trace & (TRACE_PATTERN|TRACE_SAMPLE)  && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"try %c%d.%d: randomcontinuation used up\r\n",*ptr,TOPLEVELID(gambitID),REJOINDERID(gambitID));
 			if (*ptr == RANDOM_GAMBIT) available = true; //   we are allowed to use gambits part of this subtopic
 		}
 		else if (*ptr == GAMBIT) 
@@ -1417,7 +1416,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	result = (FunctionResult)(result & (-1 ^ ENDTOPIC_BIT)); // dont propogate 
 	if (result & FAILTOPIC_BIT) result = FAILRULE_BIT; // downgrade
 	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) 
-		id = Log(STDUSERTABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
+		id = Log(STDTRACETABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
 	
 	ChangeDepth(-1,(char*)"PerformTopic");
 	WORDP E = FindWord((char*)"^cs_topic_exit");
@@ -2669,7 +2668,7 @@ void AddPendingTopic(int topic)
 	bool removed = RemovePendingTopic(topic);	//   remove any old reference
 	pendingTopicList[pendingTopicIndex++] = topic;
 	if (pendingTopicIndex >= MAX_TOPIC_STACK) memmove(&pendingTopicList[0],&pendingTopicList[1],sizeof(int) * --pendingTopicIndex);
-	if (trace & TRACE_OUTPUT && !removed && CheckTopicTrace()) Log(STDUSERLOG,(char*)"Adding pending topic %s\r\n",GetTopicName(topic));
+	if (trace & TRACE_OUTPUT && !removed && CheckTopicTrace()) Log(STDTRACELOG,(char*)"Adding pending topic %s\r\n",GetTopicName(topic));
 }
 
 void PendingTopics(int set)
@@ -2734,7 +2733,7 @@ int PushTopic(int topic) // -1 = failed  0 = unneeded  1 = pushed
 {
 	if (topic == currentTopicID) 
 	{
-		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,(char*)"Topic %s is already current\r\n",GetTopicName(topic));
+		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDTRACELOG,(char*)"Topic %s is already current\r\n",GetTopicName(topic));
 		return 0;  // current topic
 	}
 	else if (!topic)
@@ -2746,7 +2745,7 @@ int PushTopic(int topic) // -1 = failed  0 = unneeded  1 = pushed
 	//  topic  already in progress? allow repeats since this is control flow
 	if (TopicInUse(topic) == -1)
 	{
-		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDUSERLOG,(char*)"Topic %s is already pending, changed to current\r\n",GetTopicName(topic));
+		if (trace & TRACE_TOPIC && CheckTopicTrace()) Log(STDTRACELOG,(char*)"Topic %s is already pending, changed to current\r\n",GetTopicName(topic));
 	}
     topicStack[++topicIndex] = currentTopicID; // [1] will be 0 
     if (topicIndex >= MAX_TOPIC_STACK) 
@@ -2756,7 +2755,7 @@ int PushTopic(int topic) // -1 = failed  0 = unneeded  1 = pushed
         return -1;
     }
 	currentTopicID = topic; 
-  	if (trace & TRACE_TOPIC) Log(STDUSERLOG,(char*)"Pushing Topic %s\r\n",GetTopicName(topic));
+  	if (trace & TRACE_TOPIC) Log(STDTRACELOG,(char*)"Pushing Topic %s\r\n",GetTopicName(topic));
 	return 1;
 }
 
@@ -2764,7 +2763,7 @@ void PopTopic()
 {
 	if (topicIndex) 
 	{
- 		if (trace & TRACE_TOPIC) Log(STDUSERLOG,(char*)"Popping Topic %s\r\n",GetTopicName(currentTopicID));
+ 		if (trace & TRACE_TOPIC) Log(STDTRACELOG,(char*)"Popping Topic %s\r\n",GetTopicName(currentTopicID));
 		currentTopicID = topicStack[topicIndex--];
 	}
 	else currentTopicID = 0;	// no topic now

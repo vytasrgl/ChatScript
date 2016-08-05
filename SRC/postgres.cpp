@@ -36,7 +36,7 @@ FunctionResult DBCloseCode(char* buffer)
 		}
 		char* msg = "db not open\r\n";
 		SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-		Log(STDUSERLOG,msg);
+		Log(STDTRACELOG,msg);
 		return FAILRULE_BIT;
 	}
 	PostgresShutDown();
@@ -56,7 +56,7 @@ FunctionResult DBInitCode(char* buffer)
 	{
 		char* msg = "DB already opened\r\n";
 		SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-		if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG,msg);
+		if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG,msg);
  		return FAILRULE_BIT;
 	}
 	FunctionResult result;
@@ -72,7 +72,7 @@ FunctionResult DBInitCode(char* buffer)
 #ifdef WIN32
 	if (InitWinsock() == FAILRULE_BIT)
 	{
-		if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "WSAStartup failed\r\n");
+		if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG, "WSAStartup failed\r\n");
 		return FAILRULE_BIT;
 	}
 #endif
@@ -86,7 +86,7 @@ FunctionResult DBInitCode(char* buffer)
 		char msg[MAX_WORD_SIZE];
 		sprintf(msg,(char*)"%s - %s\r\n",query,PQerrorMessage(conn));
 		SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-        if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "Connection failed: %s",  msg);
+        if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG, "Connection failed: %s",  msg);
 		return DBCloseCode(NULL);
     }
 
@@ -346,7 +346,7 @@ FunctionResult DBExecuteCode(char* buffer)
 		{
 			char* msg = "DB not opened\r\n";
 			SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG,msg);
+			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG,msg);
 		}
 		return FAILRULE_BIT;
 	}
@@ -377,7 +377,7 @@ FunctionResult DBExecuteCode(char* buffer)
 	WORDP FN = (*function) ? FindWord(function) : NULL;
 	if (FN) argflags = FN->x.macroFlags;
 
-	if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "DBExecute command %s\r\n", query);
+	if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG, "DBExecute command %s\r\n", query);
     res = PQexec(conn, query);
 	int status = (int) PQresultStatus(res);
     if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
@@ -386,14 +386,14 @@ FunctionResult DBExecuteCode(char* buffer)
 		if (buffer)
 		{
 			SetUserVariable((char*)"$$db_error",msg);	// pass along the error
-			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "DBExecute command failed: %s %s status:%d\r\n", arg1,msg,status);
+			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG, "DBExecute command failed: %s %s status:%d\r\n", arg1,msg,status);
 		}
         PQclear(res);
 		return FAILRULE_BIT;
      }
 	if (*function && status == PGRES_TUPLES_OK) // do something with the answers
 	{
-		char psBuffer[MAX_ARG_BYTES];
+		char psBuffer[MAX_BUFFER_SIZE];
 		psBuffer[0] = '(';
 		psBuffer[1] = ' ';
 	
@@ -414,7 +414,7 @@ FunctionResult DBExecuteCode(char* buffer)
 				*at = 0;
 				char* val = PQgetvalue(res, i, j);
 				size_t len = strlen(val);
-				if (len > (MAX_ARG_BYTES - 100))  // overflow
+				if (len > (maxBufferSize - 100))  // overflow
 				{
 					PQclear(res);
 					return FAILRULE_BIT;
@@ -440,7 +440,7 @@ FunctionResult DBExecuteCode(char* buffer)
 				}
 				*at++ = ' ';
 
-				if ((at - psBuffer) > (MAX_ARG_BYTES - 100)) 
+				if ((at - psBuffer) > (maxBufferSize - 100)) 
 				{
 					ReportBug((char*)"postgres answer overflow %s -> %s\r\n",query,psBuffer);
 					break;
@@ -448,7 +448,7 @@ FunctionResult DBExecuteCode(char* buffer)
 			}
 			*at = 0;
 			strcpy(at,(char*)")"); //  ending paren
-			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG, "DBExecute results %s\r\n", psBuffer);
+			if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG, "DBExecute results %s\r\n", psBuffer);
 	
  			if (stricmp(function,(char*)"null")) DoFunction(function,psBuffer,buffer,result); 
 			buffer += strlen(buffer);
@@ -458,7 +458,7 @@ FunctionResult DBExecuteCode(char* buffer)
 				char msg[MAX_WORD_SIZE];
 				sprintf(msg,(char*)"Failed %s%s\r\n",function,psBuffer);
 				SetUserVariable((char*)"$$db_error",msg);	// pass along the error
- 				if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDUSERLOG,msg);
+ 				if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG,msg);
 				break; // failed somehow
 			}
 		}

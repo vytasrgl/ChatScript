@@ -70,8 +70,8 @@ void ScriptWarn()
 	if (compiling)
 	{
 		++hasWarnings; 
-		if (*currentFilename) Log(STDUSERLOG,(char*)"*** Warning- line %d of %s: ",currentFileLine,currentFilename);
-		else Log(STDUSERLOG,(char*)"*** Warning-  ");
+		if (*currentFilename) Log(STDTRACELOG,(char*)"*** Warning- line %d of %s: ",currentFileLine,currentFilename);
+		else Log(STDTRACELOG,(char*)"*** Warning-  ");
 	}
 }
 
@@ -88,7 +88,7 @@ void ScriptError()
 	if (compiling)
 	{
 		patternContext = false; 
-		Log(STDUSERLOG,(char*)"*** Error- line %d of %s: ",currentFileLine,currentFilename);
+		Log(STDTRACELOG,(char*)"*** Error- line %d of %s: ",currentFileLine,currentFilename);
 	}
 }
 
@@ -1523,7 +1523,8 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
 	if (!call || !D || !(D->internalBits & FUNCTION_NAME))  //   not a function, is it a function variable?
 	{
-		if (!IsDigit(name[1])) BADSCRIPT((char*)"CALL-1 Call to function not yet defined %s",name)
+		if (!IsDigit(name[1])) 
+			BADSCRIPT((char*)"CALL-1 Call to function not yet defined %s",name)
 		*data++ = *name++;
 		*data++ = *name++;
 		if (IsDigit(*name)) *data++ = *name++;
@@ -1627,7 +1628,8 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 				if (*word == '^' && (*nextToken == '(' || IsDigit(word[1])))   //   function call or function var ref 
 				{
 					WORDP D = FindWord(word,0,LOWERCASE_LOOKUP);
-					if (!IsDigit(word[1]) && *nextToken == '(' && (!D || !(D->internalBits & FUNCTION_NAME))) BADSCRIPT((char*)"CALL-1 Default call to function not yet defined %s",word)
+					if (!IsDigit(word[1]) && *nextToken == '(' && (!D || !(D->internalBits & FUNCTION_NAME))) 
+						BADSCRIPT((char*)"CALL-1 Default call to function not yet defined %s",word)
 					if (*nextToken != '(' && !IsDigit(word[1])) BADSCRIPT((char*)"CALL-? Unknown function variable %s",word)
 
 					char* arg = mydata;
@@ -1804,7 +1806,8 @@ static void SpellCheckScriptWord(char* input,int startSeen,bool checkGrade)
 		uint64 cansysflags = 0;
 		wordStarts[0] = wordStarts[1] = wordStarts[2] = wordStarts[3] = AllocateString((char*)"");
 		wordCount = 1;
-		uint64 flags = GetPosData(2,word,entry,canonical,sysflags,cansysflags,false,true,0);
+		WORDP revise;
+		uint64 flags = GetPosData(2,word,revise,entry,canonical,sysflags,cansysflags,false,true,0);
 		// do we know a possible base for it
 		//char* canon = FindCanonical(word, 2,true);
 		//if (!canon) canon = GetSingularNoun(word,true,true);
@@ -1823,7 +1826,7 @@ static void SpellCheckScriptWord(char* input,int startSeen,bool checkGrade)
 	if (grade && checkGrade)
 	{
 		if (canonical && !IsUpperCase(*input) && !(canonical->systemFlags & grade) && !strchr(word,'\'')) // all contractions are legal
-			Log(STDUSERLOG,(char*)"Grade Limit: %s\r\n",D->word);
+			Log(STDTRACELOG,(char*)"Grade Limit: %s\r\n",D->word);
 	}
 
 	// see if substitition will ruin this word
@@ -2768,8 +2771,8 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 	char* bodyends[1000];				//   places to patch for jumps
 	unsigned int bodyendIndex = 0;
 	char* original = data;
-	strcpy(data,(char*)"^^if ");
-	data += 5;
+	strcpy(data,(char*)"^if ");
+	data += 4;
 	patternContext = false;
 	while (ALWAYS)
 	{
@@ -2882,8 +2885,8 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 
 static char* ReadLoop(char* word, char* ptr, FILE* in, char* &data,char* rejoinders)
 {
-	strcpy(data,(char*)"^^loop ");
-	data += 7;
+	strcpy(data,(char*)"^loop ");
+	data += 6;
 	ptr = ReadNextSystemToken(in,ptr,word,false,false); //   (
 	*data++ = '(';
 	*data++ = ' ';
@@ -3333,8 +3336,8 @@ Then one of 3 kinds of character:
 					char c = original[40];
 					original[40] = 0;
 					while (level-- > 0) 
-						Log(STDUSERLOG,(char*)"  ");
-					Log(STDUSERLOG,(char*)"rule: %s\r\n",original);
+						Log(STDTRACELOG,(char*)"  ");
+					Log(STDTRACELOG,(char*)"rule: %s\r\n",original);
 					original[40] = c;
 				}
 				break;//   responder definition ends when another major unit or top level responder starts
@@ -3349,8 +3352,8 @@ Then one of 3 kinds of character:
 			char c = original[40];
 			original[40] = 0;
 			while (level-- > 0) 
-				Log(STDUSERLOG,(char*)"  ");
-			Log(STDUSERLOG,(char*)"rule: %s\r\n",original);
+				Log(STDTRACELOG,(char*)"  ");
+			Log(STDTRACELOG,(char*)"rule: %s\r\n",original);
 			original[40] = c;
 		}
 	}
@@ -3398,14 +3401,14 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 			{
 				strcpy(macroName,(char*)"tbl:");
 				strcpy(macroName+4,word);
-				Log(STDUSERLOG,(char*)"Reading table %s\r\n",macroName);
+				Log(STDTRACELOG,(char*)"Reading table %s\r\n",macroName);
 			}
 			else
 			{
 				if (!IsLegalName(word)) BADSCRIPT((char*)"MACRO-2 Illegal characters in function name %s",word)
 				*macroName = '^';
 				strcpy(macroName+1,word);
-				Log(STDUSERLOG,(char*)"Reading %s %s\r\n",kind,macroName);
+				Log(STDTRACELOG,(char*)"Reading %s %s\r\n",kind,macroName);
 			}
 			D = StoreWord(macroName);
 			if (D->internalBits & FUNCTION_NAME && !table) BADSCRIPT((char*)"MACRO-3 macro %s already defined",macroName)
@@ -3883,7 +3886,7 @@ static char* ReadBot(char* ptr, FILE* in, unsigned int build)
 	MakeLowerCopy(botheader,word);
 	char* x;
 	while ((x = strchr(botheader,','))) *x = ' ';	// change comma to space. all bot names have spaces on both sides
-	Log(STDUSERLOG,(char*)"Reading bot restriction: %s\r\n",botheader);
+	Log(STDTRACELOG,(char*)"Reading bot restriction: %s\r\n",botheader);
 	return ptr;
 }
 
@@ -3925,7 +3928,7 @@ static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 		{
 			if (*word != '~') BADSCRIPT((char*)"Topic name - %s must start with ~",word)
 			strcpy(currentTopicName,word);
-			Log(STDUSERLOG,(char*)"Reading topic %s\r\n",currentTopicName);
+			Log(STDTRACELOG,(char*)"Reading topic %s\r\n",currentTopicName);
 			topicName = FindWord(currentTopicName);
 			if (topicName && topicName->internalBits & CONCEPT && !(topicName->internalBits & TOPIC) && topicName->internalBits & (BUILD0|BUILD1|BUILD2)) 
 				BADSCRIPT((char*)"TOPIC-1 Concept already defined with this topic name %s",currentTopicName)
@@ -4115,7 +4118,7 @@ static char* ReadRename(char* ptr, FILE* in,unsigned int build)
 		WORDP D = StoreWord(word,n);
 		AddInternalFlag(D,(unsigned int)(RENAMED|build)); 
 		if (*word == '#' && *basic == '-') AddSystemFlag(D,CONSTANT_IS_NEGATIVE);
-		Log(STDUSERLOG,(char*)"Rename %s as %s\r\n",basic,word);
+		Log(STDTRACELOG,(char*)"Rename %s as %s\r\n",basic,word);
 	}	
 	renameInProgress = false;
 	return ptr;
@@ -4151,7 +4154,7 @@ static char* ReadPlan(char* ptr, FILE* in,unsigned int build)
 			*planName = '^';
 			strcpy(planName+1,word);
 			strcpy(baseName,planName);
-			Log(STDUSERLOG,(char*)"Reading plan %s\r\n",planName);
+			Log(STDTRACELOG,(char*)"Reading plan %s\r\n",planName);
 
 			// handle potential multiple plans of same name
 			WORDP plan = FindWord(planName);
@@ -4413,7 +4416,7 @@ static char* ReadConcept(char* ptr, FILE* in,unsigned int build)
 			concept = MakeMeaning(D);
 			sys = type = 0;
 			parenLevel = 0;
-			Log(STDUSERLOG,(char*)"Reading concept %s\r\n",conceptName);
+			Log(STDTRACELOG,(char*)"Reading concept %s\r\n",conceptName);
 			// read the control flags of the concept
 			ptr = SkipWhitespace(ptr);
 			while (*ptr && *ptr != '(' && *ptr != '[' && *ptr != '"') // not started and no concept comment given (concept comments come after all control flags
@@ -4523,7 +4526,7 @@ static void ReadTopicFile(char* name,uint64 buildid) //   read contents of a top
 	}
 	build &= -1 ^ FROM_FILE; // remove any flag indicating it came as a direct file, not from a directory listing
 
-	Log(STDUSERLOG,(char*)"\r\n----Reading file %s\r\n",currentFilename);
+	Log(STDTRACELOG,(char*)"\r\n----Reading file %s\r\n",currentFilename);
 
 	//   if error occurs lower down, flush to here
 	int holdDepth = globalDepth;
@@ -4849,13 +4852,13 @@ static void ClearTopicConcept(WORDP D, uint64 build)
 
 static void DumpErrors()
 {
-	if (errorIndex) Log(STDUSERLOG,(char*)"\r\n ERROR SUMMARY: \r\n");
-	for (unsigned int i = 0; i < errorIndex; ++i) Log(STDUSERLOG,(char*)"  %s\r\n",errors[i]);
+	if (errorIndex) Log(STDTRACELOG,(char*)"\r\n ERROR SUMMARY: \r\n");
+	for (unsigned int i = 0; i < errorIndex; ++i) Log(STDTRACELOG,(char*)"  %s\r\n",errors[i]);
 }
 
 static unsigned int DumpWarnings(unsigned int& substitutes,unsigned int &cases, unsigned int &function)
 {
-	if (warnIndex) Log(STDUSERLOG,(char*)"\r\nWARNING SUMMARY: \r\n");
+	if (warnIndex) Log(STDTRACELOG,(char*)"\r\nWARNING SUMMARY: \r\n");
 	unsigned int count = 0;
 	cases = 0;
 	substitutes = 0;
@@ -4867,7 +4870,7 @@ static unsigned int DumpWarnings(unsigned int& substitutes,unsigned int &cases, 
 		else if (strstr(warnings[i],(char*)"is unknown as a word")) {++count;}
 		else if (strstr(warnings[i],(char*)"in opposite case")){++cases;}
 		else if (strstr(warnings[i],(char*)"a function call")){++function;}
-		else Log(STDUSERLOG,(char*)"  %s\r\n",warnings[i]);
+		else Log(STDTRACELOG,(char*)"  %s\r\n",warnings[i]);
 	}
 	return count;
 }
@@ -4987,9 +4990,9 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		char output[MAX_WORD_SIZE];
 		if (word[len-1] == '/') 
 		{
-			Log(STDUSERLOG,(char*)"\r\n>>Reading folder %s\r\n",word);
+			Log(STDTRACELOG,(char*)"\r\n>>Reading folder %s\r\n",word);
 			WalkDirectory(word,ReadTopicFile,build); // read all files in folder (top level)
-			Log(STDUSERLOG,(char*)"\r\n<<end folder %s\r\n",word);
+			Log(STDTRACELOG,(char*)"\r\n<<end folder %s\r\n",word);
 		}
 		else if (*word == ':' && word[1]) DoCommand(readBuffer,output); // testing command
 		else ReadTopicFile(word,build|FROM_FILE); // was explicitly named
@@ -5061,8 +5064,8 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	{
 		EraseTopicFiles(build,baseName);
 		DumpErrors();
-		if (missingFiles) Log(STDUSERLOG,(char*)"%d topic files were missing.\r\n",missingFiles);
-		Log(STDUSERLOG,(char*)"r\n%d errors - press Enter to quit. Then fix and try again.\r\n",hasErrors);
+		if (missingFiles) Log(STDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
+		Log(STDTRACELOG,(char*)"r\n%d errors - press Enter to quit. Then fix and try again.\r\n",hasErrors);
 		if (!server && !commandLineCompile) ReadALine(readBuffer,stdin);
 		resultcode = 4; // error
 	}
@@ -5072,16 +5075,16 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		unsigned int cases;
 		unsigned int function;
 		unsigned int count = DumpWarnings(substitutes,cases,function);
-		if (missingFiles) Log(STDUSERLOG,(char*)"%d topic files were missing.\r\n",missingFiles);
-		Log(STDUSERLOG,(char*)"%d function warnings, %d spelling warnings, %d case warnings, %d substitution warnings,  and %d more serious warnings\r\n    ",function,count,cases,substitutes,hasWarnings-count-substitutes-cases);
+		if (missingFiles) Log(STDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
+		Log(STDTRACELOG,(char*)"%d function warnings, %d spelling warnings, %d case warnings, %d substitution warnings,  and %d more serious warnings\r\n    ",function,count,cases,substitutes,hasWarnings-count-substitutes-cases);
 	}
 	else 
 	{
-		if (missingFiles) Log(STDUSERLOG,(char*)"%d topic files were missing.\r\n",missingFiles);
-		Log(STDUSERLOG,(char*)"No errors or warnings\r\n\r\n");
+		if (missingFiles) Log(STDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
+		Log(STDTRACELOG,(char*)"No errors or warnings\r\n\r\n");
 	}
 	ReturnDictionaryToWordNet();
-	Log(STDUSERLOG,(char*)"\r\n\r\nFinished compile\r\n\r\n");
+	Log(STDTRACELOG,(char*)"\r\n\r\nFinished compile\r\n\r\n");
 	return resultcode;
 }
 

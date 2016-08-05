@@ -315,7 +315,7 @@ SOURCE:
 			*base = 0;
 
 			// chatbot replies this
-			Log(STDUSERLOG,(char*)"%s",ptr);
+			Log(STDTRACELOG,(char*)"%s",ptr);
 
 			// we say that  until :exit
 			printf((char*)"%s",(char*)"\r\n>    ");
@@ -345,7 +345,7 @@ SOURCE:
 				}
 				delete(sock);
 				*base = 0;
-				Log(STDUSERLOG,(char*)"%s",ptr); 	// chatbot replies this
+				Log(STDTRACELOG,(char*)"%s",ptr); 	// chatbot replies this
 
 				printf((char*)"%s",(char*)"\r\nEnter client user name: ");
 				ReadALine(word,source);
@@ -966,7 +966,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 			output[2] = 0xfe; //ctrl markers
 			output[3] = 0xff;
 			output[4] = 0;	
-			Log(STDUSERLOG,(char*)"Timeout waiting for service: %s  =>  %s\r\n",msg,output);
+			Log(STDTRACELOG,(char*)"Timeout waiting for service: %s  =>  %s\r\n",msg,output);
 			return Done(sock,memory);
 		}
 

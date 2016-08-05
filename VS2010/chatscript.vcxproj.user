@@ -4,7 +4,7 @@
     <LocalDebuggerWorkingDirectory>..\BINARIES</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>..\BINARIES\chatscript.exe </LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>xmongo="mongodb://localhost:27017 ChatScript New2"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>xmongo="mongodb://10.0.12.80:27017 ChatScript Logo"</LocalDebuggerCommandArguments>
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

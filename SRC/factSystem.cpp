@@ -217,8 +217,8 @@ char* GetSetEnd(char* x)
 void TraceFact(FACT* F,bool ignoreDead)
 {
 	char* word = AllocateBuffer();
-	Log(STDUSERLOG,(char*)"%d: %s\r\n",Fact2Index(F),WriteFact(F,false,word,ignoreDead,false));
-	Log(STDUSERTABLOG,(char*)"");
+	Log(STDTRACELOG,(char*)"%d: %s\r\n",Fact2Index(F),WriteFact(F,false,word,ignoreDead,false));
+	Log(STDTRACETABLOG,(char*)"");
 	FreeBuffer();
 }
 
@@ -329,9 +329,10 @@ void KillFact(FACT* F)
 	WORDP x = Meaning2Word(F->object);
 	if (trace & TRACE_FACT && CheckTopicTrace()) 
 	{
-		Log(STDUSERLOG,(char*)"Kill: ");
+		Log(STDTRACELOG,(char*)"Kill: ");
 		TraceFact(F);
 	}
+#ifndef DISCARDJSON
 	// recurse on JSON datastructures below if they are being deleted on right side
 	if (F->flags & JSON_ARRAY_VALUE)
 	{
@@ -344,6 +345,7 @@ void KillFact(FACT* F)
 		jkillfact(jsonobject);
 	}
 	if (F->flags & JSON_ARRAY_FACT) JsonRenumber(F);// have to renumber this array
+#endif
 	F->flags |= FACTDEAD; 
 
 	if (planning) SpecialFact(Fact2Index(F),0,0); // save to restore
@@ -525,13 +527,13 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 
 	//   insure fact is unique if requested
 	currentFact =  (properties & FACTDUPLICATE) ? NULL : FindFact(subject,verb,object,properties); 
-	if (trace & TRACE_FACT && currentFact && CheckTopicTrace())  Log(STDUSERLOG,(char*)" Found %d ", Fact2Index(currentFact));
+	if (trace & TRACE_FACT && currentFact && CheckTopicTrace())  Log(STDTRACELOG,(char*)" Found %d ", Fact2Index(currentFact));
 	if (currentFact) return currentFact;
 	currentFact = CreateFastFact(subject,verb,object,properties);
 	if (trace & TRACE_FACT && currentFact && CheckTopicTrace())  
 	{
-		Log(STDUSERLOG,(char*)" Created %d\r\n", Fact2Index(currentFact));
-		Log(STDUSERTABLOG,(char*)"");
+		Log(STDTRACELOG,(char*)" Created %d\r\n", Fact2Index(currentFact));
+		Log(STDTRACETABLOG,(char*)"");
 	}
 
 	return  currentFact;
@@ -753,7 +755,7 @@ char* EatFact(char* ptr,unsigned int flags,bool attribute)
 	}
 	else object =  MakeMeaning(StoreWord(word2,AS_IS),0);
 
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"%s %s %s %x) = ",word,word1,word2,flags);
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s %s %s %x) = ",word,word1,word2,flags);
 
 	FACT* F = FindFact(subject,verb,object,flags);
 	if (!attribute || (F && object == F->object)) {;}  // not making an attribute or already made
@@ -769,7 +771,7 @@ char* EatFact(char* ptr,unsigned int flags,bool attribute)
 				{
 					char word[MAX_WORD_SIZE];
 					WriteFact(F,false,word,false,true);
-					Log(STDUSERLOG,(char*)"Fact created is not an attribute. There already exists %s",word); 
+					Log(STDTRACELOG,(char*)"Fact created is not an attribute. There already exists %s",word); 
 					printf((char*)"Fact created is not an attribute. There already exists %s",word); 
 					currentFact = F;
 					return (*ptr) ? (ptr + 2) : ptr; 
@@ -831,11 +833,10 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 			else if (!*buffer) strcpy(buffer,Meaning2Word(G->subject)->word); // to return the name
 		}
 	}
-	fclose(in);
 	FreeUserCache();
 
 	if (!stricmp(erase,(char*)"erase") || !stricmp(transient,(char*)"erase")) remove(name); // erase file after reading
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"[%d] => ",FACTSET_COUNT(store));
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"[%d] => ",FACTSET_COUNT(store));
 	currentFact = NULL; // we have used up the facts
 	return true;
 }
@@ -982,7 +983,7 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 	{
 		char* buffer = AllocateBuffer(); // fact might be big, cant use mere WORD_SIZE
 		buffer = WriteFact(currentFact,false,buffer,true,false);
-		Log(STDUSERLOG,(char*)"create %s",buffer);
+		Log(STDTRACELOG,(char*)"create %s",buffer);
 		FreeBuffer();
 	}	
 	return currentFact;

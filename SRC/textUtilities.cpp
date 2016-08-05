@@ -1653,7 +1653,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		}
 	}
 	if (hasbadutf && showBadUTF && !server)  
-		Log(STDUSERLOG,(char*)"Bad UTF-8 %s at %d in %s\r\n",start,currentFileLine,currentFilename);
+		Log(STDTRACELOG,(char*)"Bad UTF-8 %s at %d in %s\r\n",start,currentFileLine,currentFilename);
 	return (buffer - start);
 }
 
@@ -1709,8 +1709,8 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 			*buffer = 0;
 			return ptr;
 		}
- 		if (!n) Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
-		else Log(STDUSERLOG,(char*)"bad double-quoting1?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
+ 		if (!n) Log(STDTRACELOG,(char*)"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
+		else Log(STDTRACELOG,(char*)"bad double-quoting1?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
 		return NULL;	// no closing quote... refuse
 	}
 
@@ -1763,7 +1763,7 @@ Used for function calls, to read their callArgumentList. Arguments are not evalu
         char c = *ptr;
 		int x = GetNestingData(c);
 		if (paren == 0 && (c == ' ' || x == -1  || c == ENDUNIT)) break; // simple arg separator or outer closer or end of data
-        if ((buffer-start) < (MAX_ARG_BYTES-2)) *buffer++ = c; // limit overflow into argument area
+        if ((buffer-start) < (maxBufferSize-2)) *buffer++ = c; // limit overflow into argument area
         *buffer = 0;
 		if (x) paren += x;
     }
@@ -2527,12 +2527,12 @@ RETRY: // for sampling loopback
 	}
 
 	if (readAhead >= 6)
-		Log(STDUSERLOG,(char*)"Heavy long line? %s\r\n",documentBuffer);
+		Log(STDTRACELOG,(char*)"Heavy long line? %s\r\n",documentBuffer);
 	if (autonumber) 
 	{
 		bool oldecho = echo;
 		echo = true;
-		Log(STDUSERLOG,(char*)"%d: %s\r\n",inputSentenceCount,inBuffer);
+		Log(STDTRACELOG,(char*)"%d: %s\r\n",inputSentenceCount,inBuffer);
 		echo = oldecho;
 	}
 	else if (docstats)
@@ -2541,7 +2541,7 @@ RETRY: // for sampling loopback
 		{
 			bool oldecho = echo;
 			echo = true;
-			Log(STDUSERLOG,(char*)"%d: %s\r\n",docSentenceCount,inBuffer);
+			Log(STDTRACELOG,(char*)"%d: %s\r\n",docSentenceCount,inBuffer);
 			echo = oldecho;
 		}	
 	}

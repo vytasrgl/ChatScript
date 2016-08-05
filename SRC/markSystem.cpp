@@ -52,7 +52,7 @@ void RemoveMatchValue(WORDP D, int position)
 	{
 		if (data[i] == position) 
 		{
-			if (trace) Log(STDUSERLOG,(char*)"unmark %s @word %d  ",D->word,position);
+			if (trace) Log(STDTRACELOG,(char*)"unmark %s @word %d  ",D->word,position);
 			memmove(data+i,data+i+2,(maxRefSentence - i - 2)); 
 			break;
 		}
@@ -115,11 +115,11 @@ void MarkWordHit(WORDP D, int start,int end)
 		if (markLength > MARK_LINE_LIMIT)
 		{
 			markLength = 0;
-			Log(STDUSERLOG,(char*)"\r\n");
-			Log(STDUSERTABLOG,(char*)"");
+			Log(STDTRACELOG,(char*)"\r\n");
+			Log(STDTRACETABLOG,(char*)"");
 		}
-		Log((showMark) ? ECHOSTDUSERLOG : STDUSERLOG,(D->internalBits & TOPIC) ? (char*)" +T%s " : (char*)" +%s",D->word);
-		if (start != end) Log((showMark) ? ECHOSTDUSERLOG : STDUSERLOG,(char*)"(%d-%d)",start,end);
+		Log((showMark) ? ECHOSTDTRACELOG : STDTRACELOG,(D->internalBits & TOPIC) ? (char*)" +T%s " : (char*)" +%s",D->word);
+		if (start != end) Log((showMark) ? ECHOSTDTRACELOG : STDTRACELOG,(char*)"(%d-%d)",start,end);
 	}
 }
 
@@ -224,7 +224,7 @@ static int MarkSetPath(MEANING M, int start, int end, unsigned int depth, bool c
 				fact = WriteFact(F,false,word); // just so we can see it
 				unsigned int hold = globalDepth;
 				globalDepth = depth;
-				Log(STDUSERTABLOG,(char*)"%s   ",fact); // \r\n
+				Log(STDTRACETABLOG,(char*)"%s   ",fact); // \r\n
 				globalDepth = hold;
 			}
 			// if subject has type restriction, it must pass
@@ -421,7 +421,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 	unsigned int usetrace = trace;
 	if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
 	{
-		Log(STDUSERLOG,(char*)"\r\nSequences:\r\n");
+		Log(STDTRACELOG,(char*)"\r\nSequences:\r\n");
 		usetrace = (unsigned int) -1;
 	}
 	uint64 logbase = logCount; // see if we logged anything
@@ -498,7 +498,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 			HuntMatch(rawbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
 			HuntMatch(canonbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
 			HuntMatch(originalbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
-			if (logCount != logbase && usetrace)  Log(STDUSERLOG,(char*)"\r\n"); // if we logged something, separate
+			if (logCount != logbase && usetrace)  Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
 			if (++index >= SEQUENCE_LIMIT) break; //   up thru 5 words in a phrase
 			logbase = logCount;
 		}
@@ -555,7 +555,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 			}
 		}
 	}
-	if (trace) Log(STDUSERLOG,(char*)"\r\n"); // if we logged something, separate
+	if (trace) Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
 
 	trace = oldtrace;
 	FreeBuffer();
@@ -585,8 +585,8 @@ void MarkAllImpliedWords()
 	WORDP sys = FindWord((char*)"~sys");
 	WORDP role = FindWord((char*)"~grammar_role");
 
-    if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"\r\nConcepts: \r\n");
- 	if (showMark)  Log(ECHOSTDUSERLOG,(char*)"----------------\r\n");
+    if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"\r\nConcepts: \r\n");
+ 	if (showMark)  Log(ECHOSTDTRACELOG,(char*)"----------------\r\n");
 	markLength = 0;
 	//   now mark every word in sentence
     for (i = startSentence; i <= endSentence; ++i) //   mark that we have found this word, either in original or canonical form
@@ -596,13 +596,13 @@ void MarkAllImpliedWords()
 			continue;	// ignore this
 		if (!wordCanonical[i] || !*wordCanonical[i]) wordCanonical[i] = original; // in case failure below
 
-		if (showMark) Log(ECHOSTDUSERLOG,(char*)"\r\n");
+		if (showMark) Log(ECHOSTDTRACELOG,(char*)"\r\n");
 		NextInferMark(); // blocks circular fact marking.
 		pos->inferMark = inferMark; // dont mark these supersets of pos-tagging stuff
 		sys->inferMark = inferMark; // dont mark these supersets of pos-tagging stuff
 		role->inferMark = inferMark; // dont mark these supersets of pos-tagging stuff
 
- 		if (trace  & (TRACE_HIERARCHY | TRACE_PREPARE) || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"\r\n%d: %s (raw): ",i,original);
+ 		if (trace  & (TRACE_HIERARCHY | TRACE_PREPARE) || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"\r\n%d: %s (raw): ",i,original);
 
 		uint64 flags = posValues[i];
 		//if (flags & ADJECTIVE_NOUN) // transcribe back to adjective
@@ -683,7 +683,7 @@ void MarkAllImpliedWords()
 			if (i < wordCount && *wordStarts[i+1] == '/' && wordStarts[i+1][1] == 0 && finalPosValues[i+2] & (NOUN_NUMBER | ADJECTIVE_NUMBER))
 			{
 				MarkFacts(MakeMeaning(Dplacenumber),i,i);  
-				if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"=%s/%s \r\n",wordStarts[i],wordStarts[i+2]);
+				if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"=%s/%s \r\n",wordStarts[i],wordStarts[i+2]);
 			}
 			else if (IsDigit(*wordStarts[i]) && IsPlaceNumber(wordStarts[i])) // finalPosValues[i] & (NOUN_NUMBER | ADJECTIVE_NUMBER) 
 			{
@@ -754,7 +754,7 @@ void MarkAllImpliedWords()
 			StdMark(MakeTypedMeaning(OL,0,restriction), i, i,false);
 		}
 
-        if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)" // "); //   close original meanings lowercase
+        if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)" // "); //   close original meanings lowercase
 
 		markLength = 0;
 		if (IS_NEW_WORD(OU) && (OL || CL)) {;} // uppercase original was unknown and we have lower case forms, ignore upper.
@@ -769,7 +769,7 @@ void MarkAllImpliedWords()
 
 		if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
 		{
-			Log(STDUSERLOG,(char*)"\r\n%d: %s (canonical): ", i,wordCanonical[i] ); //    original meanings lowercase
+			Log(STDTRACELOG,(char*)"\r\n%d: %s (canonical): ", i,wordCanonical[i] ); //    original meanings lowercase
 		}
 
 		//   canonical word
@@ -790,7 +790,7 @@ void MarkAllImpliedWords()
 		
 
  		markLength = 0;
-	    if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)" // "); //   close canonical form lowercase
+	    if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)" // "); //   close canonical form lowercase
  		
 		// mark upper case canonical 
 		StdMark(MakeTypedMeaning(CU,0, NOUN), i, i,true);
@@ -798,7 +798,7 @@ void MarkAllImpliedWords()
 		// canonical word is a number (maybe we didn't register original right) eg. "how much is 24 and *seven"
 		if (IsDigit(*wordCanonical[i]) && IsNumber(wordCanonical[i])) MarkFacts(Mnumber,i,i,true);  
 
-		if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)" "); //   close canonical form uppercase
+		if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)" "); //   close canonical form uppercase
 		markLength = 0;
 	
         //   peer into multiword expressions  (noncanonical), in case user is emphasizing something so we dont lose the basic match on words
@@ -863,7 +863,7 @@ void MarkAllImpliedWords()
 		if (D->internalBits & UTF8) MarkFacts(MakeMeaning(StoreWord((char*)"~utf8")),i,i);
 		if (D->internalBits & UPPERCASE_HASH && D->length > 1)  MarkFacts(MakeMeaning(Dpropername),i,i);  // historical - internal is uppercase
 
-        if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"\r\n");
+        if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"\r\n");
 
 		D = FindWord(wordStarts[i]);
 		if (*wordStarts[i] == 'I' && !wordStarts[i][1]) {;} // ignore "I"
@@ -871,10 +871,10 @@ void MarkAllImpliedWords()
 		{
 			char word[MAX_WORD_SIZE];
 			MakeLowerCopy(word,D->word);
-			if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"%d: %s (lower): ", i,word ); //    original meanings lowercase
+			if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"%d: %s (lower): ", i,word ); //    original meanings lowercase
 			D = StoreWord(word);
 			StdMark(MakeMeaning(D), i, i,true);
-			if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDUSERLOG,(char*)"\r\n");
+			if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"\r\n");
 		}
 	
     }

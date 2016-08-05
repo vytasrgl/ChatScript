@@ -1,4 +1,9 @@
-Version 6.2a 7-31-2016
+Version 6.7b 8-5-2016
+USER TOPIC FILE FORMAT now detects the old format again, and accepts it, along with newer format.
+1. %zulutime - format: 2016-07-27T11:38:35.0Z
+2. documented   :trace factcreate x y z in debugging manual to trace specific fact creations
+
+Version 6.7a 7-31-2016
 1. ^'xxxxx'  -- active json string. Advanced manual.
 2. postgres user storage name now includes USERS/ and .txt at end
 3. renamed %http_response to %httpresponse. Json manual

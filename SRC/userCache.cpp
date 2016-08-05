@@ -100,7 +100,7 @@ static void WriteCache(unsigned int which,size_t size)
 #endif
 	userFileSystem.userWrite(ptr,1,size,out);
 	userFileSystem.userClose(out);
-	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"write out %s cache (%d)\r\n",ptr,which);
+	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"write out %s cache (%d)\r\n",ptr,which);
 
 	cacheIndex[TIMESTAMP(which)] &= 0x00ffffff;	// clear volley count since last written but keep time info
 }
@@ -252,7 +252,7 @@ char* GetFileRead(char* user,char* computer)
 		size_t readit;
 		readit = userFileSystem.userRead(buffer,1,userCacheSize,in);
 		userFileSystem.userClose(in);
-		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"read in %s cache (%d)\r\n",word,currentCache);
+		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"read in %s cache (%d)\r\n",word,currentCache);
 	}
 	return buffer;
 }

@@ -37,9 +37,9 @@ resume:
 		if (result & SUCCESSCODES) result = NOPROBLEM_BIT;	// legal way to terminate the piece with success at any  level
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 		{
-			if (result & ENDCODES) id = Log(STDUSERTABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
-			else if (*word1 == '1' && word1[1] == 0) id = Log(STDUSERTABLOG,(char*)"else ");
-			else id = Log(STDUSERTABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
+			if (result & ENDCODES) id = Log(STDTRACETABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
+			else if (*word1 == '1' && word1[1] == 0) id = Log(STDTRACETABLOG,(char*)"else ");
+			else id = Log(STDTRACETABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
 		}
 		ChangeDepth(-1,(char*)"TestIf");
 		ptr = ReadCompiledWord(ptr,op); // find out what happens next after function call
@@ -94,13 +94,13 @@ resume:
 				if (*remap == '^') sprintf(label,"%s->%s",remap,word1);
 				if (!*found) 
 				{
-					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (null) ",label);
-					else id = Log(STDUSERTABLOG,(char*)"If %s (null) ",label);
+					if (invert) id = Log(STDTRACETABLOG,(char*)"If !%s (null) ",label);
+					else id = Log(STDTRACETABLOG,(char*)"If %s (null) ",label);
 				}
 				else 
 				{
-					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (%s) ",label,found);
-					else id = Log(STDUSERTABLOG,(char*)"If %s (%s) ",label,found);
+					if (invert) id = Log(STDTRACETABLOG,(char*)"If !%s (%s) ",label,found);
+					else id = Log(STDTRACETABLOG,(char*)"If %s (%s) ",label,found);
 				}
 			}
 			if (!*found) result = FAILRULE_BIT;
@@ -110,9 +110,9 @@ resume:
 		{
 			if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 			{
-				if (result & ENDCODES) id = Log(STDUSERTABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
-				else if (*word1 == '1' && word1[1] == 0) id = Log(STDUSERTABLOG,(char*)"else ");
-				else id = Log(STDUSERTABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
+				if (result & ENDCODES) id = Log(STDTRACETABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
+				else if (*word1 == '1' && word1[1] == 0) id = Log(STDTRACETABLOG,(char*)"else ");
+				else id = Log(STDTRACETABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
 			}
 			ptr -= strlen(word1) + 3; //   back up to process the word and space
 			ptr = FreshOutput(ptr,word2,result,OUTPUT_ONCE|OUTPUT_KEEPSET) + 2; //   returns on the closer and we skip to accel
@@ -124,25 +124,25 @@ resume:
 	{
 		if (!(result & ENDCODES)) 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" AND ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" AND ");
 			goto resume;
 			//   If he fails (result is one of ENDCODES), we fail
 		}
 		else 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" ... ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" ... ");
 		}
 	}
 	else if (*op == 'o') //  OR
 	{
 		if (!(result & ENDCODES)) 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" ... ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" ... ");
 			result = NOPROBLEM_BIT;
 		}
 		else 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" OR ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" OR ");
 			goto resume;
 		}
 	}
@@ -185,7 +185,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			int positionStart, positionEnd;
 			int whenmatched = 0;
 			bool failed = false;
-			if (!Match(ptr+10,0,start,(char*)"(",true,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
+			if (!Match(ptr+10,0,start,(char*)"(",1,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
 			if (clearUnmarks) // remove transient global disables.
 			{
 				clearUnmarks = false;
@@ -197,17 +197,17 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			{
 				if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() ) //   display the entire matching responder and maybe wildcard bindings
 				{
-					Log(STDUSERTABLOG,(char*)"  **  Match: ");
+					Log(STDTRACETABLOG,(char*)"  **  Match: ");
 					if (wildcardIndex)
 					{
-						Log(STDUSERTABLOG,(char*)"  Wildcards: (");
+						Log(STDTRACETABLOG,(char*)"  Wildcards: (");
 						for (int i = 0; i < wildcardIndex; ++i)
 						{
-							if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s (%d-%d)   ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
-							else Log(STDUSERLOG,(char*)"_%d=  ",i);
+							if (*wildcardOriginalText[i]) Log(STDTRACELOG,(char*)"_%d=%s / %s (%d-%d)   ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
+							else Log(STDTRACELOG,(char*)"_%d=  ",i);
 						}
 					}
-					Log(STDUSERLOG,(char*)"\r\n");
+					Log(STDTRACELOG,(char*)"\r\n");
 				}
 			}
 			result = (failed) ? FAILRULE_BIT : NOPROBLEM_BIT;
@@ -271,7 +271,7 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 	while (counter-- > 0)
 	{
 		ChangeDepth(1,(char*)"HandleLoop");
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"loop (%d)\r\n",counter+1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"loop (%d)\r\n",counter+1);
 		FunctionResult result1;
 		Output(ptr,buffer,result1,OUTPUT_LOOP);
 		buffer += strlen(buffer);
@@ -285,7 +285,7 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 			break;//   potential failure if didnt add anything to buffer
 		}
 	}
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"end of loop\r\n");
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"end of loop\r\n");
 	--withinLoop;
 
 	currentIterator = oldIterator;
@@ -482,21 +482,21 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 		}
 		if (!stricmp(word1,val1)) 
 		{
-			if (*word1) Log(STDUSERTABLOG,(char*)"if %s %s ",(*x) ? x : word1,op); // no need to show value
-			else Log(STDUSERTABLOG,(char*)"if null %s ",op);
+			if (*word1) Log(STDTRACETABLOG,(char*)"if %s %s ",(*x) ? x : word1,op); // no need to show value
+			else Log(STDTRACETABLOG,(char*)"if null %s ",op);
 		}
-		else if (!*val1) Log(STDUSERTABLOG,(char*)"if  %s (null) %s ",word1,op);
-		else if (*op == '&')  Log(STDUSERTABLOG,(char*)"if  %s (%s) %s ",word1,x,op);
-		else Log(STDUSERTABLOG,(char*)"if  %s (%s) %s ",word1,val1,op);
+		else if (!*val1) Log(STDTRACETABLOG,(char*)"if  %s (null) %s ",word1,op);
+		else if (*op == '&')  Log(STDTRACETABLOG,(char*)"if  %s (%s) %s ",word1,x,op);
+		else Log(STDTRACETABLOG,(char*)"if  %s (%s) %s ",word1,val1,op);
 
 		if (!strcmp(word2,val2)) 
 		{
-			if (*val2) id = Log(STDUSERLOG,(char*)" %s ",(*y) ? y : word2); // no need to show value
-			else id = Log(STDUSERLOG,(char*)" null "); 
+			if (*val2) id = Log(STDTRACELOG,(char*)" %s ",(*y) ? y : word2); // no need to show value
+			else id = Log(STDTRACELOG,(char*)" null "); 
 		}
-		else if (!*val2)  id = Log(STDUSERLOG,(char*)" %s (null) ",word2);
-		else if (*op == '&') id = Log(STDUSERLOG,(char*)" %s (%s) ",word2,y);
-		else id = Log(STDUSERLOG,(char*)" %s (%s) ",word2,val2);
+		else if (!*val2)  id = Log(STDTRACELOG,(char*)" %s (null) ",word2);
+		else if (*op == '&') id = Log(STDTRACELOG,(char*)" %s (%s) ",word2,y);
+		else id = Log(STDTRACELOG,(char*)" %s (%s) ",word2,val2);
 	}
 	else if (trace & TRACE_PATTERN && !output && CheckTopicTrace()) 
 	{

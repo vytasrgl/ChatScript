@@ -54,7 +54,7 @@ void AddError(char* buffer);
 char* ReadNextSystemToken(FILE* in,char* ptr, char* word, bool separateUnderscore=true,bool peek=false);
 char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore=true);
 
-#define BADSCRIPT(...) {ScriptError(); Log((compiling) ? BADSCRIPTLOG : STDUSERLOG , __VA_ARGS__); JumpBack();}
-#define WARNSCRIPT(...) {if (compiling) {ScriptWarn(); Log(STDUSERLOG, __VA_ARGS__); }} // readpattern calls from functions should not issue warnings
+#define BADSCRIPT(...) {ScriptError(); Log((compiling) ? BADSCRIPTLOG : STDTRACELOG , __VA_ARGS__); JumpBack();}
+#define WARNSCRIPT(...) {if (compiling) {ScriptWarn(); Log(STDTRACELOG, __VA_ARGS__); }} // readpattern calls from functions should not issue warnings
 
 #endif

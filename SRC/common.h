@@ -27,7 +27,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //#define DISCARDPOSTGRES 1
 //#define DISCARDMONGO 1
 //#define DISCARDDICTIONARYBUILD 1 // only a windows version can build a dictionary from scratch
-//#define DISCARDJSON 1
+//#define DISCARDJSON 1 
 //#define DISCARDJAVASCRIPT 1
 
 #ifdef LOEBNER
@@ -68,10 +68,12 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DISCARDJSON 1
 #define DISCARDJAVASCRIPT 1
 
-#elif MACH
+#elif __MACH__
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
 #define DISCARDJAVASCRIPT 1
+#define DISCARDPOSTGRES 1
+//#define DISCARDMONGO 1
 
 #else // GENERIC LINUX
 #define DISCARDJAVASCRIPT 1
@@ -183,13 +185,14 @@ using namespace std;
 #include "dictionarySystem.h"
 #include "os.h"
 #include "mainSystem.h"
+#include "factSystem.h"
 #include "functionExecute.h"
 
 #include "csocket.h"
 #include "constructCode.h"
 #include "english.h"
-#include "factSystem.h"
 #include "infer.h"
+#include "json.h"
 #include "markSystem.h"
 #include "mongodb.h"
 #include "outputSystem.h"

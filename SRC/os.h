@@ -31,9 +31,12 @@ void mystart(char* msg);
 extern bool logged;
 extern int filesystemOverride;
 
-// MEMORY SYSTEM
+#define RECORD_SIZE 4000
 
+// MEMORY SYSTEM
+extern char* inverseStringDepth[512];
 extern unsigned int maxBufferLimit;
+extern unsigned int maxInverseStringGap;
 extern unsigned int maxBufferSize;
 extern unsigned int maxBufferUsed;	
 extern unsigned int bufferIndex;
@@ -69,6 +72,7 @@ FILE* FopenBinaryWrite(const char* name); // only for binary data files
 FILE* FopenUTF8Write(const char* filename);
 FILE* FopenUTF8WriteAppend(const char* filename, const char* flags = "ab");
 typedef void (*FILEWALK)(char* name, uint64 flag);
+void CopyFile2File(const char* newname,const char* oldname,bool autoNumber);
 
 
 #ifdef INFORMATION
@@ -109,7 +113,7 @@ char* GetUserPath(char* name);
 
 #define SKIPWEEKDAY 4 // from gettimeinfo
 
-char* GetTimeInfo(bool nouser=false);
+char* GetTimeInfo(bool nouser=false,bool utc=false);
 char* GetMyTime(time_t curr);
 
 #ifdef __MACH__
@@ -127,12 +131,13 @@ unsigned int GetFutureSeconds(unsigned int seconds);
 #define SERVERLOG 0
 #define STDUSERLOG 1
 #define STDDEBUGLOG 2
-#define ECHOSTDUSERLOG 3
+#define ECHOSTDTRACELOG 3
+#define STDTRACELOG 4
 
 #define BADSCRIPTLOG 9
 #define BUGLOG 10
-#define STDUSERTABLOG 101
-#define STDUSERATTNLOG 201
+#define STDTRACETABLOG 101
+#define STDTRACEATTNLOG 201
 
 extern bool echo;
 extern bool showDepth;

@@ -195,7 +195,7 @@ static bool ReadUserFacts()
         int setid;
         ptr = ReadInt(ptr,setid); 
 		SET_FACTSET_COUNT(setid,0);
-		if (trace & TRACE_USER) Log(STDUSERLOG,(char*)"Facts[%d]\r\n",setid);
+		if (trace & TRACE_USER) Log(STDTRACELOG,(char*)"Facts[%d]\r\n",setid);
 	    while (ReadALine(readBuffer, 0)>= 0) 
 		{
 			if (*readBuffer == '#') break;
@@ -421,7 +421,7 @@ static bool ReadUserVariables()
 			echo = true;
 		}
 
-		if (trace & TRACE_VARIABLE) Log(STDUSERLOG,(char*)"uservar: %s=%s\r\n",readBuffer,ptr+1);
+		if (trace & TRACE_VARIABLE) Log(STDTRACELOG,(char*)"uservar: %s=%s\r\n",readBuffer,ptr+1);
     }
 
 	if (strcmp(readBuffer,(char*)"#`end variables")) 
@@ -570,6 +570,16 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 			ReadCompiledWord(x,timeturn15); // the timeturn id if there
 			if (stricmp(junk,saveVersion)) *buffer = 0;// obsolete format
 		}
+		else // older format
+		{
+			userRecordSourceBuffer = buffer + strlen(buffer) + 1; // filename
+			ReadALine(readBuffer,0);
+
+			char* x = ReadCompiledWord(readBuffer,junk);
+			x = ReadCompiledWord(x,timeturn0); // the start stamp id if there
+			x = ReadCompiledWord(x,timePrior); // the prior stamp id if there
+			ReadCompiledWord(x,timeturn15); // the timeturn id if there
+		}
 	}
     if (!buffer || !*buffer) 
 	{
@@ -579,7 +589,7 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 	}
 	else
 	{
-		if (trace & TRACE_USER) Log(STDUSERLOG,(char*)"loading user\r\n");
+		if (trace & TRACE_USER) Log(STDTRACELOG,(char*)"loading user\r\n");
 		if (!ReadUserTopics()) 
 		{
 			ReportBug((char*)"User data file TOPICS inconsistent\r\n");
@@ -605,7 +615,7 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 			ReportBug((char*)"User data file MESSAGES inconsistent\r\n");
 			return false;
 		}
-		if (trace & TRACE_USER) Log(STDUSERLOG,(char*)"user load completed normally\r\n");
+		if (trace & TRACE_USER) Log(STDTRACELOG,(char*)"user load completed normally\r\n");
 		oldRandIndex = randIndex = atoi(GetUserVariable((char*)"$cs_randindex")) + (volleyCount % MAXRAND);	// rand base assigned to user
 	}
 	userRecordSourceBuffer = NULL;
@@ -640,7 +650,7 @@ void KillShare()
 
 void ReadNewUser()
 {
-	if (trace & TRACE_USER) Log(STDUSERLOG,(char*)"New User\r\n");
+	if (trace & TRACE_USER) Log(STDTRACELOG,(char*)"New User\r\n");
 	ResetUserChat();
 	ClearUserVariables();
 	ClearUserFacts();

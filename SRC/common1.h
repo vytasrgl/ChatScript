@@ -6,8 +6,7 @@ typedef signed long long  int64;
 #define ALWAYS (1 == always)
 
 #define MAX_ARGUMENT_COUNT 400 //  assume 10 args 40 nested calls max. 
-#define MAX_ARG_BYTES 50000
-extern char callArgumentList[MAX_ARGUMENT_COUNT+1][MAX_ARG_BYTES];    //   function callArgumentList
+extern char* callArgumentList[MAX_ARGUMENT_COUNT+1];    //   function callArgumentList
 extern unsigned int callArgumentBase;
 
 #define ARGUMENT(n) callArgumentList[callArgumentBase+n]

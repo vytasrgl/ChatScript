@@ -23,6 +23,9 @@ char* testOutput = NULL;					// testing commands output reroute
 
 // buffer information
 #define MAX_BUFFER_COUNT 22
+unsigned int maxInverseString = 0;
+unsigned int maxInverseStringGap = 0xffffffff;
+
 unsigned int maxBufferLimit = MAX_BUFFER_COUNT;		// default number of system buffers for AllocateBuffer
 unsigned int maxBufferSize = MAX_BUFFER_SIZE;		// how big std system buffers from AllocateBuffer should be
 unsigned int maxBufferUsed = 0;						// worst case buffer use - displayed with :variables
@@ -33,6 +36,7 @@ char* buffers = 0;							//   collection of output buffers
 static char* overflowBuffers[MAX_OVERFLOW_BUFFERS];	// malloced extra buffers if base allotment is gone
 
 unsigned char memDepth[512];				// memory usage at depth
+char* inverseStringDepth[512];				// inverseString at start of depth
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
@@ -136,6 +140,7 @@ void ResetBuffers()
 	globalDepth = 0;
 	bufferIndex = baseBufferIndex;
 	memset(memDepth,0,sizeof(memDepth)); 
+	memset(inverseStringDepth,0,sizeof(inverseStringDepth)); 
 }
 
 void CloseBuffers()
@@ -152,14 +157,14 @@ void CloseBuffers()
 char* AllocateBuffer()
 {// CANNOT USE LOG INSIDE HERE, AS LOG ALLOCATES A BUFFER
 	char* buffer = buffers + (maxBufferSize * bufferIndex); 
-	if (showmem) Log(STDUSERLOG,(char*)"New BUff alloc %d\r\n",bufferIndex+1);
+	if (showmem) Log(STDTRACELOG,(char*)"New BUff alloc %d\r\n",bufferIndex+1);
 	if (++bufferIndex >= maxBufferLimit ) // want more than nominally allowed
 	{
 		if (bufferIndex > (maxBufferLimit+2) || overflowIndex > 20) 
 		{
 			char word[MAX_WORD_SIZE];
 			sprintf(word,(char*)"Corrupt bufferIndex %d or overflowIndex %d\r\n",bufferIndex,overflowIndex);
-			Log(STDUSERLOG,(char*)"%s\r\n",word);
+			Log(STDTRACELOG,(char*)"%s\r\n",word);
 			myexit(word);
 		}
 		--bufferIndex;
@@ -170,12 +175,12 @@ char* AllocateBuffer()
 			overflowBuffers[overflowLimit] = (char*) malloc(maxBufferSize);
 			if (!overflowBuffers[overflowLimit]) 
 			{
-				Log(STDUSERLOG,(char*)"out of buffers\r\n");
+				Log(STDTRACELOG,(char*)"out of buffers\r\n");
 				myexit((char*)"out of buffers");
 			}
 			overflowLimit++;
 			if (overflowLimit >= MAX_OVERFLOW_BUFFERS) myexit((char*)"Out of overflow buffers\r\n");
-			Log(STDUSERLOG,(char*)"Allocated extra buffer %d\r\n",overflowLimit);
+			Log(STDTRACELOG,(char*)"Allocated extra buffer %d\r\n",overflowLimit);
 		}
 		buffer = overflowBuffers[overflowIndex++];
 	}
@@ -195,7 +200,7 @@ void FreeBuffer()
 	if (overflowIndex) --overflowIndex; // keep the dynamically allocated memory for now.
 	else if (bufferIndex)  --bufferIndex; 
 	else ReportBug((char*)"Buffer allocation underflow")
-	if (showmem) Log(STDUSERLOG,(char*)"Buffer free %d\r\n",bufferIndex);
+	if (showmem) Log(STDTRACELOG,(char*)"Buffer free %d\r\n",bufferIndex);
 }
 
 /////////////////////////////////////////////////////////
@@ -212,6 +217,60 @@ void InitUserFiles()
 	userFileSystem.userWrite = fwrite;
 	userFileSystem.userDelete = FileDelete;
 	filesystemOverride = NORMALFILES;
+}
+
+void CopyFile2File(const char* newname,const char* oldname, bool automaticNumber)
+{
+	char name[MAX_WORD_SIZE];
+	FILE* out;
+	if (automaticNumber) // get next number
+	{
+		const char* at = strchr(newname,'.');	//   get suffix
+		int len = at - newname;
+		strncpy(name,newname,len);
+		strcpy(name,newname); //   base part
+		char* endbase = name + len;
+		int j = 0;
+		while (++j)
+		{
+			sprintf(endbase,(char*)"%d.%s",j,at+1);
+			out = FopenReadWritten(name);
+			if (out) fclose(out);
+			else break;
+		}
+	}
+	else strcpy(name,newname);
+
+	FILE* in = FopenReadWritten(oldname);
+	if (!in) 
+	{
+		unlink(name); // kill any old one
+		return;	
+	}
+	out = FopenUTF8Write(name);
+	if (!out) // cannot create 
+	{
+		return;
+	}
+	fseek (in, 0, SEEK_END);
+	unsigned long size = ftell(in);
+	fseek (in, 0, SEEK_SET);
+
+	char buffer[RECORD_SIZE];
+	while (size >= RECORD_SIZE)
+	{
+		fread(buffer,1,RECORD_SIZE,in);
+		fwrite(buffer,1,RECORD_SIZE,out);
+		size -= RECORD_SIZE;
+	}
+	if (size > 0)
+	{
+		fread(buffer,1,size,in);
+		fwrite(buffer,1,size,out);
+	}
+
+	fclose(out);
+	fclose(in);
 }
 
 int MakeDirectory(char* directory)
@@ -250,7 +309,7 @@ void C_Directories(char* x)
 	if (bytes >= 0) 
 	{
 		word[bytes] = 0;
-		Log(STDUSERLOG,(char*)"execution path: %s\r\n",word);
+		Log(STDTRACELOG,(char*)"execution path: %s\r\n",word);
 	}
 
 #ifdef WIN32
@@ -260,11 +319,11 @@ void C_Directories(char* x)
     #include <unistd.h>
     #define GetCurrentDir getcwd
 #endif
-	if (GetCurrentDir(word, MAX_WORD_SIZE)) Log(STDUSERLOG,(char*)"current directory path: %s\r\n",word);
+	if (GetCurrentDir(word, MAX_WORD_SIZE)) Log(STDTRACELOG,(char*)"current directory path: %s\r\n",word);
 
-	Log(STDUSERLOG,(char*)"readPath: %s\r\n",readPath);
-	Log(STDUSERLOG,(char*)"writeablePath: %s\r\n",writePath);
-	Log(STDUSERLOG,(char*)"untouchedPath: %s\r\n",staticPath);
+	Log(STDTRACELOG,(char*)"readPath: %s\r\n",readPath);
+	Log(STDTRACELOG,(char*)"writeablePath: %s\r\n",writePath);
+	Log(STDTRACELOG,(char*)"untouchedPath: %s\r\n",staticPath);
 }
 
 void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath)
@@ -533,13 +592,13 @@ char* GetUserPath(char* login)
 /// TIME FUNCTIONS
 /////////////////////////////////////////////////////////
 
-char* GetTimeInfo(bool nouser) //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
+char* GetTimeInfo(bool nouser,bool utc) //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
 {
     time_t curr = time(0); // local machine time
     if (regression) curr = 44444444; 
 	ptm = localtime (&curr);
-
 	char* utcoffset = (nouser) ? (char*)"" : GetUserVariable((char*)"$cs_utcoffset");
+	if (utc) utcoffset = (char*)"+0";
 	if (*utcoffset) // report UTC relative time - so if time is 1PM and offset is -1:00, time reported to user is 12 PM.  
 	{
 		ptm = gmtime (&curr); 
@@ -847,14 +906,16 @@ void ChangeDepth(int value,char* where)
 			ReportBug((char*)"depth %d not closing bufferindex correctly at %s bufferindex now %d was %d\r\n",globalDepth,where,bufferIndex,memDepth[globalDepth]);
 			memDepth[globalDepth] = 0;
 		}
+		stringInverseFree = inverseStringDepth[globalDepth]; // deallocoate ARGUMENT space
 		globalDepth += value;
-		if (showDepth) Log(STDUSERLOG,(char*)"-depth %d after %s bufferindex %d\r\n", globalDepth,where, bufferIndex);
+		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d\r\n", globalDepth,where, bufferIndex);
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDUSERLOG,(char*)"+depth %d before %s bufferindex %d\r\n",globalDepth, where, bufferIndex);
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d\r\n",globalDepth, where, bufferIndex);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
+		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
 	}
 	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
 	if (globalDepth >= 511)
@@ -870,10 +931,18 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	if (channel == SERVERLOG) channelID = 2;
 	else channelID = 1;
 
+	bool tracing = false;
+	if (channel == STDTRACELOG)
+	{
+		tracing = true;
+		channel = STDUSERLOG;
+	}
+	else if (channel == STDTRACETABLOG || channel == STDTRACEATTNLOG) tracing = true;
+
 	static unsigned int id = 1000;	if (quitting) return id;
 	logged = true;
 	bool localecho = false;
-	if (channel == ECHOSTDUSERLOG)
+	if (channel == ECHOSTDTRACELOG)
 	{
 		localecho = true;
 		channel = STDUSERLOG;
@@ -890,7 +959,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	int jsonlen = 0;
 	char jsonform[MAX_WORD_SIZE];
 #ifndef DISCARDMONGO
-	if (filesystemOverride == MONGOFILES) // hidden json data wrapper
+	if (filesystemOverride == MONGOFILES && !tracing) // hidden json data wrapper
 	{
 		static long iteration = 0; // insures local uniqueness
 		++iteration;
@@ -921,11 +990,11 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		at += 4;
 	}
 	//   any channel above 1000 is same as 101
-	else if (channel > 1000) channel = STDUSERTABLOG; //   force result code to indent new line
+	else if (channel > 1000) channel = STDTRACELOG; //   force result code to indent new line
 
 	//   channels above 100 will indent when prior line not ended
-	if (channel >= STDUSERTABLOG && last != '\\') //   indented by call level and not merged
-	{ //   STDUSERTABLOG 101 is std indending characters  201 = attention getting
+	if (channel >= STDTRACELOG && last != '\\') //   indented by call level and not merged
+	{ //   STDTRACELOG 101 is std indending characters  201 = attention getting
 		if (last == 1 && globalDepth == priordepth) {} // we indented already
 		else if (last == 1 && globalDepth > priordepth) // we need to indent a bit more
 		{
@@ -952,7 +1021,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (n < 0) n = 0; //   just in case
 			for (int i = 0; i < n; i++)
 			{
-				if (channel == STDUSERATTNLOG) *at++ = (i == 1) ? '*' : ' ';
+				if (channel == STDTRACEATTNLOG) *at++ = (i == 1) ? '*' : ' ';
 				else *at++ = (i == 4 || i == 9) ? ',' : '.';
 				// *at++ = ' ';
 			}
@@ -1151,7 +1220,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 #endif
 
 #ifndef DISCARDMONGO
-	if (filesystemOverride == MONGOFILES) // filesystem is mongo, copy logs to there (server or user channel)
+	if (filesystemOverride == MONGOFILES && !tracing) // filesystem is mongo, copy logs to there (server or user channel)
 	{
 		sprintf(logbase+bufLen," \"} "); // terminate entire json string
 		jsonlen += strlen(logbase+bufLen);
