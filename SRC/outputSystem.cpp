@@ -498,7 +498,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 		// is choice a repeat of something already said... if so try again
 		if (*buffer && HasAlreadySaid(buffer)) 
 		{
-			if (trace) Log(STDTRACELOG,(char*)"Choice %s already said\r\n",buffer);
+			if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"Choice %s already said\r\n",buffer);
 			*buffer = 0;
 			choiceset[r] = choiceset[--count];
 		}
@@ -523,11 +523,12 @@ char* FreshOutput(char* ptr,char* buffer,FunctionResult &result,int controls,uns
 	ptr = Output(ptr,currentOutputBase,result,controls);
 	if (limit != maxBufferSize) // someone's small local buffer
 	{
-		if (strlen(currentOutputBase) >= limit) 
+		size_t olen = strlen(currentOutputBase);
+		if (olen >= limit) 
 		{
 			strncpy(buffer,currentOutputBase,limit-1);
 			buffer[limit-1] = 0;
-			ReportBug((char*)"FreshOutput limit truncated: %s\r\n",buffer);
+			ReportBug((char*)"FreshOutput of %d exceeded caller limit of %d. Truncated: %s\r\n",olen,maxBufferSize,buffer);
 		}
 		else strcpy(buffer,currentOutputBase);
 		FreeOutputBuffer();

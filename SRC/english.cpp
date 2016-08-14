@@ -311,7 +311,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	{
 		int x = at-1;
 		while (--x >= start) if (*wordStarts[x] == '"') break;
-		if (*wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
+		if (x > 0 && wordStarts[x] && *wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
 	}
 	if (wordStarts[start] && (*wordStarts[start] == '"' || *wordStarts[start] == '(')) ++start; // skip over any quotes or paren starter -- consider next thing a starter
 	uint64 properties = 0;

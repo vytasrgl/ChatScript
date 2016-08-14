@@ -373,10 +373,15 @@ char* AddEscapes(char* to, char* from, bool normal) // normal true means dont fl
 		else if (*at == '\t') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 't';}
 		else if (*at == '"') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = '"';}
 		// detect it is already escaped
-		else if (*at == '\\') // just pass it along
+		else if (*at == '\\')
 		{
-			*to++ = '\\';  
-			*to++ = *++at;
+			char* at1 = at + 1;
+			if (*at1 && (*at1 == 'n' || *at1 == 'r' || *at1 == 't' || *at1 == '"' || *at1 == 'u' || *at1 == '\\'))  // just pass it along
+			{
+				*to++ = *at;
+				*to++ = *++at;
+			}
+			else { if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = '\\'; }
 		}
 		// no escape needed
 		else *to++ = *at;
@@ -384,6 +389,7 @@ char* AddEscapes(char* to, char* from, bool normal) // normal true means dont fl
 	*to = 0;
 	return to; // return where we ended
 }
+
 void AcquireDefines(char* fileName)
 { // dictionary entries:  `xxxx (property names)  ``xxxx  (systemflag names)  ``` (parse flags values)  -- and flipped:  `nxxxx and ``nnxxxx and ```nnnxxx with infermrak being ptr to original name
 
@@ -505,7 +511,7 @@ void AcquireDefines(char* fileName)
 			if (!E->inferMark) E->inferMark = MakeMeaning(D); // if number value NOT already defined, use this definition
 		}
 	}
-	fclose(in);
+	FClose(in);
 }
 
 void AcquirePosMeanings()

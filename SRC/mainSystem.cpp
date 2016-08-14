@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.7b";
+char* version = "6.8";
 
 // Technically using atomic is not helpful here. EVServer runs a single thread per core (excluding the event library)
 // and the alternate server code in csocket has a single thread for the engine so it cannot be out of synch with these variables.
@@ -17,7 +17,7 @@ unsigned int tokenCount;						// for document performc
 bool callback = false;						// when input is callback,alarm,loopback, dont want to enable :retry for that...
 int timerLimit = 0;						// limit time per volley
 int timerCheckRate = 0;					// how often to check calls for time
-int volleyStartTime = 0;
+clock_t volleyStartTime = 0;
 int timerCheckInstance = 0;
 char* privateParams = NULL;
 char hostname[100];
@@ -621,7 +621,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		{
 			sprintf(logFilename,(char*)"%s/build0_log.txt",users);
 			FILE* in = FopenUTF8Write(logFilename);
-			if (in) fclose(in);
+			if (in) FClose(in);
 			commandLineCompile = true;
 			int result = ReadTopicFiles(argv[i]+7,BUILD0,NO_SPELL);
  			myexit((char*)"build0 complete",result);
@@ -630,7 +630,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		{
 			sprintf(logFilename,(char*)"%s/build1_log.txt",users);
 			FILE* in = FopenUTF8Write(logFilename);
-			if (in) fclose(in);
+			if (in) FClose(in);
 			commandLineCompile = true;
 			int result = ReadTopicFiles(argv[i]+7,BUILD1,NO_SPELL);
  			myexit((char*)"build1 complete",result);
@@ -741,10 +741,11 @@ static void CheckTracedFunction(WORDP D, uint64 junk)
 	}
 }
 
-void SaveTracedFunctions()
+unsigned int SaveTracedFunctions()
 {
 	tracedFunctionsIndex = 0;
 	WalkDictionary(CheckTracedFunction,0);
+	return tracedFunctionsIndex;
 }
 
 static void RestoreTracedFunctions()
@@ -958,7 +959,7 @@ inputRetry:
     }
 	if (sourceFile != stdin) 
 	{
-		fclose(sourceFile);  // to get here, must have been a source file that ended
+		FClose(sourceFile);  // to get here, must have been a source file that ended
 		sourceFile = stdin;
 	}
 	Log(STDTRACELOG, "Sourcefile Time used %ld ms for %d sentences %d tokens.\r\n",ElapsedMilliseconds() - sourceStart,sourceLines,sourceTokens);
@@ -1207,7 +1208,7 @@ void FinishVolley(char* incoming,char* output,char* postvalue)
 		
 		time_t curr = time(0);
 		if (regression) curr = 44444444; 
-		char* when = GetMyTime(curr);
+		char* when = GetMyTime(curr); // now
 		if (*incoming) strcpy(timePrior,GetMyTime(curr)); // when we did the last volley
 		if (!stopUserWrite) WriteUserData(curr); 
 		else stopUserWrite = false;
@@ -1217,8 +1218,9 @@ void FinishVolley(char* incoming,char* output,char* postvalue)
 		{
 			char buff[20000];
 			char time15[MAX_WORD_SIZE];
+			unsigned int lapsedMilliseconds = ElapsedMilliseconds() - volleyStartTime;
 			*time15 = 0;
-			if (volleyCount == 15 && timeturn15[1]) sprintf(time15,(char*)" F:%s ",timeturn15);
+			sprintf(time15,(char*)" F:%d ",lapsedMilliseconds);
 			*buff = 0;
 			if (responseIndex && regression != NORMAL_REGRESSION) ComputeWhy(buff,-1);
 
@@ -1950,12 +1952,12 @@ bool AddResponse(char* msg, unsigned int responseControl)
 		word[100] = 0;
 		char* at = word;
 		while ((at = strchr(at,'\n'))) *at = ' ';
+		at = word;
 		while ((at = strchr(at,'\r'))) *at = ' ';
 		ReportBug((char*)"response too big %s...",word)
 		strcpy(msg+OUTPUT_BUFFER_SIZE-5,(char*)"..."); //   prevent trouble
 		len = strlen(msg);
 	}
-	
 
 	// Do not change any oob data or test for repeat
     strcpy(buffer,msg);
@@ -1989,7 +1991,7 @@ bool AddResponse(char* msg, unsigned int responseControl)
     else if (all || HasAlreadySaid(at) ) // dont really do this, either because it is a repeat or because we want to see all possible answers
     {
 		if (all) Log(ECHOSTDTRACELOG,(char*)"Choice %d: %s  why:%s %d.%d %s\r\n\r\n",++choiceCount,at,GetTopicName(currentTopicID,false),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),ShowRule(currentRule));
-        else if (trace) Log(STDTRACELOG,(char*)"Rejected: %s already said\r\n",buffer);
+        else if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"Rejected: %s already said\r\n",buffer);
 		else if (showReject) Log(ECHOSTDTRACELOG,(char*)"Rejected: %s already said\r\n",buffer);
         memset(msg,0,len+1); //   kill partial output
 		FreeBuffer();
@@ -2344,7 +2346,7 @@ int main(int argc, char * argv[])
 		chdir((char*)"..");
 #endif
 	}
-	else fclose(in); 
+	else FClose(in); 
 
 	if (InitSystem(argc,argv)) myexit((char*)"failed to load memory\r\n");
     if (!server) MainLoop();

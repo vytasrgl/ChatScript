@@ -58,7 +58,7 @@ int MakeDirectory(char* directory);
 extern unsigned int currentFileLine;
 extern char currentFilename[MAX_WORD_SIZE];
 extern struct tm* ptm;
-
+int FClose(FILE* file);
 void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath);
 void C_Directories(char* x);
 void StartFile(const char* name);
@@ -160,6 +160,7 @@ extern bool serverctrlz;
 unsigned int Log(unsigned int spot,const char * fmt, ...);
 void Bug();
 void ChangeDepth(int value,char* where);
+void BugBacktrace(FILE* out);
 
 // RANDOM NUMBERS
 

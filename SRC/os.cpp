@@ -37,10 +37,11 @@ static char* overflowBuffers[MAX_OVERFLOW_BUFFERS];	// malloced extra buffers if
 
 unsigned char memDepth[512];				// memory usage at depth
 char* inverseStringDepth[512];				// inverseString at start of depth
+static char* nameDepth[512];				// who are we?
+static char* ruleDepth[512];				// current rule
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
-
 
 USERFILESYSTEM userFileSystem;
 static char staticPath[MAX_WORD_SIZE]; // files that never change
@@ -113,7 +114,7 @@ void myexit(char* msg, int code)
 	if (in) 
 	{
 		fprintf(in,(char*)"%s %d - called myexit at %s\r\n",msg,code,GetTimeInfo(true));
-		fclose(in);
+		FClose(in);
 	}
 	if (code == 0) exit(0);
 	else exit(EXIT_FAILURE);
@@ -127,7 +128,7 @@ void mystart(char* msg)
 	if (in) 
 	{
 		fprintf(in,(char*)"System startup %s %s\r\n",msg,GetTimeInfo(true));
-		fclose(in);
+		FClose(in);
 	}
 }
 
@@ -207,12 +208,19 @@ void FreeBuffer()
 /// FILE SYSTEM
 /////////////////////////////////////////////////////////
 
+int FClose(FILE* file)
+{
+	int answer = fclose(file);
+	*currentFilename = 0;
+	return answer;
+}
+
 void InitUserFiles()
 { 
 	// these are dynamically stored, so CS can be a DLL.
 	userFileSystem.userCreate = FopenBinaryWrite;
 	userFileSystem.userOpen = FopenReadWritten;
-	userFileSystem.userClose = fclose;
+	userFileSystem.userClose = FClose;
 	userFileSystem.userRead = fread;
 	userFileSystem.userWrite = fwrite;
 	userFileSystem.userDelete = FileDelete;
@@ -235,7 +243,7 @@ void CopyFile2File(const char* newname,const char* oldname, bool automaticNumber
 		{
 			sprintf(endbase,(char*)"%d.%s",j,at+1);
 			out = FopenReadWritten(name);
-			if (out) fclose(out);
+			if (out) FClose(out);
 			else break;
 		}
 	}
@@ -269,8 +277,8 @@ void CopyFile2File(const char* newname,const char* oldname, bool automaticNumber
 		fwrite(buffer,1,size,out);
 	}
 
-	fclose(out);
-	fclose(in);
+	FClose(out);
+	FClose(in);
 }
 
 int MakeDirectory(char* directory)
@@ -431,7 +439,7 @@ FILE* FopenUTF8WriteAppend(const char* filename,const char* flags)
 	else strcpy(path,filename);
 
 	FILE* in = fopen(path,(char*)"rb"); // see if file already exists
-	if (in) fclose(in);
+	if (in) FClose(in);
 	FILE* out = fopen(path,flags);
 	if (out && !in) // mark file as UTF8 if new
 	{
@@ -897,6 +905,18 @@ unsigned int random(unsigned int range)
 /////////////////////////////////////////////////////////
 uint64 logCount = 0;
 
+void BugBacktrace(FILE* out)
+{
+	int i = globalDepth +1;
+	char rule[MAX_WORD_SIZE];
+	while (--i > 0) 
+	{
+		strncpy(rule,ruleDepth[i],50);
+		rule[50] = 0;
+		fprintf(out,"BugDepth %d: %s - %s\r\n",i,nameDepth[i],rule);
+	}
+}
+
 void ChangeDepth(int value,char* where)
 {
 	if (value < 0)
@@ -915,6 +935,8 @@ void ChangeDepth(int value,char* where)
 		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d\r\n",globalDepth, where, bufferIndex);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
+		nameDepth[globalDepth] = where;
+		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
 		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
 	}
 	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
@@ -1093,6 +1115,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
         at += strlen(at);
 		if (!ptr) break;
+		if ((at-logbase) >= (MAX_BUFFER_SIZE - 2000)) break; // prevent log overflow
     }
     *at = 0;
     va_end(ap); 
@@ -1102,7 +1125,6 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	if (last == '\\') *--at = 0;	//   dont show it (we intend to merge lines)
 	logUpdated = true; // in case someone wants to see if intervening output happened
 	size_t bufLen = at - logbase;
- 	logbase[bufLen] = 0;
 	inLog = true;
 	bool bugLog = false;
 		
@@ -1136,13 +1158,14 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		FILE* bug = FopenUTF8WriteAppend(name);
 		char located[MAX_WORD_SIZE];
 		*located = 0;
-		if (currentTopicID && currentRule) sprintf(located,(char*)"%s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
+		if (currentTopicID && currentRule) sprintf(located,(char*)" script: %s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
 		if (bug) //   write to a bugs file
 		{
-			if (*currentFilename) fprintf(bug,(char*)"   in %s at %d: %s\r\n",currentFilename,currentFileLine,readBuffer);
-			if (channel == BUGLOG && *currentInput) fprintf(bug,(char*)"%s: input:%d %s %s caller:%s callee:%s in sentence: %s at %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,currentInput,located);
+			if (*currentFilename) fprintf(bug,(char*)"BUG in %s at %d: %s ",currentFilename,currentFileLine,readBuffer);
+			if (!compiling && !loading && channel == BUGLOG && *currentInput)  fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located,currentInput);
 			fwrite(logbase,1,bufLen,bug);
-			fclose(bug);
+			if (!compiling && !loading) BugBacktrace(bug);
+			FClose(bug);
 
 		}
 		if ((echo||localecho) && !silent && !server)
@@ -1203,7 +1226,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
  			else if (*currentFilename) fprintf(out,(char*)"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
 			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
-		fclose(out);
+		FClose(out);
 		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logbase);
     }
 	

@@ -6,6 +6,9 @@
 
 #define PATTERN_UNWIND 1
 
+// functions that manage topic execution (hence displays) are: PerformTopic (gambit, responder), 
+// Reusecode, RefineCode, Rejoinder, Plan
+
 // max toplevel rules in a RANDOM topic
 int numberOfTopics = 0;
 
@@ -17,6 +20,7 @@ char* unwindLayer2 = NULL;
 // current operating data
 bool shared = false;
 bool loading = false;
+unsigned int currentTopicDisplay = 0;
 
 #define MAX_OVERLAPS 1000
 static WORDP overlaps[MAX_OVERLAPS];
@@ -225,7 +229,7 @@ void TraceSample(int topic, int ruleID,unsigned int how)
 					break;
 				}
 			}
-			fclose(in);
+			FClose(in);
 		}
 	}
 }
@@ -395,7 +399,7 @@ char* GetVerify(char* tag,int &topicid, int &id) //  ~topic.#.#=LABEL<~topic.#.#
 				break;
 			}
 		}
-		fclose(in);
+		FClose(in);
 	}
 	*rest = c;
 	FreeBuffer();
@@ -1385,17 +1389,18 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	if (!active) active = (tokenFlags & QUESTIONMARK)  ? QUESTION : STATEMENT;
     FunctionResult result = RETRYTOPIC_BIT;
 	unsigned oldTopic = currentTopicID;
-	ChangeDepth(1,(char*)"PerformTopic");
 	char* topicName = GetTopicName(currentTopicID);
-	unsigned int limit = 30;
+	int limit = 30;
 	unsigned int oldtrace = EstablishTopicTrace();
 	char value[100];
-	WORDP D = FindWord((char*)"^cs_topic_enter");
 
-	char* display[MAX_DISPLAY];
+	ChangeDepth(1,topicName); // PerformTopic
+	unsigned int oldTopicDisplay = currentTopicDisplay;
+	currentTopicDisplay = currentTopicID;
 	char* locals = GetTopicLocals(currentTopicID);
-	if (locals) InitDisplay(locals, display);
+	if (locals && currentTopicDisplay != oldTopicDisplay && !InitDisplay(locals)) result = FAILRULE_BIT;
 
+	WORDP D = FindWord((char*)"^cs_topic_enter");
 	if (D && !cstopicsystem)  
 	{
 		sprintf(value,(char*)"( %s %c )",topicName,active);
@@ -1417,8 +1422,11 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	if (result & FAILTOPIC_BIT) result = FAILRULE_BIT; // downgrade
 	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) 
 		id = Log(STDTRACETABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
+
+	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(locals);
+	currentTopicDisplay = oldTopicDisplay;
+	ChangeDepth(-1,topicName); // performtopic
 	
-	ChangeDepth(-1,(char*)"PerformTopic");
 	WORDP E = FindWord((char*)"^cs_topic_exit");
 	if (E && !cstopicsystem) 
 	{
@@ -1427,8 +1435,6 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 		Callback(E,value,false); 
 		cstopicsystem = false;
 	}
-
-	if (locals) RestoreDisplay(locals, display);
 
 	trace = oldtrace;
 	currentTopicID = oldTopic;
@@ -1995,7 +2001,7 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 			P->w.planArgCount = *argCount - '0'; // up to 9 arguments
 		}
 	}
-	fclose(in);
+	FClose(in);
 }
 
 static void ReadPatternData(const char* name,const char* layer,unsigned int build)
@@ -2034,7 +2040,7 @@ static void ReadPatternData(const char* name,const char* layer,unsigned int buil
 			unwindLayer2 = (char*) protect;
 		}
     }
-    fclose(in);
+    FClose(in);
 }
 
 void UnwindLayer2Protect()
@@ -2330,7 +2336,7 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 			AddRecursiveRequired(D,D,required,buildDictionary,build);
 		}
 	}
-	fclose(in);
+	FClose(in);
 }
 
 static void InitMacros(const char* name,const char* layer,unsigned int build)
@@ -2364,7 +2370,7 @@ static void InitMacros(const char* name,const char* layer,unsigned int build)
 		ptr = ReadCompiledWord(ptr,tmpWord); // skip over readable arg count, has arg count embedded also
 		D->w.fndefinition = (unsigned char*) AllocateString(ptr);
 	}
-	fclose(in);
+	FClose(in);
 }
 
 void AddContext(int topic, char* label)
@@ -2462,7 +2468,7 @@ static void InitLayerMemory(const char* name, int layer)
 	{
 		ReadALine(readBuffer,in);
 		ReadInt(readBuffer,total);
-		fclose(in);
+		FClose(in);
 		counter += total;
 	}
 	sprintf(filename,(char*)"TOPIC/plans%s.txt",name);
@@ -2476,7 +2482,7 @@ static void InitLayerMemory(const char* name, int layer)
 	{
 		ReadALine(readBuffer,in);
 		ReadInt(readBuffer,total);
-		fclose(in);
+		FClose(in);
 		counter += total;
 	}
 	int priorTopicCount = (layer) ? numberOfTopicsInLayer[layer - 1] : 0;

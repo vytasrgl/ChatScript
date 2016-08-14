@@ -146,6 +146,7 @@ char* GetRuleIDFromText(char* ptr, int & id);
 char* GetVerify(char* tag,int & topicid, int &id);//  ~topic.#.#=LABEL<~topic.#.#  is a maximally complete why
 void UnwindLayer2Protect();
 void InitKeywords(const char* name,const char* layer,unsigned int build,bool mark=false,bool concept=true);
+extern unsigned int currentTopicDisplay;
 
 // encoding
 void DummyEncode(char* &data);

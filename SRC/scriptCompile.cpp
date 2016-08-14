@@ -112,7 +112,7 @@ static char* ReadDisplay(FILE* in, char* ptr)
 		ptr = ReadNextSystemToken(in,ptr,word,false);
 		if (*word == ')') break;
 		if (*word != USERVAR_PREFIX) 
-			BADSCRIPT("Display argument must be uservar: %s",word)
+			BADSCRIPT("Display argument must be uservar of $$ $ or $_: %s",word)
 		AddDisplay(word); // explicit display
 	}
 	return ptr;
@@ -1144,7 +1144,7 @@ static void DoubleCheckSetOrTopic()
 		if (!IsSet(word) && !IsTopic(word)) 
 			WARNSCRIPT((char*)"Undefined set or topic %s\r\n",readBuffer)
 	}
-	fclose(in);
+	FClose(in);
 	remove((char*)"TOPIC/missingSets.txt");
 }
 
@@ -1162,7 +1162,7 @@ static void CheckSetOrTopic(char* name) // we want to prove all references to se
 	AddInternalFlag(D,BEEN_HERE);
 	FILE* out = FopenUTF8WriteAppend((char*)"TOPIC/missingsets.txt");
 	fprintf(out,(char*)"%s line %d in %s\r\n",word,currentFileLine,currentFilename);
-	fclose(out);
+	FClose(out);
 }
 
 static char* AddVerify(char* kind, char* sample)
@@ -1195,7 +1195,7 @@ static void WriteVerify()
 		{
 			fprintf(valid,(char*)"%s %s.%d.%d %s\r\n",space,currentTopicName,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),verifyLines[i]); 
 		}
-		fclose(valid);
+		FClose(valid);
 	}
 
 	verifyIndex = 0;
@@ -1246,7 +1246,7 @@ static void WriteKey(char* word)
 	if (out)
 	{
 		DownHierarchy(MakeMeaning(StoreWord(word)),out,0);
-		fclose(out);
+		FClose(out);
 	}
 }
 
@@ -1299,7 +1299,7 @@ static void NoteUse(char* label,char* topic)
 		if (out)
 		{
 			fprintf(out,(char*)"%s %s %s %d\r\n",label,topic,currentFilename,currentFileLine);
-			fclose(out);
+			FClose(out);
 		}
 	}
 }
@@ -1887,7 +1887,7 @@ static char* ReadDescribe(char* ptr, FILE* in,unsigned int build)
 		sprintf(file,(char*)"TOPIC/BUILD%s/describe%s.txt",baseName,baseName);
 		FILE* out = FopenUTF8WriteAppend(file);
 		fprintf(out,(char*)" %s %s\r\n",word,description);
-		fclose(out);
+		FClose(out);
 	}
 	return ptr;
 }
@@ -3508,7 +3508,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 		if ((D->internalBits & FUNCTION_BITS) ==  IS_TABLE_MACRO) fprintf(out,(char*)"%s T %d %d %s\r\n",macroName,D->x.macroFlags,functionArgumentCount,data);
 		else if ((D->internalBits & FUNCTION_BITS) == (IS_OUTPUT_MACRO|IS_PATTERN_MACRO))  fprintf(out,(char*)"%s %c %d %d %s\r\n",macroName,'D',D->x.macroFlags,functionArgumentCount,data);
 		else fprintf(out,(char*)"%s %c %d %d %s\r\n",macroName,((D->internalBits & FUNCTION_BITS) == IS_OUTPUT_MACRO) ? 'O' : 'P',D->x.macroFlags,functionArgumentCount,data);
-		fclose(out);
+		FClose(out);
 	}
 
 	return ptr;
@@ -4081,7 +4081,7 @@ static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 	fprintf(out,(char*)"TOPIC: %s 0x%x %d %d %d %d %s\r\n",currentTopicName,(unsigned int) flags,(unsigned int) checksum,(unsigned int) toplevelrules,(unsigned int) gambits,(unsigned int)(len + len1 + 7),currentFilename); 
 	fprintf(out,(char*)"\" %s \" ",restriction);
 	fprintf(out,(char*)"%s\r\n",data);
-	fclose(out);
+	FClose(out);
 	
 	free(data);
 	
@@ -4271,7 +4271,7 @@ static char* ReadPlan(char* ptr, FILE* in,unsigned int build)
 	{
 		FILE* out = FopenUTF8Write(build == BUILD0 ? (char*)"TOPIC/BUILD0/plans0.txt" : (char*)"TOPIC/BUILD1/plans1.txt");
 		fprintf(out,(char*)"%s",(char*)"0     \r\n"); //   reserve 5-digit count for number of plans
-		fclose(out);
+		FClose(out);
 	}
 	++hasPlans;
 
@@ -4281,7 +4281,7 @@ static char* ReadPlan(char* ptr, FILE* in,unsigned int build)
 	unsigned int len1 = (unsigned int)strlen(restriction);
 	fprintf(out,(char*)"PLAN: %s %d %d %d %s\r\n",planName,(unsigned int) functionArgumentCount,(unsigned int) toplevelrules,(unsigned int)(len + len1 + 7),currentFilename); 
 	fprintf(out,(char*)"\" %s \" %s\r\n",restriction,data);
-	fclose(out);
+	FClose(out);
 
 	free(data);
 	return ptr;
@@ -4337,7 +4337,7 @@ static char* ReadReplace(char* ptr, FILE* in, unsigned int build)
 		sprintf(filename,(char*)"TOPIC/BUILD%s/private%s.txt",baseName,baseName);
 		FILE* out = FopenUTF8WriteAppend(filename);
 		fprintf(out,(char*)" %s %s\r\n",word,replace);
-		fclose(out);
+		FClose(out);
 	}
 	return ptr;
 }
@@ -4348,7 +4348,7 @@ void SaveCanon(char* word, char* canon)
 	sprintf(filename,(char*)"TOPIC/BUILD%s/canon%s.txt",baseName,baseName);
 	FILE* out = FopenUTF8WriteAppend(filename);
 	fprintf(out,(char*)" %s %s\r\n",word,canon);
-	fclose(out);
+	FClose(out);
 	WritePatternWord(word);		// must recognize this word for spell check
 	WritePatternWord(canon);	// must recognize this word for spell check
 }
@@ -4565,7 +4565,7 @@ static void ReadTopicFile(char* name,uint64 buildid) //   read contents of a top
 		else if (!stricmp(word,(char*)"patternMacro:") || !stricmp(word,(char*)"outputMacro:") || !stricmp(word,(char*)"dualMacro:") || !stricmp(word,(char*)"tableMacro:")) ptr = ReadMacro(ptr,in,word,build);
 		else BADSCRIPT((char*)"FILE-1 Unknown top-level declaration %s in %s",word,name)
 	}
-	fclose(in);
+	FClose(in);
 	--jumpIndex;
 }
 
@@ -4590,7 +4590,7 @@ void DoubleCheckReuse()
 			else  WARNSCRIPT((char*)"Missing cross-topic label %s for reuse in File: %s Line: %d\r\n",word,tmpWord,line)
 		}
 	}
-	fclose(in);
+	FClose(in);
 	remove((char*)"TOPIC/missingLabel.txt");
 }
 
@@ -4695,7 +4695,7 @@ static void WriteConcepts(WORDP D, uint64 build)
 	}
 
 	fprintf(out,(char*)"%s",(char*)")\r\n");
-	fclose(out);
+	FClose(out);
 }
 
 static void WriteDictionaryChange(FILE* dictout, unsigned int build)
@@ -4822,8 +4822,8 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 		D->properties = prop;
 		D->systemFlags = flags;
 	}
-	fclose(in);
-    fclose(dictout);
+	FClose(in);
+    FClose(dictout);
 }
 
 static void WriteExtendedFacts(FILE* factout,FILE* dictout,unsigned int build)
@@ -4974,7 +4974,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	char* at = strchr(name,'.');
 	*at = 0;
 	fprintf(out,(char*)"0     %s %s\r\n",GetMyTime(time(0)),name); //   reserve 5-digit count for number of topics + timestamp  (AFTER BOM)
-	fclose(out);
+	FClose(out);
 	
 	uint64 oldtokenControl = tokenControl;
 	tokenControl = 0;
@@ -4997,8 +4997,8 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		else if (*word == ':' && word[1]) DoCommand(readBuffer,output); // testing command
 		else ReadTopicFile(word,build|FROM_FILE); // was explicitly named
 	}
-	if (in) fclose(in);
-	fclose(patternFile);
+	if (in) FClose(in);
+	FClose(patternFile);
 
 	StartFile((char*)"Post compilation Verification");
 
@@ -5023,7 +5023,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		bom[2] = 0xBF;
 		fwrite(bom,1,3,out);
 		fwrite(word,1,5 * sizeof(char),out);
-		fclose(out);
+		FClose(out);
 	}
 
 	if (hasPlans)
@@ -5036,7 +5036,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 			fseek(out,0,SEEK_SET);
 			sprintf(word,(char*)"%05d",hasPlans);
 			fwrite(word,1,5 * sizeof(char),out);
-			fclose(out);
+			FClose(out);
 		}
 	}
 

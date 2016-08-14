@@ -18,7 +18,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #include "common.h"
 
-#define MAX_DISPLAY 25
+#define MAX_DISPLAY 2500
 
 #define FAILCODES ( RESTART_BIT | FAILINPUT_BIT | FAILTOPIC_BIT | FAILLOOP_BIT | FAILRULE_BIT | FAILSENTENCE_BIT | RETRYSENTENCE_BIT | RETRYTOPIC_BIT | UNDEFINED_FUNCTION | RETRYINPUT_BIT )
 #define SUCCESSCODES ( ENDINPUT_BIT | ENDSENTENCE_BIT | NEXTLOOP_BIT | ENDTOPIC_BIT | ENDRULE_BIT | ENDCALL_BIT | ENDLOOP_BIT)
@@ -80,8 +80,8 @@ void DeletePermanentJavaScript();
 void DeleteTransientJavaScript();
 
 //   argument data for user calls
-char* InitDisplay(char* list, char* display[MAX_DISPLAY]);
-void RestoreDisplay(char* list,char* display[MAX_DISPLAY]);
+char* InitDisplay(char* list);
+void RestoreDisplay(char* list);
 extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
 

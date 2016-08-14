@@ -52,7 +52,7 @@ void RemoveMatchValue(WORDP D, int position)
 	{
 		if (data[i] == position) 
 		{
-			if (trace) Log(STDTRACELOG,(char*)"unmark %s @word %d  ",D->word,position);
+			if (trace & TRACE_PATTERN) Log(STDTRACELOG,(char*)"unmark %s @word %d  ",D->word,position);
 			memmove(data+i,data+i+2,(maxRefSentence - i - 2)); 
 			break;
 		}
@@ -71,8 +71,8 @@ void MarkWordHit(WORDP D, int start,int end)
 	// track the actual sets done matching start word location (good for verbs, not so good for nouns)
 	if (*D->word == '~')
 	{
-		if (!(D->internalBits & TOPIC)) Add2ConceptTopicList(concepts, D,start,false); // DOESNT need to be be marked as concept
-		else Add2ConceptTopicList(topics, D,start,false);
+		if (!(D->internalBits & TOPIC)) Add2ConceptTopicList(concepts, D,start,end,false); // DOESNT need to be be marked as concept
+		else Add2ConceptTopicList(topics, D,start,end,false);
 	}
 	// diff < 0 means peering INSIDE a multiword token before last word
 	// we label END as the word before it (so we can still see next word) and START as the actual multiword token
@@ -401,6 +401,7 @@ static void HuntMatch(char* word,bool strict,int start, int end, unsigned int& u
 {
 	WORDP set[20];
 	WORDP D;
+	int oldtrace = trace;
 	int i = GetWords(word,set,strict); // words in any case and with mixed underscore and spaces
 	while (i) 
 	{
@@ -409,6 +410,7 @@ static void HuntMatch(char* word,bool strict,int start, int end, unsigned int& u
 		if (*D->word == 'I' && !D->word[1]){;}
 		else MarkFacts(MakeMeaning(D),start,end,false,true); 
 	}
+	trace = oldtrace;
 }
 
 static void SetSequenceStamp() //   mark words in sequence, original and canonical (but not mixed) - detects proper name potential up to 5 words  - and does discontiguous phrasal verbs
@@ -555,7 +557,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 			}
 		}
 	}
-	if (trace) Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
+	if (trace & TRACE_PATTERN) Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
 
 	trace = oldtrace;
 	FreeBuffer();

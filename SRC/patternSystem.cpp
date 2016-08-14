@@ -846,7 +846,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					char rhsside[MAX_WORD_SIZE];
 					char* rhs = rhsside;
 					DecodeComparison(word, lhs, op, rhs);
-					if (trace) sprintf(word,(char*)"%s%s%s",lhs,op,rhs);
+					if (trace & TRACE_PATTERN) sprintf(word,(char*)"%s%s%s",lhs,op,rhs);
 					if (*lhs == '^') DecodeFNRef(lhs); // local function arg indirect ^$ var or _ as LHS
 					if (*rhs == '^') DecodeFNRef(rhs);// local function argument or indirect ^$ var  is LHS. copy across real argument
 				
@@ -871,7 +871,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 							matched = FindPhrase(val,(positionEnd < basicStart && firstMatched < 0) ? basicStart : positionEnd, reverse,
 								positionStart,positionEnd);
 							if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart; //   first SOLID match
-							if (trace) sprintf(word,(char*)"%s(%s)%s",lhs,val,op);
+							if (trace & TRACE_PATTERN) sprintf(word,(char*)"%s(%s)%s",lhs,val,op);
 							break;
 						}
 
@@ -879,7 +879,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						matched = MatchTest(reverse,FindWord(val),(positionEnd < basicStart && firstMatched < 0) ? basicStart : positionEnd,NULL,NULL,
 							quoted,junk,positionStart,positionEnd); 
 						if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart; //   first SOLID match
-						if (trace) sprintf(word,(char*)"%s(%s)%s",lhs,val,op);
+						if (trace & TRACE_PATTERN) sprintf(word,(char*)"%s(%s)%s",lhs,val,op);
 						break;
 					}
 	
@@ -891,7 +891,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						char word2val[MAX_WORD_SIZE];
 						FunctionResult answer = HandleRelation(lhs,op,rhs,false,id,word1val,word2val); 
 						matched = (answer & ENDCODES) ? 0 : 1;
-						if (trace) 
+						if (trace  & TRACE_PATTERN) 
 						{
 							if (!stricmp(lhs,word1val)) *word1val = 0; // dont need redundant constants in trace
 							if (!stricmp(rhs,word2val)) *word2val = 0; // dont need redundant constants in trace

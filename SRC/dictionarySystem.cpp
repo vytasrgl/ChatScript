@@ -132,12 +132,12 @@ void RemoveConceptTopic(int list[256], WORDP D,int index)
 	}
 }
 
-void Add2ConceptTopicList(int list[256], WORDP D,int index,bool unique)
+void Add2ConceptTopicList(int list[256], WORDP D,int start,int end,bool unique)
 {
 	MEANING M = MakeMeaning(D);
 	if (unique)
 	{
-		int at = list[index];
+		int at = list[start];
 		while (at)
 		{
 			MEANING* mlist = (MEANING*) Index2String(at);
@@ -147,9 +147,10 @@ void Add2ConceptTopicList(int list[256], WORDP D,int index,bool unique)
 	}
 
 	unsigned int* entry = (unsigned int*) AllocateString(NULL,2, sizeof(MEANING),false); // ref and link
-	entry[1] = list[index];
-	list[index] = String2Index((char*) entry);
+	entry[1] = list[start];
+	list[start] = String2Index((char*) entry);
 	entry[0] = M;
+	// entry[2] = (start << 8) | end; // currently unused because we use dictionary marks.
 }
 
 void ClearVolleyWordMaps()
@@ -500,7 +501,7 @@ void BuildShortDictionaryBase();
 static void EraseFile(char* file)
 {
 	FILE* out = FopenUTF8Write(UseDictionaryFile(file));
-	if (out) fclose(out);
+	if (out) FClose(out);
 }
 
 static void ClearDictionaryFiles()
@@ -539,7 +540,7 @@ void BuildDictionary(char* label)
 	{
 		miniDict = 1;
 		makeBaseList = true;
-		fclose(FopenUTF8Write((char*)"RAWDICT/basicwordlist.txt"));
+		FClose(FopenUTF8Write((char*)"RAWDICT/basicwordlist.txt"));
 		maxHashBuckets = 10000;
 		setMaxHashBuckets = true;
 		mini = "BASIC";
@@ -575,7 +576,7 @@ void BuildDictionary(char* label)
     WriteFacts(FopenUTF8Write(UseDictionaryFile((char*)"facts.txt")),factBase); 
 	sprintf(logFilename,(char*)"%s/build_log.txt",users); // all data logged here by default
 	FILE* out = FopenUTF8Write(logFilename);
-	if (out) fclose(out);
+	if (out) FClose(out);
 	printf((char*)"dictionary dump complete %d\r\n",miniDict);
 
     echo = true;
@@ -592,7 +593,7 @@ void InitDictionary()
 		if (in) 
 		{
 			maxHashBuckets = Read32(in); // bucket size used by dictionary file
-			fclose(in);
+			FClose(in);
 		}
 	}
 
@@ -746,6 +747,33 @@ char* AllocateInverseString(char* word, size_t len)
 	len = stringFree - stringInverseFree;
 	if (len < maxInverseStringGap) maxInverseStringGap = len;
 	return answer;
+}
+
+bool AllocateInverseSlot(char* variable)
+{
+	WORDP D = StoreWord(variable);
+
+	int len = sizeof(char*);
+    if ((stringInverseFree + len + 1) >= (stringFree - 5000)) // dont get close
+    {
+		ReportBug((char*)"Out of transient inverse string space\r\n")
+		return false;
+    }
+	char* answer = stringInverseFree;
+	memcpy(answer,&D->w.userValue,sizeof(char*));
+	if (D->word[1] == LOCALVAR_PREFIX) D->w.userValue = NULL; // autoclear local var
+	stringInverseFree += sizeof(char*);
+	len = stringFree - stringInverseFree;
+	if (len < maxInverseStringGap) maxInverseStringGap = len;
+	return true;
+}
+
+char* RestoreInverseSlot(char* variable,char* slot)
+{
+	WORDP D = FindWord(variable);
+	if (!D) return slot; // should never happen, we allocate dict entry on save
+	memcpy(&D->w.userValue,slot,sizeof(char*));
+	return slot + sizeof(char*);
 }
 
 char* AllocateString(char* word,size_t len,int bytes,bool clear) // BYTES means size of unit
@@ -1267,7 +1295,7 @@ void WriteDictDetailsBeforeLayer(int layer)
 			fwrite(&head,1,1,out);
 			fwrite(&x,1,1,out);
 		}
-		fclose(out);
+		FClose(out);
 	}
 	else 
 	{
@@ -1308,7 +1336,7 @@ static void ReadDictDetailsBeforeLayer(int layer)
 			fread(&c,1,1,in);
 			if (c != 0) myexit((char*)"bad return to build");
 		}
-		fclose(in);
+		FClose(in);
 	}
 }
 
@@ -1598,7 +1626,7 @@ void WriteBinaryDictionary()
 	// add datestamp
 	strcpy(dictionaryTimeStamp, GetMyTime(time(0)));
 	fwrite(dictionaryTimeStamp,1,20,out);
-	fclose(out);
+	FClose(out);
 	printf((char*)"binary dictionary %ld written\r\n",(long int)(dictionaryFree - dictionaryBase));
 }
 
@@ -1833,7 +1861,7 @@ bool ReadBinaryDictionary()
 	dictionaryFree = dictionaryBase + 1;
 	while (ReadBinaryEntry(in));
 	fread(dictionaryTimeStamp,1,20,in);
-	fclose(in);
+	FClose(in);
 	return true;
 }
 
@@ -2003,7 +2031,7 @@ void WriteDictionary(WORDP D,uint64 data)
 		fprintf(out,(char*)"%s\r\n",gloss);
 	}
  
-    fclose(out);
+    FClose(out);
 }
 
 char* ReadDictionaryFlags(WORDP D, char* ptr,unsigned int* meaningcount, unsigned int * glosscount)
@@ -2311,7 +2339,7 @@ bool ReadDictionary(char* file)
 			}
 		}
 	}
-	fclose(in);
+	FClose(in);
 	return true;
 }
 
@@ -2440,7 +2468,7 @@ void NoteLanguage()
 {
 	FILE* out = FopenUTF8Write((char*)"language.txt"); 
 	fprintf(out,(char*)"%s\r\n",language); // current default language
-	fclose(out);
+	FClose(out);
 }
 
 void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,bool filegiven)
@@ -2535,7 +2563,7 @@ void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,b
 			if (GetTense(D)) SetTense(D,0);
        }
 	}
-    fclose(in);
+    FClose(in);
 }
 
 void ReadWordsOf(char* name,uint64 mark)
@@ -2556,7 +2584,7 @@ void ReadWordsOf(char* name,uint64 mark)
 		}
 
 	}
-    fclose(in);
+    FClose(in);
 }
 
 void ReadCanonicals(const char* file,const char* layer)
@@ -2584,7 +2612,7 @@ void ReadCanonicals(const char* file,const char* layer)
 		WORDP R = StoreWord(replacement);
 		SetCanonical(D,MakeMeaning(R));
 	}
-    fclose(in);
+    FClose(in);
 }
 
 void ReadAbbreviations(char* name)
@@ -2603,7 +2631,7 @@ void ReadAbbreviations(char* name)
 			RemoveInternalFlag(D,DELETED_MARK);
 		}
 	}
-    fclose(in);
+    FClose(in);
 }
 
 void ReadQueryLabels(char* name)
@@ -2635,7 +2663,7 @@ void ReadQueryLabels(char* name)
 		}
  	    D->w.userValue = AllocateString(ptr);    // read query labels
     }
-    fclose(in);
+    FClose(in);
 }
 
 void ReadLivePosData()

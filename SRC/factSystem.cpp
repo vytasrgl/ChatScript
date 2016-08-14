@@ -445,7 +445,9 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 	currentFact = NULL; 
 	if (!subject || !object || !verb)
 	{
-		ReportBug((char*)"Missing field in fact create at line %d of %s",currentFileLine,currentFilename)
+		if (!subject) ReportBug((char*)"Missing subject field in fact create at line %d of %s",currentFileLine,currentFilename)
+		if (!verb) ReportBug((char*)"Missing verb field in fact create at line %d of %s",currentFileLine,currentFilename)
+		if (!object) ReportBug((char*)"Missing object field in fact create at line %d of %s",currentFileLine,currentFilename)
 		return NULL;
 	}
 
@@ -621,7 +623,7 @@ FunctionResult ExportJson(char* name, char* jsonitem, char* append)
 	FILE* out = (append && !stricmp(append,(char*)"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
 	if (!out) return FAILRULE_BIT;
 	ExportJson1(jsonitem, out);
-	fclose(out);
+	FClose(out);
 	return NOPROBLEM_BIT;
 }
 
@@ -805,9 +807,12 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 	FILE* in = userFileSystem.userOpen(name); 
 	if (!in) return false;
 
+	ChangeDepth(1, (char*)"ImportFacts");
 	char* filebuffer = GetFreeCache();
 	size_t readit = userFileSystem.userRead(filebuffer,1,userCacheSize,in);	// read it all in, including BOM
 	userFileSystem.userClose(in);
+	size_t len = strlen(filebuffer); // dont trust return length data from mongo
+	memset(filebuffer+len,0,20);	 // insure fully closed off
 
 	// set bom
 	currentFileLine = 0;
@@ -827,7 +832,10 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 		}
 		else if (*word == '(')
 		{
+			ChangeDepth(1, readBuffer);
 			FACT* G = ReadFact(readBuffer,0);
+			ChangeDepth(-1, readBuffer);
+			if (!G) continue;
 			G->flags |= flags;
 			if (store > 0) AddFact(store,G);
 			else if (!*buffer) strcpy(buffer,Meaning2Word(G->subject)->word); // to return the name
@@ -838,6 +846,7 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 	if (!stricmp(erase,(char*)"erase") || !stricmp(transient,(char*)"erase")) remove(name); // erase file after reading
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"[%d] => ",FACTSET_COUNT(store));
 	currentFact = NULL; // we have used up the facts
+	ChangeDepth(-1, (char*)"ImportFacts");
 	return true;
 }
 
@@ -854,7 +863,7 @@ void WriteFacts(FILE* out,FACT* F, int flags) //   write out from here to end
 			F->flags ^= flags;
 		}
 	}
-    fclose(out);
+    FClose(out);
 }
 
 void WriteBinaryFacts(FILE* out,FACT* F) //   write out from here to end
@@ -871,7 +880,7 @@ void WriteBinaryFacts(FILE* out,FACT* F) //   write out from here to end
 		Write32(F->object,out);
 		Write32(F->flags,out);
 	}
-    fclose(out);
+    FClose(out);
 }
 	
 FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties)
@@ -1001,7 +1010,7 @@ bool ReadBinaryFacts(FILE* in) //   read binary facts
   		unsigned int properties = Read32(in);
 		CreateFastFact(subject,verb,object,properties);
 	}
-    fclose(in);
+    FClose(in);
 	return true;
 }
 
@@ -1033,15 +1042,22 @@ static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead)
 			return buffer; //   cancels print
 		}
 		char* answer = WriteMeaning(T,true);
+
+		bool quoted = false;
+		if (*answer == '"') // if it starts with ", does it end with "
+		{
+			size_t len = strlen(answer);
+			if (answer[len-1] == '"') quoted = true;
+		}
 		bool embeddedbacktick = strchr(answer,'`') ? true : false;
-		bool embeddedspace = *answer != '"' && strchr(answer,' ')  || strchr(answer,'(') || strchr(answer,')'); // does this need protection? blanks or function call maybe
+		bool embeddedspace = !quoted && strchr(answer,' ')  || strchr(answer,'(') || strchr(answer,')'); // does this need protection? blanks or function call maybe
 		bool safe = true; 
 		if (strchr(answer,'\n') || strchr(answer,'\r') || strchr(answer,'\t') || strchr(answer,'\\') || strchr(answer,'/')) safe = false;
 		// json must protect: " \ /  nl cr tab  we are not currently protecting bs ff
 		if (embeddedbacktick || !safe) // uses our own marker and can escape data
 		{
 			if (embeddedbacktick) strcpy(buffer,(char*)"`*^"); 
-			else strcpy(buffer,(char*)"`"); // has blanks or paren, use internal string notation
+			else strcpy(buffer,(char*)"`"); // has blanks or paren or just starts with ", use internal string notation
 			buffer += strlen(buffer);
 			AddEscapes(buffer,answer,false); // facts are not normal
 			buffer += strlen(buffer);
@@ -1284,7 +1300,7 @@ void ReadFacts(const char* name,const char* layer,unsigned int build,bool user) 
 			ReadFact(ptr,build); // will write on top of ptr... must not be readBuffer variable
 		}
     }
-   fclose(in);
+   FClose(in);
 }
 
 void SortFacts(char* set, int alpha) //   sort low to high ^sort(@1subject) which field we sort on (subject or verb or object)

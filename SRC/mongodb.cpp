@@ -145,7 +145,7 @@ FunctionResult MongoClose(char* buffer)
 		g_filesysDatabase =  NULL;
 		g_filesysClient = NULL;
 	}
-
+	*currentFilename = 0;
 	return (buffer == NULL) ? FAILRULE_BIT : NOPROBLEM_BIT; 
 }
 

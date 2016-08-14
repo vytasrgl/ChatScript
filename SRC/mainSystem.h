@@ -109,7 +109,7 @@ extern char oktest[MAX_WORD_SIZE];
 extern int timerLimit;
 extern int timerCheckRate;
 extern int timerCheckInstance;
-extern int volleyStartTime;
+extern clock_t volleyStartTime;
 extern bool autonumber;
 extern bool showWhy;
 extern bool showTopic;
@@ -173,7 +173,7 @@ void PartiallyCloseSystem();
 int main(int argc, char * argv[]);
 void ProcessOOB(char* buffer);
 void ComputeWhy(char* buffer, int n);
-void SaveTracedFunctions();
+unsigned int SaveTracedFunctions();
 
 // Input processing
 void MainLoop();

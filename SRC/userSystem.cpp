@@ -482,6 +482,10 @@ void WriteUserData(time_t curr)
 { 
 	if (!numberOfTopics)  return; //   no topics ever loaded or we are not responding
 	if (!userCacheCount) return;	// never save users - no history
+
+	if (globalDepth == 0) currentRule = NULL;
+	ChangeDepth(1,(char*)"WriteUserData");
+
 	char name[MAX_WORD_SIZE];
 	char filename[MAX_WORD_SIZE];
 	// NOTE mongo does not allow . in a filename
@@ -541,6 +545,7 @@ void WriteUserData(time_t curr)
 		if (ptr) Cache(userDataBase,ptr-userDataBase);
 	}
 	userVariableIndex = 0; // flush all modified variables
+	ChangeDepth(-1,(char*)"WriteUserData");
 }
 
 static  bool ReadFileData(char* bot) // passed  buffer with file content (where feasible)
@@ -624,6 +629,9 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 
 void ReadUserData() // passed  buffer with file content (where feasible)
 {	
+	if (globalDepth == 0) currentRule = NULL;
+	ChangeDepth(1,(char*)"ReadUserData");
+
 	// std defaults
 	tokenControl = (DO_SUBSTITUTE_SYSTEM | DO_INTERJECTION_SPLITTING | DO_PROPERNAME_MERGE | DO_NUMBER_MERGE | DO_SPELLCHECK | DO_PARSE );
 	responseControl = ALL_RESPONSES;
@@ -636,6 +644,7 @@ void ReadUserData() // passed  buffer with file content (where feasible)
 		ReportBug((char*)"User data file inconsistent\r\n");
 	}
 	if (shared) ReadFileData((char*)"share");  // read shared file, if any, or get it from cache
+	ChangeDepth(-1,(char*)"ReadUserData");
 }
 
 void KillShare()

@@ -292,7 +292,7 @@ void SetUserVariable(const char* var, char* word, bool reuse)
 			if (len > MAX_USERVAR_SIZE) 
 			{
 				word[MAX_USERVAR_SIZE] = 0; // limit on user vars same as match vars
-				ReportBug((char*)"Too long user variable %s assigning %s\r\n",var,word);
+				ReportBug((char*)"Too long user variable %s size %d assigning %s\r\n",var,len,word);
 			}
 			if (!reuse) word = reuseAllocation(D->w.userValue,word); // we may be restoring old value which doesnt need allocation
 			if (!word) return;

@@ -80,7 +80,7 @@ static void WriteCache(unsigned int which,size_t size)
         int fd = fileno(out);
         if (fd < 0) 
 		{
-			fclose(out);
+			FClose(out);
 			return;
         }
 

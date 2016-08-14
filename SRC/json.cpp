@@ -17,7 +17,7 @@ bool jsonNoduplicate = false;
 
 static int arraycnt = 0;
 static int objectcnt = 0;
-static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure,bool raw);
+static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure,bool raw,bool nofail);
 static MEANING jcopy(WORDP D);
 
 static int JSONArgs() 
@@ -96,7 +96,7 @@ static char* IsJsonNumber(char* str)
 	return NULL;
 }
 
-int factsPreBuildFromJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken, MEANING *retMeaning, int* flags, bool key) {
+int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken, MEANING *retMeaning, int* flags, bool key, bool nofail) {
 	// Always build with duplicate on. create a fresh copy of whatever
 	jsmntok_t curr = tokens[currToken];
 	char namebuff[256];
@@ -135,10 +135,10 @@ int factsPreBuildFromJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken
 			if (*mainpath) // access field given
 			{
 				char word[MAX_WORD_SIZE];
-				result = JSONpath(word, mainpath, str,true); // raw mode
+				result = JSONpath(word, mainpath, str,true,nofail); // raw mode
 				if (result != NOPROBLEM_BIT) 
 				{
-					ReportBug((char*)"Bad Json path building facts %s%s", str,mainpath);
+					if (!nofail) ReportBug((char*)"Bad Json path building facts from templace %s%s data: %s", str,mainpath,jsontext); // if we are not expecting it to fail
 					return 0;
 				}
 				else strcpy(str,word);
@@ -185,10 +185,10 @@ int factsPreBuildFromJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken
 		for (int i = 0; i < curr.size / 2; i++) { // each entry takes an id and a value
 			MEANING keyMeaning = 0;
 			int jflags = 0;
-			retToken = factsPreBuildFromJsonHelper(jsontext, tokens, retToken, &keyMeaning, &jflags,true);
+			retToken = factsJsonHelper(jsontext, tokens, retToken, &keyMeaning, &jflags,true,nofail);
 			if (retToken == 0) return 0;
 			MEANING valueMeaning = 0;
-			retToken = factsPreBuildFromJsonHelper(jsontext, tokens, retToken, &valueMeaning, &jflags,false);
+			retToken = factsJsonHelper(jsontext, tokens, retToken, &valueMeaning, &jflags,false,nofail);
 			if (retToken == 0) return 0;
 			CreateFact(objectName, keyMeaning, valueMeaning, jsonPermanent|jflags|JSON_OBJECT_FACT); // only the last value of flags matters. 5 means object fact in subject
 		}
@@ -205,7 +205,7 @@ int factsPreBuildFromJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken
 			MEANING index = MakeMeaning(StoreWord(namebuff,AS_IS));
 			MEANING arrayMeaning = 0;
 			int jflags = 0;
-			retToken = factsPreBuildFromJsonHelper(jsontext, tokens, retToken, &arrayMeaning, &jflags,false);
+			retToken = factsJsonHelper(jsontext, tokens, retToken, &arrayMeaning, &jflags,false,nofail);
 			if (retToken == 0) return 0;
 			CreateFact(arrayName, index, arrayMeaning, jsonPermanent|jflags|JSON_ARRAY_FACT); // flag6 means subject is arrayfact
 		}
@@ -213,18 +213,18 @@ int factsPreBuildFromJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken
 		break;
 	}
 	default: 
-		myexit((char*)"(factsPreBuildFromJsonHelper) Unknown JSON type encountered.");
+		myexit((char*)"(factsJsonHelper) Unknown JSON type encountered.");
 	} 
 	currentFact = NULL;
 	return retToken;
 }
 
-MEANING factsPreBuildFromJson(char *jsontext, jsmntok_t *tokens) {
+MEANING factsPreBuildFromJson(char *jsontext, jsmntok_t *tokens,bool nofail) {
 	MEANING retMeaning = 0;
 	int flags = 0;
-	int X = factsPreBuildFromJsonHelper(jsontext, tokens, 0, &retMeaning, &flags,false);
-	if (!X) return 0;
+	int X = factsJsonHelper(jsontext, tokens, 0, &retMeaning, &flags,false,nofail);
 	currentFact = NULL;	 // used up by putting into json
+	if (!X) return 0;
 	return retMeaning;
 }
 
@@ -672,7 +672,7 @@ FunctionResult JSONOpenCode(char* buffer)
 	// 300 seconds is the default timeout
 	// CUrl is gone, we have the json data now to convert
 	ChangeDepth(1,(char*)"ParseJson");
-	FunctionResult result = ParseJson(buffer, output.buffer,output.size);
+	FunctionResult result = ParseJson(buffer, output.buffer,output.size,false);
 	ChangeDepth(-1,(char*)"ParseJson");
 	if (trace & TRACE_JSON)
 	{
@@ -691,13 +691,19 @@ FunctionResult JSONOpenCode(char* buffer)
 	return result;
 }
 
-FunctionResult ParseJson(char* buffer, char* message, size_t size)
+FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 {
 	*buffer = 0;
 	if (trace & TRACE_JSON) 
 	{
 		if (size < (MAX_BUFFER_SIZE - 100)) Log(STDTRACETABLOG, "JsonParse Call: %s", message);
-		else Log(STDTRACETABLOG, "JsonParse Call: %d-byte message too big to show\r\n",size);
+		else 
+		{
+			char msg[MAX_WORD_SIZE];
+			strncpy(msg,message,MAX_WORD_SIZE-100);
+			msg[MAX_WORD_SIZE-100] = 0;
+			Log(STDTRACETABLOG, "JsonParse Call: %d-byte message too big to show all %s\r\n",size,msg);
+		}
 	}
 	if (size < 1) return NOPROBLEM_BIT; // nothing to parse
 
@@ -712,7 +718,7 @@ FunctionResult ParseJson(char* buffer, char* message, size_t size)
 		if (!tokens) return FAILRULE_BIT;
 		jsmn_init(&parser);
 		jsmn_parse(&parser, message, size, tokens, jtokenCount);
-		MEANING id = factsPreBuildFromJson(message, tokens);
+		MEANING id = factsPreBuildFromJson(message, tokens,nofail);
 		if (id != 0) // worked
 		{
 			WORDP D = Meaning2Word(id);
@@ -720,7 +726,7 @@ FunctionResult ParseJson(char* buffer, char* message, size_t size)
 			return NOPROBLEM_BIT;
 		}
 	}
-	return FAILRULE_BIT;
+	return (nofail)  ? NOPROBLEM_BIT : FAILRULE_BIT;	
 }
 
 static char* jtab(int depth, char* buffer)
@@ -751,7 +757,7 @@ static int orderJsonArrayMembers(WORDP D, FACT** store)
 	if (max > size || max < size) 
 	{
 		show = true;
-		ReportBug((char*)"Erased json array fact illegally %s", D->word);
+		ReportBug((char*)"Erased json array fact illegally %s max %d size %d", D->word,max,size);
 		return -1;
 	}
 	return max + 1; // for the 0th value
@@ -778,7 +784,8 @@ static char* jwritehierarchy(int depth, char* buffer, WORDP D, int subject, int 
 	if (!(subject&(JSON_ARRAY_VALUE|JSON_OBJECT_VALUE)))
 	{
 		if (subject & JSON_STRING_VALUE) *buffer++ = '"';
-		strcpy(buffer,D->word);
+		if (subject & JSON_STRING_VALUE) AddEscapes(buffer,D->word,true);
+		else strcpy(buffer,D->word);
 		buffer += strlen(buffer);
 		if (subject & JSON_STRING_VALUE) *buffer++ = '"';
 		return buffer;
@@ -871,7 +878,7 @@ FunctionResult JSONTreeCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
-static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bool raw)
+static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bool raw,bool nofail)
 {
 	WORDP D = FindWord(jsonstructure); 
 	FACT* F;
@@ -921,7 +928,7 @@ static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bo
 		{
 			if (!D) return FAILRULE_BIT;
 			char* next = path + 1;
-			while (*next && *next != '[' && *next != ']' && *next != '.') ++next; // find token break
+			while (*next && *next != '[' && *next != ']' && *next != '.' && *next != '*') ++next; // find token break
 			char c = *next;
 			*next = 0;
 			if (*path == '[' && !IsDigit(path[1]) && path[1] != USERVAR_PREFIX) return FAILRULE_BIT;
@@ -944,6 +951,13 @@ static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bo
 			*next = c;
 			path = next;
 			if (*path == ']') ++path;
+
+			if (F && *path == '*' && !path[1]) // return the fact ID at the bottom
+			{
+				sprintf(buffer,"%d",Fact2Index(F));
+				return NOPROBLEM_BIT;
+			}
+
 			if (!F) return FAILRULE_BIT;
 		}
 		else return FAILRULE_BIT;
@@ -964,7 +978,7 @@ FunctionResult JSONPathCode(char* buffer)
 		strcpy(buffer,ARGUMENT(2));	// return the item itself
 		return NOPROBLEM_BIT;
 	}
-	return JSONpath(buffer,path,ARGUMENT(2),!safe);
+	return JSONpath(buffer,path,ARGUMENT(2),!safe,false);
 }
 
 static MEANING jcopy(WORDP D)
@@ -1028,12 +1042,15 @@ static char* jwrite(char* buffer, WORDP D, int subject )
 	int index = 0;
 	if (!(subject & (JSON_OBJECT_VALUE |JSON_ARRAY_VALUE)) && subject & JSON_FLAGS)
 	{
-		if (subject & JSON_STRING_VALUE) strcpy(buffer++,(char*)"\"");
-		if (stricmp(D->word,(char*)"null")) 
+		if (!stricmp(D->word, (char*)"null"))
 		{
-			if (subject & JSON_STRING_VALUE) AddEscapes(buffer,D->word,true);
-			else strcpy(buffer,D->word);
+			if (subject & JSON_STRING_VALUE) strcpy(buffer, (char*)"\"\"");
+			else strcpy(buffer, D->word); // primitive
+			return buffer + strlen(buffer);
 		}
+		if (subject & JSON_STRING_VALUE) strcpy(buffer++,(char*)"\"");
+		if (subject & JSON_STRING_VALUE) AddEscapes(buffer,D->word,true);
+		else strcpy(buffer,D->word);
 		buffer += strlen(buffer);
 		if (subject & JSON_STRING_VALUE) strcpy(buffer++,(char*)"\"");
 		return buffer;
@@ -1156,7 +1173,9 @@ FunctionResult JSONParseCode(char* buffer)
 {
 	safeJsonParse = false;
 	int index = JSONArgs();
-	char* data  = ARGUMENT(index);
+	bool nofail = !stricmp(ARGUMENT(index),(char*)"nofail");
+	if (nofail) index++;
+	char* data  = ARGUMENT(index++);
 	if (*data == '^') ++data; // skip opening functional marker
 	if (*data == '"') ++data; // skip opening quote
 	size_t len = strlen(data);
@@ -1198,7 +1217,7 @@ FunctionResult JSONParseCode(char* buffer)
 		}
 		len = strlen(data);
 	}
-	FunctionResult result = ParseJson(buffer, data, len);
+	FunctionResult result = ParseJson(buffer, data, len,nofail);
 	return result;
 }
 
@@ -1239,12 +1258,12 @@ FunctionResult JSONParseFileCode(char* buffer)
 			if (*at == '"' && *(at-1) != '\\') quote = !quote; // flip quote state
 		}
 	}
-	fclose(in);
+	FClose(in);
 	FunctionResult result = FAILRULE_BIT;
 	if (start) // didnt overflow bufer
 	{
 		*data = 0;
-		result = ParseJson(buffer, start, data-start);
+		result = ParseJson(buffer, start, data-start,false);
 	}
 	FreeBuffer();
 	return result;
@@ -1298,6 +1317,11 @@ FunctionResult JSONFormatCode(char* buffer)
 		}
 		else if (*arg == ',')
 		{
+			// Unexpectedly came across the end of a property without a value
+			if (field == 2) {
+				*buffer++ = '"';
+				*buffer++ = '"';
+			}
 			if (kind[level] != OBJECTJ && kind[level] != ARRAYJ) break;
 			*buffer++ = *arg;
 			field = 1;  // ready for fresh element - eg the keyword
@@ -1306,6 +1330,7 @@ FunctionResult JSONFormatCode(char* buffer)
 		{
 			if (kind[level] != OBJECTJ) break;
 			*buffer++ = *arg;
+			field = 2;
 		}
 		else if (*arg == '"') 
 		{
@@ -1337,6 +1362,7 @@ FunctionResult JSONFormatCode(char* buffer)
 			buffer += strlen(buffer);
 			*buffer++ = '"'; // add back trailing quote
 			if (level == 0) kind[0] = DIDONE;
+			if (field == 2) field = 0;
 		}
 		else if ((numberEnd = IsJsonNumber(arg)) != NULL) // json number
 		{
@@ -1344,6 +1370,7 @@ FunctionResult JSONFormatCode(char* buffer)
 			buffer += numberEnd - arg;
 			arg = numberEnd - 1;
 			if (level == 0) kind[0] = DIDONE;
+			if (field == 2) field = 0;
 		}
 		else // literal or simple field name nonquoted
 		{
@@ -1351,16 +1378,19 @@ FunctionResult JSONFormatCode(char* buffer)
 			char word[MAX_WORD_SIZE];
 			char* at = word;
 			*at++ = *arg++;
-			while (*arg && *arg != ' ' && *arg != ',' && *arg != '}' && *arg != ']' && *arg != ':') *at++ = *arg++;
+			while (*arg && *arg != ',' && *arg != '}' && *arg != ']' && *arg != ':') *at++ = *arg++;
 			--arg;
 			*at = 0;
+			TrimSpaces(word);
 
 			if (!strcmp(word,(char*)"null") || !strcmp(word,(char*)"false") || !strcmp(word,(char*)"true")) fieldType = 0; // simple literal
-			if (fieldType == 1) *buffer++ = '"';	// field name quote
-			strcpy(buffer,word);
+			if (fieldType == 1 || fieldType == 2) *buffer++ = '"';	// field name quote
+			if (fieldType == 1 || fieldType == 2) AddEscapes(buffer, word, true);
+			else strcpy(buffer,word);
 			buffer += strlen(buffer);
-			if (fieldType == 1) *buffer++ = '"';	// field name closing quote
+			if (fieldType == 1 || fieldType == 2) *buffer++ = '"';	// field name closing quote
 			if (level == 0) kind[0] = DIDONE;
+			if (field == 2) field = 0;
 		}
 	}
 	if (*arg) // didnt finish, must have been faulty format
@@ -1372,7 +1402,7 @@ FunctionResult JSONFormatCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
-static MEANING jsonValue(char* value, unsigned int& flags) 
+MEANING jsonValue(char* value, unsigned int& flags) 
 {
 	bool number = true;
 	int decimal = 0;
@@ -1380,11 +1410,15 @@ static MEANING jsonValue(char* value, unsigned int& flags)
 	if (*at == '+') ++at;
 	else if (*at == '-') ++at;
 	int exponent = 0;
-	while (*at) 
+	// numbers cannot start with a zero unless next character is an exponent or a decimal or nothing
+	// and numbers cannot start with an exponent or a decimal
+	if (*at == '0' && *(at+1) && !(*(at+1) == 'e' || *(at+1) == 'E' || *(at+1) == '.')) number = false;
+	else if (*at == 'e' || *at == 'E' || *at == '.') number = false;
+	while (*at && number) 
 	{  
 		if (*at == 'e' || *at == 'E')
 		{
-			if (IsDigit(*at-1)) ++exponent;
+			if (IsDigit(*(at-1))) ++exponent;
 			else break;
 		}
 		if (*at == '.') ++decimal;
@@ -1392,26 +1426,29 @@ static MEANING jsonValue(char* value, unsigned int& flags)
 		++at;
 	}
 	if (*at  || decimal > 1 || exponent > 1) number = false;
-	char* wordx = AllocateBuffer();
 	if (*value == '"') // explicit string
 	{
 		flags |= JSON_STRING_VALUE;
+		// strip off quotes for CS, replace later in jsonwrite for output
+		// special characters are also escaped later on serialization
 		size_t len = strlen(value);
 		if (value[len-1] == '"') value[--len] = 0;
-		++value; // strip off quotes for CS, replace later in jsonwrite for output
-		AddEscapes(wordx,value,true);
-		value = wordx;
+		++value; 
 	}
 	else if (!strnicmp(value,(char*)"jo-",3)) flags |= JSON_OBJECT_VALUE;
 	else if (!strnicmp(value,(char*)"ja-",3))  flags |= JSON_ARRAY_VALUE;
 	else if (!stricmp(value,(char*)"true"))  flags |= JSON_PRIMITIVE_VALUE;
 	else if (!stricmp(value,(char*)"false"))  flags |= JSON_PRIMITIVE_VALUE;
 	else if (!stricmp(value,(char*)"null"))  flags |= JSON_PRIMITIVE_VALUE;
+	else if (!*value)  // empty string treat as null
+	{
+		flags |= JSON_PRIMITIVE_VALUE;
+		value = "null";
+	}
 	else if (number) flags |= JSON_PRIMITIVE_VALUE;
 	else flags |= JSON_STRING_VALUE; // all others are also strings but without quotes
 
 	WORDP V = StoreWord(value,AS_IS); // new value
-	FreeBuffer();
 	return MakeMeaning(V);
 }
 

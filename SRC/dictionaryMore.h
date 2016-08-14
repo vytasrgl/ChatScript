@@ -164,7 +164,7 @@ void SetCanonical(WORDP D,MEANING M);
 uint64 GetTriedMeaning(WORDP D);
 void SetTriedMeaning(WORDP D,uint64 bits);
 void ReadSubstitutes(const char* name,const char* layer,unsigned int fileFlag,bool filegiven = false);
-void Add2ConceptTopicList(int list[256], WORDP D,int index,bool unique);
+void Add2ConceptTopicList(int list[256], WORDP D,int start,int end,bool unique);
 
 extern unsigned int savedSentences;
 // memory data
@@ -236,6 +236,8 @@ extern char systemFolder[500];
 char* expandAllocation(char* old, char* word,int size);
 char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false);
 char* AllocateInverseString(char* word, size_t len = 0);
+bool AllocateInverseSlot(char* variable);
+char* RestoreInverseSlot(char* variable,char* slot);
 WORDP StoreWord(int);
 void ClearWordMaps();
 void WriteDictDetailsBeforeLayer(int layer);

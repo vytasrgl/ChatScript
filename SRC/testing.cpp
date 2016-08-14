@@ -14,6 +14,7 @@ static char* abstractBuffer;
 static int longLines;
 static uint64 verifyToken;
 static bool isTracing = false;
+static bool foundATrace = false;
 
 static WORDP dictUsedG;
 static FACT* factUsedG;
@@ -157,13 +158,13 @@ static bool DumpOne(WORDP S,int all,int depth,bool shown)
 				{
 					FILE* out = FopenUTF8WriteAppend((char*)"intransitive.txt");
 					fprintf(out,(char*)"%s 1\r\n",S->word);
-					fclose(out);
+					FClose(out);
 				}
 				if (all == 1 && (S->systemFlags & VERB_INDIRECTOBJECT)) //   generate a list of dual transitive verbs
 				{
 					FILE* out = FopenUTF8WriteAppend((char*)"intransitive.txt");
 					fprintf(out,(char*)"%s 2\r\n",S->word);
-					fclose(out);
+					FClose(out);
 				}
 				Log(STDTRACELOG,(char*)"%s  ",S->word);
 			}
@@ -457,7 +458,7 @@ static void MemorizeRegress(char* input)
 				if (volley || *kind != 'S') 
 				{
 					Log(STDTRACELOG,(char*)"Log file must begin with Start at turn 0, not turn %d\r\n",volley);
-					fclose(in);
+					FClose(in);
 					return;
 				}
 				start = false;
@@ -528,8 +529,8 @@ static void MemorizeRegress(char* input)
 			pattern[50] = 0;	 // limit it
 			fprintf(out,(char*)"  verify2: %s rule:%s kind:%c label:%s pattern: %s output: %s \r\n",verify, end,*rule,label,pattern,outputdata);
 		}
-		fclose(out);
-		fclose(in);
+		FClose(out);
+		FClose(in);
 		Log(STDTRACELOG,(char*)"Regression file %s created\r\n",outputfile);
 	}
 }
@@ -552,7 +553,7 @@ static void VerifyRegress(char* file)
 	}
 	sprintf(logFilename,(char*)"%s/tmpregresslog.txt",users); // user log goes here so we can regenerate a new regression file if we need one
 	FILE* out = FopenUTF8Write(logFilename); // make a new log file to do this in.
-	if (out) fclose(out);
+	if (out) FClose(out);
 
 	int olduserlog = userLog;
 	userLog = LOGGING_SET;
@@ -794,7 +795,7 @@ static void VerifyRegress(char* file)
 		}
 	}
 	userLog = olduserlog;
-	fclose(in);
+	FClose(in);
 	echo = oldecho;
 	mainOutputBuffer = holdmain;
 	prepareMode = NO_MODE;
@@ -957,7 +958,7 @@ static void C_Document(char* input)
 	
 	if (docOut) // end echoing
 	{
-		fclose(docOut);
+		FClose(docOut);
 		docOut = NULL;
 	}
 
@@ -1721,7 +1722,7 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 			strcpy(computerIDwSpace,oldcomputer);
 		}
 	}
-	fclose(in);
+	FClose(in);
 	RemovePendingTopic(topicID);
 	FreeBuffer(); // copyBuffer
 	trace = oldtrace;
@@ -1916,7 +1917,7 @@ static void PennWrite(char* name,uint64 flags)
 		*ptr = 0;
 		fprintf(out,(char*)"%s\r\n",buffer);
 	}
-	fclose(in);
+	FClose(in);
 	FreeBuffer();
 }
 
@@ -1933,7 +1934,7 @@ static void C_PennFormat(char* file)
 	FILE* out = FopenUTF8Write(outfile);
 	if (!out) return;
 	WalkDirectory(indir,PennWrite,(uint64)out);
-	fclose(out);
+	FClose(out);
 }
 
 static void ShowFailCount(WORDP D,uint64 junk)
@@ -2065,7 +2066,7 @@ reloop:
 	{
 		if (!*readBuffer && !readBuffer[2]) // continue from nested call
 		{
-			fclose(in);
+			FClose(in);
 			in = oldin;
 			oldin = NULL;
 			continue;
@@ -2617,7 +2618,7 @@ retry:
 			}
 		}
 	}
-	fclose(in);
+	FClose(in);
 	FreeBuffer();
 	if (ignoreRule >= 0 && ignoreRule < (int) tagRuleCount) 
 	{
@@ -2736,7 +2737,7 @@ static void C_PennNoun(char* file)
 			}
 		}
 	}
-	fclose(in);
+	FClose(in);
 	FreeBuffer();
 }
 
@@ -2824,7 +2825,7 @@ static void C_VerifyPos(char* file)
 		}
 	}
 
-	fclose(in);
+	FClose(in);
 
 	Log(STDTRACELOG,(char*)"%d sentences tested, %d failed doing %d tokens in %d ms\r\n",count,fail,tokens, ElapsedMilliseconds() - start);
 	tokenControl = oldtokencontrol;
@@ -2850,7 +2851,7 @@ static void C_TimePos(char* file) // how many wps for pos tagging
 		words += wordCount;
 	}
 
-	fclose(in);
+	FClose(in);
 	float wps = (float)words / ((float)posTiming/(float)1000.0);
 	Log(STDTRACELOG,(char*)"%d words tagged in %d ms wps: %d.\r\n",words,posTiming, (unsigned int) wps);
 	tokenControl = oldtokencontrol;
@@ -2891,7 +2892,7 @@ static void C_VerifySpell(char* file) // test spell checker against a file of en
 		}
 	}
 
-	fclose(in);
+	FClose(in);
 	Log(STDTRACELOG,(char*)"Right:%d  Wrong:%d\r\n",right,wrong);
 }
 
@@ -3145,7 +3146,7 @@ static void C_WikiText(char* ptr)
 			{
 				if ((int)len > size) // start in new file, this file is getting too big
 				{
-					fclose(out);
+					FClose(out);
 					++id;
 					sprintf(outfile,(char*)"%s/file%d.txt",directoryout,id); // the output file
 					out = FopenUTF8Write(outfile);
@@ -3348,7 +3349,7 @@ static void C_WikiText(char* ptr)
 			if ((int)len > size) // start in new file, this file is getting too big
 			{
 				char outfile[MAX_WORD_SIZE];
-				fclose(out);
+				FClose(out);
 				++id;
 				sprintf(outfile,(char*)"%s/file%d.txt",directoryout,id); // the output file
 				out = FopenUTF8Write(outfile);
@@ -3807,10 +3808,10 @@ static void C_WikiText(char* ptr)
 			strcat(content,start);
 		}
 	}
-	fclose(in);
+	FClose(in);
 
 	} // end MAIN loop
-	fclose(out);
+	FClose(out);
 }
 
 /////////////////////////////////////////////////////
@@ -3872,7 +3873,7 @@ static void C_Build(char* input)
 	{
 		sprintf(logFilename,(char*)"%s/build%s_log.txt",users,file); //   all data logged here by default
 		FILE* in = FopenUTF8Write(logFilename);
-		if (in) fclose(in);
+		if (in) FClose(in);
 		Log(STDTRACELOG,(char*)"ChatScript Version %s  compiled %s\r\n",version,compileDate);
 		char word[MAX_WORD_SIZE];
 		sprintf(word,(char*)"files%s.txt",file);
@@ -4253,7 +4254,7 @@ static bool TestSetPath(MEANING T,unsigned int depth) // once you are IN a set, 
 		MEANING parent = FindSetParent(T,k); //   next set we are member of
 		if (!parent)  break;
 		WORDP D = Meaning2Word(parent);	// topic or concept
-		if (trace) Log(STDTRACELOG,(char*)"%s\r\n",D->word);
+		if (trace & TRACE_PATTERN) Log(STDTRACELOG,(char*)"%s\r\n",D->word);
 		if (D == topLevel) return true;
 		if (TestSetPath(parent,depth+1)) return true; // follow up depth first
 	}
@@ -5147,7 +5148,7 @@ static void C_TopicDump(char* input)
 		}
 		fprintf(out,(char*)"%s",(char*)"000 x\r\n"); // end of topic
 	}
-	fclose(out);
+	FClose(out);
 	Log(STDTRACELOG,(char*)"Done.\r\n");
 }
 
@@ -5521,7 +5522,7 @@ static void LoadDescriptions (char* file)
 		D->inferMark = MakeMeaning(E); 
 	}
 	dictionaryLocked = lock;
-	fclose(in);
+	FClose(in);
 }
 
 static void FreeDescriptions(WORDP D, uint64 junk)
@@ -5906,7 +5907,7 @@ static void C_Do(char* input)
 	{
 		FunctionResult result;
 		FreshOutput(data,answer,result);
-		if (trace) Log(STDTRACELOG,(char*)"   result: %s  output: %s\r\n",ResultCode(result),answer);
+		if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"   result: %s  output: %s\r\n",ResultCode(result),answer);
 		AddResponse(answer,responseControl);
 	}
 #else
@@ -6178,7 +6179,7 @@ static void ShowTrace(unsigned int bits, bool original)
 		Log(STDTRACELOG,(char*)"Enabled deep detail: ");
 		if (bits & TRACE_FACT) Log(STDTRACELOG,(char*)"fact ");
 		if (bits & TRACE_INFER) Log(STDTRACELOG,(char*)"infer ");
-		if (bits & TRACE_HIERARCHY) Log(STDTRACELOG,(char*)"hierarchy ");
+		if (bits == TRACE_HIERARCHY) Log(STDTRACELOG,(char*)"hierarchy ");
 		if (bits & TRACE_SUBSTITUTE) Log(STDTRACELOG,(char*)"substitute ");
 		if (bits & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"varassign ");
 		if (bits & TRACE_QUERY) Log(STDTRACELOG,(char*)"query ");
@@ -6224,7 +6225,7 @@ static void ShowTrace(unsigned int bits, bool original)
 		if (!(bits & TRACE_FACT)) Log(STDTRACELOG,(char*)"fact ");
 		if (!(bits & TRACE_INFER)) Log(STDTRACELOG,(char*)"infer ");
 		if (!(bits & TRACE_SAMPLE)) Log(STDTRACELOG,(char*)"sample ");
-		if (!(bits & TRACE_HIERARCHY)) Log(STDTRACELOG,(char*)"hierarchy ");
+		if ((bits != TRACE_HIERARCHY)) Log(STDTRACELOG,(char*)"hierarchy ");
 		if (!(bits & TRACE_SUBSTITUTE)) Log(STDTRACELOG,(char*)"substitute ");
 		if (!(bits & TRACE_VARIABLESET)) Log(STDTRACELOG,(char*)"varassign ");
 		if (!(bits & TRACE_QUERY)) Log(STDTRACELOG,(char*)"query ");
@@ -6277,6 +6278,7 @@ static void C_Trace(char* input)
 {
 	char word[MAX_WORD_SIZE];
 	isTracing = false;
+	foundATrace = false;
 	bool full = false;
 	if (trace && !(trace & TRACE_NOTFULL)) full = true;	// already on full
 	unsigned int flags = trace;
@@ -6451,7 +6453,7 @@ static void C_Trace(char* input)
 				while (which && *which && (which = FindNextLabel(topic,period+1,which,id,true)))
 				{
 					SetDebugRuleMark(topic,id);
-					flags |= TRACE_NOTFULL;
+					isTracing = true;
 					found = true;
 					which = FindNextRule(NEXTRULE,which,id);
 				}
@@ -6465,7 +6467,7 @@ static void C_Trace(char* input)
 				if (rule) 
 				{
 					SetDebugRuleMark(topic,id);
-					flags |= TRACE_NOTFULL;
+					isTracing  = true;
 				}
 				else Log(STDTRACELOG,(char*)"cannot find %s.%s\r\n",word,period+1);
 			}
@@ -6475,16 +6477,26 @@ static void C_Trace(char* input)
 	if (trace && full) trace &= -1 ^ TRACE_NOTFULL;
 	else if (trace == TRACE_HIERARCHY) {;}
 	else if (trace && !full) trace |= TRACE_NOTFULL;
-	if (!fromScript)
+	if (!fromScript) // do not show things automatically 
 	{
 		bool oldecho = echo;
 		echo = true;
 		Log(STDTRACELOG,(char*)" trace = %d (0x%x)\n",trace,trace);
-		if (trace) ShowTrace(trace,true);
-		SaveTracedFunctions();
+		if (trace && trace != TRACE_NOTFULL) 
+		{
+			isTracing = true;
+			ShowTrace(trace,true);
+		}
+		else trace = 0;
+		if (SaveTracedFunctions()) isTracing = true;
 		WalkDictionary(TracedTopic,0);
 		echo = oldecho;
-		if (!trace && !isTracing) echo = false;
+		if (isTracing) 
+		{
+			trace |= TRACE_NOTFULL;
+			echo = true;
+		}
+		else echo = false;
 	}	
 	else echo = true;
 	wasCommand = TRACECMD; // save results to user file
@@ -6531,7 +6543,7 @@ static void CleanIt(char* word,uint64 junk) // remove cr from source lines for L
 
 	fseek (in, 0, SEEK_SET);
 	unsigned int val = (unsigned int) fread(buf,1,size,in);
-	fclose(in);
+	FClose(in);
 	if ( val != size) return;
 	buf[size] = 0;	// force an end
 
@@ -6542,7 +6554,7 @@ static void CleanIt(char* word,uint64 junk) // remove cr from source lines for L
 		if (buf[i] != '\r' && buf[i] != 26) fwrite(buf+i,1,1,out);	// remove cr and ^Z
 	}
 	if (buf[size-1] != '\n') fwrite((char*)"\n",1,1,out); // force ending line feed
-	fclose(out);
+	FClose(out);
 	free(buf);
 }
 
@@ -6609,7 +6621,7 @@ To get concepts in a file sorted alphabetically (both by concept and within) , d
 		AddInternalFlag(D,BUILD0|CONCEPT);
 	}
 
-	fclose(FopenUTF8Write((char*)"cset.txt"));
+	FClose(FopenUTF8Write((char*)"cset.txt"));
 	if (!*input) // hide this on second pass
 	{
 		WORDP D = FindWord((char*)"~a_dummy");
@@ -7229,7 +7241,7 @@ static void DisplayTopic(char* name,int spelling)
 		*end = ENDUNIT;
 		rule = FindNextRule(NEXTRULE,rule,id);
 	}
-	if (in) fclose(in);
+	if (in) FClose(in);
 	FreeBuffer();
 	FreeBuffer();
 }
@@ -7350,7 +7362,7 @@ static void C_Diff(char* input)
 	if (!in2) 
 	{
 		Log(STDTRACELOG,(char*)"%s does not exist\r\n",file2);
-		fclose(in1);
+		FClose(in1);
 		return;
 	}
 	char name[MAX_WORD_SIZE];
@@ -7410,11 +7422,11 @@ static void C_Diff(char* input)
 	}
 	FreeBuffer();
 	FreeBuffer();
-	fclose(in2);
-	fclose(in1);
+	FClose(in2);
+	FClose(in1);
 	fprintf(out,(char*)"For %s vs %s -  %d lines differ.\r\n",file1,file2,err);
 	Log(STDTRACELOG,(char*)"For %s vs %s - %d lines differ.\r\n",file1,file2,err);
-	fclose(out);
+	FClose(out);
 }
 
 static void IndentDisplay(char* one, char* two,char* display)
@@ -7527,7 +7539,7 @@ static void TrimIt(char* name,uint64 flag)
 				sprintf(file,(char*)"%s/log-%s.txt",users,user);
 				FILE* out1 = FopenUTF8WriteAppend(file);
 				fprintf(out1,(char*)"%s\r\n",copy);
-				fclose(out1);
+				FClose(out1);
 			}
 			// other things you could do with start line here
 			continue;
@@ -7662,7 +7674,7 @@ static void TrimIt(char* name,uint64 flag)
 			sprintf(file,(char*)"%s/log-%s.txt",users,user);
 			FILE* out1 = FopenUTF8WriteAppend(file);
 			fprintf(out1,(char*)"%s\r\n",copy);
-			fclose(out1);
+			FClose(out1);
 			continue;
 		}
 		else if (flag == 10) // build stats
@@ -7728,8 +7740,8 @@ static void TrimIt(char* name,uint64 flag)
 
 		strcpy(prior,output); // what bot said previously
 	}
-    fclose(in);
-    fclose(out);
+    FClose(in);
+    FClose(out);
 	Log(STDTRACELOG,(char*)"Trim %s complete\r\n",name);
 }
 
@@ -7759,7 +7771,7 @@ static void C_Trim(char* input) // create simple file of user chat from director
 		*directory = 0;	
 		sprintf(file,(char*)"%s/log-%s.txt",users,word);
 		FILE* x = FopenReadWritten(file);
-		if (x) fclose(x); // see if file exists. if not, then its a directory name
+		if (x) FClose(x); // see if file exists. if not, then its a directory name
 		else 
 		{
 			strcpy(directory,word);
@@ -7782,7 +7794,7 @@ static void C_Trim(char* input) // create simple file of user chat from director
 	FILE* out = FopenUTF8Write((char*)"TMP/tmp.txt");
 	fprintf(out,(char*)"# %s\r\n",original);
 	Log(STDTRACELOG,(char*)"# %s\r\n",input);
-	fclose(out);
+	FClose(out);
 
 	if (!*file) WalkDirectory(directory,TrimIt,flag);
 	else TrimIt(file,flag);
@@ -7910,7 +7922,7 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 	char buffer[MAX_WORD_SIZE];
 	if ( authorizations == (char*)1) // command line does not authorize
 	{
-		if (in) fclose(in);
+		if (in) FClose(in);
 		return false;
 	}
 
@@ -7927,7 +7939,7 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 			if (word[len-1] == '"') word[len-1] = 0;
 			if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
 			{
-				if (in) fclose(in);
+				if (in) FClose(in);
 				return true;
 			}
 		}
@@ -7945,7 +7957,7 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 			break;
 		}
 	}
-	fclose(in);
+	FClose(in);
 	return result;
 }
 
@@ -8076,7 +8088,7 @@ void Sortit(char* name,int oneline)
 	}
 	if (drop) fprintf(out,(char*)"%s)\r\n",buffer);
 	FreeBuffer();
-	fclose(out);
+	FClose(out);
 }
 
 #endif

@@ -9,7 +9,7 @@ table: ~colorof (^color ^object)
  green [artichoke arugula asparagus avacado brussel_sprout chinese_cabbage cucumber endive "green apple" "green bean"]
  green [bean cabbage "green onion" "green pepper" honeydew kiwi kiwifruit leek okra pea snow_pea watercress zucchini]
 
- brown ["tree trunk" tree soil dirt earth mud chocolate bark beaver coffee toast root_beer eye raisin shit feces crap wood furniture floor floorboard]
+ brown [bread "tree trunk" tree soil dirt earth mud chocolate bark beaver coffee toast root_beer eye raisin shit feces crap wood furniture floor floorboard]
  
  orange [orange marigold goldfish pumpkin 	carrot tangerine cantaloupe mango  opal ]
  
@@ -33,7 +33,7 @@ table: ~colorof (^color ^object)
 
  black [night darkness death dead corpse computer speaker "electronic equipment" Tivo TV	 pavement magnet tire smoke panther opal zebra charcoal ]
  
- white [snow snowman sheet pillowcase cloud	lamb cotton_ball cotton milk cream polar_bear tooth bride zebra fog egg]
+ white [bread snow snowman sheet pillowcase cloud	lamb cotton_ball cotton milk cream polar_bear tooth bride zebra fog egg]
  white [moon chicken pigeon dove ginger cauliflower garlic jicama kohlrabi onion parsnip potato onion shallot turnip "white corn"]
  
  grey [raincloud building ~building elephant ash turkey computer]

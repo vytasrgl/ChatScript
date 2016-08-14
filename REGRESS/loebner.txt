@@ -1,4 +1,29 @@
 :user test
+
+:reset
+
+# 2016 Loebner questions
+My name is Andrew, whats yours?
+Whats up?
+Whats my name?
+What do you know about the Turing Test?
+What do you get if you multiply six by nine?
+Dave drove faster than Mike because he was in a rush. Who was in a rush?
+The cat tried to climb in the box but got stuck because it was too big. What was too big?
+What does Brexit mean?
+For how long have we been talking?
+What colour is bread?
+Why do people get ulcers?
+What comes after "The best laid plans"?
+Do you have a voice?
+Would you like a cup of tea?
+Do you dream of electric sheep?
+Do you identify as a man , or a woman?
+Could you repeat that please?
+Where are you right now?
+How do you respond to "e4 e5"?
+What can you tell me about yourself?
+
 :reset
 
 # 2015 Loebner questions
