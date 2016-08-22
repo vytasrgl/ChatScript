@@ -8,17 +8,17 @@ Here is an overview.
 
 # Basic ChatScript for starters
 
-* ## [What is ChatScript?](https://github.com/solyaris/ChatScript/wiki/What-is-ChatScript%3F)
+* ## [What is ChatScript?](https://github.com/solyaris/ChatScript/wiki/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
 Overview of the design goals and abilities of CS. Not necessary to read.
 
-* ## [ChatScript Basic User Manual](https://github.com/solyaris/ChatScript/wiki/ChatScript-Basic-User-Manual)
+* ## [ChatScript Basic User Manual](https://github.com/solyaris/ChatScript/wiki/ChatScript-Basic-User-Manual.md)
 This explains how to run CS, how to understand basic CS ideas like rules, topics, and
 concepts. A must starting place.
 
-* ##[ChatScript Tutorial](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial)
+* ##[ChatScript Tutorial](https://github.com/solyaris/ChatScript/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md)
 A briew step-by-step on creating a chatbot travel agent, written by a CS user.
 
-* ## [ChatScript Memorization](https://github.com/solyaris/ChatScript/wiki/ChatScript-Memorization)
+* ## [ChatScript Memorization](https://github.com/solyaris/ChatScript/wiki/ChatScript-Memorization.md)
 A simple explanation of how to “learn” data about the user.
 
 # Predefined Bots
