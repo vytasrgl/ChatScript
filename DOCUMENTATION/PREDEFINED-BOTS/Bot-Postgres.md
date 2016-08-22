@@ -1,3 +1,5 @@
+# Bot Postgres - Postgres Database bot
+
 ChatScript comes with a bot used to prove postgres connection works.
 
 To use it you have to edit the simpletopic code of the bot to put in a valid password, assuming you
