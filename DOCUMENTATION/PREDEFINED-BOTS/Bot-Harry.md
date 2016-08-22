@@ -1,3 +1,5 @@
+# Bot Harry - basic bot
+
 ChatScript comes with a simple bot, already compiled, called Harry. He has a minimal knowledge of
 his personal life (childhood) and the ability to quibble and stall in response to most anything else.
 
