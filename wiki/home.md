@@ -23,19 +23,19 @@ A simple explanation of how to “learn” data about the user.
 
 # Predefined Bots
 
-* ## [Bot Harry - basic bot](https://github.com/solyaris/ChatScript/wiki/Bot-Harry---basic-bot)
+* ## [Bot Harry - basic bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Harry.md)
 A brief overview of the simple Harry bot and how to make simple modifications.
 Potentially useful for a beginner read.
 
-* ## [Bot NLTK – NL analysis bot](https://github.com/solyaris/ChatScript/wiki/Bot-NLTK---NL-analysis-bot)
+* ## [Bot NLTK – NL analysis bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-NLTK.md)
 A brief description of how to run the NLTK bot. Not useful for most people, especially if
 NLTK means nothing to you.
 
-* ## [Bot Stockpile – planner bot](https://github.com/solyaris/ChatScript/wiki/Bot-Stockpile---planner-bot)
+* ## [Bot Stockpile – planner bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Stockpile.md)
 A brief description of how to run the Stockpile bot. Not useful for most people. It's about
 planner capabilities of CS.
 
-* ## [Bot Postgres – postgres bot](https://github.com/solyaris/ChatScript/wiki/Bot-Postgres---Postgres-bot)
+* ## [Bot Postgres – postgres bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Postgres.md)
 Illustration of using Postgres database.
 
 * ## [Bot German]()
