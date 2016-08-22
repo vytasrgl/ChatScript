@@ -1,3 +1,5 @@
+# Bot Stockpile - planner bot
+
 ChatScript comes with a simple planner bot called Stockpile. You build it using `:build stockpile`.
 
 The world of stockpile has three locations: location0, location1, and location2. It has two kinds of
