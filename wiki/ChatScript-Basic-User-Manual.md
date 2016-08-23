@@ -16,7 +16,7 @@ ChatScript is a scripting language designed to accept user text input and genera
 response. Chat proceeds in volleys, like tennis. The program inputs one or more
 sentences from the user and outputs one or more sentences back.
 
-In most common usage, what you build is a “chatbot”, a program that takes input from a
+In most common usage, what you build is a "chatbot", a program that takes input from a
 human and outputs a response. It converses with you. But I have also built a chatbot that
 is dedicated to reading a document. The input, in that case, is the entire document. What,
 if any, output it generates is up to its program. My program was designed to find the table
@@ -78,7 +78,7 @@ tokens.
 
 ChatScript is case insensitive for code script. Obviously case is important in literal
 output. And words in patterns should be lower case unless they are proper names or the
-word “I”. Don't make a lowercase word be upper case in a pattern merely because you
+word "I". Don't make a lowercase word be upper case in a pattern merely because you
 think of it as starting a sentence.
 
 ## Comments
@@ -116,7 +116,7 @@ Also, the Linux version defaults to server mode, so you should run it as:
 ```
 
 * The system prints out a bunch of statistics as it loads data. After which is says:
-“Enter user name”.
+"Enter user name".
 
 * Select a user name. It’s arbitrary, but it’s how the system knows you are you
 when you start up again later. The system will respond with a Welcome to
@@ -282,7 +282,7 @@ dictionary and run-time system that you might change as an advanced author.
 
 * **Knowledge Files**: The RAWDATA folder is where raw data to support chat is kept
 (though you can keep it anywhere since it’s not compiled into the engine). That data is
-run through the script “compiler” and the output is stored in the TOPIC directory, which
+run through the script "compiler" and the output is stored in the TOPIC directory, which
 holds your compiled script data. If your script has verification data embedded in it (#!
 sample inputs), which allows the system to prove your patterns actually do what you
 intend, that data is stored in the VERIFY directory after compilation. There are folders
@@ -358,7 +358,7 @@ If you are in the middle of some topic and the user says something unrelated, th
 system will hunt for a topic that matches keywords of the input and see if some matching
 topic has a responder to react to the input. If so, the system will switch to that topic. 
 
-The new topic becomes the “active” topic and the old topic becomes “pending”, put on a list
+The new topic becomes the "active" topic and the old topic becomes "pending", put on a list
 of topics to return to when the new topic becomes exhausted. This behavior is the default
 behavior and you can script other behavior by creating a control script to do so
 (advanced). 
@@ -382,7 +382,7 @@ reuse a gambit it was going to volunteer anyway. It is entirely up to you the or
 responders and gambits. You can segregate `s:` from `?:` from `u:` or co-mingle them. You
 can have responders intermixed with gambits. 
 
-What does it mean for the chatbot to be “in control” of the conversation? When the user
+What does it mean for the chatbot to be "in control" of the conversation? When the user
 types in a statement or question, the system will see if it has a rejoinder or a responder
 that directly matches the input. If it does, it will respond with that. That forced response
 means the human was in control of the conversation. If, however, the chatbot cannot find
@@ -512,14 +512,14 @@ sentence, immediately after I.
 Another way to request a sequence is to put double quotes around it. 
 
 ```
-s: ( “I love you” ) Do you really? 
+s: ( "I love you" ) Do you really? 
 ```
 
 There are two reasons to use double quoting. First, if you are trying to shoe-horn a phrase
 into a place that expects a word. For example, as a topic keyword you could do this: 
 
 ```
-topic: ~death [“to die” “cross over”] 
+topic: ~death ["to die" "cross over"] 
 ```
 
 Second, when trying to write words where you are not sure how the system will tokenize
@@ -527,8 +527,8 @@ it and whether it is one word or a sequence of words. Tokenization involving pun
 can be tricky. For example, the word _Bob’s_ is actually tokenized as two words: _Bob ‘s_ .
 And in Wordnet, _New_Year's_Eve_ is a single word. 
 
-You might not know that, but anytime you think of something as multiple words, you are safe quoting it (writing _”New
-Year’s Eve”_) and letting ChatScript manage how it is stored internally. This is
+You might not know that, but anytime you think of something as multiple words, you are safe quoting it (writing _"New
+Year’s Eve"_) and letting ChatScript manage how it is stored internally. This is
 particularly true of names of people, titles of books and other multiple-word proper
 names. 
 
@@ -622,7 +622,7 @@ pattern:
 ```
 u: ( I * like << really >> photos)
 ```
-and input _photos I really like_ then it would match because it found “I * like” then found anywhere really and then reset
+and input _photos I really like_ then it would match because it found "I * like" then found anywhere really and then reset
 the position freely back to start and found photos somewhere in the sentence.
 
 
@@ -635,7 +635,7 @@ You can match alternate words in the same position by placing those choices in b
 This matches Do you swim and Do you fish and do you ride.
 Choices may be significant alternatives or they can be synonyms.
 ```
-?: (you [eat ingest “binge and purge” (feed my face ) ] *~2 meat) I love meat
+?: (you [eat ingest "binge and purge" (feed my face ) ] *~2 meat) I love meat
 ```
 Notice that elements of a choice can be sequences of words either as double-quoted
 phrases or as paren sequences. 
@@ -648,7 +648,7 @@ rules. At such point being able to declare a list of choices in one place and us
 everywhere else becomes convenient. This is the concept set. It is hugely important in
 writing patterns that match meaning.
 ```
-concept: ~eat [eat ingest “binge and purge”]
+concept: ~eat [eat ingest "binge and purge"]
 ```
 
 Unlike choices, a concept cannot use paren notation to hold a sequence of words, though
@@ -723,18 +723,18 @@ You should always put multiple-word proper names in double quotes, particularly 
 with embedded punctuation. You want CS to know that the entire phrase is considered a
 single entity. So
 ```
-u: (“Dr. Watson”)
-u: ( “The Beatles”)
+u: ("Dr. Watson")
+u: ( "The Beatles")
 ```
 
-## Interjections, “discourse acts”, and concept sets
+## Interjections, "discourse acts", and concept sets
 
 Some words and phrases have interpretations based on whether they are at sentence start
-or not. E.g., good day, mate and It is a good day are different for “good day”. Likewise
+or not. E.g., good day, mate and It is a good day are different for "good day". Likewise
 sure and I am sure are different. Words that have a different meaning at the start of a
 sentence are commonly called interjections. 
 
-In ChatScript these are defined by the `livedata/interjections.txt` file. In addition, the file augments this concept with “discourse acts”, phrases that are like an interjection. All interjections and discourse acts map to concept sets, which come thru as the user input instead of what they wrote. 
+In ChatScript these are defined by the `livedata/interjections.txt` file. In addition, the file augments this concept with "discourse acts", phrases that are like an interjection. All interjections and discourse acts map to concept sets, which come thru as the user input instead of what they wrote. 
 For example _yes_ and _sure_ and _of course_ are all treated as meaning the discourse act of agreement in the
 interjections file. So you don’t see _yes_, I will go coming out of the engine. The
 interjections file will remap that to the sentence `~yes`, breaking off that into its own
@@ -847,7 +847,7 @@ handled by using the canonical degree.
 
 If you want to test for a sequence of optional words, you can do two things:
 ```
-u: ( {are} {you}{going} home ) or u: ({“be you go”} home )
+u: ( {are} {you}{going} home ) or u: ({"be you go"} home )
 ```
 In a quoted phrase, you can use either all canonical or all exact forms. And you can do a
 quoted phrase of 4 words long (but not longer). 
@@ -944,7 +944,7 @@ You pass words and punctuation for display. The system automatically formats it,
 doesn’t matter if your commas and periods have spaces before them, or how many blanks
 or tabs there are between words. The system reformats it automatically. _I like you?_ and _I
 like you ?_ print the same on output
-If you actually need to control spacing, consult “formatted double quotes” in the
+If you actually need to control spacing, consult "formatted double quotes" in the
 advanced manual. 
 
 
@@ -990,7 +990,7 @@ duration of the current volley (several sentences maybe) after which it should b
 presumed trashed. Whenever you start a volley, you should presume match variables all
 hold unknown junk.
 
-You are allowed `_0` through `_20`. I often use the `_10` to `_20` range as “safe” variables for
+You are allowed `_0` through `_20`. I often use the `_10` to `_20` range as "safe" variables for
 the duration of a volley, because I will never match that many variables in a single
 sentence. I am unlikely to even match more than 5. So I can dedicate them any way I
 want to. 
@@ -1029,7 +1029,7 @@ Be aware that this expression:
 ```
 u: (_1)
 ```
-does not memorize the input word “1”. It instead names match variable 1 and asks if it
+does not memorize the input word "1". It instead names match variable 1 and asks if it
 has a value. If you were desperate to memorize the word 1 (how weird), you'd have to do
 this:
 ```
@@ -1103,8 +1103,8 @@ $myvar -= $articlesize * 10
 because it first deducts `$articlesize` from `$myvar` and then multiplies that result by 10. 
 
 You can test variables in patterns in a variety of ways. Some such tests do not affect the
-current position pointer of the match. Merely putting in the variable name will ask “does
-it have a value”?
+current position pointer of the match. Merely putting in the variable name will ask "does
+it have a value"?
 ```
 ?: ( what is my name $firstname ) Your name is $firstname.
 ```
