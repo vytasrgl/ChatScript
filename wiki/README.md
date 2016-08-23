@@ -45,7 +45,7 @@ An illustration of hooking in an external pos-tagger for foreign language suppor
 
 # Advanced ChatScript
 
-* ## ChatScript Advanced User Manual
+* ## [ChatScript Advanced User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md)
 Once you've master basic CS, this is the place to go next.
 
 * ## ChatScript System Functions Manual
