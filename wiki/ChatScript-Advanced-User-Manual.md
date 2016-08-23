@@ -86,9 +86,9 @@ User variables always hold text strings as values. Numbers are represented as di
 strings, which are converted into binary formats internally as needed. Text comes in
 three flavors. First are simple words (arbitrary contiguous characters with no spaces).
 
-Second are passive strings like “meat-loving plants”. 
+Second are passive strings like "meat-loving plants". 
 
-Third are active strings (which you haven't read about yet) like `^”I like $value”`. 
+Third are active strings (which you haven't read about yet) like `^"I like $value"`. 
 Active strings involve references to functions or data inside them and execute when used to convert their results into a passive string 
 with appropriate value substitutions. 
 Other languages would name a CS active string a format string, and have to pass it to a function like sprintf along with the arguments
@@ -105,7 +105,7 @@ happens (are not saved to disk).
 
 ChatScript supports structured triples of data called facts, which can be found by
 querying for them. The 3 fields of a fact are either text strings or fact references to other
-facts. So you might have a fact like (I eat “meat-loving plants”) and you could query CS
+facts. So you might have a fact like (I eat "meat-loving plants") and you could query CS
 to find what eats meat-loving plants or what do I eat. Or even more generally what do I
 ingest (using relationship properties of words). JSON data returned from website calls are
 all represented using facts so you can query them to find the bits of data you seek.
@@ -129,7 +129,7 @@ regardless of whether the rule subsequently fails.
 ### Marking
 
 When CS receives user input, it tokenizes it into sentences and analyzes each
-sentence in turn. It “marks” each word of the sentence with what concepts it belongs to.
+sentence in turn. It "marks" each word of the sentence with what concepts it belongs to.
 Concepts always begin with `~`. Usually concepts are explicit enumerations of words, like
 `~animals` is a list of all known animals or `~ingest` is a list of all verbs that imply ingestion.
 
@@ -148,7 +148,7 @@ ones.
 ### Memorizing 
 
 Rule patterns can dictate memorizing part of the input that matches a
-pattern element. The memorized data goes onto “match variables”, which are numbered
+pattern element. The memorized data goes onto "match variables", which are numbered
 `_0`, `_1`, … in the order in which the data is captured. CS memorizes both the original input
 and the canonical form of it. The pattern can use match variables in comparisons and the
 output can also access the data captured from the input.
@@ -164,7 +164,7 @@ control result. That result in part affects how additional rules in the calling 
 functions execute, in that you can make a rule return a failure or success code that
 propagates and affects the current function, or rule, or topic, or sentence, or input. So a
 failure or success down deep can, if desired, end all further script execution by sending
-the right code back up the calling sequence. When code returns the “noproblem” value,
+the right code back up the calling sequence. When code returns the "noproblem" value,
 all callers will complete what they are doing, but if user output was created will likely not
 initiate any new rules.
 
@@ -392,7 +392,7 @@ topic, but that will also randomize the responders. And sometimes what you want 
 semirandomness in gambits. That is, a topic treated as a collection of subtopics for
 gambit purposes.
 This is `r:` The engine selects an `r:` gambit randomly, but any `t:` topic gambits that follow
-it up until the next random gambit are considered “attached” to it. They will be executed
+it up until the next random gambit are considered "attached" to it. They will be executed
 in sequence until they are used up, after which the next random gambit is selected.
 ```
 Topic: ~beach [beach sand ocean sand_castle]
@@ -458,11 +458,11 @@ routines `^postprintbefore` and `^postprintafter`).
 ## Keyword Phrases
 
 You cannot make a concept out with a member whose string includes starting or trailing
-blanks, like “ X “. Such a word could never match as a pattern, since spaces are skipped
+blanks, like " X ". Such a word could never match as a pattern, since spaces are skipped
 over. But you can make it respond to idiomatic phrases and multiple words. Just put them
 in quotes. E.g. 
 ```
-concept: ~remove ( “take away” remove )
+concept: ~remove ( "take away" remove )
 ```
 
 Normally in patterns you can write
@@ -484,10 +484,10 @@ But if you tried a word memorize like
 ?: (what is your favorite *1 *1)
 ```
 that would fail because the first `*1` memorizes _TV_show_ and there is therefore no second
-word to memorize. Likewise when you write `concept: ~viewing (“TV show”)` the
+word to memorize. Likewise when you write `concept: ~viewing ("TV show")` the
 system can match that concept readily also. In fact, whenever you write the quoted
 keyword phrase, if all its words are canonical, you can match canonical and
-noncanonincal forms. _“TV show”_ matchs _TV shows_ as well as _TV show_.
+noncanonincal forms. _"TV show"_ matchs _TV shows_ as well as _TV show_.
 
 
 ## Dictionary Keyword sets
@@ -555,10 +555,10 @@ behavior on the pattern side is unpredictable.
 
 ## Macros
 
-Just as you can use sets to “share” data across rules, you can also write macros to share
+Just as you can use sets to "share" data across rules, you can also write macros to share
 code. A patternmacro is a top-level declaration that declares a name, arguments that can
-be passed, and a set of script to be executed “as though the script code were in place of
-the original call”. 
+be passed, and a set of script to be executed "as though the script code were in place of
+the original call". 
 
 Macro names can be ordinary names or have a `^` in front of them. The
 arguments must always begin with `^`. The definition ends with the start of a new top-level
@@ -595,16 +595,16 @@ When a patternmacro takes a single argument and you want to pass in several, you
 wrap them in parens to make them a single argument. Or sometimes brackets. E.g.,
 ```
 ?: ( ^DoYouDoThis( (play * baseball) ) ) Yes I do
-?: ( ^DoYouDoThis( [swim surf “scuba dive”] ) Yes I do
+?: ( ^DoYouDoThis( [swim surf "scuba dive"] ) Yes I do
 ```
 
-If you call a patternmacro with a string argument, like “scuba dive” above, the system
+If you call a patternmacro with a string argument, like "scuba dive" above, the system
 will convert that to its internal single-token format just as it would have had it been part
 of a normal pattern. Quoted strings to output macros are treated differently and left in
 string form when passed.
 
 You can declare a patternmacro to accept a variable number of arguments. You define the
-macro with the maximum and then put “variable” before the argument list. All missing
+macro with the maximum and then put "variable" before the argument list. All missing
 arguments will be set to null on the call.
 ```
 patternmacro: ^myfn variable (^arg1 ^arg2 ^arg3 ^arg4)
@@ -718,8 +718,8 @@ keywords of the topic OR you are already in the topic. So:
 ```
 u: (<<chocolate [~ice_cream ~] >>)
 ```
-would match if you only said “chocolate” while inside the topic, or if you said “chocolate
-ice cream” while outside the topic.
+would match if you only said "chocolate" while inside the topic, or if you said "chocolate
+ice cream" while outside the topic.
 
 
 ## Prefix Wildcard Spelling and Postfix Wildcard Spelling
@@ -763,7 +763,7 @@ because you won’t have the script compiler protecting you and properly formatt
 
 ## Setting Match Position - @_3+ @_3-
 
-You can “back up” and continue matching from a prior match position using `@` followed
+You can "back up" and continue matching from a prior match position using `@` followed
 by a match variable previously set. E.g.
 ```
 u: (_~pronoun * go @_0+ often)
@@ -796,7 +796,7 @@ u: (I love * > _*-1 ) capture last word of sentence
 ## Gory details about strings
 
 ```
-u: ( I “take charge” ) OK.
+u: ( I "take charge" ) OK.
 ```
 When you use "take charge" it can match taking charges, take charge, etc. When you use
 "taking charge" it can only match that, not "taking charges'. If all words in the string are
@@ -808,7 +808,7 @@ The quote notation is typically used in several situations...
 * what you are matching contains embedded punctuation and you don't want to think
 about how to tokenize it e.g., "Mrs. Watson's" -- is the period part of Mrs, is the ' part of
 Watson, etc. Easier just to use quotes and let the system handle it.
-* You want to use a phrase inside `[]` or `{}` choices. Like `[ like live “really enjoy” ]`
+* You want to use a phrase inside `[]` or `{}` choices. Like `[ like live "really enjoy" ]`
 
 In actuality, when you quote something, the system generates a correctly tokenized set of
 words and joins them with underscores into a single word. There is no real difference
@@ -837,7 +837,7 @@ the cost of matching is linear in the number of items to test. And a quoted expr
 the `_` equivalent) is a single item, whereas ( take charge) is 4 items. 
 So the first rule will below will match faster than the second rule:
 ```
-u: ( “I love you today when”)
+u: ( "I love you today when")
 u: (I love you today when)
 ```
 
@@ -969,7 +969,7 @@ I also didn’t tell you that the system monitors what it says, and won’t repe
 within the last 20 outputs. 
 So if, when converting the output stream into a response to go in the responses list, the system finds it already had such a response
 sent to the user in some recently earlier volley, the output is also discarded and the rule
-“fails”.
+"fails".
 
 Actually, it's a bit more complicated than that. Let's imagine a stream is being built up.
 And then suddenly the rule calls another rule (`^reuse`, `^gambit`, `^repond`). What happens?
@@ -999,30 +999,30 @@ Because you can intermix program script with ordinary output words, ChatScript
 normally autoformats output code. But programming languages allow you to control
 your output with format strings and ChatScript is no exception. 
 
-In the case of ChatScript, the active string `^”xxx”` string is a format string. 
+In the case of ChatScript, the active string `^"xxx"` string is a format string. 
 The system will remove the `^` and the quotes and put it out exactly as you have it, except, it will substitute variables (which you learn about shortly) 
 with their values and it will accept `[]` `[]` choice blocks. And will allow function calls. 
 You can't do assignment statements or loops or if statements.
 ```
-t: ^“I like you.”
+t: ^"I like you."
 ```
 puts out I like you.
 
-When you want special characters in the format string like `“`, you need to
+When you want special characters in the format string like `"`, you need to
 backslash them, which the format string removes when it executes. For example:
 ```
-u: () $tmp = [ hi ^”there \”john\”” ]
+u: () $tmp = [ hi ^"there \"john\"" ]
 ```
-the quote inside the format string need protecting using `\”`. 
+the quote inside the format string need protecting using `\"`. 
 You can write `\n`, `\r`, `\t` and those will be translated into newline, carriage return, and tab.
 
 Format strings evaluate themselves as soon as they can. If you write:
 ```
-u: () $tmp = ^” This is $var output”
+u: () $tmp = ^" This is $var output"
 ```
 then `$tmp` will be set to the result of evaluating the format string. Similarly, if you write:
 ```
-u: () $tmp = ^myfunc(^” This is $var output”)
+u: () $tmp = ^myfunc(^" This is $var output")
 ```
 then the format string is evaluated before being sent to `^myfunc`.
 
@@ -1030,7 +1030,7 @@ You can continue a format string across multiple source lines. It will always ha
 space representing the line change, regardless of how many spaces were before or after
 the line break. E.g
 ```
-^”this is my life” → ^”this is my life”
+^"this is my life" → ^"this is my life"
 ```
 regardless of whether there were no spaces after is or 100 spaces after is. You may not
 have comments at the ends of such lines (they would be absorbed into the string).
@@ -1050,8 +1050,8 @@ such things, you can use `^join()` instead.
 ## Json Active Strings
 
 `^' xxxxxx '` is another kind of active string. It is intended for writing easy json, because you don't have to escape doublequotes unless json would need to. It will
-converting `\n`,`\t`, `\r` into their control characters, convert `\\` into just `\`, and leave all other characters alone. Eg `^'{ “test” : “my \”value\” \x” }` will become
-`^'{ “test” : “my \”value\” \x” }`
+converting `\n`,`\t`, `\r` into their control characters, convert `\\` into just `\`, and leave all other characters alone. Eg `^'{ "test" : "my \"value\" \x" }` will become
+`^'{ "test" : "my \"value\" \x" }`
 
 
 ## Functional Strings
@@ -1065,7 +1065,7 @@ but gain full other output execution abilities.
 They have to be different because there is no user context when compiling a table. As a
 consequence, if you have table code that looks like this:
 ```
-^createfact( x y ^” This is $var output”)
+^createfact( x y ^" This is $var output")
 ```
 the functional string does NOT evaluate itself before going to createfact. It gets stored as
 its original self.
@@ -1224,9 +1224,9 @@ u: ( << what time >> ) $test = ^mymac() join(ok $test)
 will print _oktested here_.
 
 However, it is clearer and cleaner if you are returning data to be stored somewhere else
-(not to be merely immediately sent to the user), to use `^return(“tested here”)`. This both
+(not to be merely immediately sent to the user), to use `^return("tested here")`. This both
 creates the result, and ends the function immediately even if other code follows.
-Note- calls to macros use “pass by reference”, so the actual value of the ^variable is the
+Note- calls to macros use "pass by reference", so the actual value of the ^variable is the
 name of what was passed in, and it is generally (but not always) evaluated on use. 
 
 
@@ -1305,17 +1305,17 @@ If you just write a function name with ^ in output, the compiler will complain a
 call. So you have to synthesize the name somehow. Here are two ways:
 ```
 outputmacro: ^mycall()
-    $$tmpfn = ^join( ^”\^” func)
+    $$tmpfn = ^join( ^"\^" func)
     ^indirect($$tmpfn 34)
-    ^indirect( ^”\^func” 34)
+    ^indirect( ^"\^func" 34)
 ```
 You can also store function names on user and match variables and then call them. E.g.
 ```
-$$tmp = ^”\^func”
+$$tmp = ^"\^func"
 $$tmp(34)
 ```
 You can declare an outputmacro to accept a variable number of arguments. You define the
-macro with the maximum and then put “variable” before the argument list. All missing
+macro with the maximum and then put "variable" before the argument list. All missing
 arguments will be set to null on the call.
 ```
 outputmacro: ^myfn variable (^arg1 ^arg2 ^arg3 ^arg4)
@@ -1443,7 +1443,7 @@ user says _I'm bored_ you want to leave a topic and not reopen it yourself for a
 future (say 200 volleys). In that case, you don't have a variable but you need to create one
 dynamically.
 ```
-$$topicname = substitute(character %topic ~ “”)
+$$topicname = substitute(character %topic ~ "")
 ```
 The above gives you a topic name without the `~`. Pretend the current topic is `~washing`.
 Then you can create a dynamic variable name simply by using
@@ -1492,7 +1492,7 @@ See also Indirect Pattern Elements in Advanced Patterns.
 
 ## Bot variables
 
-You can also define variables that are “owned” by the bot. Any variables you create as
+You can also define variables that are "owned" by the bot. Any variables you create as
 part of layer 0 or layer 1 are always resident. As are any variables you define on the
 command line starting ChatScript. You can see them and even change them during a
 volley, but they will always refresh back to their original values at the start of the next
@@ -1647,7 +1647,7 @@ The system will not use this keyword. Or if you write this
 topic: ~mytopic (cheese cheese~1)
 ```
 You are saying the word cheese or the wordnet path of cheese meaning #1, which
-includes the word cheese. You don't need “cheese”. Or consider:
+includes the word cheese. You don't need "cheese". Or consider:
 ```
 topic: ~mytopic (cheese cheese~n)
 ```
@@ -1681,8 +1681,8 @@ user, you can request this on the build command.
 
 ## Build Layers
 The build system has two layers, 0 and 1. When you say :build 0, the system looks in the
-top level directory for a file “files0.txt”. Similarly when you say :build 1 it looks for
-“files1.txt”. Whatever files are listed inside a “filesxxx.txt” are what gets built. And the
+top level directory for a file "files0.txt". Similarly when you say :build 1 it looks for
+"files1.txt". Whatever files are listed inside a "filesxxx.txt" are what gets built. And the
 last character of the file name (e.g., files0) is what is critical for deciding what level to build on. 
 If the name ends in 0, it builds level 0. If it doesn't, it builds level 1. 
 This means you can create a bunch of files to build things any way you want. You can imagine:
@@ -1719,9 +1719,9 @@ some junk
 ##>> more junk
 ```
 
-Because any comment marker kills the rest of the line, the “first junk” will not be seen,
-nor will the “more junk”. But a comment block was established, so lines between them
-line “some junk” are also not seen.
+Because any comment marker kills the rest of the line, the "first junk" will not be seen,
+nor will the "more junk". But a comment block was established, so lines between them
+line "some junk" are also not seen.
 
 
 ## Renaming Variables, Sets, and Integer Constants
@@ -2032,45 +2032,45 @@ evolved and is not consistent.
 > How are double-quoted strings handled?
 
 First, note that you are not allowed strings that end in punctuation followed by a space.
-This string “I love you. “ is illegal. There is no function adding that space serves.
+This string "I love you. " is illegal. There is no function adding that space serves.
 String handling depends on the context. In input/pattern context, it means translate the
 string into an appropriately tokenized entity. Such context happens when a user types in
 such a string:
 
-_I liked “War and Peace”_
+_I liked "War and Peace"_
 
 It also happens as keywords in concepts:
 ```
-concept: ~test[ “kick over”]
+concept: ~test[ "kick over"]
 and in tables:
 DATA:
-“Paris, France”
+"Paris, France"
 ```
 and in patterns:
 ```
-u: (“do you know” what )
+u: ("do you know" what )
 ```
 In output context, it means print out this string with its double quotes literally. E.g.
 ```
-u: (hello) “What say you? “ # prints out “What say you? “
+u: (hello) "What say you? " # prints out "What say you? "
 ```
 There are also the functional interpretations of strings; these are strings with ^ in front of them.
 They don’t make any sense on input or patterns or from a user, but they are handy in a
 table. They mean compile the string (format it suitable for output execution) and you can
 use the results of it in an ^eval call.
 
-On the output side, a ^”string” means to interpret the contents inside the string as a
+On the output side, a ^"string" means to interpret the contents inside the string as a
 format string, substituting any named variables with their content, preserving all internal
 spacing and punctuation, and stripping off the double quotes.
 ```
-u: (test) ^”This $var is good.” # if $var is kid the result is This kid is good.
+u: (test) ^"This $var is good." # if $var is kid the result is This kid is good.
 ```
 
 > What really happens on the output side of a rule?
 
-Well, really, the system “evaluates” every token. Simple English words and punctuation
+Well, really, the system "evaluates" every token. Simple English words and punctuation
 always evaluate to themselves, and the results go into the output stream. Similarly, the
-value of a text string like “this is text” is itself, and so “this is text” shows up in the
+value of a text string like "this is text" is itself, and so "this is text" shows up in the
 output stream. And the value of a concept set or topic name is itself.
 
 System function calls have specific unique evaluations which affect the data of the
@@ -2191,15 +2191,15 @@ than normal.
 
 Normally you match words in a sentence. But the system sometimes merges multiple
 words into one, either as a proper name, or because some words are like that. For
-example “here and there” is a single word adverb. If you try to match _We go here and
+example "here and there" is a single word adverb. If you try to match _We go here and
 there about town_ with
 ```
 u: (* here *) xxx
 ```
-you will succeed. The actual tokens are “we” “go” “here and there” “about” “town”.
+you will succeed. The actual tokens are "we" "go" "here and there" "about" "town".
 but the pattern matcher is allowed to peek some into composite words. 
 
-When it does match, since the actual token is “here and there”, the position start is set to that word (e.g., position 3), 
+When it does match, since the actual token is "here and there", the position start is set to that word (e.g., position 3), 
 and in order to allow to match other words later in the composite, the position end is set to the word before (e.g., position 2). 
 This means if your pattern is
 ```
@@ -2210,8 +2210,8 @@ comes when you try to memorize matches. If your pattern is
 ```
 u: (_* and _* ) xxx
 ```
-then `_0` is bound to words 1 & 2 “we go”, and matches “here and there”, and `_1` matches
-the rest, “about town”. 
+then `_0` is bound to words 1 & 2 "we go", and matches "here and there", and `_1` matches
+the rest, "about town". 
 
 That is, the system will NOT position the position end before the
 composite word. If it did, `_1` would be _here and there about town_. It’s not.
@@ -2239,7 +2239,7 @@ you want to not match at all, you can write:
 u: (* _’~myjunk * ) xxx
 ```
 In this case, the result is not allowed to match a partial word, and fails to match.
-However, given “ My brothers are rare.” and these:
+However, given " My brothers are rare." and these:
 ```
 concept: ~myfamily (brother)
 u: (* _’~ myfamily * ) xxx
@@ -2287,7 +2287,7 @@ rejoinder. Etc.
 To manage things like automatic pronoun resolution, etc, you also want the chatbot to be
 able to read and process its own output with whatever scripts you want. The set of
 sentences the chatbot utters for a volley are automatically created as transient facts stored
-under the verb “chatoutput”. The subject is a sentence uttered by the chatbot. The object
+under the verb "chatoutput". The subject is a sentence uttered by the chatbot. The object
 is a fact triple of whatever value was stored as `%why` (default is `.`), the name of the
 topic, and the offset of the rule within the topic.
 
@@ -2388,7 +2388,7 @@ is unlimited.
 not add trailing / on this path. Recommended is you use `RAWDATA/yourbotfolder/LIVEDATA`
 to keep all your data in one place. You can have your own live data, yet use ChatScripts
 default LIVEDATA/SYSTEM and LIVEDATA/ENGLISH by providing paths to the
-“system=” and “english=” parameters as well as the “livedata=” parameter.
+"system=" and "english=" parameters as well as the "livedata=" parameter.
 
 `users=xxx` – name relative or absolute path to where you want the USERS folder to be.
 Do not add trailing /.
@@ -2429,8 +2429,8 @@ You can create predefined bot variables by simply naming permanent variables on 
 command line, using V to replace $ (since Linux shell scripts don't like $). Eg.
 
 ChatScript Vmyvar=fatcat
-ChatScript Vmyvar=”tony is here”
-ChatScript “Vmyvar=tony is here”
+ChatScript Vmyvar="tony is here"
+ChatScript "Vmyvar=tony is here"
 
 Quoted strings will be stored without the quotes. Bot variables are always reset to their
 original value at each volley, even if you overwrite them during a volley. This can be
@@ -2465,7 +2465,7 @@ folder there also.
 
 Then create a folder within yours called ChatScript and put the current ChatScript
 contents within that. You can also create a batch file, probably within your folder, that
-does a “cd ChatScript” to be in the right directory, and then runs ChatScript with the
+does a "cd ChatScript" to be in the right directory, and then runs ChatScript with the
 following parameters:
 
 ChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH
