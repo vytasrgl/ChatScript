@@ -78,7 +78,6 @@ think of it as starting a sentence.
 The comment character is the hash mark (`#`). It extends to the end of the line.
 Ordinary comments must have at least one space after them, to allow the system to
 distinguish comments from numeric constants like : `#NOUN`
-
 ```
 s: (I hate meat) So do I. # an untruth
 ```
@@ -204,6 +203,7 @@ answer the question about yourself. As in:
 
 ```
 Topic: school [school university learn]
+
 t: Where do you go to school?
 t: I go to Harvard.
 t: What is your major?
@@ -215,10 +215,14 @@ make some cogent rejoinder on that BEFORE you gambit say _I go to Harvard_.
 
 ```
 Topic: school [school university learn]
+
 t: Where do you go to school?
-a: (Rochester)That's a great school.
+    a: (Rochester)That's a great school.
+
 t: I go to Harvard.
+
 t: What is your major?
+
 t: I am studying finance. 
 ```
 
@@ -313,6 +317,7 @@ a simple topic declaration.
  
 ```
 topic: ~DEATH [dead corpse death die body]
+
 t: I don’t want to die
 ?: (When will you die) I don’t know. 
 ```
@@ -655,7 +660,7 @@ ChatScript can represent word synonyms as above or affiliated words as below.
 
 ```
 concept: ~baseball [strike umpire ball bat base ]
-… some topic declaration
+# … some topic declaration
 s: (~baseball) I’m not that into sports like baseball. 
 ```
 A concept can also a natural ordering of words that an advanced script can use. The
@@ -666,7 +671,6 @@ concept: ~pokerhand [ royal flush straight flush 4 of a kind full house ]
 ```
 The pattern: 
 ```
-pattern:
 ?: ( which * better * ~pokerhand * or * ~pokerhand ) … 
 ```
 detects questions like which is better, a full house or a royal flush and the system has
@@ -675,7 +679,7 @@ functions that can exploit the ordered concept to provide a correct answer.
 You can nest concepts within concepts, so this is fine: 
 
 ```
-concept: ~food [~meat ~dessert lasagna ~vegetables ~fruit ] 
+concept: ~food [ ~meat ~dessert lasagna ~vegetables ~fruit ] 
 ```
 
 Hierarchical inheritance is important in pattern generalization. Concepts can be used to
