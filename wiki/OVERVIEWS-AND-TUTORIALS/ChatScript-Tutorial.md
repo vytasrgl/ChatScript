@@ -27,16 +27,15 @@ From now on, we will work with the file `tutorial.top`.
 > the documentation
 
 
-# Contents
-1. [Speaking (topic: , t:)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#speaking-topic--t)
-2. [Saying more (^keep, random selection [], ^repeat)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#saying-more-keep-random-selection--repeat)
-3. [Listening (u:, ^reuse)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#listening-u-reuse)
-4. [Short-term memory (* _)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#short-term-memory--_)
-5. [Long-term memory ($)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#long-term-memory-)
-6. [Dialog Management (conditions)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#dialog-management-conditions)
-7. [Implicit Confirmations (^respond)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#implicit-confirmations-respond)
-8. [Explicit Confirmation (rejoinders: a: b: c:...)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#explicit-confirmation-rejoinders-a-b-c)
-9. [Knowledge (^createfact, table:)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#knowledge-createfact-table)
+* [Speaking (topic: , t:)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#speaking-topic--t)
+* [Saying more (^keep, random selection [], ^repeat)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#saying-more-keep-random-selection--repeat)
+* [Listening (u:, ^reuse)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#listening-u-reuse)
+* [Short-term memory (* _)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#short-term-memory--_)
+* [Long-term memory ($)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#long-term-memory-)
+* [Dialog Management (conditions)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#dialog-management-conditions)
+* [Implicit Confirmations (^respond)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#implicit-confirmations-respond)
+* [Explicit Confirmation (rejoinders: a: b: c:...)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#explicit-confirmation-rejoinders-a-b-c)
+* [Knowledge (^createfact, table:)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#knowledge-createfact-table)
 
 # Speaking (topic: , t:)
 The simplest possible chat-script should include a topic and a sentence to say, for
