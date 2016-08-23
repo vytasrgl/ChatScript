@@ -1788,7 +1788,7 @@ or alter the type data of a word. The type information is all in dictionarySyste
 
 The substitutions files consistof pairs of data per line. The first is what to match.
 Individual words are separated by underscores, and you can request sentence boundaries
-`<` and v>` . 
+`<` and `>` . 
 The output can be missing (delete the found phrase) or words separated by plus
 signs (substitute these words) or a `%word` which names a system flag to be set (and the
 input deleted). The output can also be prefixed with `![…]` where inside the brackets are a
@@ -1808,7 +1808,8 @@ sentence. The files include:
 Processing done by various of these files can be suppressed by setting `$cs_token`
 differently. See Control over Input.
 
-The `queries.txt` file defines queries available to `^query`. A query is itself a script. See the file for more information.
+The `queries.txt` file defines queries available to `^query`. A query is itself a script. 
+See the file for more information.
 
 The `canonical.txt` file is a list of words and override canonical values. When the word on
 the left is seen in raw input, the word on the right will be used as its canonical form.
