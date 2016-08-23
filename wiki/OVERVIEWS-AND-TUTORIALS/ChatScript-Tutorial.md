@@ -26,6 +26,7 @@ From now on, we will work with the file `tutorial.top`.
 > features needed for building our traveling-agent bot. You can find many more features in
 > the documentation
 
+# Contents
 
 * [Speaking (topic: , t:)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#speaking-topic--t)
 * [Saying more (^keep, random selection [], ^repeat)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#saying-more-keep-random-selection--repeat)
