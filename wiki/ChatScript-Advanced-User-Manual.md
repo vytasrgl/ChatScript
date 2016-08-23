@@ -3,25 +3,24 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 > Revision 8/13/2016 cs6.8
 
-[Review]()
-[Advanced Concepts]()
-[Advanced Topics]()
-[Advanced Patterns]()
-[Advanced Output]()
-[Advanced Variables]()
-[Out of Band Communication]()
-[System callback functions]()
-[Advanced :build]()
-[Editing Non-topic Files]()
-[Which Bot?]()
-[Common Script Idioms]()
-[Questions/Hand-holding]()
-[Esoterica and Fine Detail]()
-[Self-Reflection]()
-[A Fresh build]()
-[Command line Parameters]()
-[Updating CS versions Easily]()
-[The Dictionary]()
+* [Review](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
+* [Advanced Concepts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#advanced-concepts)
+* [Advanced Topics](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#advanced-topics)
+* [Advanced Patterns](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#advanced-patterns)
+* [Advanced Output](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#advanced-output)
+* [Advanced Variables](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#advanced-variables)
+* [Out of Band Communication](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#out-of-band-communication)
+* [System callback functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#system-callback-functions)
+* [Advanced :build](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#advanced-build)
+* [Editing Non-topic Files](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#editing-non-topic-files)
+* [Which Bot?](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#which-bot)
+* [Common Script Idioms](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#common-script-idioms)
+* [Esoterica and Fine Detail](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#esoterica-and-fine-detail)
+* [Self-Reflection](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#self-reflection)
+* [A Fresh build](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#a-fresh-build)
+* [Command line Parameters](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#command-line-parameters)
+* [Updating CS versions Easily](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#updating-cs-versions-easily)
+* [The Dictionary](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md#the-dictionary)
 
 
 # Review: Overview of how CS works
@@ -1524,7 +1523,7 @@ _0 = _10
 This is a transfer from one match variable to another, so no data is lost
 
 
-## Out of band Communication
+# Out of band Communication
 
 ChatScript can neither see nor act, but it can interact with systems that do. The
 convention is that out-of-band information occurs at the start of input or output, and is
@@ -1586,7 +1585,7 @@ CS can cancel any of these by sending an oob message with a milliseconds of 0.
 e.g. `[loopback=0 callback=0 alarm=0]` cancels any pending callbacks into the future.
 
 
-## System callback functions:
+# System callback functions:
 
 `outputmacro: ^CSBOOT()`
 
@@ -1770,7 +1769,7 @@ permanent variables (handy for finalizing a bot to show you have no spelling err
 variables).
 
 
-## Editing Non-topic Files
+# Editing Non-topic Files
 
 Non-topic files include the contents of DICT and LIVEDATA.
 
