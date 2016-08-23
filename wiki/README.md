@@ -38,7 +38,7 @@ planner capabilities of CS.
 * ## [Bot Postgres – postgres bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Postgres.md)
 Illustration of using Postgres database.
 
-* ## [Bot German]()
+* ## [Bot German](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-German.md)
 An illustration of hooking in an external pos-tagger for foreign language support.
 
 
