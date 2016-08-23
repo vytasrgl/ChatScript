@@ -64,12 +64,12 @@ ever randomly selected the pet topic again.
 
 An even more impressive bot will bring up the pet again in a future conversation. How to write such
 script will be explained in a moment. But imagine at the start of some future conversation, the bot, after
-saying hello, says “I was walking by a pet store the other day and saw the cutest dog in the window,
-which reminded me of your dog. Has it learned any new tricks?”
+saying hello, says "I was walking by a pet store the other day and saw the cutest dog in the window,
+which reminded me of your dog. Has it learned any new tricks?"
 
 There are two parts to the code for this. First, you have to detect you are in a new conversation. Then
 you have to decide when to bring forth the memory. The simple place to do this is in the introduction
-topic, when issuing and responding to “hello” and “how are you”. You are only in this topic at the start
+topic, when issuing and responding to "hello" and "how are you". You are only in this topic at the start
 of a conversation, so any knowledge you have memorized about pets clearly has to have been from a
 prior conversation. So you can try to find a moment when the user has issued a statement (not a
 question). So the topic might have a bunch of rules like this: 
