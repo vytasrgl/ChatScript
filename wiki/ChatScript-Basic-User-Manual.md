@@ -2,6 +2,14 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 > Revision 7/4/2016 cs6.6
 
+* [Overview](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#overview)
+* [Simple Topics](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#simple-topics)
+* [Simple Patterns](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#simple-patterns)
+* [Simple Output](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#simple-output)
+* [Variables](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#variables)
+* [Summary](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#summary)
+
+
 # OVERVIEW
 
 ChatScript is a scripting language designed to accept user text input and generate a text
