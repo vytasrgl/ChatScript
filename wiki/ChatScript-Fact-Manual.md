@@ -1,6 +1,11 @@
 # ChatScript Fact Manual
+
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 > Revision 5/19/2016cs6.5a
+
+* [Simple Facts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#simple-facts)
+* [Advanced Facts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#advanced-facts)
+* [Esoteric Facts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#esoteric-facts)
 
 
 # SIMPLE FACTS
@@ -59,7 +64,7 @@ some or all of the field values that you want to find. Any field value can be re
 with `?` which means either you don’t care or you don’t know and want to find it. The kinds of queries are programmable and are defined in `LIVEDATA/queries.txt` (but you need to be really advanced to add to it). The simplest query kinds are:
 
 | query flag | description |
-| ---------- | ----------- |
+| ---------: | ----------- |
 | direct_s | find all facts with the given subject |
 | direct_v | find all facts with the given verb |
 | direct_o | find all facts with the given object |
@@ -148,7 +153,7 @@ By default in the simplest queries, the system will find all facts that match an
 (are like records), it is also valid to say a factset is a collection of subjects, or verbs, or objects. Therefore when you use a factset, you normally have to specify how you want it used.
 
 | fields    | description |
-| --------- | ----------- |
+| --------: | ----------- |
 | @1subject | means use the subject field |
 | @1verb    | means use the verb field |
 | @1object  | means use the object field |
