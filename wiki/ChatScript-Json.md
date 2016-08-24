@@ -79,8 +79,8 @@ volley unless you work to save them). You can override this default by saying
 permanent or transient. This applies to `^jsonopen`, `^jsonparse`, `^jsoncreate`,
 `^jsonobjectinsert`, `^jsonarrayinsert`, `^jsoncopy`.
 
-You can also add a flag safe to `^jsonparse`. See `^Jsonparse`
-You can also add a flag unique to `^jsonarrayinsert`. See `^Jsonarrayinsert`.
+You can also add a flag safe to `^jsonparse`. See `^jsonparse`
+You can also add a flag unique to `^jsonarrayinsert`. See `^jsonarrayinsert`.
 
 
 ### ^jsonparse({JSONFLAGS} string)
@@ -148,7 +148,7 @@ path fails cannot be found.
 ^jsonparse(transient NOFAIL "{ a: $var, b: _0.e[2] }")
 ```
 
-### ^JSONFormat(string)
+### ^jsonformat(string)
 Because technically JSON requires you put quotes around field names
 (though various places ignore that requirement) and because CS doesn't, the function takes in a slack
 json text string and outputs a strict one.
@@ -158,7 +158,7 @@ json text string and outputs a strict one.
 
 ### ^jsonpath(string id)
 string is a description of how to walk JSON. Id is the name of the node you
-want to start at (typically returned from `^JSONOPEN` or `^JSONPARSE`). 
+want to start at (typically returned from `^jsonopen` or `^jsonparse`). 
 
 Array values are accessed using typical array notation like `[3]` and object fields using dotted notation. 
 A simple path access might look like this: `[1].id` which means take the root object passed as id, e.g., `ja-1`, get the 2nd index value (arrays are 0-based in JSON). That value is expected to be an object, so return the value
@@ -186,16 +186,16 @@ flag.
 ```
 ^query(directflag_v ? verbkey ? 1 ? ? ? JSON_OBJECT_FACT)
 ```
-Be aware that when ^jsonpath returns the value of an object key, when the value is a simple word, it
+Be aware that when `^jsonpat`h returns the value of an object key, when the value is a simple word, it
 just returns the word without doublequotes (since CS just stores information as a single word). 
 But if the value contains whitespace, or JSON special characters, that may mess up if you pass it to
-`^JSONFormat`. You can get ^jsonpath to return dangerous data as a string with double quotes around it
+`^JSONFormat`. You can get `^jsonpath` to return dangerous data as a string with double quotes around it
 if you add a 3rd argument "safe" to the call.
 ```
 ^jsonpath(".name" $$jsonobject safe)
 ```
 
-### ^Jsonpath
+### ^jsonpath
 can also return the actual factid of the match, instead of the object of the fact. This would
 allow you to see the index of a found array element, or the json object/array name involved. Or you
 could use ^revisefact to change the specific value of that fact (not creating a new fact). Just add * after
@@ -212,11 +212,11 @@ returns the number of top-level members in a json array or object.
 ## Printing JSON structures
 
 ### ^jsonwrite(name)
-name is the name from a json fact set (either by ^JSONPART, ^JSONOPEN, orsome query into such structures). 
+name is the name from a json fact set (either by `^jsonpart`, `^jsonopen`, orsome query into such structures). 
 Result is the corresponding JSON string (as a website might emit), without any linefeeds.
 
 ### ^jsontree(name {depth})
-name is the value returned by ^JSONPARSE or ^JSONOPEN or some query into such structures. 
+name is the value returned by `^jsonparse` or `^jsonopen` or some query into such structures. 
 It displays a tree of elements, one per line, where depth is represented as more deeply indented. 
 Objects are marked with { } as they are in JSON. Arrays are marked with []. The
 internal name of the composite is shown immediately next to its opening punctuation. Optional depth
@@ -225,13 +225,12 @@ number restricts how deep it displays. 0 (default) means all. 1 is just top leve
 
 ## JSON structure manipulation
 
-You can build up a JSON structure without using ^JSONparse if you want to build it piece by piece.
+You can build up a JSON structure without using `^jsonparse` if you want to build it piece by piece.
 And you can edit existing structures.
 
 ###^jsoncreate( {JSONFLAGS} type) 
 Type is either array or object and a json composite with no content
-is created and its name returned. See ^jsonarrayinsert, ^jsonobjectinsert, and ^jsondelete for how to
-manipulate it. See writeup earlier about optional json flags.
+is created and its name returned. See `^jsonarrayinsert`, `^jsonobjectinsert`, and `^jsondelete` for how to manipulate it. See writeup earlier about optional json flags.
 
 ### ^jsonarrayinsert({JSONFLAGS} arrayname value) 
 Given the name of a json array and a value, it adds the value to the end of the array. 
@@ -254,7 +253,7 @@ Inserting a json string as value requires a quoted string. Duplicate keys are al
 deprecated in favor of ^delete
 
 ### ^jsongather( factset jsonid) 
-takes the facts involved in the json data (as returned by ^jsonparse or ^jsonopen) and stores them in the named factset. This allows you to remove their transient flags or save them in the users permanent data file.
+takes the facts involved in the json data (as returned by `^jsonparse` or `^jsonopen`) and stores them in the named factset. This allows you to remove their transient flags or save them in the users permanent data file.
 
 ### ^jsonlabel(label)
 assigns a text sequence to add to jo- and ja- items created thereafter. See System functions manual.
@@ -266,7 +265,7 @@ to a user. This translates \n to newline, \r to carriage return, \t to tab, and 
 ## WEB JSON
 
 ### ^jsonopen( {JSONFLAGS} kind url postdata header)
-this function queries a website and returns a JSON datastructure as facts. It uses the standard "CURL" library, so it's arguments and how to use them are generally defined by CURL documentation and the website you intend to access. See writeup earlier about optional json flag.
+this function queries a website and returns a JSON datastructure as facts. It uses the standard CURL library, so it's arguments and how to use them are generally defined by CURL documentation and the website you intend to access. See writeup earlier about optional json flag.
 
 | parameter    | description                                  |
 | :----------: | -------------------------------------------- |
@@ -323,18 +322,18 @@ You may not have any need to use these flags, so maybe you will just ignore thei
 
 Using queries, you could get all values of an array. Or all fields of an object. Or all JSON facts where
 the field is the id. You could manually write script to walk the entire tree. But more likely you will use
-`^JSONPATH` to retrieve specific pieces of data you want. For example, you could do a query on the
-value returned by `^JSONOPEN` as subject, to find out how many array elements there are. Then use
-`^JSONPATH` to walk each array element to retrieve a specific field buried within.
+`^jsonpath` to retrieve specific pieces of data you want. For example, you could do a query on the
+value returned by `^jsonopen` as subject, to find out how many array elements there are. Then use
+`^jsonpath` to walk each array element to retrieve a specific field buried within.
 Note- for things like primitive null, null arrays, null strings, null objects, these are represented as "null"
 and the corresponding fact flag tells you the kind of value it is.
 
-You can also ask CS to show those out visually using `^JSONtree`.
+You can also ask CS to show those out visually using `^jsontree`.
 
 Note that the facts created are all transient and disappear at the end of the volley unless you have forced
 them to stay. Forcing them to stay is generally a bad idea because it will congest your user topic data
 file, slowing it down or exceeding its capacity, and because those facts may then collide with new facts
-created by a new `^JSONOPEN` on a new volley. The array and object ids are cleared at each volley, so
+created by a new `^jsonopen` on a new volley. The array and object ids are cleared at each volley, so
 you will be reusing the same names on new unrelated facts.
 
 Using the flag values, it is entirely possible to reconstruct the original JSON from the facts (if the root
@@ -359,7 +358,8 @@ System variables `%httpresponse` will hold the most recent http return code from
 Out-of-band data in ChatScript is signaled by the output beginning with data enclosed in [].
 Which might be confusing, since JSON uses [] to denote an array. Standalone ChatScript contains a
 built-in handler for OOB data and if you pass it JSON at the start of output, it will swallow it and not
-display it (unless you turn on OOB display). 
+display it (unless you turn on OOB display).
+
 Similarly, std webpage interfaces connecting to ChatScript do likewise. So if you want to see this information, you should put something in the output at the start which is NOT the JSON data. Anything will do. The only time you might actually need the JSON clean at the beginning is from some special purpose application, and in that case you will write your own OOB handler anyway (or not have one).
 
 
@@ -370,7 +370,8 @@ followed typically by the user's actual input.
 The ChatScript engine reacts specially to OOB incoming data in that it will be careful to not treat it like
 ordinary user chat. Tokenization is done uniquely, spell-checking, pos-tagging, parsing, named entity
 merging etc are all turned off and the data becomes its own sentence (the user's actual input generates
-more sentences to CS as input). OOB data is then processed by your script in any way you want. So
+more sentences to CS as input). 
+OOB data is then processed by your script in any way you want. So
 one clever thing you can do is pass in JSON data within the OOB to get temporary facts into your app
 during a volley. Input might look like this:
 ```
@@ -380,7 +381,7 @@ You can pattern match the oob section of the input as follows:
 ```
 u: ( \[ _* ) $$tmp = ^jsonparse('_0)
 ```
-`_0` will contain an excess right bracket (the end of the oob message), but that won't bother ^jsonparse.
+`_0` will contain an excess right bracket (the end of the oob message), but that won't bother `^jsonparse`.
 Representing JSON in CS facts is more than just a bunch of subject-verb-object facts linked together.
 
 The facts have typing bits on them that describe the structure and arrays have index values that must
