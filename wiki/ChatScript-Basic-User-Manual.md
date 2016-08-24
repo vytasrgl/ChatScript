@@ -488,7 +488,7 @@ s: (home) I go home tomorrow.
 then it reacts to _He slid home_ inappropriately. 
 
 
-## In sequence ( )
+## In sequence `( )`
 
 I said that parens mean in sequence, anywhere in the input. Thus 
 
@@ -536,7 +536,7 @@ Put things with punctuation in them in double quotes to be safe. Pattern matchin
 a sequence is limited to 5 words in row and will do both original and canonical forms. 
 
 
-## Sentence boundaries < and >
+## Sentence boundaries `<` and `>`
 
 Sometimes, to get a proper meaning in the pattern, you need to actually know where an
 input begins or ends. For example: 
@@ -562,7 +562,7 @@ match position to the sentence start, and then it finds I like at the beginning.
 this will not match _You know I like roses_ because I is not at the start of the sentence.
 
 
-## Simple Indefinite Wildcards *
+## Simple Indefinite Wildcards `*`
 
 The wildcard `*` means 0 or more words in sequence. It can be used to widen a pattern:
 ```
@@ -573,7 +573,7 @@ This pattern responds to _When will you go home_ and _When Roger is with you, wi
 be anyone at home?_
 
 
-## Precise Wildcards *1 …
+## Precise Wildcards `*1` …
 
 As you may notice, indefinite wildcards can allow all sorts of mischief to creep into a
 match. An overprotective way to manage this is using wildcards that tell you exactly how
@@ -586,7 +586,7 @@ This matches When did you go home but won’t accept wide variances like _When R
 with you…_ nor will it accept _when you went home_ which hasn’t room for the first *1. 
 
 
-## Range-restricted Wildcards *~1 …
+## Range-restricted Wildcards `*~1` …
 
 The usual way to manage the excesses of the previous wildcards is to use a range restricted
 wildcard. This is an `*` followed by a `~` and a number, like `*~3`. It means from 0
@@ -599,7 +599,7 @@ kind of adverb), without requiring them or letting the sentence stray.
 This responds equally to _You can go home_ and _you should not go to your home_.
 
 
-## Unordered Matching << >>
+## Unordered Matching `<<` `>>`
 
 Often times you are interested in matching several keywords, but you explicitly want any
 order of them. For example the sentence _I love birds_ is a lot like _Birds are what I love_ but
@@ -626,7 +626,7 @@ and input _photos I really like_ then it would match because it found "I * like"
 the position freely back to start and found photos somewhere in the sentence.
 
 
-## Choices [ ]
+## Choices `[ ]`
 
 You can match alternate words in the same position by placing those choices in brackets.
 ```
@@ -641,7 +641,7 @@ Notice that elements of a choice can be sequences of words either as double-quot
 phrases or as paren sequences. 
 
 
-## ~Concepts
+## `~`Concepts
 
 Choices are handy for synonyms, but you have to repeat them over and over in different
 rules. At such point being able to declare a list of choices in one place and use them
@@ -815,7 +815,7 @@ The same is true for concepts:
 u: ('~extent_adverbs) 
 ```
 
-## Not ! And NotNot !!
+## Not `!` And NotNot `!!`
 
 The absence of words is represented using ! and means it must not be found anywhere
 after the current match location. When placed at the start of the pattern, it means not
@@ -833,7 +833,7 @@ u: (test !!this) I win
 Will match input _test that this works_ and not match _test this works_.
 
 
-## Optional Words { }
+## Optional Words `{ }`
 
 Sometimes you can expect a word might or might not be supplied. Your pattern can
 reflect this, swallowed it when present. {} is just like choice [], except the match is
@@ -948,14 +948,14 @@ If you actually need to control spacing, consult "formatted double quotes" in th
 advanced manual. 
 
 
-## Literal Output \
+## Literal Output `\`
 
 To output characters that have reserved meaning to the engine, like `[` and `]`, you need to
 put a backslash immediately in front of them. In particular, to force a newline you use `\n`
 and tab with `\t`.
 
 
-## Randomized Output []
+## Randomized Output `[]`
 
 You can select among a range of choices by using output choices. Each choice is encased
 in [], and a contiguous set of them form a zone that the system will pick randomly
@@ -973,7 +973,7 @@ A chatbot with no ability to remember, even in the brief moment of attending to 
 input, would be an impoverished being indeed. ChatScript supports several levels of
 memorization. The ultimate variable is the fact, but that has its own manual.
 
-## _Match Variables
+## `_`Match Variables
 
 When you use wildcards and sets in a pattern, you can ask the system to memorize briefly
 the word it matches. Just place an underscore in front of what you want memorized. The
@@ -1036,7 +1036,7 @@ this:
 u: (_~number _0=1)
 ```
 
-## $User_Variables
+## `$`User_Variables
 
 If you need memory that lasts beyond the current input, one source of this is user
 variables. A variable is named with a starting dollar sign or two and then an alphabetic
@@ -1167,7 +1167,7 @@ part of the base system, you can put those assignments into a table and read it 
 a `:build` command. Go read the facts manual for more about facts. 
 
 
-## %System Variables
+## `%`System Variables
 
 The system has some predefined variables which you can generally test and use but not
 normally assign to. These all begin with `%`. These include `%hour`, `%bot`, and others. See
