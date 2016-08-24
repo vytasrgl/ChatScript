@@ -269,7 +269,7 @@ topic: ~rust keep random [rust iron oxide]
 The flags and their meanings are:
 
 | flag           | description |
-| -------------- | ----------- |
+| :------------: | ----------- |
 | `Random`       | search rules randomly instead of linearly |
 | `NoRandom`     | (default) search rules linearly |
 | `Keep`         | do not erase responders ever. Gambits (and rejoinders) are not affected by this |
