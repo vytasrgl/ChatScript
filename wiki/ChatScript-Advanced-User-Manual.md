@@ -267,36 +267,28 @@ the topic name and the ( keywords list). You may have multiple flags. E.g.
 topic: ~rust keep random [rust iron oxide]
 ```
 The flags and their meanings are:
-* `Random` - search rules randomly instead of linearly
-* `NoRandom` – (default) search rules linearly
-* `Keep` – do not erase responders ever. Gambits (and rejoinders) are not affected by
-this.
-* `Erase` – (default) erase responders that successfully generate output. (Gambits
-automatically erase unless you suppress them specifically.
-* `NoStay` – do not consider this a topic to remain in, leave it (except for rejoinders).
-* `Stay` – (default) make this a pending topic when it generates output
-* `Repeat` - allow rules to generate output which has been output recently
-* `NoRepeat` – (default) do not generate output if it matches output made recently
-* `Priority` - raise the priority of this topic when matching keywords
-* `Normal` - (default) give this topic normal priority when matching keywords
-* `Deprioritize` – lower the priority of this topic when matching keywords
-* `System` – this is a system topic. It is automatically NoStay, Keep. Keep
-automatically applies to gambits as well. The system never looks to these
-topics for gambits. System topics can never be considered pending
-(defined shortly). They can not have themselves or their rules be enabled
-or disabled. Their status/data is never saved to user files.
-* `User` - (default) this is a normal topic.
-* `NoBlocking` - :verify should not perform any blocking tests on this topic
-* `NoPatterns` - :verify should not perform any pattern tests on this topic
-* `NoSamples` - :verify should not perform any sample tests on this topic
-* `NoKeys` - :verify should not perform any keyword tests on this topic
-* `More` – Normally if you try to redeclare a concept, you get an error. MORE tells
-CS you intend to extend the topic and allows additional keywords for it.
-* `Bot=name` – if this is given, only named bots are allowed to use this topic. You
-can name multiple bots separated by commas with no extra spaces. E.g.,
-```
-topic: ~mytopic bot=harry,,roman [mykeyword]
-```
+
+| flag           | description |
+| -------------- | ----------- |
+| `Random`       | search rules randomly instead of linearly |
+| `NoRandom`     | (default) search rules linearly |
+| `Keep`         | do not erase responders ever. Gambits (and rejoinders) are not affected by this |
+| `Erase`        | (default) erase responders that successfully generate output. (Gambits automatically erase unless you suppress them specifically |
+| `NoStay`       | do not consider this a topic to remain in, leave it (except for rejoinders) |
+| `Stay`         | (default) make this a pending topic when it generates output |
+| `Repeat`       | allow rules to generate output which has been output recently |
+| `NoRepeat`     | (default) do not generate output if it matches output made recently |
+| `Priority`     | raise the priority of this topic when matching keywords |
+| `Normal`       | (default) give this topic normal priority when matching keywords |
+| `Deprioritize` | lower the priority of this topic when matching keywords |
+| `System`       | this is a system topic. It is automatically `NoStay`, `Keep`. `Keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files |
+| `User`       | (default) this is a normal topic |
+| `NoBlocking` | `:verify` should not perform any blocking tests on this topic |
+| `NoPatterns` | `:verify` should not perform any pattern tests on this topic |
+| `NoSamples`  | `:verify` should not perform any sample tests on this topic |
+| `NoKeys`     | `:verify` should not perform any keyword tests on this topic |
+| `More`       | Normally if you try to redeclare a concept, you get an error. MORE tells CS you intend to extend the topic and allows additional keywords for it |
+| `Bot=name`  | if this is given, only named bots are allowed to use this topic. You can name multiple bots separated by commas with no extra spaces. E.g. `topic: ~mytopic bot=harry,,roman [mykeyword]`  |
 
 To support **multiple bots**, you may create multiple copies of a topic name, which vary in
 their bot restrictions and content. The set of keywords given for a topic is the union of the
