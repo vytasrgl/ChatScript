@@ -269,11 +269,11 @@ to a user. This translates \n to newline, \r to carriage return, \t to tab, and 
 this function queries a website and returns a JSON datastructure as facts. It uses the standard "CURL" library, so it's arguments and how to use them are generally defined by CURL documentation and the website you intend to access. See writeup earlier about optional json flag.
 
 | parameter    | description                                  |
-| ------------ | -------------------------------------------- |
-| **Kind**     | is `POST`, `GET`, `POSTU`, `GETU`, `PUT`, `DELETE` corresponding to the usual meanings of Get and Post and url-encoded forms. | 
-| **Url**      | is the url to query |
-| **Postdata** | is either "" if this is not a post or is the data to send as post or put | 
-| **Header**   | is any needed extra request headers or "". Multiple header entries must be separated by a tilde |
+| :----------: | -------------------------------------------- |
+| **kind**     | is `POST`, `GET`, `POSTU`, `GETU`, `PUT`, `DELETE` corresponding to the usual meanings of Get and Post and url-encoded forms. | 
+| **url**      | is the url to query |
+| **postdata** | is either "" if this is not a post or is the data to send as post or put | 
+| **header**   | is any needed extra request headers or "". Multiple header entries must be separated by a tilde |
 
 A sample call might be:
 ```
@@ -313,7 +313,7 @@ The facts have flags on them which you can use in queries.
 You may not have any need to use these flags, so maybe you will just ignore their existence.
 
 | fact                 | associated flags                             |
-| -------------------- | -------------------------------------------- |            
+| :------------------: | :------------------------------------------: |            
 | `(ja-1 0 jo-1)`      | `#JSON_ARRAY_FACT` `#JSON_OBJECT_VALUE`      |
 | `(jo-1 id 1)`        | `#JSON_OBJECT_FACT` `#JSON_PRIMITIVE_VALUE`  |
 | `(jo-1 value hello)` | `#JSON_OBJECT_FACT` `#JSON_STRING_VALUE`     |
