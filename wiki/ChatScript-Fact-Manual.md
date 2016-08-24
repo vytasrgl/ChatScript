@@ -682,6 +682,7 @@ arguments at the end you omit default themselves.
 
 All query kinds are defined in LIVEDATA/queries.txt and you can add entries to that (or
 revise existing ones). The essential things a query needs to be able to do is:
+
 1. Start with existing words or facts
 2. Find related words or facts
 3. Mark newly found words or facts so you don’t trip over them multiple times
@@ -696,6 +697,7 @@ the text strings of words with some goal. That would be inefficient. Instead it 
 if a word or a fact has a particular “tag” on it. Each word/fact can have a single tag id,
 drawn from a set of nine. The tags ids are labeled ‘1’ thru ‘9’.
 Another essential notion is the field/value. One refers to fields of facts or values of the incoming arguments, or direct values in the query script. Here are the codes involved:
+
 1. s = refers to the subject argument or the subject field of a fact
 2. v = refers to the verb argument or the verb field of a fact
 3. o = refers to the object argument or the object field of a fact
@@ -724,17 +726,19 @@ Paris (to be stored in the default output factset `@0`).
 Segment one handles marking and/or storing initial values. You always start by naming
 the tag you want to use, then naming the field/value and the operation. The operations
 are:
+
 1. t = tag the item
 2. q = tag and queue the item
 3. < or > scan from the item, tagging things found (more explanation shortly)
-The query direct_s, which finds facts that have a given subject, is defined as
-1sq:s::
+The query direct_s, which finds facts that have a given subject, is defined as 1sq:s::
 
 This says segment 1 is 1sq and segment 2 is s and segments 3 and 4 have no data.
 Segment 1 says to start with a tag of ‘1’, use the subject argument and tag and queue it.
+
 Segment two says how to use the queue. The queue is a list of words or facts that will be
 used to find facts. In our example, having stored the word Paris onto the queue, we now
 get all facts in which Paris participates as the subject ( the s: segment )
+
 Segment three tells how to disqualify facts that are found (deciding not to return them).
 There is no code here, so all facts found will be acceptable.
 Segment four tells how to take disqualified facts as a source of further navigation around
