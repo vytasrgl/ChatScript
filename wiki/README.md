@@ -51,7 +51,7 @@ Once you've master basic CS, this is the place to go next.
 * ## ChatScript System Functions Manual
 A listing of all the functions of CS that do not involve facts.
 
-* ## ChatScript Fact Manual
+* ## [ChatScript Fact Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md)
 A discussion of how to manipulate facts in CS.
 
 * ## ChatScript Json
