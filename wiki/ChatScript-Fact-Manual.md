@@ -87,7 +87,7 @@ When you just want or expect a single one, use `1` as the value.
 
 **Fromset** specifies that the set of initial values should come from the designated factset.
 
-Special values of fromset are “user” and “system” which do not name where the facts come from but specify that matching facts should only come from the named domain of facts. **Toset** names where to store the answers. Commonly you don't name it because you did an assignment like
+Special values of fromset are "user" and "system" which do not name where the facts come from but specify that matching facts should only come from the named domain of facts. **Toset** names where to store the answers. Commonly you don't name it because you did an assignment like
 
 
 `@3 = ^query(...)` and if you didn't do that, toset defaults to `@0` so
@@ -121,7 +121,7 @@ if (^query(direct_vo ? want toy)) {@0subject wants a toy.}
 
 You can define your own queries beyond the LIVEDATA ones. In a normal topic file as a top level unit you can do:
 ```
-query: name “value”
+query: name "value"
 ```
 Name is the name to give your query and the query command string is placed within
 double quotes.
@@ -344,7 +344,7 @@ name. The mechanism allows user input to use the short name.
 
 ## Variable Argument Tables
 
-While a line of table data must fill all fields of the table exactly (no more or less), you can tell the system to fill in the remaining arguments with “*” by putting “…” as your last
+While a line of table data must fill all fields of the table exactly (no more or less), you can tell the system to fill in the remaining arguments with "*" by putting "…" as your last
 value. Eg.
 ```
 table: test(^item1 ^item2 ^item3 ^item4)
@@ -627,7 +627,7 @@ Flags you can use to define facts that have system meaning but may or may not st
 them are:
 FACTDUPLICATE (allow multiple versions of the same fact)
 FACTTRANSIENT (the fact should die at the end of the volley if not in a fact set)
-ORIGINAL_ONLY (a “member” fact defining a concept only uses the raw word)
+ORIGINAL_ONLY (a "member" fact defining a concept only uses the raw word)
 
 Flags you can set for yourself include:
 USER_FLAG1 … USER_FLAG8
@@ -654,7 +654,7 @@ it’s standard word processing like all English phrases. To compile it, you pre
 doublequoted string with the function designator ^. E.g.,
 ```
 DATA:
-~books “this is normal” ^”[script a][script b] ^fail(TOPIC)”
+~books "this is normal" ^"[script a][script b] ^fail(TOPIC)"
 ```
 This acts like a typical string. You pass it around, store it as value of variables or as a
 field of a fact. Like all other strings, it remains itself whenever it is put into the output
@@ -665,7 +665,7 @@ onto some variable (like _5 or $value) , and then ^eval(_5) or ^eval($value).
 
 ## FactSet Remaps
 
-Factset names like @1 are not mnemonic. You can “rename” them as follows:
+Factset names like @1 are not mnemonic. You can "rename" them as follows:
 ```
 rename: @bettername @12
 ```
@@ -694,7 +694,7 @@ with what arguments, in what order.
 
 An essential notion is the "tag". As the system examines facts, it is not going to compare
 the text strings of words with some goal. That would be inefficient. Instead it looks to see
-if a word or a fact has a particular “tag” on it. Each word/fact can have a single tag id,
+if a word or a fact has a particular "tag" on it. Each word/fact can have a single tag id,
 drawn from a set of nine. The tags ids are labeled ‘1’ thru ‘9’.
 Another essential notion is the field/value. One refers to fields of facts or values of the incoming arguments, or direct values in the query script. Here are the codes involved:
 
