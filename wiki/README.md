@@ -54,7 +54,7 @@ A listing of all the functions of CS that do not involve facts.
 * ## [ChatScript Fact Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md)
 A discussion of how to manipulate facts in CS.
 
-* ## ChatScript Json
+* ## [ChatScript Json](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Json.md)
 ChatScript support for Json
 
 * ## ChatScript Debugging Manual
