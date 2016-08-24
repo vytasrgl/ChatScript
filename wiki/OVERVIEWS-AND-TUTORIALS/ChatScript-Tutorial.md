@@ -87,11 +87,11 @@ Chatting with this bot results in a dialog such as this:
 ```
 Hello, talk to me!
 
- >hi
+>hi
 
 I don't know what to say.
 
- >why?
+>why?
 
 I don't know what to say.
  ...
@@ -125,31 +125,31 @@ Building this chatbot will result in a dialog such as this:
 ```
 Hello, say something to me!
 
- >hi
+>hi
 
 Hey, say something to me!
 
- >what
+>what
 
 Hey, talk to me!
 
- >why?
+>why?
 
 Hello, speak to me!
 
- >who
+>who
 
 Hi, talk to me!
 
- >abc
+>abc
 
 I don't know what to say.
 
- >def
+>def
 
 I don't know what to say.
 
- >...
+>...
 ```
 
 The bot tries some random combinations from our output pattern, and then gets stuck 
@@ -164,7 +164,7 @@ t: ^keep() ^repeat() [Hello] [Hi] [Hey], [talk] [speak] [say something] to me!
 
 With this bot we can chat forever.
 
-# Listening (u:, ^reuse)
+# Listening (`u`:, `^reuse`)
 Our previous bots could only talk - they did not listen to us. Now let's build a bot that
 listens and reacts to what we say:
 
@@ -191,27 +191,27 @@ Here is a possible dialog with this bot;
 ```
 Hello, say something to me!
 
- >hi
+>hi
 
 I don't know what to say.
 
- >What are you?
+>What are you?
 
 I am a bot.
 
- >Tell me where do you live.
+>Tell me where do you live.
 
 I live on your computer.
 
- >What is the time?
+>What is the time?
 
 Good question.
 
- >why?
+>why?
 
 I don't know what to say.
 
- >Remind me where did you live please.
+>Remind me where did you live please.
 
 I live on your computer.
 ```
@@ -234,11 +234,11 @@ we will get this dialog:
 ```
 Hey, speak to me!
 
- >where do you live
+>where do you live
 
 I live on your computer.
 
- >where did you live
+>where did you live
 
 Good question.
 ```
@@ -284,7 +284,7 @@ I am a bot. Hi, talk to me!
 I am a bot.
 ```
 
-# Short-term memory (* _)
+# Short-term memory (`*` `_`)
 Our previous bots could listen and talk. The third thing a bot should do is remember. In
 ChatScript, the memory of a bot is contained in variables.
 
@@ -311,19 +311,19 @@ Here is a sample dialog:
 ```
 Hello, I will help you plan your travel. Just tell me where you want to go.
 
- >I want to go to the moon.
+>I want to go to the moon.
 
 OK, you want to go to a moon.
 
- >I want to go to earth.
+>I want to go to earth.
 
 OK, you want to go to earth.
 
- >I want to go back to the moon.
+>I want to go back to the moon.
 
 I don't know what to say.
 
- >
+>
 ```
 
 Note that the last sentence did not match because of the word "back". We could use
@@ -335,7 +335,7 @@ u: (I want to go * to _*) OK, you want to go to _0.
 
 In this case we don't need to capture the first wildcard, so we don't put a `_` before it.
 
-# Long-term memory ($)
+# Long-term memory (`$`)
 The `_0`, `_1`... variables are "short-term memory" because they exist only in the output line
 next to the pattern where they were created. We can create "long-term memory" by using
 `$`-variables. Let's use these variables to extend our travel-agent bot:
@@ -366,28 +366,29 @@ Here is a sample dialog. We added some explanations in `{`braces`}`:
 Hey, I will help you plan your travel. Just tell me where you are and where you want to
 go to.
 
- >I am at Earth. {'be' in the pattern is the cannonical form of 'am'}
+>I am at Earth. {'be' in the pattern is the cannonical form of 'am'}
 
 OK, you want to go from Earth. {the bot prints the temporary variable `_0`, which
 contains 'Earth'}.
 
- >I would like to fly to the moon.
+>I would like to fly to the moon.
 
 OK, you want to go to the moon. {the bot prints the permanent variable '$target', where
 we put 'the moon'}.
 
- >What do I want? 
+>What do I want? 
 
 You want to go from Earth to the moon. {the bot remembers the permanent variables}
 
- >Actually, I want to go to the sky.
+>Actually, I want to go to the sky.
 
 OK, you want to go to the sky.
 
- >What do I want?
+>What do I want?
+
 You want to go from Earth to the sky. {the bot updated the variable '$target'}
 
- >
+>
 ```
 
 # Dialog Management (conditions)
@@ -434,31 +435,31 @@ go to.
 Hello, I will help you plan your travel. Just tell me where you are and
 where you want to go to.
 
- >great!
+>great!
 
 Where are you?
 
- >Hod Hasharon
+>Hod Hasharon
 
 Where are you?
 
- >I am at Hod Hasharon
+>I am at Hod Hasharon
 
 Where do you want to go?
 
- >I don't know
+>I don't know
 
 Where do you want to go?
 
- >I want to go to Jerusalem
+>I want to go to Jerusalem
 
 You want to go from Hod Hasharon to Jerusalem.
 
- >really?
+>really?
 
 You want to go from Hod Hasharon to Jerusalem.
 
- >Actually I am at Haifa.
+>Actually I am at Haifa.
 
 You want to go from Haifa to Jerusalem.
 ```
@@ -516,24 +517,24 @@ it as two different input conditions `$issue` and `source`.
 ```
 Hello, I will help you plan your travel.
 
- >great!
+>great!
 
 Where are you?
 
- >Jerusalem
+>Jerusalem
 
 Where do you want to go?
 
- >Actually I am at Haifa
+>Actually I am at Haifa
 
 Where do you want to go?
 
- >Hebron
+>Hebron
 
 You want to go from Haifa to Hebron.
 ```
 
-# Implicit Confirmations (^respond)
+# Implicit Confirmations (`^respond`)
 Our previous bot understood the user perfectly, but usually it is not the case, we would
 like our bot to confirm that it understood the user correctly. There are two types of
 confirmation:
@@ -575,19 +576,19 @@ This works, but produces an awkward dialog:
 Hello, I will help you plan your travel. Just tell me where you are and where you want to
 go to.
 
- >I am at Haifa
+>I am at Haifa
 
 OK, you want to go from Haifa.
 
- >well?
+>well?
 
 Where do you want to go?
 
- >I want to go to Jerusalem.
+>I want to go to Jerusalem.
 
 OK, you want to go to Jerusalem.
 
- >what now?
+>what now?
 
 You want to go from Haifa to Jerusalem.
 ```
@@ -643,20 +644,20 @@ This produces a much shorter dialog:
 ```
 Hi, I will help you plan your travel. Where are you?
 
- >I am at Haifa
+>I am at Haifa
 
 OK, you want to go from Haifa. Where do you want to go?
 
- >I don't know
+>I don't know
 
 Where do you want to go?
 
- >go to Jerusalem
+>go to Jerusalem
 
 OK, you want to go to Jerusalem. You want to go from Haifa to Jerusalem.
 ```
 
-# Explicit Confirmation (rejoinders: a: b: c:...)
+# Explicit Confirmation (rejoinders: `a:` `b:` `c:` ...)
 Sometimes we want to explicitly ask the user what he meant. In this case we expect a
 yes/no answer, but the meaning of the answer obviously depends on the context - the
 question that we just asked. One way to handle this is to use rejoinders. 
@@ -709,56 +710,54 @@ Note that we use `~yes` and `~no` as the patterns for yes and no; this will also
 Here is a sample dialog:
 
 ```
-
 Hello, I will help you plan your travel. Where are you?
 
- > at Haifa
+> at Haifa
 
 Is your current location "Haifa "?
 
- > no
+> no
 
 OK, so where are you?
 
- > at Ramat Gan
+> at Ramat Gan
 
 Is your current location "Ramat Gan "?
 
- > yes
+> yes
 
 Where do you want to go?
 
- > actually I am at Givat Shmuel
+> actually I am at Givat Shmuel
 
 Is your current location "Givat Shmuel "?
 
- > sure
+> sure
 
 Where do you want to go?
 
- > to Jerusalem
+> to Jerusalem
 
 Is your destination "Jerusalem "?
 
- > y
+> y
 
 Where do you want to go?
 
- > to Jerusalem
+> to Jerusalem
 
 Is your destination "Jerusalem "?
 
- > yeah
+> yeah
 
 You want to go from Givat Shmuel to Jerusalem.
 
- > 
+> 
 ```
 
-# Knowledge (^createfact, table:)
+# Knowledge (`^createfact`, `table:`)
 Our previous bot could understand what the user wants, but it couldn't really help him
 reach his goal because it had no knowledge of transportation means. We can give our bot
 some knowledge by creating facts
 
 ----- THE TUTORIAL AS ORIGINALLY AUTHORED ENDS HERE --- 
-
