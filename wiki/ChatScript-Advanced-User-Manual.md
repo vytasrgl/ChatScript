@@ -616,7 +616,7 @@ if (…) {}
 Use patterns, not output script.
 
 
-## Literal Next \
+## Literal Next `\`
 
 If you need to test a character that is normally reserved, like `(` or `[`, you can put a
 backslash in front of it.
@@ -637,7 +637,7 @@ u: (_\test=fort)
 Note that `\` does not block a word with an `*` in it from performing wildcard spelling.
 
 
-## Question and exclamation ? ‘!
+## Question and exclamation - `?` `!`
 
 Normally you already know that an input was a question because you used the rule
 type `?:` . But rejoinders do not have rule types, so if you want to know if something was a
@@ -654,7 +654,7 @@ be treated as a not request. This doesn’t change the match position.
 s: (I like \) Why so much excitement
 ```
 
-## More comparison tests & and ?
+## More comparison tests - `&` `?`
 
 You can use the logical and bit-relation to test numbers. Any non-zero value passes.
 ```
@@ -692,7 +692,7 @@ s: ( _~number _0=#NOUN)
 Such constants can be done anywhere, not just in a pattern.
 
 
-## Current Topic ~
+## Current Topic `~`
 
 Whenever you successfully execute a rule in a topic, that topic becomes a pending topic
 (if the topic is not declared system or nostay). When you execute a rule, while the rule is
@@ -753,7 +753,7 @@ Maybe it’s a word. You can also do whole expressions, but if you do you will b
 because you won’t have the script compiler protecting you and properly formatting your data. See also Advanced Variables.
 
 
-## Setting Match Position - @_3+ @_3-
+## Setting Match Position - `@_3+` `@_3-`
 
 You can "back up" and continue matching from a prior match position using `@` followed
 by a match variable previously set. E.g.
@@ -1314,7 +1314,7 @@ outputmacro: ^myfn variable (^arg1 ^arg2 ^arg3 ^arg4)
 ```
 
 
-## Output Macros vs ^reuse()
+## Output Macros vs `^reuse()`
 
 An outputmacro is a block of code, treated as a kind of function. But another way to
 make a block of code is create a rule and `^reuse` it. E.g.
@@ -1350,7 +1350,7 @@ There are many system functions to perform specific tasks. These are enumerated 
 ChatScript System Function manual and the ChatScript Facts manual.
 
 
-## Randomized Output Revisited []
+## Randomized Output Revisited `[ ]`
 
 Remember this construct:
 ```
@@ -1577,7 +1577,7 @@ CS can cancel any of these by sending an oob message with a milliseconds of 0.
 e.g. `[loopback=0 callback=0 alarm=0]` cancels any pending callbacks into the future.
 
 
-# System callback functions:
+# System callback functions
 
 `outputmacro: ^CSBOOT()`
 
@@ -1607,7 +1607,7 @@ representing what it returned. E.g., NOPROBLEM. The range of names of these are
 defined in mainsystem.h (minus _BIT) but are your basic FAILTOPIC, etc.
 
 
-# Advanced :build
+# Advanced `:build`
 
 ## Build warning messages
 
@@ -1931,7 +1931,7 @@ topic: ~quibblewho system []
 ```
 
 
-## Using ^reuse
+## Using `^reuse`
 
 To have a conversation, you want to volunteer information with a gambit line. And that
 same information may need to be given in response to a direct question by the user.
