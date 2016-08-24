@@ -38,7 +38,7 @@ From now on, we will work with the file `tutorial.top`.
 * [Explicit Confirmation (rejoinders: a: b: c:...)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#explicit-confirmation-rejoinders-a-b-c)
 * [Knowledge (^createfact, table:)](https://github.com/solyaris/ChatScript/wiki/ChatScript-Tutorial#knowledge-createfact-table)
 
-# Speaking (topic: , t:)
+# Speaking (`topic:` , `t:`)
 The simplest possible chat-script should include a topic and a sentence to say, for
 example:
 
@@ -103,7 +103,7 @@ to say.
 If you are tired of speaking with the bot, you can exit the client using the :shutdown
 command.
 
-# Saying more (^keep, random selection [], ^repeat) 
+# Saying more (`^keep`, random selection `[]`, `^repeat`) 
 Let's make our bot a bit more interesting:
 
 ```
@@ -164,7 +164,7 @@ t: ^keep() ^repeat() [Hello] [Hi] [Hey], [talk] [speak] [say something] to me!
 
 With this bot we can chat forever.
 
-# Listening (`u`:, `^reuse`)
+# Listening (`u:`, `^reuse`)
 Our previous bots could only talk - they did not listen to us. Now let's build a bot that
 listens and reacts to what we say:
 
