@@ -9,6 +9,7 @@ Here is an overview.
 # Basic ChatScript for starters
 
 * [What is ChatScript?](https://github.com/solyaris/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
+
 Overview of the design goals and abilities of CS. Not necessary to read.
 
 * [ChatScript Basic User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md)
