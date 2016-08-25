@@ -68,9 +68,6 @@ never be complete because you will want to keep improving it.
 An overview of the process of converting input to output. Not necessary except for
 really advanced users wanting the appropriate mental model.
 
-* ## ChatScript Control Scripts
-Brief overview of writing your own control scripts
-
 * ## ChatScript Pattern Redux
 A terse but detailed look at everything involving rule patterns.
 
@@ -90,6 +87,9 @@ How to install CS as a server on Amazon AWS.
 
 
 * ## Esoteric ChatScript
+
+ * ### ChatScript Control Scripts
+Brief overview of writing your own control scripts
 
  * ### ChatScript Analytics
 Debug functions that can dissect log files.
