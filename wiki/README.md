@@ -57,7 +57,7 @@ A discussion of how to manipulate facts in CS.
 * ## [ChatScript Json](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Json.md)
 ChatScript support for Json
 
-* ## ChatScript Debugging Manual
+* ## [ChatScript Debugging Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Debugging-Manual.md)
 The features of CS that support debugging, including tracing.
 
 * ## [ChatScript Finalizing a Bot](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Finalizing-A-Bot.md)
