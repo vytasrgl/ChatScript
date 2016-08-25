@@ -23,9 +23,9 @@ A JSON object is a list of key-value pairs separated by commas and placed within
 ```json
 { 
     "key1": 1, 
-    "bob": help, 
+    "bob": "help", 
     "1": 7, 
-    "array": [1 2 3] 
+    "array": [1 2 3],
     "object12": {} 
 }
 ```
