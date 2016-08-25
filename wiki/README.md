@@ -25,6 +25,29 @@ A simple explanation of how to “learn” data about the user.
 Here are a collection of common beginner mistakes.
 
 
+
+# Predefined Bots
+
+* ## [Bot Harry - basic bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Harry.md)
+A brief overview of the simple Harry bot and how to make simple modifications.
+Potentially useful for a beginner read.
+
+* ## [Bot NLTK – NL analysis bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-NLTK.md)
+A brief description of how to run the NLTK bot. Not useful for most people, especially if
+NLTK means nothing to you.
+
+* ## [Bot Stockpile – planner bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Stockpile.md)
+A brief description of how to run the Stockpile bot. Not useful for most people. It's about
+planner capabilities of CS.
+
+* ## [Bot Postgres – postgres bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Postgres.md)
+Illustration of using Postgres database.
+
+* ## [Bot German](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-German.md)
+An illustration of hooking in an external pos-tagger for foreign language support.
+
+
+
 # Advanced ChatScript
 
 * ## [ChatScript Advanced User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md)
@@ -56,27 +79,6 @@ A terse but detailed look at everything involving rule patterns.
 * ## ChatScript System Variables and Engine-defined Concepts
 
 * ## Installing and Updating ChatScript
-
-
-# Predefined Bots
-
-* ## [Bot Harry - basic bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Harry.md)
-A brief overview of the simple Harry bot and how to make simple modifications.
-Potentially useful for a beginner read.
-
-* ## [Bot NLTK – NL analysis bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-NLTK.md)
-A brief description of how to run the NLTK bot. Not useful for most people, especially if
-NLTK means nothing to you.
-
-* ## [Bot Stockpile – planner bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Stockpile.md)
-A brief description of how to run the Stockpile bot. Not useful for most people. It's about
-planner capabilities of CS.
-
-* ## [Bot Postgres – postgres bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Postgres.md)
-Illustration of using Postgres database.
-
-* ## [Bot German](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-German.md)
-An illustration of hooking in an external pos-tagger for foreign language support.
 
 
 # Specialized ChatScript
