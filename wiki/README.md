@@ -21,8 +21,8 @@ A briew step-by-step on creating a chatbot travel agent, written by a CS user.
 * ## [ChatScript Memorization](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Memorization.md)
 A simple explanation of how to “learn” data about the user.
 
-* ## [ChatScript Common Beginner Mistakes]()
-Here are a collection of common beginner mistakes
+* ## [ChatScript Common Beginner Mistakes](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Common-Beginner-Mistakes.md)
+Here are a collection of common beginner mistakes.
 
 # Predefined Bots
 
