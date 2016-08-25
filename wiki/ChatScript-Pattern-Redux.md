@@ -78,14 +78,14 @@ So _I_ is sought deeper in the sentence and matched. `like` matches _like_ and `
 matches _apples_. So we match. Had that not matched, no more retries exist so the failure sticks.
 There are tokens you can use that alter the rules/location around current position.
 
-# Pattern Constituents
+## Pattern Constituents
 
-## Type of Sentence - `s:` `?:`
+### Type of Sentence - `s:` `?:`
 
 A responder beginning with `s:` or `?:` implictly is testing that the sentence is a statement or a question. It
 is built in even before the pattern. All other rules are not immediately sensitive to kind of sentence.
 
-## Existence - word `~concept` `$var` `%sysvar` `_0` `@0` `^var` `?` `~`
+### Existence - word `~concept` `$var` `%sysvar` `_0` `@0` `^var` `?` `~`
 Basic pattern matching is against words or concepts. Does this word or concept exist?
 `u: ( this ~animal )` matches _this dog_ or _this dogs_ but not _this is my dog_
 
@@ -108,7 +108,7 @@ A stand-alone `~` means the current topic is already on the pending topic list (
 active topic).
 
 
-## Grouping Pairs - `()` `[]` `{}` `<< >>`
+### Grouping Pairs - `()` `[]` `{}` `<< >>`
 
 `( … )` - Parens mean the tokens within must be found "in sequence". The notation of a pattern
 starts with parens, but has the unusual property of allowing the match to occur anywhere within the
@@ -173,12 +173,13 @@ If you use underscore before braces to memorize the answer found, then when no a
 match variable is set to null (no content) but it is set.
 
 
-## Wildcards - `*` `*~2` `*3` `*-2`
+### Wildcards - `*` `*~2` `*3` `*-2`
 
 Wildcards allow you to relax the positional requirements for matching. The classic wildcard “*” allows
 you to have zero or more words between other tokens in a pattern.
 
-```u: ( I * you )
+```
+u: ( I * you )
 ``` 
 matches _I love chicken and hate you- as well as _I you they_.
 
@@ -190,9 +191,9 @@ noun, for example, but not allow a pattern to match weirdly.
 ```
 u: ( I like *~2 cat)
 ``` 
-matches _I like my cats_ or _I like a yellow cat_.
-You can also request a match of a specific number of words in succession using `*n`. `*1` means get the
-next word. If you are already positionally on the end of the sentence, this match fails. If you aren't sure
+matches _I like my cats_ or _I like a yellow cat_. 
+You can also request a match of a specific number of words in succession using `*n`. `*1` means get the next word. 
+If you are already positionally on the end of the sentence, this match fails. If you aren't sure
 how many words are left, you could do something like this:
 ```
 u: ( apple _[*4 *3 *2 *1] )
@@ -203,7 +204,7 @@ with an underscore in front to memorize the sequence.
 `*-2` is like `*2`, only it matchs backwards instead of forwards. Valid thru `*-9`.
 
 
-## Negation `!` and `!!`
+### Negation `!` and `!!`
 
 `!x` means prove that x is not found anywhere in the sentence later than where we are:
 ```
@@ -213,7 +214,7 @@ This pattern says the word not cannot occur anywhere in the sentence.
 `!!x` means prove that x is not the next word.
 
 
-## Original Form  - `'`
+### Original Form  - `'`
 
 While CS normally matches both original and canonical forms of words when you give a pattern word
 in canonical form, you can require it only match the original form by quoting it.
@@ -223,7 +224,7 @@ Likewise in a relation where you use a match variable, quoting it means use only
 `u: (_~fruits '_0==apple)` matches _I like apple_ but not _I like apples_
 
 
-## Literal Next - `\`
+### Literal Next - `\`
 
 You can tell CS that a token should be considered a token, not a special form, by putting a `\` in front of
 it. This applies to single characters like: `\[ \]` and it also applies to relational tokens like `\tom=*`
@@ -231,7 +232,7 @@ which means do not treat this as a relational test, but instead as a token whose
 Note that the `\` does not suppress detecting the `*` in a word and therefore allowing variant spelling.
 
 
-## Composite Words - "xxx"
+### Composite Words - "xxx"
 
 There are sequences of words that have a specific meaning and are treated as a single word, e.g.,
 batting cage. In a dictionary these are often represented using an `_` instead of a space, e.g.,
@@ -274,14 +275,14 @@ u: ("king of a jungle")
 but the above rule can match _kings of the jungle_ since all words in the quote are canonical.
 
 
-## Memorization - `_`
+### Memorization - `_`
 Placing an underscore means to memorize what was matched onto a match variable. Match variables
 are allocated in sequence in a pattern, starting with `_0` and increasing to `_1` etc for each memorized
 match. The system memorizes the original word, the canonical word, and the position in the sentence
 of the match.
 
 
-## Relations - `>` `<` `?` `==` `!=` `<=` `>=`
+### Relations - `>` `<` `?` `==` `!=` `<=` `>=`
 
 You can test relationships by conjoining a token with a relationship operator and another token, with no
 spaces. E.g.,
@@ -327,7 +328,7 @@ sentence, it should be noticed and marked so it can be matched in a pattern. But
 variable, then the dictionary is unaware of the phrase and so `$var?` will not work for it.
 
 
-## Escape - `\`
+### Escape - `\`
 
 If you want to match a reserved punctuation symbol like `[` or `(`, you must escape it by putting a
 backslash in front. This is commonly done in matching out-of-band information.
@@ -344,7 +345,7 @@ You may use either `?` or `\?` when asking if the sentence has a question in it.
 this in a rejoinder.
 
 
-## Function Call - `^xxx(...)`
+### Function Call - `^xxx(...)`
 
 You can call a function from within a pattern. If the function returns a failure code of any kind, the
 match fails. If the function is a predefined system function, you are allowed relation operators on the
@@ -368,7 +369,7 @@ u: (^respond(~finddelay) $$delay) Wait for $$delay.
 tomorrow or whatever complex matching you want to do.
 
 
-## Partially Spelled words: `*ing` `bottle*` `8bott*`
+### Partially Spelled words: `*ing` `bottle*` `8bott*`
 
 You can request a match against a partial spelling of a word in various ways.
 If you use `*` somewhere after an alpha, it matches any number of characters.
@@ -388,7 +389,7 @@ When using an `*` word, you can use `.` to indicate exactly one character of any
 `u: ( sit*u.tion)` matches _situation_
 
 
-## Altering Position - `<` `>` `@_0+`
+### Altering Position - `<` `>` `@_0+`
 
 When you put `<` in your pattern, it doesn't actually match anything. It means "reset position" to the start
 of the sentence.
@@ -420,9 +421,9 @@ matches _my pretty home is near here_.
 Note when you use `–` for reverse matching, the behavior of `<` and `>` changes. 
 `>` sets a position and `<` confirms it instead of the way it is for `+`.
 
-# Debugging
+## Debugging
 
-## `:testpattern`
+### `:testpattern`
 
 The system inputs the sentence and tests the pattern you provide against it. It tells you whether it
 matched or failed.
@@ -441,7 +442,7 @@ what has gone wrong. You can also name an existing rule, rather than supply a pa
 :testpattern ~aliens.ufo do you believe in aliens?
 ```
 
-## `:prepare`
+### `:prepare`
 
 Since CS may revise your input for various reasons, to know why a pattern fails you may need to know
 what actually say. Using `:prepare` will tell you what the final input words were, and what concepts got
@@ -450,7 +451,7 @@ marked.
 :prepare This is a sentence.
 ```
 
-## `:verify`
+### `:verify`
 In general all of your responders and rejoinders should have a sample input comment above them.
 ```
 #! Do you believe in dogs?
@@ -462,7 +463,7 @@ This allows you to do
 ```
 and have the system test if your rule would match your input.
 
-## `:trace`
+### `:trace`
 You can get a trace of various system functions.
 ```
 :trace pattern
