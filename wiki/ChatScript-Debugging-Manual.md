@@ -493,7 +493,7 @@ Shows the code of the user-defined macro named.
 Lists the directories in use: the path to the exe file, the current working directory, and
 directory overrides used in embedded applications.
 
-### `:findwords word
+### `:findwords word`
 Given a word pattern, find all words in the dictionary that match that
 pattern. The pattern starts with a normal word character, after which you can intermix the
 wildcard * with other normal characters. For example, `slo*` finds _slothful_, _slower_,
