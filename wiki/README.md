@@ -8,20 +8,20 @@ Here is an overview.
 
 # Basic ChatScript for starters
 
-* ## [What is ChatScript?](https://github.com/solyaris/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
+* [What is ChatScript?](https://github.com/solyaris/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
 Overview of the design goals and abilities of CS. Not necessary to read.
 
-* ## [ChatScript Basic User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md)
+* [ChatScript Basic User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md)
 This explains how to run CS, how to understand basic CS ideas like rules, topics, and
 concepts. A must starting place.
 
-* ## [ChatScript Tutorial](https://github.com/solyaris/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md)
+* [ChatScript Tutorial](https://github.com/solyaris/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md)
 A briew step-by-step on creating a chatbot travel agent, written by a CS user.
 
-* ## [ChatScript Memorization](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Memorization.md)
+* [ChatScript Memorization](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Memorization.md)
 A simple explanation of how to “learn” data about the user.
 
-* ## [ChatScript Common Beginner Mistakes](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Common-Beginner-Mistakes.md)
+* [ChatScript Common Beginner Mistakes](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Common-Beginner-Mistakes.md)
 Here are a collection of common beginner mistakes.
 
 
