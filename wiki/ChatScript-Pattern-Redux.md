@@ -87,17 +87,25 @@ is built in even before the pattern. All other rules are not immediately sensiti
 
 ### Existence - word `~concept` `$var` `%sysvar` `_0` `@0` `^var` `?` `~`
 Basic pattern matching is against words or concepts. Does this word or concept exist?
-`u: ( this ~animal )` matches _this dog_ or _this dogs_ but not _this is my dog_
+```
+u: ( this ~animal )
+``` 
+matches _this dog_ or _this dogs_ but not _this is my dog_
 
 You can also ask if a user variable is defined just by naming it:
-`u: ( $myvar help)` this only matches if input has _help_ and `$myvar` is not null.
+```
+u: ( $myvar help)
+``` 
+this only matches if input has _help_ and `$myvar` is not null.
 
 System variables one would not ask if they are defined (they almost always are) but would use in a
 relation instead.
 
 Similarly, `_0` by itself in a pattern means is it defined, that is, not null.
-`u: ( _{apple orange} _0 )` matches only if apple or orange got matched
-And `@0` by itself means does this fact-set have any facts stored in it.
+```
+u: ( _{apple orange} _0 )
+``` 
+matches only if apple or orange got matched. And `@0` by itself means does this fact-set have any facts stored in it.
 
 You can also reference an argument to a function call, and its value will be used to decide what to do.
 A stand-alone `?` means is this sentence a question. 
@@ -114,7 +122,10 @@ active topic).
 starts with parens, but has the unusual property of allowing the match to occur anywhere within the
 sentence, not just at the start. Any nested parens do not have that property, and still require in sequence.
 
-`u: ( this (is my) pattern)` matches _this is my pattern_ and not _this sometimes is my pattern_
+```
+u: ( this (is my) pattern)
+``` 
+matches _this is my pattern_ and not _this sometimes is my pattern_
 
 `[ … ]` - Brackets mean match one of contained tokens, in the order given. A bracket list tries all
 its members in sequence, stopping when it finds a match.
@@ -408,9 +419,11 @@ in this pattern `>` is redundant, since `*` would match to the end of the senten
 You may also use `!>` to ask that we NOT be at the end of the sentence.
 
 `@_1+` says to set the position to where the given match variable (`_1`) matched. Positional sequencing
-will continue normally increasing thereafter. You can suffix the match variable with – instead, to tell
+will continue normally increasing thereafter. 
+You can suffix the match variable with `–` instead, to tell
 CS to begin matching in reverse order in the sentence, i.e., matching backwards to the start of the
-sentence. When you use +, the position starts at the end of the match. When you use -, the position
+sentence. 
+When you use `+`, the position starts at the end of the match. When you use `-`, the position
 starts at the start of the match.
 
 ```
