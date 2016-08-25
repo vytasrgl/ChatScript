@@ -129,12 +129,12 @@ double quotes.
 
 ## System-reserved verbs
 
-The system builds the Word-net hierarchy using the verb isa, with the lower-level (more specific) word as subject and the upper-level word as object. E.g.
+The system builds the Word-net hierarchy using the verb `isa`, with the lower-level (more specific) word as subject and the upper-level word as object. E.g.
 ```
 (dog~1 isa animal~4)
 ```
 
-The system builds concept and topic sets using the verb member with the member value as subject and the set name as object. E.g.
+The system builds concept and topic sets using the verb `member` with the member value as subject and the set name as object. E.g.
 ```
 (run member ~movementverbs)
 ```
@@ -153,7 +153,7 @@ By default in the simplest queries, the system will find all facts that match an
 (are like records), it is also valid to say a factset is a collection of subjects, or verbs, or objects. Therefore when you use a factset, you normally have to specify how you want it used.
 
 | fields    | description |
-| :-------: | ----------- |
+| --------- | ----------- |
 | @1subject | means use the subject field |
 | @1verb    | means use the verb field |
 | @1object  | means use the object field |
@@ -176,9 +176,7 @@ removing that fact from the set. The functions to do this are:
 
 ### ^first( fact-set ), ^last( fact-set ), ^pick( fact-set )
 
-`^first` – retrieve the first fact, `^last` – retrieve the last fact, `^pick` – retrieve a random fact
-
-e.g.
+`^first` – retrieve the first fact, `^last` – retrieve the last fact, `^pick` – retrieve a random fact, e.g.
 ```
 _1 = ^first(@1all)
 ```
@@ -240,7 +238,7 @@ If you want to know how many facts a fact-set has, you can do this:
 outputs the count of facts.
 
 If you want to retrieve a particular set fact w/o erasing it, you can use
-^nth(@1 count) where the first argument is like ^first because you also specify how to
+`^nth(@1 count)` where the first argument is like `^first` because you also specify how to
 interpret the answer) and the second is the index you want to retrieve. An index out of
 bounds will fail.
 
@@ -278,29 +276,30 @@ or
 A fact like `(bird eat worm)` is indexed by the system so that bird can find facts with bird
 as the subject or as the verb or as the object. Similarly eat can find facts involving it in
 each position. As a new fact is added, like `(bird hate cat)` the word bird gets the new fact
-added to the front of its list of facts involving bird in the subject field. So if you search
-for just one fact where bird is the subject, you get the most recent fact. If you search for
-all facts with bird as the subject, the facts will be stored in a fact set most recent first
-(lowest/earliest element of the fact set). You would use `^first(@2)` to get its most recent
-fact and `^last(@2)` to get its oldest fact.
+added to the front of its list of facts involving bird in the subject field. 
+So if you search for just one fact where bird is the subject, you get the most recent fact. 
+If you search for all facts with bird as the subject, the facts will be stored in a fact set most recent first
+(lowest/earliest element of the fact set). 
+You would use `^first(@2)` to get its most recent fact and `^last(@2)` to get its oldest fact.
 
 
 ## Tables
 
 With the ability to create and manipulate facts comes the need to create large numbers of
 them conveniently. This is the top-level declaration of a table, a combination of a
-transient output macro declaration and a bunch of data to execute the macro on. Usually
-the macro creates facts.
+transient output macro declaration and a bunch of data to execute the macro on. 
+Usually the macro creates facts.
 
 The table has a name (ignored- just for your documentation convenience), a list of
 arguments, a bunch of script, a `DATA:` separator, and then the table data. The data is line
 oriented.
 
 Within a line there are no rules about whitespace; you can indent, tab, use lots
-of spaces, etc. Each line should have as many elements as the table has arguments. The
-table ends with the end of file or a new top-level declaration. E.g.,
+of spaces, etc. Each line should have as many elements as the table has arguments. 
+The table ends with the end of file or a new top-level declaration. E.g.,
 ```
 Table: authors (^author ^work ^copyright)
+
 ^createfact(^author member ~author) # add to concept ~author
 ^createfact(^work member ~book) # add to concept ~book
 ^createfact(^work exemplar ^author) # author wrote this book
@@ -329,23 +328,22 @@ value4 value5 value6
 ```
 
 A table allows you to automatically list shortened synonyms of proper names. For
-example, Paris could be a shortened synonym for Paris, France. In a table of capitals,
+example, Paris could be a shortened synonym for _Paris, France_. In a table of capitals,
 you would normally make the fact on the full name, and write the shortened synonyms in
-parens. You may have more than one:
-_"Paris, France" (Paris "City of Love") France_
+parens. You may have more than one: _"Paris, France" (Paris "City of Love") France_.
 
 These synonyms are represented using the member verb, sort of like making a concept set
 of the full name. The system detects this specially during inferencing, and if an argument
 to ^query were _Paris_, it could automatically transfer across and consider facts for
-*Paris,_France* as well. It would not go the other way, however, so if the argument were
+*Paris,_France* as well. 
+It would not go the other way, however, so if the argument were
 *Paris_France*, it would not move over to *Paris*. You should store your facts on the full
 name. The mechanism allows user input to use the short name.
 
 
 ## Variable Argument Tables
 
-While a line of table data must fill all fields of the table exactly (no more or less), you can tell the system to fill in the remaining arguments with "*" by putting "…" as your last
-value. Eg.
+While a line of table data must fill all fields of the table exactly (no more or less), you can tell the system to fill in the remaining arguments with `*` by putting `…` as your last value. Eg.
 ```
 table: test(^item1 ^item2 ^item3 ^item4)
 # ...
@@ -353,21 +351,23 @@ Data:
 lion 50 …
 ```
 
-This table will use * for item3 and item4 of lion.
+This table will use `*` for item3 and item4 of lion.
 Alternatively, you can declare the table variable via:
 ```
-table: ^mytable variable (^arg1 ^arg2 ^arg3 ^arg4 )
+table: ^mytable variable ( ^arg1 ^arg2 ^arg3 ^arg4 )
 ```
-which allows you to not supply all arguments and not use …, but it means you get no
+which allows you to not supply all arguments and not use `…`, but it means you get no
 error checking if you failed to supply enough arguments.
+
 Note: If you create member facts to add something to a concept, the concept must have
 been predeclared. You can declare an empty concept just before the table like this:
 ```
 concept: ~newconcept()
+
 table: mytable( ^x )
 createfact(^x member ~newconcept)
 DATA:
-
+# data here
 ```
 
 
@@ -393,11 +393,13 @@ Note several things. This is declared as a table. The system can tell the differ
 because the table name `(^secondkeys)` will already have a definition. The arguments you
 supply must be real arguments, not `^xxx` names of dummy arguments). This table
 presupplies one argument `(~accidents)`. 
-There is no need for a `DATA:` line because the table function has already been defined- it knows all its code. So one proceeds directly to supplying table data. In this instance, the code will be expecting each table entry is one value, because the ^secondkeys tablemacro said there are two arguments. Since one is presupplied, the table data must supply the rest (1). So this will execute the table code on each of the 5 table data entries.
+There is no need for a `DATA:` line because the table function has already been defined- it knows all its code. 
+So one proceeds directly to supplying table data. In this instance, the code will be expecting each table entry is one value, 
+because the `^secondkeys` tablemacro said there are two arguments. Since one is presupplied, the table data must supply the rest (1). So this will execute the table code on each of the 5 table data entries.
 
 ### Datum
 You can use a tablemacro within a topic to declare a single table line. It must be at the top
-level, like a t: or u: rule. E.g.
+level, like a `t:` or `u:` rule. E.g.
 ```
 topic: ~mytopic []
 t: this is a test
@@ -451,14 +453,13 @@ if ( gambitTopics()) { first(@0object)}
 ```
 
 ### ^AddProperty(set flag)
-add this flag onto all facts in named set or onto words. If you
-just say `^addproperty(@9 USER_FLAG3)` then all facts get that flag on them. The
-predefined but meaningless to the system fact flags are `User_flag4`, `User_flag3`,
+add this flag onto all facts in named set or onto words. If you just say `^addproperty(@9 USER_FLAG3)` 
+then all facts get that flag on them. The predefined but meaningless to the system fact flags are `User_flag4`, `User_flag3`,
 `User_flag2`, `User_flag1`.
 
 If set has a field marker (like `@2subject`) then the property is added to all values of that
-field of facts of that set, that is, a dictionary word. The flags must come from
-`dictionarysystem.h` and the set of property flags or system flags.
+field of facts of that set, that is, a dictionary word. The flags must come from `dictionarysystem.h` 
+and the set of property flags or system flags.
 
 
 ### ^conceptlist(kind location ) 
@@ -489,8 +490,7 @@ the arguments are a stream, so "flags" is optional. Creates a fact of the listed
 See system functions manual for a bit more on how createfact can process data.
 
 ### ^delete(set)
-erase all facts in this set. This is the same as `^addfactproperty(set
-FACTDEAD)`.
+erase all facts in this set. This is the same as `^addfactproperty(set FACTDEAD)`.
 
 
 ### ^field(fact fieldname)
@@ -505,9 +505,8 @@ $$f = createfact (I eat (he eats beer))
 
 and `^field($$f object) returns (he eats beer)`
 
-Fields include: `subject`, `verb`, `object`, `flags`, `all` (spread onto 3 match variables, raw (spread onto 3 match variables). `all` just displays a human normal dictionary word, so if
-the value were actually `plants~1` you'd get just plants whereas raw would return what was
-actually there `plants~1`.
+Fields include: `subject`, `verb`, `object`, `flags`, `all` (spread onto 3 match variables, raw (spread onto 3 match variables). 
+`all` just displays a human normal dictionary word, so if the value were actually `plants~1` you'd get just plants whereas raw would return what was actually there `plants~1`.
 
 ### ^find( setname itemname)
 given a concept set, find the ordered position of the 2nd
@@ -566,8 +565,9 @@ named in an assignment statement like:
 
 How are facts and variables different? Which should you use?
 
-Facts are persistent. If you don't create them explicitly as transient, they stay with the user forever. Variables that don't begin with $$ are also persistent and stay with the user
-forever. There are no limits on the number of variables you can have (none that you need
+Facts are persistent. If you don't create them explicitly as transient, they stay with the user forever. Variables that don't begin with `$$` are also persistent and stay with the user forever. 
+
+There are no limits on the number of variables you can have (none that you need
 be aware of) and variable names can be up to 999 characters long. The limits on user
 facts that can be saved are defined as a parameter when CS is started up (default 100).
 You can create more facts, but it will only save the most recent limit.
@@ -591,14 +591,16 @@ $$tmp = ^first(@1fact)
 that value is a numeric index into fact space. It is ONLY valid during the current volley.
 You cannot insure that it will remain valid across volleys.
 The valid ways to access facts across volleys are:
+
 1. rerun ^query(...) to get a set of factsubject
 2. get your fact reference into an @factset and have the set marked to save across
-volleys via ^enable(write @4)
+volleys via `^enable(write @4)`
 3. save the fact as text to a permanet variable, e.g.,
 ```
 $fact = ^WriteFact(^first(@1fact)
 ```
-You can later reaccess (or recreate) this fact via ^createfact($fact)
+
+You can later reaccess (or recreate) this fact via `^createfact($fact)`.
 
 
 # ADVANCED FACTS
@@ -606,37 +608,40 @@ You can later reaccess (or recreate) this fact via ^createfact($fact)
 
 ## Facts of Facts
 
-Suppose you do something like `CreateFact( john eat (wet food peanuts))`. What happens
-when you retrieve it into a fact set and then do `_1 = ^last(@1+)` and get the fact
-disassembled onto `_1`, `_2`, `_3`, and `_4`? What you get for `_3` is a reference to a fact, that is, a number. You can decode that by using `^field( _3 subject)` or `^field(_3 verb)` or `^fact(_3 object)` to get wet or food or peanuts. The first argument to ^field is a fact number.
+Suppose you do something like `CreateFact( john eat (wet food peanuts))`. What happens when you retrieve it into a fact set and then do `_1 = ^last(@1+)` and get the fact disassembled onto `_1`, `_2`, `_3`, and `_4`? 
+What you get for `_3` is a reference to a fact, that is, a number. 
+You can decode that by using `^field( _3 subject)` or `^field(_3 verb)` or `^fact(_3 object)` to get wet or food or peanuts. 
+The first argument to ^field is a fact number.
 
 You get a fact number if you do `_3 = CreateFact(….)` and can decode `_3` the same way.
 Naturally this function fails if you give it something that cannot be a fact reference.
 
 
 ## Flags
-Facts may have flags on them. You can create them with flags (see ^createfact) and you
+
+Facts may have flags on them. You can create them with flags (see `^createfact`) and you
 can get them using ^field or when you spread out a fact onto a collection of match
 variables.
 
 System-defined flags (which should not be set or erased by user scripts) are:
-FACTSUBJECT, FACTVERB, FACTOBJECT (describe that a field is a fact)
-FACTDEAD (indicates the fact has been killed and will go away at the end of volley)
+`FACTSUBJECT`, `FACTVERB`, `FACTOBJECT` (describe that a field is a fact)
+`FACTDEAD` (indicates the fact has been killed and will go away at the end of volley)
 
 Flags you can use to define facts that have system meaning but may or may not stay on
 them are:
-FACTDUPLICATE (allow multiple versions of the same fact)
-FACTTRANSIENT (the fact should die at the end of the volley if not in a fact set)
-ORIGINAL_ONLY (a "member" fact defining a concept only uses the raw word)
+
+`FACTDUPLICATE` (allow multiple versions of the same fact)
+`FACTTRANSIENT` (the fact should die at the end of the volley if not in a fact set)
+`ORIGINAL_ONLY` (a "member" fact defining a concept only uses the raw word)
 
 Flags you can set for yourself include:
-USER_FLAG1 … USER_FLAG8
+`USER_FLAG1` … `USER_FLAG8`
 
 Facts created by JSON code have user markings also, renamed as
-JSON_PRIMITIVE_VALUE, JSON_STRING_VALUE, JSON_ARRAY_VALUE,
-JSON_OBJECT_VALUE which indicate what kind of value the object of the fact is.
-And JSON_ARRAY_FACT and JSON_OBJECT_FACT which indicate what kind of
-value the subect of the fact is
+`JSON_PRIMITIVE_VALUE`, `JSON_STRING_VALUE`, `JSON_ARRAY_VALUE`,
+`JSON_OBJECT_VALUE` which indicate what kind of value the object of the fact is.
+And `JSON_ARRAY_FACT` and `JSON_OBJECT_FACT` which indicate what kind of
+value the subect of the fact is.
 
 
 ## JSON
@@ -651,7 +656,7 @@ ChatScript JSON manual for more details.
 
 You can specify that a table argument string is to be compiled as output script. Normally
 it’s standard word processing like all English phrases. To compile it, you prefix the
-doublequoted string with the function designator ^. E.g.,
+doublequoted string with the function designator `^`. E.g.,
 ```
 DATA:
 ~books "this is normal" ^"[script a][script b] ^fail(TOPIC)"
@@ -660,27 +665,29 @@ This acts like a typical string. You pass it around, store it as value of variab
 field of a fact. Like all other strings, it remains itself whenever it is put into the output
 stream, EXCEPT if you pass it into the ^eval function. Then it will actual get executed
 So. To use that argument effectively, you would get it out of the fact you built and store it
-onto some variable (like _5 or $value) , and then ^eval(_5) or ^eval($value).
+onto some variable (like `_5` or `$value`) , and then `^eval(_5)` or `^eval($value)`.
 
 
 ## FactSet Remaps
 
-Factset names like @1 are not mnemonic. You can "rename" them as follows:
+Factset names like `@1` are not mnemonic. You can "rename" them as follows:
 ```
 rename: @bettername @12
 ```
-in a script before any uses of @bettername, which now mean @12. Then you can do:
+in a script before any uses of `@bettername`, which now mean `@12`. Then you can do:
 ```
 $$tmp = @betternamesubject
 ```
 
+
 ## Defining your own queries
+
 The query code wanders around facts to find those you want. But since facts can
 represent anything, you may need to custom tailor the query system, which itself is a
 mini-programming language. The full query function is takes nine arguments and any
 arguments at the end you omit default themselves.
 
-All query kinds are defined in LIVEDATA/queries.txt and you can add entries to that (or
+All query kinds are defined in `LIVEDATA/queries.txt` and you can add entries to that (or
 revise existing ones). The essential things a query needs to be able to do is:
 
 1. Start with existing words or facts
@@ -694,8 +701,9 @@ with what arguments, in what order.
 
 An essential notion is the "tag". As the system examines facts, it is not going to compare
 the text strings of words with some goal. That would be inefficient. Instead it looks to see
-if a word or a fact has a particular "tag" on it. Each word/fact can have a single tag id,
-drawn from a set of nine. The tags ids are labeled ‘1’ thru ‘9’.
+if a word or a fact has a particular "tag" on it. 
+
+Each word/fact can have a single tag id, drawn from a set of nine. The tags ids are labeled ‘1’ thru ‘9’.
 Another essential notion is the field/value. One refers to fields of facts or values of the incoming arguments, or direct values in the query script. Here are the codes involved:
 
 1. s = refers to the subject argument or the subject field of a fact
@@ -703,8 +711,8 @@ Another essential notion is the field/value. One refers to fields of facts or va
 3. o = refers to the object argument or the object field of a fact
 4. p = refers to the propagate argument
 5. m = refers to the match argument
-6. ~set = use the explicitly named concept set
-7. ‘word = use the explicitly named word
+6. `~`set = use the explicitly named concept set
+7. `‘`word = use the explicitly named word
 8. @n = use the named fact set
 
 Each query has is composed of four segments. Each segment is separated using a colon.
@@ -713,7 +721,7 @@ then the operation, and possibly special arguments to the operation.
 
 You can separate things in a segment with a period or an underscore, to assist in visual
 clarity. Those characters are ignored. I always separate actions by underscores. The
-period I use to mark the end of literal values (~sets and ‘words).
+period I use to mark the end of literal values (`~sets` and `‘words`).
 
 
 ## EXAMPLE 1 – PARIS as subject
@@ -723,6 +731,7 @@ Consider this example: we want to find facts about Paris. The system has these f
 
 Our query will be `^query(direct_s Paris ? ?)` which request all facts about a subject named
 Paris (to be stored in the default output factset `@0`).
+
 Segment one handles marking and/or storing initial values. You always start by naming
 the tag you want to use, then naming the field/value and the operation. The operations
 are:
@@ -730,6 +739,7 @@ are:
 1. t = tag the item
 2. q = tag and queue the item
 3. < or > scan from the item, tagging things found (more explanation shortly)
+
 The query direct_s, which finds facts that have a given subject, is defined as 1sq:s::
 
 This says segment 1 is 1sq and segment 2 is s and segments 3 and 4 have no data.
@@ -751,4 +761,5 @@ Therefore the system returns the two facts with Paris as the subject
 Assume you have this fact `( 23 doyou ~like)` and what you actually have is a specific
 verb like which is a member of ~like. You want to find facts using doyou and like and
 find facts where doyou matches and some set that contains like matches. 
+
 The query for this is `direct_v<o`, which means you have a verb and you have an object but you want the object to match anywhere up in the hierarchy. < , which means the start of the sentence in patterns, really means the left side of something. And in the case of facts and concepts, the left side is the more specific (lower in the hierarchy) and the right side is most general (higher in the higherarchy) when the verb is member.
