@@ -315,7 +315,7 @@ You may not have any need to use these flags, so maybe you will just ignore thei
 | :----------------: | :--------------------------------------: |            
 | (ja-1 0 jo-1)      | #JSON_ARRAY_FACT #JSON_OBJECT_VALUE      |
 | (jo-1 id 1)        | #JSON_OBJECT_FACT #JSON_PRIMITIVE_VALUE  |
-| (jo-1 value hello  | #JSON_OBJECT_FACT #JSON_STRING_VALUE     |
+| (jo-1 value hello) | #JSON_OBJECT_FACT #JSON_STRING_VALUE     |
 | ( ja-1 1 jo-2)     | #JSON_ARRAY_FACT #JSON_OBJECT_VALUE      |
 | (jo-2 id 2)        | #JSON_OBJECT_FACT #JSON_PRIMITIVE_VALUE  |
 | (jo-2 value bye)   | #JSON_OBJECT_FACT #JSON_STRING_VALUE     |
@@ -355,8 +355,8 @@ System variables `%httpresponse` will hold the most recent http return code from
 
 ## JSON & Out-of-band output data
 
-Out-of-band data in ChatScript is signaled by the output beginning with data enclosed in [].
-Which might be confusing, since JSON uses [] to denote an array. Standalone ChatScript contains a
+Out-of-band data in ChatScript is signaled by the output beginning with data enclosed in `[]`.
+Which might be confusing, since JSON uses `[]` to denote an array. Standalone ChatScript contains a
 built-in handler for OOB data and if you pass it JSON at the start of output, it will swallow it and not
 display it (unless you turn on OOB display).
 
@@ -382,9 +382,9 @@ You can pattern match the oob section of the input as follows:
 u: ( \[ _* ) $$tmp = ^jsonparse('_0)
 ```
 `_0` will contain an excess right bracket (the end of the oob message), but that won't bother `^jsonparse`.
+
 Representing JSON in CS facts is more than just a bunch of subject-verb-object facts linked together.
 
 The facts have typing bits on them that describe the structure and arrays have index values that must
 remain consistent. Therefore you should not create and alter JSON fact structures using ordinary CS
 fact routines like `^createfact` and `^delete`. Instead use the JSON routines provided.
-
