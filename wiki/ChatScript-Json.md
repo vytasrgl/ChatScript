@@ -312,11 +312,11 @@ The facts have flags on them which you can use in queries.
 You may not have any need to use these flags, so maybe you will just ignore their existence.
 
 | fact               | associated flags                         |
-| :----------------: | :--------------------------------------: |            
-| (ja-1 0 jo-1)      | #JSON_ARRAY_FACT #JSON_OBJECT_VALUE      |
+| ------------------ | :--------------------------------------- |            
+| (ja-1 0 jo-1)      | #JSON_ARRAY_FACT  #JSON_OBJECT_VALUE     |
 | (jo-1 id 1)        | #JSON_OBJECT_FACT #JSON_PRIMITIVE_VALUE  |
 | (jo-1 value hello) | #JSON_OBJECT_FACT #JSON_STRING_VALUE     |
-| ( ja-1 1 jo-2)     | #JSON_ARRAY_FACT #JSON_OBJECT_VALUE      |
+| ( ja-1 1 jo-2)     | #JSON_ARRAY_FACT  #JSON_OBJECT_VALUE     |
 | (jo-2 id 2)        | #JSON_OBJECT_FACT #JSON_PRIMITIVE_VALUE  |
 | (jo-2 value bye)   | #JSON_OBJECT_FACT #JSON_STRING_VALUE     |
 
