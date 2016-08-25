@@ -24,6 +24,9 @@ A simple explanation of how to “learn” data about the user.
 * ## [ChatScript Common Beginner Mistakes](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Common-Beginner-Mistakes.md)
 Here are a collection of common beginner mistakes.
 
+* ## [Installing and Updating ChatScript]()
+
+
 # Predefined Bots
 
 * ## [Bot Harry - basic bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Harry.md)
@@ -43,7 +46,6 @@ Illustration of using Postgres database.
 
 * ## [Bot German](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-German.md)
 An illustration of hooking in an external pos-tagger for foreign language support.
-
 
 
 # Advanced ChatScript
@@ -73,6 +75,8 @@ really advanced users wanting the appropriate mental model.
 
 * ## ChatScript Pattern Redux
 A terse but detailed look at everything involving rule patterns.
+
+* ## [ChatScript System Variables and Engine-defined Concepts]()
 
 
 # Specialized ChatScript
