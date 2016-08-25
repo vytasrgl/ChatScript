@@ -20,7 +20,7 @@ Note that arrays can hold values of different types. The JSON types are array, o
 (enclosed in doublequotes), and primitives (text without doublequotes that cannot contain any
 whitespace). Array values are ordered and always retain that order.
 A JSON object is a list of key-value pairs separated by commas and placed within {}, e.g.,
-```
+```json
 { 
     "key1": 1, 
     "bob": help, 
