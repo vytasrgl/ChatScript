@@ -21,7 +21,7 @@ records, arbitrary graphs, treat them as arrays of data, etc.
 
 ## Simple Creating Facts
 
-### ^createfact( subject verb object ) 
+### `^createfact(subject verb object)` 
 this creates a fact triple. The system will not create
 duplicate facts. If you have a fact (Bob eat fish) then executing
 ```
@@ -53,12 +53,12 @@ The above creates facts which are findable by querying for pets Bob has. You can
 To find facts, you need to make a query. There can be many different kinds of queries.
 
 
-### ^FindFact(subject verb object) 
+### `^FindFact(subject verb object)` 
 The simplest fact find involves knowing all the
 components (meanings) and asking if the fact already exists. If it does, it returns the index of the fact. If it doesn't it returns `FAILRULE_BIT`.
 
 
-### ^query(kind subject verb object)
+### `^query(kind subject verb object)`
 The simplest query names the kind of query and gives
 some or all of the field values that you want to find. Any field value can be replaced
 with `?` which means either you don’t care or you don’t know and want to find it. The kinds of queries are programmable and are defined in `LIVEDATA/queries.txt` (but you need to be really advanced to add to it). The simplest query kinds are:
@@ -81,7 +81,7 @@ If no matching facts are found, the query function returns the RULE fail code.
 If the above query finds a fact `(I own dog)` then the rule says yes. If not, the rule fails during output. This query could have been put inside the pattern instead.
 
 
-### ^query(kind subject verb object count fromset toset propagate match)
+### `^query(kind subject verb object count fromset toset propagate match)`
 query can actually take up to 9 arguments. Default values are `?` . The count argument defaults to `-1` and indicates how many answers to limit to. 
 When you just want or expect a single one, use `1` as the value.
 
@@ -174,7 +174,7 @@ statement like `@2 = @1`.
 You can transfer fields of a fact from a fact-set using assignment, while simultaneously
 removing that fact from the set. The functions to do this are:
 
-### ^first( fact-set ), ^last( fact-set ), ^pick( fact-set )
+### `^first(fact-set)`, `^last(fact-set)`, `^pick(fact-set)`
 
 `^first` – retrieve the first fact, `^last` – retrieve the last fact, `^pick` – retrieve a random fact, e.g.
 ```
@@ -194,7 +194,7 @@ This does not destroy the facts; merely the collection of them.
 You can sort a fact set which has number values as a field
 
 
-### ^sort( fact-set {more fact sets})
+### `^sort(fact-set {more fact-sets})`
 the fact set is sorted from highest first. By default, the subject is treated as a float for sorting. You can say something like `@2object` to sort on the object field.
 You can add additional factsets after the first, which will move their contents slaved to
 how the first one was rearranged. Eg.
@@ -206,7 +206,7 @@ same way (assuming they have the same counts).
 If you actually want to destroy facts, you can query them into a fact-set and then do this:
 
 
-### ^delete ( fact-set )
+### `^delete(fact-set)`
 
 ```
 ^delete(@1)
@@ -228,7 +228,7 @@ you delete all facts within that factset AND all facts which use those facts as 
 themselves. Deleted facts are never saved at the end of a volley.
 
 
-### ^length( fact-set )
+### `^length(fact-set)`
 If you want to know how many facts a fact-set has, you can do this:
 
 ```
@@ -243,7 +243,7 @@ interpret the answer) and the second is the index you want to retrieve. An index
 bounds will fail.
 
 
-### ^Unpackfactref 
+### `^Unpackfactref` 
 examines facts in a set and generates all fact references from it. That is,
 it lists all the fields that are themselves facts.
 ```
@@ -452,7 +452,7 @@ assignment context, the function will store results into `@0` and fail if the re
 if ( gambitTopics()) { first(@0object)}
 ```
 
-### ^AddProperty(set flag)
+### `^AddProperty(set flag)`
 add this flag onto all facts in named set or onto words. If you just say `^addproperty(@9 USER_FLAG3)` 
 then all facts get that flag on them. The predefined but meaningless to the system fact flags are `User_flag4`, `User_flag3`,
 `User_flag2`, `User_flag1`.
@@ -462,7 +462,7 @@ field of facts of that set, that is, a dictionary word. The flags must come from
 and the set of property flags or system flags.
 
 
-### ^conceptlist(kind location ) 
+### `^conceptlist(kind location)` 
 generates a list of transient facts for the designated word
 position in the sentence of the concepts (or topics or both) referenced by that word, based
 on kind being CONCEPT or TOPIC or BOTH. Facts are `(~concept ^conceptlist location)`
@@ -485,15 +485,15 @@ anything about the canonical form, and so there may be no triggered concepts as 
 (Best to use a canonical word as mark).
 
 
-### ^createfact (subject verb object flags )
+### `^createfact (subject verb object flags)`
 the arguments are a stream, so "flags" is optional. Creates a fact of the listed data if it doesn't exist (unless flags allows duplicates).
 See system functions manual for a bit more on how createfact can process data.
 
-### ^delete(set)
+### `^delete(set)`
 erase all facts in this set. This is the same as `^addfactproperty(set FACTDEAD)`.
 
 
-### ^field(fact fieldname)
+### `^field(fact fieldname)`
 given a reference to a fact, pull out a named field. If the
 fieldname is in lower case and the field is a fact reference, you get that number. If the
 fieldname starts uppercase, the system gives you the printout of that fact. Eg for a fact:
@@ -508,26 +508,26 @@ and `^field($$f object) returns (he eats beer)`
 Fields include: `subject`, `verb`, `object`, `flags`, `all` (spread onto 3 match variables, raw (spread onto 3 match variables). 
 `all` just displays a human normal dictionary word, so if the value were actually `plants~1` you'd get just plants whereas raw would return what was actually there `plants~1`.
 
-### ^find( setname itemname)
+### `^find(setname itemname)`
 given a concept set, find the ordered position of the 2nd
 argument within it. ^Output that index. Used, for example, to compare two poker hands.
 
-### ^first( fact-set-annotated)
+### `^first(fact-set-annotated)`
 retrieve the first fact. You must qualify with what you want from it. Retrieve means the fact is removed from the set.
 `^first(@0subject)` retrieves the subject field of the first fact. 
 
 Other obvious qualifications are `verb`, `object`, `fact` (return the index of the fact itself), `all` (spread all 3 fields onto a match variable triple, `raw` (like all but all displays just a normal human-readable word like plant whereas raw displays what was actually there, which might have been plant~1).
 
-### ^last ( fact-set-annotated )
+### `^last(fact-set-annotated)`
 retrieve the last fact – see ^first for a more complete explanation.
 
 
-### ^length( word )
+### `^length(word)`
 puts the length of the word into the output stream. If word is actually a fact set reference (e.g., `@2` ), 
 it returns the count of facts in the set.
 
 
-### ^next(FACT fact-set-annotated)
+### `^next(FACT fact-set-annotated)`
 allows you to walk a set w/o erasing anything. See `^first` for more complete description of annotation, 
 the distinction between next and `^first` is that next does NOT remove the fact from the set, but moves on to each fact in turn.
 You can reset a set with
@@ -539,21 +539,19 @@ then loop thru it looking at the subject field with
 loop() { _0 = next(FACT @1subject) }
 ```
 
-### ^pick ( ~concept )
+### `^pick(~concept)`
 retrieve a random member of the concept. Pick is also used with factsets to pick a random fact (analogous to ^first with its more complete description).
 
-### ^reset( fact-set )
+### `^reset(fact-set)`
 reset a fact set for browsing using ^next.
 
-### ^query(kind subject verb object)
+### `^query(kind subject verb object)`
 see writeup earlier.
 
-
-### ^sort( set )
+### `^sort(set)`
 sort the set.. doc unfinished.
 
-
-### ^unduplicate(set)
+### `^unduplicate(set)`
 remove duplicate facts from this set. The destination set will be
 named in an assignment statement like:
 ```
