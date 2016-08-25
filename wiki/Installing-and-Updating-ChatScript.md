@@ -123,9 +123,8 @@ These generic interjections (which are open to author control via `interjections
 
 `~yes`,`~no`,`~emomaybe`,`~emohello`,`~emogoodbye`,`~emohowzit`,`~emothanks`,
 `~emolaugh`,`~emohappy`,`~emosad`,`~emosurprise`,
-`~emomisunderstand, `~emoskeptic`,`~emoignorance`,`~emobeg`,
-`~emobored`, `~emopain`,`~emoangry`, `~emocurse,`~emodisgustv,`~emoprotest`,
-`~emoapology`,`~emomutual`
+`~emomisunderstand`, `~emoskeptic`,`~emoignorance`,`~emobeg`,
+`~emobored`, `~emopain`,`~emoangry`, `~emocurse`, `~emodisgustv`,`~emoprotest`, `~emoapology`,`~emomutual`
 
 Because all interjections at the start of a sentence are broken off into their own sentence,
 this kind of pattern does not work:
@@ -151,7 +150,7 @@ volleys.
 Words will have pos-tags attached, specififying both generic and specific tag attributes,
 eg., `~noun` and `~noun_singular`. 
 
-### Genric Specifics
+### Generic Specifics
 `~noun`, `~noun_singular`, `~noun_plural`, `~noun_proper_singular`, `~noun_proper_plural`,
 `~noun_gerund`, `~noun_number`, `~noun_infinitive`, `~noun_omitted_adjective`, 
 `~verb`, `~verb_present`, `~verb_present_3ps`, `~verb_infinitive`, `~verb_present_participle`,
@@ -225,8 +224,7 @@ include
 `~mainsubject`, `~mainverb`, `~mainindirect`, `~maindirect`,
 `~subject2`, `~verb2`, `~indirectobject2`, `~object2`,
 `~subject_complement` (adjective object of sentence involving linking verb),
-`~object_complement` (2ndary noun or infinitive verb filling modifying mainobject or
-object2),
+`~object_complement` (2ndary noun or infinitive verb filling modifying mainobject or object2),
 `~conjunct_noun`, `~conjunct_verb`, `~conjunct_adjective`, `~conjunct_adverb`,
 `~conjunct_phrase`, `~conjunct_clause`, `~conjunct_sentence`,
 `~postnominalAdjective` adjective occuring AFTER the noun it modified,
@@ -235,8 +233,7 @@ object2),
 `~address` - noun used as addressee of sentence, 
 `~appositive` - noun restating and modifying prior noun,
 `~absolutephrase` – special phrase describing whole sentence, 
-`~omittedtimeprep` – modified time word used as phrase but lacking preposition (Next
-tuesday I will go),
+`~omittedtimeprep` – modified time word used as phrase but lacking preposition (Next tuesday I will go),
 `~phrase` – a prepositional phrase start (except),
 `~clause` – a subordinate clause start,
 `~verbal` – a verb phrase
@@ -346,6 +343,7 @@ $cs_token = #DO_INTERJECTION_SPLITTING | #DO_SUBSTITUTE_SYSTEM |
 #DO_NUMBER_MERGE | #DO_PROPERNAME_MERGE | #DO_SPELLCHECK |
 #DO_PARSE
 ```
+
 The # signals a named constant from the dictionarySystem.h file. One can set the
 following:
 These enable various LIVEDATA files to perform substitutions on input:
@@ -397,12 +395,12 @@ NO_SEMICOLON_END – don't break apart a sentence after a semi-colon
 UNTOUCHED_INPUT – if set to this alone, will tokenize only on spaces, leaving
 everything but spacing untouched.
 Note, you can change $cs_token on the fly and force input to be reanalyzed via
-^retry(SENTENCE). I do this when I detect the user is trying to give his name, and
-9
-many foreign names might be spell-corrected into something wrong and the user is
+^retry(SENTENCE). I do this when I detect the user is trying to give his name, 
+and many foreign names might be spell-corrected into something wrong and the user is
 unlikely to misspell his own name. Just remember to reset $cs_token back to normal
 after you are done. Here is one such way, assuming $stdtoken is set to your normal
 tokenflags in your bot definition outputmacro:
+
 ```
 #! my name is Rogr
 s: (name is _*)
@@ -417,8 +415,8 @@ _0 is the name.
 $cs_token = $stdtoken
 ```
 
-If you type “my name is Rogr” into a topic with this, the original input is spell-corrected
-to “my name is Roger”, but this will change the $cs_token over to one without spell
+If you type _my name is Rogr_ into a topic with this, the original input is spell-corrected
+to _my name is Roger_, but this will change the $cs_token over to one without spell
 correction and redo the sentence, which will now come back with “my name is Rogr” and
 be echoed correctly, and $cs_token reset. That's assuming nothing else would run
 differently and trap the response elsewhere. If you were worried about that, it would be
@@ -427,7 +425,8 @@ script to return immediate control to here after input processing if you had cha
 $cs_token.
 
 
-Private Substitutions
+## Private Substitutions
+
 While in general, substitutions are defined in the LIVEDATA folder, you can define
 private substititions for your specific bot using the scripting language. You can say
 ```
@@ -436,15 +435,14 @@ replace: xxx yyyyy
 
 which defines a substitution just like a livedata substitution file. It actually creates a
 substitution file called private0.txt or private1.txt in your TOPIC folder. Even then, those
-substitutions will not be enacted unless you explicitly add to the $cs_token value
-#DO_PRIVATE, eg
+substitutions will not be enacted unless you explicitly add to the $cs_token value #DO_PRIVATE, eg
 ```
 $cs_token = #DO_INTERJECTION_SPLITTING | #DO_SUBSTITUTE_SYSTEM |
 #DO_NUMBER_MERGE | #DO_PROPERNAME_MERGE | #DO_SPELLCHECK | #DO_PARSE | #DO_PRIVATE
 ```
 
 Similarly while canonical values of words can be defined in
-LIVEDATA/SYSTEM/canonical.txt, you can define private canonical values for your
+`LIVEDATA/SYSTEM/canonical.txt`, you can define private canonical values for your
 bots by using the scripting language. You can say:
 ```
 canon: oh 0 faster fast
@@ -470,11 +468,10 @@ Response_removespacebeforecomma – does the obvious
 Response_alterunderscores - converts single underscores to spaces and double
 underscores to singles (eg for a web url)
 $cs_crashmsg – in server mode, what to say if the server crashes and we return a message
-to the user. By default the message is “Hey, sorry. I forgot what I was thinking about.”
+to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._
 $cs_abstract – used with :abstract
 $cs_looplimit – loop() defaults to 1000 iterations before stopping. You can change this
 default with this.
-
 
 $cs_control_pre – name of topic to run in gambit mode on pre-pass, set by author. Runs
 before any sentences of the input volley are analyzed. Good for setting up initial values.
@@ -507,8 +504,9 @@ response to user inputs are kept for each user. Std default is 100.
 $cs_response – controls some characteristics of how responses are formatted
 $cs_randIndex – the random seed for this volley
 $cs_utcoffset – if defined, then %time returns current utc time + timezone offset
+
 The following variables are generated by the system on behalf of scripts.
-12
+
 $$db_error – error message from a postgres failure
 $$findtext_start - ^findtext return the end normally, this is where it puts the start.
 $$tcpopen_error – error message from a tcpopen error
