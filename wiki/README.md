@@ -71,7 +71,7 @@ never be complete because you will want to keep improving it.
 <br>An overview of the process of converting input to output. Not necessary except for
 really advanced users wanting the appropriate mental model.
 
-* ChatScript Pattern Redux
+* [ChatScript Pattern Redux](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Pattern-Redux.md)
 <br>A terse but detailed look at everything involving rule patterns.
 
 * ChatScript System Variables and Engine-defined Concepts
