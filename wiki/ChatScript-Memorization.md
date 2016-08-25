@@ -6,11 +6,11 @@ user a question, and a rejoinder replying specifically to what the user said. E.
 
 ```
 t: Do you have any pets?
-   #! dog
-   a: (dog) Dogs make great pets.
+     #! dog
+     a: (dog) Dogs make great pets.
 
-   #! cat
-   a: (cat) I prefer cats.
+     #! cat
+     a: (cat) I prefer cats.
 ```
 
 Or it comes from a responder able to answer the user's question. E.g.
@@ -54,8 +54,8 @@ t: I have two chickens.
 t: I love having chickens
 
 t: ($pet) refine()
-   a: ($pet=dog) Have you always preferred dogs as pets?
-   a: (*) What do you feed your $pet ?
+    a: ($pet=dog) Have you always preferred dogs as pets?
+    a: (*) What do you feed your $pet ?
 ```
 
 The pet gambit will not fire until it knows of a user's pet. Control would skip past it if the user has
@@ -76,6 +76,7 @@ question). So the topic might have a bunch of rules like this:
 
 ```
 s: ($pet) I remember you have a $pet.
+
 s: ($coffee) I know you like coffee.
 ```
 
@@ -85,8 +86,11 @@ by calling a topic to handle it. The topic might look like this:
 
 ```
 topic: ~yourpet []
+
 t: (!$pet) keep() end(TOPIC)
+
 t: I was passing a pet shop yesterday and it reminded me of your $pet. Do you buy toys for it?
+
 t: What do you feed your $pet?
 ```
 
@@ -152,6 +156,7 @@ would eat scraps like this;
 
 ```
 concept: ~table_pets (dog cat lion goat elephant)
+
 t: ($pet?~table_pets) Do you ever feed your $pet table scraps during dinner?
 ```
 Note that $pet is a variable that, once set, lives forever with the user data unless you explicitly erase it.
