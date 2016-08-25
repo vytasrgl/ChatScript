@@ -60,7 +60,7 @@ ChatScript support for Json
 * ## ChatScript Debugging Manual
 The features of CS that support debugging, including tracing.
 
-* ## ChatScript Finalizing a Bot
+* ## [ChatScript Finalizing a Bot](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Finalizing-A-Bot.md)
 Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely
 never be complete because you will want to keep improving it.
 
