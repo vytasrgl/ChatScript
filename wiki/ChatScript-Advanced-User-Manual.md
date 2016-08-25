@@ -1089,7 +1089,7 @@ terminated. Loop also has a built in limit of 1000 so it will never run forever.
 override this if you define `$cs_looplimit` to have some value you prefer.
 
 
-## ^loop(n)
+## `^loop(n)`
 
 Loop can be given a count. This can be either a number, or you can use a factset id to
 loop through each item of the factset via
@@ -1098,7 +1098,7 @@ loop through each item of the factset via
 ```
 
 
-## If Construct - if or ^if
+## If Construct - `if` or `^if`
 
 The if allows you to conditionally execute blocks of script. The full syntax is:
 ```
@@ -1107,9 +1107,9 @@ If ( test1 ) { script1 } else if ( test2 ) { script2 } … else { script3 }
 
 You can omit the else if section, having just if and else, and you can omit the else section, having just if or if and else if. You may have any number of else if sections.
 The test condition can be:
+
 1. A variable – if it is defined, the test passes
-2. `!` variable – if it is not defined, the test passes (same as relation variable `==`
-null)
+2. `!` variable – if it is not defined, the test passes (same as relation variable `==` null)
 3. A function call – if it doesn’t fail or return the values 0 or null or nil, it passes
 4. A relation – one of `==` `!=` `<` `<=` `>` `>=` `?` `!?`
 
