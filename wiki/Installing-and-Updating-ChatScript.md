@@ -122,8 +122,7 @@ For example _yes_ and _sure_ and of course are all treated as meaning the discou
 These generic interjections (which are open to author control via `interjections.txt`) are: 
 
 `~yes`,`~no`,`~emomaybe`,`~emohello`,`~emogoodbye`,`~emohowzit`,`~emothanks`,
-`~emolaugh`,`~emohappy`,`~emosad`,`~emosurprise`,
-`~emomisunderstand`, `~emoskeptic`,`~emoignorance`,`~emobeg`,
+`~emolaugh`,`~emohappy`,`~emosad`,`~emosurprise`,`~emomisunderstand`, `~emoskeptic`,`~emoignorance`,`~emobeg`,
 `~emobored`, `~emopain`,`~emoangry`, `~emocurse`, `~emodisgustv`,`~emoprotest`, `~emoapology`,`~emomutual`
 
 Because all interjections at the start of a sentence are broken off into their own sentence,
@@ -139,8 +138,7 @@ issue a warning. Likely you should use the remapped name instead.
 
 The following concepts are triggered by exactly repeating either the chatbot or oneself (to
 a repeat count of how often repeated). Repeats are within a recency window of about 20
-volleys.
-`~repeatme`, `~repeatinput1`, `~repeatinput2`, `~repeatinput3`, `~repeatinput4`,
+volleys: `~repeatme`, `~repeatinput1`, `~repeatinput2`, `~repeatinput3`, `~repeatinput4`,
 `~repeatinput5`, `~repeatinput6`.
 
 
@@ -154,11 +152,11 @@ eg., `~noun` and `~noun_singular`.
 `~noun`, `~noun_singular`, `~noun_plural`, `~noun_proper_singular`, `~noun_proper_plural`,
 `~noun_gerund`, `~noun_number`, `~noun_infinitive`, `~noun_omitted_adjective`, 
 `~verb`, `~verb_present`, `~verb_present_3ps`, `~verb_infinitive`, `~verb_present_participle`,
-`~verb_past`, `~verb_past_participle`, `~aux_verb`, `~aux_verb_present`, `~aux_verb_past`, `~aux_verb_future` (`~aux_verb_tenses`), `~aux_be`, `~aux_have`, `~aux_do`
+`~verb_past`, `~verb_past_participle`, `~aux_verb`, `~aux_verb_present`, `~aux_verb_past`, `~aux_verb_future` (`~aux_verb_tenses`), `~aux_be`, `~aux_have`, `~aux_do`.
 
 Auxilliary verbs are segmented into normal ones and special ones. Normal ones give their
 tense directly. Special ones give their root word. The tense of the be/have/do verbs can be
-had via `^properties()` and testing for verb tenses
+had via `^properties()` and testing for verb tenses:
 
 `~adjective`, `~adjective_normal`, `~adjective_number`, `~adjective_noun`,
 `~adjective_participle`
@@ -179,7 +177,7 @@ Adverbs in comparative form will also have `~more_form` or `~most_form`.
 `~quote` (covers ' and “ when not embedded in a word),
 `~paren` (covers opening and closing parens),
 `~foreign_word` (some unknown word),
-`~there_existential` (the word there used existentially),
+`~there_existential` (the word there used existentially).
 
 In addition to normal generic kinds of pos tags, words which are serving a pos-tag role
 different from their putative word type are marked as members of the major tag they act
@@ -189,7 +187,7 @@ as part of. E.g,
 `~noun_omitted_adjective` – an adjective used as a collective noun (eg the beautiful are
 kind),
 `~adjectival_noun` (noun used as adjective like bank "bank teller"),
-`~adjective_participle` (verb participle used as an adjective)
+`~adjective_participle` (verb participle used as an adjective).
 
 For `~noun_gerund` in _I like swimming_ the verb gerund swimming is treated as a noun
 (hence called noun-gerund) but retains verb sense when matching keywords tagged with
@@ -236,7 +234,7 @@ include
 `~omittedtimeprep` – modified time word used as phrase but lacking preposition (Next tuesday I will go),
 `~phrase` – a prepositional phrase start (except),
 `~clause` – a subordinate clause start,
-`~verbal` – a verb phrase
+`~verbal` – a verb phrase.
 
 
 ## %System Variables
@@ -344,58 +342,86 @@ $cs_token = #DO_INTERJECTION_SPLITTING | #DO_SUBSTITUTE_SYSTEM |
 #DO_PARSE
 ```
 
-The # signals a named constant from the dictionarySystem.h file. One can set the
+The `#` signals a named constant from the dictionarySystem.h file. One can set the
 following:
-These enable various LIVEDATA files to perform substitutions on input:
-DO_ESSENTIALS - perform LIVEDATA/systemessentials which mostly strips off
-trailing punctuation and sets corresponding flags instead.
-DO_SUBSTITUTES – perform LIVEDATA/substitutes
-DO_CONTRACTIONS – perform LIVEDATA/contractions, expanding contractions.
 
-DO_INTERJECTIONS – perform LIVEDATA/interjections, changing phrases to
+These enable various LIVEDATA files to perform substitutions on input:
+
+`DO_ESSENTIALS` - perform LIVEDATA/systemessentials which mostly strips off
+trailing punctuation and sets corresponding flags instead.
+
+`DO_SUBSTITUTES` – perform LIVEDATA/substitutes
+
+`DO_CONTRACTIONS` – perform LIVEDATA/contractions, expanding contractions.
+
+`DO_INTERJECTIONS` – perform LIVEDATA/interjections, changing phrases to
 interjections.
-DO_BRITISH – perform LIVEDATA/british, respelling brit words to American.
-DO_SPELLING – performs the LIVEDATA/spelling file (manual spell correction)
-DO_TEXTING – performs the LIVEDATA/texting file (expand texting notation)
-DO_SUBSTITUTE_SYSTEM – do all LIVEDATA file expansions
-DO_INTERJECTION_SPLITTING – break off leading interjections into own sentence.
-DO_NUMBER_MERGE – merge multiple word numbers into one (“four and twenty”)
-DO_PROPERNAME_MERGE – merge multiple proper name into one (“George
+
+`DO_BRITISH` – perform LIVEDATA/british, respelling brit words to American.
+
+`DO_SPELLING` – performs the LIVEDATA/spelling file (manual spell correction)
+
+`DO_TEXTING` – performs the LIVEDATA/texting file (expand texting notation)
+
+`DO_SUBSTITUTE_SYSTEM` – do all LIVEDATA file expansions
+
+`DO_INTERJECTION_SPLITTING` – break off leading interjections into own sentence.
+
+`DO_NUMBER_MERGE` – merge multiple word numbers into one (“four and twenty”)
+
+`DO_PROPERNAME_MERGE` – merge multiple proper name into one (“George
 Harrison”)
-DO_DATE_MERGE – merge month day and/or year sequences (“January 2, 1993”)
+`DO_DATE_MERGE` – merge month day and/or year sequences (“January 2, 1993”)
  
 If any of the above items affect the input, they will be echoed as values into
 %tokenFlags so you can detect they happened.
+
 The next changes do not echo into %tokenFlags and relate to grammar of input:
-DO_POSTAG – allow pos-tagging (labels like ~noun ~verb become marked)
-DO_PARSE – allow parser (labels for word roles like ~main_subject)
-DO_CONDITIONAL_POSTAG – perform pos-tagging only if all words are known.
+
+`DO_POSTAG` – allow pos-tagging (labels like ~noun ~verb become marked)
+
+`DO_PARSE` – allow parser (labels for word roles like ~main_subject)
+
+`DO_CONDITIONAL_POSTAG` – perform pos-tagging only if all words are known.
 Avoids wasting time on foreign sentences in particular.
-NO_ERASE – where a substitution would delete a word entirely as junk, don't.
+
+`NO_ERASE` – where a substitution would delete a word entirely as junk, don't.
+
 Normally the system tries to outguess the user, who cannot be trusted to use
 correct punctuation or casing or spelling. These block that:
-STRICT_CASING – except for 1st word of a sentence, assume user uses correct casing
+
+`STRICT_CASING` – except for 1st word of a sentence, assume user uses correct casing
 on words.
-NO_INFER_QUESTION – the system will not try to set the QUESTIONMARK flag if
-the
-user didn't input a ? and the structure of the input looks like a question.
-DO_SPELLCHECK - perform internal spell checking
-ONLY_LOWERCASE – force all input (except “I”) to be lower case, refuse to
+
+`NO_INFER_QUESTION` – the system will not try to set the QUESTIONMARK flag if
+the user didn't input a ? and the structure of the input looks like a question.
+
+`DO_SPELLCHECK` - perform internal spell checking
+
+`ONLY_LOWERCASE` – force all input (except “I”) to be lower case, refuse to
 recognize uppercase forms of anything
-NO_IMPERATIVE -
-NO_WITHIN -
-NO_SENTENCE_END -
+
+`NO_IMPERATIVE` -
+
+`NO_WITHIN` -
+
+`NO_SENTENCE_END` -
 
 
 Normally the tokenizer breaks apart some kinds of sentences into two. These
 prevent that:
-NO_HYPHEN_END – don't break apart a sentence after a hyphen
-NO_COLON_END – don't break apart a sentence after a colon
-NO_SEMICOLON_END – don't break apart a sentence after a semi-colon
-UNTOUCHED_INPUT – if set to this alone, will tokenize only on spaces, leaving
+
+`NO_HYPHEN_END` – don't break apart a sentence after a hyphen
+
+`NO_COLON_END` – don't break apart a sentence after a colon
+
+`NO_SEMICOLON_END` – don't break apart a sentence after a semi-colon
+
+`UNTOUCHED_INPUT` – if set to this alone, will tokenize only on spaces, leaving
 everything but spacing untouched.
-Note, you can change $cs_token on the fly and force input to be reanalyzed via
-^retry(SENTENCE). I do this when I detect the user is trying to give his name, 
+
+Note, you can change `$cs_token` on the fly and force input to be reanalyzed via
+`^retry(SENTENCE)`. I do this when I detect the user is trying to give his name, 
 and many foreign names might be spell-corrected into something wrong and the user is
 unlikely to misspell his own name. Just remember to reset $cs_token back to normal
 after you are done. Here is one such way, assuming $stdtoken is set to your normal
@@ -418,11 +444,12 @@ $cs_token = $stdtoken
 If you type _my name is Rogr_ into a topic with this, the original input is spell-corrected
 to _my name is Roger_, but this will change the $cs_token over to one without spell
 correction and redo the sentence, which will now come back with “my name is Rogr” and
-be echoed correctly, and $cs_token reset. That's assuming nothing else would run
-differently and trap the response elsewhere. If you were worried about that, it would be
-possible for the script to save where it is using ^getrule(tag) and modify your control
+be echoed correctly, and `$cs_token` reset. That's assuming nothing else would run
+differently and trap the response elsewhere. 
+If you were worried about that, it would be
+possible for the script to save where it is using `^getrule(tag)` and modify your control
 script to return immediate control to here after input processing if you had changed
-$cs_token.
+`$cs_token`.
 
 
 ## Private Substitutions
@@ -459,58 +486,87 @@ you can use a function to do the same thing (but only 1 pair at a time).
 
 The following variables can be defined in a script and the engine will react to their
 contents.
-$cs_token – described extensively above
-$cs_response – controls automatic handling of outputs to user. By default it consists of
-$cs_response = #Response_upperstart | #response_removespacebeforecomma |
+
+`$cs_token` – described extensively above
+
+`$cs_response` – controls automatic handling of outputs to user. By default it consists of
+
+`$cs_response` = #Response_upperstart | #response_removespacebeforecomma |
 #response_alterunderscores
+
 Response_upperstart – makes the first letter of an output sentence capitalized
+
 Response_removespacebeforecomma – does the obvious
+
 Response_alterunderscores - converts single underscores to spaces and double
 underscores to singles (eg for a web url)
-$cs_crashmsg – in server mode, what to say if the server crashes and we return a message
+
+`$cs_crashmsg` – in server mode, what to say if the server crashes and we return a message
 to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._
-$cs_abstract – used with :abstract
-$cs_looplimit – loop() defaults to 1000 iterations before stopping. You can change this
+
+`$cs_abstract` – used with :abstract
+
+`$cs_looplimit` – loop() defaults to 1000 iterations before stopping. You can change this
 default with this.
 
-$cs_control_pre – name of topic to run in gambit mode on pre-pass, set by author. Runs
+`$cs_control_pre` – name of topic to run in gambit mode on pre-pass, set by author. Runs
 before any sentences of the input volley are analyzed. Good for setting up initial values.
-$cs_prepass – name of a topic to run in responder mode on main volleys, which runs
-before $cs_control_main and after all of the above and pos-parsing is done. Used to
-amend preparation data coming from the engine. You can use it to add your own spin on
-input processing before going to your main control. I use it to, for example, label
-commands as questions, standardize sentence construction (like “if you see me what will
-you think” to “assume you see me. What will you think?”).
-$cs_control_main – name of topic to run in responder mode on main volleys, set by
+
+`$cs_prepass` – name of a topic to run in responder mode on main volleys, which runs
+before `$cs_control_main` and after all of the above and pos-parsing is done. Used to
+amend preparation data coming from the engine. 
+You can use it to add your own spin on input processing before going to your main control. 
+I use it to, for example, label commands as questions, standardize sentence construction 
+(like _if you see me what will you think to assume you see me. What will you think?_).
+
+`$cs_control_main` – name of topic to run in responder mode on main volleys, set by
 author.
-$cs_control_post – name of topic to run in gambit mode on post-pass, set by author
-$botprompt – message for console window to label bot output
-$userprompt – message for console window to label user input line
-$cs_crashmsg – message to use if a server crash occurs.
-$cs_token- bits controlling how the tokenizer works. By default when null, you get all
+
+`$cs_control_post` – name of topic to run in gambit mode on post-pass, set by author
+
+`$botprompt` – message for console window to label bot output
+
+`$userprompt` – message for console window to label user input line
+
+`$cs_crashmsg` – message to use if a server crash occurs.
+
+`$cs_token` - bits controlling how the tokenizer works. By default when null, you get all
 bits assumed on. The possible values are in src/dictionarySystem.h (hunt for $token) and
 you put a # in front of them to generate that named numeric constant.
-$cs_abstract – topic used by :abstract to display facts if you want them displayed
-$cs_prepass – topic used between parsing and running user control script. Useful to
+
+`$cs_abstract` – topic used by :abstract to display facts if you want them displayed
+
+`$cs_prepass` – topic used between parsing and running user control script. Useful to
 supplement parsing, setting the question value, and revising input idioms.
-$cs_wildcardseparator – when a match variable covers multiple words, what should
+
+`$cs_wildcardseparator` – when a match variable covers multiple words, what should
 separate them- by default it's a space, but underscore is handy too. Initial system
 character is space, creating fidelity with what was typed. Useful if _ can be recognized in
 input (web addresses). Changing to _ is consistent with multi-word representation and
 keyword recognition for concepts. CS automatically converts _ to space on output, so
 internal use of _ is normal.
-$cs_userfactlimit – how many of the most recent permanent facts created by the script in
+
+`$cs_userfactlimit` – how many of the most recent permanent facts created by the script in
 response to user inputs are kept for each user. Std default is 100.
-$cs_response – controls some characteristics of how responses are formatted
-$cs_randIndex – the random seed for this volley
-$cs_utcoffset – if defined, then %time returns current utc time + timezone offset
+
+`$cs_response` – controls some characteristics of how responses are formatted
+
+`$cs_randIndex` – the random seed for this volley
+
+`$cs_utcoffset` – if defined, then %time returns current utc time + timezone offset
 
 The following variables are generated by the system on behalf of scripts.
 
-$$db_error – error message from a postgres failure
-$$findtext_start - ^findtext return the end normally, this is where it puts the start.
-$$tcpopen_error – error message from a tcpopen error
-$$document – name of the document being read in document mode
-$cs_randindex – current value of the random generator value
-$bot – name of the bot currently in use
-$login – login name of the user
+`$$db_error` – error message from a postgres failure
+
+`$$findtext_start` - ^findtext return the end normally, this is where it puts the start.
+
+`$$tcpopen_error` – error message from a tcpopen error
+
+`$$document` – name of the document being read in document mode
+
+`$cs_randindex` – current value of the random generator value
+
+`$bot` – name of the bot currently in use
+
+`$login` – login name of the user
