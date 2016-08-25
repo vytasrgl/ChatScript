@@ -64,7 +64,7 @@ The features of CS that support debugging, including tracing.
 Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely
 never be complete because you will want to keep improving it.
 
-* ## ChatScript Overview Input to Output
+* ## [ChatScript Overview Input to Output](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Overview-of-Input-to-Output.md)
 An overview of the process of converting input to output. Not necessary except for
 really advanced users wanting the appropriate mental model.
 
