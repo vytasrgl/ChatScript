@@ -24,6 +24,8 @@ concepts. A must starting place.
 * [ChatScript Common Beginner Mistakes](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Common-Beginner-Mistakes.md)
 <br>Here are a collection of common beginner mistakes.
 
+* Installing and Updating ChatScript
+<br>
 
 
 # Predefined Bots
@@ -76,8 +78,6 @@ really advanced users wanting the appropriate mental model.
 <br>A terse but detailed look at everything involving rule patterns.
 
 * ChatScript System Variables and Engine-defined Concepts
-<br>
-* ## Installing and Updating ChatScript
 <br>
 
 # Specialized ChatScript
