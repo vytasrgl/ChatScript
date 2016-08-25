@@ -123,35 +123,36 @@ How to communicate with external system like HTTP or the local machine.
 Brief old interesting scripting tips
 
 
-* ## Papers in order
- * ### Paper- ChatBots 102
+# Papers in order
+
+* ## Paper- ChatBots 102
 My first paper, looking at the flaws of AIML and why I felt I could do better
 (before Suzette won anything).
 
- * ### Paper- Pattern Matching for Natural Language
+* ## Paper- Pattern Matching for Natural Language
 Compares CS, AIML, and Facade
 
- * ### Paper- Suzette The Most Human Computer
+* ## Paper- Suzette The Most Human Computer
 How our first chatbot came about, won the Loebner's, and differed from AIML.
 
- * ### Paper- Speaker for the Dead
+* ## Paper- Speaker for the Dead
 Applying chatbots to manage people's accumulations of papers, photos, etc.
 
- * ### Paper – Google Talk
+* ## Paper – Google Talk
 A talk I gave at Google about my history, CS, and writing code to act out stories
 
- * ### Paper- Writing a Chatbot
+* ## Paper- Writing a Chatbot
 Useful discussion on how to think about writing a chatbot
 
- * ### Paper- ARBOR_ MakingItReal
+* ## Paper- ARBOR_ MakingItReal
 Useful discussion on how to think about writing a chatbot
 
- * ### Paper- Winning 15 Minute Conversation
+* ## Paper- Winning 15 Minute Conversation
 The conversation (1 of 2) that had our chatbot easily win best 15 minute conversation at
 ChatBot Battles 2012.
 
- * ### Paper- Winning the Loebner's
+* ## Paper- Winning the Loebner's
 Realities of the Loebner competition and additional ideas of english applied to chatbots
 
- * ### ChatScript Training
+* ## ChatScript Training
 A slide series on how CS works and how the engine works.
