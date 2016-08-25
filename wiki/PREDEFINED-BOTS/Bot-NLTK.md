@@ -1,7 +1,10 @@
 # Bot NLTK - Natural Language analysis bot
 
-ChatScript comes with a bot used to analyze documents called NLTK. You build it using `:build nltk`. It's
-still in its infancy.
+ChatScript comes with a bot used to analyze documents called NLTK. You build it using 
+````
+:build nltk
+``` 
+It's still in its infancy.
 
 You start by selecting what you want to do:
 `tally rootpos` – read documents and list all words in it and their frequencies by root and part of speech.
