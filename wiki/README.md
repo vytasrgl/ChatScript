@@ -71,9 +71,6 @@ really advanced users wanting the appropriate mental model.
 * ## ChatScript Pattern Redux
 A terse but detailed look at everything involving rule patterns.
 
-* ## ChatScript Training
-A slide series on how CS works and how the engine works.
-
 
 # Specialized ChatScript
 
@@ -148,3 +145,6 @@ ChatBot Battles 2012.
 
  * ### Paper- Winning the Loebner's
 Realities of the Loebner competition and additional ideas of english applied to chatbots
+
+ * ### ChatScript Training
+A slide series on how CS works and how the engine works.
