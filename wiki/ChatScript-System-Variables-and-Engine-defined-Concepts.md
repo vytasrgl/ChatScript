@@ -4,10 +4,10 @@
 > Revision 7/31/2016 cs6.7a
 
 
-* [Engine-defined Concepts]()
-* [System Variables]()
-* [Control over Input]()
-* [Interchange Variables]()
+* [Engine-defined Concepts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
+* [System Variables](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
+* [Control over Input](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#control-over-input)
+* [Interchange Variables](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#interchange-variables)
 
 
 # Engine-defined concepts
@@ -177,7 +177,7 @@ tuesday I will go),
 `~verbal` – a verb phrase.
 
 
-## %System Variables
+# System Variables
 
 The system has some predefined variables which you can generally test and use but not
 normally assign to. These all begin with `%` . Ones that are reasonable to set are written in
