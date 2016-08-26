@@ -3,17 +3,17 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 > Revision 8/13/2016 cs6.8
 
-* [Topic Functions]()
-* [Marking Functions]()
-* [Input Functions]()
-* [Number Functions]()
-* [Output Functions]()
-* [Control Flow Functions]()
-* [External Access Functions]()
-* [JSON Functions]()
-* [Word Manipulation Functions]()
-* [Multipurpose Functions]()
-* [Facts Functions]()
+* [Topic Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#topic-functions)
+* [Marking Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#marking-functions)
+* [Input Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#input-functions)
+* [Number Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#number-functions)
+* [Output Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#output-functions)
+* [Control Flow Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#control-flow-functions)
+* [External Access Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#external-access-functions)
+* [JSON Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#json-functions)
+* [Word Manipulation Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#word-manipulation-functions)
+* [Multipurpose Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#multipurpose-functions)
+* [Facts Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#fact-functions)
 
 System functions are predefined and can be intermixed with direct output. Generally
 they are used from the output side of a rule, but in many cases nothing prevents you from
@@ -546,7 +546,7 @@ Flags include:
 
 | Flag                            | meaning                         |
 | ------------------------------  | ------------------------------- |
-| `OUTPUT_EVALCODE`               | is automatic, so not particularly useful. Useful ones would control how print decides to space things | 
+| OUTPUT_EVALCODE                 | is automatic, so not particularly useful. Useful ones would control how print decides to space things | 
 | OUTPUT_RAW                      |  does not attempt to interpret ( or { or [ or " |
 | OUTPUT_RETURNVALUE_ONLY         | does not go to the user, is merely return as an answer. Print normally stores directly into the response system, meaning failing the rule later has no effect. Print normally does not return a value so you can't store it into a variable. And print has a number of flags that can affect its formatting that dont exist with normal output. This flag converts print into an ordinary function returning a value, reversing all those differences |
 | OUTPUT_NOCOMMANUMBER            | dont add commas to numbers |
@@ -563,7 +563,7 @@ These flags apply to output as it is sent to the user:
 | RESPONSE_ALTERUNDERSCORES       | convert underscores to spaces |
 | RESPONSE_REMOVETILDE            | remove leading ~ on class names |
 
-### `^preprint (stream )
+### `^preprint`( stream )
 The stream will be put into output, but it will be placed before all
 previously generated outputs instead of after, which is what usually happens. The output
 is safe in that even if the rule later fails, this output will go out. Before the output you
@@ -1282,11 +1282,11 @@ of bits.
 Only valid during current volley. You can associate a 32-bit
 number with a word by `^tally(test 35)` and retrieve it via `^tally(test)`.
 
-### `^rhyme ( word )
+### `^rhyme`( word )
 Finds a word in the dictionary which is the same except for the first
 letter (a cheap rhyme).
 
-### `^substitute( mode find oldtext newtext)
+### `^substitute`( mode find oldtext newtext)
 Outputs the result of substitution. Mode can be character or word or insensitive. 
 In the text given by find, the system will search for oldtext and replace it with newtext, for all occurrences. This is non-recursive, so it does not also substitute within replaced text. Since find is a single argument, you pass a phrase or sentence by using underscores instead of spaces. 
 `^substitute` will convert all underscores to spaces before beginning substitution and will output the spaced results. 
