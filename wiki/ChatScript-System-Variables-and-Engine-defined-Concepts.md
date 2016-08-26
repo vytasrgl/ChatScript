@@ -407,8 +407,7 @@ replace: xxx yyyyy
 ```
 which defines a substitution just like a livedata substitution file. It actually creates a
 substitution file called `private0.txt` or `private1.txt` in your TOPIC folder. 
-Even then, those substitutions will not be enacted unless you explicitly add to the $cs_token value
-#DO_PRIVATE, eg
+Even then, those substitutions will not be enacted unless you explicitly add to the $cs_token value #DO_PRIVATE, eg
 ```
 $cs_token = #DO_INTERJECTION_SPLITTING | 
             #DO_SUBSTITUTE_SYSTEM |
