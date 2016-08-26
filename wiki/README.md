@@ -51,8 +51,8 @@ NLTK means nothing to you.
 * [ChatScript Advanced User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md)
 <br>Once you've master basic CS, this is the place to go next.
 
-* ChatScript System Functions Manual
-<br>A listing of all the functions of CS that do not involve facts.
+* [ChatScript System Functions Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md)
+<br>A listing of all the functions of CS.
 
 * [ChatScript Fact Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md)
 <br>A discussion of how to manipulate facts in CS.
