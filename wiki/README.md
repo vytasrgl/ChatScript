@@ -78,7 +78,7 @@ really advanced users wanting the appropriate mental model.
 <br>
 
 * [Installing and Updating ChatScript](https://github.com/solyaris/ChatScript/blob/master/wiki/Installing-and-Updating-ChatScript.md)
-<br>
+<br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
 
 
 # Specialized ChatScript
