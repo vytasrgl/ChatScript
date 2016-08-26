@@ -679,8 +679,7 @@ The failure codes are:
 | code     | description |
 | -------- | ------------| 
 | RULE     | stops the current rule and cancels pending output |
-| LOOP     | stops a containing loop and fails the rule calling it. If you have no
-containing loop, this can crawl up through all enclosing topics and make no output |
+| LOOP     | stops a containing loop and fails the rule calling it. If you have no containing loop, this can crawl up through all enclosing topics and make no output |
 | TOPIC    | stops not only the current rule also the current topic and cancels pending output. Rule processing stops for the topic, but as it exits, it passes up to the caller a downgraded fail(rule), so the caller can just continue executing other rules |
 | SENTENCE | stops the current rule, the current topic, and the current sentence and cancels pending output |
 | INPUT    | stops processing anything more from this user's volley. Does not cancel pending output. It's the same as END(INPUT) |
