@@ -535,7 +535,7 @@ Given a word, this displays the dictionary entry for it as well some data up it'
 The word is case sensitive and if you want to check out a composite word, you need to
 use underscores instead of blanks. So `:word TV_star`.
 
-### `:userfacts
+### `:userfacts`
 This prints out the current facts stored with the user.
 
 ### `:allfacts`
