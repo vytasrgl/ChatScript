@@ -18,6 +18,7 @@
 System functions are predefined and can be intermixed with direct output. Generally
 they are used from the output side of a rule, but in many cases nothing prevents you from
 invoking them from inside a pattern.
+
 You can write them with or without a `^` in front of their name. With is clearer, but you
 don’t have to. The only time you must is if the first thing you want to do in a gambit is
 call a function (unlikely).
@@ -34,7 +35,7 @@ t: ^name(xxx )   # explicilty say it is a function
 t: () name(xxx ) # explicitly add an empty pattern
 ```
 
-**Rule Tags**
+## Rule Tags
 
 Some functions out or take "rule tags". All rules have an internal label consisting of
 `~topic.toplevelindex.rejoinderindex`. E.g.
@@ -96,9 +97,9 @@ Optional second argument, if `any` will return normally if topic has any gambits
 will failrule if topic has no gambits (a reactor topic).
 
 ### `^keep`()
-do not erase this top level rule when it executes its output part. (you could
-declare a topic to be this, although it wouldn't affect gambits). Doing `keep()` on a gambit
-is quite risky since gambits after it may not ever fire.
+do not erase this top level rule when it executes its output part (you could
+declare a topic to be this, although it wouldn't affect gambits). 
+Doing `keep()` on a gambit is quite risky since gambits after it may not ever fire.
 
 ### `^lastused`( topic what )
 given a topic name, get the volley of the last what, where `what`
@@ -110,6 +111,7 @@ Given what of `GAMBIT` or `RESPONDER` or `REJOINDER` or `RULE` and a rule label 
 `REJOINDER` will fail if it reaches the next top level rule. If `label` is `~`, it will use the
 last call's answer as the starting point, enabling you to walk rules in succession. There is
 also `^next(FACT @xxx)` – see fact manual. 
+
 For `^next(input)` the system will read the next sentence and prep the system with it. 
 This means that all patterns and code executing thereafter will be in the context of the next input sentence. 
 That sentence is now used up, and will not be seen next when the current revised sentence finishes. 
@@ -175,31 +177,37 @@ will be a keyword of some topic to pick.
 If item is `RULE` reexecute the current rule. It will automatically try to
 match one word later than its first match previously. 
 If item is `TOPIC` it will try the topic over again. 
-If item is `SENTENCE` it will retry doing the sentence again. To prevent
-infinite loops, it will not perform more than 5 retries during a volley.
+If item is `SENTENCE` it will retry doing the sentence again. 
+
+To prevent infinite loops, it will not perform more than 5 retries during a volley.
 `SENTENCE` is particularly useful with changing the tokenflags to get input processing
 done differently. If item is INPUT it will retry all input again.
 
-`^retry`( TOPRULE ) Will return back to the top level rule 
-(not of the topic but of a rejoinder set) and retry. 
+`^retry(TOPRULE)` Will return back to the top level rule (not of the topic but of a rejoinder set) and retry. 
 It's the same if the current rule was a top level rule, but if the current rule is
 from `^refine()`, then it returns to the outermost rule to restart. If the current rule is not
-from `^refine()`, then TOPRULE means the lexically placed toprule above the current rule
+from `^refine()`, then `TOPRULE` means the lexically placed toprule above the current rule
 and a `^reuse()` will be performed to go to it.
+
 
 ### `^reuse`( rule label optional-enable optional-FAIL )
 Uses the output script of another rule. 
 The label can either be a simple rule label within the current topic, or it can be a
-dotted pair of a topic name and a label within that topic or it can be a rule tag. ^reuse
-stops at the first correctly labeled rule it can find and issues a RULE fail if it cannot find
+dotted pair of a topic name and a label within that topic or it can be a rule tag. 
+
+`^reuse` stops at the first correctly labeled rule it can find and issues a RULE fail if it cannot find
 one. Assuming nothing fails, it will return 0 regardless of whether or not any output was
 generated.
 When it executes the output of the other rule, that rule is credited with matching and is
 disabled if it is allowed. If not allowed, the calling rule will be disabled if it can be.
 ```
 t: NAME () My name is Bob.
-?: ( << what you name >>) ^reuse(NAME)
-?: ( << what you girlfriend name >>) ^reuse(~SARAH.NAME)
+
+?: ( << what you name >>) 
+    ^reuse(NAME)
+
+?: ( << what you girlfriend name >>) 
+    ^reuse(~SARAH.NAME)
 ```
 Normally reuse will use the output of a rule whether or not the rule has been disabled.
 But, if you supply a 2nd argument (whatever it is), then it will ignore disabled ones and
@@ -212,11 +220,11 @@ with rejoinders, the most efficient way to do that is with a rule whose pattern 
 match. E.g. like this:
 ```
 s: COMMON (?) some answer
-a: () some rejoinder...
+    a: () some rejoinder...
 ```
 
-You make `^reuses` go to COMMON (or whatever you name it) or even
-`^SETREJOINDER` on it. The rule itself can never trigger because it only considers its
+You make `^reuses` go to COMMON (or whatever you name it) or even `^setrejoinder` on it. 
+The rule itself can never trigger because it only considers its
 pattern when the input is a statement, but the pattern says the input must be a question. So
 this rule never matches on its own.
 
@@ -228,6 +236,7 @@ the facts manual to learn about them.
 This is like `^refine`, except instead of only executing the first rejoinder that
 matches, it executes all matching rejoinders in order. If one of the rule outputs fails, it
 stops by failing the calling rule. 
+
 Normally `^sequence` uses the rejoinders of the rule that it
 is executing from, but you can direct it to ^sequence the rejoinders of any rule.
 
@@ -236,8 +245,9 @@ is executing from, but you can direct it to ^sequence the rejoinders of any rule
 Force the output rejoinder to be set to the given tag or rule
 label. It's as though that rule had just executed, so the rules beneath it will be the
 rejoinders to try. 
-If kind is `input` then the input rejoinder is set. 
-If kind is `output` or is omitted, then it sets the output rejoinder.
+If `kind` is `input` then the input rejoinder is set. 
+If `kind` is `output` or is omitted, then it sets the output rejoinder.
+
 `^setrejoinder` does not jump anywhere. It establishes the context for `^rejoinder`. 
 
 When you do:
@@ -276,8 +286,7 @@ The bits are mapped in dictionary_system.h as `TOPIC_*`.
 ### `^mark`( word location )
 Marking and unmarking words and concepts is fundamental to
 the pattern matching mechanism, so the system provides both an automatic marking
-mechanism and manual override abilities. 
-You can manually mark or unmark something.
+mechanism and manual override abilities. You can manually mark or unmark something.
 
 There are two mechanisms supported using `^mark` and `^unmark`: specific and generic.
 
@@ -291,9 +300,10 @@ and matching proceeds as if they do not exist.
 `Specific`: effects are permanent for the volley and cross over to other rules. In
 documentation below, use of `_0` symbolizes use of any match variable.
 
+
 ### `^mark`( `~meat` `_0` )
-This marks ~meat as though it has been seen at whereever sentence
-location _0 is bound to (start and end)
+This marks `~meat` as though it has been seen at whereever sentence
+location `_0` is bound to (start and end)
 
 ### `^mark` ( `~meat` `n` )
 Assuming `n` is within 1 and sentence word limit, this marks meat at nth word location. 
@@ -303,6 +313,7 @@ If `n` was gotten from ^position of a match variable, it is the range of that ma
 This marks the word tomboy as visible at the location designated,
 even though this word is not actually in the sentence. While patterns will react to its
 presence, it will not show up in any memorizations using `_`. 
+
 While usually you mark a concept, you can also mark a word (though you should generally use the canonical form
 of the word to trigger all its normal concept hierarchy markings as well). 
 Although `^conceptlist` (see Facts manual) normally only reports concepts marked at a word, if you
@@ -331,9 +342,9 @@ All references to word (or `~concept` if you named one) are removed from anywher
 `Generic:` effects are transient if done inside a pattern, last the volley if done in output.
 When you are trying to analyze pieces of a sentence, you may want to have a pattern that
 finds a kind of word, notes information, then hides that kind of word and reanalyzes the
-input again looking for another of that ilk. Being able to temporarily hide marks can be
-quite useful, and this means typically you use `^unmark` of some flavor to hide words, and
-then `^mark` later to reenable access to those hidden words.
+input again looking for another of that ilk. 
+Being able to temporarily hide marks can be quite useful, and this means typically you use `^unmark` 
+of some flavor to hide words, and then `^mark` later to reenable access to those hidden words.
 
 ### `^unmark`( `*` `_0` ) 
 Aays turn off ALL matches on this location temporarily. The word becomes invisible. 
@@ -354,9 +365,9 @@ turned off when the pattern match finishes (so you don't ruin later rules), wher
 you do it from output, then the change persists for the rest of the volley.
 Furthermore it is handy to flip specific collections of generic unmarks on an off.
 
-
 `^mark()` memorizes the set of all * unmarks (generic unmarks) and then turns them off
 so normal matching will occur.
+
 `^unmark()` will restore the set of generic unmarks that were flipped off using `^mark()`.
 
 ### `^position`( how matchvariable )
@@ -373,13 +384,13 @@ word is not currently marked from the current sentence.
 Sets the match location data of a match var to the number values given.
 
 ### `^setcanon`( wordindex value )
-Changes the canonical value for this word
+Changes the canonical value for this word.
 
 ### `^settag`( wordindex value )
-Changes the pos tag for the word
+Changes the pos tag for the word.
 
 ### `^setoriginal`( wordindex value )
-Changes the original value for this word
+Changes the original value for this word.
 
 ### `^setrole`( wordindex value )
 Changes the parse role for this word. These are used in conjunction with `$cs_externaltag` to replace the CS inbuilt English postagger and parser with one from outside. See end of ChatScript PosParser manual.
@@ -391,7 +402,7 @@ saved, you can go on to a new sentence (either via `^next(INPUT)` or `^analyze()
 whatever), and then rapidly flip back to some previous sentence analysis. Label is a
 value used to label the saved analysis. This only works during the current volley.
 
-Cannot be used in document mode. `^SaveSentence` returns the number of 4-byte words
+Cannot be used in document mode. `^savesentence` returns the number of 4-byte words
 the save took.
 
 
@@ -422,7 +433,8 @@ from `^input` and not from the user by `%revisedInput` (bool) being true (1).
 ### `^original`( `_n` )
 The argument is the name of a match variable. 
 Whatever it has memorized will be used to locate the corresponding series of words in the original raw
-input from the user that led to this match. Eg, if the input was:
+input from the user that led to this match. 
+Eg, if the input was:
 ```
 _I lick ice crem_
 ```
@@ -432,6 +444,7 @@ _I lick ice_create_
 ```
 and you'd memorized the food onto a match variable, then you could do
 `^original(_0)` and get back _ice crem_.
+
 
 ### `^position`( which `_var` )
 If which is `start` this returns the starting index of the word matched in the named `_var`. 
@@ -443,10 +456,12 @@ _it was the fox_ .
 ### `^removetokenflags`( value )
 Rremoves these flags from the tokenflags returned from the preprocessing stage.
 
+
 ### `^settokenflags`( value )
 Adds these flags to the tokenflags return from the preprocessing
 stage. Particularly useful for setting the `#QUESTIONMARK` flag indicating the input
-was perceived to be a question. For example, I treat _tell me about cars_ sentences as
+was perceived to be a question. 
+For example, I treat _tell me about cars_ sentences as
 questions by marking them as such from script (equivalent to _what do you know about
 cars?_.
 
@@ -547,21 +562,21 @@ Flags include:
 | Flag                            | meaning                         |
 | ------------------------------  | ------------------------------- |
 | OUTPUT_EVALCODE                 | is automatic, so not particularly useful. Useful ones would control how print decides to space things | 
-| OUTPUT_RAW                      |  does not attempt to interpret ( or { or [ or " |
+| OUTPUT_RAW                      | does not attempt to interpret ( or { or [ or " |
 | OUTPUT_RETURNVALUE_ONLY         | does not go to the user, is merely return as an answer. Print normally stores directly into the response system, meaning failing the rule later has no effect. Print normally does not return a value so you can't store it into a variable. And print has a number of flags that can affect its formatting that dont exist with normal output. This flag converts print into an ordinary function returning a value, reversing all those differences |
 | OUTPUT_NOCOMMANUMBER            | dont add commas to numbers |
 | OUTPUT_NOQUOTES                 | remove quotes from strings |
-| OUTPUT_NOUNDERSCORE             | convert underscores to blanks
+| OUTPUT_NOUNDERSCORE             | convert underscores to blanks |
 
 These flags apply to output as it is sent to the user:
 
-| Flag                            | meaning                         |
-| ------------------------------  | ------------------------------- |
-| RESPONSE_NONE                   | turn off all default response conversions |
+| Flag                            | meaning                                       |
+| ------------------------------  | --------------------------------------------- |
+| RESPONSE_NONE                   | turn off all default response conversions     |
 | RESPONSE_UPPERSTART             | force 1st character of output to be uppercase |
-| RESPONSE_REMOVESPACEBEFORECOMMA | as the name says |
-| RESPONSE_ALTERUNDERSCORES       | convert underscores to spaces |
-| RESPONSE_REMOVETILDE            | remove leading ~ on class names |
+| RESPONSE_REMOVESPACEBEFORECOMMA | as the name says                              |
+| RESPONSE_ALTERUNDERSCORES       | convert underscores to spaces                 |
+| RESPONSE_REMOVETILDE            | remove leading ~ on class names               |
 
 ### `^preprint`( stream )
 The stream will be put into output, but it will be placed before all
@@ -624,8 +639,11 @@ data after output, e.g., when running the document reader.
 Retrieves the nth argument of the calling outputmacro (1-based).
 
 ### `^argument`( n `^fn` )
-Looks backward in the callstack for the named outputmacro, and if found returns the nth argument passed to it. Failure will be reported for n out of range or `^fn` not in the call path. 
-This is an alterative access to function variable arguments, useful in a loop instead of having to access by variable name. If n is 0, the system merely tests whether the caller exists and fails if the caller is not in the path of this call.
+Looks backward in the callstack for the named outputmacro, and if found returns the nth argument passed to it. 
+Failure will be reported for n out of range or `^fn` not in the call path. 
+This is an alterative access to function variable arguments, 
+useful in a loop instead of having to access by variable name. 
+If `n` is `0`, the system merely tests whether the caller exists and fails if the caller is not in the path of this call.
 
 ### `^command`( args )
 Execute this stream of arguments through the `:` command processor.
@@ -656,8 +674,7 @@ other codes propagate past the loop. The codes are:
 To evaluate a stream as though it were output (like to assign a variable). 
 Can be used to execute `:`commands from script as well. 
 Flags are optional and match the flag capabilities of `^print`. 
-One common flag would be
-`OUTPUT_NOQUOTES` if you wanted to string enclosing "" from a value. E.g.,
+One common flag would be `OUTPUT_NOQUOTES` if you wanted to string enclosing "" from a value. E.g.,
 ```
 $$tmp = ^eval(OUTPUT_NOQUOTES ^arg1)
 ```
@@ -688,17 +705,18 @@ Output that has been recorded via `^print`, `^preprint`, etc is never canceled. 
 output.
 
 ### `^load`( name ) 
-Normally CS takes all the data you have compiled as `:build 0` and `:build`
-whatever as layers 0 and 1, and loads them when CS starts up. They are then permanently
-resident. However, you can also compile files named `filesxxx2.txt` which will NOT be
-loaded automatically. 
+Normally CS takes all the data you have compiled as `:build 0` and `:build` whatever as layers 0 and 1, 
+and loads them when CS starts up. They are then permanently resident. 
+However, you can also compile files named `filesxxx2.txt` which will NOT be loaded automatically. 
+
 You can write script that calls `^load`, naming the `xxx` part and they
 will be dynamically loaded, for that user only, and stay loaded for that user across all
 volleys until you call `^load` again. 
-Calling load again with a different name will load that
-new name. Calling `^load(null)` will merely unload the dynamic layer previously loaded.
+Calling load again with a different name will load that new name. 
+Calling `^load(null)` will merely unload the dynamic layer previously loaded.
 
 **Warning** 
+
 It's erroneous (you get whatever happens to you), if you call `^load` from within
 topics you have loaded via `^load`.
 
@@ -720,7 +738,8 @@ if ($$newtype == $$type AND match($$newrule)) # we would match this rule
 
 `^match` can also take a rule tag for what, in which case it uses the pattern of the rule given
 it. `^match` will normally take your pattern and compile it with the script compiler during
-execution. If you have discarded the script compiler in your build, it will run your pattern
+execution. 
+If you have discarded the script compiler in your build, it will run your pattern
 directly and pray. In that case every token should be separated by a space: eg not this:
 ```
 [my you]
@@ -746,7 +765,7 @@ match. The indices are in order, so you can know the range of the match or the s
 word indices that were seen. Currently matches only include the words/concepts that
 were matched, not things like `(sag* )` where the word is not fully named.
 
-### `^nofail`( code … script …)
+### `^nofail`( code … script … )
 The antithesis of fail(). It takes a code and and number of
 script elements, executes the script and removes all failure codes through the listed code.
 
@@ -757,20 +776,18 @@ responder.
 
 The nofail codes are:
 
-
-RULE –a rule failure within the script does not propagate outside of nofail.
-LOOP –a loop failure or end within the script does not propagate outside of
-nofail.
-TOPIC- a topic or rule failure within the script does not propagate outside of
-nofail.
-SENTENCE – a topic or rule or sentence failure within the script does not
-propogate outside of nofail.
-INPUT - no failure propagates outside of the script
+| code      | description                                                           |
+| --------- | --------------------------------------------------------------------  |
+|RULE       | a rule failure within the script does not propagate outside of nofail |
+|LOOP       | a loop failure or end within the script does not propagate outside of nofail |
+|TOPIC      | a topic or rule failure within the script does not propagate outside of nofail |
+|SENTENCE   | a topic or rule or sentence failure within the script does not propogate outside of nofail |
+|INPUT      | no failure propagates outside of the script |
 
 
 ### `notnull`( stream )
-Execute the stream and if it returns no text value whatsoever, fail this
-code. The text value is not used anywhere, just tested for existence. Useful in IF
+Execute the stream and if it returns no text value whatsoever, fail this code. 
+The text value is not used anywhere, just tested for existence. Useful in IF
 conditions.
 
 ### `^norejoinder`()
@@ -778,8 +795,7 @@ Prevents this rule from assigning a rejoinder.
 
 ### `^notrace`( ... )
 Suppresses normal tracing if if :trace all is on, for the duration of
-evaluation of the contents of the parens. It does not block explicit traces of functions or
-topics.
+evaluation of the contents of the parens. It does not block explicit traces of functions or topics.
 
 ### `^return`( ... )
 Evaluates it data and returns any output from the most recent calling
@@ -815,9 +831,11 @@ but for `^function` calling `^return(null)`
 if (^function()) { # like a $var, this fails if the function returns null}
 ```
 
+
 ### `^addcontext`( topic label )
 Sets a topic and context name for use by `^incontext`. 
-The label doesn't have to corrrespond to any real label. The topic can be a topic name or `~` meaning current topic.
+The label doesn't have to corrrespond to any real label. 
+The topic can be a topic name or `~` meaning current topic.
 
 ### `^clearcontext`()
 Erases all context data (see `^addcontext`).
@@ -835,22 +853,25 @@ rule. This has a 5 volley context and are used in normal rule patterns.
 u: (^incontext(PLAYTENNIS) why) because it was fun.
 ````
 
+
 # External Access Functions
 
 ### `^system`( any number of arguments )
-The arguments, separated by spaces, are passed as a text string to the operating system for execution as a command. The function always succeeds, returning the return code of the call. You can transfer data back and forth via
+The arguments, separated by spaces, are passed as a text string to the operating system for execution as a command. 
+The function always succeeds, returning the return code of the call. You can transfer data back and forth via
 files by using `^import` and `^export` of facts.
 
 ### `^popen( commandstring `'function`)
 The command string is a string to pass the os shell
-to execute. That will return output strings (some number of them) which will have any \r
-or \n changed to blanks and then the string stripped of leading and trailing blanks. The
+to execute. That will return output strings (some number of them) which will have any `\r`
+or `\n` changed to blanks and then the string stripped of leading and trailing blanks. The
 string is then wrapped in double quotes so it looks like a standard ChatScript single
 argument string, and sent to the declared function, which must be an output macro or
-system function name, preceded by a quote. The function can do whatever it wants. Any
-output it prints to the output buffer will be concatenated together to be the output from
-ChatScript. If you need a doublequote in the command string, use a backslash in front of
-each one. They will be removed prior to sending the command. E.g.,
+system function name, preceded by a quote. 
+The function can do whatever it wants. Any output it prints to the output buffer will be concatenated together 
+to be the output from ChatScript. If you need a doublequote in the command string, use a backslash in front of
+each one. 
+They will be removed prior to sending the command. E.g.,
 ```
 outputmacro: ^myfunc(^arg)
 ^arg \n
@@ -874,41 +895,42 @@ Directory of C:ChatScript
 24 Dir(s) 566,354,685,952 bytes free
 ```
 
-'Function can be null if you are not needing to look at output.
+`'Function` can be null if you are not needing to look at output.
+
 
 ### `^tcpopen`( kind url data 'function )
-Analogous in spirit to popen. 
-You name the `kind` of service (`POST`, `GET`), 
-the `url` (not including http://) but including any subdirectory, 
-the text string to send as data, and the quoted function in ChatScript you want to receive the
-answer. 
+Analogous in spirit to popen.  You name the `kind` of service (`POST`, `GET`), 
+the `url` (not including `http://`) but including any subdirectory, 
+the text string to send as data, and the quoted function in ChatScript you want to receive the answer. 
 The answer will be read as strings of text (newlines separate and are stripped off
 with carriage returns) and each string is passed in turn to your function which takes a
 single argument (that text). 
+
 `:trace TRACE_TCP` can be enabled to log what happens during the call.
 
 Likely you will prefer `^jsonopen` which can deal with more complex web
 communication scenarios and returns structured data so you don't have to write script
 yourself to parse the text.
 
-`'Function` can be `null` if you are not needing to look at output. 
+`'function` can be `null` if you are not needing to look at output. 
 The system will set `$$tcpopen_error` with error information if this function fails.
 When you look at a webpage you often see it's url looking like this:
 ```
 http://xml.weather.com/weather/local/4f33?cc=*&unit ="+vunit+"&dayf=7"
 ```
 There are three components to it. 
+
 The host: `xml.weather.com`. 
 
 The service or directory: `/weather/local/4f33`. 
 
-The arguments: everything AFTER the `?`. The arguments are URLencoded,
-so spaces have been replaced by `+`, special characters will be converted to `%xx`
-hex numbers. 
+The arguments: everything AFTER the `?`. The arguments are URLencoded, so spaces have been replaced by `+`, 
+special characters will be converted to `%xx` hex numbers. 
 If there are multiple values, they will be separated by `&` and the left side of
 an `=` is the argument name and the right side is the value. 
-When you call ^TCPOPEN, normally you provide the host and service as a single argument (everything to the left
-of ?) and the data as another argument (everything to the right of ?).
+
+When you call `^tcpopen`, normally you provide the host and service as a single argument (everything to the left
+of `?`) and the data as another argument (everything to the right of `?`).
 
 Since ChatScript URL encodes, you don't. If you don't know the unencoded form of the
 data or you don't think CS will get it right, you can provide URL-encoded data yourself,
@@ -918,7 +940,9 @@ supplying url-encoded data so CS should not do anything to your arguments.
 Below is sample code to find current conditions and temperature in san francisco if you
 have an api key to the service. It calls the service, gets back all the JSON formatted data
 from the request, and line by line passes it to `^myfunc`. 
-This, in turn, calls a topic to hunt selectively for fragments and save them, and when all the fragments we want have been found, `^myfunc` outputs a message and stops further processing by calling `^END(RULE)`.
+This, in turn, calls a topic to hunt selectively for fragments and save them, 
+and when all the fragments we want have been found, 
+`^myfunc` outputs a message and stops further processing by calling `^END(RULE)`.
 
 Note that in this example there is no data to pass, everything is in the service named, so
 the data value is "".
@@ -1010,10 +1034,12 @@ If `set` is null, then facts are created but not stored into any fact-set.
 
 ## Debugging Function `^debug`()
 As a last ditch, you can add this function call into a pattern or the output and it will call
-DebugCode in functionExecute.cpp so you know exactly where you are and can use a
+DebugCode in `functionExecute.cpp` so you know exactly where you are and can use a
 debugger to follow code thereafter if you can debug c code.
 
+
 ## Logging Function `^log`( ... )
+
 This allows you to print something directly to the users log file. You can actually append
 to any file by putting at the front of your output the word FILE in capital letters followed
 by the name of the file. E.g.,
@@ -1046,14 +1072,16 @@ JSON functions and JSON are described more fully in the ChatScript JSON manual.
 Given the name of a json array and a value, it addsthe value to the end of the array.
 
 ### `^jsonarraydelete`( [INDEX, VALUE] arrayname value ) 
-This deletes a single entry from a JSON array. It does not damage the thing deleted, just its member in the array. If the first argument is `INDEX`, then value is a number which is the array index (0 … n-1).
+This deletes a single entry from a JSON array. It does not damage the thing deleted, 
+just its member in the array. If the first argument is `INDEX`, 
+then value is a number which is the array index (0 … n-1).
 If the first argument is `VALUE`, then value is the value to find and remove as the object of the json fact.
 
 ### `^jsoncreate`( type )
 Type is either array or object and a json composite with no content is created and its name returned.
 
 ### `^jsondelete`( factid ) 
-deprecated in favor of `^delete`.
+Deprecated in favor of `^delete`.
 
 ^jsongather`( factset jsonid )
 Takes the facts involved in the json data (as returned by `^jsonparse` or `^jsonopen` and stores them in the named factset. This allows you to remove their transient flags or save them in the users permanent data file.
@@ -1069,8 +1097,7 @@ different naming for user json created later and code can determine the source o
 
 ### `^jsonundecodestring`( string )
 Removes all json escape markers back to normal for possible printout to a user. 
-This translates `\n` to newline, `\r` to carriage return, `\t` to tab, and
-`\"` to a simple quote.
+This translates `\n` to newline, `\r` to carriage return, `\t` to tab, and `\"` to a simple quote.
 
 ### `^jsonobjectinsert`( objectname key value )
 Inserts the key value pair into the object named. 
@@ -1079,20 +1106,23 @@ quoted string. Duplicate keys are allowed but not advised (standards differ on l
 
 ### `^jsonopen`( {UNIQUE} kind url postdata header )
 This function queries a website and returns a JSON datastructure as facts. 
-It uses the standard CURL library, so it's arguments and how to use them are generally defined by CURL documentation and the website you intend to access. See ChatScript JSON manual for details.
+It uses the standard CURL library, so it's arguments and how to use them are generally defined by CURL documentation and the website you intend to access. 
+See ChatScript JSON manual for details.
 
 ### `^jsonprint`( name )
 `name` is the value returned by `^JSONparse`, `^JSONopen`, or some query into such structures. 
 It prints out a tree of elements, one per line, where depth is represented as more deeply indented. 
-Objects are marked with { } as they are in JSON.
-Arrays are marked with `[]`.
+Objects are marked with { } as they are in JSON. Arrays are marked with `[]`.
 
 ### `^jsonwrite`( name )
-`name` is the name from a json fact set (returned by `^JSONparse`, `^JSONopen`, or some query into such structures). Result is the corresponding JSON string (as a website might emit), without any linefeeds.
+`name` is the name from a json fact set (returned by `^JSONparse`, `^JSONopen`, or some query into such structures). 
+Result is the corresponding JSON string (as a website might emit), without any linefeeds.
 
 ### `^jsonparse`( {UNIQUE} string )
-`string` is a json text string (as might be returned from a website) and this parses into facts exactly as ^JSONOPEN would do, just not retrieving the string from the web. It returns the name of the root node. One use for this is to pass JSON data as a quoted string within out-of-band data, and have the system parse that into
-facts you can use.
+`string` is a json text string (as might be returned from a website) and this parses into facts exactly as `^jsonopen` would do, 
+just not retrieving the string from the web. It returns the name of the root node. 
+One use for this is to pass JSON data as a quoted string within out-of-band data, 
+and have the system parse that into facts you can use.
 
 You can add `NOFAIL` before the string argument, to tell it to return null but not fail if a
 dereference path fails cannot be found.
@@ -1101,15 +1131,21 @@ dereference path fails cannot be found.
 ```
 
 ### `^jsonpath`( string id )
-`string` is a description of how to walk JSON. Id is the name of the node you want to start at (typically returned from `^JSONOPEN` or `^JSONPARSE`. Array values are accessed using typical array notation like `ja-1[3]` and object fields using dotted notation like `jo-7.id`. 
+`string` is a description of how to walk JSON. Id is the name of the node you want to start at 
+(typically returned from `^jsonopen` or `^jsonparse`. 
+Array values are accessed using typical array notation like `ja-1[3]` 
+and object fields using dotted notation like `jo-7.id`. 
 
-A simple path access might look like this: `[1].id` which means take the root object passed as id, e.g., ja-1, get the 2nd index value (arrays are 0-based in JSON). 
-That value is expected to be an object, so return the value corresponding to the id field of that object. In more complex situations, the value of id might itself be an object or an array, which you could continue indexing like `[1].id.firstname`.
+A simple path access might look like this: `[1].id` which means take the root object passed as id, e.g., `ja-1`, 
+get the 2nd index value (arrays are 0-based in JSON). 
+That value is expected to be an object, so return the value corresponding to the id field of that object. 
+In more complex situations, the value of id might itself be an object or an array, 
+which you could continue indexing like `[1].id.firstname`.
 
 `^Jsonpath` can also return the actual factid of the match, instead of the object of the fact.
-This would allow you to see the index of a found array element, or the json object/array
-name involved. Or you could use `^revisefact` to change the specific value of that fact (not
-creating a new fact). Just add `*` after your final path, eg
+This would allow you to see the index of a found array element, or the json object/array name involved. 
+Or you could use `^revisefact` to change the specific value of that fact (not creating a new fact). 
+Just add `*` after your final path, eg
 ```
 ^jsonpath(.name* $$obj)
 ^jsonpath(.name[4]* $$obj)
@@ -1118,17 +1154,19 @@ creating a new fact). Just add `*` after your final path, eg
 # Word Manipulation Functions
 
 ### `^burst`( {count once} data-source burst-character-string )
-Takes the data source text and hunts within it for instances of the burst-character-string. If it is being dumped to the output stream then only the first piece is dumped. If it is being assigned to a fact set (like
-`@2`) then a series of transient facts are created for the pieces, with the piece as the subject
-and `^burst` `^burst` as the verb and object. 
-If it is being assigned to a match variable, then pieces are assigned starting at that variable and moving on to successively higher ones.
+Takes the data source text and hunts within it for instances of the burst-character-string. 
+If it is being dumped to the output stream then only the first piece is dumped. 
+If it is being assigned to a fact set (like `@2`) then a series of transient facts are created for the pieces, 
+with the piece as the subject and `^burst` `^burst` as the verb and object. 
+If it is being assigned to a match variable, 
+then pieces are assigned starting at that variable and moving on to successively higher ones.
 
 If burst does not find a separator, it puts out the original value. For assignment to match
 variables, it also clears the next match variable so the end of the list will be a null match
 variable.
 
-If burst_character is omitted, it is presumed to be BOTH `_` (which joins composite
-words and names) and " ", which separates words.
+If burst_character is omitted, it is presumed to be BOTH `_` 
+(which joins composite words and names) and " ", which separates words.
 
 If burst_character is the null string "", it means burst into characters.
 `^burst` takes an optional first parameter `count`, which tells it to return how many items it
@@ -1141,18 +1179,16 @@ and then the leftover rest.
 Looks up the given word and returns all words matching it. Matching
 includes the lower case form of it and any number of uppercase forms of it. E.g, you
 might say `^words(ted)` and get back facts for _ted_, _Ted_, _TED_. 
+
 The answers are a series of facts of the form (someword words words). In addition to case switching, the
 system will automatically switch words with underscores or blanks into words with
 changes in them to the other (since CS stores phrases with underscores). So
 `^words("I love you")` can match phrases already in the dictionary of:
-
 <br>_I_love you_
 <br>_I_love_you_
 <br>_I love you_
 <br>_I LOVE You_
-
-etc. Depending on which words are actually there (for example because they are parts of
-a fact).
+etc. Depending on which words are actually there (for example because they are parts of a fact).
 
 ### `^canon`( word canonicalform )
 Same as `:canon` during a `:build` from a table. Fails during normal execution not involving compiling.
@@ -1179,9 +1215,8 @@ get the 64bit systemflags of a word.
 
 ### `^intersectwords`( arg1 arg2 optional )
 Given two "sentences", finds words in common in both of them. 
-Output facts will go to the set assigned to, or `@0` if not an assignment
-statement. The optional third argument, if it's `canonical`, it will match the canonical
-forms of each word.
+Output facts will go to the set assigned to, or `@0` if not an assignment statement. 
+The optional third argument, if it's `canonical`, it will match the canonical forms of each word.
 
 ### `^join`( any number of arguments )
 Concatenates them all together, putting the result
@@ -1248,7 +1283,7 @@ have current set as token controls.
 ### `^decodepos`( pos location )
 Translates into text the 64bit pos data at given location.
 `location` can be a position in the sentence (1... number of words) or a match variable
-found from some location in the sentence). See dictionary.h for meanings of bits. Type
+found from some location in the sentence). See _dictionary.h_ for meanings of bits. Type
 word will classify word as concept, word, number, or unknown.
 
 ### `^decodepos`( role location )
@@ -1259,7 +1294,8 @@ When was this word entered into the dictionary. Answers are: `wordnet`, `0`, `1`
 
 ### `^partofspeech`( location )
 Gets the 64-bit part-of-speech information about a word at `location`, resulting from parsing. 
-Location can be a position in the sentence (1... number of words) or a match variable found from some location in the sentence). See dictionary.h for meanings of bits.
+Location can be a position in the sentence (1... number of words) 
+or a match variable found from some location in the sentence). See _dictionary.h_ for meanings of bits.
 
 ### `^phrase`( type matchvar )
 Can be used to retrieve all of a prepositional phrase or a noun phrase. 
@@ -1274,8 +1310,7 @@ with input _I love red herring_ `$tmp` is set to _red herring_
 ### `^role`( location )
 Gets the 32-bit role information about a word at location, resulting
 from parsing. Location can be a position in the sentence (1... number of words) or a
-match variable found from some location in the sentence). See dictionary.h for meanings
-of bits.
+match variable found from some location in the sentence). See _dictionary.h_ for meanings of bits.
 
 ### `^tally`( word {value} ) 
 Only valid during current volley. You can associate a 32-bit
@@ -1287,7 +1322,9 @@ letter (a cheap rhyme).
 
 ### `^substitute`( mode find oldtext newtext)
 Outputs the result of substitution. Mode can be character or word or insensitive. 
-In the text given by find, the system will search for oldtext and replace it with newtext, for all occurrences. This is non-recursive, so it does not also substitute within replaced text. Since find is a single argument, you pass a phrase or sentence by using underscores instead of spaces. 
+In the text given by find, the system will search for oldtext and replace it with newtext, for all occurrences. 
+This is non-recursive, so it does not also substitute within replaced text. 
+Since find is a single argument, you pass a phrase or sentence by using underscores instead of spaces. 
 `^substitute` will convert all underscores to spaces before beginning substitution and will output the spaced results. 
 In character mode, the system finds oldtext as characters anywhere in newtext. In word
 mode it only finds it as whole words in newtext. Finding is case sensitive, unless you use
@@ -1307,10 +1344,11 @@ outputs _I hate hately flowers_
 Given a pattern, find words from the dictionary that meets it and
 create facts for them that get stored in the referenced fact set. 
 The facts are created with subject 1, verb word, and object the found word. 
-The pattern is a text string describing possibly the length and letter constraints. If there is an exact length of word, it must be first in the pattern. 
+The pattern is a text string describing possibly the length and letter constraints. 
+If there is an exact length of word, it must be first in the pattern. 
 After which the system matches the letters you provide against the
-start of the word up until your pattern either ends or has an asterisk or a period. A period
-means match any letter. 
+start of the word up until your pattern either ends or has an asterisk or a period. 
+A period means match any letter. 
 An asterisk matches any number of letters and would normally be
 followed by more letters. The `*` will swallow letters in the dictionary word until it can
 match the rest of your given pattern. It will keep trying as needed. Eg.
@@ -1336,11 +1374,11 @@ entered it in. Returns 1 if yes and 0 otherwise.
 
 ### `^addproperty` ( word flag1 … flagn ) 
 given the word, the dictionary entry for it is marked with additional properties, 
-the flags given which must match property flags or system flags in dictionarySystem.h. 
+the flags given which must match property flags or system flags in _dictionarySystem.h_. 
 Typically used to mark up titles of books and things when building world data. 
 In particular, however, if you are adding phrases or words not
 in the dictionary which will be used as patterns in match, you should mark them with
-PATTERN_WORD. To create a dynamic concept, mark the set name as CONCEPT.
+`PATTERN_WORD`. To create a dynamic concept, mark the set name as CONCEPT.
 
 You can also add fact properties to all members of a set of facts via
 ```
@@ -1400,11 +1438,14 @@ loop () # unload every resource on board
    }
 ```
 
+
 # Multipurpose Functions
 
+
 ### `^disable`( what ? ) 
-What can be `topic` or `rule` or `inputrejoinder` or `outputrejoinder` or `save` or `write @set`. If `topic`, the next argument can be a topic name (with or without `~` or just `~` meaning the current topic). It means to disable
-(BLOCK) that topic. 
+What can be `topic` or `rule` or `inputrejoinder` or `outputrejoinder` or `save` or `write @set`. 
+If `topic`, the next argument can be a topic name (with or without `~` or just `~` meaning the current topic). 
+It means to disable (BLOCK) that topic. 
 
 If a `rule`, you erase (disable) the labeled rule (or rule tag and `~` means the current rule). 
 
@@ -1463,15 +1504,15 @@ The simplest query names the kind of query and gives some or all of the field va
 The kinds of queries are programmable and are defined in `LIVEDATA/queries.txt` (but you
 need to be really advanced to add to it). The simplest query kinds are:
 
-| query kind | description |
-| ---------- | ---------------- |
-| direct_s   | find all facts with the given subject |
-| direct_v   | find all facts with the given verb |
-| direct_o   | find all facts with the given object |
-| direct_sv  | find all facts with the given subject and verb |
-| direct_so  | find all facts with the given subject and object |
-| direct_vo  | find all facts with the given object and verb |
-| direct_svo | find all facts given all fields (prove that this fact exists) |
+| query kind   | description                                                  |
+| ----------   | ------------------------------------------------------------ |
+| direct_s     | find all facts with the given subject |
+| direct_v     | find all facts with the given verb |
+| direct_o     | find all facts with the given object |
+| direct_sv    | find all facts with the given subject and verb |
+| direct_so    | find all facts with the given subject and object |
+| direct_vo    | find all facts with the given object and verb |
+| direct_svo   | find all facts given all fields (prove that this fact exists) |
 | Unipropogate | find how subject joins into the object set|
 
 If no matching facts are found, the query function returns the RULE fail code.
@@ -1528,9 +1569,8 @@ Then `^query(unipropogate dog ? ~things 1)` would return `(~animals member ~thin
 
 Note that the set to be found (`~things`) is not expanded. 
 Normal queries expand any reference to a set into all of its members and expand simple words to the entire wordnet
-hierarchy above it. You can block this expansion behavior by putting a single quote in
-front. Note for the idiom `'_0` which means the original form of the match variable, you
-have to use two quotes: `''_0`.
+hierarchy above it. You can block this expansion behavior by putting a single quote in front. 
+Note for the idiom `'_0` which means the original form of the match variable, you have to use two quotes: `''_0`.
 ```
 ^query(direct_svo 'bomb ''_0 '$$tmp)
 ```
@@ -1642,7 +1682,7 @@ discarded across inputs. You can force a set to be saved by saying:
 ^save(@9 false) # turn off saving thereafter
 ```
 
-### `^AddProperty`( set flag )
+### `^addproperty`( set flag )
 Add this flag onto all facts in named set. Typically you would be adding private marker flags of yours. If set has a field marker (like `@2subject`) then the property is added to all values of that field of facts of that set.
 
 
@@ -1682,7 +1722,7 @@ spelling of the word can be found this way as a member of a concept. And composi
 words using either spaces or underscores can be found as well and returns the correct
 notation.
 
-### `^Createattribute`( subject verb object flags ) 
+### `^createattribute`( subject verb object flags ) 
 This is just like `^createfact`, except that it
 only allows one fact with this subject and verb to exist. 
 
@@ -1714,7 +1754,7 @@ Or `^createfact($$tmp)` or some other variable that evaluates to a fact stream w
 create/find a fact. `$$tmp` might have been written previously using WriteFact.
 
 
-### `^writeFact`( F )
+### `^writefact`( F )
 Given a fact index such as might be returned by `first(@1fact)`, writes out
 the fact in std text notation (such as done by ^export or written into user files). (see
 `^createfact`).
@@ -1724,13 +1764,12 @@ The existing non-dead user fact will have fields replaced when arguments are not
 You cannot change type of field, so a fact subject will require a factid as subject, etc.
 
 ### `^delete(set)
-erase all facts in this set. This is the same as ^addfactproperty(set
-FACTDEAD)
+erase all facts in this set. This is the same as `^addfactproperty(set FACTDEAD)`.
 
 ### `^field`( fact fieldname )
-given a reference to a fact, pull out a named field. If the
-fieldname is in lower case and the field is a fact reference, you get that number. If the
-fieldname starts uppercase, the system gives you the printout of that fact. Eg for a fact:
+given a reference to a fact, pull out a named field.
+If the fieldname is in lower case and the field is a fact reference, you get that number. 
+If the fieldname starts uppercase, the system gives you the printout of that fact. Eg for a fact:
 ```
 $$f = createfact (I eat (he eats beer))
 ```
@@ -1741,7 +1780,7 @@ Fields include: `subject`, `verb`, `object`, `flagsv, `all` (spread onto 3 match
 (spread onto 3 match variables). 
 
 `all` just displays a human normal dictionary word, so if
-the value were actually plants~1 you'd get just plants whereas raw would return what was
+the value were actually `plants~1` you'd get just plants whereas raw would return what was
 actually there `plants~1`.
 
 ### `^find`( setname itemname )
@@ -1771,7 +1810,7 @@ facts you created while doing this sentence by doing `^flushfacts($$marker)`.
 ### `^gambittopics`()
 finds user topics (not system topics) with gambits remaining. If you
 use it in a fact-set assignment statement, it stores all topics found as facts (topicname
-^gambittopics topicname). You can then display them or use them as you wish E.g.
+`^gambittopics topicname`). You can then display them or use them as you wish E.g.
 ```
 @1 = ^gambittopics()
 ^gambit( ^pick(@1)) # randomly issue a gambit
@@ -1793,9 +1832,9 @@ set, which will contain all matching facts from the from set.
 ```
 
 ### `^keywordtopics`() 
-Lists topics and priority values for matching keywords in input. An
-optional argument if `gambit`, will ignore topics without available gambits. The verb
-used is: `^keywordtopics`.
+Lists topics and priority values for matching keywords in input. 
+An optional argument if `gambit`, will ignore topics without available gambits. 
+The verb used is: `^keywordtopics`.
 
 ### `^last`( fact-set-annotated )
 Retrieve the last fact – see `^first` for a more complete explanation.
@@ -1826,14 +1865,14 @@ List of currently pendings topics (interesting)
 Retrieve a random member of the concept. Pick is also used with
 factsets to pick a random fact (analogous to `^first` with its more complete description).
 
-### `^queryTopics`( word )
+### `^querytopics`( word )
 Get topics of which word is a keyword and which are not system
 topics and which have gambits (not necessarily unused), returns as fact triples of
 word, "a", topicname. If used in an assignment to a set, it will not fail, but it may
 return 0 elements. If not used in an assignment, then it will use set @0 and will FAIL if
 no topics are found.
 
-### `^RemoveProperty`( set flag )
+### `^removeproperty`( set flag )
 remove this flag from all facts in named set. 
 Typically you would be removing private marker flags of yours or making transient facts permanent.If
 set has a field marker (like `@2subject`) then the property is added to all values of that
