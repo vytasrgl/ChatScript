@@ -273,7 +273,7 @@ The bits are mapped in dictionary_system.h as `TOPIC_*`.
 
 # Marking Functions
 
-### ^mark`( word location )
+### `^mark`( word location )
 Marking and unmarking words and concepts is fundamental to
 the pattern matching mechanism, so the system provides both an automatic marking
 mechanism and manual override abilities. 
