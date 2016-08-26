@@ -75,7 +75,7 @@ really advanced users wanting the appropriate mental model.
 <br>A terse but detailed look at everything involving rule patterns.
 
 * [ChatScript System Variables and Engine-defined Concepts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md)
-<br>
+<br> Engine-defined Concepts. System Variables. Control over Input. Interchange Variables.
 
 * [Installing and Updating ChatScript](https://github.com/solyaris/ChatScript/blob/master/wiki/Installing-and-Updating-ChatScript.md)
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
