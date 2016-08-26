@@ -74,7 +74,7 @@ really advanced users wanting the appropriate mental model.
 * [ChatScript Pattern Redux](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Pattern-Redux.md)
 <br>A terse but detailed look at everything involving rule patterns.
 
-* ChatScript System Variables and Engine-defined Concepts
+* [ChatScript System Variables and Engine-defined] Concepts(https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md)
 <br>
 
 * [Installing and Updating ChatScript](https://github.com/solyaris/ChatScript/blob/master/wiki/Installing-and-Updating-ChatScript.md)
