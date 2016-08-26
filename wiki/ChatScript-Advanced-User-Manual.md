@@ -1,4 +1,4 @@
-# ChatScript Advanced User’s Manual
+# ChatScript Advanced User's Manual
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 > Revision 8/13/2016 cs6.8
@@ -89,15 +89,17 @@ three flavors. First are simple words (arbitrary contiguous characters with no s
 Second are passive strings like "meat-loving plants". 
 
 Third are active strings (which you haven't read about yet) like `^"I like $value"`. 
-Active strings involve references to functions or data inside them and execute when used to convert their results into a passive string 
-with appropriate value substitutions. 
-Other languages would name a CS active string a format string, and have to pass it to a function like sprintf along with the arguments
-to embed into the format. CS just directly embeds the arguments in the string and any attempt to use the active string implicitly invokes the equivalent of sprintf.
+Active strings involve references to functions or data inside them and execute when used to convert 
+their results into a passive string with appropriate value substitutions. 
+Other languages would name a CS active string a format string, and have to pass it to a function like 
+sprintf along with the arguments to embed into the format. 
+CS just directly embeds the arguments in the string and any attempt to use the active string implicitly invokes 
+the equivalent of sprintf.
 
 User variables also come in permanent and transient forms. 
-Permanent variables start with a single `$` and are preserved across user interactions (are saved and restored from
-disk). 
-Transient variables start with `$$` and completely disappear when a user interaction
+**Permanent variables** start with a single `$` and are preserved across user interactions 
+(are saved and restored from disk). 
+**Transient variables** start with `$$` and completely disappear when a user interaction
 happens (are not saved to disk).
 
 
@@ -105,8 +107,12 @@ happens (are not saved to disk).
 
 ChatScript supports structured triples of data called facts, which can be found by
 querying for them. The 3 fields of a fact are either text strings or fact references to other
-facts. So you might have a fact like (I eat "meat-loving plants") and you could query CS
-to find what eats meat-loving plants or what do I eat. Or even more generally what do I
+facts. So you might have a fact like 
+```
+(I eat "meat-loving plants")
+``` 
+
+and you could query CS to find what eats meat-loving plants or what do I eat. Or even more generally what do I
 ingest (using relationship properties of words). JSON data returned from website calls are
 all represented using facts so you can query them to find the bits of data you seek.
 
@@ -130,8 +136,9 @@ regardless of whether the rule subsequently fails.
 
 When CS receives user input, it tokenizes it into sentences and analyzes each
 sentence in turn. It "marks" each word of the sentence with what concepts it belongs to.
-Concepts always begin with `~`. Usually concepts are explicit enumerations of words, like
-`~animals` is a list of all known animals or `~ingest` is a list of all verbs that imply ingestion.
+Concepts always begin with `~`. 
+Usually concepts are explicit enumerations of words, like `~animals` is a list of all known animals 
+or `~ingest` is a list of all verbs that imply ingestion.
 
 Sometimes concepts are implicit collections handled directly by the engine, like `~number`
 is the implied set of all numbers (we wouldn't want to actually enumerate them all) or
@@ -172,10 +179,10 @@ initiate any new rules.
 
 Topics are not functions and do not take arguments. CS provides system
 functions and you can write user functions in ChatScript. Function names always start
-with `^`, like `^match(argument1 argument2)` and no commas are used to separate the
-arguments (since commas themselves might be legal arguments). These are classic
-functions in that they have arguments and a collection of code to execute. Their code can
-generate output and/or make calls to other functions, including invoking topics and rules.
+with `^`, like `^match(argument1 argument2)` and **no commas are used to separate the
+arguments** (since commas themselves might be legal arguments). 
+These are classic functions in that they have arguments and a collection of code to execute. 
+Their code can generate output and/or make calls to other functions, including invoking topics and rules.
 Functions are a convenient way to abstract and share code. 
 
 ### Function variables
@@ -187,7 +194,9 @@ header:
 patternmacro: ^myfunction( ^argument1 ^argument2)
 ```
 
+
 # ADVANCED CONCEPTS
+
 
 Concepts can have part of speech information attached to them (using dictionarysystem.h values). Eg.
 ```
@@ -242,6 +251,7 @@ Concept: ~myconcept (!thisword ~otherconcept)
 
 # ADVANCED TOPICS
 
+
 There are several things to know about advanced topics.
 
 ## Topic Execution
@@ -251,8 +261,11 @@ executing rules until some rule generates ouput for the user or something issues
 appropriate `^end` or `^fail` call. So you can do things like this:
 ```
 u: (I love) $userloves = true
+
 u: ( dog ) $animal = dog
+
 u: ( love) Glad to hear it
+
 u: ( dog) I hate dogs
 ```
 and given _I love dogs_, the system will set $userloves and $animal and output glad to
@@ -318,6 +331,7 @@ common variable. When sharing is in effect, the state with the user (what he sai
 bot said, what turn of the volley this is, where the rejoinder mark is) is all common
 among the bots- they are advancing a joint conversation.
 
+
 ## Rules that erase and repeat
 
 Normally a rule that successfully generates output directly erases itself so it won't run
@@ -360,12 +374,12 @@ script.
 The second thing to know about topics is what makes a topic pending. Control flow
 passes through various topics, some of which become pending, meaning one wants to
 continue in those topics when talking to the user. Topics that can never be pending are:
-system topics, blocked topics (you can block a topic so it won’t execute), and nostay
+system topics, blocked topics (you can block a topic so it won't execute), and nostay
 topics.
 
 What makes a remaining topic pending is one of two things. Either the system is
 currently executing rules in the topic or the system previously generated a user response
-from the topic. When the system leaves a topic that didn’t say anything to the user, it is
+from the topic. When the system leaves a topic that didn't say anything to the user, it is
 no longer pending. But once a topic has said something, the system expects to continue in
 that topic or resume that topic.
 
@@ -398,10 +412,10 @@ t: I often go to the beach to swim.
 
 # subtopic about sand castles.
 r: Have you made sand castles?
-  a: (~yes) Maybe sometime you can make some that I can go see.
-  a: (~no) I admire those who make luxury sand castles.
+    a: (~yes) Maybe sometime you can make some that I can go see.
+    a: (~no) I admire those who make luxury sand castles.
 
-t: I’ve seen pictures of some really grand sand castles.
+t: I've seen pictures of some really grand sand castles.
 ```
 
 This topic has a subtopic on swimming and one on sand castles. It will select the subtopic
@@ -418,8 +432,8 @@ and you can modify it or write your own.
 The typical flow of control is for the control script to try to invoke a pending rejoinder.
 This allows the system to directly test rules related to its last output, rules that anticipate
 how the user will respond. Unlike responders and gambits, the engine will keep trying
-rejoinders below a rule until the pattern of one matches and the output doesn’t fail. Not
-failing does not require that it generate user output. Merely that it doesn’t return a fail
+rejoinders below a rule until the pattern of one matches and the output doesn't fail. Not
+failing does not require that it generate user output. Merely that it doesn't return a fail
 code. Whereas responders and gambits are tried until user output is generated (or you run
 out of them in a topic).
 
@@ -492,11 +506,13 @@ concept: ~buildings [ shelter~1 living_accomodations~1 building~3 ]
 
 The concept `~buildings` represents 760 general and specific building words found in the
 WordNet dictionary – any word which is a child of: definition 1 of shelter, definition 1 of
-accommodations, or definition 3 of building in WordNet’s ontology. How would you be
+accommodations, or definition 3 of building in WordNet's ontology. How would you be
 able to figure out creating this? This is described under `:up` in Word Commands later.
 
-`Building~3` and `building~3n` are equivalent. The first is what you might say to refer to the 3rd meaning of building. 
-Internally `building~3n` denotes the 3rd meaning and its a noun meaning. You may see that in printouts from Chatscript. 
+`Building~3` and `building~3n` are equivalent. 
+The first is what you might say to refer to the 3rd meaning of building. 
+Internally `building~3n` denotes the 3rd meaning and its a noun meaning. 
+You may see that in printouts from Chatscript. 
 If you write 3n yourself, the system will strip off the n marker as superfluous.
 
 Similarly you can invoke parts of speech classes on words. By default you get all of
@@ -511,7 +527,7 @@ to help prevent false matches to concepts by adding `~n` `~v` `~a` or `~b` (adve
 ```
 concept: ~beings [snake~n mother~n]
 ```
-If the system isn’t sure something is only a noun, it would let the verb match still. Thus a
+If the system isn't sure something is only a noun, it would let the verb match still. Thus a
 user single-word reply of snakes would be considered both noun and verb.
 
 The notation run~46 exists to represent a meaning. There is mild inherent danger that I
@@ -520,26 +536,26 @@ might kill off some word meaning that is problematic (eg if `run~23` turned out 
 meaning by renumbering into either non-existence (in which case the script compiler will
 warn you) or into a different pos set (because your meaning was on the boundary of
 meanings of a different pos type). 
-Use of the specific meaning is handy in defining
-concepts when the meaning is a noun, because Wordnet has a good noun ontology. Use of
-the specific meaning of other parts of speech is more questionable, as Wordnet does not
+Use of the specific meaning is handy in defining concepts when the meaning is a noun, 
+because Wordnet has a good noun ontology. 
+Use of the specific meaning of other parts of speech is more questionable, as Wordnet does not
 have much ontology for them.
 
 The broader scope meaning restriction by part-of-speech (eg `run~v`) has much more
 utility. It has its risks in that it depends on the parser getting it right (as you have seen),
 which over time will get better and better. 
-In MOST cases, you are better off with the full
-fledged unadorned word, which is parse-independent. This is particularly true when you
-are pattern matching adjacent words and so context is firm. < run `~app` is a pretty clean
-context which does not need pos-certification. The topic on `~drugs` would want in its
-keyword list `clean~a` to allow _I've been clean for months_ to target it, but not _I clean
-my house_.
+
+In MOST cases, you are better off with the full fledged unadorned word, which is parse-independent. 
+This is particularly true when you are pattern matching adjacent words and so context is firm. 
+< run `~app` is a pretty clean context which does not need pos-certification. 
+The topic on `~drugs` would want in its
+keyword list `clean~a` to allow _I've been clean for months_ to target it, but not _I clean my house_.
 
 
 ## System Functions
 
-You can call any predefined system function. It will fail the pattern if it returns any fail or end code. It will pass otherwise. 
-The most likely functions you would call would be:
+You can call any predefined system function. It will fail the pattern if it returns any fail or end code. 
+It will pass otherwise.  The most likely functions you would call would be:
 `^query` – to see if some fact data could be found.
 Many functions make no sense to call, because they are only useful on output and their
 behavior on the pattern side is unpredictable.
@@ -560,7 +576,7 @@ patternmacro: ^ISHAIRCOLOR(^who)
     ![not never]
     [
     ( << be ^who [blonde brunette redhead blond ] >> )
-    (<< what ^who hair color >> )
+    ( << what ^who hair color >> )
     ]
 
 ?: (^ISHAIRCOLOR(I)) How would I know your hair color?
@@ -568,10 +584,11 @@ patternmacro: ^ISHAIRCOLOR(^who)
 
 The above patternmacro takes one argument (who we are talking about). After checking
 that the sentence is not in the negative, it uses a choice to consider alternative ways of
-asking what the hair color is. The first way matches are you a redhead. The second way
-matches what is my hair color. The call passes in the value I (which will also match my
-mine etc in the canonical form). Every place in the macro code where `^who` exists, the
-actual value passed through will be used.
+asking what the hair color is. 
+The first way matches are you a redhead. 
+The second way matches what is my hair color. 
+The call passes in the value I (which will also match my mine etc in the canonical form). 
+Every place in the macro code where `^who` exists, the actual value passed through will be used.
 
 You cannot omit the `^` prefix in the call. The system has no way to distinguish it
 otherwise.
@@ -641,17 +658,17 @@ Note that `\` does not block a word with an `*` in it from performing wildcard s
 
 Normally you already know that an input was a question because you used the rule
 type `?:` . But rejoinders do not have rule types, so if you want to know if something was a
-question or not, you need to use the `?` keyword. It doesn’t change the match position
+question or not, you need to use the `?` keyword. It doesn't change the match position
 ```
 t: Do you like germs?
     a: (?) Why are you asking a question instead of answering me?
     a: (!?) I appreciate your statement.
 ```
 
-If you want to know if an exclamation ended his sentence, just backslash a `!` so it won’t
-be treated as a not request. This doesn’t change the match position.
+If you want to know if an exclamation ended his sentence, just backslash a `!` so it won't
+be treated as a not request. This doesn't change the match position.
 ```
-s: (I like \) Why so much excitement
+s: (I like \\!) Why so much excitement
 ```
 
 ## More comparison tests - `&` `?`
@@ -670,12 +687,13 @@ u: (_~propername?~bands)
 As a standalone, it allows you to ask if a wildcard or variable is in the sentence. E.g.
 ```
 u: ( _1? )
+
 u: ( $bot? )
 ```
 Note that when `_1` is a normal word, that is simple for CS to handle. If `_1` is a phrase,
 then generally CS cannot match it. This is because for phrases, CS needs to know in
 advance that a phrase can be matched. 
-If you put "take a seat" as a keyword in a concept or topic or pattern, 
+If you put _take a seat_ as a keyword in a concept or topic or pattern, 
 that phrase is stored in the dictionary and marked as a pattern phrase,
 meaning if the phrase is ever seen in a sentence, it should be noticed and marked so it can
 be matched in a pattern. But if it is merely in a variable, then the dictionary is unaware of
@@ -708,20 +726,22 @@ now.
 A useful idiom is `[~topicname ~]`. This allows you to match if EITHER the user gave
 keywords of the topic OR you are already in the topic. So:
 ```
-u: (<<chocolate [~ice_cream ~] >>)
+u: (<< chocolate [~ice_cream ~] >>)
 ```
-would match if you only said "chocolate" while inside the topic, or if you said "chocolate
-ice cream" while outside the topic.
+would match if you only said _chocolate_ while inside the topic, or if you said _chocolate
+ice cream_ while outside the topic.
+
 
 
 ## Prefix Wildcard Spelling and Postfix Wildcard Spelling
 
-Some words you just know people will get wrong, like Schrodinger's cat or Sagittarius.
-You can request a partial match by using an `*` to represent any number of letters (includig
-0). For example
+Some words you just know people will get wrong, like _Schrodinger's cat_ or _Sagittarius_.
+You can request a partial match by using an `*` to represent any number of letters (including 0). 
+For example
 ```
-u: ( Sag*) This matches Sagittarius in a variety of misspellings.
-u: (*tor) this matches _reactor_.
+u: ( Sag*) # This matches "Sagittarius" in a variety of misspellings.
+
+u: (*tor) # this matches "reactor".
 ```
 The `*` can occur in one or more positions and means 0 or more letters match. A period can
 be used to match a single letter (but may not start a wildcardprefix). E.g.,
@@ -733,6 +753,7 @@ the pattern.
 `u: (.p*)` is not legal because it may not start with a period.
 
 
+
 ## Indirect pattern elements
 
 Most patterns are easy to understand because what words they look at is usually staring
@@ -740,7 +761,7 @@ you in the face. With indirection, you can pass patterndata from other topics, a
 obscurity. Declaring a macro does this. A `^` normally means a macro call (if what follows
 it is arguments in parens), or a macro argument. The contents of the macro argument are
 used in the pattern in its place. Macro arguments only exist inside of macros. But macros
-don’t let you write rules, only pieces of rules.
+don't let you write rules, only pieces of rules.
 
 Normally you use a variable directly. `$$tmp = nil` clears the `$$tmp` variable, for
 instance, while `u: ( ) $$tmp` goes home will output the value into the output stream.
@@ -749,8 +770,8 @@ The functional user argument lets you pass pattern data from one topic to anothe
 s: ( are you a _^$var )
 ```
 The contents of `$var` are used at that point in the pattern. Maybe it is a set being named.
-Maybe it’s a word. You can also do whole expressions, but if you do you will be at risk
-because you won’t have the script compiler protecting you and properly formatting your data. See also Advanced Variables.
+Maybe it's a word. You can also do whole expressions, but if you do you will be at risk
+because you won't have the script compiler protecting you and properly formatting your data. See also Advanced Variables.
 
 
 ## Setting Match Position - `@_3+` `@_3-`
@@ -811,9 +832,8 @@ cannot handle optional choices of words. You can't write `go {really almost} bac
 where that can match _go back_ or _go almost back_. So there is that limitation when using a
 string inside `[]` or `{}`. But, one can write a pattern for that. 
 
-While `[]` means a choice of
-words and `{ }` means a choice of optional words, `( )` means these things in sequence. So
-you could write:
+While `[]` means a choice of words and `{ }` means a choice of optional words, 
+`( )` means these things in sequence. So you could write:
 ```
 u: ( [ next before (go {almost really} back) ] )
 ```
@@ -822,7 +842,8 @@ and that will be a more complex pattern. One almost never has a real use for tha
 capability, but you use `()` notation all the time, of course. In fact, all rules have an
 implied `< *` in front of the `()`. That's what allows them to find a sequence of words
 starting anywhere in the input. 
-But when you nest `()` inside, unless you write `< *` yourself, you are committed to remaining in the sequence set up.
+But when you nest `()` inside, unless you write `< *` yourself, 
+you are committed to remaining in the sequence set up.
 
 As a side note, the quoted expression is faster to match than the `( )` one. That's because
 the cost of matching is linear in the number of items to test. And a quoted expression (or
@@ -830,6 +851,7 @@ the `_` equivalent) is a single item, whereas ( take charge) is 4 items.
 So the first rule will below will match faster than the second rule:
 ```
 u: ( "I love you today when")
+
 u: (I love you today when)
 ```
 
@@ -900,8 +922,8 @@ They are initialized on startup and never destroyed. They are overwritten by a
 rule that forces a match value onto them and by things like `_0 = ^burst(..)` or `_3 =
 ^first(@0all)`. And those may overrun the needed number of variables by 1 to indicate the
 end of a sequence. But this means typically `_10` and above are easily available as
-permanent variables that can hold values across all users etc. This might be handy in a
-server context and is definitely handy in :document mode where user memory can be
+permanent variables that can hold values across all users etc. 
+This might be handy in a server context and is definitely handy in :document mode where user memory can be
 very transient. Of course remembering what `_10` means as a holding variable is harder,
 unlike the ones bound to matches from input. So you can use
 ```
@@ -913,12 +935,13 @@ in a script before any uses of `_bettername`, which now mean `_12`.
 ## Precautionary note about [ ] and pattern matching retries
 
 When you list a collection of words or concepts within a `[ ]` in a pattern, the system does
-not try each in turn to find the earliest match. Instead it tries each in turn until it finds a match. Then `[ ]` quits. 
-So if you have a pattern like:
+not try each in turn to find the earliest match. Instead it tries each in turn until it finds a match. 
+Then `[ ]` quits. So if you have a pattern like:
 ```
  u: ( the * [bear raccoon] ate)
 ```
 and an input like _the raccoon at the bear_, then matching would proceed as
+
 * find the word the (position 1 in sentence)
 * try to find bear starting at position 2 – found at position 5
 * try to find the word ate starting at position 6 – fails
@@ -938,7 +961,7 @@ set is immaterial both to the order of finding things and to the speed of matchi
 # ADVANCED OUTPUT
 
 Simple output puts words into the output stream, a magical place that queues up each
-word you write in a rule output. What I didn’t tell you before was that if the rule fails
+word you write in a rule output. What I didn't tell you before was that if the rule fails
 along the way, an incomplete stream is canceled and says nothing to the user.
 For example,
 ```
@@ -957,7 +980,7 @@ generate responses in a different order). If the output was destined for storing
 variable or becoming the argument to a function or macro, then the output stream is
 stored in the appropriate place instead.
 
-I also didn’t tell you that the system monitors what it says, and won’t repeat itself (even if from a different rule) 
+I also didn't tell you that the system monitors what it says, and won't repeat itself (even if from a different rule) 
 within the last 20 outputs. 
 So if, when converting the output stream into a response to go in the responses list, the system finds it already had such a response
 sent to the user in some recently earlier volley, the output is also discarded and the rule
@@ -974,9 +997,8 @@ What happens is this- when the system detects the transfer of control (the `^reu
 there is output pending it is finished off and packaged for the user. The current stream is
 cleared, and the rule is erased (if allowed to be). Then the `^reuse()` happens. Even if it
 fails, this rule has produced output and been erased. 
-Assuming the reuse doesn't fail, it
-will have sent whatever it wants into the stream and been packaged up for the user. The
-rest of the message for this rule now goes into the output stream _and so do you_ and
+Assuming the reuse doesn't fail, it will have sent whatever it wants into the stream and been packaged up 
+for the user. The rest of the message for this rule now goes into the output stream _and so do you_ and
 then that too is finished off and packaged for the user. The rule is erased because it has
 output in the stream when it ends (but it was already erased so it doesn't matter).
 
@@ -992,7 +1014,8 @@ normally autoformats output code. But programming languages allow you to control
 your output with format strings and ChatScript is no exception. 
 
 In the case of ChatScript, the active string `^"xxx"` string is a format string. 
-The system will remove the `^` and the quotes and put it out exactly as you have it, except, it will substitute variables (which you learn about shortly) 
+The system will remove the `^` and the quotes and put it out exactly as you have it, 
+except, it will substitute variables (which you learn about shortly) 
 with their values and it will accept `[]` `[]` choice blocks. And will allow function calls. 
 You can't do assignment statements or loops or if statements.
 ```
@@ -1022,7 +1045,7 @@ You can continue a format string across multiple source lines. It will always ha
 space representing the line change, regardless of how many spaces were before or after
 the line break. E.g
 ```
-^"this is my life" → ^"this is my life"
+^"this is my life" # -> ^"this is my life"
 ```
 regardless of whether there were no spaces after is or 100 spaces after is. You may not
 have comments at the ends of such lines (they would be absorbed into the string).
@@ -1041,9 +1064,12 @@ such things, you can use `^join()` instead.
 
 ## Json Active Strings
 
-`^' xxxxxx '` is another kind of active string. It is intended for writing easy json, because you don't have to escape doublequotes unless json would need to. It will
-converting `\n`,`\t`, `\r` into their control characters, convert `\\` into just `\`, and leave all other characters alone. Eg `^'{ "test" : "my \"value\" \x" }` will become
+`^' xxxxxx '` is another kind of active string. It is intended for writing easy json, 
+because you don't have to escape doublequotes unless json would need to. 
+It will converting `\n`,`\t`, `\r` into their control characters, convert `\\` into just `\`, 
+and leave all other characters alone. Eg `^'{ "test" : "my \"value\" \x" }` will become
 `^'{ "test" : "my \"value\" \x" }`
+
 
 
 ## Functional Strings
@@ -1072,15 +1098,17 @@ Loop allows you to repeat script. It takes an optional argument within parens, w
 how many times to loop. It executes the code within `{ }` until the loop count expires or
 until a `FAIL` or `END` code of some kind is issued. 
 
-`End(loop)` signals merely the end of the loop, not really the rule, and will not cancel any pending output in the output stream.
+`End(loop)` signals merely the end of the loop, not really the rule, 
+and will not cancel any pending output in the output stream.
 
-`Fail(LOOP)` will terminate both loop and rule enclosing. All other return codes have their
-usual effect. 
+`Fail(LOOP)` will terminate both loop and rule enclosing. 
+All other return codes have their usual effect. 
 
 > Deprecated is `fail(rule)` and `end(rule)` which merely terminated the loop.
 
 ```
 t: Hello. ^loop (5) { me }
+
 t: ^loop () { This is forever, not. end(LOOP)}
 ```
 The first gambit prints _Hello. me me me me me_. The second loop would print forever, but
@@ -1102,15 +1130,22 @@ loop through each item of the factset via
 
 The if allows you to conditionally execute blocks of script. The full syntax is:
 ```
-If ( test1 ) { script1 } else if ( test2 ) { script2 } … else { script3 }
+If ( test1 ) 
+    { script1 } 
+else if ( test2 ) 
+    { script2 } 
+… 
+else 
+    { script3 }
 ```
 
-You can omit the else if section, having just if and else, and you can omit the else section, having just if or if and else if. You may have any number of else if sections.
+You can omit the else if section, having just if and else, and you can omit the else section, 
+having just if or if and else if. You may have any number of else if sections.
 The test condition can be:
 
 1. A variable – if it is defined, the test passes
 2. `!` variable – if it is not defined, the test passes (same as relation variable `==` null)
-3. A function call – if it doesn’t fail or return the values 0 or null or nil, it passes
+3. A function call – if it doesn't fail or return the values 0 or null or nil, it passes
 4. A relation – one of `==` `!=` `<` `<=` `>` `>=` `?` `!?`
 
 For the purposes of numeric comparison `(< <= > >=)` a null value compared against a
@@ -1121,7 +1156,7 @@ test condition can be any end or fail code. It does not affect outside the condi
 merely controls which branch of the if gets taken.
 ```
 if ($var) { } # if $var has a value
-if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn’t fail
+if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn't fail
 ```
 
 Comparison tests between two text strings is case insensitive.
@@ -1129,13 +1164,15 @@ Comparison tests between two text strings is case insensitive.
 A word of warning on the `?` (in set) relation test. It only works for actual concepts that
 have enumerated values. A number of sets marked by the engine for patterns do not
 consist of enumerated members. All of the pos-tagging and parse-related concepts are
-like this, so you cannot use `~number`, `~noun`, `~verb`, etc here. It will work if you compare a match variable derived from input, because that has access to knowing all the marked concepts of that particular word.
+like this, so you cannot use `~number`, `~noun`, `~verb`, etc here. 
+It will work if you compare a match variable derived from input, 
+because that has access to knowing all the marked concepts of that particular word.
 
 
 ## Pattern If
 
-An alternative If test condition is the pattern If. You write the test using the word pattern at the start, and then you write exactly what you can write when you write a rule pattern.
-Eg.
+An alternative If test condition is the pattern If. You write the test using the word pattern at the start, 
+and then you write exactly what you can write when you write a rule pattern. Eg.
 ```
 if (pattern bingo _*1 ~helo) { … }
 ```
@@ -1177,13 +1214,14 @@ other default response output processing. The variable `$cs_response` can be set
 combination of values to alter behavior. The default value is
 ```
 $cs_response = #RESPONSE_UPPERSTART +
-#RESPONSE_REMOVESPACEBEFORECOMMA +
-#RESPONSE_ALTERUNDERSCORES
+               #RESPONSE_REMOVESPACEBEFORECOMMA +
+               #RESPONSE_ALTERUNDERSCORES
 ```
 which controls automatically up-casing the first letter of output, removing spaces before
-commas, and converting underscores to spaces (and also removing `~` from concept
-names). Equivalently `$cs_response = #ALL_RESPONSES`, which if you want all is
+commas, and converting underscores to spaces (and also removing `~` from concept names). 
+Equivalently `$cs_response = #ALL_RESPONSES`, which if you want all is
 what you should use in case new ones are added in the system later.
+
 
 
 ## Output Macros
@@ -1212,12 +1250,11 @@ TOPIC: ~patterns keep repeat []
 #! what time is it?
 u: ( << what time >> ) $test = ^mymac() join(ok $test)
 ```
-
 will print _oktested here_.
 
 However, it is clearer and cleaner if you are returning data to be stored somewhere else
-(not to be merely immediately sent to the user), to use `^return("tested here")`. This both
-creates the result, and ends the function immediately even if other code follows.
+(not to be merely immediately sent to the user), to use `^return("tested here")`. 
+This both creates the result, and ends the function immediately even if other code follows.
 Note- calls to macros use "pass by reference", so the actual value of the ^variable is the
 name of what was passed in, and it is generally (but not always) evaluated on use. 
 
@@ -1226,11 +1263,11 @@ name of what was passed in, and it is generally (but not always) evaluated on us
 
 There are no true local variables in ChatScript. 
 All variables are global, merely some are transient and some are permanent. 
-Function variables like ^myval are restricted in use to the function declaring them, so they are sort of local variables, 
-but the are stand-ins for the arguments passed, which means if you write on the function variable you are
-changing something above you as well. And without local variables, it is easy to
-accidentally reuse the same name of a temporary variable that you used above you in the
-call chain. Imagine this:
+Function variables like ^myval are restricted in use to the function declaring them, 
+so they are sort of local variables, but the are stand-ins for the arguments passed, 
+which means if you write on the function variable you are changing something above you as well. 
+And without local variables, it is easy to accidentally reuse the same name of a temporary variable 
+that you used above you in the call chain. Imagine this:
 ```
 outputmacro: ^mycall()
     $$counter = 0
@@ -1357,7 +1394,7 @@ Remember this construct:
 ?: (hi) [How are you feeling?][Why are you here?]
 ```
 
-These choices are picked equally. But maybe you don’t want some choices. You can put
+These choices are picked equally. But maybe you don't want some choices. You can put
 an existence test of a variable at the start of a choice to restrict it.
 ```
 ?: (hi) [$ready How are you feeling?][Why are you here?]
@@ -1399,7 +1436,9 @@ you have successful control.
 ```
 
 
+
 # Advanced Variables
+
 
 ## Local Variables
 
@@ -1420,7 +1459,7 @@ Local variables used in a topic all remain accessible while in that topic. If yo
 left the topic and so the variables remain intact. But if you call outside the topic, then a
 deeper call to the original topic sees new variables (just as a recursive call to an
 outputmacro would). 
-Hence `^gambit(~mytopic)` which calls `^reuse(~histopic.label)`
+Hence `^gambit(~mytopic)` which calls `^reuse(~histopic.label)` 
 which then calls `^gambit(~mytopic)` will get two different instances of `~mytopic` and the
 variables separately handled by each.
 
@@ -1454,7 +1493,8 @@ You can set indirectly through `$$tmp` using function notation `^`, e.g.
 ```
 ^$$tmp = 25
 ```
-The above says take the value of `$$tmp`, treat it as the name of a variable, and assign into it. Which means it does the equivalent of
+The above says take the value of `$$tmp`, treat it as the name of a variable, 
+and assign into it. Which means it does the equivalent of
 ```
 $washing = 25
 ```
@@ -1521,7 +1561,9 @@ ChatScript can neither see nor act, but it can interact with systems that do. Th
 convention is that out-of-band information occurs at the start of input or output, and is
 encased in `[ ]`. 
 ChatScript does not attempt to postag and parse any input sentence which begins with
-`[` and has a closing `]`. It will automatically not try to spellcheck that part or perform any kind of merge (date, number, propername). In fact, the `[…]` will be split off into its own sentence. You can use normal CS rules to detect and react to incoming oob messaging.
+`[` and has a closing `]`. It will automatically not try to spellcheck that part or perform any kind of merge 
+(date, number, propername). In fact, the `[…]` will be split off into its own sentence. 
+You can use normal CS rules to detect and react to incoming oob messaging.
 E.g, input like this
 ```
 [ speed=10 rate: 50 ] User said this
@@ -1607,7 +1649,9 @@ representing what it returned. E.g., NOPROBLEM. The range of names of these are
 defined in mainsystem.h (minus _BIT) but are your basic FAILTOPIC, etc.
 
 
+
 # Advanced `:build`
+
 
 ## Build warning messages
 
@@ -1816,7 +1860,10 @@ to be available only to certain bots (see Advanced Topics). You can restrict rul
 available only to certain bots by using something like
 ```
 ?: ($bot=harry …)
+
+
 ?: (!$bot=harry …).
+
 t: ($bot=harry) My name is harry.
 ```
 
@@ -1825,9 +1872,9 @@ could get Georgia by logging in as `yourname:georgia`. And you can confirm who s
 by asking what is your name.
 
 You specify which bot you want when you login, by appending `:botname` to your login
-name, e.g., `bruce:harry` . 
+name, e.g., `bruce:harry`. 
 
-When you don’t do that, you get the default bot. How does the system know what that is? 
+When you don't do that, you get the default bot. How does the system know what that is? 
 It looks for a fact in the database whose subject will be the
 default bot name and whose verb is defaultbot. If none is found, the default bot is called
 anonymous, and probably nothing works at all. Defining the default bot is what a table
@@ -1879,16 +1926,20 @@ of the duplicate topics, naming which bot can use it.
 
 # Topics By Bot
 
+
 You should already know that a topic can be restricted to specific bots. Now you learn
 that you can create multiple copies of the same topic, so different bots can have different
 copies. These form a topic family with the same name. The rules are:
+
 * the topics share the union of keywords
 * `:verify` can only verify the first copy of a topic it is allowed access to
 
 When the system is trying to access a topic, it will check the bot restrictions. If a topic
 fails, it will try the next duplicate in succession until it finds a copy that the bot is allowed to use. 
-This means if topic 1 is restricted to ben and topic2 is unrestricted, ben will use topic 1 and all other bots will use topic2. 
-If the order of declaration is flipped, then all bots including ben will use topic 2 (which now precedes topic 1 in declaration).
+This means if topic 1 is restricted to ben and topic2 is unrestricted, ben will use topic 1 
+and all other bots will use topic2. 
+If the order of declaration is flipped, then all bots including ben will use topic 2 
+(which now precedes topic 1 in declaration).
 
 You can also use the `:disable` and `:enable` commands to turn off all or some topics for a personality.
 
@@ -1903,13 +1954,15 @@ To be efficient in rule processing, I often catch a lot of things in a rule and 
 u: ( ~country) ^refine() # gets any reference to a country
     a: (Turkey) I like Turkey
     a: (Sweden) I like Sweden
-    a: (*) I’ve never been there.
+    a: (*) I've never been there.
 ```
 Equivalently one could invoke a subtopic, though that makes it less obvious what is
 happening, unless you plan to share that subtopic among multiple responders.
 ```
 u: (~country) ^respond(~subcountry)
+
 topic: ~subcountry system[]
+
 u: (Turkey) …
 u: (Sweden) …
 u: (*) …
@@ -1926,8 +1979,9 @@ hundreds of specific quibbles.
 # ...
 
 topic: ~quibblewho system []
+
 ?: (<who knows) The shadow knows
-?: (<who can) I certainly can’t.
+?: (<who can) I certainly can't.
 ```
 
 
@@ -1935,21 +1989,23 @@ topic: ~quibblewho system []
 
 To have a conversation, you want to volunteer information with a gambit line. And that
 same information may need to be given in response to a direct question by the user.
-^reuse let’s you share information.
+`^reuse` let's you share information.
+
 ```
 t: HOUSE () I live in a small house
+
 u: (where * you * live) ^reuse(HOUSE)
 ```
 
 The rule on disabling a rule after use is that the rule that actually generates the output gets disabled. 
-So the default behavior (if you don’t set keep on the topic or the rule) is that if the question is asked first, 
-it reuses HOUSE. Since we have given the answer, we don’t want to repetitiously volunteer it, HOUSE gets disabled. 
+So the default behavior (if you don't set keep on the topic or the rule) is that if the question is asked first, 
+it reuses HOUSE. Since we have given the answer, we don't want to repetitiously volunteer it, HOUSE gets disabled. 
 But, if the user repetitiously asks the question (maybe he forgot the answer), we will answer it again because the responder
-didn’t get disabled, just the gambit. And disabling applies to allowing a rule to try to
-match, not to what it does for output. So one can reuse that gambit’s output any number
+didn't get disabled, just the gambit. And disabling applies to allowing a rule to try to
+match, not to what it does for output. So one can reuse that gambit's output any number
 of times. 
 
-If you don’t want that behavior you can either add a disable on the responder
+If you don't want that behavior you can either add a disable on the responder
 OR tell `^reuse` to skip used rules by giving it a second argument (anything). So one way
 is:
 ```
@@ -1999,8 +2055,8 @@ continues any prior conversation you may have had.
 
 ## Prefix labeling in stand-alone mode
 
-You can control the label put before the bot’s output and the user’s input prompt by
-setting variables $botprompt and $userprompt. I set them in the bot’s initialization code,
+You can control the label put before the bot's output and the user's input prompt by
+setting variables $botprompt and $userprompt. I set them in the bot's initialization code,
 though you can dynamically change them. The values can be literal or a format string.
 The value is used as the prompt. Hence the following example:
 ```
@@ -2008,14 +2064,14 @@ $userprompt = ^"$login: >"
 $botprompt = ^ "HARRY: "
 ```
 
-The user prompt wants to use the user’s login name so it is a format string, which is
+The user prompt wants to use the user's login name so it is a format string, which is
 processed and stored on the user prompt variable. The botprompt wants to force a space
 at the end, so it also uses a format string to store on the bot prompt variable.
 
 > In color.tbl is there a reason that the color grey includes both building and ~building?
 
 Yes. Rules often want to distinguish members of sets that have supplemental data from
-ones that don’t. The set of ~musician has extra table data, like what they did and doesn’t
+ones that don't. The set of ~musician has extra table data, like what they did and doesn't
 include the word musician itself. Therefore a rule can match on ~musician and know it
 has supplemental data available.
 This is made clearer when the set is named something list ~xxxlist. But the system
@@ -2047,7 +2103,7 @@ In output context, it means print out this string with its double quotes literal
 u: (hello) "What say you? " # prints out "What say you? "
 ```
 There are also the functional interpretations of strings; these are strings with ^ in front of them.
-They don’t make any sense on input or patterns or from a user, but they are handy in a
+They don't make any sense on input or patterns or from a user, but they are handy in a
 table. They mean compile the string (format it suitable for output execution) and you can
 use the results of it in an ^eval call.
 
@@ -2069,7 +2125,7 @@ System function calls have specific unique evaluations which affect the data of 
 system and/or add content into the output stream. User-defined macros are just script that
 resides external to the script being evaluated, so they are evaluated. 
 Script constructs like IF, LOOP, assignment, and relational comparison 
-affect the flow of control of the script but don’t themselves put anything into the output stream when evaluated.
+affect the flow of control of the script but don't themselves put anything into the output stream when evaluated.
 
 Whenever a variable is evaluated, its contents are evaluated and their result is put into the output stream. 
 Variables include user variables, function argument variables, system variables, match variables, and factset variables.
@@ -2104,14 +2160,14 @@ If like is defined as an output macro and if you write:
 t: I like (somewhat) ice
 ```
 how does the system resolve this ambiguity? Here, white space actually matters. First, if
-the function is a builtin system function, it always uses that. So you can’t write this:
+the function is a builtin system function, it always uses that. So you can't write this:
 ```
 t: I fail (sort of) at most things
 ```
 When it is a user function, it looks to see if the 
 ( of the argument list is contiguous to the function name or spaced apart. 
 Contiguous is treated as a function call and apart is treated as English. 
-This is not done for built-ins because it’s more likely you spaced it accidently than that you intended it to be English.
+This is not done for built-ins because it's more likely you spaced it accidently than that you intended it to be English.
 
 > How should I go about creating a responder?
 
@@ -2124,8 +2180,8 @@ sentence. This will tell you how the system will tokenize it and what concepts i
 trigger. This will help you decide what the structure of the pattern should be and how
 general you can make important keywords.
 What really happens with rule erasure?
-The system’s default behavior is to erase rules that put output into the output stream, so
-they won’t repeat themselves later. You can explicitly make a rule erase with ^erase() and
+The system's default behavior is to erase rules that put output into the output stream, so
+they won't repeat themselves later. You can explicitly make a rule erase with ^erase() and
 not erase with ^keep() and you can make the topic not allow responders to erase with
 keep as a topic flag. So… if a rule generates output, it will try to erase itself. If a rule
 uses ^reuse(), then the rule that actually generated the output will be the called rule. If for
@@ -2191,8 +2247,10 @@ u: (* here *) xxx
 you will succeed. The actual tokens are "we" "go" "here and there" "about" "town".
 but the pattern matcher is allowed to peek some into composite words. 
 
-When it does match, since the actual token is "here and there", the position start is set to that word (e.g., position 3), 
-and in order to allow to match other words later in the composite, the position end is set to the word before (e.g., position 2). 
+When it does match, since the actual token is "here and there", 
+the position start is set to that word (e.g., position 3), 
+and in order to allow to match other words later in the composite, 
+the position end is set to the word before (e.g., position 2). 
 This means if your pattern is
 ```
 u: (* here and there *) xxx
@@ -2206,7 +2264,7 @@ then `_0` is bound to words 1 & 2 "we go", and matches "here and there", and `_1
 the rest, "about town". 
 
 That is, the system will NOT position the position end before the
-composite word. If it did, `_1` would be _here and there about town_. It’s not.
+composite word. If it did, `_1` would be _here and there about town_. It's not.
 
 Also, if you try to memorize the match itself, you will get nothing because the system
 cannot represent a partial word. Hence
@@ -2214,7 +2272,7 @@ cannot represent a partial word. Hence
 u: (* _and * ) xxx
 ```
 would memorize the empty word for `_0`.
-If you don’t want something within a word to match your word, you can always quote it.
+If you don't want something within a word to match your word, you can always quote it.
 ```
 u: (X * ‘and *) xxx
 ```
@@ -2228,13 +2286,13 @@ What happens here? First, a match happens, because `~myjunk` can match and insid
 composite. Second memorization cannot do that, so you memorize the empty word. If
 you want to not match at all, you can write:
 ```
-u: (* _’~myjunk * ) xxx
+u: (* _'~myjunk * ) xxx
 ```
 In this case, the result is not allowed to match a partial word, and fails to match.
 However, given " My brothers are rare." and these:
 ```
 concept: ~myfamily (brother)
-u: (* _’~ myfamily * ) xxx
+u: (* _'~ myfamily * ) xxx
 ```
 the system will match and store `_0 = brothers`. Quoting a set merely means no partial
 matches are allowed. The system is still free to canonicalize the word, so brothers and
@@ -2305,16 +2363,16 @@ The system also sets `$cs_tokencontrol` to results that happen from input proces
 
 # A Fresh Build
 
-You've been building and chatting and something isn’t right but it’s all confusing. Maybe
+You've been building and chatting and something isn't right but it's all confusing. Maybe
 you need a fresh build. Here is how to get a clean start.
 
 * Quit chatscript.
 
-* Empty the contents of your USER folder, but don’t erase the folder.
-This gets rid of old history in case you are having issues around things you’ve said before
+* Empty the contents of your USER folder, but don't erase the folder.
+This gets rid of old history in case you are having issues around things you've said before
 or used from the chatbot before.
 
-* Empty the contents of your TOPIC folder, but don’t erase the folder.
+* Empty the contents of your TOPIC folder, but don't erase the folder.
 This gets rid of any funny state of topic builds.
 
 * `:build 0` - rebuild the common layer
@@ -2361,7 +2419,8 @@ things with facts). If you want to know how much, try doing `:show stats` and th
 and the stats at the end will include the maximum values needed during a volley. To be
 paranoid, add beyond those valuse. 
 Take your max dict value and double it. Same with max fact. Add 10000 to max text. 
-Just for reference, for our most advanced bot, the actual max values used were: max dict: 346 max fact: 689 max text: 38052. 
+Just for reference, for our most advanced bot, the actual max values used were: 
+max dict: 346 max fact: 689 max text: 38052. 
 And the maximum rules executed to find an answer to an input sentence was 8426 (not that you
 control or care). Typical rules executed for an input sentence was 500-2000 rules.
 For example, add 1000 to the dict and fact used amounts and 10 (kb) to the string space
