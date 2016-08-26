@@ -440,8 +440,7 @@ contents.
 | interchange variable | meaning |
 | -------------------  | ------- |
 | $cs_token |  described extensively above| 
-| $cs_response |  controls automatic handling of outputs to user. By default it consists of `$cs_response = #Response_upperstart \| #response_removespacebeforecomma \| #response_alterunderscores \| #response_removetilde` If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. `#response_upperstart` – makes the first letter of an output sentence capitalized, `#Response_removespacebeforecomma` – does the obvious, `#Response_alterunderscores` - converts single underscores to spaces and double
-underscores to singles (eg for a web url) |
+| $cs_response |  controls automatic handling of outputs to user. By default it consists of `$cs_response = #Response_upperstart \| #response_removespacebeforecomma \| #response_alterunderscores \| #response_removetilde` If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. `#response_upperstart` – makes the first letter of an output sentence capitalized, `#Response_removespacebeforecomma` – does the obvious, `#Response_alterunderscores` - converts single underscores to spaces and double underscores to singles (eg for a web url) |
 | $cs_jsontimeout |  seconds before JsonOpen declares a time out failure. If unspecified the default is 300 | 
 | $cs_crashmsg |  in server mode, what to say if the server crashes and we return a message to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._ | 
 | $cs_abstract |  used with :abstract | 
@@ -449,9 +448,7 @@ underscores to singles (eg for a web url) |
 | $cs_trace |  if this variable is defined, then whenever the user's volley is finished, the value of this variable is set to that of :trace and :trace is cleared to 0, but when the user is read back in, the :trace is set to this value. For a server, this means you can perform tracing on a user w/o making all user transactions dump trace data | 
 | $cs_control_pre |  name of topic to run in gambit mode on pre-pass, set by author. Runs before any sentences of the input volley are analyzed. Good for setting up initial values | 
 | $cs_externaltag |  name of a topic to use to replace existing internal English pos-parser. See bottom of ChatScript PosParser manual for details | 
-| $cs_prepass |  name of a topic to run in responder mode on main volleys, which runs before $cs_control_main and after all of the above and pos-parsing is done. Used to amend preparation data coming from the engine. You can use it to add your own spin on input processing before going to your main control. I use it to, for example, label
-commands as questions, standardize sentence construction (like _if you see me what will
-you think_ to _assume you see me. What will you think?_) | 
+| $cs_prepass |  name of a topic to run in responder mode on main volleys, which runs before $cs_control_main and after all of the above and pos-parsing is done. Used to amend preparation data coming from the engine. You can use it to add your own spin on input processing before going to your main control. I use it to, for example, label commands as questions, standardize sentence construction (like _if you see me what will you think_ to _assume you see me. What will you think?_) | 
 | $cs_control_main |  name of topic to run in responder mode on main volleys, set by author | 
 | $cs_control_post |  name of topic to run in gambit mode on post-pass, set by author| 
 | $botprompt |  message for console window to label bot output | 
@@ -461,16 +458,14 @@ you think_ to _assume you see me. What will you think?_) |
 | $cs_token |  bits controlling how the tokenizer works. By default when null, you get all bits assumed on. The possible values are in src/dictionarySystem.h (hunt for $token) and you put a # in front of them to generate that named numeric constant | 
 | $cs_abstract |  topic used by :abstract to display facts if you want them displayed | 
 | $cs_prepass |  topic used between parsing and running user control script. Useful to supplement parsing, setting the question value, and revising input idioms | 
-| $cs_wildcardseparator |  when a match variable covers multiple words, what should separate them- by default it's a space, but underscore is handy too. Initial system character is space, creating fidelity with what was typed. Useful if _ can be recognized in input (web addresses). Changing to _ is consistent with multi-word representation and
-keyword recognition for concepts. CS automatically converts _ to space on output, so internal use of _ is normal.
-$cs_userfactlimit – how many of the most recent permanent facts created by the script in response to user inputs are kept for each user. Std default is 100 | 
+| $cs_wildcardseparator |  when a match variable covers multiple words, what should separate them- by default it's a space, but underscore is handy too. Initial system character is space, creating fidelity with what was typed. Useful if _ can be recognized in input (web addresses). Changing to _ is consistent with multi-word representation and keyword recognition for concepts. CS automatically converts _ to space on output, so internal use of _ is normal |
+$cs_userfactlimit | how many of the most recent permanent facts created by the script in response to user inputs are kept for each user. Std default is 100 | 
 | $cs_response |  controls some characteristics of how responses are formatted | 
 | $cs_randIndex |  the random seed for this volley | 
-| $cs_utcoffset |  if defined, then %time returns current utc time + timezone offset. The offset is usually a simple number, meaning hours, and can have + or – in front of it. It can also be a normal time reference like 02:30 which means plus 2 hours and 30 minutes beyond utc, or -01:30:20 which means 1 hour, 30 minutes, and 20 seconds
-before utc (as if anyone would use that). The following variables are generated by the system on behalf of scripts | 
+| $cs_utcoffset |  if defined, then %time returns current utc time + timezone offset. The offset is usually a simple number, meaning hours, and can have + or – in front of it. It can also be a normal time reference like 02:30 which means plus 2 hours and 30 minutes beyond utc, or -01:30:20 which means 1 hour, 30 minutes, and 20 seconds before utc (as if anyone would use that). The following variables are generated by the system on behalf of scripts | 
 | $$db_error |  error message from a postgres failure $$findtext_start - ^findtext return the end normally, this is where it puts the start | 
 | $$tcpopen_error |  error message from a tcpopen error| 
 | $$document |  name of the document being read in document mode| 
 | $cs_randindex |  current value of the random generator value| 
 | $cs_bot |  name of the bot currently in use| 
-| $cs_login |  login name of the user
+| $cs_login |  login name of the user |
