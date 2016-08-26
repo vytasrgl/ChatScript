@@ -322,12 +322,12 @@ the topic. Otherwise the most recent pending topic is found |
 
 ### Build data:
 
-| variable | meaning |
-| -------- | ------- |
-| %dict  | date/time the dictionary was built |
-| %engine  |  date/time the engine was compiled |
-| %os  |  os invovled (linux windows mac ios) |
-| %script  |  date/time build1 was compiled |
+| variable  | meaning |
+| --------  | ------- |
+| %dict     | date/time the dictionary was built |
+| %engine   |  date/time the engine was compiled |
+| %os       |  os invovled (linux windows mac ios) |
+| %script   |  date/time build1 was compiled |
 | %version  | engine version number  |
 
 
@@ -348,21 +348,20 @@ following:
 
 These enable various LIVEDATA files to perform substitutions on input:
 
-| flag | description |
-| ---- | ----------- |
-|`DO_ESSENTIALS`  | perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead Control Over Input |  
-|`DO_SUBSTITUTES`  perform LIVEDATA/substitutes  |
-|`DO_CONTRACTIONS`  | perform LIVEDATA/contractions, expanding contractions  |
- |`DO_INTERJECTIONS`  | perform LIVEDATA/interjections, changing phrases to
-interjections  |
- |`DO_BRITISH`  | perform LIVEDATA/british, respelling brit words to American  |
- |`DO_SPELLING`  | performs the LIVEDATA/spelling file (manual spell correction)  |
- |`DO_TEXTING`  | performs the LIVEDATA/texting file (expand texting notation)  |
- | `DO_SUBSTITUTE_SYSTEM`  | do all LIVEDATA file expansions  |
- | `DO_INTERJECTION_SPLITTING`  | break off leading interjections into own sentence. |
- | `DO_NUMBER_MERGE`  | merge multiple word numbers into one (_four and twenty_)  |
- | `DO_PROPERNAME_MERGE`  | merge multiple proper name into one (_George Harrison_)  |
- |`DO_DATE_MERGE`  | merge month day and/or year sequences (_January 2, 1993_)  |
+| flag                      | description |
+| ------------------------- | ----------- |
+|`DO_ESSENTIALS`            | perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead Control Over Input |  
+|`DO_SUBSTITUTES`           | perform LIVEDATA/substitutes  |
+|`DO_CONTRACTIONS`          | perform LIVEDATA/contractions, expanding contractions  |
+|`DO_INTERJECTIONS`         | perform LIVEDATA/interjections, changing phrases to interjections  |
+|`DO_BRITISH`               | perform LIVEDATA/british, respelling brit words to American  |
+|`DO_SPELLING`              | performs the LIVEDATA/spelling file (manual spell correction)  |
+|`DO_TEXTING`               | performs the LIVEDATA/texting file (expand texting notation)  |
+|`DO_SUBSTITUTE_SYSTEM`     | do all LIVEDATA file expansions  |
+|`DO_INTERJECTION_SPLITTING`| break off leading interjections into own sentence. |
+|`DO_NUMBER_MERGE`          | merge multiple word numbers into one (_four and twenty_)  |
+|`DO_PROPERNAME_MERGE`      | merge multiple proper name into one (_George Harrison_)  |
+|`DO_DATE_MERGE`            | merge month day and/or year sequences (_January 2, 1993_)  |
  
 If any of the above items affect the input, they will be echoed as values into
 %tokenFlags so you can detect they happened.
@@ -370,34 +369,34 @@ If any of the above items affect the input, they will be echoed as values into
 The next changes do not echo into %tokenFlags and relate to grammar of input:
 
 | flag | description |
-| ---- | ----------- |
-| `DO_POSTAG` |  allow pos-tagging (labels like ~noun ~verb become marked) | 
-| `DO_PARSE` |  allow parser (labels for word roles like ~main_subject) | 
+| ----                    | ----------- |
+| `DO_POSTAG`             |  allow pos-tagging (labels like ~noun ~verb become marked) | 
+| `DO_PARSE`              |  allow parser (labels for word roles like ~main_subject) | 
 | `DO_CONDITIONAL_POSTAG` |  perform pos-tagging only if all words are known. Avoids wasting time on foreign sentences in particular | | `NO_ERASE` |  where a substitution would delete a word entirely as junk, don't. |
 
 Normally the system tries to outguess the user, who cannot be trusted to use
 correct punctuation or casing or spelling. These block that:
 
-| flag | description |
-| ---- | ----------- |
-| `STRICT_CASING` |  except for 1st word of a sentence, assume user uses correct casing on words | 
-| `NO_INFER_QUESTION` |  the system will not try to set the QUESTIONMARK flag if the user didn't input a ? and the structure of the input looks like a question | 
-| `DO_SPELLCHECK` |  perform internal spell checking | 
-| `ONLY_LOWERCASE` |  force all input (except “I”) to be lower case, refuse to recognize uppercase forms of anything | 
-| `NO_IMPERATIVE`  |  | 
-|  `NO_WITHIN`  |  | 
-| `NO_SENTENCE_END`  |  | 
+| flag              | description |
+| ----------------- | ----------- |
+|`STRICT_CASING`    |  except for 1st word of a sentence, assume user uses correct casing on words | 
+|`NO_INFER_QUESTION`|  the system will not try to set the QUESTIONMARK flag if the user didn't input a ? and the structure of the input looks like a question | 
+|`DO_SPELLCHECK`    |  perform internal spell checking | 
+|`ONLY_LOWERCASE`   |  force all input (except “I”) to be lower case, refuse to recognize uppercase forms of anything | 
+|`NO_IMPERATIVE`    |  | 
+|`NO_WITHIN`        |  | 
+|`NO_SENTENCE_END`  |  | 
 
 
 Normally the tokenizer breaks apart some kinds of sentences into two. These
 prevent that:
 
-| flag | description |
-| ---- | ----------- |
-| `NO_HYPHEN_END` |  don't break apart a sentence after a hyphen | 
-| `NO_COLON_END` |  don't break apart a sentence after a colon | 
-| `NO_SEMICOLON_END` |  don't break apart a sentence after a semi-colon | 
-| `UNTOUCHED_INPUT` |  if set to this alone, will tokenize only on spaces, leaving everything but spacing untouched | 
+| flag             | description |
+| ---------------- | ----------- |
+|`NO_HYPHEN_END`   |  don't break apart a sentence after a hyphen | 
+|`NO_COLON_END`    |  don't break apart a sentence after a colon | 
+|`NO_SEMICOLON_END`|  don't break apart a sentence after a semi-colon | 
+|`UNTOUCHED_INPUT` |  if set to this alone, will tokenize only on spaces, leaving everything but spacing untouched | 
 
 Note, you can change `$cs_token` on the fly and force input to be reanalyzed via
 `^retry(SENTENCE)`. I do this when I detect the user is trying to give his name, 
