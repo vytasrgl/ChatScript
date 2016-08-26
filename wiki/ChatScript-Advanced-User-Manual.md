@@ -668,7 +668,7 @@ t: Do you like germs?
 If you want to know if an exclamation ended his sentence, just backslash a `!` so it won't
 be treated as a not request. This doesn't change the match position.
 ```
-s: (I like \\!) Why so much excitement
+s: (I like \!) Why so much excitement
 ```
 
 ## More comparison tests - `&` `?`
