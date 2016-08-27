@@ -395,7 +395,8 @@ Changes the original value for this word.
 ### `^setrole`( wordindex value )
 Changes the parse role for this word. These are used in conjunction with `$cs_externaltag` to replace the CS inbuilt English postagger and parser with one from outside. See end of ChatScript PosParser manual.
 
-### `^savesentence`( label ) `^restoresentence`( label )
+### `^savesentence`( label )
+### `^restoresentence`( label )
 These two functions save and restore the current entire sentence preparation context. That
 means everything that pattern matching depends upon from the current sentence can be
 saved, you can go on to a new sentence (either via `^next(INPUT)` or `^analyze()` or
