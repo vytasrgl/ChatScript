@@ -94,8 +94,10 @@ There are special documentation comments that start with `#!` described elsewher
 
 ## Legal declaration names 
 
-A topic or function must contain only alpha-numeric characters, underscores, hyphens, and periods. They must begin with `~` and then continue with a starting alphabetic character. Variables must start with `$` or `$$`, then begin with a
-starting alphabetic character and continue with alpha-numerics, underscores, or hyphens. 
+A topic or function must contain only alpha-numeric characters, underscores, hyphens, and periods. 
+They must begin with `~` and then continue with a starting alphabetic character. 
+Variables must start with `$` or `$$`, 
+then begin with a starting alphabetic character and continue with alpha-numerics, underscores, or hyphens. 
 
 
 # Hello Word Demo
@@ -117,18 +119,19 @@ Also, the Linux version defaults to server mode, so you should run it as:
 ```
 
 * The system prints out a bunch of statistics as it loads data. After which is says:
-"Enter user name".
+
+_Enter user name:_
 
 * Select a user name. It’s arbitrary, but it’s how the system knows you are you
-when you start up again later. The system will respond with a Welcome to
-ChatScript message.
+when you start up again later. The system will respond with a _Welcome to ChatScript_ message.
 
 * Now enter: _What is your name?_ – you get _My name is Harry_ if you type this
-correctly. You can also ask How was your childhood? and what are you afraid of
-and what is your history. Actually, you can say or ask anything and get an almost
-reasonable response because Harry has quibbles. If he knows nothing specific on
-your topic (which is almost universally true), he can stall and quibble instead. So
-you can have a conversation about anything. 
+correctly. You can also ask _How was your childhood?_ and what are you afraid of
+and what is your history. 
+
+Actually, you can say or ask anything and get an almost reasonable response because Harry has quibbles. 
+If he knows nothing specific on your topic (which is almost universally true), 
+he can stall and quibble instead. So you can have a conversation about anything. 
 
 OK. Now you’ve run what comes pre-installed.
 
@@ -187,7 +190,7 @@ u: (run away)
 
 the engine will see if the word run can be found anywhere in the sentence, and if so, is it
 immediately followed by the word away.
-Whenever you see [ …] it means pick one of. So 
+Whenever you see `[…]` it means pick one of. So 
 
 ```
 u: ([scare afraid]) 
@@ -197,15 +200,18 @@ in any of its related forms: _scared_, _scare_, _scaring_, _scares_.
 
 
 In the sample file you will see ordinary words and `~words`. Tilde words refer to a
-concept set of words, a list of words that approximates the `~word`. E.g., `~like` means any
-of a number of words that mean to like something. `~animals` means any of a large list of
-names of animals. These are shareable shorthand for the `[` `]` notation. Instead of having to
+concept set of words, a list of words that approximates the `~word`. E.g., 
+
+`~like` means any of a number of words that mean to like something. 
+`~animals` means any of a large list of names of animals. 
+
+These are shareable shorthand for the `[` `]` notation. Instead of having to
 write `[elephant tiger leopard alligator crocodile lion …]` in lots of rules, with the
 appropriate concept defined one can merely say `~animals` 
 
 Rules are always bundled into topics, like the topic: `~childhood` topic. Topics have a list
-of relevant keywords following the topic name. After that, rules come in any order. The
-gambits, t: lines, offer a story or expected conversation flow. If you ask information in a
+of relevant keywords following the topic name. After that, rules come in any order. 
+The gambits, `t:` lines, offer a story or expected conversation flow. If you ask information in a
 conversation, you are expected to balance the scales by giving information. For example
 if you ask what someone does for a hobby, you are expected after their response to
 answer the question about yourself. As in:
@@ -249,12 +255,14 @@ comment.
 
 Special comments `#!` give sample input from a user that the immediately following rule is
 expected to match and handle. This both documents what input is expected to match the
-rule below AND allows the engine to automatically test it. The special comment gives
-only one example of matching input, not all possible inputs that can match. It helps you
-understand what a responder or rejoinder is supposed to react to. It has no impact
-whatsoever on a user in chat. 
+rule below AND allows the engine to automatically test it. 
+The special comment gives only one example of matching input, not all possible inputs that can match. 
+It helps you understand what a responder or rejoinder is supposed to react to. 
+It has no impact whatsoever on a user in chat. 
+
 
 # What Files are Where
+
 
 The ChatScript engine can run multiple bots at once, each with a unique persona. So one
 user can connect and talk with a specific personality while another user connects and
@@ -267,7 +275,8 @@ access all the other folders.
 * **History Files**: Each user’s conversation is tracked by the system and kept in files in the
 USERS directory. A user can return to chat with a personality days later, and the system
 knows what has happened in previous conversations and that this is the start of a new
-conversation. The system keeps a log file per user recording their conversations for the
+conversation. 
+The system keeps a log file per user recording their conversations for the
 author (CS does not use this file, it merely records it), and a topic file for each
 userchatbot pairing, where it stores the current state of conversation for the engine. If the
 script records facts about the user during conversation, these are also stored in the topic
@@ -284,8 +293,9 @@ dictionary and run-time system that you might change as an advanced author.
 * **Knowledge Files**: The RAWDATA folder is where raw data to support chat is kept
 (though you can keep it anywhere since it’s not compiled into the engine). That data is
 run through the script "compiler" and the output is stored in the TOPIC directory, which
-holds your compiled script data. If your script has verification data embedded in it (#!
-sample inputs), which allows the system to prove your patterns actually do what you
+holds your compiled script data. 
+If your script has verification data embedded in it (#! sample inputs), 
+which allows the system to prove your patterns actually do what you
 intend, that data is stored in the VERIFY directory after compilation. There are folders
 for HARRY, ONTOLOGY, WORLDDATA, STOCKPILE, NLTK, POSTGRES and
 QUIBBLES. Normally when you define a chatbot, you add a folder with the name of
@@ -304,10 +314,10 @@ folder. A server will also store its log here.
 executable engine. LOEBNERVS2010 builds a Loebner contest version.
 
 * **Top Level Files**: Aside from the chatscript.exe, the following top level files exist:
-authorizedIP.txt –as a server, this allows some users to enter commands
-changes.txt – list of changes between releases
-version.txt – the current version
-talk.vbs – script to enable voice output in windows 
+`authorizedIP.txt` – as a server, this allows some users to enter commands
+`changes.txt` – list of changes between releases
+`version.txt` – the current version
+`talk.vbs` – script to enable voice output in windows 
 
 * **REGRESS**: Files that can do regress tests of various kinds are here.
 
@@ -336,8 +346,7 @@ file or a new top level declaration (which includes `topic:`, `concept:`, `table
 `outputmacro:`, `patternmacro:`, `dualmacro:`, `bot:`, `data:`, `canon:`, `query:`, `plan:`, `describe:`,
 and `replace:`). 
 A topic name must start with a `~`, an alphabetic character, and then be a
-standard legal name (contain only alpha-numeric characters, underscores, hyphens, and
-periods). 
+standard legal name (contain only alpha-numeric characters, underscores, hyphens, and periods). 
 
 ## Keywords
 
@@ -346,8 +355,9 @@ If the user input has no keywords in common with the topic, then normally the to
 all its rules will not be considered. User sentence keywords trigger the closest matching
 topic (based on number and length of keywords) for evaluation. 
 
-If the engine can find a matching responder, then it shifts to that topic and replies. Otherwise the engine tries
-other matching topics. Eventually, if it can’t find an appropriate responder, it can go back
+If the engine can find a matching responder, then it shifts to that topic and replies. 
+Otherwise the engine tries other matching topics. 
+Eventually, if it can’t find an appropriate responder, it can go back
 to the most relevant topic and just dish out a gambit (the `t:` rule). 
 
 It doesn’t matter if the new topic has responders that overlap some other topic’s
@@ -374,14 +384,15 @@ OR, the topic is already the current topic (some other rule had keywords in its 
 also were topic keywords and got you entry into the topic) OR, the topic was directly
 called by the control script or some other topic.
 
+
 ## Gambit Rules
 
 In addition to responders for user input (`s:` `?:` `u:`) a topic can have gambits to offer (`t:`).
 Gambits create a coherent story on the topic if the bot is in control of the conversation.
 Yet if the user asks questions, the system can use a responder to either respond directly or
 reuse a gambit it was going to volunteer anyway. It is entirely up to you the order of
-responders and gambits. You can segregate `s:` from `?:` from `u:` or co-mingle them. You
-can have responders intermixed with gambits. 
+responders and gambits. You can segregate `s:` from `?:` from `u:` or co-mingle them. 
+You can have responders intermixed with gambits. 
 
 What does it mean for the chatbot to be "in control" of the conversation? When the user
 types in a statement or question, the system will see if it has a rejoinder or a responder
@@ -394,15 +405,17 @@ from a topic closely related to the user's input. Maybe it will try to steer the
 to a specific new topic. All that is controlled by the logic of the control script (of which
 there is a default one supplied with ChatScript but which you can author yourself). 
 
-The typical gambit does not have a label or a pattern component. It could have them. It
-just usually is the rule type and the output data. 
+The typical gambit does not have a label or a pattern component. It could have them. 
+It just usually is the rule type and the output data. 
 
 ## Execution Order
 
 A topic is executed in either gambit mode (meaning t: lines fire) or in responder mode
 (meaning `s:` `?:` and `u:` fire). Rules are placed in the order you want them to be tried. For
 gambits, the order tells a story. 
-For responders, rules are usually ordered most specific to least specific, possibly bunched by a theme. So a responder trying to catch what color is your hair would be before one that simply would react to any reference to your hair. 
+For responders, rules are usually ordered most specific to least specific, possibly bunched by a theme. 
+So a responder trying to catch what color is your hair would be before one that simply would react 
+to any reference to your hair. 
 
 By default, the system avoids repeating itself, marking as used-up rules that it matches
 that generate output. This is how a topic story gets told. It outputs the first gambit, marks
@@ -414,7 +427,9 @@ answer.
 The file `RAWDATA/skeleton.top` has a bunch of topics already predefined with
 keywords but no responders or gambits. 
 
-If you filled in some of these topics with rules and hooked the file into `RAWDATA/filesHarry.txt` and rebuilt the data, you’d have a chatbot. 
+If you filled in some of these topics with rules and hooked the file into `RAWDATA/filesHarry.txt` 
+and rebuilt the data, you’d have a chatbot. 
+
 
 ## Rejoinders
 
@@ -454,8 +469,8 @@ All rules (responders, gambits, rejoinders) can have labels on them. Labels have
 of uses. Other rules can use functions that target a particular labeled rule. You can use the
 debug abilities to test that rule and you can see that rule more easily in a trace. And you
 get a kind of documentation telling you what your rule is about. 
-A label is a single word placed between the rule type and the pattern. If the rule is a gambit, you must add a
-pattern, even if it is only empty parens. 
+A label is a single word placed between the rule type and the pattern. 
+If the rule is a gambit, you must add a pattern, even if it is only empty parens. 
 
 ```
 t: MY_EYES () My eyes are blue
@@ -471,6 +486,7 @@ The `simpletopic.top` file has an example topic called `~Childhood` of normal co
 
 
 # SIMPLE PATTERNS 
+
 
 As stated previously, a rule cannot fire unless its pattern matches, and a pattern in a rule
 is encased in parens (which means find the items within it in sequence).
@@ -525,13 +541,12 @@ topic: ~death ["to die" "cross over"]
 
 Second, when trying to write words where you are not sure how the system will tokenize
 it and whether it is one word or a sequence of words. Tokenization involving punctuation
-can be tricky. For example, the word _Bob’s_ is actually tokenized as two words: _Bob ‘s_ .
+can be tricky. For example, the word _Bob’s_ is actually tokenized as two words: _Bob 's_ .
 And in Wordnet, _New_Year's_Eve_ is a single word. 
 
-You might not know that, but anytime you think of something as multiple words, you are safe quoting it (writing _"New
-Year’s Eve"_) and letting ChatScript manage how it is stored internally. This is
-particularly true of names of people, titles of books and other multiple-word proper
-names. 
+You might not know that, but anytime you think of something as multiple words, 
+you are safe quoting it (writing _"New Year’s Eve"_) and letting ChatScript manage how it is stored internally. 
+This is particularly true of names of people, titles of books and other multiple-word proper names. 
 
 Put things with punctuation in them in double quotes to be safe. Pattern matching
 a sequence is limited to 5 words in row and will do both original and canonical forms. 
@@ -592,8 +607,9 @@ with you…_ nor will it accept _when you went home_ which hasn’t room for the
 The usual way to manage the excesses of the previous wildcards is to use a range restricted
 wildcard. This is an `*` followed by a `~` and a number, like `*~3`. It means from 0
 up through that number, or approximately that number. 
-A common choice is `*~2`. This leaves room for some filler words (like a determiner and an adjective or perhaps some
-kind of adverb), without requiring them or letting the sentence stray.
+A common choice is `*~2`. This leaves room for some filler words 
+(like a determiner and an adjective or perhaps some kind of adverb), 
+without requiring them or letting the sentence stray.
 ```
 ?: (you *~2 go *~2 home) I often go to that home.
 ```
@@ -623,11 +639,12 @@ pattern:
 ```
 u: ( I * like << really >> photos)
 ```
-and input _photos I really like_ then it would match because it found "I * like" then found anywhere really and then reset
-the position freely back to start and found photos somewhere in the sentence.
+and input _photos I really like_ then it would match because it found `I * like` 
+then found anywhere really and then reset the position freely back to start and found photos 
+somewhere in the sentence.
 
 
-## Choices `[ ]`
+## Choices `[` `]`
 
 You can match alternate words in the same position by placing those choices in brackets.
 ```
@@ -735,10 +752,14 @@ or not. E.g., good day, mate and It is a good day are different for "good day". 
 sure and I am sure are different. Words that have a different meaning at the start of a
 sentence are commonly called interjections. 
 
-In ChatScript these are defined by the `livedata/interjections.txt` file. In addition, the file augments this concept with "discourse acts", phrases that are like an interjection. All interjections and discourse acts map to concept sets, which come thru as the user input instead of what they wrote. 
-For example _yes_ and _sure_ and _of course_ are all treated as meaning the discourse act of agreement in the
-interjections file. So you don’t see _yes_, I will go coming out of the engine. The
-interjections file will remap that to the sentence `~yes`, breaking off that into its own
+In ChatScript these are defined by the `livedata/interjections.txt` file. 
+In addition, the file augments this concept with "discourse acts", phrases that are like an interjection. 
+All interjections and discourse acts map to concept sets, 
+which come thru as the user input instead of what they wrote. 
+
+For example _yes_ and _sure_ and _of course_ are all treated as meaning the discourse act 
+of agreement in the interjections file. So you don’t see _yes_, I will go coming out of the engine. 
+The interjections file will remap that to the sentence `~yes`, breaking off that into its own
 sentence, followed by I will go as a new sentence. 
 
 These generic interjections (which are open to author control via `interjections.txt`) listed
@@ -779,7 +800,7 @@ For verbs, the canonical form is the infinitive tense. If your pattern is:
 ```
 This will respond equally to _Was it correct?_ and _Are you correct?_ and _Is she correct?_.
 
-* Possessive suffixes ‘ and ‘s transform to the word ‘s.
+* Possessive suffixes `'` and `'s` transform to the word `'s`.
 
 * Adjectives and adverbs revert to their base form.
 
@@ -797,7 +818,7 @@ _which_.
 
 The file `canonical.txt` in LIVEDATA controls lots of these.
 
-If the system sees & in the input, it changes it to and. It also changes ` to ‘ . 
+If the system sees & in the input, it changes it to and. It also changes `\`` to `'` . 
 
 ChatScript’s simple concept below accepts all tenses and conjugations of the listed verbs:
 
@@ -811,6 +832,7 @@ system will restrict itself to what you used in the pattern:
 u: ( I 'like you ) This matches I like you but not I liked you.
 s: ( I was ) This matches I was and Me was but not I am
 ```
+
 The same is true for concepts:
 ```
 u: ('~extent_adverbs) 
@@ -826,32 +848,31 @@ u: ( ![ not never rarely ] I * ~ingest * ~meat ) You eat meat.
 u: ( !~negativeWords I * ~like * ~meat ) You like meat. 
 ```
 
-While ! Checks for the entire rest of the sentence, !! checks just the next word from
-where you are. So
+While ! Checks for the entire rest of the sentence, !! checks just the next word from where you are. So
 ```
 u: (test !!this) I win
 ```
 Will match input _test that this works_ and not match _test this works_.
 
 
-## Optional Words `{ }`
+## Optional Words `{` `}`
 
 Sometimes you can expect a word might or might not be supplied. Your pattern can
-reflect this, swallowed it when present. {} is just like choice [], except the match is
+reflect this, swallowed it when present. `{``}` is just like choice `[``]`, except the match is
 optional. It is allowed to fail.
 ```
 ?: (how hot is ~number {degree deg} Farenheit) Sounds hot.
 s: ( define {the word (the meaning of) } *1 > ) Sorry. I don’t know it.
 ```
-Note how we didn’t have to say degrees in the optional list, because that automatically is
-handled by using the canonical degree.
+Note how we didn’t have to say degrees in the optional list, 
+because that automatically is handled by using the canonical degree.
 
 If you want to test for a sequence of optional words, you can do two things:
 ```
 u: ( {are} {you}{going} home ) or u: ({"be you go"} home )
 ```
-In a quoted phrase, you can use either all canonical or all exact forms. And you can do a
-quoted phrase of 4 words long (but not longer). 
+In a quoted phrase, you can use either all canonical or all exact forms. 
+And you can do a quoted phrase of 4 words long (but not longer). 
 
 
 ## Commands
@@ -927,10 +948,12 @@ top level members. `:down entity 1` or `:down ~animals 2`.
 
 # SIMPLE OUTPUT
 
-The goal of the engine is to generate output to display to a user. When a rule does that, it
-has accomplished the goal of the topic. 
+The goal of the engine is to generate output to display to a user. 
+When a rule does that, it has accomplished the goal of the topic. 
+
 
 ## Direct Output
+
 To generate simple output, just put the text you want to display after the pattern
 component of a rule. Gambits do not have to have a pattern component, in which case
 their output starts immediately.
@@ -938,6 +961,7 @@ their output starts immediately.
 t: This is output for the user.
 ?: ( hello ) How are you? Do you have a life? Are you going to die soon? 
 ```
+
 
 ## AutoFormat
 
@@ -951,12 +975,12 @@ advanced manual.
 
 ## Literal Output `\`
 
-To output characters that have reserved meaning to the engine, like `[` and `]`, you need to
-put a backslash immediately in front of them. In particular, to force a newline you use `\n`
-and tab with `\t`.
+To output characters that have reserved meaning to the engine, 
+like `[` and `]`, you need to put a backslash immediately in front of them. 
+In particular, to force a newline you use `\n` and tab with `\t`.
 
 
-## Randomized Output `[]`
+## Randomized Output `[``]`
 
 You can select among a range of choices by using output choices. Each choice is encased
 in [], and a contiguous set of them form a zone that the system will pick randomly
@@ -968,7 +992,9 @@ The above has two random zones, separated by fixed text. So it might output _hel
 you going to dance anytime soon?_ or _hey Are you going to eat anytime soon?_.
 
 
+
 # VARIABLES
+
 
 A chatbot with no ability to remember, even in the brief moment of attending to user
 input, would be an impoverished being indeed. ChatScript supports several levels of
@@ -984,12 +1010,13 @@ many underscores you use in the pattern.
 ```
 ?: ( do you eat _~meat) No, I hate _0.
 ```
+
 If the input is do you eat ham the output would be No, I hate ham. Of course, the value
 of `_0` is only guaranteed for the execution of this rule. Match variables may be clobbered
-when you execute another rule. Or they may last for a while. At most it will last for the
-duration of the current volley (several sentences maybe) after which it should be
-presumed trashed. Whenever you start a volley, you should presume match variables all
-hold unknown junk.
+when you execute another rule. Or they may last for a while. 
+At most it will last for the duration of the current volley (several sentences maybe) 
+after which it should be presumed trashed. Whenever you start a volley, 
+you should presume match variables all hold unknown junk.
 
 You are allowed `_0` through `_20`. I often use the `_10` to `_20` range as "safe" variables for
 the duration of a volley, because I will never match that many variables in a single
@@ -1000,7 +1027,7 @@ When the system memorizes your underscore match, it stores both the original wor
 canonical form, and the position of the text. On output, by default you get the canonical
 form. If you want the original form, you must precede your reference with an apostrophe.
 ```
-?: (do you eat _ [ ham eggs bacon]) I eat ‘_0.
+?: (do you eat _ [ ham eggs bacon]) I eat '_0.
 ```
 
 If the input is do you eat eggs the output is I eat eggs. Had I not used the apostrophe, the
@@ -1008,7 +1035,7 @@ output would have been I eat egg.
 
 Rarely would you ever want the canonical form of memorizing an indefinite gap.
 ```
-?: (do you like _* or _*) I don’t like ‘_0 so I guess that means I prefer ‘_1.
+?: (do you like _* or _*) I don’t like '_0 so I guess that means I prefer '_1.
 ```
 If the input is do you like eating green eggs or swimming on the beach, the output would
 be I don’t like eating green eggs so I guess that means I prefer swimming on the beach.
@@ -1021,10 +1048,9 @@ If you use match variables, they are allocated in the order of the pattern. E.g.
 s: ( _~fruit [_~animal _bear] _~like)
 ```
 
-In the above, `_0` is a fruit and `_2` is a like, and the `_~animal` or `_bear` is `_1`. If you had
-NOT put `_`in front of bear, you are at risk that the `~like` match may be `_1` or `_2`,
-depending on what happened inside `[]`. That's your headache if you use nested
-memorization.
+In the above, `_0` is a fruit and `_2` is a like, and the `_~animal` or `_bear` is `_1`. 
+If you had NOT put `_`in front of bear, you are at risk that the `~like` match may be `_1` or `_2`,
+depending on what happened inside `[]`. That's your headache if you use nested memorization.
 
 Be aware that this expression:
 ```
@@ -1050,13 +1076,13 @@ you don't want it to simply output some bizarre word.
 
 Unlike match variables, user variables hold a single value only.
 ```
-s: ( I eat _*1 >) $food = ‘_0 I eat oysters.
+s: ( I eat _*1 >) $food = '_0 I eat oysters.
 ```
 You are advised to put these computational scripts on separate lines to make it easier to
 read your script, but ChatScript doesn’t really care.
 ```
 s: ( I eat _*1 >)
-$food = ‘_0
+$food = '_0
 I eat oysters. 
 ```
 The variables will last forever or until you change them. If you want the variable to
@@ -1073,8 +1099,7 @@ to control operator precedence. E.g.,
 $myvalue = $foo + 20 * 5 / 59 This is normal output after the assignment.
 ```
 
-You can even assign sets of facts in various ways (see fact manual for understanding
-facts) like:
+You can even assign sets of facts in various ways (see fact manual for understanding facts) like:
 ```
 @2 = @3 # put all facts in 3 into 2
 @2 += @3 # augment 2 with facts of 3 (allows duplicates)
@@ -1159,6 +1184,7 @@ You can erase a user variable or match variable by setting it to null:
 $myvar = null
 _3 = null 
 ```
+
 
 ## Long-term variables
 
