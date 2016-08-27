@@ -440,16 +440,20 @@ replace: xxx yyyyy
 ```
 
 which defines a substitution just like a livedata substitution file. It actually creates a
-substitution file called private0.txt or private1.txt in your TOPIC folder. Even then, those
-substitutions will not be enacted unless you explicitly add to the $cs_token value #DO_PRIVATE, eg
+substitution file called `private0.txt` or `private1.txt` in your TOPIC folder. 
+Even then, those substitutions will not be enacted unless you explicitly add to the `$cs_token value` `#DO_PRIVATE`, eg
 ```
-$cs_token = #DO_INTERJECTION_SPLITTING | #DO_SUBSTITUTE_SYSTEM |
-#DO_NUMBER_MERGE | #DO_PROPERNAME_MERGE | #DO_SPELLCHECK | #DO_PARSE | #DO_PRIVATE
+$cs_token = #DO_INTERJECTION_SPLITTING | 
+            #DO_SUBSTITUTE_SYSTEM |
+            #DO_NUMBER_MERGE | 
+            #DO_PROPERNAME_MERGE | 
+            #DO_SPELLCHECK | 
+            #DO_PARSE | 
+            #DO_PRIVATE
 ```
 
-Similarly while canonical values of words can be defined in
-`LIVEDATA/SYSTEM/canonical.txt`, you can define private canonical values for your
-bots by using the scripting language. You can say:
+Similarly while canonical values of words can be defined in `LIVEDATA/SYSTEM/canonical.txt`, 
+you can define private canonical values for your bots by using the scripting language. You can say:
 ```
 canon: oh 0 faster fast
 ```
@@ -483,7 +487,7 @@ contents.
 |  `$cs_token`       |  bits controlling how the tokenizer works. By default when null, you get all bits assumed on. The possible values are in src/dictionarySystem.h (hunt for $token) and you put a # in front of them to generate that named numeric constant
 | `$cs_abstract`     |  topic used by `:abstract` to display facts if you want them displayed  
 | `$cs_prepass`      |  topic used between parsing and running user control script. Useful to supplement parsing, setting the question value, and revising input idioms | 
-| `$cs_wildcardseparator` |  when a match variable covers multiple words, what should separate them- by default it's a space, but underscore is handy too. Initial system character is space, creating fidelity with what was typed. Useful if _ can be recognized in input (web addresses). Changing to _ is consistent with multi-word representation and keyword recognition for concepts. CS automatically converts _ to space on output, so internal use of _ is normal 
+| `$cs_wildcardseparator` |  when a match variable covers multiple words, what should separate them- by default it's a space, but underscore is handy too. Initial system character is space, creating fidelity with what was typed. Useful if `_` can be recognized in input (web addresses). Changing to `_` is consistent with multi-word representation and keyword recognition for concepts. CS automatically converts `_` to space ` ` on output, so internal use of` _` is normal 
 | `$cs_userfactlimit` |  how many of the most recent permanent facts created by the script in response to user inputs are kept for each user. Std default is 100 
 | `$cs_response`      |  controls some characteristics of how responses are formatted 
 | `$cs_randIndex`     | the random seed for this volley  
