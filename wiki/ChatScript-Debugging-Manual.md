@@ -88,7 +88,7 @@ Thus the most common debug command is `:prepare`.
 
 ## Most Useful Debug Commands
 
-### `:prepare this is my sample input`
+### `:prepare _this is my sample input_`
 This shows you how the system will tokenize a sentence and what concepts it matches.
 It’s what the system does to prepare to match topics against your input. From that you
 can deduce what patterns would match and what topics might be invoked.
@@ -102,7 +102,8 @@ the `$cs_token` value to use for preparation. E.g
 :prepare $mytoken this is a sentence.
 ```
 The `$cs_prepass` variable contains optional script that will be executed before the main
-control script is executed. The advantage of $cs_prepass is that it is also executed by `:prepare`, so you can see traces of it there. If you want to see preparation w/o this topic
+control script is executed. The advantage of $cs_prepass is that it is also executed by `:prepare`, 
+so you can see traces of it there. If you want to see preparation w/o this topic
 (raw preparation by the engine) you can add the optional argument `NOPREPASS` or
 `PREPASS`. Eg.
 ```
@@ -125,7 +126,7 @@ need tracing.
 
 ## Trace
 
-### `:trace all` `:trace full` `:trace none`
+### `:trace _all_` `:trace _full_` `:trace _none_`
 The ultimate debugging command dumps a trace of everything that happens during
 execution onto screen and into the log file. After entering this, you type in your chat and
 watch what happens (which also gets dumped into the current log file). Problem is, it’s
@@ -139,41 +140,41 @@ executing within `^NOTRACE()`.
 `:trace ignorenotrace` allows you to use the limited traces below, and still
 ignore NOTRACE covered calls.
 
-### `:trace ~education`
+### `:trace _~education_`
 this enables tracing for this topic and all the topics it calls. Call it
 again to restore to normal. This is probably what you need usually to see what went
 wrong. You know the code you expected to execute, so monitor the topic it is in.
 
-### `:trace notthis ~education` 
+### `:trace _notthis ~education_` 
 disables tracing for this topic and all topics it calls recursively.
 
-### `:trace ^myfunction`
+### `:trace _^myfunction_`
 this enables tracing for the function. Call it again to restore to
 normal.
 
-### `:trace $var`
+### `:trace _$var_`
 this enables tracing when this variable changes. Local variables only show
 a trace during the current volley. Global variables show a trace across volleys.
 
-### `:trace !~education`
+### `:trace _!~education_`
 this disables current tracing for this topic and all the topics it calls
 when `:trace all` is running. Call it again to restore to normal.
 
-### `:trace ~education.school`
+### `:trace _~education.school_`
 this traces all top-level rules in `~education` that you named school (and its rejoinders and anything it calls. Call it again to turn off the trace.
 
 Similarly you can do
 
-### `:trace ~education.4.5`
+### `:trace _~education.4.5_`
 which says to trace just the 4th top level rule in `~education`, rejoinder # 5.
 The above defaults to tracing everything while in that topic. You can specify what you
 want to trace by naming trace values and then the topic.
 
-### `:trace prepare basic facts ~education`
+### `:trace _prepare basic facts ~education_`
 The above will turn on a bunch of trace values and then assign them to the topic, clearing
 the trace values.
 
-### `:trace factcreate subject verb object`
+### `:trace _factcreate subject verb object_`
 subject, verb, and object name values of those fields. You can use null when you don't want to name a value. This trace will show whenever facts matching this template are created.
 You can insert a trace command in the data of a table declaration, to trace a table being
 built (the log file will be from the build in progress). E.g.,
@@ -312,7 +313,7 @@ list all user functions being traced
 ### `:tracedtopics`
 list all topics being traced
 
-### `:retry` `:retry This is my new input`
+### `:retry` `:retry _This is my new input_`
 :retry tells the system to rerun the most recent input on the state of the system a moment
 ago, and retry it. It should do exactly what it did before, but this time if you have turned
 on tracing it will trace it. 
