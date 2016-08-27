@@ -60,8 +60,6 @@ something like this:
 ``` 
  >:build 2 
  
- 
- 
  ----Reading file simplecontrol.top
  Reading outputmacro: ^harry
  Reading outputmacro: ^georgia
@@ -80,23 +78,18 @@ something like this:
  Free space: 123,252,280 bytes FreeFacts: 4,584,560
  
  Hello, talk to me!
-  >
+ >
 ``` 
 
 Chatting with this bot results in a dialog such as this:
 
 > 
 > Hello, talk to me!
-> 
 > >hi
-> 
 > I don't know what to say.
-> 
 > >why?
-> 
 > I don't know what to say.
 > 
-> ...
 
 
 The bot just says what we told it to say, and then stuck, as it does not have anything else
@@ -126,31 +119,18 @@ Building this chatbot will result in a dialog such as this:
 
 
 > Hello, say something to me!
-> 
 > >hi
-> 
 > Hey, say something to me!
-> 
 > >what
-> 
 > Hey, talk to me!
-> 
 > >why?
-> 
 > Hello, speak to me!
-> 
 > >who
-> 
 > Hi, talk to me!
-> 
 > >abc
-> 
 > I don't know what to say.
-> 
 > >def
-> 
 > I don't know what to say.
-> 
 > ...
 
 
