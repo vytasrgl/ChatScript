@@ -276,7 +276,7 @@ for that topic. This means you can do multiple topics and global limits in one c
 ~mytopic gets the pattern limit, ~yourtopic gets the pos limit, and globally you do
 varassign.
 
-### Understanding a pattern trace**
+### Understanding a pattern trace
 
 ```
 . . . . , try 3.0: ( ! %response=0 !%lastquestion !%outputrejoinder )
