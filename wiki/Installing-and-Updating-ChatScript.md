@@ -468,35 +468,34 @@ contents.
 
 | variable           | description                                                       |
 | ------------------ | ----------------------------------------------------------------- |
-| `$cs_token`        |  described extensively above | 
-| `$cs_response`     |  controls automatic handling of outputs to user.<br>By default it consists of `$cs_response = #Response_upperstart | #response_removespacebeforecomma | #response_alterunderscores`.<br><br>Note: <br>`#response_upperstart` – makes the first letter of an output sentence capitalized, <br>`#response_removespacebeforecomma` – does the obvious, <br>`#response_alterunderscores` - converts single underscores to spaces and double underscores to singles  (eg for a web url) |
-| `$cs_crashmsg`     | in server mode, what to say if the server crashes and we return a message to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._ | 
-| `$cs_abstract`     |  used with :abstract | 
-| `$cs_looplimit`    |  loop() defaults to 1000 iterations before stopping. You can change this default with this | 
-| `$cs_control_pre`  |  name of topic to run in gambit mode on pre-pass, set by author. Runs before any sentences of the input volley are analyzed. Good for setting up initial values | 
-|  `$cs_prepass`     |  name of a topic to run in responder mode on main volleys, which runs before `$cs_control_main` and after all of the above and pos-parsing is done. Used to amend preparation data coming from the engine. You can use it to add your own spin on input processing before going to your main control. I use it to, for example, label commands as questions, standardize sentence construction (like _if you see me what will you think to assume you see me. What will you think?_) |
-| `$cs_control_main` |  name of topic to run in responder mode on main volleys, set by author | 
-| `$cs_control_post` |  name of topic to run in gambit mode on post-pass, set by author | 
-| `$botprompt`       |  message for console window to label bot output | 
-| `$userprompt`      |  message for console window to label user input line | 
-| `$cs_crashmsg`     |  message to use if a server crash occurs | 
-|  `$cs_token`       |  bits controlling how the tokenizer works. By default when null, you get all bits assumed on. The possible values are in src/dictionarySystem.h (hunt for $token) and you put a # in front of them to generate that named numeric constant | 
-| `$cs_abstract`     |  topic used by :abstract to display facts if you want them displayed | 
+| `$cs_token`        |  described extensively above
+| `$cs_response`     |  controls automatic handling of outputs to user.<br>By default it consists of `$cs_response = #Response_upperstart | #response_removespacebeforecomma | #response_alterunderscores`.<br><br>Note: <br>`#response_upperstart` – makes the first letter of an output sentence capitalized, <br>`#response_removespacebeforecomma` – does the obvious, <br>`#response_alterunderscores` - converts single underscores to spaces and double underscores to singles  (eg for a web url) 
+| `$cs_crashmsg`     | in server mode, what to say if the server crashes and we return a message to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._
+| `$cs_abstract`     |  used with `:abstract`  
+| `$cs_looplimit`    |  `loop()` defaults to 1000 iterations before stopping. You can change this default with this
+| `$cs_control_pre`  |  name of topic to run in gambit mode on pre-pass, set by author. Runs before any sentences of the input volley are analyzed. Good for setting up initial values  
+|  `$cs_prepass`     |  name of a topic to run in responder mode on main volleys, which runs before `$cs_control_main` and after all of the above and pos-parsing is done. Used to amend preparation data coming from the engine. You can use it to add your own spin on input processing before going to your main control. I use it to, for example, label commands as questions, standardize sentence construction (like _if you see me what will you think to assume you see me. What will you think?_) 
+| `$cs_control_main` |  name of topic to run in responder mode on main volleys, set by author 
+| `$cs_control_post` |  name of topic to run in gambit mode on post-pass, set by author  
+| `$botprompt`       |  message for console window to label bot output 
+| `$userprompt`      |  message for console window to label user input line 
+| `$cs_crashmsg`     |  message to use if a server crash occurs  
+|  `$cs_token`       |  bits controlling how the tokenizer works. By default when null, you get all bits assumed on. The possible values are in src/dictionarySystem.h (hunt for $token) and you put a # in front of them to generate that named numeric constant
+| `$cs_abstract`     |  topic used by `:abstract` to display facts if you want them displayed  
 | `$cs_prepass`      |  topic used between parsing and running user control script. Useful to supplement parsing, setting the question value, and revising input idioms | 
-| `$cs_wildcardseparator` |  when a match variable covers multiple words, what should separate them- by default it's a space, but underscore is handy too. Initial system character is space, creating fidelity with what was typed. Useful if _ can be recognized in input (web addresses). Changing to _ is consistent with multi-word representation and keyword recognition for concepts. CS automatically converts _ to space on output, so internal use of _ is normal | 
-| `$cs_userfactlimit` |  how many of the most recent permanent facts created by the script in response to user inputs are kept for each user. Std default is 100| 
-| `$cs_response`      |  controls some characteristics of how responses are formatted | 
-| `$cs_randIndex`     | the random seed for this volley | 
-| `$cs_utcoffset`     |  if defined, then %time returns current utc time + timezone offset | 
+| `$cs_wildcardseparator` |  when a match variable covers multiple words, what should separate them- by default it's a space, but underscore is handy too. Initial system character is space, creating fidelity with what was typed. Useful if _ can be recognized in input (web addresses). Changing to _ is consistent with multi-word representation and keyword recognition for concepts. CS automatically converts _ to space on output, so internal use of _ is normal 
+| `$cs_userfactlimit` |  how many of the most recent permanent facts created by the script in response to user inputs are kept for each user. Std default is 100 
+| `$cs_response`      |  controls some characteristics of how responses are formatted 
+| `$cs_randIndex`     | the random seed for this volley  
+| `$cs_utcoffset`     |  if defined, then %time returns current utc time + timezone offset 
 
 
 The following variables are generated by the system on behalf of scripts.
 
-| variable           | description                                               |
-| ------------------ | --------------------------------------------------------- |
+| variable           | description                                                           |
+| ------------------ | --------------------------------------------------------------------- |
 | `$$db_error`       |  error message from a postgres failure  
-| `$$findtext_start` |  `^findtext` return the end normally,
-                        <br>this is where it puts the start 
+| `$$findtext_start` |  `^findtext` return the end normally, >this is where it puts the start 
 | `$$tcpopen_error`  |  error message from a tcpopen error
 | `$$document`       |  name of the document being read in document mode 
 | `$cs_randindex`    |  current value of the random generator value
