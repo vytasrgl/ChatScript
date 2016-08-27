@@ -1,5 +1,4 @@
 # ChatScript
 Natural Language tool/dialog manager
 
-Wiki:
-https://github.com/solyaris/ChatScript/blob/master/wiki/README.md
+[ChatScript Wiki (user guides and tutorials)](https://github.com/solyaris/ChatScript/blob/master/wiki/README.md)
