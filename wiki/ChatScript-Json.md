@@ -83,25 +83,27 @@ You can also add a flag safe to `^jsonparse`. See `^jsonparse`
 You can also add a flag unique to `^jsonarrayinsert`. See `^jsonarrayinsert`.
 
 
-### `^jsonparse({JSONFLAGS} string)`
-string is a JSON text string (as might be returned from a
-website) and this parses into facts. It returns the name of the root node JSON composite. This name
-will look like this:
+### `^jsonparse`( {JSONFLAGS} string )
+`string` is a JSON text string (as might be returned from a website) and this parses into facts. 
+It returns the name of the root node JSON composite. This name will look like this:
 
-`ja-0` – a json array numbered 0.
+`ja-0` – a json array numbered `0`.
 
-`jo-0` – a json object numbered 0.
+`jo-0` – a json object numbered `0`.
 
 As new JSON composites are created during a volley, the numbers increase to keep them all distinct.
 JSON composites are all created as transient facts and will die at the end of the volley unless you do
 something to explictly keep them (typically `^jsongather` into some factset and then saving that OR
 using that to remove all their transient flags OR using `^delete()` to destroy the facts in the set). 
+
 If you are keeping JSON across volleys, you should use the optional Json flags argument to make sure
 numbering never collides (normally the numbers start back at 0 for each new volley).
 
 JSON has stricter requirements on its format than CS does. 
 
-While CS will output strict JSON, you can input slack JSON. You do not need to put commas between elements of an array or object. And you do not need to put quotes around a key name. So the following is legal text form:
+While CS will output strict JSON, you can input slack JSON. 
+You do not need to put commas between elements of an array or object. 
+And you do not need to put quotes around a key name. So the following is legal text form:
 ```
 [a b {bob: 1 sue: 2}]
 ```
@@ -148,7 +150,7 @@ path fails cannot be found.
 ^jsonparse(transient NOFAIL "{ a: $var, b: _0.e[2] }")
 ```
 
-### `^jsonformat(string)`
+##jsonformat(string)`
 Because technically JSON requires you put quotes around field names
 (though various places ignore that requirement) and because CS doesn't, the function takes in a slack
 json text string and outputs a strict one.
@@ -156,14 +158,16 @@ json text string and outputs a strict one.
 
 ## Accessing JSON structures
 
-### `^jsonpath(string id)`
-string is a description of how to walk JSON. Id is the name of the node you
-want to start at (typically returned from `^jsonopen` or `^jsonparse`). 
+### `^jsonpath`( string id )
+`string` is a description of how to walk JSON. 
+`id` is the name of the node you want to start at (typically returned from `^jsonopen` or `^jsonparse`). 
 
 Array values are accessed using typical array notation like `[3]` and object fields using dotted notation. 
-A simple path access might look like this: `[1].id` which means take the root object passed as id, e.g., `ja-1`, get the 2nd index value (arrays are 0-based in JSON). That value is expected to be an object, so return the value
-corresponding to the id field of that object. In more complex situations, the value of id might itself be
-an object or an array, which you could continue indexing like `[1].id.firstname`.
+A simple path access might look like this: `[1].id` which means take the root object passed as id, 
+e.g., `ja-1`, get the 2nd index value (arrays are 0-based in JSON). 
+That value is expected to be an object, so return the value corresponding to the id field of that object. 
+In more complex situations, the value of id might itself be an object or an array, 
+which you could continue indexing like `[1].id.firstname`.
 
 You can walk an array by using `[$$index]` and varying the value of `$$index`.
 When you access an array element, you have to quote the text because it consists of multiple tokens to
@@ -205,21 +209,22 @@ your final path, eg
 ^jsonpath(.name[4]* $$obj)
 ```
 
-### `^length(jsonid)`
-returns the number of top-level members in a json array or object.
+### `^length`( jsonid )
+Returns the number of top-level members in a json array or object.
 
 
 ## Printing JSON structures
 
-### `^jsonwrite(name)`
+### `^jsonwrite`( name )
 name is the name from a json fact set (either by `^jsonpart`, `^jsonopen`, orsome query into such structures). 
 Result is the corresponding JSON string (as a website might emit), without any linefeeds.
 
-### `^jsontree(name {depth})`
+### `^jsontree`( name {depth} )
 name is the value returned by `^jsonparse` or `^jsonopen` or some query into such structures. 
 It displays a tree of elements, one per line, where depth is represented as more deeply indented. 
-Objects are marked with { } as they are in JSON. Arrays are marked with []. The
-internal name of the composite is shown immediately next to its opening punctuation. Optional depth
+Objects are marked with `{}` as they are in JSON. Arrays are marked with `[]`. 
+
+The internal name of the composite is shown immediately next to its opening punctuation. Optional depth
 number restricts how deep it displays. 0 (default) means all. 1 is just top level.
 
 
@@ -228,51 +233,62 @@ number restricts how deep it displays. 0 (default) means all. 1 is just top leve
 You can build up a JSON structure without using `^jsonparse` if you want to build it piece by piece.
 And you can edit existing structures.
 
-### `^jsoncreate({JSONFLAGS} type)` 
-Type is either array or object and a json composite with no content
-is created and its name returned. See `^jsonarrayinsert`, `^jsonobjectinsert`, and `^jsondelete` for how to manipulate it. See writeup earlier about optional json flags.
+### `^jsoncreate`( {JSONFLAGS} type ) 
+Type is either array or object and a json composite with no content is created and its name returned. 
+See `^jsonarrayinsert`, `^jsonobjectinsert`, and `^jsondelete` for how to manipulate it. 
+See writeup earlier about optional json flags.
 
-### `^jsonarrayinsert({JSONFLAGS} arrayname value)` 
+### `^jsonarrayinsert`( {JSONFLAGS} arrayname value ) 
 Given the name of a json array and a value, it adds the value to the end of the array. 
-See writeup earlier about optional json flags. If you use the flag unique then if value already exists in the array, no duplicate will be added.
+See writeup earlier about optional json flags. 
+If you use the flag unique then if value already exists in the array, no duplicate will be added.
 
-### `^jsonarraydelete([INDEX, VALUE] arrayname value)` 
-This deletes a single entry from a JSON array. It does not damage the thing deleted, just its member in the array. If the first argument is INDEX, then value is a number which is the array index (0 … n-1). If the first argument is VALUE, then value is the value to find and remove as the object of the json fact.
+### `^jsonarraydelete`( [INDEX, VALUE] arrayname value ) 
+This deletes a single entry from a JSON array. It does not damage the thing deleted, just its member in the array. 
+If the first argument is INDEX, then value is a number which is the array index (0 … n-1). 
+If the first argument is VALUE, then value is the value to find and remove as the object of the json fact.
 
-### `^jsonarraysize(name)` 
+### `^jsonarraysize`( name ) 
 deprecated in favor of ^length
 
-### `^jsoncopy(name)` 
+### `^jsoncopy`( name ) 
 Given the name of a json structure, makes a duplicate of it.
 
-### `^jsonobjectinsert({JSONFLAGS} objectname key value)` 
+### `^jsonobjectinsert`( {JSONFLAGS} objectname key value ) 
 inserts the key value pair into the object named. The key does not require quoting. 
-Inserting a json string as value requires a quoted string. Duplicate keys are allowed but not advised (standards differ on legality). See writeup earlier about optional json flags.
+Inserting a json string as value requires a quoted string. 
+Duplicate keys are allowed but not advised (standards differ on legality). 
+See writeup earlier about optional json flags.
 
-### `^jsondelete( factid)` 
+### `^jsondelete`( factid ) 
 deprecated in favor of ^delete
 
-### `^jsongather(fact-set jsonid)` 
-takes the facts involved in the json data (as returned by `^jsonparse` or `^jsonopen`) and stores them in the named factset. This allows you to remove their transient flags or save them in the users permanent data file.
+### `^jsongather`( fact-set jsonid ) 
+takes the facts involved in the json data (as returned by `^jsonparse` or `^jsonopen`) 
+and stores them in the named factset. 
+This allows you to remove their transient flags or save them in the users permanent data file.
 
-### `^jsonlabel(label)`
+### `^jsonlabel`( label )
 assigns a text sequence to add to jo- and ja- items created thereafter. See System functions manual.
 
-### `^jsonundecodestring(string)` 
+### `^jsonundecodestring`( string ) 
 removes all json escape markers back to normal for possible printout
 to a user. This translates \n to newline, \r to carriage return, \t to tab, and \" to a simple quote.
 
 ## WEB JSON
 
-### `^jsonopen({JSONFLAGS} kind url postdata header)`
-this function queries a website and returns a JSON datastructure as facts. It uses the standard CURL library, so it's arguments and how to use them are generally defined by CURL documentation and the website you intend to access. See writeup earlier about optional json flag.
+### `^jsonopen`( {JSONFLAGS} kind url postdata header)
+this function queries a website and returns a JSON datastructure as facts. 
+It uses the standard CURL library, so it's arguments and how to use them are 
+generally defined by CURL documentation and the website you intend to access. 
+See writeup earlier about optional json flag.
 
 | parameter    | description                                  |
 | :----------: | -------------------------------------------- |
-| **kind**     | is `POST`, `GET`, `POSTU`, `GETU`, `PUT`, `DELETE` corresponding to the usual meanings of Get and Post and url-encoded forms. | 
-| **url**      | is the url to query |
-| **postdata** | is either "" if this is not a post or is the data to send as post or put | 
-| **header**   | is any needed extra request headers or "". Multiple header entries must be separated by a tilde |
+| `kind`       | is `POST`, `GET`, `POSTU`, `GETU`, `PUT`, `DELETE` corresponding to the usual meanings of Get and Post and url-encoded forms. | 
+| `url`        | is the url to query |
+| `postdata`   | is either "" if this is not a post or is the data to send as post or put | 
+| `header`     | is any needed extra request headers or "". Multiple header entries must be separated by a tilde |
 
 A sample call might be:
 ```
