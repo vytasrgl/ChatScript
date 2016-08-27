@@ -4,10 +4,10 @@
 > Revision 7/31/2016 cs6.7a
 
 
-* [Engine-defined Concepts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
-* [System Variables](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#system-variables)
-* [Control over Input](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#control-over-input)
-* [Interchange Variables](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#interchange-variables)
+* [Engine-defined Concepts](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
+* [System Variables](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#system-variables)
+* [Control over Input](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#control-over-input)
+* [Interchange Variables](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#interchange-variables)
 
 
 # Engine-defined concepts

@@ -3,17 +3,17 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 > Revision 8/13/2016 cs6.8
 
-* [Topic Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#topic-functions)
-* [Marking Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#marking-functions)
-* [Input Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#input-functions)
-* [Number Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#number-functions)
-* [Output Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#output-functions)
-* [Control Flow Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#control-flow-functions)
-* [External Access Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#external-access-functions)
-* [JSON Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#json-functions)
-* [Word Manipulation Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#word-manipulation-functions)
-* [Multipurpose Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#multipurpose-functions)
-* [Facts Functions](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#fact-functions)
+* [Topic Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#topic-functions)
+* [Marking Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#marking-functions)
+* [Input Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#input-functions)
+* [Number Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#number-functions)
+* [Output Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#output-functions)
+* [Control Flow Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#control-flow-functions)
+* [External Access Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#external-access-functions)
+* [JSON Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#json-functions)
+* [Word Manipulation Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#word-manipulation-functions)
+* [Multipurpose Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#multipurpose-functions)
+* [Facts Functions](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md#fact-functions)
 
 System functions are predefined and can be intermixed with direct output. Generally
 they are used from the output side of a rule, but in many cases nothing prevents you from
