@@ -3,10 +3,8 @@
 >© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 >Revision 1/21/2016 cs6.1a
 
-
 OK. You've written a bot. It sort of seems to work. Now, before releasing it, you should
 polish it. There are a bunch of tools to do this.
-
 
 ## Verification (`:verify`)
 
@@ -118,8 +116,10 @@ all topics doing all verifications
 
 Passing verification means that each topic is plausibly scripted. 
 
-To be clear how valuable `:verify` is, consider this example. We authored a demo bot for a company and they added a bunch of code themselves. It was a 5500 rule bot. When I got around to verifying it, the results were: 57 keyword complaints, 92 pattern complaints, 45 blocking
-complaints, and (after fixing all those other complaints) 250 sampletopic complaints.
+To be clear how valuable `:verify` is, consider this example. 
+We authored a demo bot for a company and they added a bunch of code themselves. It was a 5500 rule bot. 
+When I got around to verifying it, the results were: 57 keyword complaints, 92 pattern complaints, 
+45 blocking complaints, and (after fixing all those other complaints) 250 sampletopic complaints.
 
 The `:verify` command takes the topic name first (and optional) and then a series of
 keywords about what to do.
@@ -142,6 +142,7 @@ Or maybe the sample input has no keywords but you do want it findable from outsi
 (E.g., an idiom), so you have to make it happen. When a responder fails this test, you
 have to either add a keyword to the topic, revise the sample input, add an idiom entry to
 send you to this topic, or tell the system to ignore keyword testing on that input.
+
 You can suppress keyword testing by augmenting the comment on the sample input
 with `!K` or marking the topic as a whole `TOPIC_NOKEYWORDS`
 
@@ -154,10 +155,11 @@ with `!K` or marking the topic as a whole `TOPIC_NOKEYWORDS`
 For responders and rejoinders, the system takes the sample input and tests to see if the
 pattern of the following rule actually would match the given input. Failing to match
 means the rule is either not written correctly for what you want it to do or you wrote a
-bad sample input and need to change it. 
-This test SHOULD NOT fail when you are done. Either your sample is bad, your pattern is bad, or ChatScript is bad.
+bad sample input and need to change it. This test SHOULD NOT fail when you are done. 
+Either your sample is bad, your pattern is bad, or ChatScript is bad.
 
-Rules that need variables set certain ways can do variable assigns (`$` or `_` or) at the end of the comment. You can also have more than one verification input line before a rule.
+Rules that need variables set certain ways can do variable assigns (`$` or `_` or) 
+at the end of the comment. You can also have more than one verification input line before a rule.
 ```
 #! I am male $gender = male
 #! I hate males $gender = male
@@ -222,17 +224,19 @@ it using `!B`. Or you can have the entire topic ignored by the topic control `TO
 The blocking test presumes you are within the topic and says nothing about whether the
 rule could be reached if you were outside the topic. That's the job of the keyword test.
 And it only looks at you sample input. Interpreting your pattern can be way too difficult.
-If :trace has been set non-zero, then tracing will be turned off during verification, but any
+
+If `:trace` has been set non-zero, then tracing will be turned off during verification, but any
 rules that fail pattern verification will be immediately be rerun with tracing on so you can
 see why it failed.
 ```
 :verify gambit
 ```
-One principle we follow in designing our bots is that if a user is asked a question in a
-gambit, the bot had better be able to answer that same question if asked of it. The gambit
-verification will read all your gambits and if it asks a question, will ask that question of
-your bot. To pass, the answer must come from that topic or leave the bot with that topic
-as the current topic.
+One principle we follow in designing our bots is that if a user is asked a question 
+in a gambit, the bot had better be able to answer that same question if asked of it. 
+
+The gambit verification will read all your gambits and if it asks a question, 
+will ask that question of your bot. To pass, the answer must come from that topic 
+or leave the bot with that topic as the current topic.
 
 You can stop a topic doing this by adding the flag `TOPIC_NOGAMBITS`. There is no
 way to suppress an individual gambit, though clearly there are some questions that are
@@ -246,15 +250,19 @@ fly faster than a model airplane?_
 Once you've cleaned up all the other verifications, you get to sample verification.
 It takes sample inputs of your responders and sees if the chatbot would end up at the
 corresponding rule if the user issued it from scratch. This means it would have to find the
-right topic and find the right rule. If it finds the right topic, it will usually pass if you have managed most of the blocking issues.
+right topic and find the right rule. If it finds the right topic, 
+it will usually pass if you have managed most of the blocking issues.
 
 I start with `:verify sampletopic`, which only shows inputs that fail to reach the topic they
 came from. This is generally more serious. It may be perfectly acceptable that the input
-gets trapped in another topic. This sample result is merely advisory. But maybe the rule
+gets trapped in another topic. 
+This sample result is merely advisory. But maybe the rule
 that trapped it should be moved into the tested topic. Or maybe its just fine. 
-But if the output you got doesn't work for the input, you can go to the rule for the output you got and alter the pattern in some way that excludes it reacting inappropriately to the input.
+But if the output you got doesn't work for the input, 
+you can go to the rule for the output you got and alter the pattern in some way 
+that excludes it reacting inappropriately to the input.
 
-Once that is cleaned up, :verify sample will include rules that fail to get back to the
+Once that is cleaned up, `:verify sample` will include rules that fail to get back to the
 correct rule of the topic. Usually, if you've fixed blocking, this won't be a problem.
 
 If you stick a rule into Harry's `~introductions` topic like:
@@ -266,8 +274,8 @@ u: (what are you) I am a robot
 Then `:verify sample` will complain about the sample. It is saying hat if you are not
 ALREADY in the topic `~introductions`, then the input you give will get answered by
 some other topic (quibble) and not by this topic. The reason this would be true is that
-there are no keywords in the `~introduction` topic that could allow it to be found if you are
-not already in this topic.
+there are no keywords in the `~introduction` topic that could allow it to be found 
+if you are not already in this topic.
 
 Normally, a question like _what are you_ is something I would put in the `~keywordless`
 topic, because there is no natural keyword in the question and you could be asked that
@@ -301,7 +309,7 @@ We generally adhere to a tweet limit (140 characters) and run `:abstract 140` to
 lines that are longer.
 
 
-## `:topicinfo` ~topic how
+### `:topicinfo` ~topic how
 
 This displays all sorts of information about a topic including its keywords, how they
 overlap with other topics, what rules exist and whether they are erased or not. You either
@@ -320,15 +328,21 @@ excessive. Some topics will share keywords with other topics. For some things, t
 reasonable. "quark" is a fine keyword for a topic on cheese and one on astronomy. But
 odds are "family" is not a great keyword for a topic on money. 
 
-Often an extraneous keyword won't really matter, but if the system is looking for a topic to gambit based on "family", you really don't want it distracted by a faulty reference to money. That is, you want to know what keywords are shared across topics and then you can decide if that's appropriate. Sometimes you are told a word but don't see it in the topic keywords. Use
-:up on that word to see how it intersects.
+Often an extraneous keyword won't really matter, 
+but if the system is looking for a topic to gambit based on "family", 
+you really don't want it distracted by a faulty reference to money. 
+That is, you want to know what keywords are shared across topics and then you can decide if that's appropriate. 
+Sometimes you are told a word but don't see it in the topic keywords. 
+Use `:up` on that word to see how it intersects.
 
 I use `:topicinfo` keys to generate a map across all topics. I then read the first column list
 of keywords for each topic to see if they obviously should be in that topic or if they don't
-really strongly imply that topic. If not, I try to remove them from it. Sometimes when I
-look at the list of topics that a key overlaps with, I find multiple topics with similar ideas.
-Like a topc called `~cars` and one called `~automobiles`. Often they are candidates for
-merging the topics.
+really strongly imply that topic. If not, I try to remove them from it. 
+
+Sometimes when I look at the list of topics that a key overlaps with, 
+I find multiple topics with similar ideas.
+Like a topc called `~cars` and one called `~automobiles`. 
+Often they are candidates for merging the topics.
 
 
 ## `:describe` and `:list`
@@ -348,18 +362,23 @@ and for variables it will list be documented and undocumented.
 There are several useful :abstract calls to do during finalization.
 
 ### `:abstract` 100 
+
 If you want to adjust output of yours that would be too long for something
-like a phone screen, you can ask :abstract to show you all rules whose output would likely exceed some limit (here 100). Without a topic name it does the entire system. With
-a topic name e.g., `:abstract 100 ~topicname`, it is restricted to that topic. You can also use a wildcard like `~top*` to do all topics with `~top` at the start of the name. You can also provide a list of topics, like `:abstract ~topic1 ~topic2`.
+like a phone screen, you can ask :abstract to show you all rules whose output would likely exceed some limit (here 100). 
+Without a topic name it does the entire system. With a topic name e.g., `:abstract 100 ~topicname`, it is restricted to that topic. 
+You can also use a wildcard like `~top*` to do all topics with `~top` at the start of the name. 
+You can also provide a list of topics, like `:abstract ~topic1 ~topic2`.
 
 
 ### `:abstract` censor ~mywords 
+
 will note all output which contains any words in mywords.
 Of course regular uses may also appear. The censor command looks for any words
 referred to by the concept given.
 
 
 ### `:abstract` spell
+
 will examine the outputs of all topics (or topic given) to find words whose spelling might be faulty. It's not a guarantee it is, but it can warn you about potential mistakes.
 And :abstract is handy just to print out a human-readable copy of your bot, without all the
 ChatScript scripting mess. As part of that, you can add header comments that will appear
@@ -381,7 +400,7 @@ will display just topics and their gambits (+ rejoinders of them).
 will display topics and their responders (+ rejoinders of them).
 
 
-## `:permanentvariables`
+### `:permanentvariables`
 
 This gives you a list of all permanent variables found in your source. Not only is
 documenting them a good idea, but you might want to confirm they are all legit (correctly
@@ -450,8 +469,8 @@ nearby. So it is likely to tell you what you need to know.
 
 The system will ask if you want to update your regression file, and if you answer "yes", it
 will rewrite the regression file with the updated test results. Do this if it detects minor
-differences so it can help stay on track in the future. Do this if the major differences are in fact OK. Otherwise decline and go fix your code somewhere.
-
+differences so it can help stay on track in the future. Do this if the major differences are in fact OK. 
+Otherwise decline and go fix your code somewhere.
 
 
 ## Mobile size issues
@@ -467,7 +486,9 @@ provide correct pos tagging on conjugations of words not in the basic dictionary
 spelling correction may or may not work properly for words not in the dictionary. And
 the wordnet ontology will not propogate data through words not in the dictionary into
 higher level mappings. 
-Eg Doberman may not know it is a more refined word of dog (though the concept sets will work). If you find you need a better dictionary, for a fee I can give you a basic dictionary where all the words of your script patterns and concepts are also correctly mapped.
+Eg Doberman may not know it is a more refined word of dog (though the concept sets will work). 
+If you find you need a better dictionary, for a fee I can give you a basic dictionary where all the words 
+of your script patterns and concepts are also correctly mapped.
 
 You can also reduce code size by declaring a bunch of DISCARDxxx defines (see start of
 SRC/common.h) to remove chunks of CS you don't need, like the ScriptCompiler or
