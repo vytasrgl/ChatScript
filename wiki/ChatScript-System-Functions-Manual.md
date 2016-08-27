@@ -1201,7 +1201,7 @@ system will automatically switch words with underscores or blanks into words wit
 changes in them to the other (since CS stores phrases with underscores). So
 `^words("I love you")` can match phrases already in the dictionary of:
 
-<br>_I_love you_
+_I_love you_
 <br>_I_love_you_
 <br>_I love you_
 <br>_I LOVE You_
