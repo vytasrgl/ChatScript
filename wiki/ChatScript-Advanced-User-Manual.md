@@ -1117,7 +1117,7 @@ terminated. Loop also has a built in limit of 1000 so it will never run forever.
 override this if you define `$cs_looplimit` to have some value you prefer.
 
 
-## `^loop(n)`
+## `^loop`( n )
 
 Loop can be given a count. This can be either a number, or you can use a factset id to
 loop through each item of the factset via
