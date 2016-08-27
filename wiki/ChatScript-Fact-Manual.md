@@ -16,12 +16,15 @@ and may or may not be their content. Facts look like this:
 (Bob eat fish )
 ```
 
-The system has a number of facts it comes bundled with and others can be created and stored either from compiling scripts, or from interactions with the user. Facts can use words, numbers, or other facts as field values, representing anything. You can build
-records, arbitrary graphs, treat them as arrays of data, etc.
+The system has a number of facts it comes bundled with and others can be created and stored either 
+from compiling scripts, or from interactions with the user. Facts can use words, numbers, 
+or other facts as field values, representing anything. You can build records, arbitrary graphs, 
+treat them as arrays of data, etc.
+
 
 ## Simple Creating Facts
 
-### `^createfact(subject verb object)` 
+### `^createfact`( subject verb object ) 
 this creates a fact triple. The system will not create
 duplicate facts. If you have a fact (Bob eat fish) then executing
 ```
@@ -35,6 +38,7 @@ The other way is to assign the value of fact creation to a variable and then use
 ```
 $fact = ^createfact( Bob own fish)
 ^createfact ($fact Bob pet FACTSUBJECT)
+
 $fact = ^createfact( Bob own dog)
 ^createfact ($fact Bob pet FACTSUBJECT)
 ```
@@ -45,7 +49,11 @@ The above creates facts which are findable by querying for pets Bob has. You can
 
 `FACTTRANSIENT` – the fact will disappear at the end of this volley
 
-`FACTDUPLICATE` – allow this fact to be a duplicate of an existing fact – this is particularly important if you go around deleting facts that might be referred to by other facts. Those other facts will also get deleted. So if you want complete isolation from facts that look the same in some subfact but shouldn't be shared, you'll want that subfact declared `FACTDUPLICATE`
+`FACTDUPLICATE` – allow this fact to be a duplicate of an existing fact – 
+this is particularly important if you go around deleting facts that might be referred to by other facts. 
+Those other facts will also get deleted. 
+So if you want complete isolation from facts that look the same in some subfact but shouldn't be shared, 
+you'll want that subfact declared `FACTDUPLICATE`.
 
 
 ## Accessing Facts
@@ -53,12 +61,12 @@ The above creates facts which are findable by querying for pets Bob has. You can
 To find facts, you need to make a query. There can be many different kinds of queries.
 
 
-### `^FindFact(subject verb object)` 
+### `^findfact`( subject verb object ) 
 The simplest fact find involves knowing all the
 components (meanings) and asking if the fact already exists. If it does, it returns the index of the fact. If it doesn't it returns `FAILRULE_BIT`.
 
 
-### `^query(kind subject verb object)`
+### `^query`( kind subject verb object )
 The simplest query names the kind of query and gives
 some or all of the field values that you want to find. Any field value can be replaced
 with `?` which means either you don’t care or you don’t know and want to find it. The kinds of queries are programmable and are defined in `LIVEDATA/queries.txt` (but you need to be really advanced to add to it). The simplest query kinds are:
@@ -81,7 +89,7 @@ If no matching facts are found, the query function returns the RULE fail code.
 If the above query finds a fact `(I own dog)` then the rule says yes. If not, the rule fails during output. This query could have been put inside the pattern instead.
 
 
-### `^query(kind subject verb object count fromset toset propagate match)`
+### `^query`(kind subject verb object count fromset toset propagate match)
 query can actually take up to 9 arguments. Default values are `?` . The count argument defaults to `-1` and indicates how many answers to limit to. 
 When you just want or expect a single one, use `1` as the value.
 
@@ -102,12 +110,14 @@ if (^query(direct_s you ? ? -1 ? @0))
 ```
 The final two arguments only make sense with specific query types that use those
 arguments.
-A query can also be part of an assignment statement, in which case the destination set argument (if supplied) is ignored in favor of the left side of the assignment, and the query doesn't fail even if it finds no values. E.g.
+A query can also be part of an assignment statement, in which case the destination set argument (if supplied) 
+is ignored in favor of the left side of the assignment, and the query doesn't fail even if it finds no values. E.g.
 ```
 @2 = ^query(direct_sv I love you)
 ```
 The above query will store its results (including no facts found) in @2.
-Queries can also be used as test conditions in patterns and if constructs. A query that finds nothing fails, so you can do:
+Queries can also be used as test conditions in patterns and if constructs. 
+A query that finds nothing fails, so you can do:
 ```
 u: ( dog ^query(direct_sv dog wants ?)) A dog wants @0object.
 ```
