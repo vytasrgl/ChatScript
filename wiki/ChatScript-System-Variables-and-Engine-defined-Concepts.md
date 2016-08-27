@@ -15,23 +15,23 @@
 In addition to concepts defined in script files, the system automatically defines a bunch of
 dictionary-based sets as well as dynamically computed concept members.
 
-| set     | meaning |
-| ------- | ------- |
-| ~web_url | word is a web url |
-| ~email_url | word is an email address |
-| ~kindergarten | word learned early in life |
-| ~grade1_2 | word learned in these grades |
-| ~grade3_4 | word learned in these grades |
-| ~grade_5-6 | word learned in these grades. Unmarked words are learned even later |
-| ~utf8 | word has nonascii characters |
-| ~daynumber | word could be a number of a day in a month |
-| ~yearnumber | word could be the number of a recent year |
-| ~dateinfo | phrase is month day year of some kind |
-| ~kelvin | temperature marker |
-| ~celcius | temperature marker |
-| ~fahrenheit | temperature marker |
-| ~twitter_name | twitter user name |
-| ~hashtag_label | twitter topic reference|
+| set              | description |
+| ---------------- | ------- |
+| `~web_url`       | word is a web url |
+| `~email_url`     | word is an email address |
+| `~kindergarten`  | word learned early in life |
+| `~grade1_2`      | word learned in these grades |
+| `~grade3_4`      | word learned in these grades |
+| `~grade_5-6`     | word learned in these grades. Unmarked words are learned even later |
+| `~utf8`          | word has nonascii characters |
+| `~daynumber`     | word could be a number of a day in a month |
+| `~yearnumber`    | word could be the number of a recent year |
+| `~dateinfo`      | phrase is month day year of some kind |
+| `~kelvin`        | temperature marker |
+| `~celcius`       | temperature marker |
+| `~fahrenheit`    | temperature marker |
+| `~twitter_name`  | twitter user name |
+| `~hashtag_label` | twitter topic reference|
 
 ## Interjections, "discourse acts", and concept sets
 
@@ -186,24 +186,24 @@ setting them.
 
 ## Date & Time & Numbers
 
-| variable | meaning |
-| -------- | ------- |
-|%date     | one or two digit day of the month |
-|%day      |Sunday, etc|
-|%daynumber| 0-6 where 0 = Sunday|
-|%fulltime | seconds representing the current time and date (Unix epoch time) |
-|%timenumbers| completely consistent full time info in numbers that you can do `_0 = ^burst(%timenumbers)`to get  `_0` =seconds (2digit) `_1`=minutes (2digit) `_2`=hours (2digit) `_3`=dayinweek(0-6 Sunday=0) `_4`=dateinmonth (1-31) `_5`=month(0-11 January=0) `_6`=year. You need to get it simultaneously if you want to do accurate things with current time, since retrieving %hour %minute separately allows time to change between calls |
-|%leapyear| boolean if current year is a leap year |
-|%daylightsavings | boolean if current within daylight savings|
-|%minute | 0-59 |
-|%month  |1-12 (January = 1)|
-|%monthname | January, etc|
-|%second | 0-59|
-|%volleytime | number of seconds of computation since volley input started |
-|%time | hh:mm in military 24-hour time |
-|%week |1-5 (week of the month) |
-|%year | e.g., 2011 |
-|%rand | get a random number from 1 to 100 inclusive|
+| variable            | description                                    |
+| --------            | ---------------------------------------------- |
+| `%date`             | one or two digit day of the month |
+| `%day`              |Sunday, etc|
+| `%daynumber`        | 0-6 where 0 = Sunday|
+| `%fulltime`         | seconds representing the current time and date (Unix epoch time) |
+| `%timenumbers`      | completely consistent full time info in numbers that you can do `_0 = ^burst(%timenumbers)`to get  `_0` =seconds (2digit) `_1`=minutes (2digit) `_2`=hours (2digit) `_3`=dayinweek(0-6 Sunday=0) `_4`=dateinmonth (1-31) `_5`=month(0-11 January=0) `_6`=year. <br>You need to get it simultaneously if you want to do accurate things with current time, since retrieving %hour %minute separately allows time to change between calls |
+| `%leapyear`         | boolean if current year is a leap year |
+| `%daylightsavings`  | boolean if current within daylight savings|
+| `%minute`           | 0-59 |
+| `%month`            |1-12 (January = 1)|
+| `%monthname`        | January, etc|
+| `%second`           | 0-59|
+| `%volleytime`       | number of seconds of computation since volley input started |
+| `%time`             | hh:mm in military 24-hour time |
+| `%week`             |1-5 (week of the month) |
+| `%year`             | e.g., 2011 |
+| `%rand`             | get a random number from 1 to 100 inclusive|
 
 Time and date information are normally local, relative to the system clock of the machine
 CS is running on. See $cs_utcoffset for adjusting time based on relationship to utc (e.g
@@ -213,72 +213,72 @@ your server is in Virginia and you are in Colorado).
 
 ## User Input
 
-| variable | meaning |
+| variable | description |
 | -------- | ------- |
-| %bot |  current bot responding
-| %revisedinput |  Boolean is current input from ^input not direct from user
-| %command |  Boolean was the user input a command
-| %foreign |  Boolean is bulk of the sentence composed of foreign words
-| %impliedyou |  Boolean was the user input having you as implied subject
-| %input |  the count of the number of volleys this user has made ever
-| %ip |  ip address supplied
-| %length |  the length in tokens of the current sentence
-| %more |  Boolean is there another sentence after this
-| %morequestion |  Boolean is there a ? or question word in the pending sentences
-| %originalinput | all sentences user passed into volley, before adjusted in any way except OOB data is stripped off |
-| %originalsentence |  the current sentence after tokenization but before any adjustments
-| %parsed |  Boolean was current input parsed successfully
-| %question |  Boolean was the user input a question – same as ? in a pattern
-| %quotation |  Boolean is current input a quotation
-| %sentence |  Boolean does it seem like a sentence (subject/verb or command)
-| %tense |  past , present, or future simple tense (present perfect is a past tense)
-| %user |  user login name supplied
-| %userfirstline |  value of %input that is at the start of this conversation start
-| %userinput |  Boolean is the current input from the user (vs the chatbot)
-| %voice |  active or passive on current input 
+| `%bot` |  current bot responding
+| `%revisedinput` |  Boolean is current input from ^input not direct from user
+| `%command` |  Boolean was the user input a command
+| `%foreign` |  Boolean is bulk of the sentence composed of foreign words
+| `%impliedyou` |  Boolean was the user input having you as implied subject
+| `%input` |  the count of the number of volleys this user has made ever
+| `%ip` |  ip address supplied
+| `%length` |  the length in tokens of the current sentence
+| `%more` |  Boolean is there another sentence after this
+| `%morequestion` |  Boolean is there a ? or question word in the pending sentences
+| `%originalinput` | all sentences user passed into volley, before adjusted in any way except OOB data is stripped off |
+| `%originalsentence` |  the current sentence after tokenization but before any adjustments
+| `%parsed` |  Boolean was current input parsed successfully
+| `%question` |  Boolean was the user input a question – same as ? in a pattern
+| `%quotation` |  Boolean is current input a quotation
+| `%sentence` |  Boolean does it seem like a sentence (subject/verb or command)
+| `%tense` |  past , present, or future simple tense (present perfect is a past tense)
+| `%user` |  user login name supplied
+| `%userfirstline` |  value of %input that is at the start of this conversation start
+| `%userinput` |  Boolean is the current input from the user (vs the chatbot)
+| `%voice` |  active or passive on current input 
 
 ## Chatbot Output
 
-| variable | meaning |
-| -------- | ------- |
-| %inputrejoinder |  rule tag of any pending rejoinder for input or 0 if none | 
-| %lastoutput |  the text of the last generated response for the current volley | 
-| %lastquestion |  Boolean did last output end in a ? | 
-| %outputrejoinder|  rule tag if system set a rejoinder for its current output or 0 | 
-| %response |  number of responses that have been generated for this sentence | 
+| variable           | description |
+| --------           | -------     |
+| `%inputrejoinder`  |  rule tag of any pending rejoinder for input or 0 if none | 
+| `%lastoutput`      |  the text of the last generated response for the current volley | 
+| `%lastquestion`    |  Boolean did last output end in a ? | 
+| `%outputrejoinder` |  rule tag if system set a rejoinder for its current output or 0 | 
+| `%response`        |  number of responses that have been generated for this sentence | 
 
 
 ## System variables
 
-| variable | meaning |
-| -------- | ------- |
-| %all |  Boolean is the :all flag on? (:all to set) |
-| %document |  Boolean is :document running | 
-| %fact |  Numeric value most recent fact id| 
-| %freetext |  kb of available text space| 
-| %freedict |  number of unused dictionary words| 
-| %freefact |  number of unused facts| 
-| %maxmatchvariables |  highest number of _match variables, currently 20 |  
-| %maxfactsets |  highest number of @factsets, currently 20 | 
-| %host |  name of the current host machine or "local" | 
-| %regression |  Boolean is the regression flag on | 
-| %server |  Boolean is the system running in server mode | 
-| %rule |  get a tag to the current executing rule. Can be used in place of a label | 
-| %topic |  name of the current "real" topic . if control is currently in a topic or called from a topic which is not system or nostay, then that is the topic. Otherwise the most recent pending topic is found | 
-| %actualtopic |  literally the current topic being processed (system or not) | 
-| %trace |  Numeric value of the trace flag (:trace to set) | 
-| %httpresponse |  return code of most recent ^jsonopen call | 
+| variable            | description |
+| --------            | ------- |
+| `%all`              |  Boolean is the :all flag on? (:all to set) |
+| `%document`         |  Boolean is :document running | 
+| `%fact`             |  Numeric value most recent fact id| 
+| `%freetext`         |  kb of available text space| 
+| `%freedict`         |  number of unused dictionary words| 
+| `%freefact`         |  number of unused facts| 
+| `%maxmatchvariables`|  highest number of _match variables, currently 20 |  
+| `%maxfactsets`      |  highest number of @factsets, currently 20 | 
+| `%host`             |  name of the current host machine or "local" | 
+| `%regression`       |  Boolean is the regression flag on | 
+| `%server`           |  Boolean is the system running in server mode | 
+| `%rule`             |  get a tag to the current executing rule. Can be used in place of a label | 
+| `%topic`            |  name of the current "real" topic . if control is currently in a topic or called from a topic which is not system or nostay, then that is the topic. Otherwise the most recent pending topic is found | 
+| `%actualtopic`      |  literally the current topic being processed (system or not) | 
+| `%trace`            |  Numeric value of the trace flag (:trace to set) | 
+| `%httpresponse`     |  return code of most recent ^jsonopen call | 
 
 
 ## Build data
 
-| variable | meaning |
-| -------- | ------- |
-| %dict | date/time the dictionary was built| 
-| %engine |  date/time the engine was compiled| 
-| %os |  os invovled (linux windows mac ios)| 
-| %script |  date/time build1 was compiled| 
-| %version |  engine version number| 
+| variable   | description                         |
+| --------   | -------                             
+| `%dict`    | date/time the dictionary was built
+| `%engine`  |  date/time the engine was compiled 
+| `%os`      |  os invovled (linux windows mac ios) 
+| `%script`  |  date/time build1 was compiled
+| `%version` |  engine version number
 
 You actually can assign to any of them. This will override them and make them return
 what you tell them to and is a particularly BAD thing to do if this is running on a server
@@ -302,9 +302,12 @@ The default one that comes with Harry is:
 
 
 ```
-$cs_token = #DO_INTERJECTION_SPLITTING | #DO_SUBSTITUTE_SYSTEM |
-#DO_NUMBER_MERGE | #DO_PROPERNAME_MERGE | #DO_SPELLCHECK |
-#DO_PARSE
+$cs_token = #DO_INTERJECTION_SPLITTING | 
+            #DO_SUBSTITUTE_SYSTEM |
+            #DO_NUMBER_MERGE | 
+            #DO_PROPERNAME_MERGE | 
+            #DO_SPELLCHECK |
+            #DO_PARSE
 ```
 
 The `#`signals a named constant from the dictionarySystem.h file. One can set the
@@ -312,59 +315,58 @@ following:
 
 These enable various LIVEDATA files to perform substitutions on input:
 
-| flag | meaning |
-| ---- | ------- |
-| DO_ESSENTIALS |  perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead | 
-| DO_SUBSTITUTES |  perform LIVEDATA/substitutes| 
-| DO_CONTRACTIONS |  perform LIVEDATA/contractions, expanding contractions | 
-| DO_INTERJECTIONS |  perform LIVEDATA/interjections, changing phrases to interjections | 
-| DO_BRITISH |  perform LIVEDATA/british, respelling brit words to American | 
-| DO_SPELLING |  performs the LIVEDATA/spelling file (manual spell correction) | 
-| DO_TEXTING |  performs the LIVEDATA/texting file (expand texting notation)| 
-| DO_SUBSTITUTE_SYSTEM |  do all LIVEDATA file expansions| 
-| DO_INTERJECTION_SPLITTING |  break off leading interjections into own sentence | 
-| DO_NUMBER_MERGE |  merge multiple word numbers into one (_four and twenty_) | 
-| DO_PROPERNAME_MERGE |  merge multiple proper name into one (_George Harrison-) | 
-| DO_DATE_MERGE |  merge month day and/or year sequences (_January 2, 1993_) | 
+| flag                        | description |
+| ----                        | ------- |
+| `DO_ESSENTIALS`             |  perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead
+| `DO_SUBSTITUTES`            |  perform LIVEDATA/substitutes 
+| `DO_CONTRACTIONS`           |  perform LIVEDATA/contractions, expanding contractions  
+| `DO_INTERJECTIONS`          |  perform LIVEDATA/interjections, changing phrases to interjections
+| `DO_BRITISH`                |  perform LIVEDATA/british, respelling brit words to American 
+| `DO_SPELLING`               |  performs the LIVEDATA/spelling file (manual spell correction)  
+| `DO_TEXTING`                |  performs the LIVEDATA/texting file (expand texting notation)
+| `DO_SUBSTITUTE_SYSTEM`      |  do all LIVEDATA file expansions
+| `DO_INTERJECTION_SPLITTING` |  break off leading interjections into own sentence 
+| `DO_NUMBER_MERGE`           |  merge multiple word numbers into one (_four and twenty_)  
+| `DO_PROPERNAME_MERGE`       |  merge multiple proper name into one (_George Harrison-)  
+| `DO_DATE_MERGE`             |  merge month day and/or year sequences (_January 2, 1993_)  
 
 
 If any of the above items affect the input, they will be echoed as values into
 %tokenFlags so you can detect they happened. 
 The next changes do not echo into %tokenFlags and relate to grammar of input:
 
-| flag | meaning |
-| ---- | ------- |
-| DO_POSTAG |  allow pos-tagging (labels like ~noun ~verb become marked)
-| DO_PARSE |  allow parser (labels for word roles like ~main_subject)
-| DO_CONDITIONAL_POSTAG |  perform pos-tagging only if all words are known. Avoids wasting time on foreign sentences in particular |
-|  NO_ERASE |  where a substitution would delete a word entirely as junk, don't |
-| DO_SPLIT_UNDERSCORES |  happens after all other input tokenization and adjustments except number merge, and separates words that have been conjoined either because the dictionary has them (_credit_card_) or because they were merged by proper name merging, or by substitution. The result is only words without underscores (excluding number words like _five_thousand_and_four_ | 
-| MARK_LOWER |  if a word is considered a proper name in CS and is marked as an upper case word, this will force it to perform any markings for its lower case form as well. Sometimes users type stuff in upper case that really should be lower | 
+| flag                    | description |
+| ----                    | -------     |
+| `DO_POSTAG`             |  allow pos-tagging (labels like ~noun ~verb become marked)
+| `DO_PARSE`              |  allow parser (labels for word roles like ~main_subject)
+| `DO_CONDITIONAL_POSTAG` |  perform pos-tagging only if all words are known. Avoids wasting time on foreign sentences in particular |
+|  `NO_ERASE`             |  where a substitution would delete a word entirely as junk, don't |
+| `DO_SPLIT_UNDERSCORES`  |  happens after all other input tokenization and adjustments except number merge, and separates words that have been conjoined either because the dictionary has them (_credit_card_) or because they were merged by proper name merging, or by substitution. The result is only words without underscores (excluding number words like _five_thousand_and_four_ | 
+| `MARK_LOWER`            |  if a word is considered a proper name in CS and is marked as an upper case word, this will force it to perform any markings for its lower case form as well. Sometimes users type stuff in upper case that really should be lower | 
 
 
 Normally the system tries to outguess the user, who cannot be trusted to use
 correct punctuation or casing or spelling. These block that:
 
-| flag | meaning |
-| ---- | ------- |
-| STRICT_CASING |  except for 1st word of a sentence, assume user uses correct casing on words | 
-| NO_INFER_QUESTION |  the system will not try to set the QUESTIONMARK flag if the user didn't input a ? and the structure of the input looks like a question | 
-| DO_SPELLCHECK |  perform internal spell checking| 
-| ONLY_LOWERCASE |  force all input (except "I") to be lower case, refuse to recognize uppercase forms of anything | 
-| NO_IMPERATIVE | | 
-| NO_WITHIN | |  
-| NO_SENTENCE_END | | 
+| flag                | description |
+| ----                | ------- |
+| `STRICT_CASING`     |  except for 1st word of a sentence, assume user uses correct casing on words | 
+| `NO_INFER_QUESTION` |  the system will not try to set the QUESTIONMARK flag if the user didn't input a ? and the structure of the input looks like a question | 
+| `DO_SPELLCHECK`     |  perform internal spell checking| 
+| `ONLY_LOWERCASE`    |  force all input (except "I") to be lower case, refuse to recognize uppercase forms of anything | 
+| `NO_IMPERATIVE`     | | 
+| `NO_WITHIN`         | |  
+| `NO_SENTENCE_END`   | | 
 
 Normally the tokenizer breaks apart some kinds of sentences into two. These
 prevent that:
 
-| flag | meaning |
-| ---- | ------- |
-| NO_COLON_END |  don't break apart a sentence after a colon| 
-| NO_SEMICOLON_END |  don't break apart a sentence after a semi-colon| 
-| UNTOUCHED_INPUT |  if set to this alone, will tokenize only on spaces, leaving everything but spacing untouched | 
-| LEAVE_QUOTE |  if input is found withing " " it will become a single token exactly as it is seen. W/o Leave_Quote, it is converted into a word without quotes and using underscores instead of spaces. So "My Fair Lady" becomes My_Fair_Lady, which would match a movie title if you had one, unlike _My Fair Lady_ becoming the resulting token
-and unrecognized | 
+| flag               | description |
+| ----               | ------- |
+| `NO_COLON_END`     |  don't break apart a sentence after a colon 
+| `NO_SEMICOLON_END` |  don't break apart a sentence after a semi-colon 
+| `UNTOUCHED_INPUT`  |  if set to this alone, will tokenize only on spaces, leaving everything but spacing untouched  
+| `LEAVE_QUOTE`      |  if input is found withing " " it will become a single token exactly as it is seen. W/o Leave_Quote, it is converted into a word without quotes and using underscores instead of spaces. So "My Fair Lady" becomes My_Fair_Lady, which would match a movie title if you had one, unlike _My Fair Lady_ becoming the resulting token and unrecognized
 
 
 Note, you can change `$cs_token` on the fly and force input to be reanalyzed via
@@ -436,35 +438,35 @@ you can use a function to do the same thing (but only 1 pair at a time).
 The following variables can be defined in a script and the engine will react to their
 contents.
 
-| interchange variable | meaning |
+| interchange variable | description |
 | -------------------  | ------- |
-| $cs_token |  described extensively above| 
-| $cs_response |  controls automatic handling of outputs to user. By default it consists of `$cs_response = #Response_upperstart \| #response_removespacebeforecomma \| #response_alterunderscores \| #response_removetilde` If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. `#response_upperstart` – makes the first letter of an output sentence capitalized, `#Response_removespacebeforecomma` – does the obvious, `#Response_alterunderscores` - converts single underscores to spaces and double underscores to singles (eg for a web url) |
-| $cs_jsontimeout |  seconds before JsonOpen declares a time out failure. If unspecified the default is 300 | 
-| $cs_crashmsg |  in server mode, what to say if the server crashes and we return a message to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._ | 
-| $cs_abstract |  used with :abstract | 
-| $cs_looplimit |  loop() defaults to 1000 iterations before stopping. You can change this default with this | 
-| $cs_trace |  if this variable is defined, then whenever the user's volley is finished, the value of this variable is set to that of :trace and :trace is cleared to 0, but when the user is read back in, the :trace is set to this value. For a server, this means you can perform tracing on a user w/o making all user transactions dump trace data | 
-| $cs_control_pre |  name of topic to run in gambit mode on pre-pass, set by author. Runs before any sentences of the input volley are analyzed. Good for setting up initial values | 
-| $cs_externaltag |  name of a topic to use to replace existing internal English pos-parser. See bottom of ChatScript PosParser manual for details | 
-| $cs_prepass |  name of a topic to run in responder mode on main volleys, which runs before $cs_control_main and after all of the above and pos-parsing is done. Used to amend preparation data coming from the engine. You can use it to add your own spin on input processing before going to your main control. I use it to, for example, label commands as questions, standardize sentence construction (like _if you see me what will you think_ to _assume you see me. What will you think?_) | 
-| $cs_control_main |  name of topic to run in responder mode on main volleys, set by author | 
-| $cs_control_post |  name of topic to run in gambit mode on post-pass, set by author| 
-| $botprompt |  message for console window to label bot output | 
-| $userprompt |  message for console window to label user input line| 
-| $cs_crashmsg |  message to use if a server crash occurs| 
-| $cs_language |  if spanish, will adjust spell checking for spanish colloquial| 
-| $cs_token |  bits controlling how the tokenizer works. By default when null, you get all bits assumed on. The possible values are in src/dictionarySystem.h (hunt for $token) and you put a # in front of them to generate that named numeric constant | 
-| $cs_abstract |  topic used by :abstract to display facts if you want them displayed | 
-| $cs_prepass |  topic used between parsing and running user control script. Useful to supplement parsing, setting the question value, and revising input idioms | 
-| $cs_wildcardseparator |  when a match variable covers multiple words, what should separate them- by default it's a space, but underscore is handy too. Initial system character is space, creating fidelity with what was typed. Useful if _ can be recognized in input (web addresses). Changing to _ is consistent with multi-word representation and keyword recognition for concepts. CS automatically converts _ to space on output, so internal use of _ is normal |
-$cs_userfactlimit | how many of the most recent permanent facts created by the script in response to user inputs are kept for each user. Std default is 100 | 
-| $cs_response |  controls some characteristics of how responses are formatted | 
-| $cs_randIndex |  the random seed for this volley | 
-| $cs_utcoffset |  if defined, then %time returns current utc time + timezone offset. The offset is usually a simple number, meaning hours, and can have + or – in front of it. It can also be a normal time reference like 02:30 which means plus 2 hours and 30 minutes beyond utc, or -01:30:20 which means 1 hour, 30 minutes, and 20 seconds before utc (as if anyone would use that). The following variables are generated by the system on behalf of scripts | 
-| $$db_error |  error message from a postgres failure $$findtext_start - ^findtext return the end normally, this is where it puts the start | 
-| $$tcpopen_error |  error message from a tcpopen error| 
-| $$document |  name of the document being read in document mode| 
-| $cs_randindex |  current value of the random generator value| 
-| $cs_bot |  name of the bot currently in use| 
-| $cs_login |  login name of the user |
+| `$cs_token`          |  described extensively above| 
+| `$cs_response`       |  controls automatic handling of outputs to user. By default it consists of `$cs_response = #Response_upperstart \| #response_removespacebeforecomma \| #response_alterunderscores \| #response_removetilde` If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. <br>`#response_upperstart` – makes the first letter of an output sentence capitalized, <br>`#Response_removespacebeforecomma` – does the obvious, <br>`#Response_alterunderscores` - converts single underscores to spaces and double underscores to singles (eg for a web url) |
+| `$cs_jsontimeout`    |  seconds before JsonOpen declares a time out failure. If unspecified the default is 300 | 
+| `$cs_crashmsg`       |  in server mode, what to say if the server crashes and we return a message to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._ | 
+| `$cs_abstract`       |  used with :abstract | 
+| `$cs_looplimit`      |  loop() defaults to 1000 iterations before stopping. You can change this default with this | 
+| `$cs_trace`          |  if this variable is defined, then whenever the user's volley is finished, the value of this variable is set to that of :trace and :trace is cleared to 0, but when the user is read back in, the :trace is set to this value. For a server, this means you can perform tracing on a user w/o making all user transactions dump trace data | 
+| `$cs_control_pre`    |  name of topic to run in gambit mode on pre-pass, set by author. Runs before any sentences of the input volley are analyzed. Good for setting up initial values | 
+| `$cs_externaltag`    |  name of a topic to use to replace existing internal English pos-parser. See bottom of ChatScript PosParser manual for details | 
+| `$cs_prepass`        |  name of a topic to run in responder mode on main volleys, which runs before $cs_control_main and after all of the above and pos-parsing is done. Used to amend preparation data coming from the engine. You can use it to add your own spin on input processing before going to your main control. I use it to, for example, label commands as questions, standardize sentence construction (like _if you see me what will you think_ to _assume you see me. What will you think?_) | 
+| `$cs_control_main`   |  name of topic to run in responder mode on main volleys, set by author | 
+| `$cs_control_post`   |  name of topic to run in gambit mode on post-pass, set by author| 
+| `$botprompt`         |  message for console window to label bot output | 
+| `$userprompt`        |  message for console window to label user input line| 
+| `$cs_crashmsg`       |  message to use if a server crash occurs| 
+| `$cs_language`       |  if spanish, will adjust spell checking for spanish colloquial| 
+| `$cs_token`          |  bits controlling how the tokenizer works. By default when null, you get all bits assumed on. The possible values are in src/dictionarySystem.h (hunt for $token) and you put a # in front of them to generate that named numeric constant | 
+| `$cs_abstract`       |  topic used by :abstract to display facts if you want them displayed | 
+| `$cs_prepass`        |  topic used between parsing and running user control script. Useful to supplement parsing, setting the question value, and revising input idioms | 
+| `$cs_wildcardseparator` |  when a match variable covers multiple words, what should separate them- by default it's a space, but underscore is handy too. Initial system character is space, creating fidelity with what was typed. Useful if _ can be recognized in input (web addresses). Changing to _ is consistent with multi-word representation and keyword recognition for concepts. CS automatically converts _ to space on output, so internal use of _ is normal |
+`$cs_userfactlimit`       | how many of the most recent permanent facts created by the script in response to user inputs are kept for each user. Std default is 100 | 
+| `$cs_response`          |  controls some characteristics of how responses are formatted | 
+| `$cs_randIndex`         |  the random seed for this volley | 
+| `$cs_utcoffset`         |  if defined, then %time returns current utc time + timezone offset. The offset is usually a simple number, meaning hours, and can have + or – in front of it. It can also be a normal time reference like 02:30 which means plus 2 hours and 30 minutes beyond utc, or -01:30:20 which means 1 hour, 30 minutes, and 20 seconds before utc (as if anyone would use that). The following variables are generated by the system on behalf of scripts | 
+| `$$db_error`            |  error message from a postgres failure $$findtext_start - ^findtext return the end normally, this is where it puts the start | 
+| `$$tcpopen_error`       |  error message from a tcpopen error| 
+| `$$document`            |  name of the document being read in document mode| 
+| `$cs_randindex`         |  current value of the random generator value| 
+| `$cs_bot`               |  name of the bot currently in use| 
+| `$cs_login`             |  login name of the user |
