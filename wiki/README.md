@@ -7,7 +7,7 @@
 ChatScript has a lot of documentation in various manuals, so knowing what to read may seem daunting.
 Here is an overview.
 
-# Basic ChatScript for starters
+## Basic ChatScript for starters
 
 * [What is ChatScript?](https://github.com/solyaris/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
 <br>Overview of the design goals and abilities of CS. Not necessary to read.
@@ -26,7 +26,7 @@ concepts. A must starting place.
 <br>Here are a collection of common beginner mistakes.
 
 
-# Predefined Bots
+## Predefined Bots
 
 * [Bot Harry - basic bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Harry.md)
 <br>A brief overview of the simple Harry bot and how to make simple modifications.
@@ -47,7 +47,7 @@ NLTK means nothing to you.
 
 
 
-# Advanced ChatScript
+## Advanced ChatScript
 
 * [ChatScript Advanced User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md)
 <br>Once you've master basic CS, this is the place to go next.
@@ -82,9 +82,9 @@ really advanced users wanting the appropriate mental model.
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
 
 
-# Specialized ChatScript
+## Specialized ChatScript
 
-* ## Servers and Clients
+* ### Servers and Clients
 
  * ChatScript ClientServer Manual
 <br>How to configure and run CS as a server. And thinking about CS on mobile.
@@ -93,7 +93,7 @@ really advanced users wanting the appropriate mental model.
 <br>How to install CS as a server on Amazon AWS.
 
 
-* ## Esoteric ChatScript
+* ### Esoteric ChatScript
 
  * ChatScript Control Scripts
 <br>Brief overview of writing your own control scripts
@@ -126,7 +126,10 @@ really advanced users wanting the appropriate mental model.
 <br>Brief old interesting scripting tips
 
 
-# Papers in order
+## Papers in order
+
+* ChatScript Training
+<br>A slide series on how CS works and how the engine works.
 
 * Paper- ChatBots 102
 <br>My first paper, looking at the flaws of AIML and why I felt I could do better (before Suzette won anything).
@@ -142,7 +145,6 @@ really advanced users wanting the appropriate mental model.
 
 * Paper – Google Talk
 <br>A talk I gave at Google about my history, CS, and writing code to act out stories
-
 * Paper- Writing a Chatbot
 <br>Useful discussion on how to think about writing a chatbot
 
@@ -154,6 +156,3 @@ really advanced users wanting the appropriate mental model.
 
 * Paper- Winning the Loebner's
 <br>Realities of the Loebner competition and additional ideas of english applied to chatbots
-
-* ChatScript Training
-<br>A slide series on how CS works and how the engine works.
