@@ -57,45 +57,49 @@ says it without waiting for our input).
 Put this text in `tutorial.top`. Then, at the client's prompt, type `:build 2`. You should see
 something like this:
 
-
-```
- >:build 2
-
-----Reading file simplecontrol.top
-Reading outputmacro: ^harry
-Reading outputmacro: ^georgia
-Reading table tbl:defaultbot
-Reading topic ~control
-Reading topic ~alternate_control
-
-----Reading file tutorial.top
-Reading topic ~introductions
-No errors or warnings in build
-Read 302,955 Dictionary entries
-Read 304,588 Dictionary facts
-Read 110,851 Build0 facts
-Read 1 Build1 facts
-Concept sets: 1421
-Free space: 123,252,280 bytes FreeFacts: 4,584,560
-
-Hello, talk to me!
- >
-```
+> 
+> 
+> 
+> >:build 2 
+> 
+> 
+> 
+> ----Reading file simplecontrol.top
+> Reading outputmacro: ^harry
+> Reading outputmacro: ^georgia
+> Reading table tbl:defaultbot
+> Reading topic ~control
+> Reading topic ~alternate_control
+> 
+> ----Reading file tutorial.top
+> Reading topic ~introductions
+> No errors or warnings in build
+> Read 302,955 Dictionary entries
+> Read 304,588 Dictionary facts
+> Read 110,851 Build0 facts
+> Read 1 Build1 facts
+> Concept sets: 1421
+> Free space: 123,252,280 bytes FreeFacts: 4,584,560
+> 
+> Hello, talk to me!
+>  >
+> 
 
 Chatting with this bot results in a dialog such as this:
 
-```
-Hello, talk to me!
+> 
+> Hello, talk to me!
+> 
+> >hi
+> 
+> I don't know what to say.
+> 
+> >why?
+> 
+> I don't know what to say.
+> 
+> ...
 
->hi
-
-I don't know what to say.
-
->why?
-
-I don't know what to say.
- ...
-```
 
 The bot just says what we told it to say, and then stuck, as it does not have anything else
 to say.
