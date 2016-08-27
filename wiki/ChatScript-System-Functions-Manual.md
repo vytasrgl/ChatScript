@@ -488,17 +488,17 @@ The answer will be `?` if the operation makes no sense and infinity if you divid
 
 `~numberOperator` recognizes these operations:
 
-| operator symbol | meaning |
-| --------------- | ------- |
-| +               | plus add and (addition) |
-| -               | minus subtract deduct (subtraction) |
-| *               | x time multiply (multiplication) |
-| /               | divide quotient (float division) |
-| %               | remainder modulo mod (integer only- modulo) |
-| root            | square_root (square root) |
-| ^^              | power exponent (exponent ) |
-| << and >>       | shift (limited to shifting 31 bits or less) |
-| random          | ( 0 random 7 means 0,1,2,3,4,5,6 - integer only) |
+| operator symbol   | description                                    |
+| ---------------   | -------                                        |
+| `+`               | plus add and (addition) 
+| `-`               | minus subtract deduct (subtraction) 
+| `*`               | x time multiply (multiplication) 
+| `/`               | divide quotient (float division) 
+| `%`               | remainder modulo mod (integer only- modulo)
+| `root`            | square_root (square root)
+| `^^`              | power exponent (exponent )
+| `<<` and `>>`     | shift (limited to shifting 31 bits or less) 
+| `random`          | ( 0 random 7 means 0,1,2,3,4,5,6 - integer only)
 
 Basic operations can be done directly in assignment statements like:
 ```
@@ -560,24 +560,24 @@ simple value without a `#` (e.g., `OUTPUT_EVALCODE` ) or a value list in parens.
 
 Flags include:
 
-| Flag                            | meaning                         |
-| ------------------------------  | ------------------------------- |
-| OUTPUT_EVALCODE                 | is automatic, so not particularly useful. Useful ones would control how print decides to space things | 
-| OUTPUT_RAW                      | does not attempt to interpret ( or { or [ or " |
-| OUTPUT_RETURNVALUE_ONLY         | does not go to the user, is merely return as an answer. Print normally stores directly into the response system, meaning failing the rule later has no effect. Print normally does not return a value so you can't store it into a variable. And print has a number of flags that can affect its formatting that dont exist with normal output. This flag converts print into an ordinary function returning a value, reversing all those differences |
-| OUTPUT_NOCOMMANUMBER            | dont add commas to numbers |
-| OUTPUT_NOQUOTES                 | remove quotes from strings |
-| OUTPUT_NOUNDERSCORE             | convert underscores to blanks |
+| Flag                              | description                     |
+| --------------------------------  | ------------------------------- |
+| `OUTPUT_EVALCODE`                 | is automatic, so not particularly useful. <br>Useful ones would control how print decides to space things 
+| `OUTPUT_RAW`                      | does not attempt to interpret ( or `{` or `[` or `"`
+| `OUTPUT_RETURNVALUE_ONLY`         | does not go to the user, is merely return as an answer. Print normally stores directly into the response system, meaning failing the rule later has no effect. Print normally does not return a value so you can't store it into a variable. And print has a number of flags that can affect its formatting that dont exist with normal output. This flag converts print into an ordinary function returning a value, reversing all those differences
+| `OUTPUT_NOCOMMANUMBER`            | dont add commas to numbers
+| `OUTPUT_NOQUOTES`                 | remove quotes from strings
+| `OUTPUT_NOUNDERSCORE`             | convert underscores to blanks
 
 These flags apply to output as it is sent to the user:
 
-| Flag                            | meaning                                       |
-| ------------------------------  | --------------------------------------------- |
-| RESPONSE_NONE                   | turn off all default response conversions     |
-| RESPONSE_UPPERSTART             | force 1st character of output to be uppercase |
-| RESPONSE_REMOVESPACEBEFORECOMMA | as the name says                              |
-| RESPONSE_ALTERUNDERSCORES       | convert underscores to spaces                 |
-| RESPONSE_REMOVETILDE            | remove leading ~ on class names               |
+| Flag                              | description                                   |
+| --------------------------------  | --------------------------------------------- |
+| `RESPONSE_NONE`                   | turn off all default response conversions     |
+| `RESPONSE_UPPERSTART`             | force 1st character of output to be uppercase |
+| `RESPONSE_REMOVESPACEBEFORECOMMA` | as the name says                              |
+| `RESPONSE_ALTERUNDERSCORES`       | convert underscores to spaces                 |
+| `RESPONSE_REMOVETILDE`            | remove leading ~ on class names               |
 
 ### `^preprint`( stream )
 The stream will be put into output, but it will be placed before all
@@ -660,15 +660,15 @@ pending in the output stream will be shipped to the user. If `^end` is contained
 condition of an if, it merely stops it. An end rule inside a loop merely stops the loop. All
 other codes propagate past the loop. The codes are:
 
-| code     | description |
-| -------- | ------------| 
-| CALL     | stops the current outputmacro w/o failing it. See also ^return |
-| RULE     | stops the current rule. Whether the next rule triggers depends upon whether or not output was generated |
-| LOOP     | stops the current loop but not the rule containing it. Can pass up through topics to find the loop. If there is no loop, it will fail you all the way to the top |
-| TOPIC    | stops the current topic |
-| SENTENCE |  stops the current rule, topic, and sentence |
-| INPUT    | stops all the way through all sentences of the current input |
-| PLAN     | succeeds a plan – (only usable within a plan) |
+| code       | description |
+| ---------- | ------------| 
+| `CALL`     | stops the current outputmacro w/o failing it. See also ^return |
+| `RULE`     | stops the current rule. Whether the next rule triggers depends upon whether or not output was generated |
+| `LOOP`     | stops the current loop but not the rule containing it. Can pass up through topics to find the loop. If there is no loop, it will fail you all the way to the top |
+| `TOPIC`    | stops the current topic |
+| `SENTENCE` |  stops the current rule, topic, and sentence |
+| `INPUT`    | stops all the way through all sentences of the current input |
+| `PLAN`     | succeeds a plan – (only usable within a plan) |
 
 
 ### `^eval` ( flags stream )
@@ -694,13 +694,13 @@ of an if, it merely stops that and not anything broader. A fail or end rule insi
 merely stops the loop; other forms propagate past the loop. 
 The failure codes are:
 
-| code     | description |
-| -------- | ------------| 
-| RULE     | stops the current rule and cancels pending output |
-| LOOP     | stops a containing loop and fails the rule calling it. If you have no containing loop, this can crawl up through all enclosing topics and make no output |
-| TOPIC    | stops not only the current rule also the current topic and cancels pending output. Rule processing stops for the topic, but as it exits, it passes up to the caller a downgraded fail(rule), so the caller can just continue executing other rules |
-| SENTENCE | stops the current rule, the current topic, and the current sentence and cancels pending output |
-| INPUT    | stops processing anything more from this user's volley. Does not cancel pending output. It's the same as END(INPUT) |
+| code       | description |
+| ---------- | ------------| 
+| `RULE`     | stops the current rule and cancels pending output |
+| `LOOP`     | stops a containing loop and fails the rule calling it. If you have no containing loop, this can crawl up through all enclosing topics and make no output |
+| `TOPIC`    | stops not only the current rule also the current topic and cancels pending output. Rule processing stops for the topic, but as it exits, it passes up to the caller a downgraded fail(rule), so the caller can just continue executing other rules |
+| `SENTENCE` | stops the current rule, the current topic, and the current sentence and cancels pending output |
+| `INPUT`    | stops processing anything more from this user's volley. Does not cancel pending output. It's the same as END(INPUT) |
 
 Output that has been recorded via `^print`, `^preprint`, etc is never canceled. Only pending
 output.
@@ -1232,6 +1232,8 @@ already in the dictionary.
 Generates a particular form of a word in any form and puts it in the output stream. 
 If it cannot generate the request, it issues a RULE failure. 
 Most combinations of arguments are obvious. Here are the 1st & 3rd choices:
+
+** TODO **
 
 ```
 conjugate pos-integer (as returned from ^partofspeech) returns the word with that
