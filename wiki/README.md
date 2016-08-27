@@ -1,4 +1,4 @@
-# ChatScript Wiki (user guides and tutorials)
+# ChatScript Wiki (user guides, tutorials, papers)
 
 > ChatScript Guide To Documentation
 > © Bruce Wilcox, gowilcox@gmail.com
