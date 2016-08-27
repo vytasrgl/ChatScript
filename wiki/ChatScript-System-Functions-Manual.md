@@ -44,7 +44,9 @@ Some functions out or take "rule tags". All rules have an internal label consist
 ```
 stands for the 0th rule in the `~introductions` topic, rejoinder # 5.
 
+
 # Topic Functions
+
 
 ### `^addtopic`( topicname )
 adds the named topic as a pending topic at the head of the list.
@@ -84,17 +86,18 @@ will be a keyword of some topic to pick. E.g.,
 ### `^getrule`( what label )
 for the given rule label or tag, return some fragment of the rule.
 `what` can be `tag`, `type`,`label`, `pattern`, `output`,`topic`, and `usable`. The type
-will be `t`, `?`, `s`, `a`, etc. 
+will be `t`, `?`, `s`, `a`, etc.
+
 If a rule label is involved, optional third argument if given means
 only find enabled rules with that label. For usable, returns 1 if is can be used or null if it
-has been erased. The label `~` means the current rule. The label `0` means the top level rule above us (if we
-are a rejoinder, otherwise it is the same as `~`).
+has been erased. The label `~` means the current rule. The label `0` means the top level rule above us 
+(if we are a rejoinder, otherwise it is the same as `~`).
 
 ### `^hasgambit`( topic )
 fails if topic does not have any gambits left unexecuted. 
 Even it if does, they may not execute if they have patterns and they don't match. 
-Optional second argument, if `any` will return normally if topic has any gambits (executed or not) and
-will failrule if topic has no gambits (a reactor topic).
+Optional second argument, if `any` will return normally if topic has any gambits 
+(executed or not) and will failrule if topic has no gambits (a reactor topic).
 
 ### `^keep`()
 do not erase this top level rule when it executes its output part (you could
@@ -106,7 +109,8 @@ given a topic name, get the volley of the last what, where `what`
 is `GAMBIT`, `RESPONDER`, `REJOINDER`, `ANY`. If it has never happened, the value is `0`.
 
 ### `^next`( what {label} )
-Given what of `GAMBIT` or `RESPONDER` or `REJOINDER` or `RULE` and a rule label or tag, find the next rule of that what. Fails if none is found.
+Given what of `GAMBIT` or `RESPONDER` or `REJOINDER` or `RULE` and a rule label or tag, 
+find the next rule of that what. Fails if none is found.
 
 `REJOINDER` will fail if it reaches the next top level rule. If `label` is `~`, it will use the
 last call's answer as the starting point, enabling you to walk rules in succession. There is
@@ -115,6 +119,7 @@ also `^next(FACT @xxx)` – see fact manual.
 For `^next(input)` the system will read the next sentence and prep the system with it. 
 This means that all patterns and code executing thereafter will be in the context of the next input sentence. 
 That sentence is now used up, and will not be seen next when the current revised sentence finishes. 
+
 Sample code might be:
 ```
 t: Do you have any pets
@@ -183,11 +188,11 @@ To prevent infinite loops, it will not perform more than 5 retries during a voll
 `SENTENCE` is particularly useful with changing the tokenflags to get input processing
 done differently. If item is INPUT it will retry all input again.
 
-`^retry(TOPRULE)` Will return back to the top level rule (not of the topic but of a rejoinder set) and retry. 
-It's the same if the current rule was a top level rule, but if the current rule is
-from `^refine()`, then it returns to the outermost rule to restart. If the current rule is not
-from `^refine()`, then `TOPRULE` means the lexically placed toprule above the current rule
-and a `^reuse()` will be performed to go to it.
+`^retry(TOPRULE)` will return back to the top level rule 
+(not of the topic but of a rejoinder set) and retry.  It's the same if the current rule was a top level rule, 
+but if the current rule is from `^refine()`, then it returns to the outermost rule to restart. 
+If the current rule is not from `^refine()`, then `TOPRULE` means the lexically placed toprule 
+above the current rule and a `^reuse()` will be performed to go to it.
 
 
 ### `^reuse`( rule label optional-enable optional-FAIL )
@@ -195,9 +200,9 @@ Uses the output script of another rule.
 The label can either be a simple rule label within the current topic, or it can be a
 dotted pair of a topic name and a label within that topic or it can be a rule tag. 
 
-`^reuse` stops at the first correctly labeled rule it can find and issues a RULE fail if it cannot find
-one. Assuming nothing fails, it will return 0 regardless of whether or not any output was
-generated.
+`^reuse` stops at the first correctly labeled rule it can find and issues a RULE fail 
+if it cannot find one. Assuming nothing fails, it will return 0 regardless of whether 
+or not any output was generated.
 When it executes the output of the other rule, that rule is credited with matching and is
 disabled if it is allowed. If not allowed, the calling rule will be disabled if it can be.
 ```
@@ -224,9 +229,8 @@ s: COMMON (?) some answer
 ```
 
 You make `^reuses` go to COMMON (or whatever you name it) or even `^setrejoinder` on it. 
-The rule itself can never trigger because it only considers its
-pattern when the input is a statement, but the pattern says the input must be a question. So
-this rule never matches on its own.
+The rule itself can never trigger because it only considers its pattern when the input is a statement, 
+but the pattern says the input must be a question. So this rule never matches on its own.
 
 There are also a variety of functions that return facts about a topic, but you have to read
 the facts manual to learn about them.
@@ -234,17 +238,18 @@ the facts manual to learn about them.
 
 ### `^sequence`( ? )
 This is like `^refine`, except instead of only executing the first rejoinder that
-matches, it executes all matching rejoinders in order. If one of the rule outputs fails, it
-stops by failing the calling rule. 
+matches, it executes all matching rejoinders in order. 
+If one of the rule outputs fails, it stops by failing the calling rule. 
 
 Normally `^sequence` uses the rejoinders of the rule that it
-is executing from, but you can direct it to ^sequence the rejoinders of any rule.
+is executing from, but you can direct it to `^sequence` the rejoinders of any rule.
 
 
 ### `^setrejoinder`( {kind} tag )
 Force the output rejoinder to be set to the given tag or rule
 label. It's as though that rule had just executed, so the rules beneath it will be the
 rejoinders to try. 
+
 If `kind` is `input` then the input rejoinder is set. 
 If `kind` is `output` or is omitted, then it sets the output rejoinder.
 
@@ -283,6 +288,7 @@ The bits are mapped in dictionary_system.h as `TOPIC_*`.
 
 # Marking Functions
 
+
 ### `^mark`( word location )
 Marking and unmarking words and concepts is fundamental to
 the pattern matching mechanism, so the system provides both an automatic marking
@@ -316,6 +322,7 @@ presence, it will not show up in any memorizations using `_`.
 
 While usually you mark a concept, you can also mark a word (though you should generally use the canonical form
 of the word to trigger all its normal concept hierarchy markings as well). 
+
 Although `^conceptlist` (see Facts manual) normally only reports concepts marked at a word, if you
 explicitly mark using a word and not a concept, that will also be reported in `^conceptlist`.
 
@@ -343,6 +350,7 @@ All references to word (or `~concept` if you named one) are removed from anywher
 When you are trying to analyze pieces of a sentence, you may want to have a pattern that
 finds a kind of word, notes information, then hides that kind of word and reanalyzes the
 input again looking for another of that ilk. 
+
 Being able to temporarily hide marks can be quite useful, and this means typically you use `^unmark` 
 of some flavor to hide words, and then `^mark` later to reenable access to those hidden words.
 
@@ -425,9 +433,9 @@ capital letter. Illegal values of n return failrule.
 ### `^input`( … )
 The arguments, separated by spaces, are injected back into the input
 stream as the next input, processed before any pending additional input. 
-Typically this command is then followed by `^fail(SENTENCE)` to cancel current processing and move
-onto the revised input. Since the sentence is fed in immediately after the current input, if
-you want to feed in multiple sentences, you must reverse the order so the last sentence to
+Typically this command is then followed by `^fail(SENTENCE)` to cancel current processing 
+and move onto the revised input. Since the sentence is fed in immediately after the current input, 
+if you want to feed in multiple sentences, you must reverse the order so the last sentence to
 be processed is submitted via input first. You can detect that the current sentence comes
 from `^input` and not from the user by `%revisedInput` (bool) being true (1).
 
@@ -528,30 +536,32 @@ current time in seconds. Month can be number 1-12 or name of month or abbreviati
 month.
 
 
+
 # Output Functions
+
 
 The following functions cannot be used during postprocessing since output has been
 finished in theory and you can now analyze it.
 
-### `^flushoutput` ()
+### `^flushoutput`()
 Takes any current pending output stream data and sends it out. If the rule
 later fails, the output has been protected and will still go out (though the rule will not
 erase itself).
 
-### `^insertprint` ( where stream )
+### `^insertprint`( where stream )
 The stream will be put into output, but it will be placed
 before output number where or before output issued by the topic named by where. The
 output is safe in that even if the rule later fails, this output will go out. Before the where,
 you may put in output control flags as either a simple value or a value list in parens.
 
-### `^keephistory` ( who count )
+### `^keephistory`( who count )
 The history of either `BOT` or `USER` (values of who) will be cut back to the count give. 
 This affects detecting repeated input on the part of the user or detecting repeating output by the chatbot.
 
 ### `^lastsaid` ()
 Returns what the bot said last volley.
 
-### `^print` ( stream )
+### `^print`( stream )
 Sends the results of outputing that stream to the user. It is isolated from
 the normal output stream, and goes to the user whether or not one later generates a failure
 code from the rule. 
@@ -636,6 +646,7 @@ data after output, e.g., when running the document reader.
 
 # Control Flow Functions
 
+
 ### `^argument`( n )
 Retrieves the nth argument of the calling outputmacro (1-based).
 
@@ -654,7 +665,7 @@ You can execute debugging commands through here. E.g.,
 ```
 
 
-### `^end` ( code )
+### `^end`( code )
 Takes 1 argument and returns a code which will stop processing. Any data
 pending in the output stream will be shipped to the user. If `^end` is contained within the
 condition of an if, it merely stops it. An end rule inside a loop merely stops the loop. All
@@ -671,7 +682,7 @@ other codes propagate past the loop. The codes are:
 | `PLAN`     | succeeds a plan – (only usable within a plan) |
 
 
-### `^eval` ( flags stream )
+### `^eval`( flags stream )
 To evaluate a stream as though it were output (like to assign a variable). 
 Can be used to execute `:`commands from script as well. 
 Flags are optional and match the flag capabilities of `^print`. 
@@ -687,7 +698,7 @@ $$tmp = join($ no x)
 $$val = eval($$tmp) # $$val = 1
 ```
 
-### `^fail` ( code )
+### `^fail`( code )
 Takes 1 argument and returns a failure code which will stop processing.
 How extensive that stop is, depends on the code. If `^fail` is contained within the condition
 of an if, it merely stops that and not anything broader. A fail or end rule inside a loop
@@ -777,13 +788,13 @@ responder.
 
 The nofail codes are:
 
-| code      | description                                                           |
-| --------- | --------------------------------------------------------------------  |
-|RULE       | a rule failure within the script does not propagate outside of nofail |
-|LOOP       | a loop failure or end within the script does not propagate outside of nofail |
-|TOPIC      | a topic or rule failure within the script does not propagate outside of nofail |
-|SENTENCE   | a topic or rule or sentence failure within the script does not propogate outside of nofail |
-|INPUT      | no failure propagates outside of the script |
+| code         | description                                                           |
+| ------------ | --------------------------------------------------------------------  |
+| `RULE`       | a rule failure within the script does not propagate outside of nofail |
+| `LOOP`       | a loop failure or end within the script does not propagate outside of nofail |
+| `TOPIC`      | a topic or rule failure within the script does not propagate outside of nofail |
+| `SENTENCE`   | a topic or rule or sentence failure within the script does not propogate outside of nofail |
+| `INPUT`      | no failure propagates outside of the script |
 
 
 ### `notnull`( stream )
@@ -855,14 +866,16 @@ u: (^incontext(PLAYTENNIS) why) because it was fun.
 ````
 
 
+
 # External Access Functions
+
 
 ### `^system`( any number of arguments )
 The arguments, separated by spaces, are passed as a text string to the operating system for execution as a command. 
 The function always succeeds, returning the return code of the call. You can transfer data back and forth via
 files by using `^import` and `^export` of facts.
 
-### `^popen( commandstring `'function`)
+### `^popen`( commandstring `'function`)
 The command string is a string to pass the os shell
 to execute. That will return output strings (some number of them) which will have any `\r`
 or `\n` changed to blanks and then the string stripped of leading and trailing blanks. The
@@ -899,7 +912,7 @@ Directory of C:ChatScript
 `'Function` can be null if you are not needing to look at output.
 
 
-### `^tcpopen`( kind url data 'function )
+### `^tcpopen`( kind url data `'function` )
 Analogous in spirit to popen.  You name the `kind` of service (`POST`, `GET`), 
 the `url` (not including `http://`) but including any subdirectory, 
 the text string to send as data, and the quoted function in ChatScript you want to receive the answer. 
@@ -1033,7 +1046,9 @@ erase at end of volley) or `permanent` meaning keep the facts as part of user da
 ```
 If `set` is null, then facts are created but not stored into any fact-set.
 
+
 ## Debugging Function `^debug`()
+
 As a last ditch, you can add this function call into a pattern or the output and it will call
 DebugCode in `functionExecute.cpp` so you know exactly where you are and can use a
 debugger to follow code thereafter if you can debug c code.
@@ -1185,10 +1200,12 @@ The answers are a series of facts of the form (someword words words). In additio
 system will automatically switch words with underscores or blanks into words with
 changes in them to the other (since CS stores phrases with underscores). So
 `^words("I love you")` can match phrases already in the dictionary of:
+
 <br>_I_love you_
 <br>_I_love_you_
 <br>_I love you_
 <br>_I LOVE You_
+
 etc. Depending on which words are actually there (for example because they are parts of a fact).
 
 ### `^canon`( word canonicalform )
@@ -1233,7 +1250,7 @@ Generates a particular form of a word in any form and puts it in the output stre
 If it cannot generate the request, it issues a RULE failure. 
 Most combinations of arguments are obvious. Here are the 1st & 3rd choices:
 
-** TODO **
+** TODO (formatting) **
 
 ```
 conjugate pos-integer (as returned from ^partofspeech) returns the word with that
