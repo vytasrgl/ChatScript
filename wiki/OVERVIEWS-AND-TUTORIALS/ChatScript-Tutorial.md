@@ -104,7 +104,7 @@ The bot just says what we told it to say, and then stuck, as it does not have an
 
 If you are tired of speaking with the bot, you can exit the client using the `:shutdown` command.
 
-# Saying more (`^keep`, random selection `[]`, `^repeat`) 
+## Saying more (`^keep`, random selection `[]`, `^repeat`) 
 Let's make our bot a bit more interesting:
 
 ```
