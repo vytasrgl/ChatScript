@@ -57,33 +57,31 @@ says it without waiting for our input).
 Put this text in `tutorial.top`. Then, at the client's prompt, type `:build 2`. You should see
 something like this:
 
-> 
-> 
-> 
-> >:build 2 
-> 
-> 
-> 
-> ----Reading file simplecontrol.top
-> Reading outputmacro: ^harry
-> Reading outputmacro: ^georgia
-> Reading table tbl:defaultbot
-> Reading topic ~control
-> Reading topic ~alternate_control
-> 
-> ----Reading file tutorial.top
-> Reading topic ~introductions
-> No errors or warnings in build
-> Read 302,955 Dictionary entries
-> Read 304,588 Dictionary facts
-> Read 110,851 Build0 facts
-> Read 1 Build1 facts
-> Concept sets: 1421
-> Free space: 123,252,280 bytes FreeFacts: 4,584,560
-> 
-> Hello, talk to me!
->  >
-> 
+``` 
+ >:build 2 
+ 
+ 
+ 
+ ----Reading file simplecontrol.top
+ Reading outputmacro: ^harry
+ Reading outputmacro: ^georgia
+ Reading table tbl:defaultbot
+ Reading topic ~control
+ Reading topic ~alternate_control
+ 
+ ----Reading file tutorial.top
+ Reading topic ~introductions
+ No errors or warnings in build
+ Read 302,955 Dictionary entries
+ Read 304,588 Dictionary facts
+ Read 110,851 Build0 facts
+ Read 1 Build1 facts
+ Concept sets: 1421
+ Free space: 123,252,280 bytes FreeFacts: 4,584,560
+ 
+ Hello, talk to me!
+  >
+``` 
 
 Chatting with this bot results in a dialog such as this:
 
@@ -126,35 +124,35 @@ any continuous sequence of bracketed phrases, the bot may select one at random.
 
 Building this chatbot will result in a dialog such as this:
 
-```
-Hello, say something to me!
 
->hi
+> Hello, say something to me!
+> 
+> >hi
+> 
+> Hey, say something to me!
+> 
+> >what
+> 
+> Hey, talk to me!
+> 
+> >why?
+> 
+> Hello, speak to me!
+> 
+> >who
+> 
+> Hi, talk to me!
+> 
+> >abc
+> 
+> I don't know what to say.
+> 
+> >def
+> 
+> I don't know what to say.
+> 
+> ...
 
-Hey, say something to me!
-
->what
-
-Hey, talk to me!
-
->why?
-
-Hello, speak to me!
-
->who
-
-Hi, talk to me!
-
->abc
-
-I don't know what to say.
-
->def
-
-I don't know what to say.
-
->...
-```
 
 The bot tries some random combinations from our output pattern, and then gets stuck 
 again as it starts to repeat itself. A bot normally doesn't like to repeat itself, except when
