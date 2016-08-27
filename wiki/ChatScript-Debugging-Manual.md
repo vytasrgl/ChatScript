@@ -88,7 +88,7 @@ Thus the most common debug command is `:prepare`.
 
 ## Most Useful Debug Commands
 
-### `:prepare _this is my sample input_`
+### `:prepare` *this is my sample input*
 This shows you how the system will tokenize a sentence and what concepts it matches.
 It’s what the system does to prepare to match topics against your input. From that you
 can deduce what patterns would match and what topics might be invoked.
@@ -126,7 +126,9 @@ need tracing.
 
 ## Trace
 
-### `:trace _all_` `:trace _full_` `:trace _none_`
+### `:trace` _all_
+### `:trace` _full_
+### `:trace` _none_
 The ultimate debugging command dumps a trace of everything that happens during
 execution onto screen and into the log file. After entering this, you type in your chat and
 watch what happens (which also gets dumped into the current log file). Problem is, it’s
@@ -140,41 +142,41 @@ executing within `^NOTRACE()`.
 `:trace ignorenotrace` allows you to use the limited traces below, and still
 ignore NOTRACE covered calls.
 
-### `:trace _~education_`
+### `:trace` _~education_
 this enables tracing for this topic and all the topics it calls. Call it
 again to restore to normal. This is probably what you need usually to see what went
 wrong. You know the code you expected to execute, so monitor the topic it is in.
 
-### `:trace _notthis ~education_` 
+### `:trace` _notthis ~education_ 
 disables tracing for this topic and all topics it calls recursively.
 
-### `:trace _^myfunction_`
+### `:trace` _^myfunction_
 this enables tracing for the function. Call it again to restore to
 normal.
 
-### `:trace _$var_`
+### `:trace` _$var_
 this enables tracing when this variable changes. Local variables only show
 a trace during the current volley. Global variables show a trace across volleys.
 
-### `:trace _!~education_`
+### `:trace` _!~education_
 this disables current tracing for this topic and all the topics it calls
 when `:trace all` is running. Call it again to restore to normal.
 
-### `:trace _~education.school_`
+### `:trace` _~education.school_
 this traces all top-level rules in `~education` that you named school (and its rejoinders and anything it calls. Call it again to turn off the trace.
 
 Similarly you can do
 
-### `:trace _~education.4.5_`
+### `:trace` _~education.4.5_
 which says to trace just the 4th top level rule in `~education`, rejoinder # 5.
 The above defaults to tracing everything while in that topic. You can specify what you
 want to trace by naming trace values and then the topic.
 
-### `:trace _prepare basic facts ~education_`
+### `:trace` _prepare basic facts ~education_
 The above will turn on a bunch of trace values and then assign them to the topic, clearing
 the trace values.
 
-### `:trace _factcreate subject verb object_`
+### `:trace` _factcreate subject verb object_
 subject, verb, and object name values of those fields. You can use null when you don't want to name a value. This trace will show whenever facts matching this template are created.
 You can insert a trace command in the data of a table declaration, to trace a table being
 built (the log file will be from the build in progress). E.g.,
@@ -313,7 +315,8 @@ list all user functions being traced
 ### `:tracedtopics`
 list all topics being traced
 
-### `:retry` `:retry _This is my new input_`
+### `:retry`
+### `:retry` _This is my new input_
 :retry tells the system to rerun the most recent input on the state of the system a moment
 ago, and retry it. It should do exactly what it did before, but this time if you have turned
 on tracing it will trace it. 
@@ -332,7 +335,7 @@ in the authorizedip.txt file to use debug commands.. If retry has been server en
 using the command line parameter "serverretry", thereafter each volley is tracked
 
 
-### `:redo 5 This is new input`
+### `:redo` _5 This is new input_
 :redo is like `:retry` but takes a volley number and requires substitute input. The command
 line parameter "redo" enables this command (otherwise becomes a `:retry`). This
 memorizes all inputs (and numbers the outputs with the current volley number). You can
@@ -340,7 +343,7 @@ then back up to the input leading to any volley number by saying
 :redo n here is new input. Can chew up file space in TMP directory
 
 
-### `:do stream`
+### `:do` _stream_
 This execute sthe stream specified as though a rule has matched input and has this
 stream as its output section. E.g.,
 ```
@@ -359,12 +362,12 @@ topic, it merely executes the stream you gave it as though that were from some r
 matched during main processing. The output generated is handled per normal and the
 system then runs the postprocess. The results are saved in the user's topic file.
 
-### `:topics This is my sample input`
+### `:topics` _This is my sample input_
 This will display the topics whose keywords match the input, the score the topic gets, and
 the specific words that matched.
 
 
-### `:say this is bot output`
+### `:say` _this is bot output_
 This will output whatever you wrote as though the chatbot said it. Useful for testing
 postprocessing code.
 
@@ -372,7 +375,7 @@ postprocessing code.
 This toggles whether or not output is sent to the user. Useful when running regression
 tests.
 
-### `:diff file1 file2 optional-separator`
+### `:diff` _file1 file2 optional-separator_
 Reports on lines that are different between the two files. Useful when running regression
 tests. Often used with :silent and :log as well. The system normally compares the lines of
 the two files, bypassing leading and trailing whitespace. If you provide an optional
@@ -388,60 +391,60 @@ The :show choices are all toggles. Each call flips its state. However, you can s
 second argument to :show, which is a value and instead of toggling the flag will be set to
 that value.
 
-### `:show all`
+### `:show` _all_
 toggles a system mode where it will not stop after it first finds an output. It
 will find everything that matches and shows all the outputs. It just doesn't proceed to do
 gambits. Since it is showing everything, it erases nothing. There is a system variable %all
 you can query to see if the all mode is turned on if you want some of your script to be
 unreactive when running all.
 
-### `:show input` 
+### `:show` _input_ 
 displays the things you send back into the system using the `^input` function.
 
-### `:show mark` 
+### `:show` _mark_ 
 is not something you are likely to use but it displays in the log the
 propogation of marked items in your sentence. If you do `:echo` that stuff will also display
 on your screen.
 
-### `:show newline` 
+### `:show` _newline_ 
 normally the log file transcodes all newline/return characters so that the
 log line of the bot output is all one line (so various tools work). But if you have an
 indented/newline oriented display you want to see in the logs, you can make this true. It
 does ruin the ability to use other tools like :regress, etc.
 
-### `:show number` 
+### `:show` _number_ 
 displays the current input number at the front of the bot's output. It is
 always shown in the log, but this shows it on-screen. I use this before running a large
 regression test like `:source REGRESS/bigregress.txt` so I will know how far it has gotten
 while it's running.
 
-### `:show pos` 
+### `:show` _pos_ 
 displays summary on the POS-tagging. Not useful for a user, but useful to me in debugging the engine itself.
 
-### `:show topic` 
+### `:show` _topic_ 
 displays the current topic the bot is in, prefixed to its output.
 
-### `:show topics` 
+### `:show` _topics_ 
 displays all the topics whose keywords matched the input.
 
-### `:show why` 
+### `:show` _why_ 
 this turns on :why for each volley so you always see the rule causing output
 before seeing the output.
 
-### `:log xxxx` 
+### `:log` _xxxx_ 
 put the message you write directly into the log file. Useful for testers to send
 comments back to scriptors in the moment of some issue arising.
 
 ### `:noreact` 
 toggles whether the system tries to respond to input.
 
-### `:testtopic ~topic sentence`
+### `:testtopic` _~topic sentence_
 This will execute responder mode of the named topic on the sentence given, to see what
 would happen. It forces focus on that topic, so no other topic could intervene. In addition
 to showing you the output it generates, it shows you the values of all user variables it
 changes.
 
-### `:testpattern (…) sentence`
+### `:testpattern` _(…) sentence_
 The system inputs the sentence and tests the pattern you provide against it. It tells you
 whether it matched or failed.
 ```
@@ -463,7 +466,7 @@ This walks all topics and computes how many rules of various kinds you have
 (e.g., how big is your system). You can also just name a topic or use a wildcard like ~do*
 to see all topics starting with ~do.
 
-### `:skip n`
+### `:skip` _n_
 The system will disable the next n gambits of the current topic, and tell you where you
 will end up next. Thereafter your next simple input like "ok" will execute that gambit,
 and the n previous will already have been used up.
@@ -480,21 +483,21 @@ current topic.
 ### `:commands`
 Displays available commands and a brief statement of purpose.
 
-### `:concepts word`
+### `:concepts` _word_
 Lists all concepts that are affiliated with this word.
 
-### `:conceptlist {argument}`
+### `:conceptlist` _{argument}_
 List all concepts defined in the system or with an argument like `~w*`, show all concepts
 starting with `~w`
 
-### `:definition ^xxxx`
+### `:definition` _^xxxx_
 Shows the code of the user-defined macro named.
 
 ### `:directories`
 Lists the directories in use: the path to the exe file, the current working directory, and
 directory overrides used in embedded applications.
 
-### `:findwords word`
+### `:findwords` _word_
 Given a word pattern, find all words in the dictionary that match that
 pattern. The pattern starts with a normal word character, after which you can intermix the
 wildcard * with other normal characters. For example, `slo*` finds _slothful_, _slower_,
@@ -512,7 +515,7 @@ Show memory use, number of words, number of facts, amount of text space used, nu
 ### `:queries`
 Show all defined queries.
 
-### `:variables {kind}`
+### `:variables` _{kind}_
 Rarely will the issue be that some variable of yours isn't correct. But you can show the
 values of all user `$variables` and all system `%variables` and all match variables. If you
 provide an argument, "system" restricts it to system variables and "user" restricts it to
@@ -521,17 +524,17 @@ user variables, and "match" restricts it to all match variables.
 ### `:who`
 Show name of current user and current bot.
 
-### `:nonset type set`
+### `:nonset` _type set_
 find what words of the given part of speech are not encompassed by
 the named concept. This is a command to determine if some words are not covered by an
 ontology tree, and not used by normal scripters. E.g., `:nonset NOUN ~nounlist`.
 
-### `:common dog cat`
+### `:common` _dog cat_
 Given 2 or more words, this displays the concepts they share in common, most close first.
 This only applies to statically defined concepts, and not to dynamic engine concepts like
 parts-of-speech, role-in-sentence, `~number`, etc
 
-### `:word apple`
+### `:word` _apple_
 Given a word, this displays the dictionary entry for it as well some data up it's hierarchy.
 The word is case sensitive and if you want to check out a composite word, you need to
 use underscores instead of blanks. So `:word TV_star`.
@@ -542,7 +545,8 @@ This prints out the current facts stored with the user.
 ### `:allfacts`
 This dumps a list of all the facts (including system facts) into the file `TMP/facts.txt`.
 
-### `:facts meaning` `:facts @n`
+### `:facts` _meaning_
+### `:facts` _@n_
 This displays all facts for the given word or meaning. If you give a meaning (e.g., `sky~1`)
 then only facts involving that specific meaning are displayed. You can also give a fact like (subject verb object) and all facts containing that fact will be shown, but the fact can
 not contain any facts itself, it must be all simple fields.
@@ -550,15 +554,15 @@ If you use `:facts @2` then it will display all facts in that fact set. Bear in 
 normally factsets are NOT stored across volleys, so displaying a factset will likely show
 nothing unless you've executed ^save to protect it.
 
-### `:up word`
+### `:up` _word_
 Shows the dictionary and concept hierarchy of things above the given word or concept.
 
-### `:down word n`
+### `:down` _word n_
 Shows the dictionary hierarchy below a word or, if the word is name of a concept, the
 members of the concept. Since displaying down can subsume a lot of entries, you can
 specify how many levels down to display (n). The default is 1.
 
-### `:findwords pattern`
+### `:findwords` _pattern_
 This uses the pattern of characters and * to name words and phrases in the dictionary
 matching it. E.g.
 ```
@@ -571,7 +575,7 @@ chief_executive_officer
 Dancing_and_singing_are_my_idea_of_exercise.
 ```
 
-### `:overlap set1 set2`
+### `:overlap` _set1 set2_
 This tests atomic members of set1 to see if they are also in set2, printing out the ones that
 are in both.
 
@@ -599,7 +603,7 @@ RAWDATA/ONTOLOGY/prepositionhierarchy.top
 Depending on what you put into it, a build file may build a single bot or lots of bots or a
 common set of data or whatever.
 
-### `:bot sue`
+### `:bot` _sue_
 Change focus to conversing with the named bot (presuming you have such a bot). It
 resets the user back to complete new, flushing the users history, variables, etc.
 
@@ -608,11 +612,11 @@ Flush the current user's total history (erases the USER/ topic file), variables,
 starting conversation from the beginning. Can be done from within a script without
 damaging the existing control flow or input sentence.
 
-### `:user username`
+### `:user` _username_
 Change your login id. It will then prompt you for new input as that user and proceed from
 there, not starting a new conversation but merely continuing a prior one.
 
-### `:source REGRESS/bigregress.txt`
+### `:source` _REGRESS/bigregress.txt_
 Switch the system to reading input from the named file. Good for regression testing.
 The system normally prints out just the output, while the log file contains both the input
 and the output. You can say `:source filename echo` to have input echoed to the console. If
@@ -656,7 +660,7 @@ startup behavior. E.g., from script:
 ^eval(:restart erase Vserver=app.john.com/api/1.1 )
 ```
 
-### `:autoreply xxx`
+### `:autoreply` _xxx_
 
 This command causes the system to talk to itself. As the user it always says whatever you
 put in xxx.
@@ -667,7 +671,7 @@ As a last ditch, you can add this function call into a pattern or the output and
 DebugCode in functionExecute.cpp so you know exactly where you are and can use a debugger to follow code thereafter if you can debug c code.
 
 
-## Logging Function `^Log(...)`
+## Logging Function `^log(...)`
 This allows you to print something directly to the users log file. You can actually append
 to any file by putting at the front of your output the word FILE in capital letters followed
 by the name of the file. E.g.,
