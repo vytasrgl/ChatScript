@@ -9,76 +9,76 @@ Here is an overview.
 
 ## Basic ChatScript for starters
 
-* [What is ChatScript?](https://github.com/solyaris/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
+* [What is ChatScript?](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
 <br>Overview of the design goals and abilities of CS. Not necessary to read.
 
-* [ChatScript Basic User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md)
+* [ChatScript Basic User Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md)
 <br>This explains how to run CS, how to understand basic CS ideas like rules, topics, and
 concepts. A must starting place.
 
-* [ChatScript Tutorial](https://github.com/solyaris/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md)
+* [ChatScript Tutorial](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md)
 <br>A briew step-by-step on creating a chatbot travel agent, written by a CS user.
 
-* [ChatScript Memorization](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Memorization.md)
+* [ChatScript Memorization](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Memorization.md)
 <br>A simple explanation of how to “learn” data about the user.
 
-* [ChatScript Common Beginner Mistakes](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Common-Beginner-Mistakes.md)
+* [ChatScript Common Beginner Mistakes](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Common-Beginner-Mistakes.md)
 <br>Here are a collection of common beginner mistakes.
 
 
 ## Predefined Bots
 
-* [Bot Harry - basic bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Harry.md)
+* [Bot Harry - basic bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Harry.md)
 <br>A brief overview of the simple Harry bot and how to make simple modifications.
 Potentially useful for a beginner read.
 
-* [Bot NLTK – NL analysis bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-NLTK.md)
+* [Bot NLTK – NL analysis bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-NLTK.md)
 <br>A brief description of how to run the NLTK bot. Not useful for most people, especially if
 NLTK means nothing to you.
 
-* [Bot Stockpile – planner bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Stockpile.md)
+* [Bot Stockpile – planner bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Stockpile.md)
 <br>A brief description of how to run the Stockpile bot. Not useful for most people. It's about planner capabilities of CS.
 
-* [Bot Postgres – postgres bot](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Postgres.md)
+* [Bot Postgres – postgres bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Postgres.md)
 <br>Illustration of using Postgres database.
 
-* [Bot German](https://github.com/solyaris/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-German.md)
+* [Bot German](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-German.md)
 <br>An illustration of hooking in an external pos-tagger for foreign language support.
 
 
 
 ## Advanced ChatScript
 
-* [ChatScript Advanced User Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md)
+* [ChatScript Advanced User Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md)
 <br>Once you've master basic CS, this is the place to go next.
 
-* [ChatScript System Functions Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md)
+* [ChatScript System Functions Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md)
 <br>A listing of all the functions of CS.
 
-* [ChatScript Fact Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md)
+* [ChatScript Fact Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md)
 <br>A discussion of how to manipulate facts in CS.
 
-* [ChatScript Json](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Json.md)
+* [ChatScript Json](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Json.md)
 <br>ChatScript support for Json
 
-* [ChatScript Debugging Manual](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Debugging-Manual.md)
+* [ChatScript Debugging Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Debugging-Manual.md)
 <br>The features of CS that support debugging, including tracing.
 
-* [ChatScript Finalizing a Bot](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Finalizing-A-Bot.md)
+* [ChatScript Finalizing a Bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Finalizing-A-Bot.md)
 <br>Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely
 never be complete because you will want to keep improving it.
 
-* [ChatScript Overview Input to Output](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Overview-of-Input-to-Output.md)
+* [ChatScript Overview Input to Output](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Overview-of-Input-to-Output.md)
 <br>An overview of the process of converting input to output. Not necessary except for
 really advanced users wanting the appropriate mental model.
 
-* [ChatScript Pattern Redux](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Pattern-Redux.md)
+* [ChatScript Pattern Redux](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Pattern-Redux.md)
 <br>A terse but detailed look at everything involving rule patterns.
 
-* [ChatScript System Variables and Engine-defined Concepts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md)
+* [ChatScript System Variables and Engine-defined Concepts](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md)
 <br> Engine-defined Concepts. System Variables. Control over Input. Interchange Variables.
 
-* [Installing and Updating ChatScript](https://github.com/solyaris/ChatScript/blob/master/wiki/Installing-and-Updating-ChatScript.md)
+* [Installing and Updating ChatScript](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/Installing-and-Updating-ChatScript.md)
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
 
 
