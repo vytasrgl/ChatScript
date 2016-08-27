@@ -2465,8 +2465,8 @@ or used from the chatbot before.
 * Empty the contents of your TOPIC folder, but don't erase the folder. 
 This gets rid of any funny state of topic builds.
 
-* `:build 0` - rebuild the common layer
-* `:build xxx` – whatever file you use for your personality layer
+`:build 0` - rebuild the common layer
+<br>`:build xxx` – whatever file you use for your personality layer
 
 Probably all is good now. If not quit chatscript. Start up and try it now.
 
@@ -2486,7 +2486,7 @@ allocate memory every during its interactions with users. These parameters can c
 those allocations. Done typically in a memory poor environment like a cellphone.
 
 `buffer=15` - how many buffers to allocate for general use (12 is default)
-`buffer=15x80` – allocate 15 buffers of 80k bytes each (default buffer size is 80k)
+<br>`buffer=15x80` – allocate 15 buffers of 80k bytes each (default buffer size is 80k)
 
 Most chat doesn't require huge output and buffers around 20k each will be more than
 enough. 12 buffers is generally enough too (depends on recursive issues in your scripts).
@@ -2495,11 +2495,11 @@ If the system runs out of buffers, it will perform emergency allocations to try 
 but in limited memory environments (like phones) it might fail. You are not allowed to
 allocate less than a 20K buffer size.
 
-* `dict=n` - limit dictionary to this size entries
-* `text=n` - limit string space to this many bytes
-* `fact=n` - limit fact pool to this number of facts
-* `hash=n` – use this hash size for finding dictionary words (bigger = faster access)
-* `cache=1x50` – allocate a 50K buffer for handling 1 user file at a time. 
+`dict=n` - limit dictionary to this size entries
+<br>`text=n` - limit string space to this many bytes
+<br>`fact=n` - limit fact pool to this number of facts
+<br>`hash=n` – use this hash size for finding dictionary words (bigger = faster access)
+<br>`cache=1x50` – allocate a 50K buffer for handling 1 user file at a time. 
 A server might want to cache multiple users at a time.
 
 A default version of ChatScript will allocate much more than it needs, because it doesn't
@@ -2541,36 +2541,26 @@ You can have your own live data, yet use ChatScripts default `LIVEDATA/SYSTEM` a
 
 `users=xxx` – name relative or absolute path to where you want the USERS folder to be.
 Do not add trailing /.
-
-`logs=xxx` – name relative or absolute path to where you want the LOGS folder to be. Do
+<br>`logs=xxx` – name relative or absolute path to where you want the LOGS folder to be. Do
 not add trailing /.
 
 Other options:
 `trace` – turn on all tracing.
-
-`redo` – see documentation for :redo in debugging manual
-
-`userfacts=n` limit a user file to saving only the n most recently created facts of a user
+<br>`redo` – see documentation for :redo in debugging manual
+<br>`userfacts=n` limit a user file to saving only the n most recently created facts of a user
 (this does not include facts stored in fact sets). 
 Overridden if the user has `$cs_userfactlimit` set to some value.
-
-`userlog` - Store a user-bot log in USERS directory (default).
-
-`nouserlog` - Don't store a user-bot log.
-
-`login=xxxx` - The same as you would name when asked for a login, this avoids having
+<br>`userlog` - Store a user-bot log in USERS directory (default).
+<br>`nouserlog` - Don't store a user-bot log.
+<br>`login=xxxx` - The same as you would name when asked for a login, this avoids having
 to ask for it. Can be `login=george` or `login=george:harry` or whatever.
-
-`build0=filename` runs `:build` on the filename as level0 and exits with 0 on success or 4 on
+<br>`build0=filename` runs `:build` on the filename as level0 and exits with 0 on success or 4 on
 failure.
-
-`build1=filename` runs :build on the filename as level1 and exits with 0 on success or 4 on
+<br>`build1=filename` runs :build on the filename as level1 and exits with 0 on success or 4 on
 failure. Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0.
-
-`debug=:xxx` xxx runs the given debug command and then exits. 
+<br>`debug=:xxx` xxx runs the given debug command and then exits. 
 Useful for `:trim`, for example or more specific `:build` commands.
-
-`param=xxxxx` data to be passed to your private code
+<br>`param=xxxxx` data to be passed to your private code
 
 
 ## Bot variables
@@ -2578,9 +2568,9 @@ Useful for `:trim`, for example or more specific `:build` commands.
 You can create predefined bot variables by simply naming permanent variables on the
 command line, using V to replace $ (since Linux shell scripts don't like $). Eg.
 
-* ChatScript Vmyvar=fatcat
-* ChatScript Vmyvar="tony is here"
-* ChatScript "Vmyvar=tony is here"
+<br>ChatScript Vmyvar=fatcat
+<br>ChatScript Vmyvar="tony is here"
+<br>ChatScript "Vmyvar=tony is here"
 
 Quoted strings will be stored without the quotes. Bot variables are always reset to their
 original value at each volley, even if you overwrite them during a volley. This can be
