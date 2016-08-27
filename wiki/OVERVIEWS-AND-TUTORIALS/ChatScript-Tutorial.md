@@ -136,7 +136,7 @@ Building this chatbot will result in a dialog such as this:
    Hello, speak to me!
 
   >who
- Hi, talk to me!
+  Hi, talk to me!
 
   >abc
   I don't know what to say.
@@ -257,8 +257,7 @@ u: ([what where]) good question.
 ```
 Here:
 
-* we moved `keep` and `repeat` to the topic definition, so we don't have to repeat them for
-each statement.
+* we moved `keep` and `repeat` to the topic definition, so we don't have to repeat them for each statement.
 * We gave the first two rules a label.
 * We added a new third rule, which reuses the first two rules.
 
