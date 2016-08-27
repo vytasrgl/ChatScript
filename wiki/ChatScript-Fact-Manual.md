@@ -3,9 +3,9 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 > Revision 5/19/2016cs6.5a
 
-* [Simple Facts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#simple-facts)
-* [Advanced Facts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#advanced-facts)
-* [Esoteric Facts](https://github.com/solyaris/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#esoteric-facts)
+* [Simple Facts](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#simple-facts)
+* [Advanced Facts](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#advanced-facts)
+* [Esoteric Facts](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md#esoteric-facts)
 
 
 # SIMPLE FACTS
