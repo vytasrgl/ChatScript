@@ -251,6 +251,8 @@ char* GetFileRead(char* user,char* computer)
 	{
 		size_t readit;
 		readit = userFileSystem.userRead(buffer,1,userCacheSize,in);
+		buffer[readit] = 0;
+		buffer[readit+1] = 0; // insure nothing can overrun
 		userFileSystem.userClose(in);
 		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"read in %s cache (%d)\r\n",word,currentCache);
 	}

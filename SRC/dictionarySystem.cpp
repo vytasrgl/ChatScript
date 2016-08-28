@@ -501,7 +501,7 @@ void BuildShortDictionaryBase();
 static void EraseFile(char* file)
 {
 	FILE* out = FopenUTF8Write(UseDictionaryFile(file));
-	if (out) FClose(out);
+	FClose(out);
 }
 
 static void ClearDictionaryFiles()
@@ -576,7 +576,7 @@ void BuildDictionary(char* label)
     WriteFacts(FopenUTF8Write(UseDictionaryFile((char*)"facts.txt")),factBase); 
 	sprintf(logFilename,(char*)"%s/build_log.txt",users); // all data logged here by default
 	FILE* out = FopenUTF8Write(logFilename);
-	if (out) FClose(out);
+	FClose(out);
 	printf((char*)"dictionary dump complete %d\r\n",miniDict);
 
     echo = true;
@@ -667,34 +667,7 @@ char* reuseAllocation(char* old, char* word)
 char* reuseAllocation(char* old, char* word,int size)
 {
 	if (size == 0  && word) size = strlen(word);
-	size_t len = 0;
-	if (old && !planning  && !compiling && !loading) 
-	{
-		char* at = old - ALLOCATESTRING_SIZE_PREFIX;	
-		char* prior = old - ALLOCATESTRING_SIZE_PREFIX - ALLOCATESTRING_SIZE_SAFEMARKER;
-		if (word) {;} // BLOCK REUSE DATA FOR NOW... DEBUG FURTHER
-		else if (old && (*prior != ALLOCATESTRING_MARKER || prior[1] != ALLOCATESTRING_MARKER)) // lacks the marker block- not allocated correctly?
-		{
-			ReportBug((char*)"reuseallocation failed1 on input %s",mainInputBuffer);
-		}
-		else if (at[0] == ALLOCATESTRING_MARKER) // lacks a mark of length
-		{
-			ReportBug((char*)"reuseallocation failed2 on input %s",mainInputBuffer);
-		}
-		else
-		{
-			if (ALLOCATESTRING_SIZE_PREFIX == 3) len +=  ((unsigned char) *(at++)) << 16;
-			len +=  (unsigned char)*(at++) << 8;
-			len +=  (unsigned char)*(at++);
-		}
-	}
-	if (size < (int) len)
-	{
-		strncpy(old,word,size); // reuse the space 
-		old[size] = 0;
-	}
-	else old = AllocateString(word,size,1); 
-	return old;
+	return AllocateString(word,size,1); 
 }
 
 char* expandAllocation(char* old, char* word,int size)
@@ -1106,7 +1079,8 @@ WORDP StoreWord(char* word, uint64 properties)
 	if (!*word) // servers dont want long lists of bugs from strange inputs //   we require something 
 	{
 		if (!server) ReportBug((char*)"entering null word to dictionary in sentence")
-		return StoreWord((char*)"badword"); //   we require something
+		// return StoreWord((char*)"badword"); //   we require something
+		return StoreWord((char*)"emptystring"); //   we require something
 	}
 	unsigned int n = 0;
 	bool lowercase = false;
@@ -3141,7 +3115,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	if (tilde && IsDigit(tilde[1])) *tilde = 0;	// turn off specificity
 	uint64 xflags = 0;
 	WORDP revise;
-	uint64 inferredProperties = (name[0] != '~' && name[0] != '^') ? GetPosData(2,name,revise,entry,canonical,xflags,cansysflags) : 0; 
+	uint64 inferredProperties = (name[0] != '~' && name[0] != '^') ? GetPosData(-1,name,revise,entry,canonical,xflags,cansysflags) : 0; 
 	sysflags |= xflags;
 	if (entry) D = entry;
 	bit = START_BIT;

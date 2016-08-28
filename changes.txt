@@ -1,3 +1,17 @@
+Version 6.8a  8/27/2016
+1. :trace full   renamed  :trace always,  merely allows you to pass thru ^notrace but you can still choose bits you are tracing
+2. mongo support for filesystem changed...
+3. ^authorized() allows a script to test for authorization of current id just as debug commands do
+4. Giorgio Robino has transcribed 1st half of the CS documentation into wiki format in directory WIKI. 
+In the future I will update it and remaining documents as I ongoingly revise documents. So currently wiki matches 6.8
+Renamed DOCUMENTATION to PDFDOCUMENTATION
+
+Version 6.8 8-13-2016
+1. JsonParse allows optional argument before the data of NOFAIL - will return null without error if something is wrong
+2. ^jsonpath can end a path with *, which means return fact id rather than object of fact. EG
+	^jsonpath(.value* $$id)  or ^jsonpath(".foo[5]*" $$id)
+3. full local variables in topics and outputmacros, $_xxx  (see Advanced manual- Local Variables)
+
 Version 6.7b 8-5-2016
 USER TOPIC FILE FORMAT now detects the old format again, and accepts it, along with newer format.
 1. %zulutime - format: 2016-07-27T11:38:35.0Z

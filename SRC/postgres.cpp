@@ -227,7 +227,11 @@ size_t pguserWrite(const void* buffer,size_t size, size_t count, FILE* file)
  		PQclear(res);
 	}
 	//PGresult   *res = PQexec(usersconn, pgfilesbuffer);
-    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR) myexit((char*)"failed to write user to postgres");
+
+    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR) 
+	{
+		ReportBug("Postgres filessys write failed for %s",pguserFilename);
+	}
 	return size * count;
 }
 

@@ -438,7 +438,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 // TRACE FLAGS
 // simple
-#define TRACE_NOTFULL		0x00000001	
+#define TRACE_ON			0x00000001	
 #define TRACE_MATCH 		0x00000002
 #define TRACE_VARIABLE		0x00000004
 
@@ -470,6 +470,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define TRACE_NOT_THIS_TOPIC 0x02000000
 #define TRACE_FLOW			0x04000000
 #define TRACE_COVERAGE		0x08000000
+#define TRACE_ALWAYS		0x10000000
 // pos tagger result operators
 #define DISCARD 1
 #define KEEP 2

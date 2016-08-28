@@ -1423,7 +1423,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) 
 		id = Log(STDTRACETABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
 
-	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(inverseStringDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 	ChangeDepth(-1,topicName); // performtopic
 	

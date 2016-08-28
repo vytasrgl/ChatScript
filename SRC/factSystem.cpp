@@ -570,7 +570,7 @@ bool ExportFacts(char* name, int set,char* append)
 		buffer += strlen(buffer);
 	}
 	FreeBuffer();
-	FILE* out = userFileSystem.userOpen(name); // user ltm file
+	FILE* out = userFileSystem.userCreate(name); // user ltm file
 	if (!out) return false;
 	userFileSystem.userWrite(buffer,1,(buffer-base),out);
 	userFileSystem.userClose(out);
@@ -578,17 +578,16 @@ bool ExportFacts(char* name, int set,char* append)
 	return true;
 }
 
-static void ExportJson1(char* jsonitem, FILE* out)
+static void ExportJson1(char* jsonitem, char* buffer)
 {
 	if (!*jsonitem)
 	{
-		fprintf(out,(char*)"null");
+		strcpy(buffer,(char*)"null\r\n");
 		return;
 	}
 
 	WORDP D = FindWord(jsonitem);
 	if (!D) return;
-	char* word = AllocateBuffer();
 	FACT* F = GetSubjectNondeadHead(D);
 	while (F)
 	{
@@ -596,14 +595,15 @@ static void ExportJson1(char* jsonitem, FILE* out)
 		{
 			unsigned int original = F->flags;
 			F->flags &= -1 ^ FACTTRANSIENT;	// dont pass transient flag out
-			fprintf(out,(char*)"%s",WriteFact(F,false,word,false,true));
+			WriteFact(F,false,buffer,false,true);
+			buffer += strlen(buffer);
+			*buffer = 0;
 			F->flags = original;
 		}
-		if (F->flags & (JSON_ARRAY_VALUE|JSON_OBJECT_VALUE)) ExportJson1(Meaning2Word(F->object)->word,out); // on object side of triple
+		if (F->flags & (JSON_ARRAY_VALUE|JSON_OBJECT_VALUE)) ExportJson1(Meaning2Word(F->object)->word,buffer); // on object side of triple
 
 		F = GetSubjectNondeadNext(F);
 	}
-	FreeBuffer();
 }
 
 FunctionResult ExportJson(char* name, char* jsonitem, char* append)
@@ -620,10 +620,15 @@ FunctionResult ExportJson(char* name, char* jsonitem, char* append)
 		size_t len = strlen(name);
 		if (name[len-1] == '"') name[len-1] = 0;
 	}
-	FILE* out = (append && !stricmp(append,(char*)"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
+
+	FILE* out = userFileSystem.userCreate(name); // user ltm file
 	if (!out) return FAILRULE_BIT;
-	ExportJson1(jsonitem, out);
-	FClose(out);
+
+	char* buffer = GetFreeCache();
+	ExportJson1(jsonitem, buffer);
+	userFileSystem.userWrite(buffer,1,strlen(buffer),out);
+	userFileSystem.userClose(out);
+	FreeUserCache();
 	return NOPROBLEM_BIT;
 }
 
@@ -811,8 +816,8 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 	char* filebuffer = GetFreeCache();
 	size_t readit = userFileSystem.userRead(filebuffer,1,userCacheSize,in);	// read it all in, including BOM
 	userFileSystem.userClose(in);
-	size_t len = strlen(filebuffer); // dont trust return length data from mongo
-	memset(filebuffer+len,0,20);	 // insure fully closed off
+	filebuffer[readit] = 0;
+	filebuffer[readit+1] = 0; // insure fully closed off
 
 	// set bom
 	currentFileLine = 0;

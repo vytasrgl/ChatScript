@@ -48,7 +48,6 @@
  <another_time> ~emogoodbye
  <apologies> ~emoapology
  <apparently> ~yes
- <approve ~yes
  <approved ~yes
  <are_you_for_real ~emoskeptic
  <are_you_having_me_on ~emoskeptic

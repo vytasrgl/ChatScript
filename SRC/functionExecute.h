@@ -81,7 +81,7 @@ void DeleteTransientJavaScript();
 
 //   argument data for user calls
 char* InitDisplay(char* list);
-void RestoreDisplay(char* list);
+void RestoreDisplay(char* base, char* list);
 extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
 

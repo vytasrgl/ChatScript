@@ -7,7 +7,7 @@
 unsigned int userFactCount = USERFACTS;			// how many facts user may save in topic file
 bool serverRetryOK = false;
 bool stopUserWrite = false;
-
+static bool verifyUserFacts = true;
 static char* backupMessages = NULL;
 
 //   replies we have tried already
@@ -180,6 +180,11 @@ static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
 
 	return ptr;
 }
+
+static void CheckUserFacts()
+{
+}
+
 
 static bool ReadUserFacts()
 {	
@@ -457,6 +462,7 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 		ReportBug("User file variable data too big %s",loginID)
 		return NULL;
 	}
+	if (verifyUserFacts) CheckUserFacts();	// verify they are good for now
 	ptr = WriteUserFacts(ptr,sharefile,count);  // json safe
 	if (!ptr)
 	{

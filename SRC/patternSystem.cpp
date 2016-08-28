@@ -884,7 +884,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					}
 	
 					result = *lhs;
-					if (result == SYSVAR_PREFIX || result == USERVAR_PREFIX || result == '_' || result == '@' || (*op == '?' && rhs)) // otherwise for words and concepts, look up in sentence and check relation there
+					if (IsComparison(*op)) // otherwise for words and concepts, look up in sentence and check relation there
 					{
 						if (result == '_' && quoted) --lhs; // include the quote
 						char word1val[MAX_WORD_SIZE];

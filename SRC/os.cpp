@@ -210,9 +210,9 @@ void FreeBuffer()
 
 int FClose(FILE* file)
 {
-	int answer = fclose(file);
+	if (file) fclose(file);
 	*currentFilename = 0;
-	return answer;
+	return 0;
 }
 
 void InitUserFiles()
@@ -243,7 +243,7 @@ void CopyFile2File(const char* newname,const char* oldname, bool automaticNumber
 		{
 			sprintf(endbase,(char*)"%d.%s",j,at+1);
 			out = FopenReadWritten(name);
-			if (out) FClose(out);
+			if (out) fclose(out);
 			else break;
 		}
 	}
@@ -277,8 +277,8 @@ void CopyFile2File(const char* newname,const char* oldname, bool automaticNumber
 		fwrite(buffer,1,size,out);
 	}
 
-	FClose(out);
-	FClose(in);
+	fclose(out);
+	fclose(in);
 }
 
 int MakeDirectory(char* directory)
@@ -439,7 +439,7 @@ FILE* FopenUTF8WriteAppend(const char* filename,const char* flags)
 	else strcpy(path,filename);
 
 	FILE* in = fopen(path,(char*)"rb"); // see if file already exists
-	if (in) FClose(in);
+	if (in) fclose(in); // dont erase currentfilame, dont call FClose
 	FILE* out = fopen(path,flags);
 	if (out && !in) // mark file as UTF8 if new
 	{
@@ -977,21 +977,6 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	static int priordepth = 0;
 	char* logbase = logmainbuffer;
 
-	// for json labelling
-	int jsonlen = 0;
-	char jsonform[MAX_WORD_SIZE];
-#ifndef DISCARDMONGO
-	if (filesystemOverride == MONGOFILES && !tracing) // hidden json data wrapper
-	{
-		static long iteration = 0; // insures local uniqueness
-		++iteration;
-		sprintf(jsonform,"%d-%s-%s-%ld-%ld",channelID,loginID,SFullTime(NULL),(long)startSystem,iteration); // user, current time, starttime
-		sprintf(logbase,"{\"_id\" : \"%s\", \"time\" : %s,\"user\" : \"%s\", \"volley\" : %d, \"data\" : \"",jsonform,SFullTime(NULL),loginID,volleyCount); 
-		jsonlen = strlen(logbase);
-		logbase += jsonlen;
-	}
-#endif
-
 	// start writing normal data here
     char* at = logbase;
     *at = 0;
@@ -1165,7 +1150,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (!compiling && !loading && channel == BUGLOG && *currentInput)  fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located,currentInput);
 			fwrite(logbase,1,bufLen,bug);
 			if (!compiling && !loading) BugBacktrace(bug);
-			FClose(bug);
+			fclose(bug); // dont use FClose
 
 		}
 		if ((echo||localecho) && !silent && !server)
@@ -1226,7 +1211,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
  			else if (*currentFilename) fprintf(out,(char*)"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
 			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
-		FClose(out);
+		fclose(out); // dont use FClose
 		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logbase);
     }
 	
@@ -1240,18 +1225,6 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 #ifndef EVSERVER
     if (server) ReleaseLogLock();
 #endif
-#endif
-
-#ifndef DISCARDMONGO
-	if (filesystemOverride == MONGOFILES && !tracing) // filesystem is mongo, copy logs to there (server or user channel)
-	{
-		sprintf(logbase+bufLen," \"} "); // terminate entire json string
-		jsonlen += strlen(logbase+bufLen);
-		FILE* out1 = userFileSystem.userCreate(jsonform);
-		userFileSystem.userWrite(logmainbuffer,1,bufLen+jsonlen,out1);
-		userFileSystem.userClose(out1);
-		logbase[bufLen] = 0;
-	}
 #endif
 
 	inLog = false;

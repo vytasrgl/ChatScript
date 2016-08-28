@@ -582,7 +582,7 @@ int evsrv_do_chat(Client_t *client)
         ourMainInputBuffer, // input
         (char*)client->ip.c_str(),
         client->data); // where output goes
-	if (!strnicmp(ourMainOutputBuffer,"$#$",3)) // special messages
+	if (!strnicmp(ourMainOutputBuffer,"$#$",3) || pendingRestart) // special messages for a restart or a restart
 	{
 		strcpy(client->data,ourMainOutputBuffer+3);
 		*ourMainOutputBuffer = 0;

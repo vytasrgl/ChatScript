@@ -36,7 +36,8 @@ mongoc_collection_t*	g_pCollection = NULL;
 // for file system use
 mongoc_client_t*		g_filesysClient = NULL;
 mongoc_database_t*		g_filesysDatabase = NULL;
-mongoc_collection_t*	g_filesysCollection = NULL;
+mongoc_collection_t*	g_filesysCollectionTopic = NULL; // user topic
+mongoc_collection_t*	g_filesysCollectionLtm = NULL; // user ltm
 
 void ProtectNL(char* buffer) // save ascii \r\n in json
 {
@@ -86,7 +87,7 @@ char* MongoCleanEscapes(char* to, char* at,int limit)
 eReturnValue EstablishConnection(	const char* pStrSeverUri, // eg "mongodb://localhost:27017"
 									const char* pStrDBName,   // eg "testMongo""testMongo"
 									const char* pStrCollName, // eg "testCollection"
-									const char* scriptFlag)
+									mongoc_collection_t** mycollect)
 {
 	if( ( pStrSeverUri == NULL ) || ( pStrDBName == NULL ) || ( pStrCollName == NULL ) ) return eReturnValue_WRONG_ARGUEMENTS;
 
@@ -97,21 +98,22 @@ eReturnValue EstablishConnection(	const char* pStrSeverUri, // eg "mongodb://loc
 	// Create a new client instance (user/script or interal/filesystem)
 	mongoc_client_t* myclient  = mongoc_client_new( pStrSeverUri );
 	if( myclient == NULL ) return eReturnValue_DATABASE_OPEN_CLIENT_CONNECTION_FAILED;
-	if (scriptFlag) g_pClient = myclient; 
-	else g_filesysClient = myclient;
+	if (mycollect == &g_pCollection) g_pClient = myclient;  // script user
+	else g_filesysClient = myclient; // all 3 filesys collections use this client
 
 	// Get a handle on the database "db_name"
 	mongoc_database_t* mydb = mongoc_client_get_database(myclient, pStrDBName);
 	if( mydb == NULL ) return eReturnValue_DATABASE_GET_FAILED;
-	if (scriptFlag) g_pDatabase = mydb; 
-	else g_filesysDatabase = mydb;
+	if (mycollect == &g_pCollection) g_pDatabase = mydb; // script user
+	else g_filesysDatabase = mydb; // all 3 filesys collections use this database
 
 	// Get a handle on the collection "coll_name"
-	mongoc_collection_t* mycollect  = mongoc_client_get_collection(myclient, pStrDBName, pStrCollName);
-	if( mycollect == NULL ) return eReturnValue_DATABASE_GET_COLLECTION_FAILED;
-	if (scriptFlag) g_pCollection = mycollect; 
-	else g_filesysCollection = mycollect;
-
+	*mycollect  = mongoc_client_get_collection(myclient, pStrDBName, pStrCollName);
+	if( *mycollect == NULL ) 
+	{
+		if (mycollect != &g_pCollection) ReportBug("Failed to open mongo filesys");
+		return eReturnValue_DATABASE_GET_COLLECTION_FAILED;
+	}
 	return eReturnValue_SUCCESS;
 }
 
@@ -138,10 +140,12 @@ FunctionResult MongoClose(char* buffer)
 		g_pClient = NULL;
 	}
 	else {
-		if( g_filesysCollection != NULL ) mongoc_collection_destroy(g_filesysCollection);
+		if( g_filesysCollectionTopic != NULL ) mongoc_collection_destroy(g_filesysCollectionTopic);
+		if( g_filesysCollectionLtm != NULL ) mongoc_collection_destroy(g_filesysCollectionLtm);
 		if( g_filesysDatabase != NULL ) mongoc_database_destroy(g_filesysDatabase);
 		if( g_pClient != NULL ) mongoc_client_destroy(g_filesysClient);
-		g_filesysCollection = NULL;
+		g_filesysCollectionTopic = NULL;
+		g_filesysCollectionLtm = NULL;
 		g_filesysDatabase =  NULL;
 		g_filesysClient = NULL;
 	}
@@ -151,7 +155,7 @@ FunctionResult MongoClose(char* buffer)
 
 FunctionResult MongoInit(char* buffer)
 {
-	if ((buffer && g_pClient) || (!buffer && g_filesysClient))
+	if (buffer && g_pClient) // assume system never gets it wrong so dont check
 	{
 		char* msg = "DB is already opened\r\n";
 		SetUserVariable((char*)"$$mongo_error",msg);	// pass message along the error
@@ -160,7 +164,10 @@ FunctionResult MongoInit(char* buffer)
 	}
 
     /* Make a connection to the database */
-    eReturnValue  eRetVal = EstablishConnection(ARGUMENT(1), ARGUMENT(2), ARGUMENT(3),buffer); // server, dbname, collection
+	mongoc_collection_t** collectvar = &g_pCollection; // default user 
+	if (!stricmp(ARGUMENT(4),"topic")) collectvar = &g_filesysCollectionTopic; // filesys
+ 	else if (!stricmp(ARGUMENT(4),"ltm")) collectvar = &g_filesysCollectionLtm; // filesys
+    eReturnValue  eRetVal = EstablishConnection(ARGUMENT(1), ARGUMENT(2), ARGUMENT(3),collectvar); // server, dbname, collection
     if (eRetVal != eReturnValue_SUCCESS )
     {	
 		char* msg = "DB opening error \r\n";
@@ -180,7 +187,10 @@ FunctionResult mongoGetDocument(char* key,char* buffer,int limit,bool user)
 		size_t len = strlen(key);
 		if (key[len-1] == '"') key[len-1] = 0;
 	}
-    mongoc_collection_t* collection = (user) ? g_pCollection : g_filesysCollection;
+    mongoc_collection_t* collection;
+	if (user) collection =  g_pCollection;
+	else if (!strncmp(ARGUMENT(2),"ltm",3) && g_filesysCollectionLtm) collection = g_filesysCollectionLtm; 
+	else collection = g_filesysCollectionTopic; 
     if (!collection)
     {
         char* msg = "DB is not open\r\n";
@@ -262,7 +272,7 @@ FunctionResult mongoGetDocument(char* key,char* buffer,int limit,bool user)
     return result;
 }
 
-FunctionResult mongoFindDocument(char* buffer) // from user not system
+FunctionResult mongoFindDocument(char* buffer) // from user not system but can name filesys refs as ARGUMENT(2)
 {
     unsigned int remainingSize = currentOutputLimit - (buffer - currentOutputBase) - 1;
 	char* dot = strchr(ARGUMENT(1),'.');
@@ -276,7 +286,10 @@ FunctionResult mongoDeleteDocument(char* buffer)
 {
 	char* dot = strchr(ARGUMENT(1),'.');
 	if (dot) *dot = 0; // not allowed by mongo
-    mongoc_collection_t* collection = (buffer) ? g_pCollection : g_filesysCollection;
+	mongoc_collection_t* collection;
+	if (buffer) collection =  g_pCollection; // user script
+ 	else if (!stricmp(ARGUMENT(2),"ltm")) collection =  g_filesysCollectionLtm;
+	else collection =  g_filesysCollectionTopic;
     if (!collection)
     {
         char* msg = "DB is not open\r\n";
@@ -326,14 +339,13 @@ FunctionResult mongoDeleteDocument(char* buffer)
     return NOPROBLEM_BIT;
 }
 
-static FunctionResult MongoUpsertDoc(bool user,char* keyname, char* value)
+static FunctionResult MongoUpsertDoc(mongoc_collection_t* collection,char* keyname, char* value)
 {// assumes mongo client and db set up - document is merely a json string ready to ship
 	if( !keyname || !*keyname || !value) return FAILRULE_BIT;
 	char* dot = strchr(keyname,'.');
 	if (dot) *dot = 0; // not allowed by mongo
  
  	//  we output no text result
-    mongoc_collection_t* collection = (user) ? g_pCollection : g_filesysCollection;
     if (!collection)
     {
         char* msg = "DB is not open\r\n";
@@ -361,12 +373,12 @@ static FunctionResult MongoUpsertDoc(bool user,char* keyname, char* value)
 }
 
 FunctionResult mongoInsertDocument(char* buffer)
-{ // comes from USER script, not the file system
+{ // always comes from USER script, not the file system
 	char* revisedBuffer = GetUserFileBuffer(); // use a filesystem buffer
 	char* dot = strchr(ARGUMENT(1),'.');
 	if (dot) *dot = 0;	 // terminate any suffix, not legal in mongo key
 	strcpy(revisedBuffer,ARGUMENT(2)); // content to do
-	FunctionResult result =  MongoUpsertDoc(true,ARGUMENT(1),revisedBuffer);
+	FunctionResult result =  MongoUpsertDoc(g_pCollection,ARGUMENT(1),revisedBuffer);
 	if (dot) *dot = '.';	 // terminate any suffix, not legal in mongo key
 	FreeUserCache();	// release back to file system
 	return result;
@@ -399,11 +411,15 @@ size_t mongouserRead(void* buffer,size_t size, size_t count, FILE* file)
 { // file buffer passed to us. Read everything, ignore size/count
 	mongoBuffer = (char*) buffer; // will be a filebuffer
 	*mongoBuffer = 0;
-	char* dot = strchr((char*)file,'.');
+	char* filename = (char*) file;
+	char* dot = strchr(filename,'.');
 	if (dot) *dot = 0;	 // terminate any suffix, not legal in mongo key
-	FunctionResult result = mongoGetDocument((char*)file,mongoBuffer,(userCacheSize - MAX_USERNAME),false);
+	if (!strnicmp(filename,"USERS/ltm-",10)) ARGUMENT(2) = (char*)"ltm";
+	else ARGUMENT(2) = (char*)"topic";
+	FunctionResult result = mongoGetDocument(filename,mongoBuffer,(userCacheSize - MAX_USERNAME),false);
 	if (dot) *dot ='.';	 
-	return (result == NOPROBLEM_BIT) ? 1 : -1; // -1 is cannot find
+	size_t len = strlen(mongoBuffer);
+	return (result == NOPROBLEM_BIT) ? len : -1; // -1 is cannot find
 }
 
 size_t mongouserWrite(const void* buffer,size_t size, size_t count, FILE* file)
@@ -412,10 +428,17 @@ size_t mongouserWrite(const void* buffer,size_t size, size_t count, FILE* file)
 	char* mongoBuffer = (char*) buffer;
 	ProtectNL(mongoBuffer); // replace cr/nl
 	char* dot = strchr((char*)file,'.');
+	char* keyname = (char*)file;
+	mongoc_collection_t* collection = g_filesysCollectionTopic;
+	if (!strncmp(keyname,"USERS/ltm-",10) && g_filesysCollectionLtm) collection = g_filesysCollectionLtm; // ltm file collection
 	if (dot) *dot = 0;	 // terminate any suffix, not legal in mongo key
-	FunctionResult result = MongoUpsertDoc(false,(char*)file, mongoBuffer);
+	FunctionResult result = MongoUpsertDoc(collection,keyname, mongoBuffer);
 	if (dot) *dot ='.';	 
-	if (result != NOPROBLEM_BIT) return 0; // failed
+	if (result != NOPROBLEM_BIT) 
+	{
+		ReportBug("Mongo filessys write failed for %s",keyname);
+		return 0; // failed
+	}
 	return size * count; // is len a match
 }
 
@@ -443,16 +466,34 @@ void MonogoUserFilesInit() // start mongo as fileserver
 void MongoSystemInit(char* params) // required
 {
 	if (!params) return;
-	char arg1[MAX_WORD_SIZE];
-	char arg2[MAX_WORD_SIZE];
-	char arg3[MAX_WORD_SIZE];
+	char arg1[MAX_WORD_SIZE]; // url
+	char arg2[MAX_WORD_SIZE]; // dbname
+	char arg3[MAX_WORD_SIZE]; // topic , logs, ltm
 	params = ReadCompiledWord(params,arg1);
 	params = ReadCompiledWord(params,arg2);
-	params = ReadCompiledWord(params,arg3);
 	ARGUMENT(1) = arg1;
 	ARGUMENT(2) = arg2;
-	ARGUMENT(3) = arg3;
-	MonogoUserFilesInit();
+	while(*params)
+	{
+		params = ReadCompiledWord(params,arg3);
+		if (!*arg3) break;
+		if (!strnicmp(arg3,"topic:",6)) 
+		{
+			ARGUMENT(3) = arg3 + 6;
+			ARGUMENT(4) = (char*)"topic"; 
+		}
+		else if (!strnicmp(arg3,"ltm:",4)) // file names always start USERS/ltm-
+		{
+			ARGUMENT(3) = arg3 + 4;
+			ARGUMENT(4) = (char*)"ltm"; 
+		}
+		else // old style
+		{
+			ARGUMENT(3) = arg3;
+			ARGUMENT(4) = (char*)"topic"; 
+		}		
+		MonogoUserFilesInit(); // init topic
+	}
 }
 
 void MongoSystemRestart()

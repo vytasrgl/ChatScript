@@ -711,6 +711,7 @@ FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 	// First run it once to count the tokens
 	jsmn_init(&parser);
 	jsmnerr_t jtokenCount = jsmn_parse(&parser, message, size, NULL, 0);
+	FACT* start = factFree;
 	if (jtokenCount > 0) 
 	{
 		// Now run it with the right number of tokens
@@ -724,6 +725,10 @@ FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 			WORDP D = Meaning2Word(id);
 			strcpy(buffer,D->word);
 			return NOPROBLEM_BIT;
+		}
+		else // failed, delete any facts created along the way
+		{
+			while (factFree > start) FreeFact(factFree--); //   restore back to facts alone
 		}
 	}
 	return (nofail)  ? NOPROBLEM_BIT : FAILRULE_BIT;	
@@ -757,7 +762,7 @@ static int orderJsonArrayMembers(WORDP D, FACT** store)
 	if (max > size || max < size) 
 	{
 		show = true;
-		ReportBug((char*)"Erased json array fact illegally %s max %d size %d", D->word,max,size);
+		ReportBug((char*)"Erased json array fact illegally previously %s max %d size %d", D->word,max,size);
 		return -1;
 	}
 	return max + 1; // for the 0th value
@@ -1434,6 +1439,11 @@ MEANING jsonValue(char* value, unsigned int& flags)
 		size_t len = strlen(value);
 		if (value[len-1] == '"') value[--len] = 0;
 		++value; 
+	}
+	else if (!*value)
+	{
+		flags |= JSON_PRIMITIVE_VALUE;
+		strcpy(value,"null");
 	}
 	else if (!strnicmp(value,(char*)"jo-",3)) flags |= JSON_OBJECT_VALUE;
 	else if (!strnicmp(value,(char*)"ja-",3))  flags |= JSON_ARRAY_VALUE;

@@ -331,6 +331,7 @@ DATA:
   Quest telephone
   TMobile telephone
   "AT&T" telephone
+  "at&t" telephone
   Expedia travel
   Orbitz travel
   Priceline travel
@@ -380,6 +381,14 @@ DATA:
   "Bank of Hawaii" (BOH) bank
   "Citibank" (Citi Citigroup) bank
   "Electronic Arts" videogame
+  Kore computer
+  Disney amusement
+  Sears grocery
+  Kony computer
+  "Kore Inc" computer
+  EMC computer
+  IOCL oil
+  "Indian Oil" oil
 
 concept: ~use_power(plug power electricity battery disconnect connect)
 concept: ~use_flight(fly glide dive)

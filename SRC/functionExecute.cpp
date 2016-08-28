@@ -131,11 +131,11 @@ char* InitDisplay(char* list)
 	return list;
 }
 
-void RestoreDisplay(char* list)
+void RestoreDisplay(char* base, char* list)
 {
 	char word[MAX_WORD_SIZE];
 	list += 2;	// skip ( and space
-	char* slot = inverseStringDepth[globalDepth]; // display table starts here
+	char* slot = base; // display table starts here
 	while (1)
 	{
 		list = ReadCompiledWord(list,word); 
@@ -388,7 +388,7 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 			base = FindNextRule(NEXTTOPLEVEL,base,ruleID);
 		}
 
-		if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(locals);
+		if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(inverseStringDepth[globalDepth],locals);
 		currentTopicDisplay = oldTopicDisplay;
 		ChangeDepth(-1,GetTopicName(currentTopicDisplay)); // plan
 
@@ -494,6 +494,11 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				callArgumentList[callArgumentIndex] = AllocateInverseString(buffer);
 				ptr = SkipWhitespace(ptr);
 				FreeBuffer();
+				if (callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX && // NOT by reference but by value
+					callArgumentList[callArgumentIndex][1] == LOCALVAR_PREFIX)
+				{
+					callArgumentList[callArgumentIndex] = AllocateInverseString(GetUserVariable(callArgumentList[callArgumentIndex]));
+				}
 			}
 			else // swallow unevaled arg stream
 			{
@@ -504,12 +509,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				callArgumentList[callArgumentIndex] = AllocateInverseString(start,len);
 			}
 
-			if (callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX && // NOT by reference but by value
-				callArgumentList[callArgumentIndex][1] == LOCALVAR_PREFIX)
-			{
-				callArgumentList[callArgumentIndex] = AllocateInverseString(GetUserVariable(callArgumentList[callArgumentIndex]));
-			}
-			if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & FN_NO_TRACE)&& CheckTopicTrace()) 
+				if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & FN_NO_TRACE)&& CheckTopicTrace()) 
 			{
 				if (info->argumentCount == STREAM_ARG) Log(STDTRACELOG,(char*)"STREAM: ");
 				Log(STDTRACELOG,(char*)" (%s), ",callArgumentList[callArgumentIndex]);
@@ -561,15 +561,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 
 		ChangeDepth(1,D->word); // "HandleUserCall"
 
-		// handle any display variables
-		char* basedisplay = 0;
-		if ((D->internalBits & FUNCTION_BITS) != IS_PLAN_MACRO && definition[0] == '(')
-		{
-			basedisplay = (char*)(definition);
-			definition = (unsigned char*) InitDisplay((char*)definition); // will return 0 if runs out of string space
-			if (!definition) result = FAILRULE_BIT;
-		}
-	
 		// now process arguments
 		unsigned int argflags = D->x.macroFlags;
 		unsigned int j = 0;
@@ -659,6 +650,17 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			++j;
 		} // end of argument processing
 
+		// handle any display variables
+		char* basedisplay = 0;
+		char* baseinvert = 0;
+		if ((D->internalBits & FUNCTION_BITS) != IS_PLAN_MACRO && definition[0] == '(')
+		{
+			basedisplay = (char*)(definition);
+			baseinvert = stringInverseFree; // here is where we allocate values
+			definition = (unsigned char*) InitDisplay((char*)definition); // will return 0 if runs out of string space
+			if (!definition) result = FAILRULE_BIT;
+		}
+	
 		// now do defaulted null arguments
 		while (definition && (callArgumentIndex - oldArgumentIndex) < args) // fill in defaulted args to null
 		{
@@ -680,7 +682,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		else if (callArgumentIndex >= (MAX_ARGUMENT_COUNT-1)) 	// pinned max (though we could legally arrive by accident on this last one)
 		{
 			// undo any display variables
-			if (definition && basedisplay) RestoreDisplay(basedisplay);
+			if (definition && basedisplay) RestoreDisplay(baseinvert,basedisplay);
 			ReportBug((char*)"User function nesting too deep %d",MAX_ARGUMENT_COUNT);
 			ChangeDepth(-1,D->word); // "HandleUserCall"
 			result = FAILRULE_BIT;
@@ -701,7 +703,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		}
 
 		// undo any display variables
-		if (definition && basedisplay) RestoreDisplay(basedisplay);
+		if (definition && basedisplay) RestoreDisplay(baseinvert,basedisplay);
 
 		trace = oldtrace;
 		fnVarBase = oldFnVarBase;
@@ -1512,7 +1514,7 @@ static FunctionResult DoRefine(char* buffer,char* arg1, bool fail, bool all)
 			GambitCode(buffer+strlen(buffer));
 		}
 	}
-	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(inverseStringDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 	ChangeDepth(-1,(char*)"DoRefineCode");
 
@@ -1888,7 +1890,7 @@ FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg
 
 	if (!failed) result = ProcessRuleOutput(currentRule,currentRuleID,buffer); 
 	
-	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(inverseStringDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 	ChangeDepth(-1,(char*)"reuseCode");
 
@@ -3206,7 +3208,7 @@ static FunctionResult SetPronounCode(char* buffer)
 	uint64 sysflags = 0;
 	uint64 cansysflags = 0;
 	WORDP revise;
-	GetPosData(2,word,revise,entry,canonical,sysflags,cansysflags,false); // NOT first try
+	GetPosData(-1,word,revise,entry,canonical,sysflags,cansysflags,false); // NOT first try
 	wordStarts[startPosition] = reuseAllocation(wordStarts[startPosition],D->word); 
 	wordCanonical[startPosition] = (canonical) ? canonical->word : D->word;	
 	if (!wordCanonical[startPosition]) wordCanonical[startPosition] = D->word;
@@ -3579,7 +3581,7 @@ static FunctionResult NoRejoinderCode(char* buffer)
 static FunctionResult NoTraceCode(char* buffer)
 {      
 	unsigned int oldtrace = trace;
-	if (trace & TRACE_NOTFULL)	trace = TRACE_NOTFULL; // allow specific topic and function traces
+	if (!(trace & TRACE_ALWAYS))	trace = TRACE_ON; // allow specific topic and function traces
 	FunctionResult result;
 	*buffer = 0;
 	ChangeDepth(1,(char*)"NoTraceCode");
@@ -3860,6 +3862,12 @@ FunctionResult ClearContextCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+FunctionResult AuthorizedCode(char* buffer)
+{
+	if (server && !VerifyAuthorization(FopenReadOnly((char*)"authorizedIP.txt"))) return FAILRULE_BIT; // authorizedIP
+	return NOPROBLEM_BIT;
+}
+	
 FunctionResult AddContextCode(char* buffer)
 {
 	char* arg1 = ARGUMENT(1);
@@ -4210,7 +4218,7 @@ static char* NextWord(char* ptr, WORDP& D,bool canon)
 		uint64 sysflags = 0;
 		uint64 cansysflags = 0;
 		WORDP revise;
-		GetPosData(2,word,revise,entry,canonical,sysflags,cansysflags); 
+		GetPosData(-1,word,revise,entry,canonical,sysflags,cansysflags); 
 		if (canonical) strcpy(word,canonical->word);
 		else if (entry) strcpy(word,entry->word);
 	}
@@ -4904,7 +4912,7 @@ static FunctionResult POSCode(char* buffer)
 		uint64 sysflags = 0;
 		uint64 cansysflags = 0;
 		WORDP revise;
-		if (*arg2) GetPosData(2,arg2,revise,entry,canonical,sysflags,cansysflags);
+		if (*arg2) GetPosData(-1,arg2,revise,entry,canonical,sysflags,cansysflags);
 		if (canonical) strcpy(buffer,canonical->word);
 		else if (entry) strcpy(buffer,entry->word);
 		else strcpy(buffer,arg2);
@@ -5057,7 +5065,7 @@ static FunctionResult SubstituteCode(char* buffer)
 		++substituteValue;
 		substituteLen -= 2; 
 	}
-	if (*substituteValue != '_') Convert2Blanks(substituteValue); // if we explicitly request _, use it
+	// if (*substituteValue != '_') Convert2Blanks(substituteValue); // if we explicitly request _, use it  but Task_Test will be ruined
 
 	// what to search in
 	char copy[MAX_WORD_SIZE * 4];
@@ -5337,7 +5345,12 @@ static FunctionResult GetPropertyCodes(char* who,char* ptr, uint64 &val, uint64 
 				if (!bits) 
 				{
 					bits = FindParseValueByName(arg);
-					if (!bits) Log(STDTRACELOG,(char*)"Unknown addproperty value %s\r\n",arg);
+					if (!bits) 
+					{
+						bits = FindMiscValueByName(arg); // goes to sysval
+						if (!bits) Log(STDTRACELOG,(char*)"Unknown addproperty value %s\r\n",arg);
+						else sysval |= bits;
+					}
 					else parseBits |= bits;
 				}
 				else sysval |= bits;
@@ -5534,7 +5547,7 @@ static FunctionResult HasAnyPropertyCode(char* buffer)
 	char* arg = ARGUMENT(1);
 	WORDP D = FindWord(arg,0,PRIMARY_CASE_ALLOWED);
 	WORDP revise;
-	if (!D)  GetPosData(2,arg,revise,D,canonical,dprop,dsys);  // WARNING- created dict entry if it doesnt exist yet
+	if (!D)  GetPosData(-1,arg,revise,D,canonical,dprop,dsys);  // WARNING- created dict entry if it doesnt exist yet
 	else 
 	{
 		dsys = D->systemFlags;
@@ -5556,7 +5569,7 @@ static FunctionResult HasAllPropertyCode(char* buffer)
 	char* arg = ARGUMENT(1);
 	WORDP D = FindWord(arg,0,PRIMARY_CASE_ALLOWED);
 	WORDP revise;
-	if (!D)  GetPosData(2,arg,revise,D,canonical,dprop,dsys); 
+	if (!D)  GetPosData(-1,arg,revise,D,canonical,dprop,dsys); 
 	else 
 	{
 		dsys = D->systemFlags;
@@ -5613,7 +5626,7 @@ static FunctionResult RemovePropertyCode(char* buffer)
 			else if (arg3 == 'o') D = Meaning2Word(F->object); 
 			else  
 			{
-				F->flags &= -1 ^ val;
+				F->flags &= -1 ^ sysval; // uses miscflags retrieval
 				if (trace & TRACE_INFER && CheckTopicTrace()) TraceFact(F);
 			}
 			if (D)
@@ -5755,12 +5768,15 @@ static FunctionResult EnableCode(char* buffer)
 FunctionResult LengthCode(char* buffer)
 {
 	char* word = ARGUMENT(1);
- 	if (*word == '@') // how many facts in factset
+	if (*word == '@' && IsDigit(word[1])) // how many facts in factset
 	{
 		int store = GetSetID(word);
-		if (store == ILLEGAL_FACTSET) return FAILRULE_BIT;
-		unsigned int count = FACTSET_COUNT(store);
-		sprintf(buffer,(char*)"%d",count);
+		if (store == ILLEGAL_FACTSET) sprintf(buffer, (char*)"%d", (int)strlen(word)); // characters in word
+		else 
+		{
+			unsigned int count = FACTSET_COUNT(store);
+			sprintf(buffer, (char*)"%d", count);
+		}
 	}
 	else if (*word == '~') // how many top level members in set
 	{
@@ -5992,19 +6008,22 @@ static FunctionResult GetRemoteFileCode(char* buffer)
 	if (!stricmp(arg2,"mongo")) // transfer mongo to local
 	{
 		// get the mongo data.
-		if (filesystemOverride != MONGOFILES) 
+		if (filesystemOverride != MONGOFILES) // currently not connected
 		{
-			ARGUMENT(1) = ARGUMENT(3); // set up server init arguments 
-			ARGUMENT(2) = ARGUMENT(4);
-			ARGUMENT(3) = ARGUMENT(5);
+			ARGUMENT(1) = ARGUMENT(3); // set up server init arguments  URL
+			ARGUMENT(2) = ARGUMENT(4); // DB
+			ARGUMENT(3) = ARGUMENT(5); // Collection
+			ARGUMENT(4) = ARGUMENT(6); // what kind of data  topic, ltm, log
 			result = MongoInit(NULL); // init filesys collection
 			if (result != NOPROBLEM_BIT) return result;
+			ARGUMENT(2) = ARGUMENT(4);	// for mongoGetDoc
 		} // Otherwise we are using mongo filesystem values
+		else ARGUMENT(2) = ARGUMENT(3);
 		char* buffer = GetFreeCache();
 		
 		char* dot = strchr(name,'.');
 		if (dot) *dot = 0;	 // terminate any suffix, not legal in mongo key
-		result = mongoGetDocument(name,buffer,(userCacheSize - MAX_USERNAME),false);
+		result = mongoGetDocument(name,buffer,(userCacheSize - MAX_USERNAME),false); // can take argument(2)
 		if (dot) *dot = '.';	 
 		
 		if (result != NOPROBLEM_BIT)
@@ -7618,6 +7637,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^postprintafter",PostPrintAfterCode,STREAM_ARG,0,(char*)"add to end of output stream"}, 
 
 	{ (char*)"\r\n---- Control Flow",0,0,0,(char*)""},
+	{ (char*)"^authorized",AuthorizedCode,0,0,(char*)"is current user authorized"},
 	{ (char*)"^addcontext",AddContextCode,2,0,(char*)"set topic and label as a context"},
 	{ (char*)"^clearcontext",ClearContextCode,2,0,(char*)"clear all context"},
 	{ (char*)"^argument",ArgumentCode,VARIABLE_ARG_COUNT,0,(char*)"returns the calling scope's nth argument (given n and possible fn name)"},
@@ -7656,8 +7676,8 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^mongoinit",MongoInit,3,0,(char*)"establish connection to mongo database"}, 
 	{ (char*)"^mongoclose",MongoClose,0,0,(char*)"destroy connection to mongo database"}, 
 	{ (char*)"^mongoinsertdocument",mongoInsertDocument,2,0,(char*)"mongo upsert document"},
-	{ (char*)"^mongodeletedocument",mongoDeleteDocument,1,0,(char*)"mongo delete document"},
-	{ (char*)"^mongofinddocument",mongoFindDocument,1,0,(char*)"mongo find document"},
+	{ (char*)"^mongodeletedocument",mongoDeleteDocument,VARIABLE_ARG_COUNT,0,(char*)"mongo delete document"},
+	{ (char*)"^mongofinddocument",mongoFindDocument,VARIABLE_ARG_COUNT,0,(char*)"mongo find document"},
 #endif
 
 	{ (char*)"\r\n---- Word Manipulation",0,0,0,(char*)""},

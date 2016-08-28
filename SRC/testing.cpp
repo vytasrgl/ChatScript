@@ -553,7 +553,7 @@ static void VerifyRegress(char* file)
 	}
 	sprintf(logFilename,(char*)"%s/tmpregresslog.txt",users); // user log goes here so we can regenerate a new regression file if we need one
 	FILE* out = FopenUTF8Write(logFilename); // make a new log file to do this in.
-	if (out) FClose(out);
+	FClose(out);
 
 	int olduserlog = userLog;
 	userLog = LOGGING_SET;
@@ -3873,7 +3873,7 @@ static void C_Build(char* input)
 	{
 		sprintf(logFilename,(char*)"%s/build%s_log.txt",users,file); //   all data logged here by default
 		FILE* in = FopenUTF8Write(logFilename);
-		if (in) FClose(in);
+		FClose(in);
 		Log(STDTRACELOG,(char*)"ChatScript Version %s  compiled %s\r\n",version,compileDate);
 		char word[MAX_WORD_SIZE];
 		sprintf(word,(char*)"files%s.txt",file);
@@ -6149,7 +6149,7 @@ static void ShowTrace(unsigned int bits, bool original)
 {
 	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH|TRACE_FLOW);
 	unsigned int mild = (TRACE_OUTPUT|TRACE_PREPARE|TRACE_PATTERN);
-	unsigned int deep = (TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
+	unsigned int deep = (TRACE_ALWAYS|TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
 	if (!original) Log(STDTRACELOG,(char*)"  ");
 
 	// general
@@ -6193,6 +6193,7 @@ static void ShowTrace(unsigned int bits, bool original)
 		if (bits & TRACE_SAMPLE) Log(STDTRACELOG,(char*)"sample ");
 		if (bits & TRACE_LABEL) Log(STDTRACELOG,(char*)"label ");
 		if (bits & TRACE_TOPIC) Log(STDTRACELOG,(char*)"topic ");
+		if (bits & TRACE_ALWAYS) Log(STDTRACELOG,(char*)"always ");
 		Log(STDTRACELOG,(char*)"\r\n");
 		if (!original) Log(STDTRACELOG,(char*)"  ");
 	}
@@ -6238,6 +6239,7 @@ static void ShowTrace(unsigned int bits, bool original)
 		if (!(bits & TRACE_SQL)) Log(STDTRACELOG,(char*)"sql ");
 		if (!(bits & TRACE_LABEL)) Log(STDTRACELOG,(char*)"label ");
 		if (!(bits & TRACE_TOPIC)) Log(STDTRACELOG,(char*)"topic ");
+		if (!(bits & TRACE_ALWAYS)) Log(STDTRACELOG,(char*)"always ");
 		Log(STDTRACELOG,(char*)"\r\n");
 		if (!original) Log(STDTRACELOG,(char*)"  ");
 	}
@@ -6279,8 +6281,6 @@ static void C_Trace(char* input)
 	char word[MAX_WORD_SIZE];
 	isTracing = false;
 	foundATrace = false;
-	bool full = false;
-	if (trace && !(trace & TRACE_NOTFULL)) full = true;	// already on full
 	unsigned int flags = trace;
 	input = SkipWhitespace(input);
 	if (!*input) 
@@ -6319,13 +6319,7 @@ static void C_Trace(char* input)
 			else continue;
 		}
 		
-		if (!stricmp(word,(char*)"all") ) flags = (unsigned int)-1;
-		else if (!stricmp(word,(char*)"full"))
-		{
-			flags = (unsigned int)-1;
-			flags -= TRACE_NOTFULL;
-			full = true; // requested full
-		}
+		if (!stricmp(word,(char*)"all") ) flags = ((unsigned int)-1) ^ TRACE_ALWAYS;
 		else if (!stricmp(word,(char*)"none")) flags = 0;
 		else if (*word == '-') // remove this flag
 		{
@@ -6360,6 +6354,7 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"label")) flags &= -1 ^  TRACE_LABEL;
 			else if (!stricmp(word,(char*)"topic")) flags &= -1 ^  TRACE_TOPIC;
 			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
+			else if (!stricmp(word,(char*)"always")) flags &= TRACE_ALWAYS;
 		}
 		else if (IsNumberStarter(*word) && !IsAlphaUTF8(word[1])) 
 		{
@@ -6396,6 +6391,7 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"topic")) flags |= TRACE_TOPIC;
 		else if (!stricmp(word,(char*)"deep")) flags |= (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
 		else if (!stricmp(word,(char*)"notthis")) flags |=  TRACE_NOT_THIS_TOPIC;
+		else if (!stricmp(word,(char*)"always")) flags|= TRACE_ALWAYS;
 
 		else if (!stricmp(word,(char*)"0") || !stricmp(word,(char*)"clear")) trace = 0;
 		else if (!stricmp(word,(char*)"end")) break; // safe end
@@ -6474,15 +6470,13 @@ static void C_Trace(char* input)
 		}
 	}
 	trace = flags;
-	if (trace && full) trace &= -1 ^ TRACE_NOTFULL;
-	else if (trace == TRACE_HIERARCHY) {;}
-	else if (trace && !full) trace |= TRACE_NOTFULL;
+	if (trace == TRACE_HIERARCHY) {;}
 	if (!fromScript) // do not show things automatically 
 	{
 		bool oldecho = echo;
 		echo = true;
 		Log(STDTRACELOG,(char*)" trace = %d (0x%x)\n",trace,trace);
-		if (trace && trace != TRACE_NOTFULL) 
+		if (trace && trace != TRACE_ON) 
 		{
 			isTracing = true;
 			ShowTrace(trace,true);
@@ -6493,7 +6487,7 @@ static void C_Trace(char* input)
 		echo = oldecho;
 		if (isTracing) 
 		{
-			trace |= TRACE_NOTFULL;
+			trace |= TRACE_ON;
 			echo = true;
 		}
 		else echo = false;
@@ -6861,7 +6855,7 @@ static void DisplayTopic(char* name,int spelling)
 					uint64 sysflags = 0;
 					uint64 cansysflags = 0;
 					WORDP revise;
-					GetPosData(2,word,revise,entry,canonical,sysflags,cansysflags);
+					GetPosData(-1,word,revise,entry,canonical,sysflags,cansysflags);
 					if (canonical)
 					{
 						// if canonical is upper and entry is lower, dont show canonical
@@ -7241,7 +7235,7 @@ static void DisplayTopic(char* name,int spelling)
 		*end = ENDUNIT;
 		rule = FindNextRule(NEXTRULE,rule,id);
 	}
-	if (in) FClose(in);
+	FClose(in);
 	FreeBuffer();
 	FreeBuffer();
 }

@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.8";
+char* version = "6.8a";
 
 // Technically using atomic is not helpful here. EVServer runs a single thread per core (excluding the event library)
 // and the alternate server code in csocket has a single thread for the engine so it cannot be out of synch with these variables.
@@ -621,7 +621,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		{
 			sprintf(logFilename,(char*)"%s/build0_log.txt",users);
 			FILE* in = FopenUTF8Write(logFilename);
-			if (in) FClose(in);
+			FClose(in);
 			commandLineCompile = true;
 			int result = ReadTopicFiles(argv[i]+7,BUILD0,NO_SPELL);
  			myexit((char*)"build0 complete",result);
@@ -630,7 +630,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		{
 			sprintf(logFilename,(char*)"%s/build1_log.txt",users);
 			FILE* in = FopenUTF8Write(logFilename);
-			if (in) FClose(in);
+			FClose(in);
 			commandLineCompile = true;
 			int result = ReadTopicFiles(argv[i]+7,BUILD1,NO_SPELL);
  			myexit((char*)"build1 complete",result);
@@ -686,7 +686,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	return 0;
 }
 
-void PartiallyCloseSystem()
+void PartiallyCloseSystem() // server data (queues etc) remain available
 {
 	WORDP shutdown = FindWord((char*)"^csshutdown");
 	if (shutdown)  Callback(shutdown,(char*)"()",false); 
@@ -1489,6 +1489,17 @@ void Restart()
 	PartiallyCloseSystem();
 	CreateSystem();
 	InitStandalone();
+
+#ifndef DISCARDPOSTGRES
+	if (postgresparams)  PGUserFilesCode();
+#endif
+#ifndef DISCARDMONGO
+	if (mongodbparams)  MongoSystemInit(mongodbparams);
+#endif
+#ifdef PRIVATE_CODE
+	PrivateInit(privateParams); 
+#endif
+
 	if (!server)
 	{
 		echo = false;
