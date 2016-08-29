@@ -86,10 +86,13 @@ really advanced users wanting the appropriate mental model.
 
 * ### Servers and Clients
 
- * ChatScript ClientServer Manual
+ * [ChatScript ClientServer Manual](CLIENTS-AND-SERVERS/ChatScript-ClientServer-Manual.md)
 <br>How to configure and run CS as a server. And thinking about CS on mobile.
 
- * ChatScript Amazon Server
+ * [ChatScript External Communications](CLIENTS-AND-SERVERS/ChatScript-External-Communications.md)
+<br> How to embedding ChatScript inside another main program, calling programs on the OS from ChatScript, and getting services via the Internet from ChatScript.
+
+ * [ChatScript Amazon Server](CLIENTS-AND-SERVERS/ChatScript-Amazon-Server.md)
 <br>How to install CS as a server on Amazon AWS.
 
 
