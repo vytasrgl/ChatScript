@@ -4,10 +4,10 @@
 > Revision 7/31/2016 cs6.7a
 
 
-* [Engine-defined Concepts](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
-* [System Variables](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#system-variables)
-* [Control over Input](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#control-over-input)
-* [Interchange Variables](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md#interchange-variables)
+* [Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
+* [System Variables](ChatScript-System-Variables-and-Engine-defined-Concepts.md#system-variables)
+* [Control over Input](ChatScript-System-Variables-and-Engine-defined-Concepts.md#control-over-input)
+* [Interchange Variables](ChatScript-System-Variables-and-Engine-defined-Concepts.md#interchange-variables)
 
 
 # Engine-defined concepts
@@ -441,7 +441,7 @@ contents.
 | interchange variable | description |
 | -------------------  | ------- |
 | `$cs_token`          |  described extensively above| 
-| `$cs_response`       |  controls automatic handling of outputs to user. By default it consists of `$cs_response = #Response_upperstart \| #response_removespacebeforecomma \| #response_alterunderscores \| #response_removetilde` If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. <br>`#response_upperstart` – makes the first letter of an output sentence capitalized, <br>`#Response_removespacebeforecomma` – does the obvious, <br>`#Response_alterunderscores` - converts single underscores to spaces and double underscores to singles (eg for a web url) |
+| `$cs_response`       |  controls automatic handling of outputs to user. By default it consists of `$cs_response = #Response_upperstart | #response_removespacebeforecomma | #response_alterunderscores | #response_removetilde` If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. <br>`#response_upperstart` – makes the first letter of an output sentence capitalized, <br>`#Response_removespacebeforecomma` – does the obvious, <br>`#Response_alterunderscores` - converts single underscores to spaces and double underscores to singles (eg for a web url) |
 | `$cs_jsontimeout`    |  seconds before JsonOpen declares a time out failure. If unspecified the default is 300 | 
 | `$cs_crashmsg`       |  in server mode, what to say if the server crashes and we return a message to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._ | 
 | `$cs_abstract`       |  used with :abstract | 
