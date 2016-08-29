@@ -98,16 +98,16 @@ really advanced users wanting the appropriate mental model.
 
 * ### Esoteric ChatScript
 
- * ChatScript Control Scripts
+ * [ChatScript Control Scripts](ESOTERIC-CHATSCRIPT/ChatScript-Control-Scripts.md)
 <br>Brief overview of writing your own control scripts
 
- * ChatScript Analytics
+ * [ChatScript Analytics](ESOTERIC-CHATSCRIPT/ChatScript-Analytics-Manual.md)
 <br>Debug functions that can dissect log files.
 
- * ChatScript Document Reader
+ * [ChatScript Document Reader](ESOTERIC-CHATSCRIPT/ChatScript-Document-Reader.md)
 <br>How to use CS to acquire information from a document.
 
- * ChatScript Javascript
+ * [ChatScript Javascript](ESOTERIC-CHATSCRIPT/ChatScript-Javascript.md)
 <br>How to write outputmacros in Javascript and call them.
 
  * ChatScript Mongo
