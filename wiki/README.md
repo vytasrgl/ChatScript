@@ -9,76 +9,76 @@ Here is an overview.
 
 ## Basic ChatScript for starters
 
-* [What is ChatScript?](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
+* [What is ChatScript?](OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md)
 <br>Overview of the design goals and abilities of CS. Not necessary to read.
 
-* [ChatScript Basic User Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md)
+* [ChatScript Basic User Manual](ChatScript-Basic-User-Manual.md)
 <br>This explains how to run CS, how to understand basic CS ideas like rules, topics, and
 concepts. A must starting place.
 
-* [ChatScript Tutorial](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md)
+* [ChatScript Tutorial](OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md)
 <br>A briew step-by-step on creating a chatbot travel agent, written by a CS user.
 
-* [ChatScript Memorization](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Memorization.md)
+* [ChatScript Memorization](ChatScript-Memorization.md)
 <br>A simple explanation of how to “learn” data about the user.
 
-* [ChatScript Common Beginner Mistakes](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Common-Beginner-Mistakes.md)
+* [ChatScript Common Beginner Mistakes](ChatScript-Common-Beginner-Mistakes.md)
 <br>Here are a collection of common beginner mistakes.
 
 
 ## Predefined Bots
 
-* [Bot Harry - basic bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Harry.md)
+* [Bot Harry - basic bot](PREDEFINED-BOTS/Bot-Harry.md)
 <br>A brief overview of the simple Harry bot and how to make simple modifications.
 Potentially useful for a beginner read.
 
-* [Bot NLTK – NL analysis bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-NLTK.md)
+* [Bot NLTK – NL analysis bot](PREDEFINED-BOTS/Bot-NLTK.md)
 <br>A brief description of how to run the NLTK bot. Not useful for most people, especially if
 NLTK means nothing to you.
 
-* [Bot Stockpile – planner bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Stockpile.md)
+* [Bot Stockpile – planner bot](PREDEFINED-BOTS/Bot-Stockpile.md)
 <br>A brief description of how to run the Stockpile bot. Not useful for most people. It's about planner capabilities of CS.
 
-* [Bot Postgres – postgres bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-Postgres.md)
+* [Bot Postgres – postgres bot](PREDEFINED-BOTS/Bot-Postgres.md)
 <br>Illustration of using Postgres database.
 
-* [Bot German](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/PREDEFINED-BOTS/Bot-German.md)
+* [Bot German](PREDEFINED-BOTS/Bot-German.md)
 <br>An illustration of hooking in an external pos-tagger for foreign language support.
 
 
 
 ## Advanced ChatScript
 
-* [ChatScript Advanced User Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Advanced-User-Manual.md)
+* [ChatScript Advanced User Manual](ChatScript-Advanced-User-Manual.md)
 <br>Once you've master basic CS, this is the place to go next.
 
-* [ChatScript System Functions Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Functions-Manual.md)
+* [ChatScript System Functions Manual](ChatScript-System-Functions-Manual.md)
 <br>A listing of all the functions of CS.
 
-* [ChatScript Fact Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Fact-Manual.md)
+* [ChatScript Fact Manual](ChatScript-Fact-Manual.md)
 <br>A discussion of how to manipulate facts in CS.
 
-* [ChatScript Json](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Json.md)
+* [ChatScript Json](ChatScript-Json.md)
 <br>ChatScript support for Json
 
-* [ChatScript Debugging Manual](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Debugging-Manual.md)
+* [ChatScript Debugging Manual](ChatScript-Debugging-Manual.md)
 <br>The features of CS that support debugging, including tracing.
 
-* [ChatScript Finalizing a Bot](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Finalizing-A-Bot.md)
+* [ChatScript Finalizing a Bot](ChatScript-Finalizing-A-Bot.md)
 <br>Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely
 never be complete because you will want to keep improving it.
 
-* [ChatScript Overview Input to Output](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Overview-of-Input-to-Output.md)
+* [ChatScript Overview Input to Output](ChatScript-Overview-of-Input-to-Output.md)
 <br>An overview of the process of converting input to output. Not necessary except for
 really advanced users wanting the appropriate mental model.
 
-* [ChatScript Pattern Redux](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Pattern-Redux.md)
+* [ChatScript Pattern Redux](ChatScript-Pattern-Redux.md)
 <br>A terse but detailed look at everything involving rule patterns.
 
-* [ChatScript System Variables and Engine-defined Concepts](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-System-Variables-and-Engine-defined-Concepts.md)
+* [ChatScript System Variables and Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md)
 <br> Engine-defined Concepts. System Variables. Control over Input. Interchange Variables.
 
-* [Installing and Updating ChatScript](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/Installing-and-Updating-ChatScript.md)
+* [Installing and Updating ChatScript](Installing-and-Updating-ChatScript.md)
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
 
 
@@ -128,31 +128,32 @@ really advanced users wanting the appropriate mental model.
 
 ## Papers in order
 
-* ChatScript Training
-<br>A slide series on how CS works and how the engine works.
-
-* Paper- ChatBots 102
+* [Paper - ChatBots 102](../PDFDOCUMENTATION/PAPERS/Paper-%20ChatBots%20102.pdf)
 <br>My first paper, looking at the flaws of AIML and why I felt I could do better (before Suzette won anything).
 
-* Paper- Pattern Matching for Natural Language
+* [Paper - Pattern Matching for Natural Language](../PDFDOCUMENTATION/PAPERS/Paper-%20Pattern_Matching_for_Natural_Language_Applications.pdf)
 <br>Compares CS, AIML, and Facade
 
-* Paper- Suzette The Most Human Computer
+* [Paper - Suzette The Most Human Computer](../PDFDOCUMENTATION/PAPERS/Paper%20-%20Suzette_The_Most_Human_Computer.pdf)
 <br>How our first chatbot came about, won the Loebner's, and differed from AIML.
 
-* Paper- Speaker for the Dead
+* [Paper - Speaker for the Dead](../PDFDOCUMENTATION/PAPERS/Paper-%20Speaker%20for%20theDead.pdf)
 <br>Applying chatbots to manage people's accumulations of papers, photos, etc.
 
-* Paper – Google Talk
+* [Paper - Google Talk](../PDFDOCUMENTATION/PAPERS/Paper%20-%20Google%20Talk.pdf)
 <br>A talk I gave at Google about my history, CS, and writing code to act out stories
-* Paper- Writing a Chatbot
+
+* [Paper - Writing a Chatbot](../PDFDOCUMENTATION/PAPERS/Paper-%20Writing%20a%20Chatbot.pdf)
 <br>Useful discussion on how to think about writing a chatbot
 
-* Paper- ARBOR_ MakingItReal
+* [Paper - ARBOR_ MakingItReal](../PDFDOCUMENTATION/PAPERS/Paper-%20ARBOR-MakingItReal.pdf)
 <br>Useful discussion on how to think about writing a chatbot
 
-* Paper- Winning 15 Minute Conversation
+* [Paper - Winning 15 Minute Conversation](../PDFDOCUMENTATION/PAPERS/Paper-%20Winning%2015%20Minute%20Conversation.pdf)
 <br>The conversation (1 of 2) that had our chatbot easily win best 15 minute conversation at ChatBot Battles 2012.
 
-* Paper- Winning the Loebner's
+* [Paper - Winning the Loebner's](../PDFDOCUMENTATION/PAPERS/Paper-%20WinningTheLoebners.pdf)
 <br>Realities of the Loebner competition and additional ideas of english applied to chatbots
+
+* [ChatScript Training](../PDFDOCUMENTATION/ChatScript%20Training.pdf)
+<br>A slide series on how CS works and how the engine works.
