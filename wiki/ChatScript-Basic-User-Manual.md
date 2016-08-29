@@ -3,12 +3,12 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 > Revision 7/4/2016 cs6.6
 
-* [Overview](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#overview)
-* [Simple Topics](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#simple-topics)
-* [Simple Patterns](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#simple-patterns)
-* [Simple Output](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#simple-output)
-* [Variables](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#variables)
-* [Summary](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/ChatScript-Basic-User-Manual.md#summary)
+* [Overview](ChatScript-Basic-User-Manual.md#overview)
+* [Simple Topics](ChatScript-Basic-User-Manual.md#simple-topics)
+* [Simple Patterns](ChatScript-Basic-User-Manual.md#simple-patterns)
+* [Simple Output](ChatScript-Basic-User-Manual.md#simple-output)
+* [Variables](ChatScript-Basic-User-Manual.md#variables)
+* [Summary](ChatScript-Basic-User-Manual.md#summary)
 
 
 # OVERVIEW
