@@ -3,22 +3,22 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 > Revision 7/31/2016 cs6.7a
 
-* [Running the server](ChatScript-ClientServer-Manual.md#Running-the-server)
-* [Unique User Names](ChatScript-ClientServer-Manual.md#Unique-User-Names)
-* [ChatScript protocol](ChatScript-ClientServer-Manual.md#ChatScript-protocol)
-* [Communicating with the Server](ChatScript-ClientServer-Manual.md#Communicating-with-the-Server)
-* [Testing the server](ChatScript-ClientServer-Manual.md#Testing-the-server)
-* [Revising a live server](ChatScript-ClientServer-Manual.md#Revising-a-live server)
-* [Revising a topic](ChatScript-ClientServer-Manual.md#Revising-a-topic)
-* [Preparing for compiling on a server](ChatScript-ClientServer-Manual.md#Preparing-for-compiling-on-a-server)
-* [Testing for server presence](ChatScript-ClientServer-Manual.md#Testing-for-server-presence)
-* [Server crashes and cron](ChatScript-ClientServer-Manual.md#Server-crashes-and-cron)
-* [CPU vs IO bound](ChatScript-ClientServer-Manual.md#CPU-vs-IO-bound)
-* [Memory issues with multiple servers on a machine](ChatScript-ClientServer-Manual.md#Memory-issues-with-multiple-servers-on-a-machine)
-* [Commands affecting the server](ChatScript-ClientServer-Manual.md#Commands-affecting-the-server)
-* [Command Authorization](ChatScript-ClientServer-Manual.md#Command-Authorization)
-* [Command line parameters](ChatScript-ClientServer-Manual.md#Command-line-parameters)
-* [RESTful server](ChatScript-ClientServer-Manual.md#RESTful-server)
+* [Running the server](ChatScript-ClientServer-Manual.md#running-the-server)
+* [Unique User Names](ChatScript-ClientServer-Manual.md#unique-user-names)
+* [ChatScript protocol](ChatScript-ClientServer-Manual.md#chatscript-protocol)
+* [Communicating with the Server](ChatScript-ClientServer-Manual.md#communicating-with-the-server)
+* [Testing the server](ChatScript-ClientServer-Manual.md#testing-the-server)
+* [Revising a live server](ChatScript-ClientServer-Manual.md#revising-a-live server)
+* [Revising a topic](ChatScript-ClientServer-Manual.md#revising-a-topic)
+* [Preparing for compiling on a server](ChatScript-ClientServer-Manual.md#preparing-for-compiling-on-a-server)
+* [Testing for server presence](ChatScript-ClientServer-Manual.md#testing-for-server-presence)
+* [Server crashes and cron](ChatScript-ClientServer-Manual.md#server-crashes-and-cron)
+* [CPU vs IO bound](ChatScript-ClientServer-Manual.md#cpu-vs-io-bound)
+* [Memory issues with multiple servers on a machine](ChatScript-ClientServer-Manual.md#memory-issues-with-multiple-servers-on-a-machine)
+* [Commands affecting the server](ChatScript-ClientServer-Manual.md#commands-affecting-the-server)
+* [Command Authorization](ChatScript-ClientServer-Manual.md#command-authorization)
+* [Command line parameters](ChatScript-ClientServer-Manual.md#command-line-parameters)
+* [RESTful server](ChatScript-ClientServer-Manual.md#restful-server)
 
 While the system defaults to running as a stand-alone chatbot under Windows, when run
 under LINUX it defaults to being a server.
