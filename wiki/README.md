@@ -110,13 +110,13 @@ really advanced users wanting the appropriate mental model.
  * [ChatScript Javascript](ESOTERIC-CHATSCRIPT/ChatScript-Javascript.md)
 <br>How to write outputmacros in Javascript and call them.
 
- * ChatScript Mongo
+ * [ChatScript Mongo](ESOTERIC-CHATSCRIPT/ChatScript-MongoDB.md)
 <br>How to use the Mongo db directly from CS
 
- * ChatScript Planning
+ * [ChatScript Planning](ESOTERIC-CHATSCRIPT/ChatScript-Planning.md)
 <br>How to use CS as an HTN (hierarchical task network) planner.
 
- * ChatScript PosParser
+ * [ChatScript PosParser](ESOTERIC-CHATSCRIPT/ChatScript-PosParser.md)
 <br>How to use grammar/parsing in CS patterns.
 
  * ChatScript PostgreSQL
