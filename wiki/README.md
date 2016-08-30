@@ -119,13 +119,10 @@ really advanced users wanting the appropriate mental model.
  * [ChatScript PosParser](ESOTERIC-CHATSCRIPT/ChatScript-PosParser.md)
 <br>How to use grammar/parsing in CS patterns.
 
- * ChatScript PostgreSQL
+ * [ChatScript PostgreSQL](ESOTERIC-CHATSCRIPT/ChatScript-PostgreSQL.md)
 <br>How to use the Postgres database directly from CS.
 
- * ChatScript External Communications
-<br>How to communicate with external system like HTTP or the local machine.
-
- * ChatScript Exotica
+ * [ChatScript Exotica](ESOTERIC-CHATSCRIPT/ChatScript-Exotica-Examples.md)
 <br>Brief old interesting scripting tips
 
 
