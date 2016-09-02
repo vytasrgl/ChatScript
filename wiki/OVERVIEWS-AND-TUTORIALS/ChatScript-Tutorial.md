@@ -32,15 +32,15 @@ the documentation.
 
 # Contents
 
-* [Speaking (topic: , t:)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#speaking-topic--t)
-* [Saying more (^keep, random selection [], ^repeat)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#saying-more-keep-random-selection--repeat)
-* [Listening (u:, ^reuse)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#listening-u-reuse)
-* [Short-term memory (* _)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#short-term-memory--_)
-* [Long-term memory ($)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#long-term-memory-)
-* [Dialog Management (conditions)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#dialog-management-conditions)
-* [Implicit Confirmations (^respond)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#implicit-confirmations-respond)
-* [Explicit Confirmation (rejoinders: a: b: c:...)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#explicit-confirmation-rejoinders-a-b-c-)
-* [Knowledge (^createfact, table:)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md#knowledge-createfact-table)
+* [Speaking (topic: , t:)](ChatScript-Tutorial.md#speaking-topic--t)
+* [Saying more (^keep, random selection [], ^repeat)](ChatScript-Tutorial.md#saying-more-keep-random-selection--repeat)
+* [Listening (u:, ^reuse)](ChatScript-Tutorial.md#listening-u-reuse)
+* [Short-term memory (* _)](ChatScript-Tutorial.md#short-term-memory--_)
+* [Long-term memory ($)](ChatScript-Tutorial.md#long-term-memory-)
+* [Dialog Management (conditions)](ChatScript-Tutorial.md#dialog-management-conditions)
+* [Implicit Confirmations (^respond)](ChatScript-Tutorial.md#implicit-confirmations-respond)
+* [Explicit Confirmation (rejoinders: a: b: c:...)](ChatScript-Tutorial.md#explicit-confirmation-rejoinders-a-b-c-)
+* [Knowledge (^createfact, table:)](ChatScript-Tutorial.md#knowledge-createfact-table)
 
 ## Speaking (`topic:` , `t:`)
 The simplest possible chat-script should include a topic and a sentence to say, for
