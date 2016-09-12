@@ -849,6 +849,9 @@ Sets a topic and context name for use by `^incontext`.
 The label doesn't have to corrrespond to any real label. 
 The topic can be a topic name or `~` meaning current topic.
 
+### `^authorized`()
+Use same authorizedIP.txt file and rules that debug commands use, to validate current user.
+
 ### `^clearcontext`()
 Erases all context data (see `^addcontext`).
 
@@ -1056,7 +1059,11 @@ debugger to follow code thereafter if you can debug c code.
 
 ## Logging Function `^log`( ... )
 
-This allows you to print something directly to the users log file. You can actually append
+This allows you to print something directly to the users log file. 
+If you want it echoed to the console as well, you can do 
+`^log(OUTPUT_ECHO This is my message)`.
+
+You can actually append
 to any file by putting at the front of your output the word FILE in capital letters followed
 by the name of the file. E.g.,
 ```
@@ -1218,6 +1225,13 @@ Convert a word into a series of facts of its letters.
 Return the substring with the designated offset range
 (exclusive of end location). Useful for data extraction using ^popen and ^tcpopen when
 combined with `^findtext`.
+
+In addition to absolute unsigned values, start and end can take on offsets or relative values. A signed end is a length to extract plus a direction or shift in start.
+	`^extract($$source 5 +2) to extract 2 characters beginning at position 5`
+	`^extract($$source 5 -2) to extract 2 characters ending at position 5`
+A negative start is a backwards offset from end.
+	`^extract($$source -1 +1) from end, 1 character before and get 1 character `
+	`^extract($$source -5 -1) from end, 5 characters before and get 1 character before			i.e. the 6th char from end`
 
 ### `^findtext`( source substring offset {insensitive} )
 Find case sensitive substring within source+offset and return offset starting immediately after match. 
@@ -1707,10 +1721,12 @@ Add this flag onto all facts in named set. Typically you would be adding private
 
 
 ### `^conceptlist`( kind location ) 
-Generates a list of transient facts for the designated word
-position in the sentence of the concepts (or topics or both) referenced by that word, based
-on `kind` being `CONCEPT` or `TOPIC` or `BOTH`. 
-Facts are `(~concept ^conceptlist location)` where location is the range location in the sentence `(start <<8 + end)`.
+^conceptlist(kind location {filter} ) generates a list of transient facts for the designated 
+word position in the sentence of the concepts (or topics or both) referenced by that word, 
+based on kind being CONCEPT or TOPIC or BOTH. 
+Facts are `(~concept ^conceptlist location)` where location is the range location in the sentence 
+(start <<8 + end).
+
 ```
 ^conceptlist( CONCEPT 3) # absolute sentence word index
 ^conceptlist( TOPIC _3) # whereever _3 is bound
@@ -1733,6 +1749,10 @@ reported via `^conceptlist`.
 But if the mark is a non-canonical word, mark does not do
 anything about the canonical form, and so there may be no triggered concepts as well.
 (Best to use a canonical word as mark).
+
+If you add the optional 3rd argument, it will filter concepts to be only those that start with the filter characters. 
+	`@0 = ^conceptlist(CONCEPT _0  ^"~bot-")`
+retrieves only concepts that start with `~bot-` .
 
 ### `^wordinconcept`( word conceptname )
 Takes any casing of a word and finds which casing

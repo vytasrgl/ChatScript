@@ -209,7 +209,7 @@ void TraceSample(int topic, int ruleID,unsigned int how)
 	WORDP D = FindWord(GetTopicName(topic,true));
 	if (D)
 	{
-		char file[MAX_WORD_SIZE];
+		char file[SMALL_WORD_SIZE];
 		sprintf(file,(char*)"VERIFY/%s-b%c.txt",D->word+1, (D->internalBits & BUILD0) ? '0' : '1'); 
 		in = FopenReadOnly(file); // VERIFY folder
 		if (in) // we found the file, now find any verfiy if we can
@@ -370,7 +370,7 @@ char* GetVerify(char* tag,int &topicid, int &id) //  ~topic.#.#=LABEL<~topic.#.#
 	dot = strchr(topicname,'.'); // split of primary topic from rest of tag
 	*dot = 0;
 	if (IsDigit(*tag)) strcpy(topicname,GetTopicName(atoi(tag)));
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	WORDP D = FindWord(topicname);
 	if (!D) return "";
 
@@ -673,7 +673,7 @@ char* ShowRule(char* rule,bool concise)
 	return result;
 }
 
-char* GetPattern(char* ptr,char* label,char* pattern)
+char* GetPattern(char* ptr,char* label,char* pattern,int limit)
 {
 	if (label) *label = 0;
 	if (!ptr || !*ptr) return NULL;
@@ -685,6 +685,7 @@ char* GetPattern(char* ptr,char* label,char* pattern)
 	int patternlen = ptr - patternStart;
 	if (pattern)
 	{
+		if (patternlen > limit) patternlen = limit-1;
 		strncpy(pattern,patternStart,patternlen);
 		pattern[patternlen] = 0;
 	}
@@ -731,6 +732,7 @@ char* GetLabel(char* rule,char* label)
 		len += c - '0' - 2;
 		if (label)
 		{
+			if (len >= MAX_LABEL_SIZE) len = MAX_LABEL_SIZE-1;
 			strncpy(label,rule,len); // added 2 in scriptcompiler... keeping files compatible
 			label[len] = 0;
 		}
@@ -773,6 +775,13 @@ void SetTopicDebugMark(int topic,unsigned int value)
 	block->topicDebug = value;
 }
 
+void SetTopicTimingMark(int topic, unsigned int value)
+{
+	if (!topic || topic > numberOfTopics) return;
+	topicBlock* block = TI(topic);
+	block->topicTiming = value;
+}
+
 void SetDebugRuleMark(int topic,unsigned int id)
 {
 	if (!topic || topic > numberOfTopics) return;
@@ -786,6 +795,32 @@ void SetDebugRuleMark(int topic,unsigned int id)
 	*testByte ^= (unsigned char) (0x80 >> bitOffset);
 }
 
+static bool HasDebugRuleMark(int topic)
+{
+	if (!topic || topic > numberOfTopics) return false;
+	bool tracing = false;
+	topicBlock* block = TI(topic);
+	for (int i = 0; i < block->topicBytesRules; ++i)
+	{
+		if (block->topicDebugRule[i]) 
+		{
+			tracing = true;
+			Log(STDTRACELOG,(char*)" Some rule(s) being traced in %s\n",GetTopicName(topic));
+
+		}
+	}
+	return tracing;
+}
+
+bool AreDebugMarksSet()
+{
+	for (int i = 1; i <= numberOfTopics; ++i)
+	{
+		if (HasDebugRuleMark(i)) return true;
+	}
+	return false;
+}
+
 static bool GetDebugRuleMark(int topic,unsigned int id) //   has this top level responder been marked for debug
 {
 	if (!topic || topic > numberOfTopics) return false;
@@ -797,6 +832,59 @@ static bool GetDebugRuleMark(int topic,unsigned int id) //   has this top level 
 	unsigned int bitOffset = id % 8;
 	unsigned char* testByte = block->topicDebugRule + byteOffset;
 	unsigned char value = (*testByte & (unsigned char) (0x80 >> bitOffset));
+	return value != 0;
+}
+
+void SetTimingRuleMark(int topic, unsigned int id)
+{
+	if (!topic || topic > numberOfTopics) return;
+	topicBlock* block = TI(topic);
+	id = TOPLEVELID(id);
+	unsigned int byteOffset = id / 8;
+	if (byteOffset >= block->topicBytesRules) return; // bad index
+
+	unsigned int bitOffset = id % 8;
+	unsigned char* testByte = block->topicTimingRule + byteOffset;
+	*testByte ^= (unsigned char)(0x80 >> bitOffset);
+}
+
+static bool HasTimingRuleMark(int topic)
+{
+	if (!topic || topic > numberOfTopics) return false;
+	bool timing = false;
+	topicBlock* block = TI(topic);
+	for (int i = 0; i < block->topicBytesRules; ++i)
+	{
+		if (block->topicTimingRule[i])
+		{
+			timing = true;
+			Log(STDTRACELOG, (char*)" Some rule(s) being timed in %s\n", GetTopicName(topic));
+
+		}
+	}
+	return timing;
+}
+
+bool AreTimingMarksSet()
+{
+	for (int i = 1; i <= numberOfTopics; ++i)
+	{
+		if (HasTimingRuleMark(i)) return true;
+	}
+	return false;
+}
+
+static bool GetTimingRuleMark(int topic, unsigned int id) //   has this top level responder been marked for timing
+{
+	if (!topic || topic > numberOfTopics) return false;
+	topicBlock* block = TI(topic);
+	id = TOPLEVELID(id);
+	unsigned int byteOffset = id / 8;
+	if (byteOffset >= block->topicBytesRules) return false; // bad index
+
+	unsigned int bitOffset = id % 8;
+	unsigned char* testByte = block->topicTimingRule + byteOffset;
+	unsigned char value = (*testByte & (unsigned char)(0x80 >> bitOffset));
 	return value != 0;
 }
 
@@ -978,28 +1066,36 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	bool oldnorejoinder = norejoinder;
 	norejoinder = false;
 	unsigned int oldtrace = trace;
+	unsigned int oldtiming = timing;
 	bool traceChanged = false;
 	if ( GetDebugRuleMark(currentTopicID,id))  
 	{
 		trace = (unsigned int) -1;
 		traceChanged = true;
 	}
+	if (GetTimingRuleMark(currentTopicID, id))
+	{
+		timing = ((unsigned int)-1 ^ TIME_ALWAYS) | (oldtiming & TIME_ALWAYS);
+		traceChanged = true;
+	}
+	clock_t start_time = ElapsedMilliseconds();
 
-	char* ptr = GetPattern(rule,NULL,NULL);  // go to output
+	char pattern[100];
+	char label[MAX_LABEL_SIZE];
+	char* ptr = GetPattern(rule,label,pattern,100);  // go to output
 
 	if (trace & TRACE_FLOW)
 	{
-		char output[MAX_WORD_SIZE];
-		char pattern[MAX_WORD_SIZE];
-		char label[MAX_WORD_SIZE];
-		char* output1 = SkipWhitespace(GetPattern(rule,label,pattern));
+		char* output = AllocateBuffer();
+		char* output1 = SkipWhitespace(ptr);
 		size_t len = strlen(output1);
 		if (len < 50) strcpy(output,output1);
 		else strncpy(output,output1,50);
 		output[50] = 0;
 		pattern[30] = 0;
-		if (*label) Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(currentTopicID),REJOINDERID(currentTopicID),label,pattern,output); //  \\  blocks linefeed on next Log call
-		else  Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(currentTopicID),REJOINDERID(currentTopicID),pattern,output); //  \\  blocks linefeed on next Log call
+		if (*label) Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(id),REJOINDERID(id),label,pattern,output); //  \\  blocks linefeed on next Log call
+		else  Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(id),REJOINDERID(id),pattern,output); //  \\  blocks linefeed on next Log call
+		FreeBuffer();
 	}
 
    //   now process response
@@ -1044,8 +1140,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	   }
 	}
 
-	char label[MAX_WORD_SIZE];
-	GetLabel(rule,label); // now at pattern if there is one
+	// now at pattern if there is one
 	if ((madeResponse && *label) || (*label == 'C' && label[1] == 'X' && label[2] == '_')) AddContext(currentTopicID,label);
 
 	// gambits that dont fail try to erase themselves - gambits and responders that generated output directly will have already erased themselves
@@ -1067,9 +1162,19 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	else if (startingIndex != responseIndex && !(result & (FAILTOPIC_BIT | ENDTOPIC_BIT)));
 	else if (!old) RemovePendingTopic(currentTopicID); // if it wasnt pending before, it isn't now
 	respondLevel = 0; 
-	
-	if (traceChanged) trace = oldtrace;
+
+	if (timing & TIME_FLOW) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (*label && (timing & TIME_ALWAYS || diff > 0)) Log(STDTIMETABLOG, "%s rule %c:%d.%d %s %s time: %d ms\r\n", GetTopicName(currentTopicID), *rule, TOPLEVELID(id), REJOINDERID(id), label, pattern, diff);
+		else if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, "%s rule %c:%d.%d %s time: %d ms\r\n", GetTopicName(currentTopicID), *rule, TOPLEVELID(id), REJOINDERID(id), pattern, diff);
+	}
+
+	if (traceChanged) {
+		trace = oldtrace;
+		timing = oldtiming;
+	}
 	norejoinder = oldnorejoinder;
+
     return result;
 }
 
@@ -1111,7 +1216,7 @@ FunctionResult TestRule(int ruleID,char* rule,char* buffer,bool refine)
 retry:
 	FunctionResult result = NOPROBLEM_BIT;
 
-	char label[MAX_WORD_SIZE];
+	char label[MAX_LABEL_SIZE];
     char* ptr = GetLabel(rule,label); // now at pattern if there is one
 	if (*label)
 	{
@@ -1124,23 +1229,22 @@ retry:
 		if (trace & TRACE_SAMPLE && *ptr == '(') TraceSample(currentTopicID,ruleID);// show the sample as well as the pattern
 		if (*ptr == '(')
 		{
-			char pattern[MAX_WORD_SIZE];
+			char* pattern = AllocateBuffer();
 			GetPattern(rule,NULL,pattern);
 			CleanOutput(pattern);
 			Log(STDTRACELOG,(char*)"       pattern: %s",pattern);
+			FreeBuffer();
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	int whenmatched;
 	if (*ptr == '(') // pattern requirement
 	{
-		unsigned int wildcardSelector = 0;
 		wildcardIndex = 0;
 		bool uppercasem = false;
-		int positionStart, positionEnd;
 		whenmatched = 0;
 		++globalDepth; // indent pattern
- 		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",1,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
+ 		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",1,0,start,end,uppercasem,whenmatched,0,0)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
 		--globalDepth;
 		if (clearUnmarks) // remove transient global disables.
 		{
@@ -1369,6 +1473,12 @@ bool CheckTopicTrace() // have not disabled this topic for tracing
 	return !D || !(D->internalBits & NOTRACE_TOPIC);
 }
 
+bool CheckTopicTime() // have not disabled this topic for timing
+{
+	WORDP D = FindWord(GetTopicName(currentTopicID));
+	return !D || !(D->internalBits & NOTIME_TOPIC);
+}
+
 unsigned int EstablishTopicTrace()
 {
 	topicBlock* block = TI(currentTopicID);
@@ -1378,6 +1488,17 @@ unsigned int EstablishTopicTrace()
 	if (block->topicDebug & (-1 ^ TRACE_NOT_THIS_TOPIC)) 
 		trace = block->topicDebug; // use tracing flags of topic
 	return oldtrace;
+}
+
+unsigned int EstablishTopicTiming()
+{
+	topicBlock* block = TI(currentTopicID);
+	unsigned int oldtiming = timing;
+	if (block->topicTiming & TIME_NOT_THIS_TOPIC)
+		timing = 0; // dont time while  in here
+	if (block->topicTiming & (-1 ^ TIME_NOT_THIS_TOPIC))
+		timing = block->topicTiming; // use timing flags of topic
+	return oldtiming;
 }
 
 FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)//   MANAGE current topic full reaction to input (including rejoinders and generics)
@@ -1392,6 +1513,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	char* topicName = GetTopicName(currentTopicID);
 	int limit = 30;
 	unsigned int oldtrace = EstablishTopicTrace();
+	unsigned int oldtiming = EstablishTopicTiming();
 	char value[100];
 
 	ChangeDepth(1,topicName); // PerformTopic
@@ -1408,6 +1530,9 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 		Callback(D,value,false); 
 		cstopicsystem = false;
 	}
+
+	clock_t start_time = ElapsedMilliseconds();
+
 	while (result == RETRYTOPIC_BIT && --limit > 0)
 	{
 		if (BlockedBotAccess(currentTopicID)) result = FAILTOPIC_BIT;	//   not allowed this bot
@@ -1425,8 +1550,12 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 
 	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(inverseStringDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
-	ChangeDepth(-1,topicName); // performtopic
-	
+	if (timing & TIME_TOPIC && CheckTopicTime()) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Topic %s time: %d ms\r\n", topicName,diff);
+	}
+	ChangeDepth(-1, topicName); // performtopic
+
 	WORDP E = FindWord((char*)"^cs_topic_exit");
 	if (E && !cstopicsystem) 
 	{
@@ -1437,6 +1566,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	}
 
 	trace = oldtrace;
+	timing = oldtiming;
 	currentTopicID = oldTopic;
 	return (result & (RESTART_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYINPUT_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|FAILINPUT_BIT|FAILRULE_BIT)) ? result : NOPROBLEM_BIT;
 }
@@ -1714,6 +1844,7 @@ static WORDP AllocateTopicMemory( int topic, char* name, uint64 flags, unsigned 
 
 	block->topicUsed =  (unsigned char*)AllocateString(NULL,bytes,1,true); // bits representing used up rules
 	block->topicDebugRule = (unsigned char*)AllocateString(NULL,bytes,1,true); // bits representing debug this rule
+	block->topicTimingRule = (unsigned char*)AllocateString(NULL, bytes, 1, true); // bits representing timing this rule
 	block->topicBytesRules = (unsigned short)bytes; // size of topic
 		
 	WORDP D = StoreWord(name); 
@@ -2456,7 +2587,7 @@ static void InitLayerMemory(const char* name, int layer)
 {
 	int total;
 	int counter = 0;
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	sprintf(filename,(char*)"TOPIC/script%s.txt",name);
 	FILE* in = FopenReadOnly(filename); // TOPICS
 	if (!in) 
@@ -2543,7 +2674,7 @@ FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 	UnlockLevel();
 	//  if (layer == 2) ReturnToAfterLayer(1,false); // Warning - erases user facts and variables, etc. 
 	int originalTopicCount = numberOfTopics;
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	InitLayerMemory(name,layer);
 	int expectedTopicCount = numberOfTopics;
 	numberOfTopics = originalTopicCount;

@@ -39,16 +39,19 @@
 #define LABEL					QUERY_KIND		// transient scriptcompiler use
 #define RENAMED					QUERY_KIND		// _alpha name renames _number or @name renames @n
 //		0x00000400		
-#define FN_NO_TRACE				0x00000800		// dont trace this function (on functions only)
+#define NOTIME_TOPIC			0x00000800		// dont time this topic (topic names)
+#define NOTIME_FN				NOTIME_TOPIC	// dont time this function (on functions only)
 
 #define UTF8					0x00001000		// word has utf8 char in it (all normal words)
 #define UPPERCASE_HASH			0x00002000		// word has upper case English character in it
 #define VAR_CHANGED				0x00004000		// $variable has changed value this volley
 #define NOTRACE_TOPIC			VAR_CHANGED		// dont trace this topic (topic names)
+#define NOTRACE_FN				VAR_CHANGED		// dont trace this function (on functions only)
 #define WORDNET_ID				0x00008000		// a wordnet synset header node (MASTER w gloss ) only used when building a dictionary -- or transient flag for unduplicate
 #define MACRO_TRACE				WORDNET_ID		// turn on tracing for this function or variable (only used when live running)
 #define INTERNAL_MARK			0x00010000		// transient marker for Intersect coding and Country testing in :trim
 #define FROM_FILE				INTERNAL_MARK	//  for scriptcompiler to tell stuff comes from FILE not DIRECTORY
+#define MACRO_TIME				INTERNAL_MARK	// turn on timing for this function (only used when live running)
 #define BEEN_HERE				0x00020000		// used in internal word searches that might recurse
 #define FAKE_NOCONCEPTLIST		0x00040000		// used on concepts declared NOCONCEPTLIST
 #define DELETED_MARK			0x00080000		// transient marker for  deleted words in dictionary build - they dont get written out - includes script table macros that are transient
@@ -69,7 +72,8 @@
 #define IS_PATTERN_MACRO		0x80000000 
 #define FUNCTION_BITS ( IS_PATTERN_MACRO | IS_OUTPUT_MACRO | IS_TABLE_MACRO | IS_PLAN_MACRO )
 
-#define FN_TRACE_BITS ( MACRO_TRACE | FN_NO_TRACE )
+#define FN_TRACE_BITS ( MACRO_TRACE | NOTRACE_FN )
+#define FN_TIME_BITS ( MACRO_TIME | NOTIME_FN )
 
 ///   DEFINITION OF A MEANING 
 #define GETTYPERESTRICTION(x) ( ((x)>>TYPE_RESTRICTION_SHIFT) & TYPE_RESTRICTION)
@@ -234,7 +238,7 @@ extern char livedata[500];
 extern char englishFolder[500];
 extern char systemFolder[500];
 char* expandAllocation(char* old, char* word,int size);
-char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false);
+char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
 char* AllocateInverseString(char* word, size_t len = 0);
 bool AllocateInverseSlot(char* variable);
 char* RestoreInverseSlot(char* variable,char* slot);

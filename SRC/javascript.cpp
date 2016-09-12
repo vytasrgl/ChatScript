@@ -84,7 +84,7 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 	if (*code && !inited) // code was supplied, handle it if not yet executed
 	{
 		*defstart = '.';
-		char file[MAX_WORD_SIZE];
+		char file[SMALL_WORD_SIZE];
 		ReadCompiledWord(code,file); 
 		if (!stricmp(file,"file")) // read files
 		{

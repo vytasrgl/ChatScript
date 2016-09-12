@@ -224,7 +224,22 @@ void InitUserFiles()
 	userFileSystem.userRead = fread;
 	userFileSystem.userWrite = fwrite;
 	userFileSystem.userDelete = FileDelete;
+	userFileSystem.userDecrypt = NULL;
+	userFileSystem.userEncrypt = NULL;
 	filesystemOverride = NORMALFILES;
+}
+
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file)
+{
+	size_t len = userFileSystem.userRead(buffer,size,count,file);
+	if (userFileSystem.userDecrypt) userFileSystem.userDecrypt(buffer,size,count,file);
+	return len;
+}
+
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file)
+{
+	if (userFileSystem.userEncrypt) userFileSystem.userEncrypt(buffer,size,count,file);
+	return userFileSystem.userWrite(buffer,size,count,file);
 }
 
 void CopyFile2File(const char* newname,const char* oldname, bool automaticNumber)
@@ -964,14 +979,25 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	static unsigned int id = 1000;	if (quitting) return id;
 	logged = true;
 	bool localecho = false;
+	bool noecho = false;
 	if (channel == ECHOSTDTRACELOG)
 	{
 		localecho = true;
 		channel = STDUSERLOG;
 	}
-	if (!userLog && (channel == STDUSERLOG || channel > 1000 || channel == id) && !testOutput) return id;
+	if (channel == STDTIMELOG) {
+		noecho = true;
+		channel = STDUSERLOG;
+	}
+	if (channel == STDTIMETABLOG) {
+		noecho = true;
+		channel = STDTRACETABLOG;
+	}
+	// allow user logging if trace is on.
+	if (!userLog && (channel == STDUSERLOG || channel > 1000 || channel == id) && !testOutput && !trace) return id;
     if (!fmt)  return id; // no format or no buffer to use
-	if ((channel == BUGLOG || channel == SERVERLOG) && server && !serverLog)  return id; // not logging server data
+	if ((channel == SERVERLOG) && server && !serverLog)  return id; // not logging server data
+	if (channel == BUGLOG && server && !serverLog)  return id; // not logging server data
 
 	static char last = 0;
 	static int priordepth = 0;
@@ -1163,7 +1189,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	}
 
 	if (server){} // dont echo  onto server console 
-    else if (((echo||localecho) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) fwrite(logbase,1,bufLen,stdout);
+    else if ((!noecho && (echo||localecho) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) fwrite(logbase,1,bufLen,stdout);
 	bool doserver = true;
 
     FILE* out = NULL;

@@ -285,7 +285,7 @@ restart: // start with user
 SOURCE: 
 	if (!strncmp(ptr,(char*)":source ",8)) 
 	{
-		char file[MAX_WORD_SIZE];
+		char file[SMALL_WORD_SIZE];
 		ReadCompiledWord(ptr+8,file);
 		FILE* source = fopen(file,(char*)"rb");
 		ReadALine(ptr,source,100000 - 100);

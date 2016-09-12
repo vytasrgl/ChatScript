@@ -15,6 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
+#define MAX_LABEL_SIZE 100
+
 #define NO_REJOINDER -1   
 #define BLOCKED_REJOINDER -2 
 
@@ -92,6 +94,7 @@ typedef struct topicBlock
 	char* topicScript;
 	char* topicSourceFileName;
 	unsigned char* topicDebugRule;
+	unsigned char* topicTimingRule;
 	unsigned char* topicUsed;
 	unsigned int* ruleOffset;
 	unsigned int* gambitTag;
@@ -101,6 +104,7 @@ typedef struct topicBlock
 	int topicMaxRule;
 	int topicDebug;
 	int topicNoDebug;
+	int topicTiming;
 	int topicLastGambitted;
 	int topicLastRejoindered;
 	int topicLastRespondered;
@@ -140,6 +144,7 @@ int TopicInUse(int topic);
 int PushTopic(int topic);
 void PopTopic();
 bool CheckTopicTrace();
+bool CheckTopicTime();
 FunctionResult DoOutput(char* buffer,char* rule, unsigned int id);
 unsigned int EstablishTopicTrace();
 char* GetRuleIDFromText(char* ptr, int & id);
@@ -147,6 +152,8 @@ char* GetVerify(char* tag,int & topicid, int &id);//  ~topic.#.#=LABEL<~topic.#.
 void UnwindLayer2Protect();
 void InitKeywords(const char* name,const char* layer,unsigned int build,bool mark=false,bool concept=true);
 extern unsigned int currentTopicDisplay;
+bool AreDebugMarksSet();
+bool AreTimingMarksSet();
 
 // encoding
 void DummyEncode(char* &data);
@@ -178,7 +185,7 @@ bool TopLevelStatement(char* word);
 bool TopLevelGambit(char* word);
 bool Rejoinder(char* word);
 char* GetLabel(char* rule,char* label);
-char* GetPattern(char* rule,char* label,char* pattern); // returns start of output and modified pattern
+char* GetPattern(char* rule,char* label,char* pattern,int limit = MAX_WORD_SIZE); // returns start of output and modified pattern
 char* GetOutputCopy(char* ptr); // returns copy of output only
 bool TopLevelRule(char* word);
 char* GetTopicName(int topic,bool actual = true);
@@ -195,7 +202,9 @@ void AddTopicFlag(int topic, unsigned int flag);
 void RemoveTopicFlag(int topic, unsigned int flag);
 
 void SetTopicDebugMark(int topic,unsigned int val);
+void SetTopicTimingMark(int topic, unsigned int val);
 void SetDebugRuleMark(int topic,unsigned int id);
+void SetTimingRuleMark(int topic, unsigned int id);
 char* ShowRule(char* rule,bool concise = false);
 char* DisplayTopicFlags(int topic);
 void FlushDisabled();

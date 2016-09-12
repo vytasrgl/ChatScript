@@ -471,6 +471,28 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define TRACE_FLOW			0x04000000
 #define TRACE_COVERAGE		0x08000000
 #define TRACE_ALWAYS		0x10000000
+
+// TIME FLAGS
+// simple
+#define TIME_ON				0x00000001	
+
+// mild
+#define TIME_PREPARE		0x00000008
+#define TIME_PATTERN		0x00000020
+
+// deep
+#define TIME_USERFN			0x00000800
+#define TIME_USER			0x00001000
+#define TIME_QUERY			0x00004000
+#define TIME_TCP			0x00008000
+#define TIME_USERCACHE		0x00010000
+#define TIME_SQL			0x00020000
+#define TIME_TOPIC			0x00400000
+#define TIME_JSON			0x01000000
+#define TIME_NOT_THIS_TOPIC 0x02000000
+#define TIME_FLOW			0x04000000
+#define TIME_ALWAYS			0x10000000
+
 // pos tagger result operators
 #define DISCARD 1
 #define KEEP 2

@@ -63,9 +63,11 @@ void InitJSONNames()
 MEANING GetUniqueJsonComposite(char* prefix) 
 {
 	char namebuff[MAX_WORD_SIZE];
+	char* permanence = "";
+	if (jsonPermanent == FACTTRANSIENT) permanence = "t";
 	while (1)
 	{
-		sprintf(namebuff, "%s%s%d", prefix, jsonLabel,objectcnt++);
+		sprintf(namebuff, "%s%s%s%d", prefix,permanence, jsonLabel,objectcnt++);
 		WORDP D = FindWord(namebuff);
 		if (!D) break;
 	}
@@ -477,7 +479,8 @@ FunctionResult JSONOpenCode(char* buffer)
 			Log(STDTRACETABLOG,(char*)"");
 		}
 	}
-
+	clock_t start_time = ElapsedMilliseconds();
+	
 	CURLcode res;
 	struct CurlBufferStruct output;
 	output.buffer = NULL;
@@ -668,11 +671,26 @@ FunctionResult JSONOpenCode(char* buffer)
 			}
 		}
 	}
+	if (timing & TIME_JSON) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Json open time: %d ms for %s %s\r\n", diff,raw_kind,url);
+	}
 	if (res != CURLE_OK) return FAILRULE_BIT;
 	// 300 seconds is the default timeout
 	// CUrl is gone, we have the json data now to convert
 	ChangeDepth(1,(char*)"ParseJson");
 	FunctionResult result = ParseJson(buffer, output.buffer,output.size,false);
+	char x[MAX_WORD_SIZE];
+	if (result == NOPROBLEM_BIT)
+	{
+		ReadCompiledWord(buffer,x);
+		if (*x) // empty json object should not be returned, will not survive on its own
+		{
+			WORDP X = FindWord(x);
+			if (X && X->subjectHead == NULL) 
+				*buffer = 0; 
+		}
+	}
 	ChangeDepth(-1,(char*)"ParseJson");
 	if (trace & TRACE_JSON)
 	{
@@ -707,6 +725,8 @@ FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 	}
 	if (size < 1) return NOPROBLEM_BIT; // nothing to parse
 
+	clock_t start_time = ElapsedMilliseconds();
+
 	jsmn_parser parser;
 	// First run it once to count the tokens
 	jsmn_init(&parser);
@@ -720,6 +740,11 @@ FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 		jsmn_init(&parser);
 		jsmn_parse(&parser, message, size, tokens, jtokenCount);
 		MEANING id = factsPreBuildFromJson(message, tokens,nofail);
+		if (timing & TIME_JSON) {
+			int diff = ElapsedMilliseconds() - start_time;
+			if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Json parse time: %d ms\r\n", diff);
+		}
+
 		if (id != 0) // worked
 		{
 			WORDP D = Meaning2Word(id);
@@ -1118,7 +1143,12 @@ FunctionResult JSONWriteCode(char* buffer) // FACT to text
 	char* arg1 = ARGUMENT(1); // names a fact label
 	WORDP D = FindWord(arg1);
 	if (!D) return FAILRULE_BIT;
+	clock_t start_time = ElapsedMilliseconds();
 	jwrite(buffer,D,true);
+	if (timing & TIME_JSON) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Json write time: %d ms\r\n", diff);
+	}
 	return NOPROBLEM_BIT;
 }
 
@@ -1143,6 +1173,7 @@ FunctionResult JSONLabelCode(char* buffer)
 	if (strchr(arg1,' ') || 
 		strchr(arg1,'\\') || strchr(arg1,'"') || strchr(arg1,'\'') || strchr(arg1,0x7f) || strchr(arg1,'\n') 
 		|| strchr(arg1,'\r') || strchr(arg1,'\t')) return FAILRULE_BIT;	// must be legal unescaped json content and safe CS content
+	if (*arg1 == 't' && !arg1[1]) return FAILRULE_BIT;	//  reserved for CS to mark transient
 	strcpy(jsonLabel, arg1);
 	return NOPROBLEM_BIT;
 }
@@ -1431,19 +1462,22 @@ MEANING jsonValue(char* value, unsigned int& flags)
 		++at;
 	}
 	if (*at  || decimal > 1 || exponent > 1) number = false;
-	if (*value == '"') // explicit string
+	if (!*value || (*value == '"' && value[1] == '"' && strlen(value) == 2)) // treat empty strings as null
+	{
+		flags |= JSON_PRIMITIVE_VALUE;
+		strcpy(value,"null");
+	}
+	else if (*value == '"') // explicit string or just a quote
 	{
 		flags |= JSON_STRING_VALUE;
 		// strip off quotes for CS, replace later in jsonwrite for output
 		// special characters are also escaped later on serialization
 		size_t len = strlen(value);
-		if (value[len-1] == '"') value[--len] = 0;
-		++value; 
-	}
-	else if (!*value)
-	{
-		flags |= JSON_PRIMITIVE_VALUE;
-		strcpy(value,"null");
+		if (len > 2 && value[len-1] == '"') // dont touch " or "" 
+		{
+			value[--len] = 0;
+			++value; 
+		}
 	}
 	else if (!strnicmp(value,(char*)"jo-",3)) flags |= JSON_OBJECT_VALUE;
 	else if (!strnicmp(value,(char*)"ja-",3))  flags |= JSON_ARRAY_VALUE;
@@ -1498,6 +1532,39 @@ FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectkey objec
 
 	MEANING value = jsonValue(val,flags);
 	CreateFact(object, key,value, flags);
+	currentFact = NULL;	 // used up by putting into json
+	return NOPROBLEM_BIT;
+}
+
+FunctionResult JSONVariableAssign(char* word,char* dot,char* value)
+{
+	*dot = 0;
+	char* val = GetUserVariable(word);
+	*dot = '.';
+	if (!*val) return FAILRULE_BIT;
+	WORDP objectname = FindWord(val);
+	if (!objectname) return FAILRULE_BIT;	// doesnt exist?
+	WORDP keyname = StoreWord(dot+1,AS_IS);		// make it exist
+
+	unsigned int flags = JSON_OBJECT_FACT;
+	if (objectname->word[3] == 't') flags |= FACTTRANSIENT; // like jo-t34
+
+	MEANING object = MakeMeaning(objectname);
+	MEANING key = MakeMeaning(keyname);
+
+	// remove old value if it exists, do not allow multiple values
+	FACT* F = GetSubjectNondeadHead(object);
+	while (F)	// already there, delete it
+	{
+		if (F->verb == key)
+		{
+			KillFact(F);
+			break;
+		}
+		F = GetSubjectNondeadNext(F);
+	}
+	MEANING valx = jsonValue(value,flags);
+	CreateFact(object, key,valx, flags);
 	currentFact = NULL;	 // used up by putting into json
 	return NOPROBLEM_BIT;
 }
@@ -1616,17 +1683,11 @@ FunctionResult JSONCreateCode(char* buffer)
 {
 	int index = JSONArgs(); // not needed but allowed
 	char* arg = ARGUMENT(index);
-	if (!stricmp(arg,(char*)"array")) 
-	{
-		MEANING M = GetUniqueJsonComposite((char*)"ja-") ;
-		sprintf(buffer,  "%s", Meaning2Word(M)->word);
-	}
-	else if (!stricmp(arg,(char*)"object"))
-	{
-		MEANING M = GetUniqueJsonComposite((char*)"jo-") ;
-		sprintf(buffer,  "%s", Meaning2Word(M)->word);
-	}
+	MEANING M;
+	if (!stricmp(arg,(char*)"array")) M = GetUniqueJsonComposite((char*)"ja-") ;
+	else if (!stricmp(arg,(char*)"object"))  M = GetUniqueJsonComposite((char*)"jo-") ;
 	else return FAILRULE_BIT;
+	sprintf(buffer, "%s", Meaning2Word(M)->word);
 	return NOPROBLEM_BIT;
 }
 

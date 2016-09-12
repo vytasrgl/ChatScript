@@ -110,7 +110,7 @@ static void DecodeFNRef(char* side)
 {
 	char* at = "";
 	if (side[1] == USERVAR_PREFIX) at = GetUserVariable(side+1); 
-	else if (IsDigit(side[1])) at = callArgumentList[side[1]-'0'+fnVarBase];
+	else if (IsDigit(side[1])) at = callArgumentList[atoi(side+1)+fnVarBase];
 	at = SkipWhitespace(at);
 	strcpy(side,at);
 }
@@ -208,6 +208,7 @@ static bool FindPartialInSentenceTest(char* test, int start,int originalstart,bo
 static bool MatchTest(bool reverse,WORDP D, int start,char* op, char* compare,int quote,bool &uppercasematch,
 	int& actualStart, int& actualEnd, bool exact) // is token found somewhere after start?
 {
+	if (start == INFINITE_MATCH) start = (reverse) ? (wordCount + 1) : 0;
 	uppercasematch = false;
 	if (deeptrace) Log(STDTRACELOG,(char*)" matchtesting:%s ",D->word);
 	while (GetNextSpot(D,start,actualStart,actualEnd,reverse)) // find a spot later where token is in sentence
@@ -289,8 +290,13 @@ static bool FindPhrase(char* word, int start,bool reverse, int & actualStart, in
 	return matched;
 }
 
-bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wildstart,unsigned int& wildcardSelector,
-	int &returnstart,int& returnend,bool &uppercasem,int& firstMatched,int& positionStart,int& positionEnd, bool reverse)
+// rebindable refers to ability to relocate firstmatched on failure
+// returnStart and returnEnd are the range of the match that happened
+// Firstmatched is a real word (not wildcard) where we first bound a match (for rebinding restarts)
+// Startposition is where we start matching from
+// wildcardSelector is current wildcard hunting status
+bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int rebindable,unsigned int wildcardSelector,
+	int &returnstart,int& returnend,bool &uppercasem,int& firstMatched,int positionStart,int positionEnd, bool reverse)
 {//   always STARTS past initial opening thing ( [ {  and ends with closing matching thing
 	int startdepth = globalDepth;
 	memset(&matchedBits[depth],0,sizeof(uint64) * 4);  // nesting level zone of bit matches
@@ -305,10 +311,12 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
     WORDP D;
 	unsigned int oldtrace = trace;
 	bool oldecho = echo;
+	int beginmatch = -1; // for ( ) where did we actually start matching
 	bool success = false;
 	int at;
+	int slidingStart = startposition;
     firstMatched = -1; //   ()  should return spot it started (firstMatched) so caller has ability to bind any wild card before it
-    if (wildstart == 1)  positionStart = INFINITE_MATCH; //   INFINITE_MATCH means we are in initial startup, allows us to match ANYWHERE forward to start
+    if (rebindable == 1)  slidingStart = positionStart = INFINITE_MATCH; //   INFINITE_MATCH means we are in initial startup, allows us to match ANYWHERE forward to start
     positionEnd = startposition; //   we scan starting 1 after this
  	int basicStart = startposition;	//   we must not match real stuff any earlier than here
     char* argumentText = NULL; //   pushed original text from a function arg -- function arg never decodes to name another function arg, we would have expanded it instead
@@ -496,6 +504,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
 				else matched = false;
 				break;
              case '*':
+				if (beginmatch == -1) beginmatch = startposition + 1;
 				if (word[1] == '-') //   backward grab, -1 is word before now -- BUG does not respect unmark system
 				{
 					int at = positionEnd - (word[2] - '0') - 1; // limited to 9 back
@@ -583,7 +592,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
                 {
                     argumentText = ptr; //   transient substitution of text
 
-					if (IsDigit(word[1]))  ptr = callArgumentList[word[1]-'0'+fnVarBase];  // nine argument limit
+					if (IsDigit(word[1]))  ptr = callArgumentList[atoi(word+1)+fnVarBase];  
 					else if (word[1] == USERVAR_PREFIX) ptr = GetUserVariable(word+1); // get value of variable and continue in place
 					else ptr = wildcardCanonicalText[GetWildcardID(word+1)]; // ordinary wildcard substituted in place (bug)?
 					if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s=>",word);
@@ -627,7 +636,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int wil
 						{
 							char* at = "";
 							if (rhs[1] == USERVAR_PREFIX) at = GetUserVariable(rhs+1); 
-							else if (IsDigit(rhs[1])) at = callArgumentList[rhs[1]-'0'+fnVarBase];
+							else if (IsDigit(rhs[1])) at = callArgumentList[atoi(rhs+1)+fnVarBase];
 							at = SkipWhitespace(at);
 							strcpy(rhs,at);
 						}
@@ -722,12 +731,11 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				// we make << also a depth token
 				ptr = nextTokenStart;
 				{
-					int returnStart = positionStart;
-					int returnEnd = positionEnd;
-					int rStart = positionStart;
+					int returnStart = positionStart; // default return for range start
+					int returnEnd = positionEnd;  // default return for range end
+					int rStart = positionStart; // refresh values of start and end for failure to match
 					int rEnd = positionEnd;
 					unsigned int oldselect = wildcardSelector;
-					wildcardSelector = 0; // inside starts fresh on memorization and gaps
 					bool uppercasemat = false;
 					// nest inherits gaps leading to it. memorization requests withheld til he returns
 					int whenmatched = 0;
@@ -742,14 +750,18 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						rEnd = 0;
 						rStart = INFINITE_MATCH; 
 					}
-					int wildstarter = 0; // not allowed to try rebinding start again
-					if (positionStart == INFINITE_MATCH) wildstarter = 1;
-					if (oldselect & WILDGAP) wildstarter = 2; // allowed to gap in
-					matched = Match(ptr,depth+1,positionEnd,type, wildstarter,wildcardSelector,returnStart,
+					int localRebindable = 0; // not allowed to try rebinding start again
+					if (positionStart == INFINITE_MATCH) localRebindable = 1;
+					if (oldselect & WILDGAP) localRebindable = 2; // allowed to gap in
+					matched = Match(ptr,depth+1,positionEnd,type, localRebindable,0,returnStart,
 						returnEnd,uppercasemat,whenmatched,positionStart,positionEnd,reverse); //   subsection ok - it is allowed to set position vars, if ! get used, they dont matter because we fail
 					wildcardSelector = oldselect; // restore outer environment
 					if (matched) 
 					{
+						positionStart = returnStart;
+						if (positionStart == INFINITE_MATCH && returnStart > 0 &&  returnStart != INFINITE_MATCH) positionStart = returnEnd;
+						positionEnd = returnEnd;
+		
 						// copy back marking bits on match
 						if (!(statusBits & NOT_BIT)) // wanted match to happen
 						{
@@ -758,11 +770,9 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 							matchedBits[depth][1] |= matchedBits[olddepth][1];
 							matchedBits[depth][2] |= matchedBits[olddepth][2];
 							matchedBits[depth][3] |= matchedBits[olddepth][3];
+							if (beginmatch == -1) beginmatch = positionStart; // first match in this level
+							if (firstMatched < 0) firstMatched = whenmatched;
 						}
-						if (!(statusBits & NOT_BIT)  && firstMatched < 0) firstMatched = whenmatched;
-						positionStart = returnStart;
-						if (positionStart == INFINITE_MATCH && returnStart > 0 &&  returnStart != INFINITE_MATCH) positionStart = returnEnd;
-						positionEnd = returnEnd;
 						if (*word == '<') // allows thereafter to be anywhere
 						{
 							positionStart = INFINITE_MATCH;
@@ -806,6 +816,18 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						matched = false; //   force match failure
 					}
 					else positionStart = wordCount + 1; //   at top level a close implies > )
+				}
+				if (matched && depth > 0 && *word == ')') // matched all at this level? wont be true if it uses < inside it
+				{
+					if (slidingStart != INFINITE_MATCH) positionStart = (reverse) ? (startposition  - 1) : (startposition  + 1);
+					else
+					{
+						// if ( ) started wild like (* xxx) we need to start from beginning
+						// if ()  started matchable like (tom is) we need to start from starting match
+
+						if (beginmatch != -1) positionStart =  beginmatch; // handle ((* test)) and ((test))
+						else positionStart = (reverse) ? (startposition  - 1) : (startposition  + 1); // probably wrong on this one
+					}
 				}
                 break; 
             case '"':  //   double quoted string
@@ -862,7 +884,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						char* val = "";
 						if (*lhs == USERVAR_PREFIX) val = GetUserVariable(lhs);
 						else if (*lhs == '_') val = (quoted) ? wildcardOriginalText[GetWildcardID(lhs)] : wildcardCanonicalText[GetWildcardID(lhs)];
-						else if (*lhs == '^' && IsDigit(lhs[1])) val = callArgumentList[lhs[1]-'0'+fnVarBase];  // nine argument limit
+						else if (*lhs == '^' && IsDigit(lhs[1])) val = callArgumentList[atoi(lhs+1)+fnVarBase];  
 						else if (*lhs == SYSVAR_PREFIX) val = SystemVariable(lhs,NULL);
 						else val = lhs; // direct word
 
@@ -933,7 +955,11 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					statusBits & QUOTE_BIT,uppercasematch,positionStart,positionEnd);
 				if (!matched || !(wildcardSelector & WILDMEMORIZESPECIFIC)) uppercasematch = false;
 				if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart;
-				if (matched && !(statusBits & NOT_BIT)) MarkMatchLocation(positionStart, positionEnd,depth);
+				if (matched && !(statusBits & NOT_BIT)) 
+				{
+					MarkMatchLocation(positionStart, positionEnd,depth);
+					if (beginmatch == -1) beginmatch = positionStart; // first match in this level
+				}
          } 
 		statusBits &= -1 ^ QUOTE_BIT; // turn off any pending quote
         if (statusBits & NOT_BIT) // flip success to failure maybe
@@ -1111,7 +1137,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				}
 			}
 		}
-		else if (!legalgap && wildstart != 2) // forward requirement
+		else if (!legalgap && rebindable != 2) // forward requirement
 		{
 			if (oldEnd < oldStart && positionStart <= (oldStart + 1)){;} // legal move ahead given matched WITHIN last time -- what does match within mean?
 			else if (positionStart > (oldEnd + 1))  // failed to match position advance of one
@@ -1170,7 +1196,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 			{
 				if (*kind == '<') break;	// we failed << >>
 
-				if (wildstart == 1 && firstMatched > 0 && firstMatched < NORETRY) //   we are top level and have a first matcher, we can try to shift it
+				if (rebindable == 1 && firstMatched > 0 && firstMatched < NORETRY) //   we are top level and have a first matcher, we can try to shift it
 				{
 					if (trace & TRACE_PATTERN  && CheckTopicTrace()) 
 					{
@@ -1229,7 +1255,8 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 	
 	if (success)
 	{
-		if (!reverse) returnstart = (firstMatched > 0) ? firstMatched : positionStart; // if never matched a real token, report 0 as start
+		if (depth > 0 && *word == ')') returnstart = positionStart;		// where we began this level
+		else if (!reverse) returnstart = (firstMatched > 0) ? firstMatched : positionStart; // if never matched a real token, report 0 as start
 		else returnstart = positionStart;
 		returnend = positionEnd;
 	}

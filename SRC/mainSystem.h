@@ -99,6 +99,7 @@ extern uint64 tokenControl;
 extern unsigned int responseControl;
 extern bool moreToCome,moreToComeQuestion;
 extern unsigned int trace;
+extern unsigned int timing;
 extern int regression;
 extern EchoSource echoSource;
 extern bool all;
@@ -174,6 +175,7 @@ int main(int argc, char * argv[]);
 void ProcessOOB(char* buffer);
 void ComputeWhy(char* buffer, int n);
 unsigned int SaveTracedFunctions();
+unsigned int SaveTimedFunctions();
 
 // Input processing
 void MainLoop();

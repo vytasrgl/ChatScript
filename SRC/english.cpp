@@ -282,6 +282,14 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 { // this is not allowed to write properties/systemflags/internalbits if the word is preexisting
 	if (start == 0) start = 1;
 	if (revise) revise = NULL;
+	if (*original == 0) // null string
+	{
+		entry = canonical = StoreWord("null word");
+		sysflags = 0;
+		cansysflags = 0;
+		revise = entry;
+		return 0;
+	}
 
 	if (oobExists)
 	{
@@ -929,7 +937,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 	}
 
-	if (!(properties & ADVERB) && (at == start || !IsUpperCase(*original)) && len > 3) // could it be comparative adverb even if we know the word
+	if (!(properties & ADVERB) && !(properties & (NOUN|VERB)) && (at == start || !IsUpperCase(*original)) && len > 3) // could it be comparative adverb even if we know the word
 	{
 		char lower[MAX_WORD_SIZE];
 		MakeLowerCopy(lower,original);
@@ -1066,6 +1074,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			preknown = true;	// lie. we know it is only an adjective
 		}
 	}
+	char tmpword[MAX_WORD_SIZE];
 
 	// A WORD WE NEVER KNEW - figure it out
 	if (!preknown) // if we didnt know the original word, then even if we've found noun/verb forms of it, we need to test other options
@@ -1106,9 +1115,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 				adjective = GetAdjectiveBase(hyphen+1,true);
 				if (adjective && strcmp(hyphen+1,adjective)) // base is not the same
 				{
-					char word[MAX_WORD_SIZE];
-					sprintf(word,(char*)"%s-%s",original,adjective);
-					canonical = StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE);
+					sprintf(tmpword,(char*)"%s-%s",original,adjective);
+					canonical = StoreWord(tmpword,ADJECTIVE_NORMAL|ADJECTIVE);
 					properties |= adjectiveFormat;
 				}
 			}
@@ -1130,9 +1138,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 				adverb = GetAdverbBase(hyphen+1,true);
 				if (adverb && strcmp(hyphen+1,adverb)) // base is not the same
 				{
-					char word[MAX_WORD_SIZE];
-					sprintf(word,(char*)"%s-%s",original,adverb);
-					canonical = StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE);
+					sprintf(tmpword,(char*)"%s-%s",original,adverb);
+					canonical = StoreWord(tmpword,ADJECTIVE_NORMAL|ADJECTIVE);
 					properties |= adverbFormat;
 				}
 			}
@@ -1165,10 +1172,9 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 					}
 
 					entry = StoreWord(original,properties,sysflags);
-					char word[MAX_WORD_SIZE];
-					strcpy(word,original);
-					strcpy(word+(hyphen+1-original),noun);
-					if (!canonical || !stricmp(canonical->word,original)) canonical = StoreWord(word,NOUN|NOUN_SINGULAR,sysflags);
+					strcpy(tmpword,original);
+					strcpy(tmpword+(hyphen+1-original),noun);
+					if (!canonical || !stricmp(canonical->word,original)) canonical = StoreWord(tmpword,NOUN|NOUN_SINGULAR,sysflags);
 				}
 			}
 			char* verb = GetInfinitive(hyphen+1,true);
@@ -1180,11 +1186,10 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 					properties |=  VERB|verbFormat; // note "self-governed" can be noun or verb and which makes a difference to canonical.
 					if (!canonical) 
 					{
-						char word[MAX_WORD_SIZE];
-						strcpy(word,original);
-						char* h = word + (hyphen-original);
+						strcpy(tmpword,original);
+						char* h = tmpword + (hyphen-original);
 						strcpy(h+1,verb);
-						canonical = StoreWord(word,VERB|VERB_INFINITIVE);
+						canonical = StoreWord(tmpword,VERB|VERB_INFINITIVE);
 					}
 				}
 			}
@@ -1194,18 +1199,17 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 				*hyphen = 0;
 				if (IsDigit(*original) || IsDigit(hyphen[1]) ||  IsNumber(original) || IsNumber(hyphen+1))
 				{
-					char word[MAX_WORD_SIZE];
 					int64 n;
 					n = Convert2Integer((IsNumber(original) || IsDigit(*original)) ? original : (hyphen+1));
 					#ifdef WIN32
-					sprintf(word,(char*)"%I64d",n); 
+					sprintf(tmpword,(char*)"%I64d",n); 
 #else
-					sprintf(word,(char*)"%lld",n); 
+					sprintf(tmpword,(char*)"%lld",n); 
 #endif
 					*hyphen = '-';
 					properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
 					entry = StoreWord(original,properties,TIMEWORD|MODEL_NUMBER);
-					canonical = StoreWord(word,properties,TIMEWORD|MODEL_NUMBER);
+					canonical = StoreWord(tmpword,properties,TIMEWORD|MODEL_NUMBER);
 					sysflags |= MODEL_NUMBER | TIMEWORD;
 					cansysflags |= MODEL_NUMBER|TIMEWORD;
 					return properties;

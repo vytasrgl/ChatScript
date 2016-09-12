@@ -127,7 +127,7 @@ need tracing.
 ## Trace
 
 ### `:trace` _all_
-### `:trace` _full_
+### `:trace` _always_
 ### `:trace` _none_
 The ultimate debugging command dumps a trace of everything that happens during
 execution onto screen and into the log file. After entering this, you type in your chat and
@@ -137,7 +137,7 @@ potentially a large trace. You really want to be more focused in your endeavor.
 But ignoring that, `:trace all` turns on all tracing. It can be suppressed in areas of code
 executing within `^NOTRACE()`. 
 
-`:trace full` ignores ^notrace protection and traces everything. 
+`:trace always` ignores ^notrace protection and traces everything. 
 
 `:trace ignorenotrace` allows you to use the limited traces below, and still
 ignore NOTRACE covered calls.

@@ -227,13 +227,37 @@ char* GetwildcardText(unsigned int i, bool canon)
     return canon ? wildcardCanonicalText[i] : wildcardOriginalText[i];
 }
 
-char* GetUserVariable(const char* word)
+char* GetUserVariable(const char* word,bool nojson)
 {
-	WORDP D = FindWord((char*) word,0,LOWERCASE_LOOKUP);
+	int len = 0;
+	const char* dot = (nojson) ? (const char*) NULL : strchr(word,'.');
+	if (dot) len = dot - word;
+
+	WORDP D = FindWord((char*) word,len,LOWERCASE_LOOKUP);
 	if (!D)  return "";	//   no such variable
 
 	char* item = D->w.userValue;
     if (!item)  return ""; // null value
+	if ( D->word[1] == LOCALVAR_PREFIX && *item == LCLVARDATA_PREFIX && item[1] == LCLVARDATA_PREFIX) 
+		item += 2; // skip `` marker
+
+	if (dot) // json object
+	{
+		if (strncmp(item,"jo-",3)) return "";	// cannot be dotted
+		D = FindWord(item);
+		if (!D) return "";
+		FACT* F = GetSubjectHead(D);
+		WORDP DOT = FindWord(dot+1); // case sensitive find
+		if (!DOT) return ""; // dont recognize such a name
+		MEANING verb = MakeMeaning(DOT);
+		while (F)
+		{
+			if (F->verb == verb) return Meaning2Word(F->object)->word;
+			F = GetSubjectNext(F);
+		}
+		return "";	// not found null value
+	}
+
     return (*item == '&') ? (item + 1) : item; //   value is quoted or not
  }
 
@@ -275,13 +299,12 @@ void PrepareVariableChange(WORDP D,char* word,bool init)
 	}
 }
 
-void SetUserVariable(const char* var, char* word, bool reuse)
+void SetUserVariable(const char* var, char* word)
 {
 	char varname[MAX_WORD_SIZE];
 	MakeLowerCopy(varname,(char*)var);
     WORDP D = StoreWord(varname);				// find or create the var.
 	if (!D) return; // ran out of memory
-
 	// adjust value
 	if (word) // has a nonnull value?
 	{
@@ -294,7 +317,8 @@ void SetUserVariable(const char* var, char* word, bool reuse)
 				word[MAX_USERVAR_SIZE] = 0; // limit on user vars same as match vars
 				ReportBug((char*)"Too long user variable %s size %d assigning %s\r\n",var,len,word);
 			}
-			if (!reuse) word = reuseAllocation(D->w.userValue,word); // we may be restoring old value which doesnt need allocation
+			bool purelocal = (D->word[1] == LOCALVAR_PREFIX);
+			word = AllocateString(word,len,1,false,purelocal); // we may be restoring old value which doesnt need allocation
 			if (!word) return;
 		}
 	}
@@ -332,9 +356,13 @@ void SetUserVariable(const char* var, char* word, bool reuse)
 	if (trace == TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"Var: %s -> %s\r\n",D->word,word);
 	else if (D->internalBits & MACRO_TRACE) 
 	{
-		char ruleLabel[MAX_WORD_SIZE];
-		GetLabel(currentRule,ruleLabel);
-		Log(STDTRACELOG," Var: %s -> %s at topic %s.%d.%d %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),ruleLabel);
+		char pattern[100];
+		char label[MAX_LABEL_SIZE];
+		char* ptr = GetPattern(currentRule,label,pattern,100);  // go to output
+		bool oldecho = echo;
+		echo = true;
+		Log(STDTRACELOG," Var: %s -> %s at topic %s.%d.%d %s %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),label,pattern);
+		echo = oldecho;
 	}
 }
 
@@ -523,7 +551,7 @@ void DumpUserVariables()
 	FreeBuffer();
 }
 
-char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
+char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 {// assign to and from  $var, _var, ^var, @set, and %sysvar
     char op[MAX_WORD_SIZE];
 	currentFact = NULL;					// No assignment can start with a fact lying around
@@ -533,9 +561,31 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	result = NOPROBLEM_BIT;
 	impliedSet = ALREADY_HANDLED;
 	
-	if (*word == '^' && IsDigit(word[1])) // function variable must be changed to actual value. can never replace a function variable binding  --- CHANGED nowadays are allowed to write on the function binding itself (done with ^^ref)
+	if (*word == '^' && word[1] == '^' && IsDigit(word[2])) // indirect function variable assign
 	{
-		strcpy(word,callArgumentList[atoi(word+1) + fnVarBase]); 
+		char* value = callArgumentList[atoi(word+2) + fnVarBase];
+		if (*value == LCLVARDATA_PREFIX && value[1] == LCLVARDATA_PREFIX)//  not allowed to write indirect to caller arg
+		{
+			result = FAILRULE_BIT;
+			return ptr;
+		}
+		strcpy(word,value); // change over to indirect to assign onto
+		strcpy(word,GetUserVariable(word)); // now indirect thru him if we can
+		if (!*word)
+		{
+			result = FAILRULE_BIT;
+			return ptr;
+		}
+	}
+	else if (*word == '^' && IsDigit(word[1])) // indirect function variable assign
+	{
+		char* value = callArgumentList[atoi(word+1) + fnVarBase];
+		if (*value == LCLVARDATA_PREFIX && value[1] == LCLVARDATA_PREFIX)//  not allowed to write indirect to caller arg
+		{
+			result = FAILRULE_BIT;
+			return ptr;
+		}
+		strcpy(word,value); // change over to assign onto caller var
 	}
 
 	if (*word == '@')
@@ -566,6 +616,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	// Get assignment operator
     ptr = ReadCompiledWord(ptr,op); // assignment operator = += -= /= *= %= ^= |= &=
 	impliedOp = *op;
+	if (*op == '=' && impliedSet >= 0) SET_FACTSET_COUNT(impliedSet,0); // force to be empty for @0 = ^first(...)
 	char originalWord1[MAX_WORD_SIZE];
 	ReadCompiledWord(ptr,originalWord1);
 
@@ -574,7 +625,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	if (assignFromWild >= 0 && *word == '_') ptr = ReadCompiledWord(ptr,word1); // assigning from wild to wild. Just copy across
 	else
 	{
-		ptr = ReadCommandArg(ptr,word1,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT); // need to see null assigned -- store raw numbers, not with commas, lest relations break
+		ptr = ReadCommandArg(ptr,word1,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT,MAX_BUFFER_SIZE); // need to see null assigned -- store raw numbers, not with commas, lest relations break
 		if (*word1 == '#') // substitute a constant? user type-in :set command for example
 		{
 			uint64 n = FindValueByName(word1+1);
@@ -603,7 +654,6 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
    	if (!stricmp(word1,(char*)"null")) *word1 = 0;
 
 	//   now sort out who we are assigning into and if its arithmetic or simple assign
-
 	if (*word == '@')
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s(%s) %s %s => ",word,GetUserVariable(word),op,originalWord1);
@@ -694,7 +744,9 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 			if (*op == '=') Log(STDTRACETABLOG,(char*)"%s %s %s(%s) => ",word,op,originalWord1,GetUserVariable(originalWord1));
 			else Log(STDTRACETABLOG,(char*)"%s(%s) %s %s(%s) => ",word,GetUserVariable(word),op,originalWord1,GetUserVariable(originalWord1));
 		}
-		Add2UserVariable(word,word1,op,originalWord1);
+		if (*word == '^') result = FAILRULE_BIT;	// not allowed to increment locally at present...
+		else if (*word == USERVAR_PREFIX && strchr(word,'.') && !nojson) result = FAILRULE_BIT; // illegal on json object insert
+		else Add2UserVariable(word,word1,op,originalWord1);
 	}
 	else if (*word == '_') //   assign to wild card
 	{
@@ -712,7 +764,9 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 	else if (*word == USERVAR_PREFIX) 
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
-		SetUserVariable(word,word1);
+		char* dot = strchr(word,'.');
+		if (!dot || nojson) SetUserVariable(word,word1);
+		else result = JSONVariableAssign(word,dot,word1);// json object insert
 	}
 	else if (*word == '\'' && word[1] == USERVAR_PREFIX) 
 	{
@@ -724,12 +778,12 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result)
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 		SystemVariable(word,word1);
 	}
-	else if (*word == '^' && word[1] == '^') // assign onto function var
+	else if (*word == '^') // overwrite function arg
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s\r\n",word,word1);
-		strcpy(callArgumentList[atoi(word+2)+fnVarBase],word1);
+		callArgumentList[atoi(word+1)+fnVarBase] = AllocateInverseString(word1);
 	}
-	else // if (*word == '^') // cannot touch a function argument, word, or number
+	else // cannot touch a  word, or number
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s illegal\r\n",word);
 		result = FAILRULE_BIT;

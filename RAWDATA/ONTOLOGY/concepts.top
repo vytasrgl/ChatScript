@@ -187,6 +187,7 @@ concept: ~bodily_states (ache asleep awake blind bloated chastity chill chilly c
           unconscious warm warmth )
 concept: ~body_container (casket coffin iron_maiden sarcophagus )
 concept: ~bodyarmor   (armor armour battledress breastplate bullet_proof_vest chain_mail cuirass helmet jousting_mail kevlar kevlar_jacket kevlar_vest linothorax shield )
+
 concept: ~bodyparts (~baseorgans ~blemishmark ~extremities ~headpart ~spiritpart ~torso )
 concept: ~bone (bone carpus coccyx cranium femur fibula humerus metatarsus patella phalanges pubis radius rib sacrum sternum tarsus tibia ulna )
 concept: ~book_genre (art autobiographical autobiography biography chicklit cyberpunk fantasy fiction horror mystery non-fiction non_fiction poetry romance sci-fi science_fantasy science_fiction 
@@ -226,7 +227,7 @@ concept: ~car_brands (Acura Alfa_Romeo American_Motors Aston_Martin Audi Bentley
 concept: ~car_vehicles   (4WD aerial_ladder_truck ambulance amphibious_vehicle armored_car armored_combat_vehicle armored_personnel_carrier armored_vehicle armoured_car 
           armoured_combat_vehicle armoured_personnel_carrier armoured_vehicle army_tank articulated_lorry ATV auto autobus automobile automotive_vehicle~1 bloodmobile bookmobile bus 
           cab Cabriolet Cadillac camper camper_trailer camping_bus car car_transporter caravan cement_truck compact_car convertible coupe cruiser delivery_truck delivery_van dump_truck 
-          electric_automobile electric_car estate_car fire_engine fire_truck flying_car garbage_truck gas_guzzler hatchback hearse hot-rod hot_rod house_trailer Humvee ice-wagon ice_cream_truck 
+          electric_automobile Tesla electric_car estate_car fire_engine fire_truck flying_car garbage_truck gas_guzzler hatchback hearse hot-rod hot_rod house_trailer Humvee ice-wagon ice_cream_truck 
           ice_wagon jaunty_car jeep ladder_truck landrover laundry_truck limo limousine minibus minicab minicar minivan Model_T monster_truck moped motor_bike motor_home motor_scooter 
           motor_vehicle motorbike motorbus motorcar motorcoach motorcross_bike motorcycle motortruck moving_truck moving_van off-roader paddy_wagon passenger_car passenger_van passenger_vehicle 
           police_car police_cruiser police_van police_wagon prowl_car race_car racing_car rally_car reconnaissance_vehicle recreational_vehicle secondhand_car sedan self-propelled_vehicle 
@@ -360,8 +361,8 @@ concept: ~datatype   (bool boolean character character_string double float int l
 concept: ~dating_friend PROBABLE_NOUN (~girlfriend beau boyfriend ex-boyfriend ex-girlfriend ex-partner fiance fiancee fuck_buddy fuckbuddy gigolo girlfriend lover paramour prostitute 
           swain sweetheart trollop )
 concept: ~day_care_center (babysitting child_care day_care_center )
-concept: ~dayname (Friday Fri Fr fri fr Monday Mon Mo mon mo Saturday sat sa Sat Sa Sunday sun su Sun Su Thursday thu thur th Thu Thur Th Tuesday tue tues tu Tue Tues Tu Wednesday wed we Wed We)
-concept: ~dayindex DUPLICATE (5 5 5 5 5 1 1 1 1 1 6 6 6 6 6 0 0 0 0 0 4 4 4 4 4 4 4 2 2 2 2 2 2 2 3 3 3 3 3)
+concept: ~dayname (Friday Fri Fr fri fr Monday Mon Mo mon mo Saturday sat sa Sat Sa Sunday sun su Sun Su Thursday thu thur th Thu Thur Th Tuesday tue tues tu Tue Tues Tu Wednesday wed Wed)
+concept: ~dayindex DUPLICATE (5 5 5 5 5 1 1 1 1 1 6 6 6 6 6 0 0 0 0 0 4 4 4 4 4 4 4 2 2 2 2 2 2 2 3 3 3 )
 concept: ~decorations   (~cosmetics ~jewelry_items bracelet Christmas_tree_ball Christmas_tree_light cologne crayon decoration dye earring eyeliner eyeshadow fragrance 
           glitter gloss lacquer lipstick mascara nail_polish nose_ring ornament paint perfume plaster popcorn_string ring scent stain tinsel varnish wallpaper )
 concept: ~defender   PROBABLE_NOUN (angel defender guardian parent protector )
@@ -417,7 +418,8 @@ concept: ~dunno (~emoignorance not_know )
 concept: ~durability_words (biodegradable delicate durable eternal forever fragile heavy-duty heavy_duty lifelong light-duty light_duty long-lasting perpetual sensitive tough transient )
 concept: ~earthmedia_words (above_ground aerial buoyant buried floating flying marine maritime oceanic submerged submersible submersive terrestrial )
 concept: ~eatable (~animals ~nutrient )
-concept: ~eatery (brewpub cafe cafeteria diner eatery kitchen pub restaurant tavern )
+concept: ~eatery (brewpub cafe cafeteria diner eatery kitchen pub restaurant tavern 
+			bar  brasserie  McDonalds  Starbucks  "Burger King" "Pizza Hut")
 concept: ~economic_troubles (bubble crash crisis decline deteriorate disaster downturn drop fall recession slide slump woe )
 concept: ~electronic_furniture   (CD_player computer gramophone hard_drive keyboard monitor mouse phonograph piano player_piano radio robot stereo television TV wireless_set )
 concept: ~electronic_items   (~electronic_furniture adding_machine boombox calculator camcorder computer digital_camera dryer electronics fax_machine freezer fridge 
@@ -478,7 +480,7 @@ concept: ~fabric_store (~clothing_material fabric_store )
 concept: ~fairytale_characters PROBABLE_NOUN (dragon frog king knight prince princess queen wizard )
 concept: ~fake_religious_sect (Christian_Science Christian_Scientist Freemason Freemasonry Moonie Satanism Satanist Scientologist Scientology Unification_Church Wicca Wiccan Witch Witchcraft )
 concept: ~family_adult   PROBABLE_NOUN ANIMATE_BEING (~family_adult_female ~family_adult_generic ~family_adult_male )
-concept: ~family_adult_female   PROBABLE_NOUN ANIMATE_BEING (~mother aunt daughter-in-law ex-wife fiancee girlfriend godmother gran grandma grandmom grandmother granny 
+concept: ~family_adult_female   PROBABLE_NOUN ANIMATE_BEING (~mother aunt aunty daughter-in-law ex-wife fiancee girlfriend godmother gran grandma grandmom grandmother granny 
           matriarch mistress mother-in-law partner spinster step-mother stepmother widow wife )
 concept: ~family_adult_generic NOUN_HUMAN PROBABLE_NOUN ANIMATE_BEING (ancestor clan cousin descendant descendent elders folks grandparent heir parent partner spouse 
           stepparent tribe )
@@ -1908,7 +1910,7 @@ concept: ~timelater (after afterward ere follow from hence later next post since
 concept: ~timenopreposition (all any every last next this )
 concept: ~tobacco   (nicotine tobacco~1 )
 concept: ~tool (tool~2 )
-concept: ~torso (abdomen back belly body bottom breast buttock chest genitals heart lap penis scrotum shoulder skeleton spine stomach testicle tummy tush vagina waist )
+concept: ~torso (abdomen back belly body bottom breast buttock bum chest genitals heart lap penis scrotum shoulder skeleton spine stomach testicle tummy tush vagina waist )
 concept: ~tow_service (road_service tow tow_service )
 concept: ~toy (~board_games ~game magnet playdough puzzle stuffed_animal swingset toy toy~3 trampoline )
 concept: ~toy_store (~game ~toy balloon bicycle board_game computer_game doll electric_train model_airplane model_train paint_set rubber_ball stuffed_animal teddy_bear toy_store tricycle )

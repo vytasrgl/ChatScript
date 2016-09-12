@@ -91,6 +91,8 @@ typedef size_t (*UserFileRead)(void* buffer,size_t size, size_t count, FILE* fil
 typedef size_t (*UserFileWrite)(const void* buffer,size_t size, size_t count, FILE* file);
 typedef int (*UserFileSize)(FILE* file, char* buffer, size_t allowedSize);
 typedef void (*UserFileDelete)(const char* name);
+typedef size_t (*UserFileDecrypt)(void* buffer,size_t size, size_t count, FILE* file);
+typedef size_t (*UserFileEncrypt)(const void* buffer,size_t size, size_t count, FILE* file);
 
 typedef struct USERFILESYSTEM //  how to access user topic data
 {
@@ -100,13 +102,16 @@ typedef struct USERFILESYSTEM //  how to access user topic data
 	UserFileRead userRead;
 	UserFileWrite userWrite;
 	UserFileDelete userDelete;
+	UserFileEncrypt userEncrypt;
+	UserFileDecrypt userDecrypt;
 
 } USERFILESYSTEM;
 
 extern USERFILESYSTEM userFileSystem;
 void InitUserFiles();
 void WalkDirectory(char* directory,FILEWALK function, uint64 flags);
-
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file);
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file);
 char* GetUserPath(char* name);
 
 // TIME
@@ -133,11 +138,13 @@ unsigned int GetFutureSeconds(unsigned int seconds);
 #define STDDEBUGLOG 2
 #define ECHOSTDTRACELOG 3
 #define STDTRACELOG 4
+#define STDTIMELOG 5
 
 #define BADSCRIPTLOG 9
 #define BUGLOG 10
 #define STDTRACETABLOG 101
 #define STDTRACEATTNLOG 201
+#define STDTIMETABLOG 301
 
 extern bool echo;
 extern bool showDepth;

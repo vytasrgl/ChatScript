@@ -749,7 +749,7 @@ char* RestoreInverseSlot(char* variable,char* slot)
 	return slot + sizeof(char*);
 }
 
-char* AllocateString(char* word,size_t len,int bytes,bool clear) // BYTES means size of unit
+char* AllocateString(char* word,size_t len,int bytes,bool clear, bool purelocal) // BYTES means size of unit
 { //   string allocation moves BACKWARDS from end of dictionary space (as do meanings)
 /* Allocations during setup as :
 2 when setting up cs using current dictionary and livedata for extensions (plurals, comparatives, tenses, canonicals) 
@@ -771,6 +771,7 @@ Allocations happen during volley processing as
 	len *= bytes; // this many units of this size
 	if (len == 0 && word) len = strlen(word);
 	if (word) ++len;	// null terminate string
+	if (purelocal) len += 2;	// for `` prefix
 	size_t allocationSize = len;
 	if (bytes == 1 && dictionaryLocked && !compiling && !loading) 
 	{
@@ -833,6 +834,12 @@ Allocations happen during volley processing as
     }
     if (word) 
 	{
+		if (purelocal) // never use clear true with this
+		{
+			*newword++ = LCLVARDATA_PREFIX;
+			*newword++ = LCLVARDATA_PREFIX;
+			len -= 2;
+		}
 		memcpy(newword,word,--len);
 		newword[len] = 0;
 	}
@@ -2447,7 +2454,7 @@ void NoteLanguage()
 
 void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,bool filegiven)
 {
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	if (layer) sprintf(file,"TOPIC/%s",name);
 	else if (filegiven) strcpy(file,name);
 	else sprintf(file,(char*)"%s/%s",livedata,name);
@@ -2542,7 +2549,7 @@ void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,b
 
 void ReadWordsOf(char* name,uint64 mark)
 {
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	sprintf(file,(char*)"%s/%s",livedata,name);
     char word[MAX_WORD_SIZE];
     FILE* in = FopenStaticReadOnly(file); // LOWERCASE TITLES LIVEDATA scriptcompile nonwords allowed OR lowercase title words
@@ -2591,7 +2598,7 @@ void ReadCanonicals(const char* file,const char* layer)
 
 void ReadAbbreviations(char* name)
 {
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	sprintf(file,(char*)"%s/%s",livedata,name);
     char word[MAX_WORD_SIZE];
     FILE* in = FopenStaticReadOnly(file); // LIVEDATA abbreviations
@@ -3186,7 +3193,8 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 #endif
 
 	if (D->internalBits & QUERY_KIND) Log(STDTRACELOG,(char*)"query ");
-	if (D->internalBits & MACRO_TRACE ) Log(STDTRACELOG,(char*)"being-traced ");
+	if (D->internalBits & FUNCTION_BITS  && D->internalBits & MACRO_TRACE ) Log(STDTRACELOG,(char*)"being-traced ");
+	if (D->internalBits & FUNCTION_BITS  && D->internalBits & MACRO_TIME) Log(STDTRACELOG, (char*)"being-timed ");
 	if (D->internalBits & CONCEPT  && !(D->internalBits & TOPIC)) Log(STDTRACELOG,(char*)"concept ");
 	if (D->internalBits & TOPIC) Log(STDTRACELOG,(char*)"topic ");
 	if (D->internalBits & BUILD0) Log(STDTRACELOG,(char*)"build0 ");

@@ -2,6 +2,54 @@
 
 extern int ignoreRule;
 
+
+bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
+{
+	if (overrideAuthorization) return true; // commanded from script
+
+	char buffer[MAX_WORD_SIZE];
+	if ( authorizations == (char*)1) // command line does not authorize
+	{
+		if (in) FClose(in);
+		return false;
+	}
+
+	//  check command line params
+	char* at = authorizations;
+	char word[MAX_WORD_SIZE];
+	if (at) // command line given
+	{
+		if (*at == '"') ++at;
+		while (*at)
+		{
+			at = ReadCompiledWord(at,word);
+			size_t len = strlen(word);
+			if (word[len-1] == '"') word[len-1] = 0;
+			if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
+			{
+				if (in) FClose(in);
+				return true;
+			}
+		}
+	}
+
+	if (!in) return (authorizations) ? false : true;			//   no restriction file
+
+	bool result = false;
+	while (ReadALine(buffer,in) >= 0 )
+    {
+		ReadCompiledWord(buffer,word);
+		if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
+		{ 
+			result = true;
+			break;
+		}
+	}
+	FClose(in);
+	return result;
+}
+
+
 #ifndef DISCARDTESTING
 
 static int lineLimit = 0; // in abstract report lines that are longer than this...
@@ -14,7 +62,7 @@ static char* abstractBuffer;
 static int longLines;
 static uint64 verifyToken;
 static bool isTracing = false;
-static bool foundATrace = false;
+static bool isTiming = false;
 
 static WORDP dictUsedG;
 static FACT* factUsedG;
@@ -34,6 +82,7 @@ static int trials;
 static bool fromScript = false;
 
 static void ShowTrace(unsigned int bits, bool original);
+static void ShowTiming(unsigned int bits, bool original);
 
 // prototypes
 static bool DumpOne(WORDP S,int all,int depth,bool shown);
@@ -401,7 +450,7 @@ static void MemorizeRegress(char* input)
 	char outputfile[MAX_WORD_SIZE];
 	ReadCompiledWord(input,outputfile); // file to write
 	FILE* in = FopenReadNormal(word); // source full name given
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	if (!in)
 	{
 		char* txt = strstr(word,(char*)".txt");
@@ -1151,7 +1200,6 @@ static void C_TestPattern(char* input)
 	PrepareSentence(ptr,true,true);	
 	PrepassSentence(prepassTopic);
 
-	unsigned int wildcardSelector = 0;
 	wildcardIndex = 0;
 	int junk1;
 	int oldtrace = trace;
@@ -1159,8 +1207,7 @@ static void C_TestPattern(char* input)
 	bool uppercasem = false;
 	int whenmatched = 0;
 	SetContext(true);
-	int positionStart,positionEnd;
-	bool result =  Match(data+2,0,0,(char*)"(",1,wildcardSelector,junk1,junk1,uppercasem,whenmatched,positionStart,positionEnd);
+	bool result =  Match(data+2,0,0,(char*)"(",1,0,junk1,junk1,uppercasem,whenmatched,0,0);
 	if (clearUnmarks) // remove transient global disables.
 	{
 		clearUnmarks = false;
@@ -1543,6 +1590,8 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 			{
 				data = rejoinderTop;
 				id = rejoinderTopID;
+				output = " "; // rejoinders block each other whether or not they generate output,
+				// except BUG that sequence does not.
 				while (data < rule)
 				{
 					if (*data == *rule)// all rules of this same level and before us
@@ -1952,7 +2001,7 @@ static void C_PennMatch(char* file)
 	bool ambig = false;
 	bool showUsed = false;
 	unsigned int ambigLocation = 0;
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	strcpy(filename,(char*)"REGRESS/PENNTAGS/penn.txt");
 	clock_t startTime = ElapsedMilliseconds(); 
 	int sentenceLengthLimit = 0;
@@ -2659,7 +2708,7 @@ static void C_PennNoun(char* file)
 {
 	char word[MAX_WORD_SIZE];
 	file = ReadCompiledWord(file,word);
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	if (*word) sprintf(filename,(char*)"REGRESS/PENNTAGS/%s.txt",word);
 	else strcpy(filename,(char*)"REGRESS/PENNTAGS/penn.txt");  // REGRESS/PENTAGS
 	FILE* in = FopenReadOnly(filename);
@@ -3049,7 +3098,7 @@ static bool FlushEmbedded(char* & ptr,char* ref,char* notref,unsigned int &contr
 
 static void C_WikiText(char* ptr)
 { // fromfile directory, size
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	char directoryout[MAX_WORD_SIZE];
 	int size = 100000;
 	bool split = false;
@@ -3841,7 +3890,7 @@ static void C_Build(char* input)
 	strcpy(oldbot,computerID);
 	strcpy(oldbotspace,computerIDwSpace);
 	strcpy(oldloginname,loginName);
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	char control[MAX_WORD_SIZE];
 	input = ReadCompiledWord(input,file);
 	input = SkipWhitespace(input);
@@ -4818,15 +4867,43 @@ static void C_Queries(char* input)
 
 static void TracedFunction(WORDP D,uint64 junk) // functions and variables
 {
-	if (D->internalBits & MACRO_TRACE) Log(STDTRACELOG,(char*)"%s\r\n",D->word);
+	if (D->internalBits & FUNCTION_BITS) {
+		if ((D->internalBits & FN_TRACE_BITS) == MACRO_TRACE) Log(ECHOSTDTRACELOG, (char*)"%s: on\r\n", D->word);
+		if ((D->internalBits & FN_TRACE_BITS) == (MACRO_TRACE | NOTRACE_FN)) Log(ECHOSTDTRACELOG, (char*)"%s: on off\r\n", D->word);
+		if ((D->internalBits & FN_TRACE_BITS) == NOTRACE_FN) Log(ECHOSTDTRACELOG, (char*)"%s: off\r\n", D->word);
+	}
 }
 
 static void ClearTracedFunction(WORDP D,uint64 junk)
 {
-	if (D->internalBits & MACRO_TRACE) D->internalBits ^= MACRO_TRACE;
+	if (D->internalBits & FUNCTION_BITS && D->internalBits & MACRO_TRACE) D->internalBits ^= MACRO_TRACE;
 }
 
-static void TracedTopic(WORDP D,uint64 junk)
+static void C_TracedFunctions(char* input)
+{
+	WalkDictionary(TracedFunction, 0);
+}
+
+static void TimedFunction(WORDP D, uint64 junk) // functions
+{
+	if (D->internalBits & FUNCTION_BITS) {
+		if ((D->internalBits & FN_TIME_BITS) == MACRO_TIME) Log(ECHOSTDTRACELOG, (char*)"%s: on\r\n", D->word);
+		if ((D->internalBits & FN_TIME_BITS) == (MACRO_TIME | NOTIME_FN)) Log(ECHOSTDTRACELOG, (char*)"%s: on off\r\n", D->word);
+		if ((D->internalBits & FN_TIME_BITS) == NOTIME_FN) Log(ECHOSTDTRACELOG, (char*)"%s: off\r\n", D->word);
+	}
+}
+
+static void ClearTimedFunction(WORDP D, uint64 junk)
+{
+	if (D->internalBits & FUNCTION_BITS && D->internalBits & MACRO_TIME) D->internalBits ^= MACRO_TIME;
+}
+
+static void C_TimedFunctions(char* input)
+{
+	WalkDictionary(TimedFunction, 0);
+}
+
+static void TracedTopic(WORDP D,uint64 style)
 {
 	if (D->internalBits & TOPIC) 
 	{
@@ -4834,17 +4911,18 @@ static void TracedTopic(WORDP D,uint64 junk)
 		topicBlock* block = TI(topic);
 		if (block->topicDebug) 
 		{
-			Log(STDTRACELOG,(char*)"%s %d\r\n",D->word,block->topicDebug);
+			Log(ECHOSTDTRACELOG,(char*)"%s:",D->word);
+			if (style == 0) Log(ECHOSTDTRACELOG, (char*)"  0x%x", block->topicDebug);
+			Log(ECHOSTDTRACELOG, (char*)"\r\n");
+			if (style == 1) ShowTrace(block->topicDebug, false);
 			isTracing = true;
 		}
-		if (D->internalBits & NOTRACE_TOPIC) 
-			Log(STDTRACELOG,(char*)"Not tracing %s\r\n",D->word);
+		if (D->internalBits & NOTRACE_TOPIC) {
+			Log(ECHOSTDTRACELOG, (char*)"%s:", D->word);
+			if (style == 1) Log(ECHOSTDTRACELOG, (char*)"\r\n");
+			Log(ECHOSTDTRACELOG, (char*)"  Not tracing\r\n");
+		}
 	}
-}
-
-static void C_TracedFunctions(char* input) 
-{
-	WalkDictionary(TracedFunction,0);
 }
 
 static void ClearTracedTopic(WORDP D,uint64 junk)
@@ -4860,6 +4938,43 @@ static void ClearTracedTopic(WORDP D,uint64 junk)
 static void C_TracedTopics(char* input)
 {
 	WalkDictionary(TracedTopic,0);
+}
+
+static void TimedTopic(WORDP D, uint64 style)
+{
+	if (D->internalBits & TOPIC)
+	{
+		int topic = FindTopicIDByName(D->word);
+		topicBlock* block = TI(topic);
+		if (block->topicTiming)
+		{
+			Log(ECHOSTDTRACELOG, (char*)"%s:", D->word);
+			if (style == 0) Log(ECHOSTDTRACELOG, (char*)"  0x%x", block->topicTiming);
+			Log(ECHOSTDTRACELOG, (char*)"\r\n");
+			if (style == 1) ShowTiming(block->topicTiming, false);
+			isTiming = true;
+		}
+		if (D->internalBits & NOTIME_TOPIC) {
+			Log(ECHOSTDTRACELOG, (char*)"%s:", D->word);
+			if (style == 1) Log(ECHOSTDTRACELOG, (char*)"\r\n");
+			Log(ECHOSTDTRACELOG, (char*)"  Not timing\r\n");
+		}
+	}
+}
+
+static void ClearTimedTopic(WORDP D, uint64 junk)
+{
+	if (D->internalBits & TOPIC)
+	{
+		int topic = FindTopicIDByName(D->word);
+		topicBlock* block = TI(topic);
+		block->topicTiming = 0;
+	}
+}
+
+static void C_TimedTopics(char* input)
+{
+	WalkDictionary(TimedTopic,0);
 }
 
 void C_MemStats(char* input)
@@ -5926,7 +6041,7 @@ static void C_Silent(char* input)
 
 static void C_Retry(char* input)
 {
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	if (server && !serverRetryOK) return;
 
 	char word[MAX_WORD_SIZE];
@@ -6127,22 +6242,14 @@ static void C_Show(char* input)
 
 static void TraceTopicFunction(WORDP D, uint64 data)
 {
-	
-	if (D->internalBits & TOPIC && D->word[0] ==  '~')
-	{
-		topicBlock* block = TI(D->x.topicIndex);
-		if (block->topicDebug) 
-		{
-			Log(STDTRACELOG,(char*)"%s: \r\n",D->word);
-			ShowTrace(block->topicDebug,false);
-		}
-	}
-	else if (D->word[0] == '^' && (D->internalBits & (MACRO_TRACE|FN_NO_TRACE)))
-	{
-		if ((D->internalBits & FN_TRACE_BITS) == MACRO_TRACE) Log(STDTRACELOG,(char*)"%s: on\r\n",D->word);
-		if ((D->internalBits & FN_TRACE_BITS) ==  (MACRO_TRACE|FN_NO_TRACE)) Log(STDTRACELOG,(char*)"%s: on off\r\n",D->word);
-		if ((D->internalBits & FN_TRACE_BITS) ==  FN_NO_TRACE) Log(STDTRACELOG,(char*)"%s: off\r\n",D->word);
-	}
+	if (D->internalBits & TOPIC && D->word[0] ==  '~') TracedTopic(D, data);
+	else if (D->word[0] == '^' && (D->internalBits & FN_TRACE_BITS)) TracedFunction(D, data);
+}
+
+static void TimingTopicFunction(WORDP D, uint64 data)
+{
+	if (D->internalBits & TOPIC && D->word[0] == '~') TimedTopic(D, data);
+	else if (D->word[0] == '^' && (D->internalBits & FN_TIME_BITS)) TimedFunction(D, data);
 }
 
 static void ShowTrace(unsigned int bits, bool original)
@@ -6150,32 +6257,32 @@ static void ShowTrace(unsigned int bits, bool original)
 	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH|TRACE_FLOW);
 	unsigned int mild = (TRACE_OUTPUT|TRACE_PREPARE|TRACE_PATTERN);
 	unsigned int deep = (TRACE_ALWAYS|TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
-	if (!original) Log(STDTRACELOG,(char*)"  ");
 
 	// general
 	if (bits & general) 
 	{
+		if (!original) Log(STDTRACELOG, (char*)"  ");
 		Log(STDTRACELOG,(char*)"Enabled simple: ");
 		if (bits & TRACE_MATCH) Log(STDTRACELOG,(char*)"match ");
 		if (bits & TRACE_FLOW) Log(STDTRACELOG,(char*)"ruleflow ");
 		if (bits & TRACE_VARIABLE) Log(STDTRACELOG,(char*)"variables ");
 		Log(STDTRACELOG,(char*)"\r\n");
-		if (!original) Log(STDTRACELOG,(char*)"  ");
 	}
 
 	// mild detail
 	if (bits & mild) 
 	{
+		if (!original) Log(STDTRACELOG, (char*)"  ");
 		Log(STDTRACELOG,(char*)"Enabled mild detail: ");
 		if (bits & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"output ");
 		if (bits & TRACE_PREPARE) Log(STDTRACELOG,(char*)"prepare ");
 		if (bits & TRACE_PATTERN) Log(STDTRACELOG,(char*)"pattern ");
 		Log(STDTRACELOG,(char*)"\r\n");
-		if (!original) Log(STDTRACELOG,(char*)"  ");
 	}
 	// deep detail
 	if (bits & deep) 
 	{
+		if (!original) Log(STDTRACELOG, (char*)"  ");
 		Log(STDTRACELOG,(char*)"Enabled deep detail: ");
 		if (bits & TRACE_FACT) Log(STDTRACELOG,(char*)"fact ");
 		if (bits & TRACE_INFER) Log(STDTRACELOG,(char*)"infer ");
@@ -6195,33 +6302,33 @@ static void ShowTrace(unsigned int bits, bool original)
 		if (bits & TRACE_TOPIC) Log(STDTRACELOG,(char*)"topic ");
 		if (bits & TRACE_ALWAYS) Log(STDTRACELOG,(char*)"always ");
 		Log(STDTRACELOG,(char*)"\r\n");
-		if (!original) Log(STDTRACELOG,(char*)"  ");
 	}
 
 	// general
 	if ((bits & general) != general) 
 	{
+		if (!original) Log(STDTRACELOG, (char*)"  ");
 		Log(STDTRACELOG,(char*)"Disabled simple: ");
 		if (!(bits & TRACE_MATCH)) Log(STDTRACELOG,(char*)"match ");
 		if (!(bits & TRACE_VARIABLE)) Log(STDTRACELOG,(char*)"variables ");
 		Log(STDTRACELOG,(char*)"\r\n");
-		if (!original) Log(STDTRACELOG,(char*)"  ");
 	}
 
 	// mild detail
 	if ((bits & mild) != mild) 
 	{
+		if (!original) Log(STDTRACELOG, (char*)"  ");
 		Log(STDTRACELOG,(char*)"Disabled mild detail: ");
 		if (!(bits & TRACE_OUTPUT)) Log(STDTRACELOG,(char*)"output ");
 		if (!(bits & TRACE_PREPARE)) Log(STDTRACELOG,(char*)"prepare ");
 		if (!(bits & TRACE_PATTERN)) Log(STDTRACELOG,(char*)"pattern ");
 		Log(STDTRACELOG,(char*)"\r\n");
-		if (!original) Log(STDTRACELOG,(char*)"  ");
 	}
 
 	// deep detail
 	if ((bits & deep) != deep)
 	{
+		if (!original) Log(STDTRACELOG, (char*)"  ");
 		Log(STDTRACELOG,(char*)"Disabled deep detail: ");
 		if (!(bits & TRACE_FACT)) Log(STDTRACELOG,(char*)"fact ");
 		if (!(bits & TRACE_INFER)) Log(STDTRACELOG,(char*)"infer ");
@@ -6241,9 +6348,87 @@ static void ShowTrace(unsigned int bits, bool original)
 		if (!(bits & TRACE_TOPIC)) Log(STDTRACELOG,(char*)"topic ");
 		if (!(bits & TRACE_ALWAYS)) Log(STDTRACELOG,(char*)"always ");
 		Log(STDTRACELOG,(char*)"\r\n");
-		if (!original) Log(STDTRACELOG,(char*)"  ");
 	}
-	if (original) WalkDictionary(TraceTopicFunction);
+	if (original) WalkDictionary(TraceTopicFunction,1);
+}
+
+static void ShowTiming(unsigned int bits, bool original)
+{
+	unsigned int general = TRACE_FLOW;
+	unsigned int mild = (TRACE_PREPARE | TRACE_PATTERN);
+	unsigned int deep = (TRACE_ALWAYS | TRACE_JSON | TRACE_TOPIC | TRACE_QUERY | TRACE_USER | TRACE_TCP | TRACE_USERFN | TRACE_USERCACHE | TRACE_SQL);
+
+	// general
+	if (bits & general)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Enabled simple: ");
+		if (bits & TRACE_FLOW) Log(ECHOSTDTRACELOG, (char*)"ruleflow ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+
+	// mild detail
+	if (bits & mild)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Enabled mild detail: ");
+		if (bits & TRACE_PREPARE) Log(ECHOSTDTRACELOG, (char*)"prepare ");
+		if (bits & TRACE_PATTERN) Log(ECHOSTDTRACELOG, (char*)"pattern ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+	// deep detail
+	if (bits & deep)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Enabled deep detail: ");
+		if (bits & TRACE_QUERY) Log(ECHOSTDTRACELOG, (char*)"query ");
+		if (bits & TRACE_USER) Log(ECHOSTDTRACELOG, (char*)"user ");
+		if (bits & TRACE_TCP) Log(ECHOSTDTRACELOG, (char*)"tcp ");
+		if (bits & TRACE_JSON) Log(ECHOSTDTRACELOG, (char*)"json ");
+		if (bits & TRACE_USERFN) Log(ECHOSTDTRACELOG, (char*)"macro ");
+		if (bits & TRACE_USERCACHE) Log(ECHOSTDTRACELOG, (char*)"usercache ");
+		if (bits & TRACE_SQL) Log(ECHOSTDTRACELOG, (char*)"sql ");
+		if (bits & TRACE_TOPIC) Log(ECHOSTDTRACELOG, (char*)"topic ");
+		if (bits & TRACE_ALWAYS) Log(ECHOSTDTRACELOG, (char*)"always ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+
+	// general
+	if ((bits & general) != general)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Disabled simple: ");
+		if (!(bits & TRACE_FLOW)) Log(ECHOSTDTRACELOG, (char*)"ruleflow ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+
+	// mild detail
+	if ((bits & mild) != mild)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Disabled mild detail: ");
+		if (!(bits & TRACE_PREPARE)) Log(ECHOSTDTRACELOG, (char*)"prepare ");
+		if (!(bits & TRACE_PATTERN)) Log(ECHOSTDTRACELOG, (char*)"pattern ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+
+	// deep detail
+	if ((bits & deep) != deep)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Disabled deep detail: ");
+		if (!(bits & TRACE_QUERY)) Log(ECHOSTDTRACELOG, (char*)"query ");
+		if (!(bits & TRACE_USER)) Log(ECHOSTDTRACELOG, (char*)"user ");
+		if (!(bits & TRACE_TCP)) Log(ECHOSTDTRACELOG, (char*)"tcp ");
+		if (!(bits & TRACE_JSON)) Log(ECHOSTDTRACELOG, (char*)"json ");
+		if (!(bits & TRACE_USERFN)) Log(ECHOSTDTRACELOG, (char*)"macro ");
+		if (!(bits & TRACE_USERCACHE)) Log(ECHOSTDTRACELOG, (char*)"usercache ");
+		if (!(bits & TRACE_SQL)) Log(ECHOSTDTRACELOG, (char*)"sql ");
+		if (!(bits & TRACE_TOPIC)) Log(ECHOSTDTRACELOG, (char*)"topic ");
+		if (!(bits & TRACE_ALWAYS)) Log(ECHOSTDTRACELOG, (char*)"always ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+	if (original) WalkDictionary(TimingTopicFunction,1);
 }
 
 static void C_Say(char* input)
@@ -6252,35 +6437,54 @@ static void C_Say(char* input)
 	wasCommand = OUTPUTASGIVEN;
 }
 
-static void C_NoTrace(char* input)
+static void NoTraceTime(char* input, unsigned int topicflag, unsigned int macroflag, char* cmd)
 {
 	char word[MAX_WORD_SIZE];
-	unsigned int val = NOTRACE_TOPIC;
+	unsigned int mode = 1;
 	while (input) 
 	{
-		input = ReadCompiledWord(input,word); // if using trace in a table, use closer "end" if you are using named flags
+		input = ReadCompiledWord(input,word); // if using in a table, use closer "end" if you are using named flags
 		if (!*word) break;
 		input = SkipWhitespace(input);
-		if (*word != '~') 
+		if (*word != '~' && *word != '^')
 		{
-			if (!stricmp(word,(char*)"on")) val = NOTRACE_TOPIC;
-			else if (!stricmp(word,(char*)"off")) val = 0;
-			else Log(STDTRACELOG,(char*)"Bad topic notrace request %s\r\n",word);
+			if (!stricmp(word, (char*)"on")) mode = 1;
+			else if (!stricmp(word,(char*)"off")) mode = 0;
+			else Log(STDTRACELOG,(char*)"Bad :%s request %s\r\n",cmd,word);
 		}
 		else
 		{
-			WORDP T = StoreWord(word);
-			if (val) T->internalBits |= val;
-			else T->internalBits &= -1 ^ NOTRACE_TOPIC;
+			unsigned int flag;
+			WORDP D = StoreWord(word);
+
+			if (D->word[0] == '~') flag = topicflag;
+			else if (D->word[0] == '^') flag = macroflag;
+			else continue;
+
+			if (mode == 1) D->internalBits |= flag;
+			else D->internalBits &= -1 ^ flag;
+
+			if (!fromScript) Log(STDTRACELOG, (char*)" %s %s %s\n", cmd, word, (mode == 1) ? (char*)"on" : (char*)"off");
 		}
 	}
+}
+
+static void C_NoTrace(char* input)
+{
+	NoTraceTime(input, NOTRACE_TOPIC, NOTRACE_FN, (char*)"notrace");
+	SaveTracedFunctions();
+}
+
+static void C_NoTime(char* input)
+{
+	NoTraceTime(input, NOTIME_TOPIC, NOTIME_FN, (char*)"notime");
+	SaveTimedFunctions();
 }
 
 static void C_Trace(char* input)
 {
 	char word[MAX_WORD_SIZE];
 	isTracing = false;
-	foundATrace = false;
 	unsigned int flags = trace;
 	input = SkipWhitespace(input);
 	if (!*input) 
@@ -6354,7 +6558,7 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"label")) flags &= -1 ^  TRACE_LABEL;
 			else if (!stricmp(word,(char*)"topic")) flags &= -1 ^  TRACE_TOPIC;
 			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
-			else if (!stricmp(word,(char*)"always")) flags &= TRACE_ALWAYS;
+			else if (!stricmp(word,(char*)"always")) flags &= -1 ^  TRACE_ALWAYS;
 		}
 		else if (IsNumberStarter(*word) && !IsAlphaUTF8(word[1])) 
 		{
@@ -6391,17 +6595,20 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"topic")) flags |= TRACE_TOPIC;
 		else if (!stricmp(word,(char*)"deep")) flags |= (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
 		else if (!stricmp(word,(char*)"notthis")) flags |=  TRACE_NOT_THIS_TOPIC;
-		else if (!stricmp(word,(char*)"always")) flags|= TRACE_ALWAYS;
+		else if (!stricmp(word,(char*)"always")) flags |= TRACE_ALWAYS;
 
-		else if (!stricmp(word,(char*)"0") || !stricmp(word,(char*)"clear")) trace = 0;
+		else if (!stricmp(word,(char*)"0") || !stricmp(word,(char*)"clear")) flags = 0;
 		else if (!stricmp(word,(char*)"end")) break; // safe end
-		else if (*word == '!') // NOT tracing a topic 
+
+		else if (*word == '!') // NOT tracing a topic or function
 		{
 			if (word[1]) memmove(word,word+1,strlen(word));  // ! jammed against topic, separate it
 			else input = ReadCompiledWord(input,word);
 			WORDP D = FindWord(word);
-			if (D) D->internalBits |= NOTRACE_TOPIC;
-			SetTopicDebugMark(FindTopicIDByName(word),0); // clear any explicit trace on it
+			if (D->word[0] == '~') {
+				D->internalBits |= NOTRACE_TOPIC;
+				SetTopicDebugMark(FindTopicIDByName(word), 0); // clear any explicit trace on it
+			}
 		}
 		else if (*word == '^')
 		{
@@ -6420,7 +6627,7 @@ static void C_Trace(char* input)
 		else if (*word == USERVAR_PREFIX)
 		{
 			WORDP D = StoreWord(word);
-			D->internalBits |= MACRO_TRACE;
+			D->internalBits ^= MACRO_TRACE;
 			PrepareVariableChange(D,"",false);
 			if (!fromScript)
 			{
@@ -6436,6 +6643,7 @@ static void C_Trace(char* input)
 			if (topic == 0) Log(STDTRACELOG,(char*)"No such topic %s\r\n",word);
 			else if (!period) 
 			{
+				if (flags & TRACE_ON) flags ^= TRACE_ON;
 				if (!TI(topic)->topicDebug && !flags) SetTopicDebugMark(topic,(unsigned int)-1); // default all
 				else if (flags) SetTopicDebugMark(topic,flags); // just those named previously
 				else SetTopicDebugMark(topic,0); // disable
@@ -6449,7 +6657,6 @@ static void C_Trace(char* input)
 				while (which && *which && (which = FindNextLabel(topic,period+1,which,id,true)))
 				{
 					SetDebugRuleMark(topic,id);
-					isTracing = true;
 					found = true;
 					which = FindNextRule(NEXTRULE,which,id);
 				}
@@ -6463,7 +6670,6 @@ static void C_Trace(char* input)
 				if (rule) 
 				{
 					SetDebugRuleMark(topic,id);
-					isTracing  = true;
 				}
 				else Log(STDTRACELOG,(char*)"cannot find %s.%s\r\n",word,period+1);
 			}
@@ -6471,11 +6677,10 @@ static void C_Trace(char* input)
 	}
 	trace = flags;
 	if (trace == TRACE_HIERARCHY) {;}
-	if (!fromScript) // do not show things automatically 
+	if (!fromScript) // do not show things automatically is
 	{
 		bool oldecho = echo;
 		echo = true;
-		Log(STDTRACELOG,(char*)" trace = %d (0x%x)\n",trace,trace);
 		if (trace && trace != TRACE_ON) 
 		{
 			isTracing = true;
@@ -6483,7 +6688,8 @@ static void C_Trace(char* input)
 		}
 		else trace = 0;
 		if (SaveTracedFunctions()) isTracing = true;
-		WalkDictionary(TracedTopic,0);
+		WalkDictionary(TracedTopic,1);
+		if (AreDebugMarksSet()) isTracing = true; // some rule is marked to trace
 		echo = oldecho;
 		if (isTracing) 
 		{
@@ -6491,8 +6697,172 @@ static void C_Trace(char* input)
 			echo = true;
 		}
 		else echo = false;
+		Log(STDTRACELOG,(char*)" trace = %d (0x%x)\n",trace,trace);
 	}	
 	else echo = true;
+	wasCommand = TRACECMD; // save results to user file
+}
+
+static void C_Time(char* input)
+{
+	char word[MAX_WORD_SIZE];
+	isTiming = false;
+	unsigned int flags = timing;
+	input = SkipWhitespace(input);
+	if (!*input)
+	{
+		ShowTiming(timing,true);
+		return;
+	}
+	ReadCompiledWord(input,word);
+	if (!stricmp(word,(char*)"none")) // turn off all topics and macros as well
+	{
+		WalkDictionary(ClearTimedFunction,0);
+		WalkDictionary(ClearTimedTopic,0);
+	}
+	
+	while (input)
+	{
+		input = ReadCompiledWord(input,word); // if using time in a table, use closer "end" if you are using named flags
+		if (!*word) break;
+		input = SkipWhitespace(input);
+		if (*word == '+') // add this flag is the default
+		{
+			if (word[1]) memmove(word, word + 1, strlen(word));
+			else continue;
+		}
+
+		if (!stricmp(word, (char*)"all")) flags = ((unsigned int)-1) ^ TIME_ALWAYS;
+		else if (!stricmp(word, (char*)"none")) flags = 0;
+		else if (*word == '-') // remove this flag
+		{
+			if (!word[1]) input = ReadCompiledWord(input, word);
+			else memmove(word, word + 1, strlen(word));
+			if (!stricmp(word, (char*)"notthis")) flags &= -1 ^ TIME_NOT_THIS_TOPIC;
+			if (!stricmp(word, (char*)"ruleflow")) flags &= -1 ^ TIME_FLOW;
+
+			if (!stricmp(word, (char*)"prepare")) flags &= -1 ^ TIME_PREPARE;
+			else if (!stricmp(word, (char*)"pattern")) flags &= -1 ^ TIME_PATTERN;
+			else if (!stricmp(word, (char*)"mild")) flags &= -1 ^ (TIME_PREPARE | TIME_PATTERN);
+
+			else if (!stricmp(word, (char*)"query")) flags &= -1 ^ TIME_QUERY;
+			else if (!stricmp(word, (char*)"user")) flags &= -1 ^ TIME_USER;
+			else if (!stricmp(word, (char*)"tcp")) flags &= -1 ^ TIME_TCP;
+			else if (!stricmp(word, (char*)"json")) flags &= -1 ^ TIME_JSON;
+			else if (!stricmp(word, (char*)"macro")) flags &= -1 ^ TIME_USERFN;
+			else if (!stricmp(word, (char*)"usercache")) flags &= -1 ^ TIME_USERCACHE;
+			else if (!stricmp(word, (char*)"sql")) flags &= -1 ^ TIME_SQL;
+			else if (!stricmp(word, (char*)"topic")) flags &= -1 ^ TIME_TOPIC;
+			else if (!stricmp(word, (char*)"deep")) flags &= -1 ^ (TIME_JSON | TIME_TOPIC | TIME_USERFN | TIME_QUERY | TIME_USER | TIME_TCP | TIME_USERCACHE | TIME_SQL);
+			else if (!stricmp(word, (char*)"always")) flags &= -1 ^ TIME_ALWAYS;
+		}
+		else if (IsNumberStarter(*word) && !IsAlphaUTF8(word[1]))
+		{
+			ReadInt(word, *(int*)&flags);
+			break; // there wont be morez flags -- want :time -1 in a table to be safe from reading the rest
+		}
+		else if (!stricmp(word, (char*)"ruleflow")) flags |= TIME_FLOW;
+
+		else if (!stricmp(word, (char*)"prepare")) flags |= TIME_PREPARE;
+		else if (!stricmp(word, (char*)"pattern")) flags |= TIME_PATTERN;
+		else if (!stricmp(word, (char*)"mild")) flags |= (TIME_PREPARE | TIME_PATTERN);
+
+		else if (!stricmp(word, (char*)"query")) flags |= TIME_QUERY;
+		else if (!stricmp(word, (char*)"user")) flags |= TIME_USER;
+		else if (!stricmp(word, (char*)"tcp")) flags |= TIME_TCP;
+		else if (!stricmp(word, (char*)"json")) flags |= TIME_JSON;
+		else if (!stricmp(word, (char*)"macro")) flags |= TIME_USERFN;
+		else if (!stricmp(word, (char*)"usercache")) flags |= TIME_USERCACHE;
+		else if (!stricmp(word, (char*)"sql")) flags |= TIME_SQL;
+		else if (!stricmp(word, (char*)"topic")) flags |= TIME_TOPIC;
+		else if (!stricmp(word, (char*)"deep")) flags |= (TIME_JSON | TIME_TOPIC | TIME_USERFN | TIME_QUERY | TIME_USER | TIME_TCP | TIME_USERCACHE | TIME_SQL);
+		else if (!stricmp(word, (char*)"notthis")) flags |= TIME_NOT_THIS_TOPIC;
+		else if (!stricmp(word, (char*)"always")) flags |= TIME_ALWAYS;
+
+		else if (!stricmp(word, (char*)"0") || !stricmp(word, (char*)"clear")) flags = 0;
+		else if (!stricmp(word, (char*)"end")) break; // safe end
+
+		else if (*word == '!') // NOT timing a topic 
+		{
+			if (word[1]) memmove(word, word + 1, strlen(word));  // ! jammed against topic, separate it
+			else input = ReadCompiledWord(input, word);
+			WORDP D = FindWord(word);
+			if (D->word[0] == '~') {
+				D->internalBits |= NOTIME_TOPIC;
+				SetTopicTimingMark(FindTopicIDByName(word), 0); // clear any explicit timing on it
+			}
+		}
+		else if (*word == '^')
+		{
+			WORDP FN = FindWord(word);
+			if (FN)
+			{
+				FN->internalBits ^= MACRO_TIME;
+				if (!fromScript)
+				{
+					Log(ECHOSTDTRACELOG, (char*)" timing %s %s\n", word, (FN->internalBits & MACRO_TIME) ? (char*)"on" : (char*)"off");
+				}
+			}
+			else Log(ECHOSTDTRACELOG, (char*)"No such function %s\r\n", word);
+		}
+		else if (*word == '~') // timing a topic or rule by label
+		{
+			char* period = strchr(word, '.');
+			if (period) *period = 0;
+			int topic = FindTopicIDByName(word);
+			if (topic == 0) Log(ECHOSTDTRACELOG, (char*)"No such topic %s\r\n", word);
+			else if (!period)
+			{
+				if (flags & TIME_ON) flags ^= TIME_ON;
+				if (!TI(topic)->topicTiming && !flags) SetTopicTimingMark(topic, (unsigned int)-1); // default all
+				else if (flags) SetTopicTimingMark(topic, flags); // just those named previously
+				else SetTopicTimingMark(topic, 0); // disable
+				flags = 0;
+			}
+			else if (IsAlphaUTF8(period[1])) // find ALL labelled statement and mark them
+			{
+				int id = 0;
+				char* which = GetTopicData(topic);
+				bool found = false;
+				while (which && *which && (which = FindNextLabel(topic, period + 1, which, id, true)))
+				{
+					SetTimingRuleMark(topic, id);
+					found = true;
+					which = FindNextRule(NEXTRULE, which, id);
+				}
+				if (!found)  Log(ECHOSTDTRACELOG, (char*)"cannot find %s.%s\r\n", word, period + 1);
+			}
+			else if (IsDigit(period[1]))// did he use number notation?
+			{
+				int id = 0;
+				*period = '.';
+				char* rule = GetRuleTag(topic, id, word);
+				if (rule)
+				{
+					SetTimingRuleMark(topic, id);
+				}
+				else Log(ECHOSTDTRACELOG, (char*)"cannot find %s.%s\r\n", word, period + 1);
+			}
+		}
+	}
+	timing = flags;
+	if (!fromScript) // do not show things automatically 
+	{
+		if (timing && timing != TIME_ON)
+		{
+			isTiming = true;
+			ShowTiming(timing, true);
+		}
+		else timing = 0;
+		if (SaveTimedFunctions()) isTiming = true;
+		WalkDictionary(TimedTopic,1);
+		if (AreTimingMarksSet()) isTiming = true; // some rule is marked to time
+		if (isTiming)
+		{
+			timing |= TIME_ON;
+		}
+		Log(ECHOSTDTRACELOG, (char*)" time = %d (0x%x)\n", timing, timing);
+	}
 	wasCommand = TRACECMD; // save results to user file
 }
 
@@ -7314,7 +7684,7 @@ static void C_Abstract(char* input)
 	}
 	else if (*input && *input != '~') // from topic file
 	{
-		char filename[MAX_WORD_SIZE];
+		char filename[SMALL_WORD_SIZE];
 		ReadCompiledWord(input,filename);
 		for (int i = 1; i <= numberOfTopics; ++i) 
 		{
@@ -7498,7 +7868,7 @@ static void TrimIt(char* name,uint64 flag)
 	bool header = false;
 	FILE* out = FopenUTF8WriteAppend((char*)"TMP/tmp.txt");
 	if (!out) return;
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	*file = 0;
 	*prior = 0;
 	char* at;
@@ -7529,7 +7899,7 @@ static void TrimIt(char* name,uint64 flag)
 		{
 			if (flag == 9)
 			{
-				char file[MAX_WORD_SIZE];
+				char file[SMALL_WORD_SIZE];
 				sprintf(file,(char*)"%s/log-%s.txt",users,user);
 				FILE* out1 = FopenUTF8WriteAppend(file);
 				fprintf(out1,(char*)"%s\r\n",copy);
@@ -7664,7 +8034,7 @@ static void TrimIt(char* name,uint64 flag)
 		else if ( flag == 8) sprintf(display,(char*)"%s\r\n\t(%s) %s\r\n",input,topic,output); // 2liner, indented computer   + topic
 		else if ( flag == 9) // build user logs
 		{
-			char file[MAX_WORD_SIZE];
+			char file[SMALL_WORD_SIZE];
 			sprintf(file,(char*)"%s/log-%s.txt",users,user);
 			FILE* out1 = FopenUTF8WriteAppend(file);
 			fprintf(out1,(char*)"%s\r\n",copy);
@@ -7742,7 +8112,7 @@ static void TrimIt(char* name,uint64 flag)
 static void C_Trim(char* input) // create simple file of user chat from directory
 {   
  	char word[MAX_WORD_SIZE];
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	char* original = input;
 	*file = 0;
 	input = ReadCompiledWord(input,word);
@@ -7804,12 +8174,14 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":silent",C_Silent,(char*)"toggle silent - dont show outputs"}, 
 	{ (char*)":log",C_Log,(char*)"dump message into log file"}, 
 	{ (char*)":noreact",C_NoReact,(char*)"Disable replying to input"}, 
-	{ (char*)":notrace",C_NoTrace,(char*)"Toggle notracing during this topic"},
-	{ (char*)":redo",C_Redo,(char*)"Back up to turn n and try replacement user input"}, 
+	{ (char*)":notime",C_NoTime,(char*)"Toggle notiming during this topic"},
+	{ (char*)":notrace",C_NoTrace,(char*)"Toggle notracing during this topic" },
+	{ (char*)":redo",C_Redo,(char*)"Back up to turn n and try replacement user input"},
 	{ (char*)":retry",C_Retry,(char*)"Back up and try replacement user input or just redo last sentence"}, 
 	{ (char*)":say",C_Say,(char*)"Make chatbot say this line"}, 
 	{ (char*)":skip",C_Skip,(char*)"Erase next n gambits"}, 
 	{ (char*)":show",C_Show,(char*)"All, Input, Mark, Number, Pos, Stats, Topic, Topics, Why, Reject, Newlines"},
+	{ (char*)":time",C_Time,(char*)"Set timing variable (all none prepare match ruleflow pattern query json macro user usercache sql tcp topic)" },
 	{ (char*)":trace",C_Trace,(char*)"Set trace variable (all none basic prepare match output pattern infer query substitute hierarchy fact control topic pos)"},
 	{ (char*)":why",C_Why,(char*)"Show rules causing most recent output"}, 
 	{ (char*)":authorize",C_Authorize,(char*)"Flip authorization for all debug commands"},
@@ -7839,6 +8211,8 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":memstats",C_MemStats,(char*)"Show memory allocations"},
 	{ (char*)":list",C_List,(char*)"$ (variables) @ (factsets)  _  (match variables)   ^ (macros)   ~ (topics&concepts)"}, 
 	{ (char*)":queries",C_Queries,(char*)"List all defined queries"},
+	{ (char*)":timedfunctions",C_TimedFunctions,(char*)"List all user defined macros currently being timed" },
+	{ (char*)":timedtopics",C_TimedTopics,(char*)"List all topics currently being timed" },
 	{ (char*)":tracedfunctions",C_TracedFunctions,(char*)"List all user defined macros currently being traced"},
 	{ (char*)":tracedtopics",C_TracedTopics,(char*)"List all topics currently being traced"},
 	{ (char*)":variables",C_Variables,(char*)"Display current user/sysytem/match/all variables"}, 
@@ -7908,52 +8282,6 @@ CommandInfo commandSet[] = // NEW
 #endif
 	{0,0,(char*)""},	
 };
-
-bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
-{
-	if (overrideAuthorization) return true; // commanded from script
-
-	char buffer[MAX_WORD_SIZE];
-	if ( authorizations == (char*)1) // command line does not authorize
-	{
-		if (in) FClose(in);
-		return false;
-	}
-
-	//  check command line params
-	char* at = authorizations;
-	char word[MAX_WORD_SIZE];
-	if (at) // command line given
-	{
-		if (*at == '"') ++at;
-		while (*at)
-		{
-			at = ReadCompiledWord(at,word);
-			size_t len = strlen(word);
-			if (word[len-1] == '"') word[len-1] = 0;
-			if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
-			{
-				if (in) FClose(in);
-				return true;
-			}
-		}
-	}
-
-	if (!in) return (authorizations) ? false : true;			//   no restriction file
-
-	bool result = false;
-	while (ReadALine(buffer,in) >= 0 )
-    {
-		ReadCompiledWord(buffer,word);
-		if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
-		{ 
-			result = true;
-			break;
-		}
-	}
-	FClose(in);
-	return result;
-}
 
 void SortTopic(WORDP D,uint64* junk)
 {

@@ -19,6 +19,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #include "common.h"
 
 #define MAX_DISPLAY 2500
+#define LCLVARDATA_PREFIX '`'
 
 #define FAILCODES ( RESTART_BIT | FAILINPUT_BIT | FAILTOPIC_BIT | FAILLOOP_BIT | FAILRULE_BIT | FAILSENTENCE_BIT | RETRYSENTENCE_BIT | RETRYTOPIC_BIT | UNDEFINED_FUNCTION | RETRYINPUT_BIT )
 #define SUCCESSCODES ( ENDINPUT_BIT | ENDSENTENCE_BIT | NEXTLOOP_BIT | ENDTOPIC_BIT | ENDRULE_BIT | ENDCALL_BIT | ENDLOOP_BIT)
@@ -39,8 +40,17 @@ typedef struct SystemFunctionInfo
 } SystemFunctionInfo;
 
 //   special argeval codes
-#define VARIABLE_ARG_COUNT -1
+#define VARIABLE_ARG_COUNT -1	// evaled
 #define STREAM_ARG -2
+#define UNEVALED -3		// split but not evaled
+#define NOEVAL_ARG1 0x00000100
+#define NOEVAL_ARG2 0x00000200
+#define NOEVAL_ARG3 0x00000400
+#define NOEVAL_ARG4 0x00000800
+#define NOEVAL_ARG5 0x00001000
+// values 1-9 are normal argument count (evaled)
+// bit 0x10 means args are split but NOT evaled, allowing receiver to eval individual ones on demand
+// bits 0x100 and above are to specify specific args not to eval
 			
 // codes returned from :command
 enum TestMode { 

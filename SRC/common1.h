@@ -11,6 +11,7 @@ extern unsigned int callArgumentBase;
 
 #define ARGUMENT(n) callArgumentList[callArgumentBase+n]
 char* ReadCompiledWord(char* ptr, char* word,bool noquote = false,bool var = false);
+char* ReadCompiledWordOrCall(char* ptr, char* word,bool noquote = false,bool var = false);
 
 #define INPUT_BUFFER_SIZE   80000
 #define MAX_BUFFER_SIZE		80000
@@ -60,7 +61,8 @@ typedef unsigned int MEANING;					//   a flagged indexed dict ptr
 #define TOPICCONCEPT_PREFIX '~'
 
 #define BIG_WORD_SIZE   10000
-#define MAX_WORD_SIZE   1500       
+#define MAX_WORD_SIZE   3000   
+#define SMALL_WORD_SIZE  500  
 
 #undef WORDP //   remove windows version (unsigned short) for ours
 

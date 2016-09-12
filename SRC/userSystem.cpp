@@ -10,6 +10,8 @@ bool stopUserWrite = false;
 static bool verifyUserFacts = true;
 static char* backupMessages = NULL;
 
+#define MAX_USER_MESSAGES MAX_USED
+
 //   replies we have tried already
 char chatbotSaid[MAX_USED+1][SAID_LIMIT+3];  //   tracks last n messages sent to user
 char humanSaid[MAX_USED+1][SAID_LIMIT+3]; //   tracks last n messages sent by user in parallel with userSaid
@@ -60,7 +62,12 @@ void Login(char* caller,char* usee,char* ip) //   select the participants
 		echo = true;
 		*usee = 0;
 	}
-    if (*usee) MakeLowerCopy(computerID,usee);
+	if (!stricmp(usee, (char*)"time")) // enable timing during login
+	{
+		timing = (unsigned int)-1 ^ TIME_ALWAYS;
+		*usee = 0;
+	}
+	if (*usee) MakeLowerCopy(computerID,usee);
 	else ReadComputerID(); //   we are defaulting the chatee
 	if (!*computerID) ReportBug((char*)"No default bot?\r\n")
 
@@ -251,12 +258,12 @@ static char* SafeLine(char* line) // be JSON text safe
 	return word; // buffer will be used immediately
 }
 
-static char* WriteRecentMessages(char* ptr,bool sharefile)
+static char* WriteRecentMessages(char* ptr,bool sharefile,int messageCount)
 {
 	if (!ptr) return NULL; // buffer ran out long ago
 
     //   recent human inputs
-	int start = humanSaidIndex - 20; 
+	int start = humanSaidIndex - messageCount; 
 	if (start < 0) start = 0;
 	int i;
     if (!shared || sharefile) for (i = start; i < humanSaidIndex; ++i)  
@@ -272,7 +279,7 @@ static char* WriteRecentMessages(char* ptr,bool sharefile)
 	ptr += strlen(ptr);
 	
 	// recent chatbot outputs
- 	start = chatbotSaidIndex - 20;
+ 	start = chatbotSaidIndex - messageCount;
 	if (start < 0) start = 0;
     if (!shared || sharefile) for (i = start; i < chatbotSaidIndex; ++i) 
 	{
@@ -388,7 +395,11 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
 				echo = false;
 			}
 			if (!val) val = ""; // for null variables being marked as traced
-			if (D->internalBits & MACRO_TRACE) sprintf(ptr,(char*)"%s=`%s\r\n",D->word,SafeLine(val));
+			if (D->internalBits & MACRO_TRACE) 
+			{
+				RemoveInternalFlag(D,MACRO_TRACE);
+				sprintf(ptr,(char*)"%s=`%s\r\n",D->word,SafeLine(val));
+			}
 			else sprintf(ptr,(char*)"%s=%s\r\n",D->word,SafeLine(val));
 			ptr += strlen(ptr);
 			if (!compiling)
@@ -399,6 +410,12 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
         D->w.userValue = NULL;
 		RemoveInternalFlag(D,VAR_CHANGED);
     }
+	if (server && trace) // trace is on for this user only
+	{
+		printf(ptr,(char*)"$cs_trace=%s\r\n",trace);
+		trace = 0;
+		echo = false;
+	}
 	strcpy(ptr,(char*)"#`end variables\r\n");
 	ptr += strlen(ptr);
 	
@@ -418,6 +435,7 @@ static bool ReadUserVariables()
 		if (traceit) 
 		{ 
 			WORDP D = StoreWord(readBuffer);
+			PrepareVariableChange(D,"",false); // keep it alive as long as it is traced
 			D->internalBits |= MACRO_TRACE;
 		}
  		if (!stricmp(readBuffer,(char*)"$cs_trace")) 
@@ -442,7 +460,11 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 	// need to get fact limit variable for WriteUserFacts BEFORE writing user variables, which clears them
 	int count = userFactCount;
 	char* value = GetUserVariable("$cs_userfactlimit");
-	if (value && *value) count = atoi(value);
+	if (*value) count = atoi(value);
+
+	int messageCount = MAX_USER_MESSAGES;
+	value = GetUserVariable("$cs_userhistorylimit");
+	if (*value) messageCount = atoi(value);
 
 	// each line MUST end with cr/lf  so it can be made potentially safe for Mongo w/o adjusting size of data (inefficient)
 	char* start = ptr;
@@ -475,7 +497,7 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 		ReportBug("User file context data too big %s",loginID)
 		return NULL;
 	}
-	ptr = WriteRecentMessages(ptr,sharefile); // json safe
+	ptr = WriteRecentMessages(ptr,sharefile, messageCount); // json safe
 	if (!ptr)
 	{
 		ReportBug("User file message data too big %s", loginID)
@@ -488,12 +510,14 @@ void WriteUserData(time_t curr)
 { 
 	if (!numberOfTopics)  return; //   no topics ever loaded or we are not responding
 	if (!userCacheCount) return;	// never save users - no history
+	
+	clock_t start_time = ElapsedMilliseconds();
 
 	if (globalDepth == 0) currentRule = NULL;
 	ChangeDepth(1,(char*)"WriteUserData");
 
 	char name[MAX_WORD_SIZE];
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	// NOTE mongo does not allow . in a filename
 	sprintf(name,(char*)"%s/%stopic_%s_%s.txt",users,GetUserPath(loginID),loginID,computerID);
 	strcpy(filename,name);
@@ -552,6 +576,11 @@ void WriteUserData(time_t curr)
 	}
 	userVariableIndex = 0; // flush all modified variables
 	ChangeDepth(-1,(char*)"WriteUserData");
+
+	if (timing & TIME_USER) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMELOG, (char*)"Write user data time: %d ms\r\n", diff);
+	}
 }
 
 static  bool ReadFileData(char* bot) // passed  buffer with file content (where feasible)
@@ -638,6 +667,8 @@ void ReadUserData() // passed  buffer with file content (where feasible)
 	if (globalDepth == 0) currentRule = NULL;
 	ChangeDepth(1,(char*)"ReadUserData");
 
+	clock_t start_time = ElapsedMilliseconds();
+
 	// std defaults
 	tokenControl = (DO_SUBSTITUTE_SYSTEM | DO_INTERJECTION_SPLITTING | DO_PROPERNAME_MERGE | DO_NUMBER_MERGE | DO_SPELLCHECK | DO_PARSE );
 	responseControl = ALL_RESPONSES;
@@ -651,6 +682,11 @@ void ReadUserData() // passed  buffer with file content (where feasible)
 	}
 	if (shared) ReadFileData((char*)"share");  // read shared file, if any, or get it from cache
 	ChangeDepth(-1,(char*)"ReadUserData");
+
+	if (timing & TIME_USER) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMELOG, (char*)"Read user data time: %d ms\r\n", diff);
+	}
 }
 
 void KillShare()

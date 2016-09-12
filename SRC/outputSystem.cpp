@@ -12,7 +12,7 @@ static int oldOutputIndex = 0;
 unsigned int outputNest = 0;
 static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int controls) ;
 static char* Output_Function(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result,bool once);
-
+static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result,bool once,bool nojson);
 #ifdef JUNK
 Special strings:
 
@@ -147,7 +147,16 @@ static bool LegalVarChar(char at)
 static char* ReadUserVariable(char* input, char* var)
 {		
 	char* at = input++; // skip $ and below either $ or first legal char
-	while (LegalVarChar(*++input)){;} 
+	bool once = false;
+	while (LegalVarChar(*++input) || *input == '.')
+	{
+		if (*input == '.')
+		{
+			if (once) break;
+			if (LegalVarChar(input[1])) once = true;
+			else break;
+		}
+	} 
 	strncpy(var,at,input-at);
 	var[input-at] = 0;
 	return input;
@@ -184,7 +193,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 	*output = 0;
 	char mainValue[3];
 	mainValue[1] = 0;
-	char var[MAX_WORD_SIZE];
+	char var[200]; // no variable should be this big
 	char* ans = AllocateBuffer();
 	while (input && *input)
 	{
@@ -258,11 +267,12 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 		else if (*input == '^' && IsDigit(input[1])) // function variable
 		{
 			char* base = input; 
-			while (*++input && IsDigit(*input)){;} // find end of function variable name (expected is 1 digit)
+			while (*++input && IsDigit(*input)){;} // find end of function variable name 
 			char* tmp = callArgumentList[atoi(base+1)+fnVarBase];
 			// if tmp turns out to be $var or _var %var, need to recurse to get it
-
-			if (*tmp == USERVAR_PREFIX && !IsDigit(tmp[1])) // user variable
+			if (*tmp == LCLVARDATA_PREFIX && tmp[1] == LCLVARDATA_PREFIX) 
+				output = AddFormatOutput(tmp+2, output,controls); 	// is already evaled
+			else if (*tmp == USERVAR_PREFIX && !IsDigit(tmp[1])) // user variable (could be json object ref)
 			{
 				char* value = GetUserVariable(tmp);
 				output = AddFormatOutput(value, output,controls); 
@@ -528,7 +538,7 @@ char* FreshOutput(char* ptr,char* buffer,FunctionResult &result,int controls,uns
 		{
 			strncpy(buffer,currentOutputBase,limit-1);
 			buffer[limit-1] = 0;
-			ReportBug((char*)"FreshOutput of %d exceeded caller limit of %d. Truncated: %s\r\n",olen,maxBufferSize,buffer);
+			ReportBug((char*)"FreshOutput of %d exceeded caller limit of %d. Truncated: %s\r\n",olen,limit,buffer);
 		}
 		else strcpy(buffer,currentOutputBase);
 		FreeOutputBuffer();
@@ -609,33 +619,47 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 		if (!once && IsAssignmentOperator(ptr)) ptr = PerformAssignment(word,ptr,result); 
 		else
 		{
-			size_t len = strlen(callArgumentList[atoi(word+1)+fnVarBase]);
+			char* value = callArgumentList[atoi(word+1)+fnVarBase];
+			size_t len = strlen(value);
 			size_t size = (buffer - currentOutputBase);
 			if ((size + len) >= (currentOutputLimit-50) ) 
 			{
 				result = FAILRULE_BIT;
 				return ptr;
 			}
-
-			strcpy(buffer,callArgumentList[atoi(word+1)+fnVarBase]);
-			if (*buffer)
+			if (*value == LCLVARDATA_PREFIX && value[1] == LCLVARDATA_PREFIX) 
+				strcpy(buffer,value+2); // already evaluated. do not reeval
+			else
 			{
-				*word = ENDUNIT;	// marker for retry
-				word[1] = '^';	// additional marker for function variables
+				strcpy(buffer,value);
+				if (*buffer)
+				{
+					*word = ENDUNIT;	// marker for retry
+					word[1] = '^';	// additional marker for function variables
+				}
 			}
 		}
 	}
 	else if (word[1] == '"' || word[1] == '\'') ReformatString(word[1],word+2,buffer,result,space); // functional string, uncompiled.  DO NOT USE function calls within it
 	else  if (word[1] == USERVAR_PREFIX || word[1] == '_' || word[1] == '\'' || (word[1] == '^' && IsDigit(word[2]))) // ^$$1 = null or ^_1 = null or ^'_1 = null or ^^which = null is indirect user assignment or retrieval
 	{
-		Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
 		if (!once && IsAssignmentOperator(ptr)) // we are lefthand side indirect
 		{
-			strcpy(word,buffer);
+			if (word[1] != '^' || !IsDigit(word[2])) // all other indirections
+			{
+				Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
+				strcpy(word,buffer);
+			}
 			*buffer = 0;
-			return PerformAssignment(word,ptr,result); //   =  or *= kind of construction
+			return PerformAssignment(word,ptr,result,true); //   =  or *= kind of construction -- dont do json indirect assignment
 		}
-		*word = ENDUNIT;	// marker for retry
+		else Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
+		if (word[1] == USERVAR_PREFIX) // direct retry to avoid json issues
+		{
+			strcpy(word,GetUserVariable(word+1));
+			Output_Dollar(word, "", space,buffer,controls,result,false,true);
+		}
+		else *word = ENDUNIT;	// marker for retry
 	}
 	else if (!strcmp(word,(char*)"^if")) ptr = HandleIf(ptr,buffer,result);  
 	else if (!strcmp(word,(char*)"^loop")) ptr = HandleLoop(ptr,buffer,result); 
@@ -882,7 +906,7 @@ static char* Output_Underscore(char* word, char* ptr, bool space,char* buffer, u
 	return ptr;
 }
 
-static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result,bool once)
+static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result,bool once,bool nojson)
 {
 	// handles user variable assignment: $myvar = 4
 	// handles user variables:  $myvar
@@ -891,7 +915,7 @@ static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsig
     {
 		if (controls & OUTPUT_EVALCODE && !(controls & OUTPUT_KEEPVAR)) 
 		{
-			char* answer = GetUserVariable(word);
+			char* answer = GetUserVariable(word,nojson);
 			if (*answer == USERVAR_PREFIX && ( answer[1] == LOCALVAR_PREFIX || answer[1] == TRANSIENTVAR_PREFIX || IsAlphaUTF8(answer[1]))) strcpy(word,answer); // force nested indirect on var of a var value
 		}
 
@@ -899,7 +923,7 @@ static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsig
 			ptr = PerformAssignment(word,ptr,result); 
 		else
 		{
-			char* value = GetUserVariable(word);
+			char* value = GetUserVariable(word,nojson);
 			StdNumber(value,buffer,controls, value && *value && space);
 			char* at = SkipWhitespace(buffer);
 			if (controls & OUTPUT_NOQUOTES && *at == '"') // remove quotes from variable data
@@ -1036,7 +1060,7 @@ retry:
 
 		// variables of various flavors
         case USERVAR_PREFIX: //   user variable or money
-			ptr = Output_Dollar(word, ptr, space, buffer, controls,result,once);
+			ptr = Output_Dollar(word, ptr, space, buffer, controls,result,once,false);
 			break;
  		case '_': //   wildcard or standalone _ OR just an ordinary token
 			ptr = Output_Underscore(word, ptr, space, buffer, controls,result,once);

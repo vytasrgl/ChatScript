@@ -301,7 +301,7 @@ The local non-commercial copy is annoying in that it outputs a couple of process
 it goes, but it would have no impact if CS is being used as a server, and at least allows you to
 experiment. I presume the commercial license would enable you to remove them.
 
-http://www.cis.unimuenchen.de/~schmid/tools/TreeTagger/ 
+http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/ 
 (Author: Helmut Schmid, CIS, Ludwig-Maximilians-Universität, Germany).
 
 The German bot assumes you have installed TreeTagger and the german data per instructions provided

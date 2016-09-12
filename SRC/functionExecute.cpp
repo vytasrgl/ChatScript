@@ -173,7 +173,14 @@ FunctionResult InitWinsock()
 static char* GetPossibleFunctionArgument(char* arg, char* word)
 {
 	char* ptr = ReadCompiledWord(arg,word);
-	if (*word == '^' && IsDigit(word[1])) strcpy(word,callArgumentList[atoi(word+1)+fnVarBase]);
+	if (*word == '^' && IsDigit(word[1])) 
+	{
+		char* value = callArgumentList[atoi(word+1)+fnVarBase];
+		if (*value == LCLVARDATA_PREFIX && value[1] == LCLVARDATA_PREFIX) 
+			value += 2; // already evaled data  -- but bug remains
+		strcpy(word,value);
+	}
+	// this gets us what was passed by name, $xxx.hi will be a json ref.
 	return ptr;
 }
 
@@ -473,32 +480,42 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	char* paren = ptr;
 	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
 	bool oldecho = echo; 
-	if (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE)) echo = true;
+	if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) echo = true;
 	SystemFunctionInfo* info = NULL;
 	unsigned int oldArgumentBase = callArgumentBase;
 	unsigned int oldArgumentIndex = callArgumentIndex;
 	unsigned char* definition = NULL;
+	unsigned int j = 0;
 	if (D->x.codeIndex && !(D->internalBits & (IS_PLAN_MACRO|IS_TABLE_MACRO))) // system function --  macroFlags are also on codeindex, but IS_TABLE_MACRO distinguishes  but PLAN also has a topicindex which is a codeindex
 	{
 		callArgumentBase = callArgumentIndex - 1;
 		ChangeDepth(1,D->word); // HandleSystemCall
-		if (((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & FN_NO_TRACE)) && CheckTopicTrace()) Log(STDTRACETABLOG, "System Call %s(",name);
+		if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) Log(STDTRACETABLOG, "System Call %s(",name);
 		info = &systemFunctionSet[D->x.codeIndex];
 		char* start = ptr;
+		int flags = 0x00000100;	// do we leave this unevaled?
 		while (ptr && *ptr != ')' && *ptr != ENDUNIT) // read arguments
-		{
-			if (info->argumentCount != STREAM_ARG) 
+		{ 
+			if (info->argumentCount != STREAM_ARG) // break them up
 			{
 				char* buffer = AllocateBuffer();
-				ptr = ReadCommandArg(ptr,buffer,result,OUTPUT_NOTREALBUFFER|OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING,maxBufferSize);
+				if (info->argumentCount == UNEVALED) ptr = ReadCompiledWordOrCall(ptr,buffer);
+				// unevaled counted arg
+				else if (info->argumentCount != VARIABLE_ARG_COUNT && info->argumentCount & (flags << j)) 
+					ptr = ReadCompiledWord(ptr,buffer);
+				else // VARIABLE ARG OR COUNTED ARG
+				{
+					ptr = ReadCommandArg(ptr,buffer,result,OUTPUT_NOTREALBUFFER|OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING,maxBufferSize);
+				}
 				callArgumentList[callArgumentIndex] = AllocateInverseString(buffer);
 				ptr = SkipWhitespace(ptr);
 				FreeBuffer();
 				if (callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX && // NOT by reference but by value
 					callArgumentList[callArgumentIndex][1] == LOCALVAR_PREFIX)
 				{
-					callArgumentList[callArgumentIndex] = AllocateInverseString(GetUserVariable(callArgumentList[callArgumentIndex]));
+					callArgumentList[callArgumentIndex] = AllocateInverseString(GetUserVariable(callArgumentList[callArgumentIndex])); // pass by unmarked value - no one will try to store thru it
 				}
+				++j;
 			}
 			else // swallow unevaled arg stream
 			{
@@ -509,7 +526,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				callArgumentList[callArgumentIndex] = AllocateInverseString(start,len);
 			}
 
-				if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & FN_NO_TRACE)&& CheckTopicTrace()) 
+			if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 			{
 				if (info->argumentCount == STREAM_ARG) Log(STDTRACELOG,(char*)"STREAM: ");
 				Log(STDTRACELOG,(char*)" (%s), ",callArgumentList[callArgumentIndex]);
@@ -520,7 +537,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		callArgumentList[callArgumentIndex] = (char*) ""; //  mark end of arg list with null value
 		callArgumentList[callArgumentIndex+1] = (char*) ""; // optional arguments excess
 		callArgumentList[callArgumentIndex+2] = (char*) ""; // optional arguments excess
-		if ((trace & TRACE_OUTPUT  || D->internalBits & MACRO_TRACE) && !(D->internalBits & FN_NO_TRACE) && CheckTopicTrace()) Log(STDTRACELOG,(char*)") = ");
+		if ((trace & TRACE_OUTPUT  || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) Log(STDTRACELOG,(char*)") = ");
 		if (result & ENDCODES); // failed during argument processing
 		else if (callArgumentIndex >= (MAX_ARG_LIST-1))	
 		{
@@ -540,8 +557,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		callStack[callIndex++] = D;
 
 		unsigned int oldFnVarBase = fnVarBase;
-		unsigned int args;
-		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE))) && CheckTopicTrace()) 
+		unsigned int args = 0;
+		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 			Log(STDTRACETABLOG, "Call %s(",name);
 		if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
 		{
@@ -563,8 +580,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 
 		// now process arguments
 		unsigned int argflags = D->x.macroFlags;
-		unsigned int j = 0;
-		char argcopy[MAX_WORD_SIZE];
+		char* argcopy = AllocateBuffer();
         while (definition && ptr && *ptr && *ptr != ')') //   ptr is after opening (and before an arg but may have white space
         {
 			char* arg = AllocateBuffer();
@@ -602,7 +618,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			}
 			if (*arg == 0) strcpy(arg,(char*)"null");// no argument found - caller had null data in argument
 
-			//   within a function, seeing function argument as an argument (limit 9 calling Arguments)
+			//   within a function, seeing function argument as an argument 
 			//   switch to incoming arg now, later callArgumentBase will be wrong
 			if (*arg == '^' && IsDigit(arg[1]) ) strcpy(arg,callArgumentList[atoi(arg+1) + fnVarBase]); 
 			if (*arg == '"' && arg[1] == ENDUNIT) // internal special quoted item, remove markers.
@@ -621,9 +637,12 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				strcpy(arg,currentOutputBase);
 				FreeOutputBuffer();
 			}
-			if (arg[0] == USERVAR_PREFIX && arg[1] == LOCALVAR_PREFIX) strcpy(arg,GetUserVariable(arg)); // NOT by reference but by value
+			if (arg[0] == USERVAR_PREFIX && arg[1] == LOCALVAR_PREFIX) 
+			{
+				strcpy(arg,GetUserVariable(arg)-2); // NOT by reference but by marked value
+			}
 				
-			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE)))  && CheckTopicTrace())
+			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN)  && CheckTopicTrace())
 			{
 				if (*argcopy == '^') Log(STDTRACELOG, "%s->%s",argcopy,arg);
 				else if (*argcopy == '"' && argcopy[1] == '^') Log(STDTRACELOG, "  %s",argcopy); // show original format string- but it may be redundant display from evaling it
@@ -649,6 +668,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			FreeBuffer();
 			++j;
 		} // end of argument processing
+		FreeBuffer(); // argcopy
 
 		// handle any display variables
 		char* basedisplay = 0;
@@ -664,11 +684,11 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		// now do defaulted null arguments
 		while (definition && (callArgumentIndex - oldArgumentIndex) < args) // fill in defaulted args to null
 		{
-			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE))) && CheckTopicTrace()) Log(STDTRACELOG, "null, ");
+			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) Log(STDTRACELOG, "null, ");
 			callArgumentList[callArgumentIndex++] = AllocateInverseString("",0);
 		}
 		if (trace == TRACE_USERFN)  Log(STDTRACELOG, ") => ");
-		else if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE))) && CheckTopicTrace()) 
+		else if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 		{
 			Log(STDTRACELOG, ")\r\n");
 			Log(STDTRACETABLOG,(char*)"");
@@ -677,7 +697,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	
 		//   run the definition
 		unsigned int oldtrace = trace;
-		if (D->internalBits & MACRO_TRACE && !(D->internalBits & FN_NO_TRACE)) trace = (unsigned int) -1;
+		if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) trace = (unsigned int) -1;
+		else if (D->internalBits & NOTRACE_FN) trace = 0;
 		if (result & ENDCODES){;}
 		else if (callArgumentIndex >= (MAX_ARGUMENT_COUNT-1)) 	// pinned max (though we could legally arrive by accident on this last one)
 		{
@@ -697,9 +718,14 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 #endif
 		else if (definition)
 		{
+			clock_t start_time = ElapsedMilliseconds();
 			unsigned int flags = OUTPUT_FNDEFINITION;
 			if (!(D->internalBits & IS_OUTPUT_MACRO)) flags|= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
 			Output((char*)definition,buffer,result,flags);
+			if ((timing & TIME_USERFN || D->internalBits & MACRO_TIME) && !(D->internalBits & NOTIME_FN) && CheckTopicTime()) {
+				int diff = ElapsedMilliseconds() - start_time;
+				if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"%s time: %d ms\r\n", name,diff);
+			}
 		}
 
 		// undo any display variables
@@ -1075,13 +1101,11 @@ bool RuleTest(char* data) // see if pattern matches
 {
 	char pattern[MAX_WORD_SIZE];
 	GetPattern(data,NULL,pattern);
-	unsigned int wildcardSelector = 0;
 	wildcardIndex = 0;
 	int junk;
 	bool uppercasem = false;
 	int matched = 0;
-	int positionStart,positionEnd;
-	bool answer =  Match(pattern+2,0,0,(char*)"(",1,wildcardSelector,junk,junk,uppercasem,matched,positionStart,positionEnd); // start past the opening paren
+	bool answer =  Match(pattern+2,0,0,(char*)"(",1,0,junk,junk,uppercasem,matched,0,0); // start past the opening paren
 	if (clearUnmarks) // remove transient global disables.
 	{
 		clearUnmarks = false;
@@ -1095,7 +1119,7 @@ unsigned int Callback(WORDP D,char* arguments, bool boot)
 {
 	if (! D || !(D->internalBits & FUNCTION_NAME)) return FAILRULE_BIT;
 	unsigned int oldtrace = trace;
-	trace = 0;
+	if (!boot) trace = 0;
 	char args[MAX_WORD_SIZE];
 	strcpy(args,arguments);
 	FunctionResult result;
@@ -2578,7 +2602,7 @@ static FunctionResult UnmarkCode(char* buffer)
 	ptr = ReadCompiledWord(ptr,word1);  // the _data
 	int startPosition = wordCount;
 	int endPosition = 1;
-	if (*word1 == '^' && IsDigit(word1[1])) strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]);
+	if (*word1 == '^') GetPossibleFunctionArgument(ptr,word1); // pass thru or convert
 	if (*word1 == USERVAR_PREFIX) strcpy(word1,GetUserVariable(word1));
 
 	if (!*word1) 
@@ -3555,13 +3579,11 @@ FunctionResult MatchCode(char* buffer)
  	if (!*base) return FAILRULE_BIT;	// NO DATA?
 	bool uppercasem = false;
 	int matched = 0;
-	int positionStart,positionEnd;
-	unsigned int wildcardSelector = 0;
 	wildcardIndex = 0;  //   reset wildcard allocation on top-level pattern match
 	int junk;
 	if (*base == '(') ++base;		// skip opening paren of a pattern
  	if (*base == ' ') ++base;		// skip opening space of a pattern
-    bool match = Match(base,0,0,(char*)"(",1,wildcardSelector,junk,junk,uppercasem,matched,positionStart,positionEnd) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
+    bool match = Match(base,0,0,(char*)"(",1,0,junk,junk,uppercasem,matched,0,0) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
 	if (clearUnmarks) // remove transient global disables.
 	{
 		clearUnmarks = false;
@@ -4333,9 +4355,21 @@ static FunctionResult JoinCode(char* buffer)
  		else 
 		{
 			FunctionResult result;
-			ptr = ReadShortCommandArg(ptr,word,result);
-			if (result & ENDCODES) return result;
-			strcpy(buffer,word);
+			char* bigword = AllocateBuffer();
+			ptr = ReadCommandArg(ptr,bigword,result,0,MAX_BUFFER_SIZE);
+			if (!(result & ENDCODES))
+			{
+				size_t olen = strlen(bigword);
+				if (olen >= currentOutputLimit) 
+				{
+					strncpy(buffer,bigword,currentOutputLimit-1);
+					buffer[currentOutputLimit-1] = 0;
+					ReportBug((char*)"join of %d exceeded caller limit of %d. Truncated: %s\r\n",olen,currentOutputLimit,buffer);
+				}
+				else strcpy(buffer,bigword);
+				FreeBuffer();
+			}
+			else return result;
 		}
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s ",buffer);
 		bool did = *buffer != 0;
@@ -5026,12 +5060,27 @@ static FunctionResult ExtractCode(char* buffer)
 	char* target = ARGUMENT(1);
 	if (!*target) return FAILRULE_BIT;
 	size_t len = strlen(target);
+	bool startFromEnd = false;
+	int offset = 0;
 	char* arg2 = ARGUMENT(2);
+	if (*arg2 == '-') {
+		startFromEnd = true;
+		++arg2;
+	}
 	char* arg3 = ARGUMENT(3);
+	if (*arg3 == '-') offset = -1;
+	else if (*arg3 == '+') offset = 1;
+	if (offset != 0) ++arg3;
 	if (!IsDigit(*arg2)) return FAILRULE_BIT;
 	if (!IsDigit(*arg3)) return FAILRULE_BIT;
 	unsigned int start = atoi(arg2);
 	unsigned int end = atoi(arg3);
+	if (startFromEnd) start = len - start;
+	if (offset > 0) end = start + end;
+	else if (offset < 0) {
+		start = start - end;
+		end = start + end;
+	}
 	if (start >= len) return FAILRULE_BIT;
 	if (end > ( len +1)) end = len + 1;
 	if (end < start) return FAILRULE_BIT; 
@@ -6211,6 +6260,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 			port = atoi(colon+1);
 		}
 	}
+	clock_t start_time = ElapsedMilliseconds();
 	int size = 0;
 	char* tcpbuffer = AllocateBuffer();
 	char* startContent = tcpbuffer;
@@ -6273,6 +6323,10 @@ static FunctionResult TCPOpenCode(char* buffer)
 		*base++ = 0;
 		// chatbot replies this
 		if (trace & TRACE_TCP && CheckTopicTrace()) Log(STDTRACELOG,(char*)"tcp received: %d bytes %s",totalBytesReceived,tcpbuffer);
+		if (timing & TIME_TCP && CheckTopicTime()) {
+			int diff = ElapsedMilliseconds() - start_time;
+			if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"TCP open time: %d ms for %s %s/%s\r\n", diff, (kind == 'G') ? (char*)"GET" : (char*) "POST", url,directory);
+		}
 	}
 	catch(SocketException e) { 
 		char* msg = "tcpopen- failed to connect to server or died in transmission\r\n";
@@ -7304,9 +7358,15 @@ static FunctionResult QueryCode(char* buffer)
 		while (IsDigit(*++at));
 		strcpy(splitoff,at);
 	}
-	
+	clock_t start_time = ElapsedMilliseconds();
+
 	count = Query(arg1, subject, verb, object, count, from, to,arg8, arg9);
-	
+
+	if (timing & TIME_QUERY && CheckTopicTime()) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Query(%s %s %s %s) time: %d ms\r\n", arg1, subject, verb, object, diff);
+	}
+
 	// result was a count. now convert to a fail code
 	FunctionResult result;
 	if (impliedSet != ALREADY_HANDLED) result = NOPROBLEM_BIT;
@@ -7620,7 +7680,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"\r\n---- Output Generation - not legal in post processing",0,0,0,(char*)""},
 	{ (char*)"^flushoutput",FlushOutputCode,0,SAMELINE,(char*)"force existing output out"}, 
 	{ (char*)"^insertprint",InsertPrintCode,STREAM_ARG,0,(char*)"add output before named responseIndex"},
-	{ (char*)"^keephistory",KeepHistoryCode,2,SAMELINE,(char*)"trim history of USER or BOT to number of entries given"}, 
+	{ (char*)"^keephistory",KeepHistoryCode,2,SAMELINE,(char*)"trim history of USER or BOT to number of entries given -- see also $cs_userhistorylimit"}, 
 	{ (char*)"^print",PrintCode,STREAM_ARG,0,(char*)"isolated output message from current stream"}, 
 	{ (char*)"^preprint",PrePrintCode,STREAM_ARG,0,(char*)"add output before existing output"}, 
 	{ (char*)"^repeat",RepeatCode,0,SAMELINE,(char*)"set repeat flag so can repeat output"}, 

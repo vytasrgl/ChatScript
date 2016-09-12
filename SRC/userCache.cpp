@@ -54,9 +54,10 @@ static void WriteCache(unsigned int which,size_t size)
 	if (size == 0) size = strlen(ptr);// request to compute size
 	char* at = strchr(ptr,'\r'); // separate off the name from the rest of the data
 	*at = 0;
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	strcpy(filename,ptr); // safe separation
 	*at = '\r';
+	clock_t start_time = ElapsedMilliseconds();
 
 	FILE* out = userFileSystem.userCreate(filename); // wb binary file (if external as db write should not fail)
 	if (!out) // see if we can create the directory (assuming its missing)
@@ -98,9 +99,13 @@ static void WriteCache(unsigned int which,size_t size)
 	}
 #endif
 #endif
-	userFileSystem.userWrite(ptr,1,size,out);
+	EncryptableFileWrite(ptr,1,size,out); // user topic file write
 	userFileSystem.userClose(out);
 	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"write out %s cache (%d)\r\n",ptr,which);
+	if (timing & TIME_USERCACHE) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log((server) ? SERVERLOG : STDTIMELOG, (char*)"Write user cache %d in file %s time: %d ms\r\n", which, filename, diff);
+	}
 
 	cacheIndex[TIMESTAMP(which)] &= 0x00ffffff;	// clear volley count since last written but keep time info
 }
@@ -194,7 +199,7 @@ char* FindUserCache(char* word)
 
 void CopyUserTopicFile(char* newname)
 {
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	sprintf(file,(char*)"%s/topic_%s_%s.txt",users,loginID,computerID);
 
 	char newfile[MAX_WORD_SIZE];
@@ -215,6 +220,7 @@ char* GetFileRead(char* user,char* computer)
 		buffer = FindUserCache(name); // sets currentCache and makes it first if non-zero return -  will either find but not assign if not found
 		if (buffer) return buffer;
 	}
+	clock_t start_time = ElapsedMilliseconds();
 
 	// have to go read it
 	buffer = GetFreeCache(); // get cache buffer 
@@ -250,11 +256,15 @@ char* GetFileRead(char* user,char* computer)
 	if (in) // read in data if file exists
 	{
 		size_t readit;
-		readit = userFileSystem.userRead(buffer,1,userCacheSize,in);
+		readit = DecryptableFileRead(buffer,1,userCacheSize,in); // reading topic file of user
 		buffer[readit] = 0;
 		buffer[readit+1] = 0; // insure nothing can overrun
 		userFileSystem.userClose(in);
 		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"read in %s cache (%d)\r\n",word,currentCache);
+		if (timing & TIME_USERCACHE) {
+			int diff = ElapsedMilliseconds() - start_time;
+			if (timing & TIME_ALWAYS || diff > 0) Log((server) ? SERVERLOG : STDTIMELOG, (char*)"Read user cache %d in file %s time: %d ms\r\n", currentCache, word, diff);
+		}
 	}
 	return buffer;
 }

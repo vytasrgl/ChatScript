@@ -196,15 +196,31 @@ Functions are a convenient way to abstract and share code.
 ### Function variables
 
 ChatScript also has function argument variables, whose names
-always start with `^` and have local (lexical) visibility. Here is a sample user function
+always start with `^` and have local (lexical) visibility. 
+
+Here is a sample user function
 header:
 ```
 patternmacro: ^myfunction( ^argument1 ^argument2)
 ```
 
+For outputmacros, 
+
+```
+outputmacro: ^myfunction( ^argument1 ^argument2)
+    ^argument1 += 1
+```
+Whenever you see a function variable, you
+can imagine it is as though the script had its argument immediately substituted in. So if the script call
+was this
+```
+    ^myfunction( $myvar 1)
+```
+then the effect of `^argument1 += 1` is as though `$myvar += 1` were done and `$myvar` would now be one
+higher. Of course, had you tried to do
+`^argument2 += 1` then that would be the illegal `1 += 1` and the assignment would fail.
 
 # ADVANCED CONCEPTS
-
 
 Concepts can have part of speech information attached to them (using `dictionarysystem.h` values). Eg.
 ```
@@ -1315,13 +1331,14 @@ name of what was passed in, and it is generally (but not always) evaluated on us
 
 ## Save-Restore locals
 
-There are no true local variables in ChatScript. 
-All variables are global, merely some are transient and some are permanent. 
-Function variables like ^myval are restricted in use to the function declaring them, 
-so they are sort of local variables, but the are stand-ins for the arguments passed, 
-which means if you write on the function variable you are changing something above you as well. 
+`$$xxx` and `$xxx` variables are global, merely transient and permanent. 
+Function variables like `^myval` are restricted in use to the function declaring them, 
+so they are sort of local variables, but they are stand-ins for the arguments passed, which means 
+if you write on the function variable you are changing something above you as well.  
 
-And without local variables, it is easy to accidentally reuse the same name of a temporary variable 
+Fortunately there are local variables, `$_xxx`. 
+
+Without local variables, it is easy to accidentally reuse the same name of a transient variable 
 that you used above you in the call chain. Imagine this:
 ```
 outputmacro: ^mycall()
@@ -1345,14 +1362,26 @@ loop()
 ```
 You have two areas using the same counter variable and the inner one destroys the outer
 one. Here is where save-restore variables come in. 
-You can declare a list of variables whose contents will be memorized on entry to a function, 
-and restored to their former values on exist. 
 
-You can safely write all over them within the function, without harming
-a caller. And they are still global, in that they are visible to anyone your function calls.
+You can either use local variables, when you don't need to pass information between places except via function args. 
+Or you can use save-restore variables.  
+You can declare a list of variables whose contents will be memorized on entry to a function or a topic, 
+and restored to their former values on exit.  
+You can safely write all over them within the function or topic, without harming a caller. 
+And they are still global, in that they are visible to anyone your function calls.
 
-Of course if you intend to pass back data in a global variable, don't put it in your saverestore
-list.
+Of course if you intend to pass back data in a global variable, don't put it in your save-restore list.
+
+	Outputmacro: ^myfunc(^arg1)($$tmp  $global  $$tmp2) # $$bestscore exported
+	….. code
+	Topic: ~mytopic(keyword1 keyword2) ($$tmp $$global $$tmp2)
+	… rules
+
+You can protect both transient and permanent variables, but usually you would just protect all of the transient variables you assign values to inside your function or topic. The comment is what I would say if I intended a variable be returned outside in addition to a primary return value. That way anyone reading the code would know $$bestscore was not accidentally left off the save-restore list.
+
+And whenever you can, prefer local variables because then you don't have to remember to add them to the
+protected save-restore list. ChatScript does that automatically.
+
 ```
 Outputmacro: ^myfunc(^arg1)($$tmp $global $$tmp2) # $$bestscore exported ... code
 ```

@@ -1778,6 +1778,21 @@ Used for function calls, to read their callArgumentList. Arguments are not evalu
     return ptr;
 }
 
+char* ReadCompiledWordOrCall(char* ptr, char* word,bool noquote,bool var) 
+{
+	ptr = ReadCompiledWord(ptr, word, noquote, var);
+	word += strlen(word);
+	if (*ptr == '(') // its a call
+	{
+		char* end = BalanceParen(ptr+1,true,false); // function call args
+		strncpy(word,ptr,end-ptr);
+		word += end-ptr;
+		*word = 0;
+		ptr = end;
+	}
+	return ptr;
+}
+
 char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var) 
 {//   a compiled word is either characters until a blank, or a ` quoted expression ending in blank or nul. or a double-quoted on both ends or a ^double quoted on both ends
 	*word = 0;
@@ -1828,6 +1843,7 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 	else 
 	{
 		bool quote = false;
+		bool oncedot = false;
 		while ((c = *ptr++) && c != ENDUNIT) 
 		{
 			if (quote) {}
@@ -1837,7 +1853,8 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 
 			if (special) // try to end a variable if not utf8 char or such
 			{
-				if ( !IsAlphaUTF8OrDigit(c) && c != special && c != '_' && c != '-' ) break;
+				if (special == '$' && c == '.' && !oncedot) oncedot = true;
+				else if ( !IsAlphaUTF8OrDigit(c) && c != special && c != '_' && c != '-' ) break;
 			}
 
 			if ((word-original) > (MAX_WORD_SIZE - 3)) break;

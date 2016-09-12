@@ -67,19 +67,18 @@ resume:
 		{
 			char remap[MAX_WORD_SIZE];
 			strcpy(remap,word1); // for tracing
-			if (*word1 == '^' && IsDigit(word1[1])) // simple function var, remap it
-			{
-				strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]); 
-			}
+			if (*word1 == '^' && IsDigit(word1[1])) strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]);  // simple function var, remap it
 			char* found;
-			if (*word1 == SYSVAR_PREFIX) found = SystemVariable(word1,NULL);
+			if (word1[0] == LCLVARDATA_PREFIX && word1[1] == LCLVARDATA_PREFIX) 
+				found = word1 + 2;	// preevaled function variable
+			else if (*word1 == SYSVAR_PREFIX) found = SystemVariable(word1,NULL);
 			else if (*word1 == '_') found = wildcardCanonicalText[GetWildcardID(word1)];
 			else if (*word1 == USERVAR_PREFIX) found = GetUserVariable(word1);
 			else if (*word1 == '?') found = (tokenFlags & QUESTIONMARK) ? (char*) "1" : (char*) "";
 			else if (*word1 == '^' && word1[1] == USERVAR_PREFIX) // indirect var
 			{
 				found = GetUserVariable(word1+1);
-				found = GetUserVariable(found);
+				found = GetUserVariable(found,true);
 			}
 			else if (*word1 == '^' && word1[1] == '^' && IsDigit(word1[2])) found = ""; // indirect function var 
 			else if (*word1 == '^' && word1[1] == '_') found = ""; // indirect var
@@ -178,14 +177,12 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 		{
 			int start = 0;
 			int end = 0;
-			unsigned int wildcardSelector = 0;
 			unsigned int gap = 0;
 			wildcardIndex = 0;
 			bool uppercasem = false;
-			int positionStart, positionEnd;
 			int whenmatched = 0;
 			bool failed = false;
-			if (!Match(ptr+10,0,start,(char*)"(",1,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
+			if (!Match(ptr+10,0,start,(char*)"(",1,0,start,end,uppercasem,whenmatched,0,0)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
 			if (clearUnmarks) // remove transient global disables.
 			{
 				clearUnmarks = false;
@@ -383,8 +380,8 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 		// convert null to numeric operator for < or >  -- but not for equality
 		if (!*val1 && IsDigit(*val2) && IsNumber(val2) && (*op == '<' || *op == '>')) strcpy(val1,(char*)"0");
 		else if (!*val2 && IsDigit(*val1) && IsNumber(val1) && (*op == '<' || *op == '>')) strcpy(val2,(char*)"0");
-
-		if (!IsDigitWord(val1,true) || !IsDigitWord(val2,true)) //   non-numeric string compare - bug, can be confused if digit starts text string
+		// treat #123 as string but +21545 and -12345 as numbers
+		if (*val1 == '#' || !IsDigitWord(val1,true) || *val2 == '#' ||  !IsDigitWord(val2,true)) //   non-numeric string compare - bug, can be confused if digit starts text string
 		{
 			char* arg1 = val1;
 			char* arg2 = val2;

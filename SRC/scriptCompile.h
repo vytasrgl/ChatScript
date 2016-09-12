@@ -20,7 +20,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define NOTE_KEYWORDS 4 // track keywords used
 #define NO_SUBSTITUTE_WARNING 8 // dont warn about substitutions
 
-#define ARGSETLIMIT 50
+#define ARGSETLIMIT 40 // ^0...^39
 
 extern unsigned int buildID; // build 0 or build 1
 extern bool compiling;

@@ -105,7 +105,7 @@ static void AddDisplay(char* word)
 
 static char* ReadDisplay(FILE* in, char* ptr)
 {
-	char word[MAX_WORD_SIZE];
+	char word[SMALL_WORD_SIZE];
 	ptr = ReadNextSystemToken(in,ptr,word,false);
 	while (1)
 	{
@@ -113,6 +113,8 @@ static char* ReadDisplay(FILE* in, char* ptr)
 		if (*word == ')') break;
 		if (*word != USERVAR_PREFIX) 
 			BADSCRIPT("Display argument must be uservar of $$ $ or $_: %s",word)
+		if (strchr(word,'.'))
+			BADSCRIPT("Display argument cannot be dot-selected %s",word)
 		AddDisplay(word); // explicit display
 	}
 	return ptr;
@@ -146,11 +148,11 @@ void EraseTopicFiles(unsigned int build,char* name)
 	int i = -1;
 	while (topicFiles[++i])
 	{
-		char word[MAX_WORD_SIZE];
-		sprintf(word,(char*)"TOPIC/%s%s.txt",topicFiles[i],name);
-		remove(word);
-		sprintf(word,(char*)"TOPIC/BUILD%s/%s%s.txt",name,topicFiles[i],name);
-		remove(word);
+		char file[SMALL_WORD_SIZE];
+		sprintf(file,(char*)"TOPIC/%s%s.txt",topicFiles[i],name);
+		remove(file);
+		sprintf(file,(char*)"TOPIC/BUILD%s/%s%s.txt",name,topicFiles[i],name);
+		remove(file);
 	}
 }
 
@@ -319,7 +321,14 @@ static void InsureAppropriateCase(char* word)
 		*at = c;
 	}
 	else if (*word == '_' || *word == '\'') InsureAppropriateCase(word+1);
-	else if ((*word == '^' && word[1] != '"') || *word == '~' || *word == USERVAR_PREFIX || *word == SYSVAR_PREFIX || *word == '|' ) MakeLowerCase(word);	
+	else if (*word == USERVAR_PREFIX)
+	{
+		char* dot = strchr(word,'.');
+		if (dot) *dot = 0;
+		MakeLowerCase(word);	
+		if (dot) *dot = '.';
+	}
+	else if ((*word == '^' && word[1] != '"') || *word == '~' ||  *word == SYSVAR_PREFIX || *word == '|' ) MakeLowerCase(word);	
 	else if (*word == '@' && IsDigit(word[1])) MakeLowerCase(word);	//   potential factref like @2subject
 }
 
@@ -362,6 +371,7 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 {
 	*word = 0;
     if (!ptr)  return 0;
+	char tmp[MAX_WORD_SIZE];
     char* start = word;
     ptr = SkipWhitespace(ptr);
 	FindDeprecated(ptr,(char*)"$bot",(char*)"Deprecated $bot needs to be $cs_bot");
@@ -468,7 +478,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 				*at = c;
 				if (index >= 0) // was a function argument
 				{
-					char tmp[MAX_WORD_SIZE];
 					strcpy(tmp,at); // protect chunk
 					sprintf(hat,(char*)"^%d%s",index,tmp);
 				}
@@ -492,7 +501,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 				WORDP D = FindWord(hat,at-hat,LOWERCASE_LOOKUP);
 				if (D && D->internalBits & RENAMED) // remap matchvar inside  string
 				{
-					char tmp[MAX_WORD_SIZE];
 					strcpy(tmp,at); // protect chunk
 					sprintf(hat+1,(char*)"%d%s",(unsigned int)D->properties,tmp);
 				}
@@ -508,7 +516,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 				WORDP D = FindWord(hat,at-hat,LOWERCASE_LOOKUP);
 				if (D && D->internalBits & RENAMED)  // rename @set inside string
 				{
-					char tmp[MAX_WORD_SIZE];
 					strcpy(tmp,at); // protect chunk
 					sprintf(hat+1,(char*)"%d%s",(unsigned int)D->properties,tmp);
 				}
@@ -528,7 +535,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 				char* at = hat;
 				if (at[1] == '#')  ++at;	// user constant
 				while (*++at && (IsAlphaUTF8OrDigit(*at) || *at == '_')){;} // find end
-				char tmp[MAX_WORD_SIZE];
 				strcpy(tmp,at); // protect chunk
 				*at = 0;
 				uint64 n;
@@ -592,7 +598,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 			word = start;
 			if (*start == '^') --ptr;
 		}
-
 	}
 
 	// the normal composite token
@@ -701,7 +706,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		WORDP D = FindWord(word,at-word);
 		if (D && D->internalBits & RENAMED) // remap @set in string
 		{
-			char tmp[MAX_WORD_SIZE];
 			strcpy(tmp,at); // protect chunk
 			sprintf(word+1,(char*)"%d%s",(unsigned int)D->properties,tmp);
 		}
@@ -809,7 +813,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 			WORDP D = FindWord(at,at1-at);
 			if (D && D->internalBits & RENAMED) // remap @set on right side
 			{
-				char tmp[MAX_WORD_SIZE];
 				strcpy(tmp,at1); // protect chunk
 				sprintf(at+1,(char*)"%d%s",(unsigned int)D->properties,tmp);
 			}
@@ -822,11 +825,10 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 			*at = 0;
 			int index = GetFunctionArgument(word);
 			*at = c;
-			char hold[MAX_WORD_SIZE];
 			if (index >= 0) 
 			{
-				sprintf(hold,(char*)"^%d%s",index,at);
-				strcpy(word,hold);
+				sprintf(tmp,(char*)"^%d%s",index,at);
+				strcpy(word,tmp);
 			}
 		}
 		// check for rename on LHS
@@ -837,9 +839,8 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 			WORDP D = FindWord(word,at-word);
 			if (D && D->internalBits & RENAMED) // remap match var
 			{
-				char hold[MAX_WORD_SIZE];
-				sprintf(hold,(char*)"%d%s",(unsigned int)D->properties,at);
-				strcpy(word+1,hold);
+				sprintf(tmp,(char*)"%d%s",(unsigned int)D->properties,at);
+				strcpy(word+1,tmp);
 			}
 		}
 		// check for rename on LHS
@@ -849,7 +850,6 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 			WORDP D = FindWord(word,at-word);
 			if (D && D->internalBits & RENAMED) // remap @set in string
 			{
-				char tmp[MAX_WORD_SIZE];
 				strcpy(tmp,at); // protect chunk
 				sprintf(word+1,(char*)"%d%s",(unsigned int)D->properties,tmp);
 			}
@@ -864,13 +864,12 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		while (*++at && (IsAlphaUTF8(*at)  || *at == '_' || IsDigit(*at))){;}
 		char c = *at;
 		*at = 0; // terminate it so internal ^ is recognized uniquely
-		char functionvar[MAX_WORD_SIZE];
-		strcpy(functionvar,hat);
+		strcpy(tmp,hat);
 		*at = c;
 
-		while (*functionvar)
+		while (*tmp)
 		{
-			int index = GetFunctionArgument(functionvar);
+			int index = GetFunctionArgument(tmp);
 			if (index >= 0) 
 			{
 				char remainder[MAX_WORD_SIZE];
@@ -878,7 +877,7 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 				sprintf(hat,(char*)"^%d%s",index,remainder);
 				break;
 			}
-			else functionvar[0] = 0;	// just abort it for now shrink it smaller, to handle @9subject kinds of behaviors 
+			else tmp[0] = 0;	// just abort it for now shrink it smaller, to handle @9subject kinds of behaviors 
 		}
 	}
 
@@ -894,7 +893,14 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 	{
 		char* at = word;
 		while (IsAlphaUTF8(*++at) );  // find end of initial word
-		if (*at && IsPunctuation(*at) & ARITHMETICS && *at != '=')
+		if (*word == '$' && *at == '.' && IsAlphaUTF8(at[1]))// allow $x.y
+		{
+			while (IsAlphaUTF8(*++at) );  // find second of initial word
+			ptr -= strlen(at);
+			*at = 0;
+			len = at - start;
+		}  
+		else if (*at && IsPunctuation(*at) & ARITHMETICS && *at != '=')
 		{
 			// - is legal in a var or word token
 			if (*at != '-' || (!IsAlphaUTF8OrDigit(at[1]) && at[1] != '_'))
@@ -931,7 +937,13 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		{
 			if (!IsAlphaUTF8OrDigit(*at) && *at != '-' && *at != '_') break;
 		}
-		if (!*at) AddDisplay(word);
+		if (*at == '.')  // root of a dotted variable
+		{
+			*at = 0;
+			AddDisplay(word);
+			*at = '.';
+		}
+		else if (!*at)  AddDisplay(word);
 	}
 
 	InsureAppropriateCase(word);
@@ -1305,7 +1317,7 @@ static void NoteUse(char* label,char* topic)
 	}
 }
 
-static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[ARGSETLIMIT][MAX_WORD_SIZE], bool needToField)
+static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[ARGSETLIMIT+1][SMALL_WORD_SIZE], bool needToField)
 {
 	if (needToField) // assigning query to var, must give TO field value
 	{
@@ -1512,14 +1524,12 @@ static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[ARGSETLI
 static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bool needTofield)
 {	//   returns with no space after it
 	//   ptr is just after the ^name -- user can make a call w/o ^ in name but its been patched. Or this is function argument
-	char reuseTarget1[MAX_WORD_SIZE];
-	char reuseTarget2[MAX_WORD_SIZE];
+	char reuseTarget1[SMALL_WORD_SIZE];
+	char reuseTarget2[SMALL_WORD_SIZE];
 	*reuseTarget2 = *reuseTarget1  = 0;	//   in case this turns out to be a ^reuse call, we want to test for its target
-	char argset[ARGSETLIMIT][MAX_WORD_SIZE];
-	char hold[MAX_BUFFER_SIZE];
+	char argset[ARGSETLIMIT+1][SMALL_WORD_SIZE];
 	char word[MAX_WORD_SIZE];
 	char* arguments = ptr;
-	char* mydata = hold;	//   read in all data, then treat callArgumentList as output data for processing
 	// locate the function
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
 	if (!call || !D || !(D->internalBits & FUNCTION_NAME))  //   not a function, is it a function variable?
@@ -1532,6 +1542,8 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 		*data = 0;
 		return ptr;
 	}
+	char* hold = AllocateBuffer();
+	char* mydata = hold;	//   read in all data, then treat callArgumentList as output data for processing
 	SystemFunctionInfo* info = NULL;
 	bool isStream = false;		//   dont check contents of stream, just format it
 	if (!(D->internalBits & FUNCTION_BITS))			//   system function  (not pattern macro, outputmacro, dual macro, tablemacro, or plan macro)
@@ -1545,7 +1557,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	else if (patternContext && !(D->internalBits & IS_PATTERN_MACRO)) BADSCRIPT((char*)"CALL-2 Can only call patternmacro or dual macro from pattern area - %s",name)
 	else if (!patternContext && !(D->internalBits &  (IS_OUTPUT_MACRO | IS_TABLE_MACRO))) BADSCRIPT((char*)"CALL-3 Cannot call pattern or table macro from output area - %s",name)
 	
-	for (unsigned int i = 0; i <= 9; ++i) *argset[i] = 0; //   default EVERYTHING before we test it later
+	memset(argset,0,sizeof(argset)); //   default EVERYTHING before we test it later
 	if (!stricmp(D->word,(char*)"^debug")) 
 		DebugCode(NULL); // a place for a script compile breakpoint
 
@@ -1609,17 +1621,14 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 				{
 					word[0] = '"';
 					word[1] = FUNCTIONSTRING; // show we know it
-					if (word[2] == ':')	
-					{
-						strcpy(word+3,CompileString(word+1)+2);
-					}
+					if (word[2] == ':')	 strcpy(word+3,CompileString(word+1)+2);
 				}
 				ReadNextSystemToken(in,ptr,nextToken,false,true);
 
 				// argument is a function without its ^ ?  // but be wary of doing this in createfact, which can have nested facts
 				if (*word != '^' && *nextToken == '(' && stricmp(name,(char*)"^createfact")) //   looks like a call, reformat it if it is
 				{
-					char fnname[MAX_WORD_SIZE];
+					char fnname[SMALL_WORD_SIZE];
 					*fnname = '^';
 					MakeLowerCopy(fnname+1,word);	
 					WORDP D = FindWord(fnname,0,PRIMARY_CASE_ALLOWED);
@@ -1636,16 +1645,23 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 					char* arg = mydata;
 					ptr = ReadCall(word,ptr,in,mydata,*nextToken == '(',false);
 					*mydata = 0;
-					strcpy(argset[++argumentCount],arg);
+					if (argumentCount < ARGSETLIMIT) 
+					{
+						if (strlen(arg) < SMALL_WORD_SIZE) strcpy(argset[++argumentCount],arg);
+						else strcpy(argset[++argumentCount],"tmpholding");
+					}
 					*mydata++ = ' ';
 					continue;
 				}
 				if (*word == '^' && *nextToken != '(' && word[1] != '^' && word[1] != USERVAR_PREFIX && word[1] != '_' && word[1] != '"' && !IsDigit(word[1]))
 				 // ^^ indicated a deref of something
 					BADSCRIPT((char*)"%s is either a function missing arguments or an undefined function variable.",word) //   not function call or function var ref
-	
-				strcpy(argset[++argumentCount],word);
-				if (argumentCount == (ARGSETLIMIT-1)) BADSCRIPT((char*)"CALL-? Too many arguments");
+				// track only initial arguments for verify. can have any number when its a stream
+				if (argumentCount < ARGSETLIMIT) 
+				{
+					if (strlen(word) < SMALL_WORD_SIZE) strcpy(argset[++argumentCount],word);
+					else strcpy(argset[++argumentCount],"tmpholding");
+				}
 			}
 			else 
 			{
@@ -1711,7 +1727,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	if (isStream){;}  // no cares
 	else if (info) // system function
 	{
-		if (argumentCount != info->argumentCount && info->argumentCount != VARIABLE_ARG_COUNT) 
+		if (argumentCount != (info->argumentCount & 255) && info->argumentCount != VARIABLE_ARG_COUNT && info->argumentCount != UNEVALED && info->argumentCount != STREAM_ARG) 
 			BADSCRIPT((char*)"CALL-60 Incorrect argument count to system function %s- given %d instead of required %d",name,argumentCount,info->argumentCount & 255)
 	}
 	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
@@ -1761,7 +1777,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	patternContext = oldContext;
 	
 	*data++ = ')'; //   outer layer generates trailing space
-	
+	FreeBuffer();
 	return ptr;	
 }
 
@@ -1884,7 +1900,7 @@ static char* ReadDescribe(char* ptr, FILE* in,unsigned int build)
 		if (*word != USERVAR_PREFIX && *word != '_' && *word != '^' && *word != '~')
 				BADSCRIPT((char*)"Described entity %s is not legal to describe- must be variable or function or concept/topic",word)
 		ptr = ReadNextSystemToken(in,ptr,description,false);
-		char file[MAX_WORD_SIZE];
+		char file[SMALL_WORD_SIZE];
 		sprintf(file,(char*)"TOPIC/BUILD%s/describe%s.txt",baseName,baseName);
 		FILE* out = FopenUTF8WriteAppend(file);
 		fprintf(out,(char*)" %s %s\r\n",word,description);
@@ -2209,7 +2225,7 @@ name of topic  or concept
 				//    MERGE user pattern words into one? , e.g. drinking age == drinking_age in dictionary
 				//   only in () sequence mode. Dont merge [old age] or {old age} or << old age >>
 				if (nestKind[nestIndex-1] == '(' && !unorderedSeen) //   BUG- do we need to see what triples etc wordnet has
-				{
+				{ // dont want pattern may 9 to merge
 					ReadNextSystemToken(in,ptr,nextToken,true,true); 
 					WORDP F = FindWord(word);
 					WORDP E = FindWord(nextToken);
@@ -2218,7 +2234,7 @@ name of topic  or concept
 						char join[MAX_WORD_SIZE];
 						sprintf(join,(char*)"%s_%s",word,nextToken);
 						E = FindWord(join,0,PRIMARY_CASE_ALLOWED); // must be direct match
-						if (E && E->properties & PART_OF_SPEECH) // change to composite
+						if (E && E->properties & PART_OF_SPEECH && !IS_NEW_WORD(E)) // change to composite
 						{
 							strcpy(word,join);		//   joined word replaces it
 							ptr = ReadNextSystemToken(in,ptr,nextToken,true,false); // swallow the lookahead
@@ -2236,7 +2252,13 @@ name of topic  or concept
 			if (memorizeSeen && comparison[1]) 
 				 BADSCRIPT((char*)"PATTERN-57 Cannot use _ before a comparison")
 			if (variableGapSeen) BADSCRIPT((char*)"PATTERN-16 Cannot use * before comparison since memorization will be incomplete")
-			if (*word == USERVAR_PREFIX && word[1] == LOCALVAR_PREFIX) AddDisplay(word);
+			if (*word == USERVAR_PREFIX && word[1] == LOCALVAR_PREFIX)
+			{
+				char* dot = strchr(word,'.');
+				if (dot) *word = 0;
+				AddDisplay(word);
+				if (dot) *word = '.';
+			}
 	 		*comparison = c;
 			if (c == '!') // move not operator out in front of token
 			{
@@ -2289,7 +2311,13 @@ name of topic  or concept
 			else if (*rhs == USERVAR_PREFIX) 
 			{
 				MakeLowerCase(rhs);	// user variable 
-				if (rhs[1] == LOCALVAR_PREFIX) AddDisplay(rhs);
+				if (rhs[1] == LOCALVAR_PREFIX) 
+				{
+					char* dot = strchr(rhs,'.');
+					if (dot) *rhs = 0;
+					AddDisplay(rhs);
+					if (dot) *word = '.';
+				}
 			}
 			else if (*rhs == SYSVAR_PREFIX) MakeLowerCase(rhs);	// system variable
 			else if (*rhs == '^' && (rhs[1] == '_' || rhs[1] == USERVAR_PREFIX || IsDigit(rhs[1]))) MakeLowerCase(rhs); // indirect match variable or indirect user vaiable or function variable
@@ -3474,9 +3502,9 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 		}
 	}
 	if (!D) return ptr; //   nothing defined
-
+	if (functionArgumentCount > ARGSETLIMIT) BADSCRIPT((char*)"MACRO-7 Argument count to macro definition %s limited to %d",macroName,ARGSETLIMIT)
 	AddInternalFlag(D,(unsigned int)(FUNCTION_NAME|build|typeFlags));
-	*pack++ = (unsigned char)(functionArgumentCount + 'A'); // some 30 can be had
+	*pack++ = (unsigned char)(functionArgumentCount + 'A'); // some 10 can be had ^0..^9
 	
 	currentFunctionDefinition = D;
 	char d[MAX_BUFFER_SIZE];
@@ -3507,7 +3535,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 
 	if (!table) // tables are not real macros, they are temporary
 	{
-		char filename[MAX_WORD_SIZE];
+		char filename[SMALL_WORD_SIZE];
 		sprintf(filename,(char*)"TOPIC/BUILD%s/macros%s.txt",baseName,baseName);
 		//   write out definition -- this is the real save of the data
 		FILE* out = FopenUTF8WriteAppend(filename);
@@ -4077,7 +4105,7 @@ static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 	
 	//   trailing blank after jump code
 	if (len >= (MAX_TOPIC_SIZE-100)) BADSCRIPT((char*)"TOPIC-7 Too much data in one topic")
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	sprintf(filename,(char*)"TOPIC/BUILD%s/script%s.txt",baseName,baseName);
 	FILE* out = FopenUTF8WriteAppend(filename);
 	
@@ -4339,7 +4367,7 @@ static char* ReadReplace(char* ptr, FILE* in, unsigned int build)
 			ptr -= strlen(replace); //   let someone else see this starter 
 			break; 
 		}
-		char filename[MAX_WORD_SIZE];
+		char filename[SMALL_WORD_SIZE];
 		sprintf(filename,(char*)"TOPIC/BUILD%s/private%s.txt",baseName,baseName);
 		FILE* out = FopenUTF8WriteAppend(filename);
 		fprintf(out,(char*)" %s %s\r\n",word,replace);
@@ -4350,7 +4378,7 @@ static char* ReadReplace(char* ptr, FILE* in, unsigned int build)
 
 void SaveCanon(char* word, char* canon)
 {
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	sprintf(filename,(char*)"TOPIC/BUILD%s/canon%s.txt",baseName,baseName);
 	FILE* out = FopenUTF8WriteAppend(filename);
 	fprintf(out,(char*)" %s %s\r\n",word,canon);
@@ -4608,7 +4636,7 @@ static void WriteConcepts(WORDP D, uint64 build)
 		
 	// write out keywords 
 	FILE* out = NULL;
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	sprintf(filename,(char*)"TOPIC/BUILD%s/keywords%s.txt",baseName,baseName);
 	out = FopenUTF8WriteAppend(filename);
 	fprintf(out,(D->internalBits & TOPIC) ? (char*)"T%s " : (char*)"%s ", D->word);
@@ -4898,7 +4926,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		strcpy(baseName,name+5);
 		char* dot = strchr(baseName,'.');
 		*--dot = 0; // remove the 2 at the end
-		char dir[MAX_WORD_SIZE];
+		char dir[SMALL_WORD_SIZE];
 		sprintf(dir,"TOPIC/BUILD%s",baseName);
 		MakeDirectory(dir);
 	}
@@ -4918,7 +4946,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	FILE* in = FopenReadNormal(name); // default was top level chatscript
 	if (!in)
 	{
-		char file[MAX_WORD_SIZE];
+		char file[SMALL_WORD_SIZE];
 		sprintf(file,(char*)"RAWDATA/%s",name); // 2nd default is rawdata itself
 		in = FopenReadNormal(file);
 		if (!in)
@@ -4961,7 +4989,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	echo = true;
 	
 	//   store known pattern words in pattern file that we want to recognize (not spellcorrect on input)
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	sprintf(filename,(char*)"TOPIC/BUILD%s/patternWords%s.txt",baseName,baseName);
 	patternFile = FopenUTF8Write(filename);
 	if (!patternFile)

@@ -453,6 +453,8 @@ void MonogoUserFilesInit() // start mongo as fileserver
 		userFileSystem.userClose = mongouserClose;
 		userFileSystem.userRead = mongouserRead;
 		userFileSystem.userWrite = mongouserWrite;
+		userFileSystem.userDecrypt = NULL;
+		userFileSystem.userEncrypt = NULL;
 		filesystemOverride = MONGOFILES;
 	}
 	else 

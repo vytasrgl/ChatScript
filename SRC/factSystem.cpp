@@ -572,22 +572,22 @@ bool ExportFacts(char* name, int set,char* append)
 	FreeBuffer();
 	FILE* out = userFileSystem.userCreate(name); // user ltm file
 	if (!out) return false;
-	userFileSystem.userWrite(buffer,1,(buffer-base),out);
+	EncryptableFileWrite(buffer,1,(buffer-base),out);
 	userFileSystem.userClose(out);
 	FreeUserCache();
 	return true;
 }
 
-static void ExportJson1(char* jsonitem, char* buffer)
+static char* ExportJson1(char* jsonitem, char* buffer)
 {
 	if (!*jsonitem)
 	{
 		strcpy(buffer,(char*)"null\r\n");
-		return;
+		return buffer + strlen(buffer);
 	}
 
 	WORDP D = FindWord(jsonitem);
-	if (!D) return;
+	if (!D) return buffer;
 	FACT* F = GetSubjectNondeadHead(D);
 	while (F)
 	{
@@ -597,13 +597,13 @@ static void ExportJson1(char* jsonitem, char* buffer)
 			F->flags &= -1 ^ FACTTRANSIENT;	// dont pass transient flag out
 			WriteFact(F,false,buffer,false,true);
 			buffer += strlen(buffer);
-			*buffer = 0;
 			F->flags = original;
 		}
-		if (F->flags & (JSON_ARRAY_VALUE|JSON_OBJECT_VALUE)) ExportJson1(Meaning2Word(F->object)->word,buffer); // on object side of triple
+		if (F->flags & (JSON_ARRAY_VALUE|JSON_OBJECT_VALUE)) buffer = ExportJson1(Meaning2Word(F->object)->word,buffer); // on object side of triple
 
 		F = GetSubjectNondeadNext(F);
 	}
+	return buffer + strlen(buffer);
 }
 
 FunctionResult ExportJson(char* name, char* jsonitem, char* append)
@@ -626,7 +626,7 @@ FunctionResult ExportJson(char* name, char* jsonitem, char* append)
 
 	char* buffer = GetFreeCache();
 	ExportJson1(jsonitem, buffer);
-	userFileSystem.userWrite(buffer,1,strlen(buffer),out);
+	EncryptableFileWrite(buffer,1,strlen(buffer),out);
 	userFileSystem.userClose(out);
 	FreeUserCache();
 	return NOPROBLEM_BIT;
@@ -814,7 +814,7 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 
 	ChangeDepth(1, (char*)"ImportFacts");
 	char* filebuffer = GetFreeCache();
-	size_t readit = userFileSystem.userRead(filebuffer,1,userCacheSize,in);	// read it all in, including BOM
+	size_t readit = DecryptableFileRead(filebuffer,1,userCacheSize,in);	// LTM file read, read it all in, including BOM
 	userFileSystem.userClose(in);
 	filebuffer[readit] = 0;
 	filebuffer[readit+1] = 0; // insure fully closed off
@@ -840,13 +840,18 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 			ChangeDepth(1, readBuffer);
 			FACT* G = ReadFact(readBuffer,0);
 			ChangeDepth(-1, readBuffer);
-			if (!G) continue;
+			if (!G) 
+			{
+				ReportBug("Import data: %s",readBuffer);
+				continue;
+			}
 			G->flags |= flags;
 			if (store > 0) AddFact(store,G);
 			else if (!*buffer) strcpy(buffer,Meaning2Word(G->subject)->word); // to return the name
 		}
 	}
 	FreeUserCache();
+	userRecordSourceBuffer = NULL;
 
 	if (!stricmp(erase,(char*)"erase") || !stricmp(transient,(char*)"erase")) remove(name); // erase file after reading
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"[%d] => ",FACTSET_COUNT(store));

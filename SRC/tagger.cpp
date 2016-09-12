@@ -22,7 +22,7 @@ uint64 lcSysFlags[MAX_SENTENCE_LENGTH];      // transient current system tags lo
 uint64 posValues[MAX_SENTENCE_LENGTH];			// current pos tags in this word position
 uint64 canSysFlags[MAX_SENTENCE_LENGTH];		// canonical sys flags lowercase in this word position 
 unsigned int parseFlags[MAX_SENTENCE_LENGTH];
-
+static unsigned char wasDescribed[256];
 static unsigned char describeVerbal[100];
 static unsigned char describePhrase[100];
 static unsigned char describeClause[100];
@@ -142,6 +142,9 @@ static char* DescribeComponent(int i,char* buffer,char* open, char* close) // ve
 
 static char* Describe(int i,char* buffer)
 {
+	if (wasDescribed[i]) 
+		return buffer; // protect against infinite xref loops
+	wasDescribed[i] = 1;
 	// before
 	int currentPhrase = phrases[i] & (-1 ^ phrases[i-1]); // only the new bit
 	if (!currentPhrase) currentPhrase = phrases[i];
@@ -328,6 +331,7 @@ void DumpSentence(int start,int end)
 	describedVerbals = 0;
 	describedPhrases = 0;
 	describedClauses = 0;
+	memset(wasDescribed,0,sizeof(wasDescribed));
 
 	for ( i = start; i <= to; ++i) // main sentence
 	{

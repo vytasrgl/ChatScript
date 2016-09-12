@@ -142,7 +142,7 @@ int ValidPeriodToken(char* start, char* end, char next,char next2) // token with
 	if (IsMadeOfInitials(start,end) == ABBREVIATION) return TOKEN_INCLUSIVE; //   word of initials is ok
 	if (IsUrl(start,end)) 
 	{
-		if (*(end-1) == ']' || *(end-1) == ')') return TOKEN_INCOMPLETE; // bruce@job.net]
+		if (!IsAlphaUTF8(*(end-1))) return TOKEN_INCOMPLETE; // bruce@job.net]
 		return TOKEN_INCLUSIVE; //   swallow URL as a whole
 	}
 	if (!strnicmp((char*)"no.",start,3) && IsDigit(next)) return TOKEN_INCLUSIVE; //   no.8  
@@ -155,7 +155,7 @@ int ValidPeriodToken(char* start, char* end, char next,char next2) // token with
 	if (*start == '$' && IsFloat(start+1,end) && IsDigit(next)) return TOKEN_INCOMPLETE; //   decimal number9 or money
 	if (IsNumericDate(start,end)) return TOKEN_INCOMPLETE;	//   swallow period date as a whole - bug . after it?
 	if ( next == '-') return TOKEN_INCOMPLETE;	// like N.J.-based
-	if (IsAlphaUTF8(next)) return TOKEN_INCLUSIVE;  // "file.txt" 
+	if (IsAlphaUTF8(next)) return TOKEN_INCOMPLETE;  // "file.txt" 
 
 	//  not part of word, will be stand alone token.
 	return TOKEN_EXCLUSIVE;
@@ -814,9 +814,9 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		if ((end-ptr) > (MAX_WORD_SIZE-3)) 
 		{
 			char word[MAX_WORD_SIZE];
-			strncpy(word,ptr,MAX_WORD_SIZE - 5);
-			word[MAX_WORD_SIZE-5] = 0;
-			ReportBug("Token too big: %s size %d limited to %d\r\n",word, (end-ptr), MAX_WORD_SIZE-3);
+			strncpy(word,ptr,MAX_WORD_SIZE - 25);
+			word[MAX_WORD_SIZE-25] = 0;
+			ReportBug("Token too big: %s size %d limited to %d\r\n",word, (end-ptr), MAX_WORD_SIZE-25);
 			end = ptr + MAX_WORD_SIZE - 25; // abort, too much jammed together. no token to reach MAX_WORD_SIZE
 		}
 		if (count != oldCount || *ptr == ' ')	// FindWordEnd performed allocation already or removed stage direction start

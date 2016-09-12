@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.8a";
+char* version = "6.83";
 
 // Technically using atomic is not helpful here. EVServer runs a single thread per core (excluding the event library)
 // and the alternate server code in csocket has a single thread for the engine so it cannot be out of synch with these variables.
@@ -46,6 +46,8 @@ bool overrideAuthorization = false;
 #define MAX_TRACED_FUNCTIONS 50
 static char tracedFunctions[MAX_TRACED_FUNCTIONS][100];
 static unsigned int tracedFunctionsIndex = 0;
+static char timedFunctions[MAX_TRACED_FUNCTIONS][100];
+static unsigned int timedFunctionsIndex = 0;
 
 clock_t  startSystem;						// time chatscript started
 unsigned int choiceCount = 0;
@@ -112,6 +114,8 @@ bool showReject = false;						// Log internal repeat rejections additions
 bool all = false;								// generate all possible answers to input
 int regression = NO_REGRESSION;						// regression testing in progress
 unsigned int trace = 0;							// current tracing flags
+char* bootcmd = NULL;						// current boot tracing flags
+unsigned int timing = 0;						// current timing flags
 bool shortPos = false;							// display pos results as you go
 
 int inputRetryRejoinderTopic = NO_REJOINDER;				
@@ -252,6 +256,16 @@ void CreateSystem()
 	WORDP boot = FindWord((char*)"^csboot");
 	if (boot) // run script on startup of system. data it generates will also be layer 1 data
 	{
+		int oldtrace = trace;
+		if (bootcmd) 	
+		{
+			if (*bootcmd == '"') 
+			{
+				++bootcmd;
+				bootcmd[strlen(bootcmd)-1] = 0;
+			}
+			DoCommand(bootcmd,NULL,false);
+		}
 		UnlockLevel(); // unlock it to add stuff
 		FACT* F = factFree;
 		Callback(boot,(char*)"()",true); // do before world is locked
@@ -263,6 +277,7 @@ void CreateSystem()
 		}
 		NoteBotVariables(); // convert user variables read into bot variables
 		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
+		trace = oldtrace;
 	}
 	InitSpellCheck(); // after boot vocabulary added
 
@@ -475,7 +490,9 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	for (int i = 1; i < argc; ++i)
 	{
 		if (!stricmp(argv[i],(char*)"trace")) trace = (unsigned int) -1; 
-		else if (!strnicmp(argv[i],(char*)"dir=",4)) 
+		else if (!stricmp(argv[i], (char*)"time")) timing = (unsigned int)-1 ^ TIME_ALWAYS;
+		else if (!strnicmp(argv[i],(char*)"bootcmd=",8)) bootcmd = argv[i]+8; 
+		else if (!strnicmp(argv[i],(char*)"dir=",4))
 		{
 #ifdef WIN32
 			if (!SetCurrentDirectory(argv[i]+4)) printf((char*)"unable to change to %s\r\n",argv[i]+4);
@@ -656,6 +673,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		}  
 #endif
 		if (!stricmp(argv[i],(char*)"trace")) trace = (unsigned int) -1; // make trace work on login
+		if (!stricmp(argv[i], (char*)"time")) timing = (unsigned int)-1 ^ TIME_ALWAYS; // make timing work on login
 	}
 
 	if (server)
@@ -731,7 +749,7 @@ void CloseSystem()
 static void CheckTracedFunction(WORDP D, uint64 junk)
 {
 	if (tracedFunctionsIndex >= MAX_TRACED_FUNCTIONS || !D->word) return;
-	if (*D->word == '^' && D->internalBits & (MACRO_TRACE | FN_NO_TRACE))
+	if (*D->word == '^' && D->internalBits & FN_TRACE_BITS)
 	{
 		sprintf(tracedFunctions[tracedFunctionsIndex++],(char*)"%s %d",D->word,D->internalBits);
 	}
@@ -755,7 +773,38 @@ static void RestoreTracedFunctions()
 		char word[MAX_WORD_SIZE];
 		char* ptr = ReadCompiledWord(tracedFunctions[i],word);
 		WORDP D = FindWord(word);
-		if (D) D->internalBits = atoi(ptr);
+		if (D) D->internalBits |= (atoi(ptr) & (FN_TRACE_BITS | NOTRACE_TOPIC));
+	}
+}
+
+static void CheckTimedFunction(WORDP D, uint64 junk)
+{
+	if (timedFunctionsIndex >= MAX_TRACED_FUNCTIONS || !D->word) return;
+	if (*D->word == '^' && D->internalBits & FN_TIME_BITS)
+	{
+		sprintf(timedFunctions[timedFunctionsIndex++], (char*)"%s %d", D->word, D->internalBits);
+}
+	else if (*D->word == '~' && D->internalBits & NOTIME_TOPIC)
+	{
+		sprintf(timedFunctions[timedFunctionsIndex++], (char*)"%s %d", D->word, D->internalBits);
+	}
+}
+
+unsigned int SaveTimedFunctions()
+{
+	timedFunctionsIndex = 0;
+	WalkDictionary(CheckTimedFunction, 0);
+	return timedFunctionsIndex;
+}
+
+static void RestoreTimedFunctions()
+{
+	for (unsigned int i = 0; i < timedFunctionsIndex; ++i)
+	{
+		char word[MAX_WORD_SIZE];
+		char* ptr = ReadCompiledWord(timedFunctions[i], word);
+		WORDP D = FindWord(word);
+		if (D) D->internalBits |= (atoi(ptr) & (FN_TIME_BITS | NOTIME_TOPIC));
 	}
 }
 
@@ -1283,6 +1332,21 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	mainOutputBuffer = output;
 	size_t len = strlen(incoming);
 	if (len >= MAX_BUFFER_SIZE) incoming[MAX_BUFFER_SIZE-1] = 0; // chop to legal safe limit
+	// now validate that token size MAX_WORD_SIZE is not invalidated
+	char* at = mainInputBuffer;
+	bool quote = false;
+	char* start = mainInputBuffer;
+	while (*++at)
+	{
+		if (*at == '"' && *(at-1) != '\\') quote = !quote;
+		if (*at == ' ' && !quote) // proper token separator
+		{
+			if ((at-start) > (MAX_WORD_SIZE-1)) break; // trouble
+			start = at + 1;
+		}
+	}
+	if ((at-start) > (MAX_WORD_SIZE-1)) start[MAX_WORD_SIZE-5] = 0; // trouble - cut him off at the knees
+
 	char* first = SkipWhitespace(incoming);
 #ifndef DISCARDTESTING
 	if (!server && !(*first == ':' && IsAlphaUTF8(first[1]))) strcpy(revertBuffer,first); // for a possible revert
@@ -1392,6 +1456,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	lastInputSubstitution[0] = 0;
 
 	RestoreTracedFunctions();
+	RestoreTimedFunctions();
 
 	unsigned int ok = true;
     if (!*incoming && !hadIncoming)  //   begin a conversation - bot goes first
@@ -1509,7 +1574,6 @@ void Restart()
 	}
 	else 
 	{
-		strcpy(ourMainOutputBuffer,"$#$Restarted server"); // same as mainOutputbuffer but not relocated code
 		Log(STDTRACELOG,(char*)"System restarted %s\r\n",GetTimeInfo(true)); // shows user requesting restart.
 	}
 	pendingRestart = false;
@@ -2020,6 +2084,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 {
 	char* original[MAX_SENTENCE_LENGTH];
 	unsigned int mytrace = trace;
+	clock_t start_time = ElapsedMilliseconds();
 	if (prepareMode == PREPARE_MODE) mytrace = 0;
 	ResetSentence();
 	ResetTokenSystem();
@@ -2334,6 +2399,10 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 		if (next && next->properties & QWORD) moreToComeQuestion = true; // assume it will be a question (misses later ones in same input)
 	}
 	if (prepareMode == PREPARE_MODE || trace & TRACE_POS || prepareMode == POS_MODE || (prepareMode == PENN_MODE && trace & TRACE_POS)) DumpTokenFlags((char*)"After parse");
+	if (timing & TIME_PREPARE) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMELOG, (char*)"Prepare %s time: %d ms\r\n", input, diff);
+	}
 }
 
 #ifdef WIN32

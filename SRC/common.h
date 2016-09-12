@@ -45,8 +45,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #elif WIN32
 //#define USERPATHPREFIX 1
-#define DISCARDPOSTGRES 1
-#define DISCARDMONGO 1
+//#define DISCARDPOSTGRES 1
+//#define DISCARDMONGO 1
 //#undef  DISCARDDICTIONARYBUILD  // only a windows version can build a dictionary from scratch
 #undef SEPARATE_STRING_SPACE
 

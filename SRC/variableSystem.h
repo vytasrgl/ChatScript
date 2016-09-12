@@ -61,11 +61,11 @@ void PrepareVariableChange(WORDP D,char* word,bool init);
 // user variable accessors
 void ClearUserVariableSetFlags();
 void ClearUserVariables(char* above = 0);
-char* GetUserVariable(const char* word);
-void SetUserVariable(const char* var, char* word, bool reuse = false);
+char* GetUserVariable(const char* word, bool nojson = false);
+void SetUserVariable(const char* var, char* word);
 void Add2UserVariable(char* var, char* word,char* op);
 
-char* PerformAssignment(char* word,char* ptr,FunctionResult& result);
+char* PerformAssignment(char* word,char* ptr,FunctionResult& result,bool nojson = false);
 
 
 #endif

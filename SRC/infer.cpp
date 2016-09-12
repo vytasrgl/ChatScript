@@ -732,8 +732,9 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 				if (whichset == ILLEGAL_FACTSET) return 0;
 				break;
 			default: 
-				ReportBug((char*)"Bad control code for query init %s", control)
+				ReportBug((char*)"Bad control code for query init %s(%s) %s",C->word,C->w.userValue,control)
 				return 0;
+
 		}
 		if (choice) // we have something to follow
 		{
@@ -787,7 +788,7 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 					else if (*control == 'o') M = F->object; 
 					else 
 					{
-						ReportBug((char*)"bad control for query %s",control)
+						ReportBug((char*)"bad control for query %s(%s) %s",C->word,C->w.userValue,control)
 						return 0;
 					}
 					if (trace & TRACE_QUERY  && CheckTopicTrace())  Log(STDTRACELOG,(char*)" %s ",WriteMeaning(M));
@@ -942,7 +943,7 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 			baseOffset = 3;
 			break;
 		default:
-			ReportBug((char*)"Bad control code for #2 (queue test) %s",control)
+			ReportBug((char*)"Bad control code for #2 (queue test) %s(%s) %s",C->word,C->w.userValue,control)
 			return 0;
 		}
 	}
@@ -1073,7 +1074,7 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 			if (trace & TRACE_QUERY  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" object must ultimately be member of set marked #%c ",*control);
 			break;
 		default: 
-			ReportBug((char*)"Bad control code for Zone 3 test %s",control)
+			ReportBug((char*)"Bad control code for Zone 3 test %s(%s) %s",C->word,C->w.userValue,control)
 			return 0;
 		}
 	}
@@ -1125,7 +1126,7 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 			baseFlags |=  (baseFlags & (USE_ORIGINAL_SUBJECT|USE_ORIGINAL_OBJECT)) ? RICCOCHET_USING_OBJECT : USE_ORIGINAL_OBJECT;
 			break;
 		default: 
-			ReportBug((char*)"Bad control code for Zone 4 test %s",control)
+			ReportBug((char*)"Bad control code for Zone 4 test %s(%s) %s",C->word,C->w.userValue,control)
 			return 0;
 		}
 	}

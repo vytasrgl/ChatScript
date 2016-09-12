@@ -1,3 +1,21 @@
+version 6.83
+1. ^extract now also takes signed arguments to perform relative or backwards extractions,
+	eg 	($$source 5 +2) to extract 2 characters beginning at position 5
+		($$source 5 -2) to extract 2 characters ending at position 5
+		($$source -1 +1) to extract last character – from end, start 1 character before and get 1 character
+		($$source -5 -1) from end, start 5 characters before and get 1 character before, i.e. the 6th char from end
+2. $cs_usermessagelimit sets max user/bot message saves. range 0...20
+3. $var.key
+4. clarify ^all = 1 and such assignments to function variables
+5. Full wiki documentation up-to-date, with HTMLDocumentation folder corresponding. I have not
+	proofread the wiki or html, so it may have minor glitches still.
+	PDFDocumentation not generated from Wiki yet (manually updated).
+Undocumented, pending for next release
+	5. :time for measuring performance
+	6. encryption capability for read/write of user topic and ltm files
+	7. boottrace param to request trace over a startup boot loading of data
+	8. proofread of all documentation
+
 Version 6.8a  8/27/2016
 1. :trace full   renamed  :trace always,  merely allows you to pass thru ^notrace but you can still choose bits you are tracing
 2. mongo support for filesystem changed...

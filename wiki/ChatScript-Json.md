@@ -209,6 +209,14 @@ your final path, eg
 ^jsonpath(.name[4]* $$obj)
 ```
 
+## Direct access via JSON variables `$myvar.field`
+
+If a variable holds a JSON object value, you can directly set and get from top level fields of that object
+using dotted notation. This must be a fixed static fieldname you give- `$myvar.$myfield` is illegal.
+Dotted notation is cleaner and faster than `^jsonpath` and `jsonobjectinsert` and for get, has
+the advantage that it never fails, it only returns null if it can't find the field.
+
+
 ### `^length`( jsonid )
 Returns the number of top-level members in a json array or object.
 
@@ -273,7 +281,7 @@ assigns a text sequence to add to jo- and ja- items created thereafter. See Syst
 
 ### `^jsonundecodestring`( string ) 
 removes all json escape markers back to normal for possible printout
-to a user. This translates \n to newline, \r to carriage return, \t to tab, and \" to a simple quote.
+to a user. This translates \\n to newline, \\r to carriage return, \\t to tab, and \\" to a simple quote.
 
 ## WEB JSON
 
