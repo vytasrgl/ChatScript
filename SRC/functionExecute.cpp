@@ -4369,7 +4369,11 @@ static FunctionResult JoinCode(char* buffer)
 				else strcpy(buffer,bigword);
 				FreeBuffer();
 			}
-			else return result;
+			else 
+			{
+				FreeBuffer();
+				return result;
+			}
 		}
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s ",buffer);
 		bool did = *buffer != 0;

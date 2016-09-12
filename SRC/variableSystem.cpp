@@ -675,7 +675,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 			{
 				result = FAILRULE_BIT;
 				impliedOp = 0;
-				return ptr;
+				goto exit;
 			}
 			unsigned int rightCount =  FACTSET_COUNT(rightSet);
 			unsigned int impliedCount =  FACTSET_COUNT(impliedSet); 
