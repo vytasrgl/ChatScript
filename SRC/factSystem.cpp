@@ -569,12 +569,16 @@ bool ExportFacts(char* name, int set,char* append)
 		}
 		buffer += strlen(buffer);
 	}
-	FreeBuffer();
 	FILE* out = userFileSystem.userCreate(name); // user ltm file
-	if (!out) return false;
-	EncryptableFileWrite(buffer,1,(buffer-base),out);
+	if (!out) 
+	{
+		FreeBuffer();
+		return false;
+	}
+	EncryptableFileWrite(base,1,(buffer-base),out);
 	userFileSystem.userClose(out);
 	FreeUserCache();
+	FreeBuffer();
 	return true;
 }
 

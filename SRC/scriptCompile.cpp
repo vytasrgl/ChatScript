@@ -894,14 +894,11 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		char* at = word + 1;
 		if (at[1] == '$' || at[1] == '_') ++at;	// skip over 2ndary marker
 		while (LegalVarChar(*++at) );  // find end of initial word
-		if (*word == '$' && *at == '.' && IsAlphaUTF8(at[1]))// allow $x.y
+		if (*word == '$' && *at == '.' && LegalVarChar(at[1]))// allow $x.y as a complete name
 		{
-			while (LegalVarChar(*++at) );  // find second of initial word
-			ptr -= strlen(at);
-			*at = 0;
-			len = at - start;
+			while (LegalVarChar(*++at) );  // find end of field name
 		}  
-		else if (*at && IsPunctuation(*at) & ARITHMETICS && *at != '=')
+		if (*at && IsPunctuation(*at) & ARITHMETICS && *at != '=')
 		{
 			// - is legal in a var or word token
 			if (*at != '-' || (!IsAlphaUTF8OrDigit(at[1]) && at[1] != '_'))
@@ -5115,7 +5112,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		unsigned int function;
 		unsigned int count = DumpWarnings(substitutes,cases,function);
 		if (missingFiles) Log(STDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
-		Log(STDTRACELOG,(char*)"%d function warnings, %d spelling warnings, %d case warnings, %d substitution warnings,  and %d more serious warnings\r\n    ",function,count,cases,substitutes,hasWarnings-count-substitutes-cases);
+		Log(STDTRACELOG,(char*)"%d function warnings,  %d more serious warnings, %d spelling warnings, %d case warnings, %d substitution warnings\r\n    ",function,hasWarnings-count-substitutes-cases,count,cases,substitutes);
 	}
 	else 
 	{
