@@ -252,7 +252,12 @@ char* GetUserVariable(const char* word,bool nojson)
 		MEANING verb = MakeMeaning(DOT);
 		while (F)
 		{
-			if (F->verb == verb) return Meaning2Word(F->object)->word;
+			if (F->verb == verb) 
+			{
+				char* answer = Meaning2Word(F->object)->word;
+				if (!strcmp(answer,"null")) return "";	// json null is our null
+				return answer;
+			}
 			F = GetSubjectNext(F);
 		}
 		return "";	// not found null value

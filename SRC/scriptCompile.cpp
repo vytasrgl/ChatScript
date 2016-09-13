@@ -891,11 +891,12 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 	// break apart math on variables eg $value+2 as a service to the user
 	if (*word == '%'  || *word == '$') // cannot use _ here as that will break memorization pattern tokens
 	{
-		char* at = word;
-		while (IsAlphaUTF8(*++at) );  // find end of initial word
+		char* at = word + 1;
+		if (at[1] == '$' || at[1] == '_') ++at;	// skip over 2ndary marker
+		while (LegalVarChar(*++at) );  // find end of initial word
 		if (*word == '$' && *at == '.' && IsAlphaUTF8(at[1]))// allow $x.y
 		{
-			while (IsAlphaUTF8(*++at) );  // find second of initial word
+			while (LegalVarChar(*++at) );  // find second of initial word
 			ptr -= strlen(at);
 			*at = 0;
 			len = at - start;

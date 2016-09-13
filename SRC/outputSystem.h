@@ -34,6 +34,7 @@ void FreeOutputBuffer();
 void PushOutputBuffers();
 void PopOutputBuffers();
 void ResetOutput();
+bool LegalVarChar(char at);
 
 // ways to generate output
 void StdNumber(char* word,char* output,int controls, bool space = false);

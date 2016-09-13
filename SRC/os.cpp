@@ -1173,7 +1173,16 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (bug) //   write to a bugs file
 		{
 			if (*currentFilename) fprintf(bug,(char*)"BUG in %s at %d: %s ",currentFilename,currentFileLine,readBuffer);
-			if (!compiling && !loading && channel == BUGLOG && *currentInput)  fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located,currentInput);
+			if (!compiling && !loading && channel == BUGLOG && *currentInput)  
+			{
+				char* buffer = AllocateBuffer();
+				if (buffer)
+				{
+					fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located,currentInput);
+				}
+				else fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located);
+				FreeBuffer();
+			}
 			fwrite(logbase,1,bufLen,bug);
 			if (!compiling && !loading) BugBacktrace(bug);
 			fclose(bug); // dont use FClose

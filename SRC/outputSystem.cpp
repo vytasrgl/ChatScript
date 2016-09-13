@@ -139,14 +139,14 @@ static char* AddFormatOutput(char* what, char* output,unsigned int controls)
 	return output;
 }
 
-static bool LegalVarChar(char at)
+bool LegalVarChar(char at)
 {
 	return  (IsAlphaUTF8OrDigit(at) || at == '_' || at == '-' );
 }
 
 static char* ReadUserVariable(char* input, char* var)
 {		
-	char* at = input++; // skip $ and below either $ or first legal char
+	char* at = input++; // skip $ and below either $ or _ if one exists or first legal char
 	bool once = false;
 	while (LegalVarChar(*++input) || *input == '.')
 	{
