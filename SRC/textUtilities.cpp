@@ -740,8 +740,14 @@ bool IsArithmeticOperator(char* word)
 {
 	word = SkipWhitespace(word);
 	char c = *word;
-	return (c == '+' || c == '-' || c == '*' || c == '/'  || c == '&' || 
-		(c == '|' && (word[1] == ' ' || word[1] == '^' || word[1] == '=')) || 
+	if (c == '+' || c == '-' || c == '*' || c == '/'  || c == '&') 
+	{
+		if (IsDigit(word[1]) || word[1] == ' ' || word[1] == '=') return true;
+		return false;
+	}
+
+	return
+		((c == '|' && (word[1] == ' ' || word[1] == '^' || word[1] == '=')) || 
 		(c == '%' && !word[1]) || 
 		(c == '%' && word[1] == ' ') || 
 		(c == '%' && word[1] == '=') || 
