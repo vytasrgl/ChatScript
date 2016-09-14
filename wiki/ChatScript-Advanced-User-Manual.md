@@ -1066,6 +1066,32 @@ So, output does two things. It queues up tokens to send to the user, which may b
 discarded if the rule ultimately fails. And it can call out to various functions. 
 Things those functions may do are permanent, not undone if the rule later fails.
 
+## Output cannot have rules in it
+Output script cannot emed another rule inside it. Output is executed during the current volley whereas rules 
+(like rejoinder rules) may be executed in a different volley.  Therefore this is illegal:
+`u: GREETING (~emohello)`
+`   if ($username)`
+  ` {`
+     `Hi  $username!`
+   `}`
+   `else`
+   `{`
+     `I don't believe we've met, what's your name?`
+      `a: (_*) So your name is '_0?`
+  `}`
+and needs to be written like this:
+`u: GREETING (~emohello)`
+`   if ($username)`
+  ` {`
+     `Hi  $username!`
+   `}`
+   `else`
+   `{`
+     `I don't believe we've met, what's your name?`
+  `}`
+  `a: (_*) So your name is '_0?`
+Of course you don't want the rejoinder triggered if you can from the `if` side, so you'd also need to add
+a call to `^setnorejoinder` from inside it.
 
 ## Formatted double quotes (Active/Format String)
 

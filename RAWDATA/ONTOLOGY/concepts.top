@@ -702,6 +702,8 @@ concept: ~flammable (~clothes ~clothing_material ~furnishings biodiesel book can
 concept: ~flavorer (flavorer flavoring seasoning~2 )
 concept: ~flavors (almond apple banana blueberry butterscotch caramel cherry chestnut chocolate chocolate_chip cinnamon coconut coffee ginger grape lemon lime Mango marshmallow mocha 
           orange peach pecan peppermint pineapple pistachio praline pumpkin raspberry strawberry vanilla walnut )
+concept: ~fruit(breadfruit edible_fruit~1 grapefruit  orange lemon strawberry raspberry blackberry blueberry pineapple apple pear  tangerine  satsuma  banana  nectarine  peach  star-fruit  kiwi jackfruit  durian  mango  papaya 
+			pineapple)
 concept: ~flexibility_words (bendable flexible inflexible pliable pliant rigid stiff )
 concept: ~florist (~flowers bouquet floral_arrangement florist )
 concept: ~flowers  ANIMATE_BEING (bluebell camelia flower~2 forget-me-not gardenia hibiscus hydrangea iris lilac lily peony poppy rose roses sunflower tulip violet )
@@ -727,9 +729,9 @@ concept: ~frequency_words (annual biannual bicentennial bimonthly biweekly cente
           recurrent recurring semiannual triennial weekly yearly )
 concept: ~friend   PROBABLE_NOUN (acquaintance ally beau  boyfriend buddy chum close_friend colleague comrade confidant friend girlfriend kith lover pal 
           partner sidekick swain )
-concept: ~fruit   (breadfruit edible_fruit~1 grapefruit )
 concept: ~functions (~burnable ~carryable ~closeable ~contains ~eatable ~enterable ~flammable ~immovable ~lockable ~noisy ~rideable ~shootable ~supports ~switchable ~throwable ~toyable 
           ~unreachable ~wearable )
+concept: ~salad (lettuce  tomatoes cucumber  radish  onions  celery beetroot "iceberg lettuce" lettuce  "spring onion")
 concept: ~fungi   ANIMATE_BEING (fungus_family~1 fungus~1 )
 concept: ~furnishings (picture rug sculpture wall_hanging )
 concept: ~furniture (~container_furniture ~surface_furniture furnishing~2 furniture~1 )

@@ -81,6 +81,7 @@ void DumpTokenControls(uint64 val)
 	if (val & SPLIT_QUOTE) Log(STDTRACELOG,(char*)"SPLIT_QUOTE ");
 	if (val & LEAVE_QUOTE) Log(STDTRACELOG,(char*)"LEAVE_QUOTE ");
 	if (val & UNTOUCHED_INPUT) Log(STDTRACELOG,(char*)"UNTOUCHED_INPUT ");
+	if (val & NO_FIX_UTF) Log(STDTRACELOG,(char*)"NO_FIX_UTF ");
 }
 
 void DumpTokenFlags(char* msg)

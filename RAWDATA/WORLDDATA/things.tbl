@@ -4,8 +4,8 @@ concept: ~grocery (~dairyitems ~foodbeverage)
 table: ~storeinfo (^kind )
 	CreateFact(^kind member ~store_type)
 
-	^kind = ^substitute(character ^kind ~ "")
-	CreateFact (^kind member ~store)  # w/o the ~
+	$_kind = ^substitute(character ^kind ~ "")
+	CreateFact ($_kind member ~store)  # w/o the ~
 	
 DATA:
 ~APPLIANCE_STORE ~ART_GALLERY ~AUTO_DEALER ~AUTO_PARTS_STORE \n

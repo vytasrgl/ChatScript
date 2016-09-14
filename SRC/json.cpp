@@ -766,8 +766,9 @@ static char* jtab(int depth, char* buffer)
 	return buffer;
 }
 
-static int orderJsonArrayMembers(WORDP D, FACT** store) 
+static int orderJsonArrayMembers(WORDP D, FACT** store,int limit) 
 {
+	--limit;
 	int max = -1;
 	int size = -1;
 	FACT* G = GetSubjectNondeadHead(D);	
@@ -778,6 +779,10 @@ static int orderJsonArrayMembers(WORDP D, FACT** store)
 		if (G->flags & JSON_ARRAY_FACT) // in case of accidental collisions with normal words
 		{
 			int index = atoi(Meaning2Word(G->verb)->word);
+			if (index >= limit) 
+			{
+				return -1; // cannot store this
+			}
 			store[index] = G;
 			if (index > max) max = index;
 			++size;
@@ -837,9 +842,9 @@ static char* jwritehierarchy(int depth, char* buffer, WORDP D, int subject, int 
 	buffer += strlen(buffer);
 
 	FACT* F =  GetSubjectNondeadHead(MakeMeaning(D));
-	unsigned int indexsize = 0;
+	int indexsize = 0;
 	bool invert = false;
-	if (F && F->flags & JSON_ARRAY_FACT) indexsize = orderJsonArrayMembers(D, stack); // tests for illegal delete
+	if (F && F->flags & JSON_ARRAY_FACT) indexsize = orderJsonArrayMembers(D, stack,JSON_LIMIT); // tests for illegal delete
 	else // json object
 	{
 		invert = true; 
@@ -855,7 +860,7 @@ static char* jwritehierarchy(int depth, char* buffer, WORDP D, int subject, int 
 		}
 	}
 	int flags = 0;
-	for (unsigned int i = 0; i < indexsize; ++i)
+	for (int i = 0; i < indexsize; ++i)
 	{
 		unsigned int itemIndex = (invert) ? ( indexsize - i - 1) : i;
 		size = (buffer - currentOutputBase + 400); // 400 slop to protect us
@@ -1032,9 +1037,9 @@ static MEANING jcopy(WORDP D)
 	else composite =  GetUniqueJsonComposite((char*)"jo-");
 
 	bool invert = false;
-	unsigned int indexsize = 0;
+	int indexsize = 0;
 	FACT* F = GetSubjectNondeadHead(D);
-	if (F && F->flags & JSON_ARRAY_FACT) indexsize = orderJsonArrayMembers(D, stack); // tests for illegal delete
+	if (F && F->flags & JSON_ARRAY_FACT) indexsize = orderJsonArrayMembers(D, stack,JSON_LIMIT); // tests for illegal delete
 	else
 	{
 		invert = true;
@@ -1050,7 +1055,7 @@ static MEANING jcopy(WORDP D)
 		}
 	}
 	int flags = 0;
-	for (unsigned int i = 0; i < indexsize; ++i)
+	for (int i = 0; i < indexsize; ++i)
 	{
 		unsigned int itemIndex = (invert) ? ( indexsize - i - 1) : i;
 		F = stack[itemIndex];
@@ -1102,9 +1107,9 @@ static char* jwrite(char* buffer, WORDP D, int subject )
 	else strcpy(buffer,(char*)"{ ");
 	buffer += strlen(buffer);
 	bool invert = false;
-	unsigned int indexsize = 0;
+	int indexsize = 0;
 	FACT* F = GetSubjectNondeadHead(D);
-	if (F && F->flags & JSON_ARRAY_FACT) indexsize = orderJsonArrayMembers(D, stack); // tests for illegal delete
+	if (F && F->flags & JSON_ARRAY_FACT) indexsize = orderJsonArrayMembers(D, stack,JSON_LIMIT); // tests for illegal delete
 	else
 	{
 		invert = true;
@@ -1120,7 +1125,7 @@ static char* jwrite(char* buffer, WORDP D, int subject )
 		}
 	}
 	int flags = 0;
-	for (unsigned int i = 0; i < indexsize; ++i)
+	for (int i = 0; i < indexsize; ++i)
 	{
 		unsigned int itemIndex = (invert) ? ( indexsize - i - 1) : i;
 		size = (buffer - currentOutputBase + 400); // 400 slop to protect us
@@ -1627,7 +1632,7 @@ FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index
 	}
 	if (!F) return FAILRULE_BIT;		// not findable.
 
-	int indexsize = orderJsonArrayMembers(O, stack); 
+	int indexsize = orderJsonArrayMembers(O, stack,JSON_LIMIT); 
 	KillFact(F);		// delete it, not recursive json structure, just array element
 	for (int i = index+1; i < indexsize; ++i) // renumber these downwards
 	{
@@ -1708,7 +1713,7 @@ void JsonRenumber(FACT* G) // given array fact dying, renumber after it
 	FACT* stack[JSON_LIMIT];
 	WORDP D = Meaning2Word(G->subject);
 	int index = atoi(Meaning2Word(G->verb)->word);
-	int indexsize = orderJsonArrayMembers(D, stack); 
+	int indexsize = orderJsonArrayMembers(D, stack,JSON_LIMIT); 
 	for (int i = index+1; i < indexsize; ++i) // renumber these downwards
 	{
 		FACT* F = stack[i];

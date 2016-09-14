@@ -2994,7 +2994,8 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 	bool javascript = false;
 	while (ALWAYS) //   read as many tokens as needed to complete the responder definition
 	{
-		if ((data-original) >= MAX_JUMP_OFFSET) BADSCRIPT((char*)"OUTPUT-1 code exceeds size limit of %d bytes",MAX_JUMP_OFFSET)
+		if ((data-original) >= MAX_JUMP_OFFSET) 
+			BADSCRIPT((char*)"OUTPUT-1 code exceeds size limit of %d bytes",MAX_JUMP_OFFSET)
 
 		if (*hold) // pending assignment code
 		{

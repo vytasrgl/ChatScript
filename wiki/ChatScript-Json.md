@@ -190,7 +190,7 @@ flag.
 ```
 ^query(directflag_v ? verbkey ? 1 ? ? ? JSON_OBJECT_FACT)
 ```
-Be aware that when `^jsonpat`h returns the value of an object key, when the value is a simple word, it
+Be aware that when `^jsonpath` returns the value of an object key, when the value is a simple word, it
 just returns the word without doublequotes (since CS just stores information as a single word). 
 But if the value contains whitespace, or JSON special characters, that may mess up if you pass it to
 `^JSONFormat`. You can get `^jsonpath` to return dangerous data as a string with double quotes around it
@@ -208,6 +208,8 @@ your final path, eg
 ^jsonpath(.name* $$obj)
 ^jsonpath(.name[4]* $$obj)
 ```
+
+If you need to handle the full range of legal keys in json, you can use text string notation like this `^jsonpath(."st. helen".data $tmp)`.
 
 ## Direct access via JSON variables `$myvar.field`
 

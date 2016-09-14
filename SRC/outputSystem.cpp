@@ -655,7 +655,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 				strcpy(word,buffer);
 			}
 			*buffer = 0;
-			return PerformAssignment(word,ptr,result,true); //   =  or *= kind of construction -- dont do json indirect assignment
+			ptr = PerformAssignment(word,ptr,result,true); //   =  or *= kind of construction -- dont do json indirect assignment
 		}
 		else Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
 		if (word[1] == USERVAR_PREFIX) // direct retry to avoid json issues

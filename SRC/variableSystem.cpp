@@ -771,7 +771,9 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s = %s(%s)\r\n",word,originalWord1,word1);
 		char* dot = strchr(word,'.');
 		if (!dot || nojson) SetUserVariable(word,word1);
+#ifndef DISCARDJSON
 		else result = JSONVariableAssign(word,dot,word1);// json object insert
+#endif
 	}
 	else if (*word == '\'' && word[1] == USERVAR_PREFIX) 
 	{
@@ -790,7 +792,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 	}
 	else // cannot touch a  word, or number
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)" %s illegal\r\n",word);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"illegal assignment to %s\r\n",word);
 		result = FAILRULE_BIT;
 		goto exit;
 	}

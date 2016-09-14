@@ -101,7 +101,7 @@ static void WriteCache(unsigned int which,size_t size)
 #endif
 	EncryptableFileWrite(ptr,1,size,out); // user topic file write
 	userFileSystem.userClose(out);
-	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"write out %s cache (%d)\r\n",ptr,which);
+	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"write out cache (%d)\r\n",which);
 	if (timing & TIME_USERCACHE) {
 		int diff = ElapsedMilliseconds() - start_time;
 		if (timing & TIME_ALWAYS || diff > 0) Log((server) ? SERVERLOG : STDTIMELOG, (char*)"Write user cache %d in file %s time: %d ms\r\n", which, filename, diff);

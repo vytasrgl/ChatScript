@@ -1632,27 +1632,23 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 					}
 					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x9c )  // open double quote
 					{
-						*buffer = ' ';
-						buffer[1] = '\'';
-						buffer[2] = ' ';
+						*buffer = '\'';
+						memmove(buffer+1,x,strlen(x)+1);
 					}
 					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x9d )  // closing double quote
 					{
-						*buffer = ' ';
-						buffer[1] = '"';
-						buffer[2] = ' ';
+						*buffer = '"';
+						memmove(buffer+1,x,strlen(x)+1);
 					}
-					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x94)  // mdash
+					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x94 && !(tokenControl & NO_FIX_UTF) && !compiling)  // mdash
 					{
-						*buffer = ' ';
-						buffer[1] = '-';
-						buffer[2] = ' ';
+						*buffer =  '-';
+	
 					}
-					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && (buffer[2] == 0x94 || buffer[2] == 0x93))  // mdash
+					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && (buffer[2] == 0x94 || buffer[2] == 0x93)&& !(tokenControl & NO_FIX_UTF)&& !compiling)  // mdash
 					{
-						*buffer = ' ';
-						buffer[1] = '-';
-						buffer[2] = ' ';
+						*buffer =  '-';
+						memmove(buffer+1,x,strlen(x)+1);
 					}
 					buffer = x-1; // valid utf8
 				}

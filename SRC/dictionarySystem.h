@@ -627,6 +627,11 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define DO_SPLIT_UNDERSCORE			0x0000020000000000ULL   
 #define MARK_LOWER					0x0000040000000000ULL   
 
+// in tokenflags not token control
+#define NO_FIX_UTF					0x0000080000000000ULL   
+
+// end of tokenflags
+
 // these change from parsing
 #define SENTENCE_TOKENFLAGS  ( QUOTATION | COMMANDMARK | IMPLIED_YOU | FOREIGN_TOKENS | FAULTY_PARSE  | NOT_SENTENCE | PRESENT | PAST | FUTURE | PRESENT_PERFECT | CONTINUOUS | PERFECT | PASSIVE )
 

@@ -3317,7 +3317,7 @@ static FunctionResult AnalyzeCode(char* buffer)
 	SAVEOLDCONTEXT()
 	FunctionResult result;
 	Output(word,buffer,result);
-	Convert2Blanks(buffer); // remove any system underscoring back to blanks
+	// Convert2Blanks(buffer); // remove any system underscoring back to blanks -- block it from outside if you want
 	if (*buffer == '"') // if a string, remove quotes
 	{
 		size_t len = strlen(buffer);
