@@ -439,6 +439,8 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 	return result; // these are swallowed
 }
 
+unsigned long functionCount = 0;
+
 char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // DoCall(
 {
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
@@ -486,6 +488,12 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	unsigned int oldArgumentIndex = callArgumentIndex;
 	unsigned char* definition = NULL;
 	unsigned int j = 0;
+	++functionCount; // used for debugging
+	if (functionCount == 176421)// used for debugging
+	{
+		int xx = 0;
+	}
+
 	if (D->x.codeIndex && !(D->internalBits & (IS_PLAN_MACRO|IS_TABLE_MACRO))) // system function --  macroFlags are also on codeindex, but IS_TABLE_MACRO distinguishes  but PLAN also has a topicindex which is a codeindex
 	{
 		callArgumentBase = callArgumentIndex - 1;

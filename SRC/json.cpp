@@ -958,13 +958,25 @@ static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bo
 		{
 			if (!D) return FAILRULE_BIT;
 			char* next = path + 1;
+			if (*next == '"') // handle quoted key
+			{
+				while (*++next)
+				{
+					if (*next == '"' && *(next-1) != '\\')  break; // leave on the closing quote
+				}
+			}
 			while (*next && *next != '[' && *next != ']' && *next != '.' && *next != '*') ++next; // find token break
 			char c = *next;
-			*next = 0;
+			*next = 0; // close off continuation
 			if (*path == '[' && !IsDigit(path[1]) && path[1] != USERVAR_PREFIX) return FAILRULE_BIT;
 			F = GetSubjectNondeadHead(D);
 			char what[MAX_WORD_SIZE];
-			strcpy(what,path+1);
+			if (path[1] == '"') // was quoted fieldname
+			{
+				strcpy(what,path+2);
+				what[strlen(what)-1] = 0; // remove closing quote
+			}
+			else strcpy(what,path+1);
 			if (*what == USERVAR_PREFIX) strcpy(what,GetUserVariable(what));
 			M = MakeMeaning(FindWord(what)); // is CASE sensitive
 			if (!M) return FAILRULE_BIT; // cant be in a fact if it cant be found

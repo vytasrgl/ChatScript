@@ -11,6 +11,7 @@ static void TestIf(char* ptr,FunctionResult& result)
 	//   if ($var) example of existence
 	//   if ('_3 == 5)  quoted matchvar
 	//   if (1) what an else does
+	ChangeDepth(1,"testif");
 	char* word1 = AllocateBuffer();
 	char* word2 = AllocateBuffer();
 	char op[MAX_WORD_SIZE];
@@ -142,12 +143,14 @@ resume:
 		else 
 		{
 			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" OR ");
+			
 			goto resume;
 		}
 	}
 
 	FreeBuffer();
 	FreeBuffer();
+	ChangeDepth(-1,"testif");
 	if (trace & TRACE_OUTPUT &&  (result & ENDCODES) && CheckTopicTrace()) Log(id,(char*)"%s\r\n", "FAIL-if");
 	impliedIf = ALREADY_HANDLED;
 }

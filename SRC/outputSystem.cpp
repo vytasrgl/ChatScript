@@ -313,7 +313,11 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 			if (output != start && *(output-1) == ' ') --output; // no space before
 			input = Output_Function(var, input, false, output, controls,result,false);
 			output += strlen(output);
-			if (result & ENDCODES) return;
+			if (result & ENDCODES) 
+			{
+				FreeBuffer();
+				return;
+			}
 		}
 		else if (*input == '\\') // protected special character
 		{
