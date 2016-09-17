@@ -2107,7 +2107,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 		}
 	}
 
-	// get derivation data
+	// set derivation data on original words of user before we do substitution
 	for (int i = 1; i <= wordCount; ++i) derivationIndex[i] = (unsigned short)((i << 8) | i); // track where substitutions come from
 	memcpy(derivationSentence+1,wordStarts+1,wordCount * sizeof(char*));
 	derivationLength = wordCount;
