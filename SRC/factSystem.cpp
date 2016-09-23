@@ -5,16 +5,16 @@
 Facts are added as layers. You remove facts by unpeeling a layer. You can "delete" a fact merely by
 marking it dead.
 
-Layer1:  facts resulting from wordnet dictionary  (wordnetFacts)
-Layer2:	 facts resulting from topic system build0
-Layer3:	 facts resulting from topic system build1
-Layer4:	 facts created by user
+Layer-1:  facts resulting from wordnet dictionary  (wordnetFacts)
+Layer0:	 facts resulting from topic system build0
+Layer1:	 facts resulting from topic system build1
+Layer2:	 facts created by user
 
-Layer 4 is always unpeeled after an interchange with the chatbot, in preparation for a new user who may chat with a different persona.
-Layers 2 and 3 are unpeeled if you want to restart the topic system to read in new topic data on the fly or rebuild 0.
-Layer 3 is unpeeled for a new build 1.
+Layer 2 is always unpeeled after an interchange with the chatbot, in preparation for a new user who may chat with a different persona.
+Layers 0 and 1 are unpeeled if you want to restart the topic system to read in new topic data on the fly or rebuild 0.
+Layer 1 is unpeeled for a new build 1.
 
-Layer 1 is never unpeeled. If you want to modify the dictionary, you either restart the chatbot entirely
+Layer -1 is never unpeeled. If you want to modify the dictionary, you either restart the chatbot entirely
 or patch in data piggy backing on facts (like from the topic system).
 
 Unpeeling a layer implies you will also reset dictionary/stringspace pointers back to levels at the
@@ -22,6 +22,9 @@ start of the layer since facts may have allocated dictionary and string items.
 This is ReturnToDictionaryFreeze for unpeeling 3/4 and ReturnDictionaryToWordNet for unpeeling layer 2.
 
 #endif
+char traceSubject[100];
+char traceVerb[100];
+char traceObject[100];
 
 size_t maxFacts = MAX_FACT_NODES;	// how many facts we can create at max
 
@@ -214,8 +217,8 @@ char* GetSetEnd(char* x)
 void TraceFact(FACT* F,bool ignoreDead)
 {
 	char* word = AllocateBuffer();
-	Log(STDUSERLOG,(char*)"%d: %s\r\n",Fact2Index(F),WriteFact(F,false,word,ignoreDead,false));
-	Log(STDUSERTABLOG,(char*)"");
+	Log(STDTRACELOG,(char*)"%d: %s\r\n",Fact2Index(F),WriteFact(F,false,word,ignoreDead,false));
+	Log(STDTRACETABLOG,(char*)"");
 	FreeBuffer();
 }
 
@@ -226,6 +229,10 @@ void ClearUserFacts()
 
 void InitFacts()
 {
+	*traceSubject = 0;
+	*traceVerb = 0;
+	*traceObject = 0;
+
 	if ( factBase == 0) 
 	{
 		factBase = (FACT*) malloc(maxFacts * sizeof(FACT)); // only on 1st startup, not on reload
@@ -322,10 +329,25 @@ void KillFact(FACT* F)
 	WORDP x = Meaning2Word(F->object);
 	if (trace & TRACE_FACT && CheckTopicTrace()) 
 	{
-		Log(STDUSERLOG,(char*)"Kill: ");
+		Log(STDTRACELOG,(char*)"Kill: ");
 		TraceFact(F);
 	}
-	F->flags |= FACTDEAD;
+#ifndef DISCARDJSON
+	// recurse on JSON datastructures below if they are being deleted on right side
+	if (F->flags & JSON_ARRAY_VALUE)
+	{
+		WORDP jsonarray = Meaning2Word(F->object);
+		jkillfact(jsonarray);
+	}
+	if (F->flags & JSON_OBJECT_VALUE)
+	{
+		WORDP jsonobject = Meaning2Word(F->object);
+		jkillfact(jsonobject);
+	}
+	if (F->flags & JSON_ARRAY_FACT) JsonRenumber(F);// have to renumber this array
+#endif
+	F->flags |= FACTDEAD; 
+
 	if (planning) SpecialFact(Fact2Index(F),0,0); // save to restore
 
 	// if this fact has facts depending on it, they too must die
@@ -423,7 +445,9 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 	currentFact = NULL; 
 	if (!subject || !object || !verb)
 	{
-		ReportBug((char*)"Missing field in fact create at line %d of %s",currentFileLine,currentFilename)
+		if (!subject) ReportBug((char*)"Missing subject field in fact create at line %d of %s",currentFileLine,currentFilename)
+		if (!verb) ReportBug((char*)"Missing verb field in fact create at line %d of %s",currentFileLine,currentFilename)
+		if (!object) ReportBug((char*)"Missing object field in fact create at line %d of %s",currentFileLine,currentFilename)
 		return NULL;
 	}
 
@@ -446,6 +470,7 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 		ReportBug((char*)"bad choice in fact object")
 		return NULL;
 	}
+
 	// convert any restricted meaning
 	MEANING other;
 	char* word;
@@ -464,16 +489,53 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 		other = ReadMeaning(word,true,true);
 		if (Meaning2Index(other) || GETTYPERESTRICTION(other)) object = other;
 	}
+	if (*traceSubject)
+	{
+		if (s && !stricmp(s->word,traceSubject) && *traceVerb && *traceObject)
+		{
+			DebugCode(NULL);
+		}
+		else if (s && !stricmp(s->word,traceSubject) && v && !stricmp(s->word,traceVerb) && *traceObject)
+		{
+			DebugCode(NULL);
+		}
+		else if (s && !stricmp(s->word,traceSubject) && o && !stricmp(s->word,traceObject) && *traceVerb)
+		{
+			DebugCode(NULL);
+		}
+		else if (s && !stricmp(s->word,traceSubject) && v && !stricmp(s->word,traceVerb) && o && !stricmp(s->word,traceObject))
+		{
+			DebugCode(NULL);
+		}
+	}
+	if (*traceVerb)
+	{
+		if (v && !stricmp(v->word,traceVerb) && *traceSubject && *traceObject)
+		{
+			DebugCode(NULL);
+		}
+		else if (v && !stricmp(s->word,traceVerb) && *traceSubject  && o && !stricmp(s->word,traceObject))
+		{
+			DebugCode(NULL);
+		}
+	}
+	if (*traceObject)
+	{
+		if (o &&  !stricmp(o->word,traceObject)  && *traceSubject && *traceVerb)
+		{
+			DebugCode(NULL);
+		}
+	}
 
 	//   insure fact is unique if requested
 	currentFact =  (properties & FACTDUPLICATE) ? NULL : FindFact(subject,verb,object,properties); 
-	if (trace & TRACE_FACT && currentFact && CheckTopicTrace())  Log(STDUSERLOG,(char*)" Found %d ", Fact2Index(currentFact));
+	if (trace & TRACE_FACT && currentFact && CheckTopicTrace())  Log(STDTRACELOG,(char*)" Found %d ", Fact2Index(currentFact));
 	if (currentFact) return currentFact;
 	currentFact = CreateFastFact(subject,verb,object,properties);
 	if (trace & TRACE_FACT && currentFact && CheckTopicTrace())  
 	{
-		Log(STDUSERLOG,(char*)" Created %d\r\n", Fact2Index(currentFact));
-		Log(STDUSERTABLOG,(char*)"");
+		Log(STDTRACELOG,(char*)" Created %d\r\n", Fact2Index(currentFact));
+		Log(STDTRACETABLOG,(char*)"");
 	}
 
 	return  currentFact;
@@ -488,26 +550,90 @@ bool ExportFacts(char* name, int set,char* append)
 		size_t len = strlen(name);
 		if (name[len-1] == '"') name[len-1] = 0;
 	}
-	FILE* out = (append && !stricmp(append,(char*)"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
-	if (!out) return false;
 
-	char word[MAX_WORD_SIZE];
+	char* buffer = GetFreeCache();
+	char* base = buffer;
+
+	char* word = AllocateBuffer();
 	unsigned int count = FACTSET_COUNT(set);
 	for (unsigned int i = 1; i <= count; ++i)
 	{
 		FACT* F = factSet[set][i];
-		if (!F) fprintf(out,(char*)"%s",(char*)"null ");
+		if (!F) strcpy(buffer,(char*)"null ");
 		else if ( !(F->flags & FACTDEAD))
 		{
 			unsigned int original = F->flags;
 			F->flags &= -1 ^ FACTTRANSIENT;	// dont pass transient flag out
-			fprintf(out,(char*)"%s",WriteFact(F,false,word,false,true));
+			strcpy(buffer,WriteFact(F,false,word,false,true));
 			F->flags = original;
 		}
+		buffer += strlen(buffer);
+	}
+	FILE* out = userFileSystem.userCreate(name); // user ltm file
+	if (!out) 
+	{
+		FreeBuffer();
+		return false;
+	}
+	EncryptableFileWrite(base,1,(buffer-base),out);
+	userFileSystem.userClose(out);
+	FreeUserCache();
+	FreeBuffer();
+	return true;
+}
+
+static char* ExportJson1(char* jsonitem, char* buffer)
+{
+	if (!*jsonitem)
+	{
+		strcpy(buffer,(char*)"null\r\n");
+		return buffer + strlen(buffer);
 	}
 
-	fclose(out);
-	return true;
+	WORDP D = FindWord(jsonitem);
+	if (!D) return buffer;
+	FACT* F = GetSubjectNondeadHead(D);
+	while (F)
+	{
+		if ( !(F->flags & FACTDEAD))
+		{
+			unsigned int original = F->flags;
+			F->flags &= -1 ^ FACTTRANSIENT;	// dont pass transient flag out
+			WriteFact(F,false,buffer,false,true);
+			buffer += strlen(buffer);
+			F->flags = original;
+		}
+		if (F->flags & (JSON_ARRAY_VALUE|JSON_OBJECT_VALUE)) buffer = ExportJson1(Meaning2Word(F->object)->word,buffer); // on object side of triple
+
+		F = GetSubjectNondeadNext(F);
+	}
+	return buffer + strlen(buffer);
+}
+
+FunctionResult ExportJson(char* name, char* jsonitem, char* append)
+{
+	WORDP D;
+	if (*jsonitem) 
+	{
+		D = FindWord(jsonitem);
+		if (!D) return FAILRULE_BIT;
+	}
+	if ( *name == '"')
+	{
+		++name;
+		size_t len = strlen(name);
+		if (name[len-1] == '"') name[len-1] = 0;
+	}
+
+	FILE* out = userFileSystem.userCreate(name); // user ltm file
+	if (!out) return FAILRULE_BIT;
+
+	char* buffer = GetFreeCache();
+	ExportJson1(jsonitem, buffer);
+	EncryptableFileWrite(buffer,1,strlen(buffer),out);
+	userFileSystem.userClose(out);
+	FreeUserCache();
+	return NOPROBLEM_BIT;
 }
 
 char* EatFact(char* ptr,unsigned int flags,bool attribute)
@@ -640,7 +766,7 @@ char* EatFact(char* ptr,unsigned int flags,bool attribute)
 	}
 	else object =  MakeMeaning(StoreWord(word2,AS_IS),0);
 
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"%s %s %s %x) = ",word,word1,word2,flags);
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s %s %s %x) = ",word,word1,word2,flags);
 
 	FACT* F = FindFact(subject,verb,object,flags);
 	if (!attribute || (F && object == F->object)) {;}  // not making an attribute or already made
@@ -656,7 +782,7 @@ char* EatFact(char* ptr,unsigned int flags,bool attribute)
 				{
 					char word[MAX_WORD_SIZE];
 					WriteFact(F,false,word,false,true);
-					Log(STDUSERLOG,(char*)"Fact created is not an attribute. There already exists %s",word); 
+					Log(STDTRACELOG,(char*)"Fact created is not an attribute. There already exists %s",word); 
 					printf((char*)"Fact created is not an attribute. There already exists %s",word); 
 					currentFact = F;
 					return (*ptr) ? (ptr + 2) : ptr; 
@@ -672,36 +798,69 @@ char* EatFact(char* ptr,unsigned int flags,bool attribute)
 	return (*ptr) ? (ptr + 2) : ptr; //   returns after the closing ) if there is one
 }
 
-bool ImportFacts(char* name, char* set, char* erase, char* transient)
-{
-	int store = GetSetID(set);
-	if (store == ILLEGAL_FACTSET) return false;
-	SET_FACTSET_COUNT(store,0);
+bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transient)
+{ // if no set is given, return the subject of the 1st fact we read (Json entity name)
+	int store = -1;
+	if (*set && *set != '"') // able to pass empty string
+	{
+		store = GetSetID(set);
+		if (store == ILLEGAL_FACTSET) return false;
+		SET_FACTSET_COUNT(store,0);
+	}
 	if ( *name == '"')
 	{
 		++name;
 		size_t len = strlen(name);
 		if (name[len-1] == '"') name[len-1] = 0;
 	}
-	FILE* in = FopenReadWritten(name);
+	FILE* in = userFileSystem.userOpen(name); 
 	if (!in) return false;
+
+	ChangeDepth(1, (char*)"ImportFacts");
+	char* filebuffer = GetFreeCache();
+	size_t readit = DecryptableFileRead(filebuffer,1,userCacheSize,in);	// LTM file read, read it all in, including BOM
+	userFileSystem.userClose(in);
+	filebuffer[readit] = 0;
+	filebuffer[readit+1] = 0; // insure fully closed off
+
+	// set bom
+	currentFileLine = 0;
+	BOM = BOMSET; // will be utf8
+	userRecordSourceBuffer = filebuffer;
+
 	unsigned int flags = 0;
 	if (!stricmp(erase,(char*)"transient") || !stricmp(transient,(char*)"transient")) flags |= FACTTRANSIENT; // make facts transient
-	while (ReadALine(readBuffer, in) >= 0)
+	while (ReadALine(readBuffer, 0) >= 0)
     {
         if (*readBuffer == 0 || *readBuffer == '#') continue; //   empty or comment
 		char word[MAX_WORD_SIZE];
-		char* ptr = ReadCompiledWord(readBuffer,word);
-		if (!stricmp(word,(char*)"null")) AddFact(store,NULL);
+		ReadCompiledWord(readBuffer,word);
+		if (!stricmp(word,(char*)"null")) 
+		{
+			if (store > 0) AddFact(store,NULL);
+		}
 		else if (*word == '(')
 		{
-			EatFact(ptr,flags);
-			AddFact(store,currentFact);
+			ChangeDepth(1, readBuffer);
+			FACT* G = ReadFact(readBuffer,0);
+			ChangeDepth(-1, readBuffer);
+			if (!G) 
+			{
+				ReportBug("Import data: %s",readBuffer);
+				continue;
+			}
+			G->flags |= flags;
+			if (store > 0) AddFact(store,G);
+			else if (!*buffer) strcpy(buffer,Meaning2Word(G->subject)->word); // to return the name
 		}
 	}
-	fclose(in);
+	FreeUserCache();
+	userRecordSourceBuffer = NULL;
+
 	if (!stricmp(erase,(char*)"erase") || !stricmp(transient,(char*)"erase")) remove(name); // erase file after reading
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERLOG,(char*)"[%d] => ",FACTSET_COUNT(store));
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"[%d] => ",FACTSET_COUNT(store));
+	currentFact = NULL; // we have used up the facts
+	ChangeDepth(-1, (char*)"ImportFacts");
 	return true;
 }
 
@@ -718,7 +877,7 @@ void WriteFacts(FILE* out,FACT* F, int flags) //   write out from here to end
 			F->flags ^= flags;
 		}
 	}
-    fclose(out);
+    FClose(out);
 }
 
 void WriteBinaryFacts(FILE* out,FACT* F) //   write out from here to end
@@ -735,7 +894,7 @@ void WriteBinaryFacts(FILE* out,FACT* F) //   write out from here to end
 		Write32(F->object,out);
 		Write32(F->flags,out);
 	}
-    fclose(out);
+    FClose(out);
 }
 	
 FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties)
@@ -769,6 +928,11 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 		return NULL;
 	}
 	currentFact = factFree;
+	int index = Fact2Index(currentFact); // for debugging
+	if (index == 416)
+	{
+		int xx = 0;
+	}
 
 	//   init the basics
 	memset(currentFact,0,sizeof(FACT));
@@ -842,7 +1006,7 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 	{
 		char* buffer = AllocateBuffer(); // fact might be big, cant use mere WORD_SIZE
 		buffer = WriteFact(currentFact,false,buffer,true,false);
-		Log(STDUSERLOG,(char*)"create %s",buffer);
+		Log(STDTRACELOG,(char*)"create %s",buffer);
 		FreeBuffer();
 	}	
 	return currentFact;
@@ -860,12 +1024,13 @@ bool ReadBinaryFacts(FILE* in) //   read binary facts
   		unsigned int properties = Read32(in);
 		CreateFastFact(subject,verb,object,properties);
 	}
-    fclose(in);
+    FClose(in);
 	return true;
 }
 
 static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead)
 {
+	char* start = buffer;
 	// a field is either a contiguous mass of non-blank tokens, or a user string "xxx" or an internal string `xxx`  (internal removes its ends, user doesnt)
     if (flags ) //   fact reference
     {
@@ -891,16 +1056,30 @@ static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead)
 			return buffer; //   cancels print
 		}
 		char* answer = WriteMeaning(T,true);
-		bool embedded = *answer != '"' && (strchr(answer,' ') != NULL || strchr(answer,'(') != NULL) ; // does this need protection? blanks or function call maybe
-		if (embedded) sprintf(buffer,(char*)"`%s`",answer); // has blanks, use internal string notation
-		else strcpy(buffer,answer); // use normal notation
-		// INSURE no cr or newline within it. as that will blow things up by moving saved user data to next line
-		char* at = buffer - 1;
-		while (*++at)
+
+		bool quoted = false;
+		if (*answer == '"') // if it starts with ", does it end with "
 		{
-			if (*at == '\n') *at = ' ';
-			else if (*at == '\r') *at = ' ';
+			size_t len = strlen(answer);
+			if (answer[len-1] == '"') quoted = true;
 		}
+		bool embeddedbacktick = strchr(answer,'`') ? true : false;
+		bool embeddedspace = !quoted && strchr(answer,' ')  || strchr(answer,'(') || strchr(answer,')'); // does this need protection? blanks or function call maybe
+		bool safe = true; 
+		if (strchr(answer,'\n') || strchr(answer,'\r') || strchr(answer,'\t') || strchr(answer,'\\') || strchr(answer,'/')) safe = false;
+		// json must protect: " \ /  nl cr tab  we are not currently protecting bs ff
+		if (embeddedbacktick || !safe) // uses our own marker and can escape data
+		{
+			if (embeddedbacktick) strcpy(buffer,(char*)"`*^"); 
+			else strcpy(buffer,(char*)"`"); // has blanks or paren or just starts with ", use internal string notation
+			buffer += strlen(buffer);
+			AddEscapes(buffer,answer,false); // facts are not normal
+			buffer += strlen(buffer);
+			if (embeddedbacktick) strcpy(buffer,(char*)"`*^"); // add closer marker
+			else strcpy(buffer,(char*)"`");
+		}
+		else if (embeddedspace) sprintf(buffer,(char*)"`%s`",answer); // has blanks, use internal string notation
+		else  strcpy(buffer,answer); // use normal notation
 		buffer += strlen(buffer);
 	}
 	*buffer++ = ' ';
@@ -913,6 +1092,7 @@ char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead,bool eol)
 	char* start = buffer;
 	*buffer = 0;
 	if (!F || !F->subject) return start; // never write special facts out
+	int index = Fact2Index(F); // for debugging
 	if (F->flags & FACTDEAD) // except for user display THIS shouldnt happen to real fact writes
 	{
 		if (ignoreDead)
@@ -983,20 +1163,39 @@ char* ReadField(char* ptr,char* field,char fieldkind, unsigned int& flags)
 	}
 	else if (*ptr == ENDUNIT) // internal string token (fact read)
 	{
-		char* end = strchr(ptr+1,ENDUNIT); // find corresponding end
-		if (!*end)
+		char* end;
+		char* start;
+		if (ptr[1] == '*' && ptr[2] == '^') // they use our ` in their field - we use `*^%s`*^
 		{
-			ReportBug("No end found");
-			return NULL;
+			start = end = ptr+3;
+			while ((end = strchr(end,'^')))
+			{
+				if (*(end-1) == '*' && *(end-2) == '`') break;  // found our close
+				++end;
+			}
+			if (!end)
+			{
+				ReportBug("No end found");
+				return NULL;
+			}
+			*(end-2) = 0; // terminate string with null
 		}
-		*end = 0;
-		strcpy(field,ptr+1);
-		return end+2; // point AFTER the space after the `
+		else
+		{
+			end = strchr(ptr+1,ENDUNIT); // find corresponding end
+			start = ptr + 1;
+			if (!*end)
+			{
+				ReportBug("No end found");
+				return NULL;
+			}
+			*end = 0;
+		}
+		
+		CopyRemoveEscapes(field,start,90000);	// we only remove ones we added
+		return end+2; // point AFTER the space after the closer
 	}
-    else 
-	{
-		ptr = ReadCompiledWord(ptr,field); 
-	}
+    else  ptr = ReadCompiledWord(ptr,field); // no escaping or anything weird needed
 	if (field[0] == '~') MakeLowerCase(field);	// all concepts/topics are lower case
 	return ptr; //   return at new token
 }
@@ -1012,6 +1211,7 @@ FACT* ReadFact(char* &ptr, unsigned int build)
     if (*word == '0') return 0; 
 	unsigned int flags = 0;
 	if (build == BUILD2) flags |= FACTBUILD2;
+	else if (build == BUILD1) flags |= FACTBUILD1;
 	char subjectname[MAX_WORD_SIZE];
 	ptr = ReadField(ptr,subjectname,'s',flags);
     char verbname[MAX_WORD_SIZE];
@@ -1043,12 +1243,19 @@ FACT* ReadFact(char* &ptr, unsigned int build)
     return F;
 }
 
-void ReadFacts(const char* name,unsigned int build,bool user) //   a facts file may have dictionary augmentations and variable also
+void ReadFacts(const char* name,const char* layer,unsigned int build,bool user) //   a facts file may have dictionary augmentations and variable also
 {
-    FILE* in = (user) ? FopenReadWritten(name) : FopenReadOnly(name); //  TOPIC fact/DICT files
-    if (!in) return;
+  	char word[MAX_WORD_SIZE];
+	if (layer) sprintf(word,"TOPIC/%s",name);
+	else strcpy(word,name);
+    FILE* in = (user) ? FopenReadWritten(word) : FopenReadOnly(word); //  TOPIC fact/DICT files
+	if (!in && layer) 
+	{
+		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		in = FopenReadOnly(word);
+	}
+	if (!in) return;
 	StartFile(name);
-	char word[MAX_WORD_SIZE];
     while (ReadALine(readBuffer, in) >= 0)
     {
 		char* ptr = ReadCompiledWord(readBuffer,word);
@@ -1091,7 +1298,7 @@ void ReadFacts(const char* name,unsigned int build,bool user) //   a facts file 
 			}
 			else ReadDictionaryFlags(D,at);
 		}
-		else if (*word == '$') // variable
+		else if (*word == USERVAR_PREFIX) // variable
 		{
 			char* eq = strchr(word,'=');
 			if (!eq) ReportBug((char*)"Bad fact file user var assignment %s",word)
@@ -1107,7 +1314,7 @@ void ReadFacts(const char* name,unsigned int build,bool user) //   a facts file 
 			ReadFact(ptr,build); // will write on top of ptr... must not be readBuffer variable
 		}
     }
-   fclose(in);
+   FClose(in);
 }
 
 void SortFacts(char* set, int alpha) //   sort low to high ^sort(@1subject) which field we sort on (subject or verb or object)

@@ -451,7 +451,6 @@
  Dunham ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Diego ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Dalena ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Dorothea ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Devenny ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  deferment ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     deferral~1n 
@@ -1984,7 +1983,6 @@
  Davisson ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Detweiler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Dampier ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Deylin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  deerstalking ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     deerstalking~1nz (^stalk~3) stalking deer
  digitiser ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -2237,7 +2235,7 @@
     pull~23vz cause to move in a certain direction by exerting a force upon, either physically or in an abstract sense
     reap~2vz get or derive
     withdraw~8v 
-    quarter~3v 
+    quarter~17v 
     draw~44vz require a specified depth for floating
     draw~45vz allow a draft
  Dantrell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3611,6 +3609,7 @@
  Devry ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Devyna ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Devynn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Deylin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Dhoire ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Dianda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Diandra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3655,6 +3654,7 @@
  Dorine ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Dorla ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Dorotea ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Dorothea ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Dorran ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Dorrance ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Dosne ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -10226,7 +10226,7 @@
     part~14v 
     part~15v 
     separate~16v 
-    split~17v 
+    split_up~4v 
     separate~20v 
  danger_zone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     danger_zone~1nz (^zone~2) a dangerous area
@@ -14538,8 +14538,8 @@
     second_childhood~1n 
  day_of_the_month ( meanings=1 ) 
     date~5n 
- D-day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    D-day~1nz (^date~5) date of the Allied landing in France, World War II
+ D-day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    6_June_1944~1n 
  day_of_the_week ( meanings=1 glosses=1 ) 
     day_of_the_week~1nz (^calendar_day~1) any one of the seven days in a week
  Dominicus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 

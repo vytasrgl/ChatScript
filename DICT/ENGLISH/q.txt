@@ -243,6 +243,25 @@
     quarantine~1nz (^closing_off~1) isolation to prevent the spread of infectious disease
     quarantine~2nz (^isolation~5) enforced isolation of patients suffering from a contagious disease in order to prevent the spread of disease
     quarantine~3vz place into enforced isolation, as for medical reasons
+ quarter ( meanings=18 glosses=18 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_NUMBER COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT TIMEWORD ) 
+    quarter~1nz (^mercifulness~1) clemency or mercy shown to a defeated opponent
+    quarter~2nz (^piece_of_leather~1) piece of leather that comprises the part of a shoe or boot covering the heel and joining the vamp
+    stern~1nz (^back~5) the rear part of a ship
+    quarter~4nz (^city_district~1) a district of a city having some distinguishing character
+    quarter~5nz (^individual~1) an unspecified person
+    quarter~6nz (^coin~1) a United States or Canadian coin worth one fourth of a dollar
+    quarter~7nz (^Imperial_capacity_unit~1) a quarter of a hundredweight
+    quarter~8nz (^avoirdupois_unit~1) a quarter of a hundredweight
+    quartern~1nz (^common_fraction~1) one of four equal parts
+    quarter~10nz (^orientation~6) one of the four major division of the compass
+    quarter~11nz (^period~3) a fourth part of a year
+    quarter~12nz (^session~4) one of four periods into which the school year is divided
+    quarter~13nz (^unit_of_time~1) a unit of time equal to 15 minutes or a quarter of an hour
+    quarter~14nz (^part~6) one of four divisions into which some games are divided
+    quarter~15vz divide by four
+    quarter~16vz divide into quarters
+    draw_and_quarter~1vz pull apart with four horses tied to his extremities, so as to execute him
+    canton~3vz provide housing for
  Quiscalus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Quiscalus~1n 
  Quiscalus_quiscula ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -278,11 +297,6 @@
     queen_bee~1nz fertile egg-laying female bee
  quarter_horse ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     quarter_horse~1nz (^mount~2) a small powerful horse originally bred for sprinting in quarter-mile races in Virginia
- quarter ( meanings=4 glosses=4 VERB_PRESENT VERB_INFINITIVE VERB ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER COMMON4 COMMON1 ORDINAL KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT TIMEWORD QUANTITY_NOUN ) 
-    quarter~1vz divide by four
-    quarter~2vz divide into quarters
-    draw_and_quarter~1vz pull apart with four horses tied to his extremities, so as to execute him
-    canton~3vz provide housing for
  quagga ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     Equus_quagga~1n 
  quinnat_salmon ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -305,6 +319,8 @@
     khat~1n 
  quat ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     qat~1n 
+ quarters ( meanings=1 NOUN NOUN_SINGULAR posdefault:NOUN ) 
+    living_quarters~1n 
  Quaalude ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     methaqualone~1n 
  Quonset_hut ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -1125,7 +1141,7 @@
  quantity_unit ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     charge_unit~1nz (^electromagnetic_unit~1) a measure of the quantity of electricity
  quarter_mile ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    quarter_mile~1nz (^linear_measure~1) a unit of length equal to a quarter of 1 mile
+    440_yards~1nz (^linear_measure~1) a unit of length equal to a quarter of 1 mile
  qindarka ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     qintar~1nz (^Albanian_monetary_unit~1) 100 qindarka equal 1 lek in Albania
  qintar ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -1146,7 +1162,7 @@
     cental~1n 
     quintal~2nz (^metric_weight_unit~1) a unit of weight equal to 100 kilograms
  quartern ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
-    one-fourth~1n 
+    twenty-five_percent~1n 
  quadrillionth ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON1 ) 
     one-quadrillionth~1n 
     quadrillionth~2az the ordinal number of one quadrillion in counting order

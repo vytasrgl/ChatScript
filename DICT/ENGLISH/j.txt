@@ -687,8 +687,6 @@
     jump-start~1n 
     jump-start~2v 
     jump~14v 
- January ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
-    Jan~1nz (^Gregorian_calendar_month~1) the first month of the year
  Jifunza ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Jibril ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Jeanbaptiste ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -1029,8 +1027,6 @@
  Jolanka ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Jeniffer ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Jore ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- June ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
-    June~1nz (^Gregorian_calendar_month~1) the month following May and preceding July
  jabiru ( meanings=3 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     Jabiru_mycteria~1n 
     Ephippiorhynchus_senegalensis~1n 
@@ -1469,7 +1465,6 @@
  Judit ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Julee ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Jules ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Jun ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Jurre ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Jussi ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Justin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -1816,6 +1811,8 @@
     Euderma_maculata~1n 
  June_beetle ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     May_beetle~1nz (^scarabaeid_beetle~1) any of various large usually brown North American leaf-eating beetles common in late spring
+ June ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
+    June~1nz (^Gregorian_calendar_month~1) the month following May and preceding July
  June_bug ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     June_beetle~1n 
  jointworm ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -4677,6 +4674,8 @@
     Jurassic~2az of or relating to or denoting the second period of the Mesozoic era
  Jurassic_period ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Jurassic~1nz (^period~5) from 190 million to 135 million years ago
+ January ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
+    Jan~1nz (^Gregorian_calendar_month~1) the first month of the year
  Judgment_Day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     end_of_the_world~2n 
  Judgement_Day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 

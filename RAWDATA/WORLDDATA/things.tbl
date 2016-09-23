@@ -4,8 +4,8 @@ concept: ~grocery (~dairyitems ~foodbeverage)
 table: ~storeinfo (^kind )
 	CreateFact(^kind member ~store_type)
 
-	^kind = ^substitute(character ^kind ~ "")
-	CreateFact (^kind member ~store)  # w/o the ~
+	$_kind = ^substitute(character ^kind ~ "")
+	CreateFact ($_kind member ~store)  # w/o the ~
 	
 DATA:
 ~APPLIANCE_STORE ~ART_GALLERY ~AUTO_DEALER ~AUTO_PARTS_STORE \n
@@ -155,8 +155,8 @@ snake grass \n rattlesnake grass \n rat walls \n beaver pond \n
 concept: ~newspaper()
 concept: ~airline()
 
-table: ~manmade ( ^role ^object)
-^createfact(^object member ^role)
+table: ~manmade ( ^roleitem ^object)
+^createfact(^object member ^roleitem)
 DATA:
 
 ~videogame [Bioshock  "CounterStrike" "Counter Strike"]
@@ -180,8 +180,8 @@ DATA:
 ~university ["Emory University" "Rice University" "University of Virginia"]
 ~newspaper [Newsweek USA_Today Wall_Street_Journal The_Times Associated_Press ]
 
-table: ~items (^role ^name ^item)
-^createfact(^name member ^role)
+table: ~items (^roleitem ^name ^item)
+^createfact(^name member ^roleitem)
 if (^item != * ) {^createfact(^item exemplar ^name) } # [Evanstan,ILL exemplar Northwestern]
 DATA:
 ~university "University_of_Exeter"  "Exeter, England"
@@ -257,10 +257,10 @@ DATA:
 ~airline Korean_Air    Republic_of_Korea
 
 
-table: ~companies  (^company ^field)
+table: ~companies  (^company ^fieldname)
 ^createfact(^company member ~company)
 ^Addproperty(^company NOUN NOUN_PROPER_SINGULAR )
-if (^field != * ) { ^createfact(^field exemplar ^company) }
+if (^fieldname != * ) { ^createfact(^fieldname exemplar ^company) }
 
 DATA:
   General_Electric *
@@ -331,6 +331,7 @@ DATA:
   Quest telephone
   TMobile telephone
   "AT&T" telephone
+  "at&t" telephone
   Expedia travel
   Orbitz travel
   Priceline travel
@@ -380,6 +381,14 @@ DATA:
   "Bank of Hawaii" (BOH) bank
   "Citibank" (Citi Citigroup) bank
   "Electronic Arts" videogame
+  Kore computer
+  Disney amusement
+  Sears grocery
+  Kony computer
+  "Kore Inc" computer
+  EMC computer
+  IOCL oil
+  "Indian Oil" oil
 
 concept: ~use_power(plug power electricity battery disconnect connect)
 concept: ~use_flight(fly glide dive)

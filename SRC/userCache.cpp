@@ -1,6 +1,5 @@
 #include "common.h"
 
-#define DEFAULT_USER_CACHE 400000
 #define NO_CACHEID -1
 
 static unsigned int cacheHead = 0;		// our marker for last allocated cache, used to find next free one
@@ -8,45 +7,9 @@ static unsigned int* cacheIndex = 0;	// data ring of the caches + timestamp/voll
 char* cacheBase = 0;					// start of contiguous cache block of caches
 static int currentCache = NO_CACHEID;	// the current user file buffer
 unsigned int userCacheCount = 1;		// holds 1 user by default
-unsigned int userCacheSize = DEFAULT_USER_CACHE;
+unsigned int userCacheSize = DEFAULT_USER_CACHE; // size of user file buffer (our largest buffers)
 int volleyLimit =  -1;					// default save user records to file every n volley (use default 0 if this value is unchanged by user)
 char* userDataBase = NULL;				// current write user record base
-static char* overflowBuffer = NULL;		// if record is bigger than cache block size, here is emergency block
-static unsigned int safespace = 0;		// size of emergency block allocated last
-
-void OverflowRelease() // from either a read or a write
-{
-	if (overflowBuffer)
-	{
-		free(overflowBuffer);
-		overflowBuffer = NULL;
-		FreeUserCache();  // associated useless buffer released
-	}
-}
-		
-char* OverflowProtect(char* ptr)
-{
-	if (!overflowBuffer && (unsigned int) (ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) 
-	{
-		ReportBug((char*)"User File %s too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)userCacheSize,OVERFLOW_SAFETY_MARGIN) // too big
-		printf((char*)"User File %s too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)userCacheSize,OVERFLOW_SAFETY_MARGIN); // too big
-		safespace = userCacheSize * 2;
-		if (safespace < 200000) safespace = 200000;
-		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"Allocating overflow write for %s\r\n",userDataBase);
-		overflowBuffer = (char*) malloc(safespace);
-		if (!overflowBuffer) return NULL;	// cannot protect
-		memmove(overflowBuffer,userDataBase,(ptr-userDataBase));
-		ptr = overflowBuffer + (ptr-userDataBase);
-		userDataBase = overflowBuffer; 
-	}
-	else if (overflowBuffer && (unsigned int) (ptr - userDataBase) >= (safespace  - OVERFLOW_SAFETY_MARGIN )) 
-	{
-		ReportBug((char*)"User File %s way too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)safespace,OVERFLOW_SAFETY_MARGIN) // too big
-		printf((char*)"User File %s way too big for buffer (actual:%ld  limit:%ld safety:%d)\r\n",userDataBase,(long int)(ptr-userDataBase),(long int)safespace,OVERFLOW_SAFETY_MARGIN); // too big
-		return NULL; // just cannot write it
-	}
-	return ptr;
-}
 
 void InitCache(unsigned int dictStringSize)
 {
@@ -74,28 +37,35 @@ void CloseCache()
 {
 	free(cacheBase);
 	cacheBase = NULL;
+#ifdef SEPARATE_STRING_SPACE 	
+	free(stringEnd);
+	stringEnd = NULL;
+#endif
 }
 
 static void WriteCache(unsigned int which,size_t size)
 {
-	char* ptr = (overflowBuffer) ? overflowBuffer : GetCacheBuffer(which);
+	char* ptr =  GetCacheBuffer(which);
 	if (!*ptr) return;	// nothing to write out
 
 	unsigned int volleys = VOLLEYCOUNT(which);
 	if (!volleys) return; // unchanged from prior write out
 
-	if (size == 0) // request to compute size
-	{
-		size = strlen(ptr) + 1; // login string
-		size += strlen(ptr+size);
-	}
-	FILE* out = userFileSystem.userCreate(ptr); // wb binary file (if external as db write should not fail)
+	if (size == 0) size = strlen(ptr);// request to compute size
+	char* at = strchr(ptr,'\r'); // separate off the name from the rest of the data
+	*at = 0;
+	char filename[SMALL_WORD_SIZE];
+	strcpy(filename,ptr); // safe separation
+	*at = '\r';
+	clock_t start_time = ElapsedMilliseconds();
+
+	FILE* out = userFileSystem.userCreate(filename); // wb binary file (if external as db write should not fail)
 	if (!out) // see if we can create the directory (assuming its missing)
 	{
 		char call[MAX_WORD_SIZE];
 		sprintf(call,(char*)"mkdir %s",users);
 		system(call);
-		out = userFileSystem.userCreate(ptr);
+		out = userFileSystem.userCreate(filename);
 
 		if (!out) 
 		{
@@ -106,12 +76,12 @@ static void WriteCache(unsigned int which,size_t size)
 
 #ifdef LOCKUSERFILE
 #ifdef LINUX
-	if (server && userFileSystem.userCreate == FopenBinaryWrite)
+	if (server && filesystemOverride == NORMALFILES)
 	{
         int fd = fileno(out);
         if (fd < 0) 
 		{
-			fclose(out);
+			FClose(out);
 			return;
         }
 
@@ -129,13 +99,15 @@ static void WriteCache(unsigned int which,size_t size)
 	}
 #endif
 #endif
-
-	userFileSystem.userWrite(ptr,1,size,out);
+	EncryptableFileWrite(ptr,1,size,out); // user topic file write
 	userFileSystem.userClose(out);
-	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"write out %s cache (%d)\r\n",ptr,which);
+	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"write out cache (%d)\r\n",which);
+	if (timing & TIME_USERCACHE) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (timing & TIME_ALWAYS || diff > 0) Log((server) ? SERVERLOG : STDTIMELOG, (char*)"Write user cache %d in file %s time: %d ms\r\n", which, filename, diff);
+	}
 
 	cacheIndex[TIMESTAMP(which)] &= 0x00ffffff;	// clear volley count since last written but keep time info
-	if ( overflowBuffer) OverflowRelease();
 }
 
 void FlushCache() // writes out the cache but does not invalidate it
@@ -150,7 +122,7 @@ void FlushCache() // writes out the cache but does not invalidate it
 	}
 }
 
-static char* GetFreeCache() // allocate backwards from current, so in use is always NEXT from current
+char* GetFreeCache() // allocate backwards from current, so in use is always NEXT from current
 {
 	if (!userCacheCount) return NULL;
 	unsigned int duration = (clock() / 	CLOCKS_PER_SEC) - startSystem; // how many seconds since start of program launch
@@ -197,7 +169,8 @@ char* FindUserCache(char* word)
 	while (userCacheCount)
 	{
 		char* ptr = GetCacheBuffer(start);
-		if (!stricmp(ptr,word)) // this is the user
+		size_t len = strlen(word);
+		if (!strnicmp(ptr,word,len) && ptr[len+1] == '\r') // this is the user
 		{
 			if (start != cacheHead) // make him FIRST on the list
 			{
@@ -224,13 +197,30 @@ char* FindUserCache(char* word)
 	return NULL;
 }
 
+void CopyUserTopicFile(char* newname)
+{
+	char file[SMALL_WORD_SIZE];
+	sprintf(file,(char*)"%s/topic_%s_%s.txt",users,loginID,computerID);
+
+	char newfile[MAX_WORD_SIZE];
+	sprintf(newfile,(char*)"LOGS/%s-topic_%s_%s.txt",newname,loginID,computerID);
+	CopyFile2File(file,newfile,false);	
+}
 
 char* GetFileRead(char* user,char* computer)
 {
 	char word[MAX_WORD_SIZE];
 	sprintf(word,(char*)"%s/%stopic_%s_%s.txt",users,GetUserPath(loginID),user,computer);
-	char* buffer = FindUserCache(word); // sets currentCache and makes it first if non-zero return -  will either find but not assign if not found
-	if (buffer) return buffer;
+	char* buffer;
+	if ( filesystemOverride == NORMALFILES) // local files
+	{
+		char name[MAX_WORD_SIZE];
+		strcpy(name,word);
+		strcat(name,"\r\n");
+		buffer = FindUserCache(name); // sets currentCache and makes it first if non-zero return -  will either find but not assign if not found
+		if (buffer) return buffer;
+	}
+	clock_t start_time = ElapsedMilliseconds();
 
 	// have to go read it
 	buffer = GetFreeCache(); // get cache buffer 
@@ -238,7 +228,7 @@ char* GetFileRead(char* user,char* computer)
 
 #ifdef LOCKUSERFILE
 #ifdef LINUX
-	if (server && in && userFileSystem.userOpen == FopenReadWritten)
+	if (server && in &&  filesystemOverride == NORMALFILES)
 	{
 		int fd = fileno(in);
 		if (fd < 0) 
@@ -263,39 +253,18 @@ char* GetFileRead(char* user,char* computer)
 	}
 #endif
 #endif
-
 	if (in) // read in data if file exists
 	{
-		unsigned int actualSize = userFileSystem.userSize(in);
-		if ((int)actualSize != -1) 
-		{
-			if (actualSize >= userCacheSize) // emergency read issue
-			{
-				if (actualSize < safespace) {;} // prior write use is fine, avoid memory fragmentation
-				else if (actualSize < 200000) safespace = 2000000;
-				else 
-				{
-					ReportBug((char*)"Overflow read buffer unexpectedly huge\r\n");
-					userFileSystem.userClose(in);
-					return NULL;
-				}
-				if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"Allocating overflow read for %s\r\n",word);
-				overflowBuffer = buffer = (char*) malloc(safespace);
-				if (!overflowBuffer) // couldnt malloc
-				{
-					ReportBug((char*)"Could not allocate overflow read buffer\r\n");
-					userFileSystem.userClose(in);
-					return NULL;
-				}
-			}
-
-
-			size_t readit = userFileSystem.userRead(buffer,1,actualSize,in);	// read it all in, including BOM
-			buffer[readit] = 0;
-			if (readit != actualSize) *buffer = 0; // read failure
-		}
+		size_t readit;
+		readit = DecryptableFileRead(buffer,1,userCacheSize,in); // reading topic file of user
+		buffer[readit] = 0;
+		buffer[readit+1] = 0; // insure nothing can overrun
 		userFileSystem.userClose(in);
-		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDUSERLOG,(char*)"read in %s cache (%d)\r\n",word,currentCache);
+		if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"read in %s cache (%d)\r\n",word,currentCache);
+		if (timing & TIME_USERCACHE) {
+			int diff = ElapsedMilliseconds() - start_time;
+			if (timing & TIME_ALWAYS || diff > 0) Log((server) ? SERVERLOG : STDTIMELOG, (char*)"Read user cache %d in file %s time: %d ms\r\n", currentCache, word, diff);
+		}
 	}
 	return buffer;
 }
@@ -305,12 +274,16 @@ char* GetCacheBuffer(int which)
 	return (which < 0) ? GetFreeCache() : (cacheBase+(which * userCacheSize)); // NOT from cache system, get a cache buffer
 }
 
+char* GetUserFileBuffer() // when we need a really big buffer (several megabytes)
+{
+	return GetFreeCache();
+}
+
 void Cache(char* buffer, size_t size) // save into cache
 {
 	if (!buffer) // ran out of room
 	{
-		ReportBug("User write failed, too big");
-		OverflowRelease();
+		ReportBug("User write failed, too big for %s", loginID);
 		return;
 	}
 	unsigned int duration = (clock() / 	CLOCKS_PER_SEC) - startSystem; // how many seconds since start of program launch
@@ -327,7 +300,7 @@ void Cache(char* buffer, size_t size) // save into cache
 	// write out users that haven't been saved recently
 	unsigned int volleys = VOLLEYCOUNT(currentCache) + 1; 
 	cacheIndex[TIMESTAMP(currentCache)] = duration | (volleys << 24); 
-	if ( (int)volleys >= volleyLimit || overflowBuffer ) WriteCache(currentCache,size); // writecache clears the volley count - default 1 ALWAYS writes
+	if ( (int)volleys >= volleyLimit) WriteCache(currentCache,size); // writecache clears the volley count - default 1 ALWAYS writes
 	if (!volleyLimit) FreeUserCache(); // force reload each time, it will have already been written out immediately before
 
 	currentCache = NO_CACHEID;

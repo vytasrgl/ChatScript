@@ -4,8 +4,7 @@
     <LocalDebuggerWorkingDirectory>..\BINARIES</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>..\BINARIES\chatscript.exe </LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>
-    </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>xbootcmd=":trace always all -fact -json" xemongo="mongodb://localhost:27017 ChatScript topic:InputOutput log:Logs ltm:LTM" xmongo="mongodb://10.0.12.80:27017 ChatScript Logo"</LocalDebuggerCommandArguments>
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -1582,7 +1582,7 @@
     upset~2n 
     revolutionize~1v 
     reverse~13v 
-    countermand~2v 
+    revoke~2v 
     turn_over~5v 
     upset~18v 
     overthrow~4v 
@@ -1704,7 +1704,7 @@
  outdoor_sport ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     field_sport~1nz (^sport~2) a sport that is played outdoors
  one-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    one-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only one hit
+    1-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team only one hit
  Olympian ( meanings=4 glosses=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR ) 
     Olympic_god~1n 
     Olympian~2nz (^athlete~1) an athlete who participates in the Olympic games
@@ -6640,7 +6640,7 @@
  oz. ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     ounce~1n 
  one-fourth ( meanings=1 NOUN NOUN_SINGULAR ) 
-    fourth_part~1n 
+    quarter~9n 
  one-sixth ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     one-sixth~1nz (^common_fraction~1) one part in six equal parts
  one-seventh ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 

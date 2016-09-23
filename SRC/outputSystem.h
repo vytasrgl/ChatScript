@@ -26,7 +26,7 @@ extern unsigned int outputNest;
 // styles of output
 char* StdIntOutput(int n);
 char* StdFloatOutput(float n);
-void ReformatString(char* word,char* buffer,FunctionResult& result,unsigned int controls = 0, bool space = false);
+void ReformatString(char starter,char* word,char* buffer,FunctionResult& result,unsigned int controls = 0, bool space = false);
 
 // output buffer management
 void AllocateOutputBuffer();
@@ -34,6 +34,7 @@ void FreeOutputBuffer();
 void PushOutputBuffers();
 void PopOutputBuffers();
 void ResetOutput();
+bool LegalVarChar(char at);
 
 // ways to generate output
 void StdNumber(char* word,char* output,int controls, bool space = false);

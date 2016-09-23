@@ -1,6 +1,6 @@
 
-table: ~men (^role ^male ^kind ^item)
-^createfact(^male member ^role)
+table: ~men (^roleitem ^male ^kind ^item)
+^createfact(^male member ^roleitem)
 if (^kind != *) {^createfact(^item member ^kind)}
 if (^item != *) {^createfact(^item write ^male)}
 ^addproperty(^male NOUN_MALEHUMAN )

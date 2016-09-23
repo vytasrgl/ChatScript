@@ -1222,14 +1222,14 @@ DATA:
 "Virginia Woolf"  "The Years" * * 
 "Virginia Woolf"  "To The Lighthouse" * * 
 
-table: ~women ( ^role ^female)
-^createfact(^female member ^role)
+table: ~women ( ^roleitem ^female)
+^createfact(^female member ^roleitem)
 ^addproperty(^female NOUN_FEMALEHUMAN )
 DATA:
  ~poet  ["Sylvia Plath"]
 
- table: ~women (^role ^female ^kind ^item)
-^createfact(^female member ^role)
+ table: ~women (^roleitem ^female ^kind ^item)
+^createfact(^female member ^roleitem)
 ^createfact(^item member ^kind)
 ^createfact(^item write ^female)
 ^addproperty(^female NOUN_FEMALEHUMAN )

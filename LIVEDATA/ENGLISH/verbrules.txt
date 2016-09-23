@@ -4,6 +4,10 @@
 # its the ONLY possible verb "Carlos smiled."  -- DONT DO that as a phase 1 rule
 
 
+#  sentence cannot start with verb present "*Buy shoes"
+0	INCLUDE * VERB_PRESENT VERB_PRESENT_3PS
+	STAY START
+DISCARD
 
  # verb (skip adverb) followed by aux/verb cant happen funds/fund (Noun_plural Verb_present_3ps)  recently (Adverb)  have (Aux_have_present)
 0	INCLUDE * VERB_BITS
@@ -296,13 +300,21 @@ DISCARD
 # 	STAY !ISQUESTION
 # KEEP
 
+# noun after helper start will be noun not verb "is *snow cold"
+-1	HAS VERB_BITS
+	STAY START
+	STAY HAS AUX_VERB
+	INCLUDE * VERB_BITS
+	STAY HAS NOUN_BITS
+DISCARD
+
 # if there is no verb before or after us no infinitive, we must be the one - "my dog *loves to play" -- except if we are immediately after something like "how about cheese and fries" or are at start (lacking subject)
 -1	!HAS PREPOSITION DETERMINER POSSESSIVE
 	STAY !ISORIGINAL no
 	STAY !ISORIGINAL about	# avoid how about xxx
 	INCLUDE * VERB_BITS 
 	STAY !START
-	STAY !PRIORPOS VERB_BITS
+	STAY !PRIORPOS VERB_BITS  AUX_VERB
 	STAY !POSTPOS VERB_BITS
 KEEP
 

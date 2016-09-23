@@ -1,8 +1,12 @@
 #ifndef DISCARDJAVASCRIPT
 #include "duktape/duktape.c"
-static duk_context *ctxPermanent = NULL;
-static duk_context *ctxTransient = NULL;
-static duk_context *ctx;
+//#include "duktape/duk_config.h"
+//#include "duktape/duktape.h"
+
+duk_context *ctxPermanent = NULL;
+duk_context *ctxTransient = NULL;
+duk_context *ctx;
+
 #endif
 
 #include "common1.h"
@@ -80,11 +84,11 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 	if (*code && !inited) // code was supplied, handle it if not yet executed
 	{
 		*defstart = '.';
-		char file[MAX_WORD_SIZE];
-		char* next = ReadCompiledWord(code,file); 
+		char file[SMALL_WORD_SIZE];
+		ReadCompiledWord(code,file); 
 		if (!stricmp(file,"file")) // read files
 		{
-			while ((code = ReadCompiledWord(code,file)) && !stricmp(file,"file"))
+			while ((code = ReadCompiledWord(code,file)) != NULL && !stricmp(file,"file"))
 			{
 				code = ReadCompiledWord(code,file);  // name
 				char* name = file;

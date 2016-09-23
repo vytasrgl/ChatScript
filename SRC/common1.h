@@ -6,14 +6,14 @@ typedef signed long long  int64;
 #define ALWAYS (1 == always)
 
 #define MAX_ARGUMENT_COUNT 400 //  assume 10 args 40 nested calls max. 
-#define MAX_ARG_BYTES 50000
-extern char callArgumentList[MAX_ARGUMENT_COUNT+1][MAX_ARG_BYTES];    //   function callArgumentList
+extern char* callArgumentList[MAX_ARGUMENT_COUNT+1];    //   function callArgumentList
 extern unsigned int callArgumentBase;
 
 #define ARGUMENT(n) callArgumentList[callArgumentBase+n]
 char* ReadCompiledWord(char* ptr, char* word,bool noquote = false,bool var = false);
+char* ReadCompiledWordOrCall(char* ptr, char* word,bool noquote = false,bool var = false);
 
-#define INPUT_BUFFER_SIZE   4000
+#define INPUT_BUFFER_SIZE   80000
 #define MAX_BUFFER_SIZE		80000
 
 #define NUMBER_OF_LAYERS 3
@@ -51,42 +51,50 @@ typedef unsigned int MEANING;					//   a flagged indexed dict ptr
 #define TYPE_RESTRICTION_SHIFT 0
 #endif
 
+#define SYSVAR_PREFIX '%'
+#define MATCHVAR_PREFIX '_'
+#define USERVAR_PREFIX '$'
+#define TRANSIENTVAR_PREFIX '$'
+#define LOCALVAR_PREFIX '_'
+#define FACTSET_PREFIX '@'
+#define FUNCTIONVAR_PREFIX '^'
+#define TOPICCONCEPT_PREFIX '~'
+
 #define BIG_WORD_SIZE   10000
-#define MAX_WORD_SIZE   1500       
+#define MAX_WORD_SIZE   3000   
+#define SMALL_WORD_SIZE  500  
 
 #undef WORDP //   remove windows version (unsigned short) for ours
 
 //   DoFunction results
  enum FunctionResult {
 	NOPROBLEM_BIT = 0,
-	ENDRULE_BIT = 1,
-	FAILRULE_BIT  = 2,
+	ENDRULE_BIT = 0x00000001,
+	FAILRULE_BIT  = 0x00000002,
 
-	RETRYRULE_BIT =  4,
-	RETRYTOPRULE_BIT =  8,
+	RETRYRULE_BIT =  0x00000004,
+	RETRYTOPRULE_BIT =  0x00000008,
 
-	ENDTOPIC_BIT =  16,
-	FAILTOPIC_BIT  = 32,
-	RETRYTOPIC_BIT  = 64,
+	ENDTOPIC_BIT =  0x00000010,
+	FAILTOPIC_BIT  = 0x00000020,
+	RETRYTOPIC_BIT  = 0x00000040,
 
-	ENDSENTENCE_BIT =  128,
-	FAILSENTENCE_BIT =  256,
-	RETRYSENTENCE_BIT =  512,
+	ENDSENTENCE_BIT =  0x00000080,
+	FAILSENTENCE_BIT =  0x00000100,
+	RETRYSENTENCE_BIT =  0x00000200,
 
-	ENDINPUT_BIT  = 1024,
-	FAILINPUT_BIT  = 2048,
-	RETRYINPUT_BIT = 4096,
+	ENDINPUT_BIT  = 0x00000400,
+	FAILINPUT_BIT  = 0x00000800,
+	RETRYINPUT_BIT = 0x00001000,
 
-	FAILMATCH_BIT  = 8192,			// transient result of TestRule, converts to FAILRULE_BIT
-	FAILLOOP_BIT  = 16384,
-	ENDLOOP_BIT  = 32768,
+	FAILMATCH_BIT  = 0x00002000,			// transient result of TestRule, converts to FAILRULE_BIT
+	FAILLOOP_BIT  = 0x00004000,
+	ENDLOOP_BIT  = 0x00008000,
 
-	UNDEFINED_FUNCTION  = 65536, //   potential function call has no definition so isnt
-	ENDCALL_BIT  =    131072,
-
-	NEXTLOOP_BIT = 262144,
-
-	NOREJOINDER = 262144,	// can be ored on
+	UNDEFINED_FUNCTION = 0x00010000, //   potential function call has no definition so isnt
+	ENDCALL_BIT  =		0x00020000,
+	NEXTLOOP_BIT =		0x00040000,
+	RESTART_BIT =	0x00080000
 };
  FunctionResult JavascriptArgEval(unsigned int index, char* buffer);
 #endif

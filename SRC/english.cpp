@@ -278,9 +278,18 @@ EndingInfo adjective1[] =
 	{0},
 };
 
-uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& sysflags,uint64 &cansysflags,bool firstTry,bool nogenerate, int start) // case sensitive, may add word to dictionary, will not augment flags of existing words
+uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &canonical,uint64& sysflags,uint64 &cansysflags,bool firstTry,bool nogenerate, int start) // case sensitive, may add word to dictionary, will not augment flags of existing words
 { // this is not allowed to write properties/systemflags/internalbits if the word is preexisting
 	if (start == 0) start = 1;
+	if (revise) revise = NULL;
+	if (*original == 0) // null string
+	{
+		entry = canonical = StoreWord("null word");
+		sysflags = 0;
+		cansysflags = 0;
+		revise = entry;
+		return 0;
+	}
 
 	if (oobExists)
 	{
@@ -297,7 +306,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 			return 0;
 		}
 	}
-	if (*original == '~' || (*original == '$' && !IsDigit(original[1])) || *original == '^' || (*original == '%' && original[1]))
+	if (*original == '~' || (*original == USERVAR_PREFIX && !IsDigit(original[1])) || *original == '^' || (*original == SYSVAR_PREFIX && original[1]))
 	{
 		char copy[MAX_WORD_SIZE];
 		MakeLowerCopy(copy,original);
@@ -306,21 +315,21 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		return 0;
 	}
 
-	if (wordStarts[at-1] && *wordStarts[at-1] == '"') 
+	if (at >= 0 && wordStarts[at-1] && *wordStarts[at-1] == '"') 
 	{
 		int x = at-1;
 		while (--x >= start) if (*wordStarts[x] == '"') break;
-		if (*wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
+		if (x > 0 && wordStarts[x] && *wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
 	}
 	if (wordStarts[start] && (*wordStarts[start] == '"' || *wordStarts[start] == '(')) ++start; // skip over any quotes or paren starter -- consider next thing a starter
 	uint64 properties = 0;
 	sysflags = cansysflags = 0;
 	canonical = 0;
-	if (at == 0) at = 1;
-	if (!wordStarts[at-1]) wordStarts[at-1] = reuseAllocation(wordStarts[at-1],(char*)""); // protection
-	if (!wordStarts[at+1]) wordStarts[at+1] = reuseAllocation(wordStarts[at+1],(char*)"");	// protection
+	if (at == 0) at = 1; //but leave <0 alone, means dont look at neighbors
+	if (at > 0 && !wordStarts[at-1]) wordStarts[at-1] = reuseAllocation(wordStarts[at-1],(char*)""); // protection
+	if (at > 0 && !wordStarts[at+1]) wordStarts[at+1] = reuseAllocation(wordStarts[at+1],(char*)"");	// protection
 
-	if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original)) MakeLowerCase(original);
+	if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original) && (*original != 'I' || original[1])) MakeLowerCase(original);
 
 	entry = FindWord(original,0,PRIMARY_CASE_ALLOWED);
 	if (entry && entry->systemFlags & CONDITIONAL_IDIOM) 
@@ -364,7 +373,8 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 	{
 		strcpy(original,(char*)"at");
 		entry = canonical = FindWord(original,0,PRIMARY_CASE_ALLOWED);
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word); 
+		original = reuseAllocation(original,entry->word); 
+		if (revise) revise = entry;
 	}
 
 	WORDP ZZ = FindWord(original,0,LOWERCASE_LOOKUP);
@@ -372,76 +382,90 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 	else if (!stricmp(original,(char*)"the") || !stricmp(original,(char*)"a") || !stricmp(original,(char*)"this") || !stricmp(original,(char*)"these") || !stricmp(original,(char*)"an")  ) // force lower case on these determiners regardless
 	{
 		entry =  canonical = ZZ;
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	else if (ZZ->properties & (PRONOUN_SUBJECT|PRONOUN_OBJECT))
 	{
 		entry =  canonical = ZZ;
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"His") || !stricmp(original,(char*)"Then") || !stricmp(original,(char*)"Thus"))
 	{
 		entry =  canonical = ZZ; //force lower case - dont want "His" as plural of HI nor thi's
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	else if (start != at && tokenControl & STRICT_CASING) {;} // believe all upper case items not at sentence start when using strict casing
 	else if (ZZ->properties & (DETERMINER|PREPOSITION|PRONOUN_POSSESSIVE|PRONOUN_BITS|AUX_VERB) && !IsNumber(original)) // prep and determiner are ALWAYS considered lowercase for parsing (which happens later than proper name extraction)
 	{
 		entry =  canonical = ZZ;
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 		if (ZZ->properties & (MORE_FORM|MOST_FORM)) canonical = NULL;	// we dont know yet
 	}
-	else if (ZZ->properties & (DETERMINER_BITS|PREPOSITION|CONJUNCTION|AUX_VERB) && strcmp(original,(char*)"May") && (*wordStarts[at-1] == '-' || *wordStarts[at-1] == ':' || *wordStarts[at-1] == '"' || at == startSentence || !(STRICT_CASING  & tokenControl))) // not the month
+	else if (at > 0 && ZZ->properties & (DETERMINER_BITS|PREPOSITION|CONJUNCTION|AUX_VERB) && strcmp(original,(char*)"May") && (*wordStarts[at-1] == '-' || *wordStarts[at-1] == ':' || *wordStarts[at-1] == '"' || at == startSentence || !(STRICT_CASING  & tokenControl))) // not the month
 	{
 		entry =  canonical = ZZ; //force lower case on all determiners and such
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	else if (at == start && ZZ->properties & VERB_INFINITIVE && !entry) // upper case start has no meaning but could be imperative verb, be that
 	{
 		entry = canonical = ZZ;
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	
 	if (!stricmp(original,(char*)"yes") )
 	{
 		entry =  canonical = FindWord(original,0,LOWERCASE_LOOKUP); //force lower case pronoun, dont want "yes" to be Y's
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"p.m") )
 	{
 		entry =  canonical = FindWord((char*)"p.m.",0,LOWERCASE_LOOKUP);
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"a.m") )
 	{
 		entry =  canonical = FindWord((char*)"a.m.",0,LOWERCASE_LOOKUP);
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
-	else if (!stricmp(original,(char*)"ca") &&  !stricmp(wordStarts[at+1],(char*)"not"))
+	else if (at > 0 && !stricmp(original,(char*)"ca") &&  !stricmp(wordStarts[at+1],(char*)"not"))
 	{
 		entry = canonical = FindWord((char*)"can",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
-	else if (!stricmp(original,(char*)"wo") &&  !stricmp(wordStarts[at+1],(char*)"not"))
+	else if (at > 0 && !stricmp(original,(char*)"wo") &&  !stricmp(wordStarts[at+1],(char*)"not"))
 	{
 		entry = canonical = FindWord((char*)"will",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
 		cansysflags = sysflags = entry->systemFlags; // probably nothing here
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"n'") )
 	{
 		entry = canonical = FindWord((char*)"and",0,LOWERCASE_LOOKUP);
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"'re") )
 	{
 		entry = canonical = FindWord((char*)"are",0,LOWERCASE_LOOKUP);
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
-	else if (!stricmp(original,(char*)"'s") && (!stricmp(wordStarts[at-1],(char*)"there") || !stricmp(wordStarts[at-1],(char*)"it") || !stricmp(wordStarts[at-1],(char*)"who") || !stricmp(wordStarts[at-1],(char*)"what")  || !stricmp(wordStarts[at-1],(char*)"that") )) //there 's and it's  who's what's
+	else if (at > 0 && !stricmp(original,(char*)"'s") && (!stricmp(wordStarts[at-1],(char*)"there") || !stricmp(wordStarts[at-1],(char*)"it") || !stricmp(wordStarts[at-1],(char*)"who") || !stricmp(wordStarts[at-1],(char*)"what")  || !stricmp(wordStarts[at-1],(char*)"that") )) //there 's and it's  who's what's
 	{
 		entry = canonical = FindWord((char*)"is",0,LOWERCASE_LOOKUP);
-		original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+		original = reuseAllocation(original,entry->word);
+		if (revise) revise = entry;
 	}
 	size_t len = strlen(original);
 	unsigned int kind =  IsNumber(original);
@@ -470,7 +494,8 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		if (check && check->properties & (PREPOSITION|DETERMINER_BITS|CONJUNCTION|PRONOUN_BITS|POSSESSIVE_BITS)) 
 		{
 			entry =  canonical = FindWord(original,0,LOWERCASE_LOOKUP); //force lower case pronoun, dont want "His" as plural of HI nor thi's
-			original = wordStarts[at] = reuseAllocation(wordStarts[at],entry->word);
+			original = reuseAllocation(original,entry->word);
+			if (revise) revise = entry;
 		}
 	}
 
@@ -629,7 +654,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		else if (kind == FRACTION_NUMBER && strchr(original,'%'))
 		{
 			int64 val1 = atoi(original);
-			float val = ((float)val1) / 100.0;
+			float val = (float)(val1 / 100.0);
 			sprintf(number,(char*)"%1.2f",val );
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
 			entry = StoreWord(original,properties);
@@ -912,7 +937,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		}
 	}
 
-	if (!(properties & ADVERB) && (at == start || !IsUpperCase(*original)) && len > 3) // could it be comparative adverb even if we know the word
+	if (!(properties & ADVERB) && !(properties & (NOUN|VERB)) && (at == start || !IsUpperCase(*original)) && len > 3) // could it be comparative adverb even if we know the word
 	{
 		char lower[MAX_WORD_SIZE];
 		MakeLowerCopy(lower,original);
@@ -1026,7 +1051,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		WORDP Y = FindWord(hyphen+1,0,LOWERCASE_LOOKUP);
 		*hyphen = '-';
 		// adjective made from counted singular noun:  6-month
-		if (Y && IsNumber(X->word,false))
+		if (X && Y && IsNumber(X->word,false))
 		{
 			if (Y->properties & NOUN && !stricmp(Y->word,GetSingularNoun(Y->word, false, true))) // number with singular noun cant be anything but adjective
 			{
@@ -1049,6 +1074,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 			preknown = true;	// lie. we know it is only an adjective
 		}
 	}
+	char tmpword[MAX_WORD_SIZE];
 
 	// A WORD WE NEVER KNEW - figure it out
 	if (!preknown) // if we didnt know the original word, then even if we've found noun/verb forms of it, we need to test other options
@@ -1089,9 +1115,8 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 				adjective = GetAdjectiveBase(hyphen+1,true);
 				if (adjective && strcmp(hyphen+1,adjective)) // base is not the same
 				{
-					char word[MAX_WORD_SIZE];
-					sprintf(word,(char*)"%s-%s",original,adjective);
-					canonical = StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE);
+					sprintf(tmpword,(char*)"%s-%s",original,adjective);
+					canonical = StoreWord(tmpword,ADJECTIVE_NORMAL|ADJECTIVE);
 					properties |= adjectiveFormat;
 				}
 			}
@@ -1113,9 +1138,8 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 				adverb = GetAdverbBase(hyphen+1,true);
 				if (adverb && strcmp(hyphen+1,adverb)) // base is not the same
 				{
-					char word[MAX_WORD_SIZE];
-					sprintf(word,(char*)"%s-%s",original,adverb);
-					canonical = StoreWord(word,ADJECTIVE_NORMAL|ADJECTIVE);
+					sprintf(tmpword,(char*)"%s-%s",original,adverb);
+					canonical = StoreWord(tmpword,ADJECTIVE_NORMAL|ADJECTIVE);
 					properties |= adverbFormat;
 				}
 			}
@@ -1148,10 +1172,9 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 					}
 
 					entry = StoreWord(original,properties,sysflags);
-					char word[MAX_WORD_SIZE];
-					strcpy(word,original);
-					strcpy(word+(hyphen+1-original),noun);
-					if (!canonical || !stricmp(canonical->word,original)) canonical = StoreWord(word,NOUN|NOUN_SINGULAR,sysflags);
+					strcpy(tmpword,original);
+					strcpy(tmpword+(hyphen+1-original),noun);
+					if (!canonical || !stricmp(canonical->word,original)) canonical = StoreWord(tmpword,NOUN|NOUN_SINGULAR,sysflags);
 				}
 			}
 			char* verb = GetInfinitive(hyphen+1,true);
@@ -1163,11 +1186,10 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 					properties |=  VERB|verbFormat; // note "self-governed" can be noun or verb and which makes a difference to canonical.
 					if (!canonical) 
 					{
-						char word[MAX_WORD_SIZE];
-						strcpy(word,original);
-						char* h = word + (hyphen-original);
+						strcpy(tmpword,original);
+						char* h = tmpword + (hyphen-original);
 						strcpy(h+1,verb);
-						canonical = StoreWord(word,VERB|VERB_INFINITIVE);
+						canonical = StoreWord(tmpword,VERB|VERB_INFINITIVE);
 					}
 				}
 			}
@@ -1177,18 +1199,17 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 				*hyphen = 0;
 				if (IsDigit(*original) || IsDigit(hyphen[1]) ||  IsNumber(original) || IsNumber(hyphen+1))
 				{
-					char word[MAX_WORD_SIZE];
 					int64 n;
 					n = Convert2Integer((IsNumber(original) || IsDigit(*original)) ? original : (hyphen+1));
 					#ifdef WIN32
-					sprintf(word,(char*)"%I64d",n); 
+					sprintf(tmpword,(char*)"%I64d",n); 
 #else
-					sprintf(word,(char*)"%lld",n); 
+					sprintf(tmpword,(char*)"%lld",n); 
 #endif
 					*hyphen = '-';
 					properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
 					entry = StoreWord(original,properties,TIMEWORD|MODEL_NUMBER);
-					canonical = StoreWord(word,properties,TIMEWORD|MODEL_NUMBER);
+					canonical = StoreWord(tmpword,properties,TIMEWORD|MODEL_NUMBER);
 					sysflags |= MODEL_NUMBER | TIMEWORD;
 					cansysflags |= MODEL_NUMBER|TIMEWORD;
 					return properties;
@@ -1209,15 +1230,15 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 
 	if (properties){;}
 	else if (tokenControl & ONLY_LOWERCASE) {;}
-	else if (tokenControl & STRICT_CASING && at != start && *wordStarts[at-1] != ':'){;} // can start a sentence after a colon (like newspaper headings
+	else if (at > 0 && tokenControl & STRICT_CASING && at != start && *wordStarts[at-1] != ':'){;} // can start a sentence after a colon (like newspaper headings
 	else 
 	{
 #ifndef NOPOSPARSER
 		// we will NOT allow capitalization shift on 1st word if it appears to be part of proper noun, unless its a simple finite word potentially
-		WORDP X = (at == start) ? FindWord(wordStarts[at],0,UPPERCASE_LOOKUP) : NULL;
+		WORDP X = (at == start) ? FindWord(original,0,UPPERCASE_LOOKUP) : NULL;
 		if (X) // we have a known uppercase word
 		{
-			if (at == endSentence) {;}
+			if (at == endSentence || at  < 0) {;}
 			else if (!IsUpperCase(*wordStarts[at+1]) || !wordStarts[at+1][1] || !wordStarts[at+1][2]) X = NULL; // next word is not big enough upper case
 			else
 			{
@@ -1239,10 +1260,17 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 				alternate[0] = toUppercaseData[alternate[0]];
 			}
 			WORDP D1,D2;
-			uint64 flags1 = GetPosData(at,alternate,D1,D2,sysflags,cansysflags,false,nogenerate,start);
+			WORDP revise;
+			uint64 flags1 = GetPosData(at,alternate,revise,D1,D2,sysflags,cansysflags,false,nogenerate,start);
+			if (revise) 
+			{
+				wordStarts[at] = revise->word;
+				original = revise->word;
+			}
 			if (flags1) 
 			{
-				wordStarts[at] = reuseAllocation(wordStarts[at],D1->word);
+				original = reuseAllocation(original,D1->word);
+				if (revise) wordStarts[at] = revise->word;
 				entry = D1;
 				canonical = D2;
 				return flags1;
@@ -1252,7 +1280,8 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		if ( IsUpperCase(*original)) // dont recognize this, see if we know  lower case if this was upper case
 		{
 			WORDP D = FindWord(original,0,LOWERCASE_LOOKUP);
-			if (D) return GetPosData(at,D->word,entry,canonical,sysflags,cansysflags,false,nogenerate);
+			WORDP revise;
+			if (D) return GetPosData(at,D->word,revise,entry,canonical,sysflags,cansysflags,false,nogenerate);
 		}
 #endif
 	}
@@ -1345,7 +1374,7 @@ uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64& 
 		properties |= ADJECTIVE_PARTICIPLE|ADJECTIVE;
 	}
 	if (properties & VERB_PRESENT_PARTICIPLE) properties |= NOUN_GERUND|NOUN;
-	if (*entry->word == '~' || *entry->word == '^' || *entry->word == '$') canonical = entry;	// not unknown, is self
+	if (*entry->word == '~' || *entry->word == '^' || *entry->word == USERVAR_PREFIX) canonical = entry;	// not unknown, is self
 	cansysflags |= canonical->systemFlags;
 	sysflags |= entry->systemFlags;
 	return properties;
@@ -1363,13 +1392,13 @@ void SetSentenceTense(int start, int end)
 	bool subjectFound = false;
 	if ((trace & TRACE_POS || prepareMode == POS_MODE) && CheckTopicTrace()) 
 	{
-		if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) Log(STDUSERLOG,(char*)"Not doing a parse.\r\n");
+		if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) Log(STDTRACELOG,(char*)"Not doing a parse.\r\n");
 	}
 
 	// assign sentence type
 	if (!verbStack[MAINLEVEL] || !(roles[verbStack[MAINLEVEL]] &  MAINVERB)) // FOUND no verb, not a sentence
 	{
-		if ((trace & TRACE_POS || prepareMode == POS_MODE) && CheckTopicTrace()) Log(STDUSERLOG,(char*)"Not a sentence\r\n");
+		if ((trace & TRACE_POS || prepareMode == POS_MODE) && CheckTopicTrace()) Log(STDTRACELOG,(char*)"Not a sentence\r\n");
 		if (tokenFlags & (QUESTIONMARK|EXCLAMATIONMARK)) {;}
 		else if (posValues[startSentence] & AUX_VERB) tokenFlags |= QUESTIONMARK;// its a question because AUX starts
 		else if (allOriginalWordBits[startSentence]  & QWORD)
@@ -1406,7 +1435,11 @@ void SetSentenceTense(int start, int end)
 			if ( bitCounts[i] != 1) break;	// all bets about structure are now off
 			if (posValues[i] & AUX_VERB)
 			{
-				if (i == startSentence) // its a question because AUX or VERB comes before MAINSUBJECT
+				size_t len = strlen(wordStarts[i]);
+				bool normalAux = true;
+				if (len > 3 && !stricmp(wordStarts[i]+len-3,"ing")) normalAux = false; // not Getting or gets in present tense
+				if (!normalAux){;}
+				else if (i == startSentence) // its a question because AUX or VERB comes before MAINSUBJECT
 				{
 					tokenFlags |= QUESTIONMARK;
 					break;
@@ -1414,7 +1447,7 @@ void SetSentenceTense(int start, int end)
 				else if (!subjectFound && !foundVerb) // its a question because AUX or VERB comes before MAINSUBJECT unless we have a command before
 				{
 					// EXCEPT for negative adverb starter: (char*)"never can I go home"
-					if (parseFlags[i-1] & NEGATIVE_ADVERB_STARTER) {;}
+					if (parseFlags[i-1] & NEGATIVE_ADVERB_STARTER ) {;}
 					else
 					{
 						tokenFlags |= QUESTIONMARK;
@@ -2079,7 +2112,7 @@ char* GetInfinitive(char* word, bool nonew)
 
 	char last = word[len-1];  
     char prior = (len > 2) ? word[len-2] : 0;  //   Xs
-    char prior1 = (len > 3) ? word[len-3] : 0; //   Xes
+    char prior1 = (len > 3) ? word[len-3] : 0; //   Xes (but not nes)
     char prior2 = (len > 4) ? word[len-4] : 0; //   Xhes
 	char prior3 = (len > 5) ? word[len-5] : 0; //   Xhes
 
@@ -2274,7 +2307,7 @@ char* GetInfinitive(char* word, bool nonew)
 		D = FindWord(word,len-1,UPPERCASE_LOOKUP); // if word exists in upper case, this is a plural and NOT a verb with s
 		if (D) return NULL;
 
-		if (!buildDictionary && !nonew)
+		if (!buildDictionary && !nonew && prior != 's') // not consciousness
 		{
 			char wd[MAX_WORD_SIZE];
 			strcpy(wd,word);
@@ -2505,7 +2538,7 @@ char* GetSingularNoun(char* word, bool initial, bool nonew)
 	if (D && D->properties & AUX_VERB) return NULL; // avoid "is" or "was" as plural noun
 
 	// check known from plural s or es
-	if (len > 2 && word[len-1] == 's')
+	if (len > 2 && word[len-1] == 's' && word[len-2] != 's')
 	{
 		static char mod[MAX_WORD_SIZE]; // we return this sometimes
 		char hold[MAX_WORD_SIZE];

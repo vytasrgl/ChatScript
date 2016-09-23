@@ -15,6 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
+#define MAX_LABEL_SIZE 100
+
 #define NO_REJOINDER -1   
 #define BLOCKED_REJOINDER -2 
 
@@ -92,6 +94,7 @@ typedef struct topicBlock
 	char* topicScript;
 	char* topicSourceFileName;
 	unsigned char* topicDebugRule;
+	unsigned char* topicTimingRule;
 	unsigned char* topicUsed;
 	unsigned int* ruleOffset;
 	unsigned int* gambitTag;
@@ -101,6 +104,7 @@ typedef struct topicBlock
 	int topicMaxRule;
 	int topicDebug;
 	int topicNoDebug;
+	int topicTiming;
 	int topicLastGambitted;
 	int topicLastRejoindered;
 	int topicLastRespondered;
@@ -123,12 +127,14 @@ extern int topicStack[MAX_TOPIC_STACK+1];
 extern int pendingTopicList[MAX_TOPIC_STACK+1];
 extern int originalPendingTopicList[MAX_TOPIC_STACK+1];
 void SetSampleFile(int topic);
+void ResetContext();
 FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer);
-FunctionResult TestRule(int responderID,char* ptr,char* buffer);
+FunctionResult TestRule(int responderID,char* ptr,char* buffer,bool refine=false);
 FunctionResult PerformTopic(int active,char* buffer,char* rule = NULL,unsigned int id = 0);
 bool Repeatable(char* rule);
+char* GetTopicLocals(int topic);
 void CleanOutput(char* word);
-FunctionResult LoadLayer(int layer, char* name,unsigned int build);
+FunctionResult LoadLayer(int layer, const char* name,unsigned int build);
 void ResetTopicReply();
 void SetRejoinder(char* rule);
 void SetErase(bool force = false);
@@ -138,11 +144,16 @@ int TopicInUse(int topic);
 int PushTopic(int topic);
 void PopTopic();
 bool CheckTopicTrace();
+bool CheckTopicTime();
 FunctionResult DoOutput(char* buffer,char* rule, unsigned int id);
 unsigned int EstablishTopicTrace();
 char* GetRuleIDFromText(char* ptr, int & id);
 char* GetVerify(char* tag,int & topicid, int &id);//  ~topic.#.#=LABEL<~topic.#.#  is a maximally complete why
 void UnwindLayer2Protect();
+void InitKeywords(const char* name,const char* layer,unsigned int build,bool mark=false,bool concept=true);
+extern unsigned int currentTopicDisplay;
+bool AreDebugMarksSet();
+bool AreTimingMarksSet();
 
 // encoding
 void DummyEncode(char* &data);
@@ -174,14 +185,14 @@ bool TopLevelStatement(char* word);
 bool TopLevelGambit(char* word);
 bool Rejoinder(char* word);
 char* GetLabel(char* rule,char* label);
-char* GetPattern(char* rule,char* label,char* pattern); // returns start of output and modified pattern
+char* GetPattern(char* rule,char* label,char* pattern,int limit = MAX_WORD_SIZE); // returns start of output and modified pattern
 char* GetOutputCopy(char* ptr); // returns copy of output only
 bool TopLevelRule(char* word);
 char* GetTopicName(int topic,bool actual = true);
 char* GetTopicData(int topic);
 void SetTopicData(int topic,char* data);
 bool BlockedBotAccess(int topic);
-void TraceSample(int topic, int ruleID, unsigned int how = STDUSERLOG);
+void TraceSample(int topic, int ruleID, unsigned int how = STDTRACELOG);
 bool SetRuleDisableMark(int topic, int id);
 void ClearRuleDisableMark(int topic,int id);
 bool UsableRule(int topic,int n);
@@ -191,7 +202,9 @@ void AddTopicFlag(int topic, unsigned int flag);
 void RemoveTopicFlag(int topic, unsigned int flag);
 
 void SetTopicDebugMark(int topic,unsigned int val);
+void SetTopicTimingMark(int topic, unsigned int val);
 void SetDebugRuleMark(int topic,unsigned int id);
+void SetTimingRuleMark(int topic, unsigned int id);
 char* ShowRule(char* rule,bool concise = false);
 char* DisplayTopicFlags(int topic);
 void FlushDisabled();
@@ -209,7 +222,6 @@ void LoadTopicSystem();
 void ResetTopicSystem(bool safe);
 void ResetTopics();
 void ResetTopic(int id);
-void InitKeywords(const char* name,unsigned int build,bool mark=false,bool concept=true);
 
 // Interesting topics
 unsigned int GetPendingTopicUnchanged();

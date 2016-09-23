@@ -20,6 +20,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define NOTE_KEYWORDS 4 // track keywords used
 #define NO_SUBSTITUTE_WARNING 8 // dont warn about substitutions
 
+#define ARGSETLIMIT 40 // ^0...^39
+
 extern unsigned int buildID; // build 0 or build 1
 extern bool compiling;
 extern bool patternContext;
@@ -37,8 +39,8 @@ char* ReadDisplayOutput(char* ptr,char* buffer);
   
 #ifndef DISCARDSCRIPTCOMPILER
 
-void ReadTopicFiles(char* name,unsigned int build, int spell);
-char* ReadPattern(char* ptr, FILE* in, char* &data,bool macro,bool ifstatement);
+int ReadTopicFiles(char* name,unsigned int build, int spell);
+char* ReadPattern(char* ptr, FILE* in, char* &data,bool macro,bool ifstatement, bool livecall = false);
 char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* existingRead = NULL,WORDP call = NULL,bool outputmacro = false);
 char* CompileString(char* ptr);
 void ScriptWarn();
@@ -52,7 +54,7 @@ void AddError(char* buffer);
 char* ReadNextSystemToken(FILE* in,char* ptr, char* word, bool separateUnderscore=true,bool peek=false);
 char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore=true);
 
-#define BADSCRIPT(...) {ScriptError(); Log((compiling) ? BADSCRIPTLOG : STDUSERLOG , __VA_ARGS__); JumpBack();}
-#define WARNSCRIPT(...) {if (compiling) {ScriptWarn(); Log(STDUSERLOG, __VA_ARGS__); }} // readpattern calls from functions should not issue warnings
+#define BADSCRIPT(...) {ScriptError(); Log((compiling) ? BADSCRIPTLOG : STDTRACELOG , __VA_ARGS__); JumpBack();}
+#define WARNSCRIPT(...) {if (compiling) {ScriptWarn(); Log(STDTRACELOG, __VA_ARGS__); }} // readpattern calls from functions should not issue warnings
 
 #endif

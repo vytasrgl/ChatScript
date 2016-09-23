@@ -28,10 +28,8 @@ typedef struct RESPONSE
 
 
 #define MAX_RESPONSE_SENTENCES 20
-#define MAX_SENTENCE_LENGTH 256 // room for +4 after content 
+#define MAX_SENTENCE_LENGTH 256 // room for +4 after content (keep a power of 4 for savesentence code)
 #define REAL_SENTENCE_LIMIT 252 // stay under char size boundary and leave excess room
-
-#define MAX_MESSAGE     1500
 
 #define TIMEOUT_INSTANCE 1000000
 
@@ -61,7 +59,8 @@ typedef struct RESPONSE
 	SOURCE_ECHO_LOG = 2,
 };
  
-extern unsigned int derivationIndex[256];
+extern unsigned short int derivationIndex[256];
+extern int derivationLength;
 extern char* derivationSentence[MAX_SENTENCE_LENGTH];
 extern bool docstats;
 extern unsigned int docSentenceCount;
@@ -78,6 +77,10 @@ extern unsigned int volleyCount;
 extern FILE* sourceFile;
 extern bool oobExists;
 extern char hostname[100];
+extern int argc;
+extern char** argv;
+extern volatile bool pendingRestart;
+extern volatile bool pendingUserReset;
 extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;
@@ -89,24 +92,25 @@ extern bool commandLineCompile;
 extern int inputCounter,totalCounter;
 extern int inputSentenceCount;  
 extern char* extraTopicData;
-extern char* postProcessing;
+extern char postProcessing;
 extern char rawSentenceCopy[MAX_BUFFER_SIZE];
 extern char* authorizations;
 extern uint64 tokenControl;
 extern unsigned int responseControl;
 extern bool moreToCome,moreToComeQuestion;
 extern unsigned int trace;
+extern unsigned int timing;
 extern int regression;
 extern EchoSource echoSource;
 extern bool all;
 extern PrepareMode prepareMode;
 extern PrepareMode tmpPrepareMode;
-extern unsigned int startSystem;
+extern clock_t startSystem;
 extern char oktest[MAX_WORD_SIZE];
 extern int timerLimit;
 extern int timerCheckRate;
 extern int timerCheckInstance;
-extern int volleyStartTime;
+extern clock_t volleyStartTime;
 extern bool autonumber;
 extern bool showWhy;
 extern bool showTopic;
@@ -121,7 +125,7 @@ extern char logs[100];
 extern int systemReset;
 extern bool quitting;
 extern bool unusedRejoinder;
-
+extern bool overrideAuthorization;
 extern bool noReact;
 
 // server
@@ -150,9 +154,10 @@ extern unsigned long loopBackTime;
 extern unsigned long loopBackDelay;
 extern unsigned long alarmTime;
 extern unsigned long alarmDelay;
-
+void Restart();
 void ProcessInputFile();
 bool ProcessInputDelays(char* buffer,bool hitkey);
+char* SkipOOB(char* buffer);
 
 // startup
 #ifdef DLL
@@ -168,8 +173,9 @@ void CloseSystem();
 void PartiallyCloseSystem();
 int main(int argc, char * argv[]);
 void ProcessOOB(char* buffer);
-void ComputeWhy(char* buffer);
-void SaveTracedFunctions();
+void ComputeWhy(char* buffer, int n);
+unsigned int SaveTracedFunctions();
+unsigned int SaveTimedFunctions();
 
 // Input processing
 void MainLoop();
@@ -185,7 +191,7 @@ int PerformChatGivenTopic(char* user, char* usee, char* incoming,char* ip,char* 
 #endif
 void ResetSentence();
 void ResetToPreUser();
-void PrepareSentence(char* input,bool mark = true,bool user=true, bool analyze = false);
+void PrepareSentence(char* input,bool mark = true,bool user=true, bool analyze = false, bool oobstart = false);
 bool PrepassSentence(char* presspassTopic);
 FunctionResult Reply();
 void OnceCode(const char* var,char* topic = NULL);
@@ -193,6 +199,5 @@ void AddBotUsed(const char* reply,unsigned int len);
 void AddHumanUsed(const char* reply);
 bool HasAlreadySaid(char* msg);
 bool AddResponse(char* msg, unsigned int controls);
-char* ConcatResult();
 
 #endif

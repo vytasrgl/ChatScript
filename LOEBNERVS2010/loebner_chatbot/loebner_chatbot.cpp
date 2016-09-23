@@ -288,6 +288,9 @@ retry:
 	return *at;
 }
 
+#include <direct.h>
+#define GetCurrentDir _getcwd
+
 VOID CALLBACK TimeCheck( HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime) // every 100 ms
 {
 	char c;
@@ -296,6 +299,8 @@ VOID CALLBACK TimeCheck( HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime) // 
 	if (!init)
 	{
 		init = true;
+	//	char word[MAX_WORD_SIZE];
+	//	GetCurrentDir(word, MAX_WORD_SIZE);
 		InitChatbot(computerName);
 		RECT rect;
 		GetClientRect(hwnd, &rect);

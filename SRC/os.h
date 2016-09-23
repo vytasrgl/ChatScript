@@ -22,13 +22,21 @@ extern jmp_buf scriptJump[5];
 extern int jumpIndex;
 
 void JumpBack();
-void myexit(char* msg);
+void myexit(char* msg, int code = 4);
+void mystart(char* msg);
 
+#define NORMALFILES 0
+#define MONGOFILES 1
+#define POSTGRESFILES 2
 extern bool logged;
+extern int filesystemOverride;
+
+#define RECORD_SIZE 4000
 
 // MEMORY SYSTEM
-
+extern char* inverseStringDepth[512];
 extern unsigned int maxBufferLimit;
+extern unsigned int maxInverseStringGap;
 extern unsigned int maxBufferSize;
 extern unsigned int maxBufferUsed;	
 extern unsigned int bufferIndex;
@@ -50,11 +58,12 @@ int MakeDirectory(char* directory);
 extern unsigned int currentFileLine;
 extern char currentFilename[MAX_WORD_SIZE];
 extern struct tm* ptm;
-
+int FClose(FILE* file);
 void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath);
 void C_Directories(char* x);
 void StartFile(const char* name);
-size_t FileSize(FILE* in);
+int FileSize(FILE* in,char* buffer,size_t allowedSize);
+void FileDelete(const char* filename);
 FILE* FopenStaticReadOnly(const char* name);
 FILE* FopenReadOnly(const char* name);
 FILE* FopenReadNormal(char* name);
@@ -63,6 +72,7 @@ FILE* FopenBinaryWrite(const char* name); // only for binary data files
 FILE* FopenUTF8Write(const char* filename);
 FILE* FopenUTF8WriteAppend(const char* filename, const char* flags = "ab");
 typedef void (*FILEWALK)(char* name, uint64 flag);
+void CopyFile2File(const char* newname,const char* oldname,bool autoNumber);
 
 
 #ifdef INFORMATION
@@ -79,7 +89,10 @@ typedef FILE* (*UserFileOpen)(const char* name);
 typedef int (*UserFileClose)(FILE*);
 typedef size_t (*UserFileRead)(void* buffer,size_t size, size_t count, FILE* file);
 typedef size_t (*UserFileWrite)(const void* buffer,size_t size, size_t count, FILE* file);
-typedef size_t (*UserFileSize)(FILE* file);
+typedef int (*UserFileSize)(FILE* file, char* buffer, size_t allowedSize);
+typedef void (*UserFileDelete)(const char* name);
+typedef size_t (*UserFileDecrypt)(void* buffer,size_t size, size_t count, FILE* file);
+typedef size_t (*UserFileEncrypt)(const void* buffer,size_t size, size_t count, FILE* file);
 
 typedef struct USERFILESYSTEM //  how to access user topic data
 {
@@ -88,21 +101,24 @@ typedef struct USERFILESYSTEM //  how to access user topic data
 	UserFileClose userClose;
 	UserFileRead userRead;
 	UserFileWrite userWrite;
-	UserFileSize userSize;
+	UserFileDelete userDelete;
+	UserFileEncrypt userEncrypt;
+	UserFileDecrypt userDecrypt;
 
 } USERFILESYSTEM;
 
 extern USERFILESYSTEM userFileSystem;
 void InitUserFiles();
 void WalkDirectory(char* directory,FILEWALK function, uint64 flags);
-
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file);
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file);
 char* GetUserPath(char* name);
 
 // TIME
 
 #define SKIPWEEKDAY 4 // from gettimeinfo
 
-char* GetTimeInfo();
+char* GetTimeInfo(bool nouser=false,bool utc=false);
 char* GetMyTime(time_t curr);
 
 #ifdef __MACH__
@@ -120,12 +136,15 @@ unsigned int GetFutureSeconds(unsigned int seconds);
 #define SERVERLOG 0
 #define STDUSERLOG 1
 #define STDDEBUGLOG 2
-#define ECHOSTDUSERLOG 3
+#define ECHOSTDTRACELOG 3
+#define STDTRACELOG 4
+#define STDTIMELOG 5
 
 #define BADSCRIPTLOG 9
 #define BUGLOG 10
-#define STDUSERTABLOG 101
-#define STDUSERATTNLOG 201
+#define STDTRACETABLOG 101
+#define STDTRACEATTNLOG 201
+#define STDTIMETABLOG 301
 
 extern bool echo;
 extern bool showDepth;
@@ -138,7 +157,7 @@ extern char* testOutput;
 
 extern char logFilename[MAX_WORD_SIZE];
 extern bool logUpdated;
-extern char* logmainbuffer;
+extern char logmainbuffer[MAX_BUFFER_SIZE]; // no dynamic allocate. Know its there
 extern char serverLogfileName[200];
 extern int userLog;
 extern int serverLog;
@@ -148,6 +167,7 @@ extern bool serverctrlz;
 unsigned int Log(unsigned int spot,const char * fmt, ...);
 void Bug();
 void ChangeDepth(int value,char* where);
+void BugBacktrace(FILE* out);
 
 // RANDOM NUMBERS
 

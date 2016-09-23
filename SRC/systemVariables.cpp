@@ -25,7 +25,7 @@ void DefineSystemVariables()
 	unsigned int i = 0;
 	while (sysvars[++i].name)
 	{
-		if (sysvars[i].name[0] == '%') 
+		if (sysvars[i].name[0] == SYSVAR_PREFIX) 
 		{
 			StoreWord((char*) sysvars[i].name)->x.topicIndex = (unsigned short) i;  // not a header
 			(*sysvars[i].address)((char*)"."); // force a reset-- testing calls this to reset after changes
@@ -39,7 +39,7 @@ char* SystemVariable(char* word,char* value)
 	unsigned int index = (D) ? D->x.topicIndex : 0;
 	if (!index) 
 	{
-		ReportBug((char*)"No system variable %s",word)
+		ReportBug((char*)"No system variable %s  ",word)
 		return "";
 	}
 	return (*sysvars[index].address)(value);
@@ -57,8 +57,8 @@ void DumpSystemVariables()
 			else if (strstr(sysvars[i].comment,(char*)"Numeric")) result = "0";
 			else result = "null";
 		}
-		if (sysvars[i].address) Log(STDUSERLOG,(char*)"%s = %s - %s\r\n",sysvars[i].name, result,sysvars[i].comment);  // actual variable
-		else Log(STDUSERLOG,(char*)"%s\r\n",sysvars[i].name);  // header
+		if (sysvars[i].address) Log(STDTRACELOG,(char*)"%s = %s - %s\r\n",sysvars[i].name, result,sysvars[i].comment);  // actual variable
+		else Log(STDTRACELOG,(char*)"%s\r\n",sysvars[i].name);  // header
 	}
 }
 
@@ -126,7 +126,7 @@ static char* SdayNumberOfWeek(char* value)
 	return systemValue;
 }
 
-static char* SFullTime(char* value)
+char* SFullTime(char* value)
 {
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
@@ -268,6 +268,17 @@ static char* Stime(char* value)
     return systemValue;
 }
 
+static char* Szulutime(char* value)
+{
+	static char hold[50] = ".";
+	if (value) return AssignValue(hold,value);
+	if (*hold != '.') return hold;
+    GetTimeInfo(true,true);
+	sprintf(systemValue,(char*)"%d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d.0Z",ptm->tm_year+1900,ptm->tm_mon+1,ptm->tm_mday,
+		ptm->tm_hour,ptm->tm_min,ptm->tm_sec);
+    return systemValue;
+}
+
 static char* Stimenumbers(char* value)
 {
 	static char hold[50] = ".";
@@ -386,7 +397,6 @@ static char* Sbot(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 	strcpy(systemValue,computerID);
-	*systemValue = GetUppercaseData(*systemValue);
     return systemValue;
 }
 
@@ -635,7 +645,25 @@ static char* SoriginalInput(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    return mainInputBuffer;
+	char* at = SkipWhitespace(mainInputBuffer); 
+	if (*at == '[') // skip oob data
+	{
+		int depth = 1;
+		bool quote = false;
+		while (++at)
+		{
+			if (*at != '"' && quote) continue; // swallow stuff in quotes
+			if (*at == '"' && *(at-1) != '\\') quote = !quote;
+			else if (*at == '[' && *(at-1) != '\\') ++depth;
+			else if (*at == ']' && *(at-1) != '\\') --depth;
+			if (depth == 0)
+			{
+				++at;
+				break;
+			}
+		}
+	}
+    return at;
 }   
 
 static char* SoriginalSentence(char* value)
@@ -867,7 +895,7 @@ static char* Sresponse(char* value)
 }   
 
 SYSTEMVARIABLE sysvars[] =
-{ 
+{ // do not use underscores in name
 	{ (char*)"",0,(char*)""},
 
 	{ (char*)"\r\n---- Time, Date, Number variables",0,(char*)""},
@@ -884,6 +912,7 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%daylightsavings",Sdaylightsavings,(char*)"Boolean is daylight savings in effect"}, 
 	{ (char*)"%second",Ssecond,(char*)"Numeric 2-digit current second"}, 
 	{ (char*)"%time",Stime,(char*)"Current military time (e.g., 21:07)"}, 
+	{ (char*)"%zulutime",Szulutime,(char*)"Time as: 2016-07-27T11:38:35.253Z"}, 
 	{ (char*)"%timenumbers",Stimenumbers,(char*)"numbers, separated by blanks, of sec,min,hr,dayinweek,dayinmonth,month,year"}, 
 	{ (char*)"%week",SweekOfMonth,(char*)"Numeric week of month (1..5)"}, 
 	{ (char*)"%volleytime",Svolleytime,(char*)"Numeric milliseconds since volley start"}, 
@@ -894,12 +923,12 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%crosstalk",ScrossTalk,(char*)"cross bot/cross document variable storage"}, 
 	{ (char*)"%document",Sdocument,(char*)"Boolean - is :document flag on"}, 
 	{ (char*)"%fact",Sfact,(char*)"Most recent fact id"}, 
-	{ (char*)"%freetext",SfreeText,(char*)"bytes of available text space"}, 
+	{ (char*)"%freetext",SfreeText,(char*)"Kbytes of available text space"}, 
 	{ (char*)"%freeword",SfreeWord,(char*)"number of available unused words"}, 
 	{ (char*)"%freefact",SfreeFact,(char*)"number of available unused facts"}, 
 	{ (char*)"%regression",Sregression,(char*)"Boolean - is regression flag on"}, 
 	{ (char*)"%host",Shost,(char*)"machine ip if a server, else local"}, 
-	{ (char*)"%http_response",ShttpResponse,(char*)"http response code from last call to JsonOpen"}, 
+	{ (char*)"%httpresponse",ShttpResponse,(char*)"http response code from last call to JsonOpen"}, 
 	{ (char*)"%maxmatchvariables",SmaxMatchVariables,(char*)"highest number of legal _match variables"}, 
 	{ (char*)"%maxfactsets",SmaxFactSets,(char*)"highest number of legal @factsets"}, 
 	{ (char*)"%rule",Srule,(char*)"Get a tag to current executing rule or null"}, 

@@ -1,7 +1,7 @@
 
 
-table: ~moremen ( ^role ^male)
-^createfact(^male member ^role)
+table: ~moremen ( ^roleitem ^male)
+^createfact(^male member ^roleitem)
 ^addproperty(^male NOUN_MALEHUMAN )
 
 DATA:
@@ -38,8 +38,8 @@ DATA:
 ~singer ["Tinie Tempah" "Taio Cruz" "Wiz Khalifa" Pitbull Akon Eminem "Justin Bieber" "Bruno Mars" "Enrique Iglesias" Usher]
 
 
-table: ~mostman (^role ^male ^kind ^item)
-^createfact(^male member ^role)
+table: ~mostman (^roleitem ^male ^kind ^item)
+^createfact(^male member ^roleitem)
 if (^kind != * AND ^item != *) {^createfact(^item member ^kind)}
 if (^item != * ) { ^createfact(^item exemplar ^male)}
 ^addproperty(^male NOUN_MALEHUMAN )
@@ -215,8 +215,8 @@ DATA:
 
 
 
-table: ~men ( ^role ^male)
-^createfact(^male member ^role)
+table: ~men ( ^roleitem ^male)
+^createfact(^male member ^roleitem)
 ^addproperty(^male NOUN_MALEHUMAN NOUN NOUN_PROPER_SINGULAR)
 
 DATA:
@@ -449,8 +449,8 @@ Stimpy
 
 
     
-table: ~man ( ^role ^male)
-^createfact(^male member ^role)
+table: ~man ( ^roleitem ^male)
+^createfact(^male member ^roleitem)
 ^addproperty(^male NOUN_MALEHUMAN )
 
 DATA:
@@ -500,8 +500,8 @@ DATA:
 ~economist ["Alan Greenspan" "Friederich von Hayek" ("von Hayek")]
 
 
-table: ~men (^role ^male ^kind ^item)
-^createfact(^male member ^role)
+table: ~men (^roleitem ^male ^kind ^item)
+^createfact(^male member ^roleitem)
 if (^kind != *) {^createfact(^item member ^kind)}
 if (^item != *) {^createfact(^item exemplar ^male)}
 ^addproperty(^male NOUN_MALEHUMAN )

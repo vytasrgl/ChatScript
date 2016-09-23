@@ -39,16 +39,19 @@
 #define LABEL					QUERY_KIND		// transient scriptcompiler use
 #define RENAMED					QUERY_KIND		// _alpha name renames _number or @name renames @n
 //		0x00000400		
-#define FN_NO_TRACE				0x00000800		// dont trace this function (on functions only)
+#define NOTIME_TOPIC			0x00000800		// dont time this topic (topic names)
+#define NOTIME_FN				NOTIME_TOPIC	// dont time this function (on functions only)
 
 #define UTF8					0x00001000		// word has utf8 char in it (all normal words)
 #define UPPERCASE_HASH			0x00002000		// word has upper case English character in it
 #define VAR_CHANGED				0x00004000		// $variable has changed value this volley
 #define NOTRACE_TOPIC			VAR_CHANGED		// dont trace this topic (topic names)
+#define NOTRACE_FN				VAR_CHANGED		// dont trace this function (on functions only)
 #define WORDNET_ID				0x00008000		// a wordnet synset header node (MASTER w gloss ) only used when building a dictionary -- or transient flag for unduplicate
-#define MACRO_TRACE				WORDNET_ID		// turn on tracing for this function (only used when live running)
+#define MACRO_TRACE				WORDNET_ID		// turn on tracing for this function or variable (only used when live running)
 #define INTERNAL_MARK			0x00010000		// transient marker for Intersect coding and Country testing in :trim
 #define FROM_FILE				INTERNAL_MARK	//  for scriptcompiler to tell stuff comes from FILE not DIRECTORY
+#define MACRO_TIME				INTERNAL_MARK	// turn on timing for this function (only used when live running)
 #define BEEN_HERE				0x00020000		// used in internal word searches that might recurse
 #define FAKE_NOCONCEPTLIST		0x00040000		// used on concepts declared NOCONCEPTLIST
 #define DELETED_MARK			0x00080000		// transient marker for  deleted words in dictionary build - they dont get written out - includes script table macros that are transient
@@ -69,7 +72,8 @@
 #define IS_PATTERN_MACRO		0x80000000 
 #define FUNCTION_BITS ( IS_PATTERN_MACRO | IS_OUTPUT_MACRO | IS_TABLE_MACRO | IS_PLAN_MACRO )
 
-#define FN_TRACE_BITS ( MACRO_TRACE | FN_NO_TRACE )
+#define FN_TRACE_BITS ( MACRO_TRACE | NOTRACE_FN )
+#define FN_TIME_BITS ( MACRO_TIME | NOTIME_FN )
 
 ///   DEFINITION OF A MEANING 
 #define GETTYPERESTRICTION(x) ( ((x)>>TYPE_RESTRICTION_SHIFT) & TYPE_RESTRICTION)
@@ -135,6 +139,10 @@
 
 #define VERB_PROPERTIES (  VERB_BITS )
 
+#define COMPARISONFIELD 1
+#define TENSEFIELD 2
+#define PLURALFIELD 3
+
 #define Index2Word(n) (dictionaryBase+n)
 #define Word2Index(D) ((uint64) (D-dictionaryBase))
 #define GetMeanings(D) ((MEANING*) Index2String(D->meanings))
@@ -142,41 +150,32 @@
 #define GetMeaningsFromMeaning(T) (GetMeanings(Meaning2Word(T)))
 #define Meaning2Index(x) ((int)((x & INDEX_BITS) >> INDEX_OFFSET)) //   which dict entry meaning
 
-#define GetFactBack(D) ((D->temps) ? GetTemps(D)[FACTBACK] : 0) // transient per search
 unsigned char* GetWhereInSentence(WORDP D); // always skips the linking field at front
-#define USEDTEMPSLIST 3
-#define TRIEDBITS 2
-#define WORDVALUE 1
-#define FACTBACK 0
 
 #define OOB_START '['
 #define OOB_END ']'
 void LockLevel();
 void UnlockLevel();
 
-void PrepareConjugates(WORDP D);
-#define PLURALFIELD 0
-#define AccessPlural(D) ((MEANING*)Index2String(D->extensions))[PLURALFIELD]
-#define GetPlural(D) ((D->extensions) ? Meaning2Word(AccessPlural(D)) : 0)
+WORDP GetPlural(WORDP D);
 void SetPlural(WORDP D,MEANING M);
-#define COMPARISONFIELD 1
-#define AccessComparison(D) ((MEANING*)Index2String(D->extensions))[COMPARISONFIELD]
-#define GetComparison(D) ((D->extensions) ? Meaning2Word(AccessComparison(D)) : 0)
-#define SetComparison(D,M) { PrepareConjugates(D); AccessComparison(D) = M; }
-#define TENSEFIELD 2
-#define AccessTense(D) ((MEANING*)Index2String(D->extensions))[TENSEFIELD]
-#define GetTense(D) ((D->extensions) ? Meaning2Word(AccessTense(D)) : 0)
-#define SetTense(D,M) {PrepareConjugates(D); AccessTense(D) = M; }
-#define CANONICALFIELD 3
-#define AccessCanonical(D) ((MEANING*)Index2String(D->extensions))[CANONICALFIELD]
-#define SetCanonical(D,M) {PrepareConjugates(D); AccessCanonical(D) = M; }
+WORDP GetComparison(WORDP D);
+void SetComparison(WORDP D,MEANING M);
+WORDP GetTense(WORDP D);
+void SetTense(WORDP D,MEANING M);
 char* GetCanonical(WORDP D);
-void ReadSubstitutes(char* name,unsigned int fileFlag,bool filegiven = false);
+void SetCanonical(WORDP D,MEANING M);
+uint64 GetTriedMeaning(WORDP D);
+void SetTriedMeaning(WORDP D,uint64 bits);
+void ReadSubstitutes(const char* name,const char* layer,unsigned int fileFlag,bool filegiven = false);
+void Add2ConceptTopicList(int list[256], WORDP D,int start,int end,bool unique);
 
+extern unsigned int savedSentences;
 // memory data
 extern WORDP dictionaryBase;
 extern char* stringBase;
 extern char* stringFree;
+extern char* stringInverseFree;
 extern char* stringEnd;
 extern uint64 maxDictEntries;
 extern unsigned long maxStringBytes;
@@ -239,18 +238,32 @@ extern char livedata[500];
 extern char englishFolder[500];
 extern char systemFolder[500];
 char* expandAllocation(char* old, char* word,int size);
-char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false);
+char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
+char* AllocateInverseString(char* word, size_t len = 0);
+bool AllocateInverseSlot(char* variable);
+char* RestoreInverseSlot(char* variable,char* slot);
 WORDP StoreWord(int);
+void ClearWordMaps();
+void WriteDictDetailsBeforeLayer(int layer);
 WORDP StoreWord(char* word, uint64 properties = 0);
 WORDP StoreWord(char* word, uint64 properties, uint64 flags);
 WORDP FindWord(const char* word, int len = 0,uint64 caseAllowed = STANDARD_LOOKUP);
 WORDP FullStore(char* word, uint64 properties, uint64 flags);
 unsigned char BitCount(uint64 n);
+void ClearVolleyWordMaps();
+void ClearBacktracks();
+unsigned int* AllocateWhereInSentence(WORDP D);
+MEANING GetFactBack(WORDP D);
+void SetFactBack(WORDP D, MEANING M);
+int GetWords(char* word, WORDP* set,bool strict);
 void ReadQueryLabels(char* file);
+void ClearWordWhere(WORDP D,int at);
+void RemoveConceptTopic(int list[256],WORDP D, int at);
 char* reuseAllocation(char* old, char* word);
 char* reuseAllocation(char* old, char* word,int len);
 char* UseDictionaryFile(char* name);
 char* Index2String(unsigned int offset);
+void ClearWhereInSentence();
 inline unsigned int String2Index(char* str) {return (!str) ? 0 : (stringBase - str);}
 inline unsigned int GlossIndex(MEANING M) { return M >> 24;}
 void ReadAbbreviations(char* file);
@@ -259,7 +272,7 @@ void ReadLivePosData();
 WORDP GetSubstitute(WORDP D);
 void ShowStats(bool reset);
 MEANING FindChild(MEANING who,int n);
-void ReadCanonicals(char* file);
+void ReadCanonicals(const char* file,const char* layer);
 
 // adjust data on a dictionary entry
 void AddProperty(WORDP D, uint64 flag);
@@ -278,7 +291,7 @@ int GetWordValue(WORDP D);
 inline int GetMeaningCount(WORDP D) { return (D->meanings) ? GetMeaning(D,0) : 0;}
 inline int GetGlossCount(WORDP D) 
 {
-	return (D->w.glosses && *D->word != '~' && *D->word != '^' && *D->word != '$' && !(D->internalBits & HAS_SUBSTITUTE) && !(D->systemFlags & CONDITIONAL_IDIOM))  ? D->w.glosses[0] : 0;
+	return (D->w.glosses && *D->word != '~' && *D->word != '^' && *D->word != USERVAR_PREFIX && !(D->internalBits & HAS_SUBSTITUTE) && !(D->systemFlags & CONDITIONAL_IDIOM))  ? D->w.glosses[0] : 0;
 }
 char* GetGloss(WORDP D, unsigned int index);
 unsigned int GetGlossIndex(WORDP D,unsigned int index);
@@ -291,8 +304,9 @@ void LoadDictionary();
 void ExtendDictionary();
 void WordnetLockDictionary();
 void ReturnDictionaryToWordNet();
-void LockLayer(int layer);
-void ReturnToLayer(int layer,bool unlocked);
+void LockLayer(int layer,bool boot);
+void ReturnToAfterLayer(int layer,bool unlocked);
+void ReturnBeforeLayer(int layer, bool unlocked);
 void DeleteDictionaryEntry(WORDP D);
 void BuildDictionary(char* junk);
 

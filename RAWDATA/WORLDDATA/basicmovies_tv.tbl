@@ -221,8 +221,8 @@ DATA:
 
 
 
-table: ~women ( ^role ^female)
-^createfact(^female member ^role)
+table: ~women ( ^roleitem ^female)
+^createfact(^female member ^roleitem)
 ^addproperty(^female NOUN_FEMALEHUMAN )
 DATA:
  ~actress [Sarah_Michelle_Gellar  Renee_Zellweger (Zellweger) Talia_Shire Tia_Carrere "Bette Davis"] 
@@ -247,8 +247,8 @@ DATA:
  ~actress [Jane_Seymour Nicole_Kidman (Kidman) Julia_Roberts (Roberts) Keira_Knightley Elizabeth_Banks Julie_Andrews] 
 
 
-table: ~men ( ^role ^male)
-^createfact(^male member ^role)
+table: ~men ( ^roleitem ^male)
+^createfact(^male member ^roleitem)
 ^addproperty(^male NOUN_MALEHUMAN )
 DATA:
 ~actor [Brad_Pitt Ben_Affleck Tim_Allen  Alan_Arkin Jim_Carrey Tom_Hanks Tom_Cruise George_Clooney Russell_Crowe Johnny_Dep Jude_Law "Clark Gable" "Rock Hudson"]

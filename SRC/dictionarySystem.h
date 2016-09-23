@@ -438,36 +438,61 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 // TRACE FLAGS
 // simple
-// 1	
-#define TRACE_MATCH 2
-#define TRACE_VARIABLE 4
+#define TRACE_ON			0x00000001	
+#define TRACE_MATCH 		0x00000002
+#define TRACE_VARIABLE		0x00000004
 
 // mild
-#define TRACE_PREPARE 8
-#define TRACE_OUTPUT 16
-#define TRACE_PATTERN 16
+#define TRACE_PREPARE		0x00000008
+#define TRACE_OUTPUT		0x00000010
+#define TRACE_PATTERN		0x00000020
 
 // deep
-#define TRACE_HIERARCHY 32
-#define TRACE_INFER 64
-#define TRACE_SUBSTITUTE 128
-#define TRACE_FACT 256
-#define TRACE_VARIABLESET 512
-#define TRACE_USERFN 1024 
-#define TRACE_USER 2048
-#define TRACE_POS 4096
-#define TRACE_QUERY 8192
-#define TRACE_TCP 16384
-#define TRACE_USERCACHE  32768
-#define TRACE_SQL 65536
-#define TRACE_LABEL ( TRACE_SQL * 2 )
-#define TRACE_SAMPLE ( TRACE_LABEL * 2 )
-#define TRACE_INPUT (TRACE_SAMPLE * 2 )
-#define TRACE_SPELLING ( TRACE_INPUT * 2 )
-#define TRACE_TOPIC ( TRACE_SPELLING * 2 )
-#define TRACE_SCRIPT ( TRACE_TOPIC * 2 )
-#define TRACE_JSON ( TRACE_SCRIPT * 2 )
-#define TRACE_NOT_THIS_TOPIC ( TRACE_JSON * 2 )
+#define TRACE_HIERARCHY		0x00000040
+#define TRACE_INFER			0x00000080
+#define TRACE_SUBSTITUTE	0x00000100
+#define TRACE_FACT			0x00000200
+#define TRACE_VARIABLESET	0x00000400
+#define TRACE_USERFN		0x00000800
+#define TRACE_USER			0x00001000
+#define TRACE_POS			0x00002000
+#define TRACE_QUERY			0x00004000
+#define TRACE_TCP			0x00008000
+#define TRACE_USERCACHE		0x00010000
+#define TRACE_SQL			0x00020000
+#define TRACE_LABEL			0x00040000
+#define TRACE_SAMPLE		0x00080000
+#define TRACE_INPUT			0x00100000
+#define TRACE_SPELLING		0x00200000
+#define TRACE_TOPIC			0x00400000
+#define TRACE_SCRIPT		0x00800000
+#define TRACE_JSON			0x01000000
+#define TRACE_NOT_THIS_TOPIC 0x02000000
+#define TRACE_FLOW			0x04000000
+#define TRACE_COVERAGE		0x08000000
+#define TRACE_ALWAYS		0x10000000
+
+// TIME FLAGS
+// simple
+#define TIME_ON				0x00000001	
+
+// mild
+#define TIME_PREPARE		0x00000008
+#define TIME_PATTERN		0x00000020
+
+// deep
+#define TIME_USERFN			0x00000800
+#define TIME_USER			0x00001000
+#define TIME_QUERY			0x00004000
+#define TIME_TCP			0x00008000
+#define TIME_USERCACHE		0x00010000
+#define TIME_SQL			0x00020000
+#define TIME_TOPIC			0x00400000
+#define TIME_JSON			0x01000000
+#define TIME_NOT_THIS_TOPIC 0x02000000
+#define TIME_FLOW			0x04000000
+#define TIME_ALWAYS			0x10000000
+
 // pos tagger result operators
 #define DISCARD 1
 #define KEEP 2
@@ -549,7 +574,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define DO_PRIVATE				0x0000000000000100ULL	// 256
 #define DO_NUMBER_MERGE			0x0000000000000200ULL	// 512
 #define DO_PROPERNAME_MERGE		0x0000000000000400ULL	// 1024
-#define DO_SPELLCHECK			0x0000000000000800ULL	// 2048
+#define DO_SPELLCHECK				0x0000000000000800ULL	// 2048
 #define DO_INTERJECTION_SPLITTING	0x0000000000001000ULL  // 4096
 
 // this do not echo into tokenFlags
@@ -591,14 +616,21 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define USERINPUT				0x0000000100000000ULL  
 #define COMMANDMARK 			0x0000000200000000ULL
 #define IMPLIED_YOU 			0x0000000400000000ULL // commands and some why questions where you is implied
-#define FOREIGN_TOKENS			0x0000000800000000ULL
+#define FOREIGN_TOKENS				0x0000000800000000ULL
 #define FAULTY_PARSE			0x0000001000000000ULL   
 #define QUOTATION				0x0000002000000000ULL
-#define NOT_SENTENCE			0x0000004000000000ULL   
+#define NOT_SENTENCE				0x0000004000000000ULL   
 
 // in tokencontrol, not tokenflags
-#define NO_PROPER_SPELLCHECK	0x0000008000000000ULL   
+#define NO_PROPER_SPELLCHECK		0x0000008000000000ULL   
 #define NO_LOWERCASE_PROPER_MERGE	0x0000010000000000ULL   
+#define DO_SPLIT_UNDERSCORE			0x0000020000000000ULL   
+#define MARK_LOWER					0x0000040000000000ULL   
+
+// in tokenflags not token control
+#define NO_FIX_UTF					0x0000080000000000ULL   
+
+// end of tokenflags
 
 // these change from parsing
 #define SENTENCE_TOKENFLAGS  ( QUOTATION | COMMANDMARK | IMPLIED_YOU | FOREIGN_TOKENS | FAULTY_PARSE  | NOT_SENTENCE | PRESENT | PAST | FUTURE | PRESENT_PERFECT | CONTINUOUS | PERFECT | PASSIVE )
@@ -626,7 +658,6 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define    OUTPUT_RETURNVALUE_ONLY		0x00080000	// just return the buffer, dont print it out		
 
 // flags to control response processing continue from output flags
-#define RESPONSE_NONE						0
 #define RESPONSE_UPPERSTART					0x00100000  // start each output sentence with upper case
 #define RESPONSE_REMOVESPACEBEFORECOMMA		0x00200000  // remove spaces before commas
 #define RESPONSE_ALTERUNDERSCORES			0x00400000
@@ -648,7 +679,7 @@ typedef unsigned int FACTOID_OR_MEANING;	// a fact or a meaning (same representa
 typedef struct WORDENTRY //   a dictionary entry  - starred items are written to the dictionary
 {
 	uint64  properties;				//   main language description of this node 
-	uint64	hash;					//   we presume 2 hashs never collide, so we dont check the string for matching
+	uint64	hash;					
 	uint64  systemFlags;			//   additional dictionary and non-dictionary properties
 	char*     word;					//   entry name
 	unsigned int internalBits;
@@ -664,17 +695,12 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
 		MEANING*  glosses;			//   for ordinary words: list of glosses for synset head meanings - is offset to allocstring and id index of meaning involved.
 		char* conditionalIdiom;		//  test code headed by ` for accepting word as an idiom instead of its individual word components
 	}w;
-		
-
-	// potential hole of 32bit on 64 bit machine
 
 	FACTOID subjectHead;		//  start threads for facts run thru here 
 	FACTOID verbHead;			//  start threads for facts run thru here 
 	FACTOID objectHead;			//  start threads for facts run thru here 
-	
-  	MEANING  meanings;			//  list of meanings (synsets) of this word - Will be wordnet synset id OR self ptr -- 1-based since 0th meaning means all meanings
-	MEANING extensions;			//  ONLY CREATABLE IN WORDNET BASE AREA-  assigned from permanent string space for 4 things: irregular nouns, irregular verbs,  irregular adjective/adverbs and canonicals  (8K of 200K have this filled in)
-	MEANING	temps;				//	assigned from transient string space - 3 things: backtrace thread on search, where xref markings, and tried bits (all transient per sentence, cleared via ClearWhereInSentence)
+  	
+	MEANING  meanings;			//  list of meanings (synsets) of this word - Will be wordnet synset id OR self ptr -- 1-based since 0th meaning means all meanings
 
     union {
           unsigned short topicIndex;	//   for a ~topic or %systemVariable or plan, this is its id

@@ -15,7 +15,7 @@ int docVolleyStartTime = 0;
 char tmpWord[MAX_WORD_SIZE];					// globally visible scratch word
 char* userRecordSourceBuffer = 0;				// input source for reading is this text stream of user file
 
-int BOM = 0;								// current ByteOrderMark
+int BOM = NOBOM;								// current ByteOrderMark
 static char holdc = 0;		//   holds extra character from readahead
 
 unsigned char utf82extendedascii[128];
@@ -298,6 +298,98 @@ void CloseTextUtilities()
 {
 }
 
+char* RemoveEscapesWeAdded(char* at)
+{
+	if (!at || !*at) return at;
+	char* startScan = at;
+	while ((at = strchr(at,'\\'))) // we always add ESCAPE_FLAG backslash   
+	{
+		if (*(at-1) == ESCAPE_FLAG) // alter the escape in some way
+		{
+			if (at[1] == 't')  at[1] = '\t';
+			else if (at[1] == 'n') at[1] = '\n';
+			else if (at[1] == 'r')  at[1] = '\r';
+			// other choices dont translate, eg double quote
+			memmove(at-1,at+1,strlen(at)); // remove the escape flag and the escape
+		}
+		else ++at;
+	}
+	return startScan;
+}
+
+char* CopyRemoveEscapes(char* to, char* at,int limit,bool all) // all includes ones we didnt add as well
+{
+	*to = 0;
+	char* start = to;
+	if (!at || !*at) return to;
+	// need to remove escapes we put there
+	--at;
+	while (*++at)
+	{
+		if (*at == ESCAPE_FLAG && at[1] == '\\') // we added an escape here
+		{
+			at += 2; // move to escaped item
+			if (*(at-1) == ESCAPE_FLAG) // dual escape is special marker, there is no escaped item
+			{
+				*to++ = '\r';
+				*to++ = '\n';
+				--at; // rescan the item
+			}
+			else if (*at == 't') *to++ = '\t';
+			else if (*at == 'n') *to++ = '\n';
+			else if (*at == 'r') *to++ = '\r';
+			else *to++ = *at; // remove our escape pair and pass the item
+		}
+		else if (*at == '\\' && all) // remove ALL other escapes in addition to ones we put there
+		{
+			++at; // move to escaped item
+			if (*at  == 't') *to++ = '\t';
+			else if (*at  == 'n') *to++ = '\n';
+			else if (*at  == 'r') *to++ = '\r';
+			else {*to++ = *at; } // just pass along untranslated
+		}
+		else *to++ = *at;
+		if ((to-start) >= limit) // too much, kill it
+		{
+			*to = 0;
+			break;
+		}
+	}
+	*to = 0;
+	return start;
+}
+
+
+char* AddEscapes(char* to, char* from, bool normal) // normal true means dont flag with extra markers
+{
+	char* start = to;
+	char* at = from - 1;
+	// if we NEED to add an escape, we have to mark it as such so  we know to remove them later.
+	while (*++at)
+	{
+		// convert these
+		if (*at == '\n') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'n';}
+		else if (*at == '\r') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'r';}
+		else if (*at == '\t') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 't';}
+		else if (*at == '"') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = '"';}
+		// detect it is already escaped
+		else if (*at == '\\')
+		{
+			char* at1 = at + 1;
+			if (*at1 && (*at1 == 'n' || *at1 == 'r' || *at1 == 't' || *at1 == '"' || *at1 == 'u' || *at1 == '\\'))  // just pass it along
+			{
+				*to++ = *at;
+				*to++ = *++at;
+			}
+			else { if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = '\\'; }
+		}
+		// no escape needed
+		else *to++ = *at;
+	}
+	*to = 0;
+	return to; // return where we ended
+}
+
 void AcquireDefines(char* fileName)
 { // dictionary entries:  `xxxx (property names)  ``xxxx  (systemflag names)  ``` (parse flags values)  -- and flipped:  `nxxxx and ``nnxxxx and ```nnnxxx with infermrak being ptr to original name
 
@@ -419,7 +511,7 @@ void AcquireDefines(char* fileName)
 			if (!E->inferMark) E->inferMark = MakeMeaning(D); // if number value NOT already defined, use this definition
 		}
 	}
-	fclose(in);
+	FClose(in);
 }
 
 void AcquirePosMeanings()
@@ -648,8 +740,14 @@ bool IsArithmeticOperator(char* word)
 {
 	word = SkipWhitespace(word);
 	char c = *word;
-	return (c == '+' || c == '-' || c == '*' || c == '/'  || c == '&' || 
-		(c == '|' && (word[1] == ' ' || word[1] == '^' || word[1] == '=')) || 
+	if (c == '+' || c == '-' || c == '*' || c == '/'  || c == '&') 
+	{
+		if (IsDigit(word[1]) || word[1] == ' ' || word[1] == '=') return true;
+		return false;
+	}
+
+	return
+		((c == '|' && (word[1] == ' ' || word[1] == '^' || word[1] == '=')) || 
 		(c == '%' && !word[1]) || 
 		(c == '%' && word[1] == ' ') || 
 		(c == '%' && word[1] == '=') || 
@@ -745,7 +843,7 @@ char* GetCurrency(char* ptr,char* &number) // does this point to a currency toke
 bool IsLegalName(char* name) // start alpha (or ~) and be alpha _ digit (concepts and topics can use . or - also)
 {
 	char start = *name;
-	if (*name == '~' || *name == '%') ++name;
+	if (*name == '~' || *name == SYSVAR_PREFIX) ++name;
 	if (!IsAlphaUTF8(*name) ) return false;
 	while (*++name)
 	{
@@ -824,9 +922,11 @@ bool IsRomanNumeral(char* word, uint64& val)
 	return (!*word); // finished or not
 }
  
-unsigned int IsNumber(char* word,bool placeAllowed) // simple digit number or word number or currency number
+unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or word number or currency number
 {
-	if (!*word) return false;
+	if (!*num) return false;
+	char word[MAX_WORD_SIZE];
+	MakeLowerCopy(word,num); // accept number words in upper case as well
 	if (word[1] && (word[1] == ':' || word[2] == ':')) return false;	// 05:00 // time not allowed
  	
 	char* number = NULL;
@@ -835,7 +935,10 @@ unsigned int IsNumber(char* word,bool placeAllowed) // simple digit number or wo
 	{
 		char c = *cur;
 		*cur = 0;
+		char* at = strchr(number,'.');
+		if (at) *at = 0;
 		int64 val = Convert2Integer(number);
+		if (at) *at = '.';
 		*cur = c;
 		return (val != NOT_A_NUMBER) ? CURRENCY_NUMBER : 0 ;
 	}
@@ -1055,6 +1158,16 @@ unsigned int IsMadeOfInitials(char * word,char* end)
 	
 	//   its all caps, needs to be lower cased
 	WORDP D = FindWord(word);
+	if (D) // see if there are any legal allcaps forms
+	{
+		WORDP set[20];
+		int n = GetWords(word,set,true);
+		while (n)
+		{
+			WORDP X = set[--n];
+			if (!strcmp(word,X->word)) return 0;	// we know it in all caps format
+		}
+	}
 	return (D && D->properties & (NOUN_PROPER_SINGULAR|NOUN_PROPER_PLURAL)) ? ABBREVIATION : SHOUT; 
 }
 
@@ -1093,7 +1206,7 @@ char* ReadFlags(char* ptr,uint64& flags,bool &bad, bool &response)
 		ptr = ReadShortCommandArg(ptr,flag,result); // swallows excess )
  		if (result & ENDCODES) return ptr;
 		if (*flag == '(') continue;	 // starter
-		if (*flag == '$') flags |= atoi(GetUserVariable(flag)); // user variable indirect
+		if (*flag == USERVAR_PREFIX) flags |= atoi(GetUserVariable(flag)); // user variable indirect
 		else if (*flag == '0' && (flag[1] == 'x' || flag[1] == 'X')) // literal hex value
 		{
 			uint64 val;
@@ -1227,7 +1340,7 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 	else // get copy and reinit for new file
 	{
 		BOMvalue = BOM;
-		BOM = 0;
+		BOM = NOBOM;
 		oldc = holdc;
 		holdc = 0;
 		oldCurrentLine = currentFileLine;
@@ -1243,7 +1356,7 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines) 
 { //  reads text line stripping of cr/nl
 	
-	if (currentFileLine == 0) BOM = 0; // start of file, set BOM to null
+	if (currentFileLine == 0) BOM = (BOM == BOMSET) ? BOMUTF8 : NOBOM; // start of file, set BOM to null
 	*buffer = 0;
 	buffer[1] = 0;
 	buffer[2] = 1;
@@ -1413,13 +1526,13 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		*buffer = 0;
 		
 		// strip UTF8 BOM marker if any and just keep reading
-		if (hasutf && currentFileLine == 0 && (buffer-start) == 3) 
+		if (hasutf && currentFileLine == 0 && (buffer-start) == 3) // only from file system 
 		{
 			if ((unsigned char) start[0] ==  0xEF && (unsigned char) start[1] == 0xBB && (unsigned char) start[2] == 0xBF) // UTF8 BOM
 			{
 				buffer -= 3;
 				*start = 0;
-				BOM = 1;
+				BOM = BOMUTF8;
 				hasutf = false;
 			}
 		}
@@ -1519,27 +1632,23 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 					}
 					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x9c )  // open double quote
 					{
-						*buffer = ' ';
-						buffer[1] = '\'';
-						buffer[2] = ' ';
+						*buffer = '\'';
+						memmove(buffer+1,x,strlen(x)+1);
 					}
 					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x9d )  // closing double quote
 					{
-						*buffer = ' ';
-						buffer[1] = '"';
-						buffer[2] = ' ';
+						*buffer = '"';
+						memmove(buffer+1,x,strlen(x)+1);
 					}
-					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x94)  // mdash
+					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x94 && !(tokenControl & NO_FIX_UTF) && !compiling)  // mdash
 					{
-						*buffer = ' ';
-						buffer[1] = '-';
-						buffer[2] = ' ';
+						*buffer =  '-';
+	
 					}
-					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && (buffer[2] == 0x94 || buffer[2] == 0x93))  // mdash
+					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && (buffer[2] == 0x94 || buffer[2] == 0x93)&& !(tokenControl & NO_FIX_UTF)&& !compiling)  // mdash
 					{
-						*buffer = ' ';
-						buffer[1] = '-';
-						buffer[2] = ' ';
+						*buffer =  '-';
+						memmove(buffer+1,x,strlen(x)+1);
 					}
 					buffer = x-1; // valid utf8
 				}
@@ -1552,7 +1661,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		}
 	}
 	if (hasbadutf && showBadUTF && !server)  
-		Log(STDUSERLOG,(char*)"Bad UTF-8 %s at %d in %s\r\n",start,currentFileLine,currentFilename);
+		Log(STDTRACELOG,(char*)"Bad UTF-8 %s at %d in %s\r\n",start,currentFileLine,currentFilename);
 	return (buffer - start);
 }
 
@@ -1568,7 +1677,6 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
     int n = MAX_WORD_SIZE-10;		// quote must close within this limit
 	char* start = ptr;
 	char* original = buffer;
-
 	// "` is an internal marker of argument passed from TCPOPEN   "'arguments'" ) , return the section untouched as one lump 
 	if (ptr[1] == ENDUNIT)
 	{
@@ -1582,12 +1690,16 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 	}
 
 	*buffer++ = *ptr;  // copy over the 1st char
-	
-	if (*ptr == '\\') *buffer++ = *++ptr;	//   swallow \ and "
+	char ender = *ptr; 
+	if (*ptr == '\\') 
+	{
+		*buffer++ = *++ptr;	//   swallow \ and "
+		ender = *ptr;
+	}
 
-	while ((c = *++ptr) && c != '"' && --n) 
+	while ((c = *++ptr) && c != ender && --n) 
     {
-		if (c == '\\' && ptr[1] == '"') // if c is \", means internal quoted expression.
+		if (c == '\\' && ptr[1] == ender) // if c is \", means internal quoted expression.
 		{
 			*buffer++ = '\\';	// preserver internal marking - must stay with string til last possible moment.
 			*buffer++ = *++ptr;
@@ -1605,13 +1717,13 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 			*buffer = 0;
 			return ptr;
 		}
-		if (!n) Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
-		else Log(STDUSERLOG,(char*)"bad double-quoting?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
+ 		if (!n) Log(STDTRACELOG,(char*)"bad double-quoting?  %s %d %s - size is %d but limit is %d\r\n",start,currentFileLine,currentFilename,buffer-start,MAX_WORD_SIZE);
+		else Log(STDTRACELOG,(char*)"bad double-quoting1?  %s %d %s missing tail doublequote \r\n",start,currentFileLine,currentFilename);
 		return NULL;	// no closing quote... refuse
 	}
 
     // close with ending quote
-    *buffer = *ptr;	
+    *buffer = ender;	
     *++buffer = 0; 
 	return ptr+1;		// after the quote end
 }
@@ -1659,7 +1771,7 @@ Used for function calls, to read their callArgumentList. Arguments are not evalu
         char c = *ptr;
 		int x = GetNestingData(c);
 		if (paren == 0 && (c == ' ' || x == -1  || c == ENDUNIT)) break; // simple arg separator or outer closer or end of data
-        if ((buffer-start) < (MAX_ARG_BYTES-2)) *buffer++ = c; // limit overflow into argument area
+        if ((buffer-start) < (maxBufferSize-2)) *buffer++ = c; // limit overflow into argument area
         *buffer = 0;
 		if (x) paren += x;
     }
@@ -1668,20 +1780,36 @@ Used for function calls, to read their callArgumentList. Arguments are not evalu
     return ptr;
 }
 
+char* ReadCompiledWordOrCall(char* ptr, char* word,bool noquote,bool var) 
+{
+	ptr = ReadCompiledWord(ptr, word, noquote, var);
+	word += strlen(word);
+	if (*ptr == '(') // its a call
+	{
+		char* end = BalanceParen(ptr+1,true,false); // function call args
+		strncpy(word,ptr,end-ptr);
+		word += end-ptr;
+		*word = 0;
+		ptr = end;
+	}
+	return ptr;
+}
+
 char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var) 
 {//   a compiled word is either characters until a blank, or a ` quoted expression ending in blank or nul. or a double-quoted on both ends or a ^double quoted on both ends
 	*word = 0;
 	if (!ptr) return NULL;
 
-	char c;
+	char c = 0;
 	char* original = word;
 	ptr = SkipWhitespace(ptr);
 	char* start = ptr;
 	char special = 0;
 	if (!var) {;}
-	else if ((*ptr == '%' && IsAlphaUTF8(ptr[1]))  || (*ptr == '@' && IsDigit(ptr[1])) || (*ptr == '$' && (IsAlphaUTF8(ptr[1]) || ptr[1] == '$')) || (*ptr == '_' && IsDigit(ptr[1]))) special = *ptr; // break off punctuation after variable
-
-	if (!noquote && (*ptr == ENDUNIT || *ptr == '"' || (*ptr == FUNCTIONSTRING && ptr[1] == '"'))) //   ends in blank or nul,  might be quoted, doublequoted, or ^"xxx" functional string
+	else if ((*ptr == SYSVAR_PREFIX && IsAlphaUTF8(ptr[1]))  || (*ptr == '@' && IsDigit(ptr[1])) || (*ptr == USERVAR_PREFIX && (ptr[1] == LOCALVAR_PREFIX || IsAlphaUTF8(ptr[1]) || ptr[1] == TRANSIENTVAR_PREFIX)) || (*ptr == '_' && IsDigit(ptr[1]))) special = *ptr; // break off punctuation after variable
+	bool jsonactivestring = false;
+	if (*ptr == FUNCTIONSTRING && ptr[1] == '\'') jsonactivestring = true;
+	if (!noquote && (*ptr == ENDUNIT || *ptr == '"' || (*ptr == FUNCTIONSTRING && ptr[1] == '"') || jsonactivestring )) //   ends in blank or nul,  might be quoted, doublequoted, or ^"xxx" functional string or ^'xxx' jsonactivestring
 	{
 		if (*ptr == '^') *word++ = *ptr++;	// move to the actual quote
 		*word++ = *ptr; // keep opener  --- a worst case is "`( \"grow up" ) " from a fact
@@ -1689,7 +1817,7 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 		while ((c = *ptr++)) // run til nul or matching `  -- may have INTERNAL string as well
 		{
 			if ((word-original) > (MAX_WORD_SIZE - 3)) break;
-			if ( c == '\\' && *ptr == '"') // escaped quote, copy both
+			if ( c == '\\' && *ptr == end) // escaped quote, copy both
 			{
 				*word++ = c;
 				*word++ = *ptr++;
@@ -1717,6 +1845,7 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 	else 
 	{
 		bool quote = false;
+		bool oncedot = false;
 		while ((c = *ptr++) && c != ENDUNIT) 
 		{
 			if (quote) {}
@@ -1726,7 +1855,8 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 
 			if (special) // try to end a variable if not utf8 char or such
 			{
-				if ( !IsAlphaUTF8OrDigit(c) && c != special && c != '_' && c != '-' ) break;
+				if (special == '$' && c == '.' && !oncedot) oncedot = true;
+				else if ( !IsAlphaUTF8OrDigit(c) && c != special && c != '_' && c != '-' ) break;
 			}
 
 			if ((word-original) > (MAX_WORD_SIZE - 3)) break;
@@ -1739,26 +1869,28 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 	return ptr;	
 }
 
-char* BalanceParen(char* ptr,bool within) // text starting with ((unless within is true), find the closing ) and point to next item after
+char* BalanceParen(char* ptr,bool within,bool wildcards) // text starting with ((unless within is true), find the closing ) and point to next item after
 {
 	int paren = 0;
 	if (within) paren = 1;
 	--ptr;
 	bool quoting = false;
-	char prior = 0;
     while (*++ptr && *ptr != ENDUNIT) // jump to END of command to resume here, may have multiple parens within
     {
-		if ( *ptr == '"' && (prior == ' ' || prior == '^')) // string not attached to anything else
+		if (*ptr == '\\' && ptr[1]) // ignore slashed item
+		{
+			++ptr;
+			continue;
+		}
+		if ( *ptr == '"') 
 		{
 			quoting =  !quoting;
 			continue;
 		}
 		if (quoting) continue;	// stuff in quotes is safe 
-		prior = *ptr;
-		if (*ptr == '\\' && ptr[1]) // ignore slashed item
+		if (wildcards && *ptr == '_' && !IsDigit(ptr[1]) && *(ptr-1) == ' ')
 		{
-			++ptr;
-			continue;
+			SetWildCardNull();
 		}
 		int value = nestingData[(unsigned char)*ptr];
 		if (*ptr == '<' && ptr[1] == '<' && ptr[2] != '<') value = 1;
@@ -1896,14 +2028,7 @@ void Convert2Underscores(char* output,bool alternewline, bool removeBlanks)
 	bool backslash = false;
     while ((c = *++ptr)) 
     {
-		if ( c == ' ') backslash = false;
-		if ( c == '\\') // protect next always
-		{
-			backslash = true;
-			memmove(ptr,ptr+1,strlen(ptr));
-			--ptr;
-		}
-        else if (!backslash && !removeBlanks &&  c == '_' && ptr[1] != '_') // remove underscores from apostrophe of possession
+		if (!removeBlanks &&  c == '_' && ptr[1] != '_') // remove underscores from apostrophe of possession
         {
 			// remove space on possessives
 			if (ptr[1] == '\'' && ( (ptr[2] == 's' && !IsAlphaUTF8OrDigit(ptr[3]))  || !IsAlphaUTF8OrDigit(ptr[2]) ) )// bob_'s  bobs_'  
@@ -1916,7 +2041,6 @@ void Convert2Underscores(char* output,bool alternewline, bool removeBlanks)
 		else if (alternewline && (c == '\n' || c == '\r')) *ptr = ' ';
     }
 }
-
 
 void RemoveTilde(char* output)
 { 
@@ -2428,12 +2552,12 @@ RETRY: // for sampling loopback
 	}
 
 	if (readAhead >= 6)
-		Log(STDUSERLOG,(char*)"Heavy long line? %s\r\n",documentBuffer);
+		Log(STDTRACELOG,(char*)"Heavy long line? %s\r\n",documentBuffer);
 	if (autonumber) 
 	{
 		bool oldecho = echo;
 		echo = true;
-		Log(STDUSERLOG,(char*)"%d: %s\r\n",inputSentenceCount,inBuffer);
+		Log(STDTRACELOG,(char*)"%d: %s\r\n",inputSentenceCount,inBuffer);
 		echo = oldecho;
 	}
 	else if (docstats)
@@ -2442,7 +2566,7 @@ RETRY: // for sampling loopback
 		{
 			bool oldecho = echo;
 			echo = true;
-			Log(STDUSERLOG,(char*)"%d: %s\r\n",docSentenceCount,inBuffer);
+			Log(STDTRACELOG,(char*)"%d: %s\r\n",docSentenceCount,inBuffer);
 			echo = oldecho;
 		}	
 	}

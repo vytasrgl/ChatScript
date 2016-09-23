@@ -12,7 +12,7 @@ static int oldOutputIndex = 0;
 unsigned int outputNest = 0;
 static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int controls) ;
 static char* Output_Function(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result,bool once);
-
+static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result,bool once,bool nojson);
 #ifdef JUNK
 Special strings:
 
@@ -139,15 +139,24 @@ static char* AddFormatOutput(char* what, char* output,unsigned int controls)
 	return output;
 }
 
-static bool LegalVarChar(char at)
+bool LegalVarChar(char at)
 {
 	return  (IsAlphaUTF8OrDigit(at) || at == '_' || at == '-' );
 }
 
 static char* ReadUserVariable(char* input, char* var)
 {		
-	char* at = input++; // skip $ and below either $ or first legal char
-	while (LegalVarChar(*++input)){;} 
+	char* at = input++; // skip $ and below either $ or _ if one exists or first legal char
+	bool once = false;
+	while (LegalVarChar(*++input) || *input == '.')
+	{
+		if (*input == '.')
+		{
+			if (once) break;
+			if (LegalVarChar(input[1])) once = true;
+			else break;
+		}
+	} 
 	strncpy(var,at,input-at);
 	var[input-at] = 0;
 	return input;
@@ -162,7 +171,7 @@ static char* ReadMatchVariable(char* input, char* var)
 	return input;
 }
 
-void ReformatString(char* input,char* output, FunctionResult& result,unsigned int controls, bool space) // take ^"xxx" format string and perform substitutions on variables within it
+void ReformatString(char starter, char* input,char* output, FunctionResult& result,unsigned int controls, bool space) // take ^"xxx" format string and perform substitutions on variables within it
 {
 	controls |= OUTPUT_NOCOMMANUMBER; // never reformat a number from here
 	if (space) {*output++ = ' '; *output = 0;}
@@ -180,53 +189,56 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		input[len] = c;
 		return;
 	}
-
 	char* start = output;
 	*output = 0;
 	char mainValue[3];
 	mainValue[1] = 0;
-	char var[MAX_WORD_SIZE];
-	char ans[MAX_WORD_SIZE];
+	char var[200]; // no variable should be this big
+	char* ans = AllocateBuffer();
 	while (input && *input)
 	{
-		if (*input == '^' && input[1] == '$' && (IsAlphaUTF8(input[2]) ||  input[2] == '$')) // ^ user variable
+		if (*input == '^' && input[1] == USERVAR_PREFIX && (IsAlphaUTF8(input[2]) ||  input[2] == '$')) // ^ user variable
 		{
 			var[0] = '^';
 			input = ReadUserVariable(input+1,var+1); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '^' && input[1] == '_' && IsDigit(input[2])) // ^ canonical match variable
 		{
 			var[0] = '^';
 			input = ReadMatchVariable(input+1,var+1); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == '$' && (IsAlphaUTF8(input[1]) ||  input[1] == '$')) // user variable
+		else if (*input == USERVAR_PREFIX && (IsAlphaUTF8(input[1]) ||  input[1] == TRANSIENTVAR_PREFIX ||  input[1] == LOCALVAR_PREFIX)) // user variable
 		{
 			input = ReadUserVariable(input,var); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == '%' && IsAlphaUTF8(input[1])) // system variable
+		else if (*input == SYSVAR_PREFIX && IsAlphaUTF8(input[1]))
 		{
 			input = ReadCompiledWord(input,var,false,true);
+			char* at = var;
+			while (*++at && IsAlphaUTF8(*at)){;}
+			input -= strlen(at);
+			*at = 0;
 			char* value = SystemVariable(var,NULL);
 			if (*value) output = AddFormatOutput(value, output,controls); 
 			else if (!FindWord(var)) output = AddFormatOutput(var, output,controls); // not a system variable
 		}
-		else if (*input == '_' && IsDigit(input[1])) // canonical match variable
+		else if (*input == '_' && IsDigit(input[1]) && *(input-1) != '@') // canonical match variable
 		{
 			input = ReadMatchVariable(input,var); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '\'' && input[1] == '_' && IsDigit(input[2])) // quoted match variable
 		{
 			var[0] = '\'';
 			input = ReadUserVariable(input+1,var+1); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '^' && input[1] == '\'' && input[2] == '_' && IsDigit(input[3])) // ^ quoted match variable
@@ -234,7 +246,7 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 			var[0] = '^';
 			var[1] = '\'';
 			input = ReadUserVariable(input+2,var+2); // end up after the var
-			FreshOutput(var,ans,result,controls, MAX_WORD_SIZE);
+			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
 		else if (*input == '@' && IsDigit(input[1])) // factset
@@ -255,11 +267,12 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 		else if (*input == '^' && IsDigit(input[1])) // function variable
 		{
 			char* base = input; 
-			while (*++input && IsDigit(*input)){;} // find end of function variable name (expected is 1 digit)
+			while (*++input && IsDigit(*input)){;} // find end of function variable name 
 			char* tmp = callArgumentList[atoi(base+1)+fnVarBase];
 			// if tmp turns out to be $var or _var %var, need to recurse to get it
-
-			if (*tmp == '$' && !IsDigit(tmp[1])) // user variable
+			if (*tmp == LCLVARDATA_PREFIX && tmp[1] == LCLVARDATA_PREFIX) 
+				output = AddFormatOutput(tmp+2, output,controls); 	// is already evaled
+			else if (*tmp == USERVAR_PREFIX && !IsDigit(tmp[1])) // user variable (could be json object ref)
 			{
 				char* value = GetUserVariable(tmp);
 				output = AddFormatOutput(value, output,controls); 
@@ -277,15 +290,15 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 				if (IsDigit(*tmp)) ++tmp; // 2nd digit
 				output = AddFormatOutput(GetwildcardText(GetWildcardID(base),false), output,controls);
 			}
-			else if (*tmp == '%' && IsAlphaUTF8(tmp[1])) // system variable
+			else if (*tmp == SYSVAR_PREFIX && IsAlphaUTF8(tmp[1])) // system variable
 			{
 				char* value = SystemVariable(tmp,NULL);
 				if (*value) output = AddFormatOutput(value, output,controls); 
 				else if (!FindWord(tmp)) output = AddFormatOutput(tmp, output,controls); // not a system variable
 			}	
-			else if (*tmp == FUNCTIONSTRING && tmp[1] == '"')
+			else if (*tmp == FUNCTIONSTRING && (tmp[1] == '"' || tmp[1] == '\''))
 			{
-				ReformatString(tmp+2,output,result,controls);
+				ReformatString(tmp[1],tmp+2,output,result,controls);
 				output += strlen(output);
 			}
 			else if (!stricmp(tmp,(char*)"null")) {;} // value is to be ignored
@@ -300,15 +313,25 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 			if (output != start && *(output-1) == ' ') --output; // no space before
 			input = Output_Function(var, input, false, output, controls,result,false);
 			output += strlen(output);
-			if (result & ENDCODES) return;
+			if (result & ENDCODES) 
+			{
+				FreeBuffer();
+				return;
+			}
 		}
 		else if (*input == '\\') // protected special character
 		{
-			if (*++input == 'n') *output++ = '\n';
-			else if (*input == 't') *output++ = '\t';
-			else if (*input == 'r') *output++ = '\r';
-			else *output++ = *input; // as is
 			++input;
+			if (starter == '"' && *input == 'n') *output++ = '\n';
+			else if (starter == '"' && *input == 't') *output++ = '\t';
+			else if (starter == '"' && *input == 'r') *output++ = '\r';
+			else if (starter == '"') *output++ = *input; // just pass along the protected char in ^"xxx" strings
+			else // is ^'xxxx' string - other than our special ' we need, leave all other escapes alone as legal json
+			{
+				if (*input == '\'') *output++ = *input;  // cs required the \, not in final output
+				else {*output++ = '\\'; *output++ = *input;}  // json can escape anything, particularly doublequote
+			}
+			++input; // skip over the specialed character
 		}
 		else // ordinary character
 		{
@@ -319,7 +342,8 @@ void ReformatString(char* input,char* output, FunctionResult& result,unsigned in
 	}
 	original[len] = c;
 	*output = 0; // when failures, return the null string
-	if (trace & TRACE_OUTPUT) Log(STDUSERLOG,(char*)" %s",start);
+	if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)" %s",start);
+	FreeBuffer();
 }
 
 void StdNumber(char* word,char* buffer,int controls, bool space) // text numbers may have sign and decimal
@@ -331,6 +355,27 @@ void StdNumber(char* word,char* buffer,int controls, bool space) // text numbers
     if ( IsAlphaUTF8(*ptr) ||  !IsDigitWord(word) || strchr(word,':')) // either its not a number or its a time - leave unchanged
     {
         strcpy(buffer,word);  
+		// but if we have newline formatting data, we need to obey
+		char* at = buffer;
+		while ((at = strchr(at,'\\')))
+		{
+			if (at[1] == 'n')
+			{
+				*at = '\n';
+				memmove(at+1,at+2,strlen(at+1));
+			}
+			else if (at[1] == 'r')
+			{
+				*at = '\r';
+				memmove(at+1,at+2,strlen(at+1));
+			}
+			else if (at[1] == 't')
+			{
+				*at = '\t';
+				memmove(at+1,at+2,strlen(at+1));
+			}
+			++at;
+		}
 
 		if (controls & OUTPUT_NOUNDERSCORE)
 		{
@@ -410,7 +455,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
     char* endptr = 0;
 
 	//   gather choices
-	while (*ptr == '[') // get next choice for block   may not nest choice blocks...
+	while (*ptr && *ptr == '[') // get next choice for block   may not nest choice blocks...
 	{
 		//   find closing ]
 		endptr = ptr-1;
@@ -435,7 +480,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 			notted = true;
 			++var;
 		}
-		if (*var == '$' && (IsAlphaUTF8(var[1]) || var[1] == '$'  )) // user variable given
+		if (*var == USERVAR_PREFIX && (IsAlphaUTF8(var[1]) || var[1] == TRANSIENTVAR_PREFIX   ||  var[1] == LOCALVAR_PREFIX)) // user variable given
 		{
 			ReadCompiledWord(simpleOutput,tmpWord);
 			if (*tmpWord == '=' || tmpWord[1] == '=') choiceset[count++] = base; //  some kind of assignment, it's all simple output
@@ -467,7 +512,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 		// is choice a repeat of something already said... if so try again
 		if (*buffer && HasAlreadySaid(buffer)) 
 		{
-			if (trace) Log(STDUSERLOG,(char*)"Choice %s already said\r\n",buffer);
+			if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"Choice %s already said\r\n",buffer);
 			*buffer = 0;
 			choiceset[r] = choiceset[--count];
 		}
@@ -477,7 +522,7 @@ static char* ProcessChoice(char* ptr,char* buffer,FunctionResult &result,int con
 			break; // if choice didnt fail, it has completed, even if it generates no output
 		}
 	}
-	return endptr+2; //   skip to end of rand past the ] and space
+	return (endptr[1]) ? (endptr+2) : (endptr+1); //   skip to end of rand past the ] and space
 }
 
 char* FreshOutput(char* ptr,char* buffer,FunctionResult &result,int controls,unsigned int limit)
@@ -492,11 +537,12 @@ char* FreshOutput(char* ptr,char* buffer,FunctionResult &result,int controls,uns
 	ptr = Output(ptr,currentOutputBase,result,controls);
 	if (limit != maxBufferSize) // someone's small local buffer
 	{
-		if (strlen(currentOutputBase) >= limit) 
+		size_t olen = strlen(currentOutputBase);
+		if (olen >= limit) 
 		{
 			strncpy(buffer,currentOutputBase,limit-1);
 			buffer[limit-1] = 0;
-			ReportBug((char*)"FreshOutput limit truncated: %s\r\n",buffer);
+			ReportBug((char*)"FreshOutput of %d exceeded caller limit of %d. Truncated: %s\r\n",olen,limit,buffer);
 		}
 		else strcpy(buffer,currentOutputBase);
 		FreeOutputBuffer();
@@ -577,39 +623,56 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 		if (!once && IsAssignmentOperator(ptr)) ptr = PerformAssignment(word,ptr,result); 
 		else
 		{
-			size_t len = strlen(callArgumentList[atoi(word+1)+fnVarBase]);
+			char* value = callArgumentList[atoi(word+1)+fnVarBase];
+			size_t len = strlen(value);
 			size_t size = (buffer - currentOutputBase);
 			if ((size + len) >= (currentOutputLimit-50) ) 
 			{
 				result = FAILRULE_BIT;
 				return ptr;
 			}
-
-			strcpy(buffer,callArgumentList[atoi(word+1)+fnVarBase]);
-			if (*buffer)
+			if (*value == LCLVARDATA_PREFIX && value[1] == LCLVARDATA_PREFIX) 
+				strcpy(buffer,value+2); // already evaluated. do not reeval
+			else
 			{
-				*word = ENDUNIT;	// marker for retry
-				word[1] = '^';	// additional marker for function variables
+				strcpy(buffer,value);
+				if (*buffer)
+				{
+					*word = ENDUNIT;	// marker for retry
+					word[1] = '^';	// additional marker for function variables
+				}
 			}
 		}
 	}
-	else if (word[1] == '"') ReformatString(word+2,buffer,result,space); // functional string, uncompiled.  DO NOT USE function calls within it
-	else  if (word[1] == '$' || word[1] == '_' || word[1] == '\'' || (word[1] == '^' && IsDigit(word[2]))) // ^$$1 = null or ^_1 = null or ^'_1 = null or ^^which = null is indirect user assignment or retrieval
+	else if (word[1] == '"' || word[1] == '\'') ReformatString(word[1],word+2,buffer,result,space); // functional string, uncompiled.  DO NOT USE function calls within it
+	else  if (word[1] == USERVAR_PREFIX || word[1] == '_' || word[1] == '\'' || (word[1] == '^' && IsDigit(word[2]))) // ^$$1 = null or ^_1 = null or ^'_1 = null or ^^which = null is indirect user assignment or retrieval
 	{
-		Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
 		if (!once && IsAssignmentOperator(ptr)) // we are lefthand side indirect
 		{
-			strcpy(word,buffer);
+			if (word[1] != '^' || !IsDigit(word[2])) // anything but ^^2
+			{
+				Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
+				strcpy(word,buffer);
+			}
 			*buffer = 0;
-			return PerformAssignment(word,ptr,result); //   =  or *= kind of construction
+			ptr = PerformAssignment(word,ptr,result,true); //   =  or *= kind of construction -- dont do json indirect assignment
 		}
-		*word = ENDUNIT;	// marker for retry
+		else // we are right side (expression) indirect
+		{
+			Output(word+1,buffer,result,controls|OUTPUT_NOTREALBUFFER); // no leading space  - we now have the variable value from the indirection
+			if (word[1] == USERVAR_PREFIX) // direct retry to avoid json issues
+			{
+				strcpy(word,GetUserVariable(word+1));
+				Output_Dollar(word, "", space,buffer,controls,result,false,true);
+			}
+			else *word = ENDUNIT;	// marker for retry
+		}
 	}
+	else if (!strcmp(word,(char*)"^if")) ptr = HandleIf(ptr,buffer,result);  
+	else if (!strcmp(word,(char*)"^loop")) ptr = HandleLoop(ptr,buffer,result); 
 	else if (word[1] == '^') // if and loop
 	{
-		if (!strcmp(word,(char*)"^^if")) ptr = HandleIf(ptr,buffer,result);  
-		else if (!strcmp(word,(char*)"^^loop")) ptr = HandleLoop(ptr,buffer,result); 
-		else if (!once && IsAssignmentOperator(ptr))  
+		if (!once && IsAssignmentOperator(ptr))  
 			ptr = PerformAssignment(word,ptr,result); //   =  or *= kind of construction
 		else if (!word[2]) strcpy(buffer,word); // "^^" exponent operator
 		else result = FAILRULE_BIT;
@@ -623,7 +686,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 		}
 		else // ordinary function
 		{
-			if (*currentRuleOutputBase && (!strcmp(word,(char*)"^gambit") || !strcmp(word,(char*)"^respond") || !strcmp(word,(char*)"^reuse") || !strcmp(word,(char*)"^retry") || !strcmp(word,(char*)"^refine")  )) // leaving current rule
+			if (*currentRuleOutputBase && (!strcmp(word,(char*)"^gambit") || !strcmp(word,(char*)"^respond") || !strcmp(word,(char*)"^reuse") || !strcmp(word,(char*)"^retry") || !strcmp(word,(char*)"^refine")  || !strcmp(word,(char*)"^print")   )) // leaving current rule
 			{
 				if (!AddResponse(currentRuleOutputBase,responseControl)) result = FAILRULE_BIT;
 				buffer = currentRuleOutputBase;	
@@ -633,7 +696,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 			ptr =  DoFunction(word,ptr,buffer,result); 
 
 			if (result == UNDEFINED_FUNCTION) result = NOPROBLEM_BIT;
-			else if (space && *buffer && *buffer != ' ') // we need to add a space
+			else if (space && *buffer && *buffer != ' ' && result != ENDCALL_BIT) // we need to add a space, but not if requesting a call return ^return
 			{
 				memmove(buffer+1,buffer,strlen(buffer) + 1);
 				*buffer = ' ';
@@ -710,7 +773,7 @@ static char* Output_AtSign(char* word, char* ptr, bool space,char* buffer, unsig
 		}
 		else if (type == 'a' && impliedWild != ALREADY_HANDLED)
 		{
-			strcpy(ARGUMENT(1), word);
+			ARGUMENT(1) = AllocateInverseString(word);
 			result = FLR(buffer,(char*)"l");
 			return ptr;
 		}
@@ -773,7 +836,7 @@ static char* Output_Quote(char* word, char* ptr, bool space,char* buffer, unsign
 			}
 		}
 	}
-	else if (word[1] == '$' || word[1] == '@' || word[1] == '%')  //    variable or factset or system variable quoted, means dont reeval its content
+	else if (word[1] == USERVAR_PREFIX || word[1] == '@' || word[1] == SYSVAR_PREFIX)  //    variable or factset or system variable quoted, means dont reeval its content
 	{
 		strcpy(buffer,word+1);
 	}
@@ -805,7 +868,7 @@ static char* Output_String(char* word, char* ptr, bool space,char* buffer, unsig
 	else if (word[1] == FUNCTIONSTRING) // treat as format string   
 	{
 		if (!dictionaryLocked) strcpy(buffer,word); // untouched - function strings passed as arguments to functions are untouched until used up. - need untouched so can create facts from tables with them in it
-		else ReformatString(word+2,buffer,result,controls);
+		else ReformatString(*word,word+2,buffer,result,controls);
 	}
 	else if (controls & OUTPUT_NOQUOTES)
 	{
@@ -850,7 +913,7 @@ static char* Output_Underscore(char* word, char* ptr, bool space,char* buffer, u
 	return ptr;
 }
 
-static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result,bool once)
+static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsigned int controls,FunctionResult& result,bool once,bool nojson)
 {
 	// handles user variable assignment: $myvar = 4
 	// handles user variables:  $myvar
@@ -859,27 +922,27 @@ static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsig
     {
 		if (controls & OUTPUT_EVALCODE && !(controls & OUTPUT_KEEPVAR)) 
 		{
-			char* answer = GetUserVariable(word);
-			if (*answer == '$' && (answer[1] == '$' || IsAlphaUTF8(answer[1]))) strcpy(word,answer); // force nested indirect on var of a var value
+			char* answer = GetUserVariable(word,nojson);
+			if (*answer == USERVAR_PREFIX && ( answer[1] == LOCALVAR_PREFIX || answer[1] == TRANSIENTVAR_PREFIX || IsAlphaUTF8(answer[1]))) strcpy(word,answer); // force nested indirect on var of a var value
 		}
 
 		if (!once && IsAssignmentOperator(ptr)) 
 			ptr = PerformAssignment(word,ptr,result); 
 		else
 		{
-			char* value = GetUserVariable(word);
+			char* value = GetUserVariable(word,nojson);
 			StdNumber(value,buffer,controls, value && *value && space);
-			if (controls & OUTPUT_NOQUOTES && *buffer == '"') // remove quotes from variable data
+			char* at = SkipWhitespace(buffer);
+			if (controls & OUTPUT_NOQUOTES && *at == '"') // remove quotes from variable data
 			{
-				size_t len = strlen(buffer);
-				if (buffer[len-1] == '"')
+				size_t len = strlen(at);
+				if (at[len-1] == '"')
 				{
-					buffer[len-1] = 0;
-					memmove(buffer,buffer+1,len);
+					at[len-1] = 0;
+					memmove(at,at+1,len);
 				}
 			}
-			if (*buffer == '"' && buffer[1] == FUNCTIONSTRING) *word = ENDUNIT; // reeval the function string
-			else if (*buffer == '^' && IsAlphaUTF8(buffer[1]) && *SkipWhitespace(ptr) == '(') *word = ENDUNIT; // if fn call substituted, force reeval
+			if (*at == '"' && at[1] == FUNCTIONSTRING) *word = ENDUNIT; // reeval the function string
 		}
 	}	
     else StdNumber(word,buffer,controls, space); // money or simple $
@@ -929,8 +992,8 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			ptr = SkipWhitespace(hold) + 1;
 			word[1] = 0;
 		}
-		else if (*word == FUNCTIONSTRING && word[1] == '"'  ) {;} // function strings can all sorts of stuff in them
-		else if (*word == '"' && word[1] == FUNCTIONSTRING) {;}   // function strings can all sorts of stuff in them
+		else if (*word == FUNCTIONSTRING && (word[1] == '"' || word[1] == '\'' )  ) {;} // function strings can all sorts of stuff in them
+		else if ((*word == '"') && word[1] == FUNCTIONSTRING) {;}   // function strings can all sorts of stuff in them
 		else // separate closing brackets from token in case not run thru script compilation
 		{
 			bool quote = false;
@@ -964,7 +1027,7 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			else
 			{
 				before = *(buffer-1);
-				// dont space after $  or # or [ or ( or " or / or newline
+				// dont space after $  or # or [ or ( or " or / or newline   USERVAR_PREFIX
 				space = before && before != '(' && before != '[' && before != '{'  && before != '$' && before != '#' && before != '"' && before != '/' && before != '\n';
 				if (before == '"') space = !(CountParens(currentOutputBase) & 1); //   if parens not balanced, add space before opening doublequote
 			}
@@ -1003,13 +1066,13 @@ retry:
 			break;
 
 		// variables of various flavors
-        case '$': //   user variable or money
-			ptr = Output_Dollar(word, ptr, space, buffer, controls,result,once);
+        case USERVAR_PREFIX: //   user variable or money
+			ptr = Output_Dollar(word, ptr, space, buffer, controls,result,once,false);
 			break;
  		case '_': //   wildcard or standalone _ OR just an ordinary token
 			ptr = Output_Underscore(word, ptr, space, buffer, controls,result,once);
 			break;
-        case '%':  //   system variable
+        case SYSVAR_PREFIX:  //   system variable
 	 		ptr = Output_Percent(word, ptr, space, buffer, (quoted) ? (controls | OUTPUT_DQUOTE_FLIP)  : controls,result,once);
 			break;
 		case '@': //   a fact set reference like @9 @1subject @2object or something else
@@ -1051,11 +1114,16 @@ retry:
 			char* c = ptr - strlen(word);
 			while (*c != ':') {--c;}
 			TestMode answer = Command(c,NULL,true);
+			if (answer == RESTART) result = RESTART_BIT;	// end it all now
 			currentTopicID = oldtopicid;
 			currentRule = oldrule;
 			currentRuleID = oldruleid;
 			currentRuleTopic = oldruletopic;
-			if (quitting == true) myexit((char*)"quit requested from script");
+			if (quitting == true) 
+			{
+				result = FAILINPUT_BIT;
+				return NULL;
+			}
 			if (FAILCOMMAND != answer) 
 			{
 				ptr = NULL;
@@ -1074,10 +1142,10 @@ retry:
 		if (*word == ENDUNIT) 
 		{
 			if (!*buffer) result = FAILRULE_BIT;
-			else if (once && (word[1] != '$' && word[1] != '_' && word[1] != '\'' && word[1] != '^')){;}	// have our answer (unless it was a function variable substitution)
+			else if (once && (word[1] != USERVAR_PREFIX && word[1] != '_' && word[1] != '\'' && word[1] != '^')){;}	// have our answer (unless it was a function variable substitution)
 			else
 			{
-				strcpy(word,buffer);
+				strcpy(word,SkipWhitespace(buffer));
 				*buffer = 0;
 				goto retry; 
 			}
@@ -1089,7 +1157,7 @@ retry:
 			{
 				buffer = start;  // debug stop
 			}
-			if (trace & (TRACE_OUTPUT|TRACE_MATCH) &&  !(controls &OUTPUT_SILENT)  && CheckTopicTrace()) Log(STDUSERLOG,(char*)" =:: %s ",buffer);
+			if (trace & (TRACE_OUTPUT|TRACE_MATCH) &&  !(controls &OUTPUT_SILENT)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" =:: %s ",buffer);
 		}
 		//   update location and check for overflow
 		buffer += strlen(buffer);
@@ -1098,9 +1166,12 @@ retry:
 		if (size >= currentOutputLimit) 
 		{
 			char hold[100];
-			strncpy(hold,currentRule,50);
+			strncpy(hold,currentRule,80);
 			hold[50] = 0;
-			ReportBug((char*)"Output overflowed on rule %s\r\n",hold);
+			char hold1[100];
+			strncpy(hold1,currentOutputBase,80);
+			hold1[50] = 0;
+			ReportBug((char*)"Output overflowed on rule %s output: %s\r\n",hold,hold1);
 		}
         if (size >= (currentOutputLimit-200) && !(result  & FAILCODES)) 
 		{
@@ -1110,7 +1181,7 @@ retry:
 		if (result & (RETRYRULE_BIT|RETRYTOPRULE_BIT|ENDCODES))
 		{
 			if (result & FAILCODES && !(controls & OUTPUT_LOOP)) *start = 0; //  kill output
-			if (!once) ptr = BalanceParen(ptr,true); // swallow excess input BUG - does anyone actually care
+			if (!once && ptr) ptr = BalanceParen(ptr,true,false); // swallow excess input BUG - does anyone actually care
 			break;
 		}
 		if (once) break;    

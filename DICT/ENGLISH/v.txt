@@ -4960,10 +4960,10 @@
     Victory_Day~1n 
  Victory_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     V-day~1nz (^day~5) the day of a victory
- V-E_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    V-E_Day~1nz (^Victory_Day~1) the date of Allied victory in Europe, World War II
- V-J_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    V-J_Day~1nz (^Victory_Day~1) the date of Allied victory over Japan, World War II
+ V-E_Day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    8_May_1945~1n 
+ V-J_Day ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    15_August_1945~1n 
  Vendemiaire ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Vendemiaire~1nz (^Revolutionary_calendar_month~1) first month of the Revolutionary calendar 
  Ventose ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 

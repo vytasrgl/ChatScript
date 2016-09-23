@@ -12,8 +12,6 @@
  UT ( meanings=2 NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
     Utah~1n 
     Greenwich_Mean_Time~1n 
- underdiagnose ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
-    underdiagnose~1vz 
  underbodice ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     camisole~2nz (^unmentionable~1) a short sleeveless undergarment for women
  upsurge ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -9066,6 +9064,8 @@
     undercorrect~1vz 
  underdetect ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     underdetect~1vz 
+ underdiagnose ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
+    underdiagnose~1vz 
  underemphasise ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     underemphasise~1vz 
  underemphasize ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 

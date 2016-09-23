@@ -30,7 +30,7 @@ DISCARD
 	HAS PRONOUN_SUBJECT
 DISCARD
 
-# after determiner and before insured noun, wont be noun - the/a (Determiner)  monthly (Noun_singular +Adjective_normal Adverb)  sales (+Noun_plural +Noun_singular) 
+# after determiner and before insured noun, wont be adverb - the/a (Determiner)  monthly (Noun_singular +Adjective_normal Adverb)  sales (+Noun_plural +Noun_singular) 
 -1 IS DETERMINER
 	INCLUDE * ADVERB
 	STAY HAS ADJECTIVE_BITS

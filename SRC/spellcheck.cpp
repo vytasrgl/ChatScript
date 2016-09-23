@@ -49,7 +49,7 @@ void InitSpellCheck()
 	WORDP D = dictionaryBase;
 	while (++D <= dictionaryFree)
 	{
-		if (!D->word || !IsAlphaUTF8(*D->word) || D->length >= 100 || strchr(D->word,'~') || strchr(D->word,'$') || strchr(D->word,'^')) continue; 
+		if (!D->word || !IsAlphaUTF8(*D->word) || D->length >= 100 || strchr(D->word,'~') || strchr(D->word,USERVAR_PREFIX) || strchr(D->word,'^') || strchr(D->word,' ')  || strchr(D->word,'_')) continue; 
 		if (D->properties & PART_OF_SPEECH || D->systemFlags & PATTERN_WORD)
 		{
 			D->spellNode = lengthLists[D->length];
@@ -137,7 +137,7 @@ static char* SpellCheck( int i, int language)
 	// now imagine partial runtogetherness, like "talkab out fingers"
 	if (i < wordCount)
 	{
-		char tmp[MAX_WORD_SIZE];
+		char tmp[MAX_WORD_SIZE*2];
 		strcpy(tmp,word);
 		strcat(tmp,wordStarts[i+1]);
 		breakAt = SplitWord(tmp);
@@ -168,7 +168,19 @@ static char* SpellCheck( int i, int language)
 
 	//   now use word spell checker 
     char* d = SpellFix(word,i,PART_OF_SPEECH,language); 
-    return (d) ? d : NULL;
+	if (d) return d;
+
+	// if is is a misspelled plural?
+	char plural[MAX_WORD_SIZE];
+	if (word[len-1] == 's')
+	{
+		strcpy(plural,word);
+		plural[len-1] = 0;
+		d = SpellFix(plural,i,PART_OF_SPEECH,language); 
+		if (d) return d; // dont care that it is plural
+	}
+
+    return NULL;
 }
 
 char* ProbableKnownWord(char* word)
@@ -182,12 +194,7 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
-		FACT* F = GetSubjectHead(D);
-		while (F)
-		{
-			if (F->verb == Mmember) return D->word;	// is a concept member so it is ok
-			F = GetSubjectNext(F);
-		}
+		if (IsConceptMember(D)) return D->word;
 		// are there facts using this word? -- issue with facts because on seeing input second time, having made facts of original, we see original
 //		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
@@ -201,6 +208,8 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
+		if (IsConceptMember(D)) return D->word;
+
 		// are there facts using this word?
 //		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
@@ -214,7 +223,9 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
-		// are there facts using this word?
+		if (IsConceptMember(D)) return D->word;
+
+	// are there facts using this word?
 //		if (GetSubjectNondeadHead(D) || GetObjectNondeadHead(D) || GetVerbNondeadHead(D)) return D->word;
 	}
 
@@ -224,7 +235,7 @@ char* ProbableKnownWord(char* word)
 	expectedBase = 0;
 	if (ProbableAdverb(word,len,expectedBase) && expectedBase) return word;
 	// is it a verb form
-	char* verb = GetInfinitive(lower,false);
+	char* verb = GetInfinitive(lower,true); // no new verbs
 	if (verb) 
 	{
 		WORDP D =  StoreWord(lower,0); // verb form recognized
@@ -237,13 +248,15 @@ char* ProbableKnownWord(char* word)
 		WORDP E = FindWord(lower,len-1,LOWERCASE_LOOKUP);
 		if (E && E->properties & NOUN) 
 		{
-			return word;	
+			E = StoreWord(word,NOUN|NOUN_PLURAL);
+			return E->word;	
 		}
 		E = FindWord(lower,len-1,UPPERCASE_LOOKUP);
 		if (E && E->properties & NOUN) 
 		{
 			*word = toUppercaseData[*word];
-			return word;	
+			E = StoreWord(word,NOUN|NOUN_PROPER_PLURAL);
+			return E->word;	
 		}
 	}
 
@@ -294,21 +307,36 @@ bool SpellCheckSentence()
 		//  dont  spell check email or other things with @ or . in them
 		if (strchr(word,'@') || strchr(word,'.') || strchr(word,'$')) continue;
 
+		// dont spell check names of json objects or arrays
+		if (!strnicmp(word,"ja-",3) || !strnicmp(word,"jo-",3)) continue;
+
 		char* known = ProbableKnownWord(word);
-		if (known) 
+		if (known && !strcmp(known,word)) continue;	 // we know it
+		if (known && strcmp(known,word)) 
 		{
-			if (strcmp(known,word) && !IsUpperCase(*known)) // revised the word to lower case (avoid to upper case like "fields" to "Fields"
+			char* tokens[2];
+			if (!IsUpperCase(*known)) // revised the word to lower case (avoid to upper case like "fields" to "Fields"
 			{
-				char* tokens[2];
-				WORDP D = FindWord(known,0,PRIMARY_CASE_ALLOWED);
+				WORDP D = FindWord(known,0,LOWERCASE_LOOKUP);
 				if (D) 
 				{
 					tokens[1] = D->word;
 					ReplaceWords(i,1,1,tokens);
 					fixedSpell = true;
+					continue;
 				}
 			}
-			continue;
+			else // is uppercase a concept member? then revise upwards
+			{
+				WORDP D = FindWord(known,0,UPPERCASE_LOOKUP);
+				if (IsConceptMember(D))
+				{
+					tokens[1] = D->word;
+					ReplaceWords(i,1,1,tokens);
+					fixedSpell = true;		
+					continue;
+				}
+			}
 		}
 
 		char* p = word -1;
@@ -332,7 +360,8 @@ bool SpellCheckSentence()
 				word[len-1] = 0;
 				uint64 sysflags = 0;
 				uint64 cansysflags = 0;
-				GetPosData(i,word,entry,canonical,sysflags,cansysflags,true,true); // dont create a non-existent word
+				WORDP revise;
+				GetPosData(i,word,revise,entry,canonical,sysflags,cansysflags,true,true); // dont create a non-existent word
 				if (entry && entry->properties & PART_OF_SPEECH)
 				{
 					wordStarts[i] = reuseAllocation(wordStarts[i],entry->word);
@@ -362,15 +391,10 @@ bool SpellCheckSentence()
 			}
 			else if (E) // does it have a member concept fact
 			{
-				FACT* F = GetSubjectHead(E);
-				while (F)
+				if (IsConceptMember(E)) 
 				{
-					if (F->verb == Mmember)
-					{
-						useAlternateCase = true;
-						break;
-					}
-					F = GetSubjectNext(F);
+					useAlternateCase = true;
+					break;
 				}
 			}
 			if (useAlternateCase)
@@ -384,7 +408,7 @@ bool SpellCheckSentence()
 		}
 		
 		// merge with next token?
-		char join[MAX_WORD_SIZE];
+		char join[MAX_WORD_SIZE * 3];
 		if (i != wordCount && *wordStarts[i+1] != '"' )
 		{
 			// direct merge as a single word
@@ -495,9 +519,26 @@ bool SpellCheckSentence()
 			continue; // ignore hypenated errors that we couldnt solve, because no one mistypes a hypen
 		}
 		
-		// leave uppercase in first position if not adjusted yet
+		// leave uppercase in first position if not adjusted yet... but check for lower case spell error
 		if (IsUpperCase(word[0])  && tokenControl & NO_PROPER_SPELLCHECK) 
+		{
+			char lower[MAX_WORD_SIZE];
+			MakeLowerCopy(lower,word);
+			WORDP D = FindWord(lower,0,LOWERCASE_LOOKUP);
+			if (!D && i == startWord)
+			{
+				char* okword = SpellFix(lower,i,PART_OF_SPEECH,language); 
+				if (okword)
+				{
+					char* tokens[2];
+					WORDP E = StoreWord(okword);
+					tokens[1] = E->word;
+					ReplaceWords(i,1,1,tokens);
+					fixedSpell = true;
+				}
+			}
 			continue; 
+		}
 
 		if (*word != '\'' && (!FindCanonical(word, i,true) || IsUpperCase(word[0]))) // dont check quoted or findable words unless they are capitalized
 		{
@@ -518,7 +559,9 @@ bool SpellCheckSentence()
 			}
 			if (word) 
 			{
-				wordStarts[i] = StoreWord(word)->word;
+				char* tokens[2];
+				tokens[1] = word;
+				ReplaceWords(i,1,1,tokens);
 				fixedSpell = true;
 				continue;
 			}
@@ -948,7 +991,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 	bool hasUnderscore = (strchr(originalWord,'_')) ? true : false;
 	bool isUpper = IsUpperCase(originalWord[0]);
 	if (IsUpperCase(originalWord[1])) isUpper = false;	// not if all caps
-	if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"Spell: %s\r\n",originalWord);
+	if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"Spell: %s\r\n",originalWord);
 
 	char word[MAX_WORD_SIZE];
 	MakeLowerCopy(word,originalWord);
@@ -998,14 +1041,16 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 	{
 		if (language == ENGLISH && i >= 3) break;	// only allow +-2 for spanish
 		MEANING offset = lengthLists[len + range[i]];
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"\r\n  Begin offset %d\r\n",i);
+		if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"\r\n  Begin offset %d\r\n",i);
 		while (offset)
 		{
 			D = Meaning2Word(offset);
 			offset = D->spellNode;
-			if (!(D->properties & posflags)) continue; // wrong kind of word
+			if (PART_OF_SPEECH == posflags  && D->systemFlags & PATTERN_WORD){;} // legal generic match
+			else if (!(D->properties & posflags)) continue; // wrong kind of word
 			if (*D->word != letterLow && *D->word != letterHigh && language == ENGLISH) continue;	// we assume no one misspells starting letter
 			char* under = strchr(D->word,'_');
+			// SPELLING lists have no underscore or space words in them
 			if (hasUnderscore && !under) continue;	 // require keep any underscore
 			if (!hasUnderscore && under) continue;	 // require not have any underscore
 			if (isUpper && !(D->internalBits & UPPERCASE_HASH) && start != 1) continue;	// dont spell check to lower a word in upper
@@ -1014,11 +1059,11 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 			{
 				if (val < min)
 				{
-					if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Better: %s against %s value: %d\r\n",D->word,originalWord,val);
+					if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"    Better: %s against %s value: %d\r\n",D->word,originalWord,val);
 					index = 0;
 					min = val;
 				}
-				else if ( val == min && trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Equal: %s against %s value: %d\r\n",D->word,originalWord,val);
+				else if ( val == min && trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"    Equal: %s against %s value: %d\r\n",D->word,originalWord,val);
 
 				if (!(D->internalBits & BEEN_HERE)) 
 				{
@@ -1059,7 +1104,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 	for (unsigned int j = 0; j < index; ++j) RemoveInternalFlag(choices[j],BEEN_HERE);
     if (index == 1) 
 	{
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Single best spell: %s\r\n",choices[0]->word);
+		if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"    Single best spell: %s\r\n",choices[0]->word);
 		return choices[0]->word;	// pick the one
 	}
     for (unsigned int j = 0; j < index; ++j) 
@@ -1076,7 +1121,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
     }
 	if (bestGuessindex) 
 	{
-		if (trace == TRACE_SPELLING) Log(STDUSERLOG,(char*)"    Pick spell: %s\r\n",bestGuess[0]->word);
+		if (trace == TRACE_SPELLING) Log(STDTRACELOG,(char*)"    Pick spell: %s\r\n",bestGuess[0]->word);
 		return bestGuess[0]->word; 
 	}
 	return NULL;

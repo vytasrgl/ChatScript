@@ -515,11 +515,6 @@
     nervus_trigeminus~1nz (^cranial_nerve~1) the main sensory nerve of the face and motor nerve for the muscles of mastication
  Fatimah ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
     Fatima~1n 
- frigid ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
-    glacial~1a 
-    frozen~5a 
-    cold~12a 
-    frigid~4az 
  fake ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT OBJECT_AS_ADJECTIVE OMITTABLE_THAT_VERB ) comparative=faker 
     juke~1nz (^feint~1) a deceptive move made by a football player
     postiche~1nz (^imitation~2) something that is a counterfeit
@@ -1161,7 +1156,7 @@
     Battle_of_Fontenoy~1n 
  Frith ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  four-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    four-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team 4 hits
+    4-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team 4 hits
  fusillade ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT ) 
     burst~3n 
     fusillade~2vz attack with fusillade
@@ -1469,6 +1464,8 @@
     conclusion~9n 
  finch ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN ) 
     finch~1nz (^oscine_bird~1) any of numerous small songbirds with short stout bills adapted for crushing seeds
+ forequarter ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER posdefault:NOUN ) 
+    forequarter~1nz (^cut~17) the front half of a side of meat
  foreign_country ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     foreign_country~1nz (^country~2) any state of which one is not a citizen
  Farrell ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -3423,7 +3420,7 @@
  football_game ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     football~1n 
  five-hitter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    five-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team 5 hits
+    5-hitter~1nz (^baseball~1) a game in which a pitcher allows the opposing team 5 hits
  fives ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
     fives~1nz (^court_game~1) a game resembling handball
  five_hundred ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR ) 
@@ -4584,7 +4581,7 @@
     flat~8az commercially inactive
     matt~2a 
     flat~10az having a relatively broad surface in relation to depth or thickness
-    two-dimensional~2az lacking the expected range or depth
+    2-dimensional~1az lacking the expected range or depth
     level~10a 
     flat~13az lacking contrast or shading between tones
     flat~14az horizontally level
@@ -5642,7 +5639,7 @@
  fore-and-aft ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) comparative=fore-and-after 
     fore-and-aft~1az parallel with the keel of a boat or ship
  forecastle ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
-    fo'c'sle~1nz living quarters consisting of a superstructure in the bow of a merchant ship where the crew is housed
+    fo'c'sle~1nz (^living_quarters~1) living quarters consisting of a superstructure in the bow of a merchant ship where the crew is housed
  fo'c'sle ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     forecastle~1n 
  forecourt ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -11782,7 +11779,7 @@
  fifty_percent ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     fifty_percent~1nz (^half~1) a half expressed as a percentage
  fourth_part ( meanings=1 NOUN NOUN_SINGULAR ) 
-    twenty-five_percent~1n 
+    one-fourth~1n 
  fifth_part ( meanings=1 NOUN NOUN_SINGULAR ) 
     twenty_percent~1n 
  fuck_all ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -12533,6 +12530,8 @@
     financial_year~1n 
  financial_year ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     fiscal_year~1nz (^year~3) any accounting period of 12 months
+ first_quarter ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    first_quarter~1nz (^half-moon~2) the first fourth of the Moon's period of revolution around the Earth
  full_moon ( meanings=1 NOUN NOUN_SINGULAR ) 
     full-of-the-moon~1n 
  full-of-the-moon ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -12555,6 +12554,8 @@
     first_period~1nz (^part~6) the first division into which the play of a game is divided
  final_period ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     final_period~1nz (^part~6) the final division into which the play of a game is divided
+ first_half ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    first_half~1nz (^half~2) the first of two halves of play
  four-four_time ( meanings=1 NOUN NOUN_SINGULAR ) 
     common_time~1n 
  fertility_rate ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -13323,7 +13324,7 @@
  flattened ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     planate~1az having been flattened
  four-dimensional ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
-    four-dimensional~1az involving or relating to the fourth dimension or time
+    4-dimensional~1az involving or relating to the fourth dimension or time
  factory-made ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     factory-made~1az produced in quantity at a factory
  fordable ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -13721,10 +13722,15 @@
     flaming~2a 
     fervid~2a 
     fiery~4az 
+ frigid ( meanings=4 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 GRADE3_4 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
+    arctic~2a 
+    icy~4a 
+    cold~12a 
+    frigid~4az 
  frosty ( meanings=4 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) comparative=frostiest 
     snappy~4a 
     rimy~1az covered with frost
-    icy~4a 
+    frigid~2a 
     frosty~4az 
  frigorific ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     frigorific~1az causing cold
@@ -13815,9 +13821,9 @@
  full-term ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
     full-term~1az gestated for the entire duration of normal pregnancy
  four-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    four-membered~1az of a chemical compound having a ring with four members
+    4-membered~1az of a chemical compound having a ring with four members
  five-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    five-membered~1az of a chemical compound having a ring with five members
+    5-membered~1az of a chemical compound having a ring with five members
  fewer ( meanings=3 glosses=1 MORE_FORM PRONOUN_SUBJECT PRONOUN_OBJECT ADJECTIVE DETERMINER ADJECTIVE_NORMAL COMMON4 PRONOUN_INDIRECTOBJECT KINDERGARTEN DETERMINER_PLURAL PRONOUN_PLURAL ) comparative=few 
     fewer~1az quantifier meaning a smaller number of
     fewer~2z 

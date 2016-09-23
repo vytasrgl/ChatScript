@@ -45,7 +45,7 @@ void ReadUserData();
 void WriteUserData(time_t curr);
 char* WriteUserVariables(char* ptr,bool sharefile, bool compiling);
 void RecoverUser();
-
+void CopyUserTopicFile(char* newname);
 // login
 void ReadComputerID();
 void Login(char* ptr,char* callee,char* ip);

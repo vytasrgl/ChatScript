@@ -235,8 +235,8 @@ DATA:
   "Spice Girls"
   "Hit Masters"
   
-table: ~men ( ^role ^male)
-^createfact(^male member ^role)
+table: ~men ( ^roleitem ^male)
+^createfact(^male member ^roleitem)
 ^addproperty(^male NOUN_MALEHUMAN )
 
 DATA:
@@ -265,8 +265,8 @@ DATA:
 ~singer [Eminem  "Charlie Walker"]
 ~singer ["Frank Sinatra" (Sinatra)  "Johnny Mathis" "Willie Nelson" ]
 
-table: ~women ( ^role ^female)
-^createfact(^female member ^role)
+table: ~women ( ^roleitem ^female)
+^createfact(^female member ^roleitem)
 ^addproperty(^female NOUN_FEMALEHUMAN )
 DATA:
 ~singer  ["Billie Holiday" "Ella Fitzgerald" "Aretha Franklin" "Diana Ross" Meiko]

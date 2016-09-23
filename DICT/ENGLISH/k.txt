@@ -2847,7 +2847,7 @@
  Kobuk_Valley_National_Park ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Kobuk_Valley_National_Park~1nz (^national_park~1) a national park in Alaska having mountains and forests and tundra and sand dunes and archeological sites
  kasbah ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
-    casbah~1nz an older or native quarter of many cities in northern Africa
+    casbah~1nz (^quarter~4) an older or native quarter of many cities in northern Africa
  kampong ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     campong~1nz (^village~2) a native village in Malaysia
  kill_zone ( meanings=1 NOUN NOUN_SINGULAR ) 

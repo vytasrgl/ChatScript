@@ -910,7 +910,6 @@
  positive_chemotaxis ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     positive_chemotaxis~1nz (^chemotaxis~1) movement toward a chemical stimulus
  Pigg ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Prior ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  pervaporation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     pervaporation~1nz (^concentration~1) the concentration of a colloidal solution whose colloid will not pass through a semipermeable membrane
  plane ( meanings=9 glosses=7 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT FACTITIVE_ADJECTIVE_VERB ) comparative=planer 
@@ -1844,7 +1843,7 @@
     Pteroclididae~1nz (^bird_family~1) sandgrouses
  pad ( meanings=11 glosses=11 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
     pad~1nz (^structure~3) the fleshy cushion-like underside of an animal's foot or of a human's finger
-    domiciliation~1nz temporary living quarters
+    domiciliation~1nz (^living_quarters~1) temporary living quarters
     launch_area~1nz (^platform~2) a platform from which rockets or space craft are launched
     pad~4nz (^cushioning~1) a flat mass of soft material used for protection, stuffing, or comfort
     stamp_pad~1nz (^block~3) a block of absorbent material saturated with ink
@@ -3633,7 +3632,7 @@
  partner ( meanings=5 glosses=5 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
     pardner~1nz (^associate~3) an associate in an activity or endeavor or sphere of common interest
     partner~2nz (^individual~1) a person who is a member of a partnership
-    married_person~1nz (^spousal_equivalent~1) a person's partner in marriage
+    better_half~1nz (^spousal_equivalent~1) a person's partner in marriage
     partner~4vz provide with a partner
     partner~5vz act as a partner
  Poon ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -5354,7 +5353,7 @@
     separate~14v 
     start~17v 
     separate~15v 
-    split_up~3v 
+    split~16v 
  portfolio ( meanings=4 glosses=4 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 posdefault:NOUN ) 
     portfolio~1nz (^office~2) the role of the head of a government department
     portfolio~2nz (^case~2) a large, flat, thin case for carrying loose papers or drawings or maps
@@ -7075,7 +7074,7 @@
  polar ( meanings=7 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     polar~1az having a pair of equal and opposite charges
     pivotal~1a 
-    arctic~2a 
+    icy~3a 
     opposite~6a 
     polar~5az of or existing at or near a geographical pole or within the Arctic or Antarctic Circles
     polar~6az located at or near or coming from the earth's poles
@@ -9935,7 +9934,9 @@
     poleax~1nz (^battle-axe~1) a battle ax used in the Middle Ages
     poleax~2nz (^ax~1) an ax used to slaughter cattle
     poleax~3vz fell with or as if with a poleax
- police_station ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+ police_station ( meanings=1 NOUN NOUN_SINGULAR ) 
+    police_headquarters~1n 
+ police_headquarters ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     station_house~1nz (^station~1) a station that serves as headquarters for police in a particular district
  paddy ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     paddy~1nz (^rice~1) rice in the husk either gathered or still in the field
@@ -14818,8 +14819,8 @@
     Postum~1nz (^coffee_substitute~1) trade mark for a coffee substitute invented by C. W. Post and made with chicory and roasted grains
  pearl_hominy ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     pearl_hominy~1nz (^hominy~1) hominy prepared by milling to pellets of medium size
- pigweed ( meanings=3 NOUN NOUN_SINGULAR COMMON2 ) 
-    wild_spinach~1n 
+ pigweed ( meanings=3 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+    lamb's-quarter~1n 
     Amaranthus_hypochondriacus~1n 
     wild_spinach~3n 
  plum_tomato ( meanings=2 glosses=2 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
@@ -23149,8 +23150,8 @@
     alum~3n 
  potash ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     caustic_potash~1n 
- pure_gold ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    pure_gold~1nz (^gold~5) 100 per cent gold
+ pure_gold ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    24-karat_gold~1n 
  palladium ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     Pd~1nz (^metal~2) a silver-white metallic element of the platinum group that resembles platinum
  Pd ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 

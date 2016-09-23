@@ -1441,7 +1441,7 @@
  accommodation ( meanings=6 glosses=5 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     accommodation~1nz (^adjustment~1) the automatic adjustment in focal length of the natural lens of the eye
     accommodation~2nz (^aid~2) the act of providing something to meet a need
-    accommodation~3nz living quarters provided for public convenience
+    accommodation~3nz (^living_quarters~1) living quarters provided for public convenience
     accommodation~4nz (^developmental_learning~1) in the theories of Jean Piaget: the modification of internal representations in order to accommodate a changing knowledge of reality
     accommodation~5nz (^settlement~4) a settlement of differences
     fitting~4n 
@@ -2537,7 +2537,7 @@
  Arian ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  a_capella_singing ( meanings=1 NOUN NOUN_SINGULAR ) 
     a_cappella_singing~1n 
- April ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
+ April ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
     Apr~1nz (^Gregorian_calendar_month~1) the month following March and preceding May
  Attmore ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Adriane ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -2632,7 +2632,7 @@
     agua_toad~1n 
  arm_pad ( meanings=1 NOUN NOUN_SINGULAR ) 
     arm_guard~1n 
- Auguste ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Auguste ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  abdominocentesis ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     paracentesis~1nz (^centesis~1) centesis of the belly to remove fluid for diagnosis
  Ammons ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -4445,7 +4445,6 @@
  Aoife ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Aolani ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Aonghus ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Aprille ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Apryll ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Aquanetta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Aquene ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
@@ -6400,7 +6399,7 @@
     stilt~2nz (^limicoline_bird~1) long-legged three-toed wading bird of brackish marshes of Australia
  arctic ( meanings=3 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     golosh~1n 
-    icy~3a 
+    glacial~1a 
     arctic~3az 
  Alcidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Alcidae~1nz (^bird_family~1) web-footed diving seabirds of northern seas: auks
@@ -12249,15 +12248,15 @@
     Axis~1nz (^alignment~4) in World War II the alliance of Germany and Italy in 1936 which later included Japan and other nations
  Arab_League ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Arab_League~1nz (^international_organization~1) an international organization of independent Arab states formed in 1945 to promote cultural and economic and military and political and social cooperation
- Allied_Command_Atlantic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    ACLANT~1nz a major strategic headquarters of NATO located in the United States
+ Allied_Command_Atlantic ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    ACLANT~1nz (^headquarters~3) a major strategic headquarters of NATO located in the United States
  Allied ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL ) 
     Allied~1az of or relating to or denoting the Allies in World War I
     Allied~2az of or relating to or denoting the Allies in World War II
  ACLANT ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Allied_Command_Atlantic~1n 
- Allied_Command_Europe ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    ACE~1nz a major strategic headquarters of NATO
+ Allied_Command_Europe ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    ACE~1nz (^headquarters~3) a major strategic headquarters of NATO
  admass ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     admass~1nz (^public~2) the segment of the public that is easily influenced by mass media
  Air_Corps ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -19550,10 +19549,8 @@
  ammonium ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     ammonium_ion~1n 
  americium ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    Am~1nz (^metal~2) a radioactive transuranic metallic element
+    americium~1nz (^metal~2) a radioactive transuranic metallic element
     americium~2az 
- Am ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
-    americium~1n 
  antimony ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     Sb~1nz (^metal~2) a metallic element having four allotropic forms
  argon ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -26119,7 +26116,7 @@
  abjure ( meanings=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     retract~1v 
  annul ( meanings=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT ) 
-    repeal~2v 
+    countermand~2v 
     nullify~3v 
  authorize ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB COMMON4 GRADE3_4 posdefault:VERB VERB_TAKES_INDIRECT_THEN_TOINFINITIVE VERB_DIRECTOBJECT ) 
     clear~32v 

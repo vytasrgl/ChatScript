@@ -19,6 +19,7 @@
  a.i. artificial+intelligence
  wifi wi-fi
  touring_test Turing+test
+ im I+am
  1am 1+am
  2am 2+am
  3am 3+am
@@ -43,7 +44,7 @@
  10pm 10+pm
  11pm 11+pm
  12pm 12+pm
- 
+ re_tweet retweet
  sec second
  sec. second
  hr hour
@@ -150,7 +151,6 @@ prof. professor
  <but_why why
  <do_you_know_about_the what+is+the
  <do_you_not do+you
- <how_about I+suggest
  <herself_,_she she
  <herself_she she
  <himself_,_he he
@@ -188,7 +188,6 @@ prof. professor
  <ourself_we we
  <ourselves_,_we we
  <should_you_not should+you
- <tell_me_more> continue
  <themself_,_they they
  <themselves_,_they they
  <themselves_they they
@@ -208,6 +207,55 @@ prof. professor
  12_noon noon
  12_o'clock_midnight midnight
  12_o'clock_noon noon
+ '00 2000
+ '01 2001
+ '02 2002
+ '03 2003
+ '04 2004
+ '05 2005
+ '06 2006
+ '07 2007
+ '08 2008
+ '09 2009
+ '10 2010
+ '11 2011
+ '12 2012
+ '13 2013
+ '14 2014
+ '15 2015
+ '16 2016
+ '17 2017
+ '18 2018
+ '70 1970
+ '71 1971
+ '72 1972
+ '73 1973
+ '74 1974
+ '75 1975
+ '76 1976
+ '77 1977
+ '78 1978
+ '79 1979
+  '80 1980
+ '81 1981
+ '82 1982
+ '83 1983
+ '84 1984
+ '85 1985
+ '86 1986
+ '87 1987
+ '88 1988
+ '89 1989
+ '90 1990
+ '91 1991
+ '92 1992
+ '93 1993
+ '94 1994
+ '95 1995
+ '96 1996
+ '97 1997
+ '98 1998
+ '99 1999
  1200s 1200
  1210s 1210
  1220s 1220
@@ -421,7 +469,6 @@ prof. professor
  at_this_point_in_time at+this+time
  atleast at+least
  ATM_machine ATM
- atm> at+the+moment
  atthe at+the
  autobiography_of_her_life autobiography
  autobiography_of_his_life autobiography
@@ -847,7 +894,6 @@ prof. professor
  is_able_to can
  is_certain_to will
  is_comprised_of comprises
- is_lead is+led
  is_ran is+run
  is_renown is+renowned
  is_setup is+set+up

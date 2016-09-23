@@ -130,7 +130,7 @@
  Soukup ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Saraid ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  stock_split ( meanings=1 NOUN NOUN_SINGULAR ) 
-    split~4n 
+    split_up~1n 
  suborder_Pinnipedia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Pinnipedia~1nz (^animal_order~1) seals
  Schrader ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -637,24 +637,6 @@
  Shelby ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  subclass_Selachii ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     subclass_Elasmobranchii~1n 
- split ( meanings=17 glosses=12 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=split comparative=splitter 
-    schism~1nz (^division~1) division of a group into opposing factions
-    rent~1n 
-    split~3nz (^acrobatic_stunt~1) extending the legs at right angles to the trunk
-    split_up~1nz (^increase~1) an increase in the number of outstanding shares of a corporation without changing the shareholders' equity
-    split~5nz (^formation~4) a divided formation of pins left standing after the first bowl
-    split~6nz (^frozen_dessert~1) a dessert of sliced fruit and ice cream covered with whipped cream and cherries and nuts
-    tear~4n 
-    split~8nz (^crack~8) a lengthwise crack in wood
-    split~9nz (^share~4) a promised or claimed share of loot or money
-    split~10nz (^bottle~3) a bottle containing half the usual amount
-    split~11az cut or ripped longitudinally with the grain
-    fragmented~1az having been divided
-    break_open~2vz come open suddenly and violently, as if from internal pressure
-    rive~1vz separate or cut with a tool, such as a sharp instrument
-    part~17v 
-    separate~17v 
-    split_up~4v 
  Sabrina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Stringham ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Salgado ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -4778,7 +4760,6 @@
     stockpot~1nz (^pot~1) a pot used for preparing soup stock
  Schuller ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Serafim ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Set ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Sippora ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  scentless_false_camomile ( meanings=1 NOUN NOUN_SINGULAR ) 
     scentless_hayweed~1n 
@@ -5468,10 +5449,10 @@
     spiritism~1n 
     spiritualty~1n 
  split_up ( meanings=5 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
-    stock_split~1n 
+    split~4n 
     separate~9v 
-    split~16v 
-    separate~18v 
+    separate~17v 
+    split~17v 
     divorce~3v 
  Schindler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Scur ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -7870,6 +7851,24 @@
     hidden~2az designed to elude detection
     secret~14az not open or public
     secret~15az 
+ split ( meanings=17 glosses=11 NOUN_ABSTRACT VERB_PRESENT VERB_PAST VERB_PAST_PARTICIPLE VERB_INFINITIVE NOUN VERB ADJECTIVE ADJECTIVE_NORMAL ADJECTIVE_PARTICIPLE NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE3_4 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) conjugate=split comparative=splitter 
+    schism~1nz (^division~1) division of a group into opposing factions
+    rent~1n 
+    split~3nz (^acrobatic_stunt~1) extending the legs at right angles to the trunk
+    stock_split~1nz (^increase~1) an increase in the number of outstanding shares of a corporation without changing the shareholders' equity
+    split~5nz (^formation~4) a divided formation of pins left standing after the first bowl
+    split~6nz (^frozen_dessert~1) a dessert of sliced fruit and ice cream covered with whipped cream and cherries and nuts
+    tear~4n 
+    split~8nz (^crack~8) a lengthwise crack in wood
+    split~9nz (^share~4) a promised or claimed share of loot or money
+    split~10nz (^bottle~3) a bottle containing half the usual amount
+    split~11az cut or ripped longitudinally with the grain
+    fragmented~1az having been divided
+    burst~6v 
+    rive~1vz separate or cut with a tool, such as a sharp instrument
+    part~17v 
+    split_up~3v 
+    separate~18v 
  straight_ticket ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     straight_ticket~1nz (^vote~2) a ballot cast by a voter who votes for all the candidates of one party
  simplification ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -13028,7 +13027,7 @@
  safety_hat ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     tin_hat~1nz (^helmet~1) a lightweight protective helmet worn by construction workers
  seraglio ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
-    serail~1nz living quarters reserved for wives and concubines and female relatives in a Muslim household
+    serail~1nz (^living_quarters~1) living quarters reserved for wives and concubines and female relatives in a Muslim household
  scuttle ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT ) 
     opening~5n 
     coal_scuttle~1n 
@@ -14959,7 +14958,7 @@
     skidpan~1nz (^paved_surface~1) a paved surface on which cars can be made to skid so that drivers can practice controlling them
  skid_road ( meanings=2 glosses=2 NOUN NOUN_SINGULAR ) 
     skid_road~1nz (^road~2) a road made of logs on which freshly cut timber can be hauled
-    skid_road~2nz the district of a town frequented by loggers
+    skid_road~2nz (^quarter~4) the district of a town frequented by loggers
  ski_jump ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR VERB_NOOBJECT VERB_CONJUGATE1 ) 
     ski_jump~1nz (^ramp~1) a steep downward ramp from which skiers jump
     ski_jump~2vz jump on skis
@@ -20243,7 +20242,7 @@
  self-report_inventory ( meanings=1 NOUN NOUN_SINGULAR ) 
     self-report_personality_inventory~1n 
  Sixteen_Personality_Factor_Questionnaire ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Sixteen_Personality_Factor_Questionnaire~1nz (^self-report_personality_inventory~1) a self-report personality inventory developed by Raymond B. Cattell to measure the 16 personality dimensions that emerged from his factor analysis of a wide range of traits
+    16_PF~1nz (^self-report_personality_inventory~1) a self-report personality inventory developed by Raymond B. Cattell to measure the 16 personality dimensions that emerged from his factor analysis of a wide range of traits
  stock-index_futures ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     stock-index_futures~1nz (^futures_contract~1) a futures contract based on a stock index
  shitlist ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
@@ -23104,7 +23103,7 @@
     South_America~1nz (^collection~4) the nations of the South American continent collectively
     South_America~2nz (^continent~1) a continent in the western hemisphere connected to North America by the Isthmus of Panama
  Supreme_Headquarters_Allied_Powers_Europe ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    SHAPE~1nz (^high_command~1) the supreme headquarters that advises NATO on military matters and oversees all aspects of the Allied Command Europe
+    SHAPE~1nz (^supreme_headquarters~1) the supreme headquarters that advises NATO on military matters and oversees all aspects of the Allied Command Europe
  SHAPE ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Supreme_Headquarters_Allied_Powers_Europe~1n 
  Supreme_Allied_Commander_Atlantic ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -23494,6 +23493,8 @@
     smart_money~1nz (^people~1) people who are highly experienced or who have inside information
     punitive_damages~1n 
     smart_money~3nz (^venture~3) money bet or invested by experienced gamblers or investors
+ supreme_headquarters ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    high_command~1nz (^leadership~3) the highest leaders in an organization
  Second_Empire ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Second_Empire~1nz (^empire~3) the imperial government of Napoleon III in France from 1852-1870
  sistership ( meanings=2 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
@@ -33840,8 +33841,8 @@
     husk~2n 
     shuck~2vz remove the shucks from
     shuck~3vz remove from the shell
- serotonin ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    serotonin~1nz (^monoamine_neurotransmitter~1) a neurotransmitter involved in e.g. sleep and depression and memory
+ serotonin ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+    5-hydroxytryptamine~1n 
  soft_coal ( meanings=1 NOUN NOUN_SINGULAR ) 
     bituminous_coal~1n 
  sea_coal ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -33992,8 +33993,8 @@
     Seidlitz_powders~1n 
  Seidlitz_powders ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Rochelle_powder~1nz (^purgative~1) an effervescing salt containing sodium bicarbonate and Rochelle salt and tartaric acid
- salicylic_acid ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    salicylic_acid~1nz (^hydroxy_acid~1) a white crystalline substance with a bitter aftertaste
+ salicylic_acid ( meanings=1 NOUN NOUN_SINGULAR ) 
+    2-hydroxybenzoic_acid~1n 
  salmon_oil ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     salmon_oil~1nz (^animal_oil~1) a fatty oil obtained from the wastes in canning salmon
  salol ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -34436,7 +34437,7 @@
  second_childhood ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     senility~2nz (^age~3) mental infirmity as a consequence of old age
  solar_day ( meanings=1 NOUN NOUN_SINGULAR ) 
-    twenty-four_hour_period~1n 
+    24-hour_interval~1n 
  sell-by_date ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     sell-by_date~1nz (^date~6) a date stamped on perishable produce indicating the date by which it should be sold
  Succoth ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -34462,7 +34463,7 @@
  Saint_Agnes_'s_Eve ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Saint_Agnes_'s_Eve~1nz (^Christian_holy_day~1) a Christian holy day
  St_Martin_'s_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Martinmas~1nz (^quarter_day~1) the feast of Saint Martin
+    11_November~1nz (^quarter_day~1) the feast of Saint Martin
  Saint_Martin_'s_summer ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Indian_summer~1nz (^period~3) a period of unusually warm weather in the autumn
  Saint_Valentine_'s_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -34616,6 +34617,8 @@
     sesquicentennial~1nz (^day_of_remembrance~1) the 150th anniversary
  second_period ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     second_period~1nz (^part~6) the second division into which the play of a game is divided
+ second_half ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    last_half~1nz (^half~2) the second of two halves of play
  split_run ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     split_run~1nz (^print_run~1) a print run of a newspaper during which some articles or advertisements are changed to produce a different edition
  space_age ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -34661,7 +34664,7 @@
  shibah ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     shiva~1n 
  Sept_._11 ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Sept_._11~1nz (^terrorist_attack~1) the day in 2001 when Arab suicide bombers hijacked United States airliners and used them as bombs
+    9-11~1nz (^terrorist_attack~1) the day in 2001 when Arab suicide bombers hijacked United States airliners and used them as bombs
  schoolchildren ( NOUN NOUN_PLURAL COMMON2 COMMON1 ) plural=schoolchild 
  salaryman ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) plural=salarymen 
     salaryman~1nz 
@@ -37624,9 +37627,9 @@
     canorous~1a 
     songful~2az 
  six-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL posdefault:ADJECTIVE ) 
-    six-membered~1az of a chemical compound having a ring with six members
+    6-membered~1az of a chemical compound having a ring with six members
  seven-membered ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    seven-membered~1az of a chemical compound having a ring with seven members
+    7-membered~1az of a chemical compound having a ring with seven members
  strip-mined ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     strip-mined~1az mined near the earth's surface by stripping
  singable ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 

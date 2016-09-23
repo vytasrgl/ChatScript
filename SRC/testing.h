@@ -32,15 +32,14 @@ extern CommandInfo commandSet[];
 void InitCommandSystem();
 TestMode Command(char* input,char* output,bool fromScript);
 int CountSet(WORDP D,unsigned int baseStamp);
-void CopyFile2File(const char* newname,const char* oldname,bool autoNumber);
 
 void Sortit(char* name,int oneline);
 void SortTopic(WORDP D,uint64 junk);
 void SortTopic0(WORDP D,uint64 junk);
-bool VerifyAuthorization(FILE* in);
 void C_MemStats(char* input);
 #endif
 
 TestMode DoCommand(char* input,char* output,bool authorize=true);
+bool VerifyAuthorization(FILE* in);
 
 #endif

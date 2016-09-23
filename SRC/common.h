@@ -15,6 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
+#define DISCARDDICTIONARYBUILD 1  
+#define SEPARATE_STRING_SPACE 1
 
 // These can be used to shed components of the system to save space
 //#define DISCARDSERVER 1
@@ -22,71 +24,60 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //#define DISCARDPARSER 1
 //#define DISCARDTESTING 1
 //#define DISCARDTCPOPEN 1
-//#define DISCARDDATABASE 1
-//#define DISCARDDICTIONARYBUILD 1 // only a windows version can build a dictionary from scratch
-//#define DISCARDJSON 1
+//#define DISCARDPOSTGRES 1
 //#define DISCARDMONGO 1
+//#define DISCARDDICTIONARYBUILD 1 // only a windows version can build a dictionary from scratch
+//#define DISCARDJSON 1 
 //#define DISCARDJAVASCRIPT 1
 
 #ifdef LOEBNER
+#undef SEPARATE_STRING_SPACE
 #define DISCARDSERVER 1
 #define DISCARDSCRIPTCOMPILER 1
 #define DISCARDTESTING 1
 #define DISCARDTCPOPEN 1
-#define DISCARDDATABASE 1
-#define DISCARDDICTIONARYBUILD 1
+#define DISCARDPOSTGRES 1
+#define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
 #define DISCARDJSON 1
-#define DISCARDMONGO 1
 #define DISCARDJAVASCRIPT 1
 
 #elif WIN32
 //#define USERPATHPREFIX 1
-//#define MONGO 1
-#define DISCARDDATABASE 1
-#define DISCARDDICTIONARYBUILD 1 // only a windows version can build a dictionary from scratch
+#define DISCARDPOSTGRES 1
+#define DISCARDMONGO 1
+//#undef  DISCARDDICTIONARYBUILD  // only a windows version can build a dictionary from scratch
+#undef SEPARATE_STRING_SPACE
 
 #elif IOS
 #define DISCARDCOUNTER 1
-#define DISCARDDICTIONARYBUILD 1 
-#define DISCARDDATABASE 1
-#define SEPARATE_STRING_SPACE 1
+#define DISCARDPOSTGRES 1
+#define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
 #define DISCARDJSON 1
-#define DISCARDMONGO 1
 #define DISCARDJAVASCRIPT 1
 
 #elif ANDROID
 #define DISCARDCOUNTER 1
-#define DISCARDDICTIONARYBUILD 1 
-#define DISCARDDATABASE 1
+#define DISCARDPOSTGRES 1
+#define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
 #define DISCARDJSON 1
-#define DISCARDMONGO 1
 #define DISCARDJAVASCRIPT 1
 
-#elif MACH
-#define DISCARDDICTIONARYBUILD 1 
-#define SEPARATE_STRING_SPACE 1
+#elif __MACH__
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
-#define DISCARDJSON 1
+#define DISCARDJAVASCRIPT 1
+#define DISCARDPOSTGRES 1
+//#define DISCARDMONGO 1
 
 #else // GENERIC LINUX
-#define DISCARDDICTIONARYBUILD 1  
-#define SEPARATE_STRING_SPACE 1
-
+#define DISCARDJAVASCRIPT 1
 #endif
-
-#ifndef MONGO
-#define DISCARDMONGO 1
-#else
-#define PRIVATE_CODE 1
-#endif
-
 
 // These can be used to include LINUX EVSERVER component - this is automatically done by the makefile in src - EV Server does not work under windows
 // #define EVSERVER 1
@@ -132,12 +123,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 	#include <dirent.h>
 	#include <mach/clock.h>
 	#include <mach/mach.h>
-	#define DISCARDDATABASE 1
 #elif __MACH__
 	#include <dirent.h>
 	#include <mach/clock.h>
 	#include <mach/mach.h>
-	#define DISCARDDATABASE 1
 #else  // LINUX
 	#include <dirent.h>
 	#ifndef LINUX
@@ -181,10 +170,14 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 using namespace std;
 
 #ifdef EVSERVER
-#define EV_STANDALONE 1
-#define EV_CHILD_ENABLE 1
-#define LOCKUSERFILE 1		// protext from multiple servers hitting same file
-//#define USERPATHPREFIX 1	// do binary tree of log file - for high speed servers recommend userlog, no server log and this (large server logs are a pain to handle)
+	#define EV_STANDALONE 1
+	#define EV_CHILD_ENABLE 1
+	#ifdef DISCARDMONGO
+		#ifdef DISCARDPOSTGRES
+			#define LOCKUSERFILE 1		// protect from multiple servers hitting same file
+			//#define USERPATHPREFIX 1	// do binary tree of log file - for high speed servers recommend userlog, no server log and this (large server logs are a pain to handle)
+		#endif
+	#endif
 #endif
 
 #include "common1.h"
@@ -192,22 +185,25 @@ using namespace std;
 #include "dictionarySystem.h"
 #include "os.h"
 #include "mainSystem.h"
+#include "factSystem.h"
 #include "functionExecute.h"
 
 #include "csocket.h"
 #include "constructCode.h"
 #include "english.h"
-#include "factSystem.h"
 #include "infer.h"
+#include "json.h"
 #include "markSystem.h"
+#include "mongodb.h"
 #include "outputSystem.h"
 #include "patternSystem.h"
+#include "postgres.h"
 #include "scriptCompile.h"
 #include "spellcheck.h"
 #include "systemVariables.h"
+#include "tagger.h"
 #include "testing.h"
 #include "textUtilities.h"
-#include "tagger.h"
 #include "tokenSystem.h"
 #include "topicSystem.h"
 #include "userCache.h"

@@ -1,5 +1,55 @@
 #include "common.h"
+
 extern int ignoreRule;
+
+
+bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
+{
+	if (overrideAuthorization) return true; // commanded from script
+
+	char buffer[MAX_WORD_SIZE];
+	if ( authorizations == (char*)1) // command line does not authorize
+	{
+		if (in) FClose(in);
+		return false;
+	}
+
+	//  check command line params
+	char* at = authorizations;
+	char word[MAX_WORD_SIZE];
+	if (at) // command line given
+	{
+		if (*at == '"') ++at;
+		while (*at)
+		{
+			at = ReadCompiledWord(at,word);
+			size_t len = strlen(word);
+			if (word[len-1] == '"') word[len-1] = 0;
+			if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
+			{
+				if (in) FClose(in);
+				return true;
+			}
+		}
+	}
+
+	if (!in) return (authorizations) ? false : true;			//   no restriction file
+
+	bool result = false;
+	while (ReadALine(buffer,in) >= 0 )
+    {
+		ReadCompiledWord(buffer,word);
+		if (!stricmp(word,(char*)"all") || !stricmp(word,callerIP) || (*word == 'L' && word[1] == '_' && !stricmp(word+2,loginID))) //   allowed by IP or L_loginname
+		{ 
+			result = true;
+			break;
+		}
+	}
+	FClose(in);
+	return result;
+}
+
+
 #ifndef DISCARDTESTING
 
 static int lineLimit = 0; // in abstract report lines that are longer than this...
@@ -11,6 +61,8 @@ static int itemcount = 0;
 static char* abstractBuffer;
 static int longLines;
 static uint64 verifyToken;
+static bool isTracing = false;
+static bool isTiming = false;
 
 static WORDP dictUsedG;
 static FACT* factUsedG;
@@ -29,9 +81,8 @@ static int trials;
 
 static bool fromScript = false;
 
-#define RECORD_SIZE 4000
-
 static void ShowTrace(unsigned int bits, bool original);
+static void ShowTiming(unsigned int bits, bool original);
 
 // prototypes
 static bool DumpOne(WORDP S,int all,int depth,bool shown);
@@ -126,8 +177,8 @@ static int CountDown(MEANING T,int all,int depth,unsigned int baseStamp)
 
 static void Indent(int count,bool nonumber)
 {
-	if (!nonumber) Log(STDUSERLOG,(char*)"%d.",count);
-	while (count--) Log(STDUSERLOG,(char*)"    ");
+	if (!nonumber) Log(STDTRACELOG,(char*)"%d.",count);
+	while (count--) Log(STDTRACELOG,(char*)"    ");
 }
 
 static bool DumpOne(WORDP S,int all,int depth,bool shown)
@@ -142,35 +193,34 @@ static bool DumpOne(WORDP S,int all,int depth,bool shown)
 			{
 				if (!data)
 				{
-					AllocateWhereInSentence(S);
-					data = GetWhereInSentence(S);
+					data = (unsigned char*) AllocateWhereInSentence(S);
 					if (!data) return false;
 					*data = 0;
 					data[1] = 0;
 				}
 				if (++data[1] == 0) ++data[0];
 			}
-			if (all == 1 && *data && (data[0] || data[1] > 1)) Log(STDUSERLOG,(char*)"+%s  ",S->word); //   multiple occurences
+			if (all == 1 && *data && (data[0] || data[1] > 1)) Log(STDTRACELOG,(char*)"+%s  ",S->word); //   multiple occurences
 			else  //   first occurence of word
 			{
 				if (all == 1 && !(S->systemFlags & VERB_DIRECTOBJECT)) //   generate a list of intransitive verbs
 				{
 					FILE* out = FopenUTF8WriteAppend((char*)"intransitive.txt");
 					fprintf(out,(char*)"%s 1\r\n",S->word);
-					fclose(out);
+					FClose(out);
 				}
 				if (all == 1 && (S->systemFlags & VERB_INDIRECTOBJECT)) //   generate a list of dual transitive verbs
 				{
 					FILE* out = FopenUTF8WriteAppend((char*)"intransitive.txt");
 					fprintf(out,(char*)"%s 2\r\n",S->word);
-					fclose(out);
+					FClose(out);
 				}
-				Log(STDUSERLOG,(char*)"%s  ",S->word);
+				Log(STDTRACELOG,(char*)"%s  ",S->word);
 			}
 			++itemcount;
 			if (itemcount == 10 && all != 2)
 			{
-				Log(STDUSERLOG,(char*)"\r\n");
+				Log(STDTRACELOG,(char*)"\r\n");
 				itemcount = 0;
 			}
 			did = true;
@@ -197,14 +247,14 @@ static void C_AutoReply(char* input)
 	regression = 1;
 	strcpy(oktest,input);
 	if (!*oktest)  regression =  false;
-	if (*oktest) Log(STDUSERLOG,(char*)"Auto input set to %s\r\n",oktest);
+	if (*oktest) Log(STDTRACELOG,(char*)"Auto input set to %s\r\n",oktest);
 }  
 
 static void MarkUp(WORDP D) // mark all that can be seen from here going up as member
 {	
 	if (D->inferMark == inferMark) return;
 	D->inferMark = inferMark;
-	FACT* F = GetSubjectHead(D);
+	FACT* F = GetSubjectNondeadHead(D);
 	while (F)
 	{
 		if (F->verb == Mmember)
@@ -213,7 +263,7 @@ static void MarkUp(WORDP D) // mark all that can be seen from here going up as m
 			MarkUp(D);
 		}
   
-		F = GetSubjectNext(F);
+		F = GetSubjectNondeadNext(F);
 	}
 }
 
@@ -226,7 +276,7 @@ static void C_Common(char* input)
 	ptr = ReadCompiledWord(ptr,word1);
 	if (!*word1) 
 	{
-		Log(STDUSERLOG, "You need to supply at least 2 words.\r\n");
+		Log(STDTRACELOG, "You need to supply at least 2 words.\r\n");
 		return;
 	}
 	while (input)
@@ -235,17 +285,19 @@ static void C_Common(char* input)
 		D = FindWord(word);
 		if (!D) 
 		{
-			Log(STDUSERLOG, "%s is an unknown word\r\n",word);
+			Log(STDTRACELOG, "%s is an unknown word\r\n",word);
 			return;
 		}
 		ReadCompiledWord(input,word1); // read ahead 1
 		if (!*word1) break; //we are on the last word
-		FACT* F = GetSubjectHead(D);
+		FACT* F = GetSubjectNondeadHead(D);
 		NextInferMark();
 		while (F)
 		{
-			if (F->verb == Mmember) MarkUp(Meaning2Word(F->object)); // mark all on this path as seen
-			F = GetSubjectNext(F);
+			TraceFact(F);
+			if (F->verb == Mmember) 
+				MarkUp(Meaning2Word(F->object)); // mark all on this path as seen
+			F = GetSubjectNondeadNext(F);
 		}
 	}
 	WORDP words[10000];
@@ -268,7 +320,7 @@ static void C_Common(char* input)
 			found[foundIndex++] = 0; // mark the level
 			continue;
 		}
-		F = GetSubjectHead(D);
+		F = GetSubjectNondeadHead(D);
 		while (F)
 		{
 			if (F->verb == Mmember) 
@@ -281,34 +333,34 @@ static void C_Common(char* input)
 					words[index++] = D;
 				}
 			}
-			F = GetSubjectNext(F);
+			F = GetSubjectNondeadNext(F);
 		}	
 	}
-	Log(STDUSERLOG,(char*)"Concept intersection:\r\n");
+	Log(STDTRACELOG,(char*)"Concept intersection:\r\n");
 	level = 1;
 	bool header = false;
 	for (unsigned int i = 0; i < foundIndex; ++i)
 	{
 		if (found[i] == 0) 
 		{
-			Log(STDUSERLOG,(char*)"\r\n");
+			Log(STDTRACELOG,(char*)"\r\n");
 			++level;
 			header = false;
 		}
 		else 
 		{
-			if (!header) Log(STDUSERLOG,(char*)"%d. ",level);
+			if (!header) Log(STDTRACELOG,(char*)"%d. ",level);
 			header = true;
-			Log(STDUSERLOG,(char*)"%s ",found[i]->word);
+			Log(STDTRACELOG,(char*)"%s ",found[i]->word);
 		}
 	}
-	Log(STDUSERLOG,(char*)"\r\n");
+	Log(STDTRACELOG,(char*)"\r\n");
 }  
 
 static void C_NoReact(char* input)
 {
 	noReact = !noReact;
-	Log(STDUSERLOG,(char*)"Noreact = %d\r\n",noReact);
+	Log(STDTRACELOG,(char*)"Noreact = %d\r\n",noReact);
 } 
 
 static void C_POS(char* input)
@@ -350,7 +402,7 @@ static void C_Prepare(char* input)
 	input = SkipWhitespace(input);
 	static bool prepass = true;
 	char word[MAX_WORD_SIZE];
-	if (*input == '$') // set token control to this
+	if (*input == USERVAR_PREFIX) // set token control to this
 	{
 		char* ptr = ReadCompiledWord(input,word);
 		char* value = GetUserVariable(word);
@@ -376,13 +428,14 @@ static void C_Prepare(char* input)
 		strcpy(prepassTopic, GetUserVariable((char*)"$cs_prepass"));
 		unsigned int oldtrace = trace;
 		nextInput = input;
+		bool oobstart = (*nextInput == '[');
 		while (*nextInput)
 		{
 			prepareMode = PREPARE_MODE;
-			if (*prepassTopic) Log(STDUSERLOG,(char*)"Prepass: %s\r\n", prepass ? (char*)"ON" : (char*)"OFF");
-			PrepareSentence(nextInput,true,true);	
+			if (*prepassTopic) Log(STDTRACELOG,(char*)"Prepass: %s\r\n", prepass ? (char*)"ON" : (char*)"OFF");
+			PrepareSentence(nextInput,true,true,false,oobstart);
+			oobstart = false;
 			prepareMode = NO_MODE;
-			if (!trace) trace = TRACE_OUTPUT | TRACE_MATCH | TRACE_PREPARE;
 			if (prepass && PrepassSentence(prepassTopic)) continue;
 		}
 		trace = oldtrace;
@@ -397,7 +450,7 @@ static void MemorizeRegress(char* input)
 	char outputfile[MAX_WORD_SIZE];
 	ReadCompiledWord(input,outputfile); // file to write
 	FILE* in = FopenReadNormal(word); // source full name given
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	if (!in)
 	{
 		char* txt = strstr(word,(char*)".txt");
@@ -405,7 +458,7 @@ static void MemorizeRegress(char* input)
 		sprintf(file,(char*)"%s/log-%s.txt",users,word); // presume only login given, go find full file
 		in = FopenReadNormal(file); // source
 	}
-	if (!in) Log(STDUSERLOG,(char*)"Couldn't find %s\n",file);
+	if (!in) Log(STDTRACELOG,(char*)"Couldn't find %s\n",file);
 	else  
 	{
 		FILE* out = NULL;
@@ -453,8 +506,8 @@ static void MemorizeRegress(char* input)
 			{
 				if (volley || *kind != 'S') 
 				{
-					Log(STDUSERLOG,(char*)"Log file must begin with Start at turn 0, not turn %d\r\n",volley);
-					fclose(in);
+					Log(STDTRACELOG,(char*)"Log file must begin with Start at turn 0, not turn %d\r\n",volley);
+					FClose(in);
 					return;
 				}
 				start = false;
@@ -525,9 +578,9 @@ static void MemorizeRegress(char* input)
 			pattern[50] = 0;	 // limit it
 			fprintf(out,(char*)"  verify2: %s rule:%s kind:%c label:%s pattern: %s output: %s \r\n",verify, end,*rule,label,pattern,outputdata);
 		}
-		fclose(out);
-		fclose(in);
-		Log(STDUSERLOG,(char*)"Regression file %s created\r\n",outputfile);
+		FClose(out);
+		FClose(in);
+		Log(STDTRACELOG,(char*)"Regression file %s created\r\n",outputfile);
 	}
 }
 
@@ -549,7 +602,7 @@ static void VerifyRegress(char* file)
 	}
 	sprintf(logFilename,(char*)"%s/tmpregresslog.txt",users); // user log goes here so we can regenerate a new regression file if we need one
 	FILE* out = FopenUTF8Write(logFilename); // make a new log file to do this in.
-	if (out) fclose(out);
+	FClose(out);
 
 	int olduserlog = userLog;
 	userLog = LOGGING_SET;
@@ -647,7 +700,7 @@ static void VerifyRegress(char* file)
 			TrimSpaces(buffer,false);
 			if (!responseIndex)
 			{
-				Log(ECHOSTDUSERLOG,(char*)"*** No response to startup\r\n");
+				Log(ECHOSTDTRACELOG,(char*)"*** No response to startup\r\n");
 			}
 		}
 		else if (*myBuffer == 'R' || myBuffer[3] == 'R' )// respond - 1st line may have utf8 marker
@@ -665,12 +718,12 @@ static void VerifyRegress(char* file)
 			TrimSpaces(buffer,false);
 			if (!responseIndex)
 			{
-				Log(ECHOSTDUSERLOG,(char*)"*** No response to user input\r\n");
+				Log(ECHOSTDTRACELOG,(char*)"*** No response to user input\r\n");
 			}
 		}
 		else
 		{
-			Log(STDUSERLOG,(char*)"Bad regression file lineup %s\r\n",myBuffer);
+			Log(STDTRACELOG,(char*)"Bad regression file lineup %s\r\n",myBuffer);
 			continue;
 		}
 		++count;
@@ -762,43 +815,43 @@ static void VerifyRegress(char* file)
 		{
 			if (!sametag && samesaid) ++minorchange;
 			else if (silent) {;}
-			else if (!sametag) Log(ECHOSTDUSERLOG,(char*)"        Volley %d input %s changed tag. Was: %s  is: %s\r\n",volley,vinput,vtag1,tag);
-			else Log(ECHOSTDUSERLOG,(char*)"    Volley %d input %s is intact. %s changed\r\n",volley,vinput,changes);
+			else if (!sametag) Log(ECHOSTDTRACELOG,(char*)"        Volley %d input %s changed tag. Was: %s  is: %s\r\n",volley,vinput,vtag1,tag);
+			else Log(ECHOSTDTRACELOG,(char*)"    Volley %d input %s is intact. %s changed\r\n",volley,vinput,changes);
 			if (!samesaid && !silent)
 			{
-				Log(ECHOSTDUSERLOG,(char*)"            Old said: %s\r\n",oldsaid);
-				Log(ECHOSTDUSERLOG,(char*)"            Now says: %s\r\n\r\n",buffer);
+				Log(ECHOSTDTRACELOG,(char*)"            Old said: %s\r\n",oldsaid);
+				Log(ECHOSTDTRACELOG,(char*)"            Now says: %s\r\n\r\n",buffer);
 			}
 			modified = true;
 		}
 		else 
 		{
-			Log(ECHOSTDUSERLOG,(char*)"*** Volley %d input %s - changed radically. old:  %s now: %s\r\n",volley,vinput, vtag1, tag);
+			Log(ECHOSTDTRACELOG,(char*)"*** Volley %d input %s - changed radically. old:  %s now: %s\r\n",volley,vinput, vtag1, tag);
 			if (!samesaid)
 			{
-				if (*SkipWhitespace(vverify) || *SkipWhitespace(vverify2)) Log(ECHOSTDUSERLOG,(char*)"            Old verify: %s  +  %s\r\n",vverify,vverify2);
-				Log(ECHOSTDUSERLOG,(char*)"            Old said: %s  -  %s pattern: %s",oldsaid,vlabel,vpattern);
+				if (*SkipWhitespace(vverify) || *SkipWhitespace(vverify2)) Log(ECHOSTDTRACELOG,(char*)"            Old verify: %s  +  %s\r\n",vverify,vverify2);
+				Log(ECHOSTDTRACELOG,(char*)"            Old said: %s  -  %s pattern: %s",oldsaid,vlabel,vpattern);
 				int oldtopic;
 				int oldid;
 				GetVerify(vtag1,oldtopic,oldid);
-				TraceSample(oldtopic,oldid,ECHOSTDUSERLOG);
-				Log(ECHOSTDUSERLOG,(char*)"\r\n");
-				Log(ECHOSTDUSERLOG,(char*)"            Now says: %s   - %s pattern: %s  ",buffer,label,pattern);
-				TraceSample(topicid,id,ECHOSTDUSERLOG);
-				Log(ECHOSTDUSERLOG,(char*)"\r\n\r\n");
+				TraceSample(oldtopic,oldid,ECHOSTDTRACELOG);
+				Log(ECHOSTDTRACELOG,(char*)"\r\n");
+				Log(ECHOSTDTRACELOG,(char*)"            Now says: %s   - %s pattern: %s  ",buffer,label,pattern);
+				TraceSample(topicid,id,ECHOSTDTRACELOG);
+				Log(ECHOSTDTRACELOG,(char*)"\r\n\r\n");
 			}			
 			++changed;
 		}
 	}
 	userLog = olduserlog;
-	fclose(in);
+	FClose(in);
 	echo = oldecho;
 	mainOutputBuffer = holdmain;
 	prepareMode = NO_MODE;
 	regression = NO_REGRESSION;
 	// shall we revise the regression file?
-	if (changed) Log(ECHOSTDUSERLOG,(char*)"There were %d rules which changed radically of %d inputs.\r\n",changed,count);
-	if (minorchange) Log(ECHOSTDUSERLOG,(char*)"There were %d rules which changed tag.\r\n",minorchange);
+	if (changed) Log(ECHOSTDTRACELOG,(char*)"There were %d rules which changed radically of %d inputs.\r\n",changed,count);
+	if (minorchange) Log(ECHOSTDTRACELOG,(char*)"There were %d rules which changed tag.\r\n",minorchange);
 			
 	if (changed || modified || minorchange)
 	{
@@ -828,7 +881,7 @@ static void C_Source(char* input)
 	char* ptr = ReadCompiledWord(input,word);
 	FILE* in = FopenReadNormal(word); // source
 	if (in) sourceFile = in;
-	else Log(STDUSERLOG,(char*)"No such source file: %s\r\n",word);
+	else Log(STDTRACELOG,(char*)"No such source file: %s\r\n",word);
 	SetUserVariable((char*)"$$document",word);
 	ReadCompiledWord(ptr,word);
 	echoSource = NO_SOURCE_ECHO;
@@ -846,7 +899,7 @@ static void ReadNextDocument(char* name,uint64 value) // ReadDocument(inBuffer,s
 	if (in) sourceFile = in;
 	else 
 	{
-		Log(STDUSERLOG,(char*)"No such document file: %s\r\n",name);
+		Log(STDTRACELOG,(char*)"No such document file: %s\r\n",name);
 		return;
 	}
 	docSentenceCount = 0;
@@ -885,8 +938,8 @@ static void ReadNextDocument(char* name,uint64 value) // ReadDocument(inBuffer,s
 		unsigned int hours = minutes/60;
 		minutes -= (hours * 60);
 
-		Log(STDUSERLOG,(char*)"\r\nDocument Read: %d sentences (%d tokens) in %d hours %d minutes %d seconds\r\n",inputSentenceCount,tokenCount, hours,minutes,seconds);
-		Log(STDUSERLOG,(char*)"%d ms/sentence or %f token/s\r\n",mspl,time);
+		Log(STDTRACELOG,(char*)"\r\nDocument Read: %d sentences (%d tokens) in %d hours %d minutes %d seconds\r\n",inputSentenceCount,tokenCount, hours,minutes,seconds);
+		Log(STDTRACELOG,(char*)"%d ms/sentence or %f token/s\r\n",mspl,time);
 		
 		unsigned int dictUsed = dictionaryFree - dictUsedG;
 		unsigned int factUsed = factFree - factUsedG;
@@ -894,15 +947,14 @@ static void ReadNextDocument(char* name,uint64 value) // ReadDocument(inBuffer,s
 		uint64 dictAvail =  maxDictEntries-(dictionaryFree-dictionaryBase);
 		unsigned int factAvail = factEnd-factFree;
 		unsigned int textAvail = (stringFree- (char*)dictionaryFree) / 1000;
-		Log(STDUSERLOG,(char*)"\r\nUsed- dict:%d fact:%d text:%dkb   Free- dict:%d fact:%d  text:%dkb\r\n",dictUsed,factUsed,textUsed,(unsigned int)dictAvail,factAvail,textAvail);
+		Log(STDTRACELOG,(char*)"\r\nUsed- dict:%d fact:%d text:%dkb   Free- dict:%d fact:%d  text:%dkb\r\n",dictUsed,factUsed,textUsed,(unsigned int)dictAvail,factAvail,textAvail);
 
 		echo = oldecho;
 	}
 	// do post process on document
-	postProcessing = AllocateBuffer();
+	postProcessing = 1;
 	FinishVolley((char*)" ",mainOutputBuffer,(char*)"~document_post"); // per document post process and will write out stuff  and reset user memory and ...
 	ReadUserData();	// read user info back in so we can continue (a form of garbage collection)
-	FreeBuffer();
 	postProcessing = 0;
 	if (*mainOutputBuffer) printf((char*)"%s\r\n",UTF2ExtendedAscii(mainOutputBuffer));
 	documentMode = false;
@@ -946,7 +998,7 @@ static void C_Document(char* input)
 	else ReadNextDocument(name,0);
 	echo = false;
 	
-	postProcessing = documentBuffer; // dedicate buffer to alternate use
+	postProcessing = 1; // dedicate buffer to alternate use
 	documentBuffer = 0;
 	FinishVolley((char*)" ",mainOutputBuffer,NULL); // bots post processing step
 	FreeBuffer(); // release document buffer
@@ -955,7 +1007,7 @@ static void C_Document(char* input)
 	
 	if (docOut) // end echoing
 	{
-		fclose(docOut);
+		FClose(docOut);
 		docOut = NULL;
 	}
 
@@ -976,7 +1028,7 @@ static void DoAssigns(char* ptr)  // find variable assignments
 		char* spot = ptr;
 		char* d = ptr;
 		dollar = NULL;
-		while ( (d = strchr(d,'$'))) // find potential variable, not money
+		while ( (d = strchr(d,USERVAR_PREFIX))) // find potential variable, not money
 		{
 			if (IsDigit(d[1])) ++d;
 			else
@@ -1096,7 +1148,7 @@ static void C_TestPattern(char* input)
 #ifndef DISCARDSCRIPTCOMPILER
 	if (*input != '(' && *input != '~') 
 	{
-		Log(STDUSERLOG,(char*)"Bad test pattern");
+		Log(STDTRACELOG,(char*)"Bad test pattern");
 		return;
 	}
 
@@ -1116,14 +1168,14 @@ static void C_TestPattern(char* input)
 		char* dot = strchr(label,'.');
 		if (!dot) 
 		{
-			Log(STDUSERLOG,(char*)" %s rule lacks dot\r\n",label);
+			Log(STDTRACELOG,(char*)" %s rule lacks dot\r\n",label);
 			return;
 		}
 		if (dot && IsDigit(dot[1])) rule = GetRuleTag(topic,id,label);
 		else rule = GetLabelledRule(topic,label,(char*)"",fulllabel,crosstopic,id,currentTopicID);
 		if (!rule) 
 		{
-			Log(STDUSERLOG,(char*)" %s rule not found\r\n",label);
+			Log(STDTRACELOG,(char*)" %s rule not found\r\n",label);
 			return;
 		}
 		GetPattern(rule,NULL,data);
@@ -1148,8 +1200,6 @@ static void C_TestPattern(char* input)
 	PrepareSentence(ptr,true,true);	
 	PrepassSentence(prepassTopic);
 
-	unsigned int gap = 0;
-	unsigned int wildcardSelector = 0;
 	wildcardIndex = 0;
 	int junk1;
 	int oldtrace = trace;
@@ -1157,34 +1207,36 @@ static void C_TestPattern(char* input)
 	bool uppercasem = false;
 	int whenmatched = 0;
 	SetContext(true);
-	int positionStart,positionEnd;
-	bool result =  Match(data+2,0,0,(char*)"(",true,gap,wildcardSelector,junk1,junk1,uppercasem,whenmatched,positionStart,positionEnd);
+	bool result =  Match(data+2,0,0,(char*)"(",1,0,junk1,junk1,uppercasem,whenmatched,0,0);
+	if (clearUnmarks) // remove transient global disables.
+	{
+		clearUnmarks = false;
+		for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
+	}
+	
 	SetContext(false);
 	trace = oldtrace;
 	if (result) 
 	{
-		Log(STDUSERLOG,(char*)" Matched\r\n");
-		if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE) ) //   display the entire matching responder and maybe wildcard bindings
+		Log(STDTRACELOG,(char*)" Matched\r\n");
+		if (wildcardIndex)
 		{
-			if (wildcardIndex)
+			Log(STDTRACELOG,(char*)" wildcards: (");
+			for (int i = 0; i < wildcardIndex; ++i)
 			{
-				Log(STDUSERLOG,(char*)" wildcards: (");
-				for (int i = 0; i < wildcardIndex; ++i)
-				{
-					if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
-					else Log(STDUSERLOG,(char*)"_%d=  ",i);
-				}
+				if (*wildcardOriginalText[i]) Log(STDTRACELOG,(char*)"_%d=%s / %s (%d-%d) ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
+				else Log(STDTRACELOG,(char*)"_%d=  ",i);
 			}
-			Log(STDUSERLOG,(char*)"\r\n");
 		}
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	else 
 	{
-		Log(STDUSERLOG,(char*)" Failed\r\n    Adjusted Input: ");
-		for (int i = 1; i <= wordCount; ++i) Log(STDUSERLOG,(char*)"%s ",wordStarts[i]);
-		Log(STDUSERLOG,(char*)"\r\n    Canonical Input: ");
-		for (int i = 1; i <= wordCount; ++i) Log(STDUSERLOG,(char*)"%s ",wordCanonical[i]);
-		Log(STDUSERLOG,(char*)"\r\n");
+		Log(STDTRACELOG,(char*)" Failed\r\n    Adjusted Input: ");
+		for (int i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s ",wordStarts[i]);
+		Log(STDTRACELOG,(char*)"\r\n    Canonical Input: ");
+		for (int i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s ",wordCanonical[i]);
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	--jumpIndex;
 #endif
@@ -1195,7 +1247,7 @@ static void GambitTestTopic(char* topic)
 	int topicID = FindTopicIDByName(topic);
 	if (!topicID) 
 	{
-		Log(STDUSERLOG,(char*)"topic not found %s\r\n",topic);
+		Log(STDTRACELOG,(char*)"topic not found %s\r\n",topic);
 		return;
 	}
 	if (GetTopicFlags(topicID) & TOPIC_NOGAMBITS) return;
@@ -1250,7 +1302,7 @@ static void GambitTestTopic(char* topic)
 		if (pendingTopicIndex && pendingTopicList[pendingTopicIndex-1] == topicID){;}
 		else if (!responseIndex || responseData[0].topic != topicID )
 		{
-			Log(STDUSERTABLOG,(char*)"Not answering own question in topic %d %s.%d.%d: %s => %s %s \r\n\r\n",++err,topic,TOPLEVELID(ruleID),REJOINDERID(ruleID),output,GetTopicName(responseData[0].topic),responseData[0].response);
+			Log(STDTRACETABLOG,(char*)"Not answering own question in topic %d %s.%d.%d: %s => %s %s \r\n\r\n",++err,topic,TOPLEVELID(ruleID),REJOINDERID(ruleID),output,GetTopicName(responseData[0].topic),responseData[0].response);
 		}
 	}
 	FreeBuffer();
@@ -1276,7 +1328,7 @@ static void C_TestTopic(char* input)
 	AllocateOutputBuffer();
 	PerformTopic(0,currentOutputBase); //   ACTIVE handle - 0 is good result
 	FreeOutputBuffer();
-	for (int i = 0; i < responseIndex; ++i) Log(STDUSERLOG,(char*)"%s\r\n", responseData[responseOrder[i]].response);
+	for (int i = 0; i < responseIndex; ++i) Log(STDTRACELOG,(char*)"%s\r\n", responseData[responseOrder[i]].response);
 	ShowChangedVariables();
 }
 
@@ -1330,7 +1382,7 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 
 	unsigned int oldtrace = trace;
 	trace = 0;
-	Log(STDUSERLOG,(char*)"VERIFYING %s ......\r\n",topic);
+	Log(STDTRACELOG,(char*)"VERIFYING %s ......\r\n",topic);
 	char* copyBuffer = AllocateBuffer();
 	char junk[MAX_WORD_SIZE];
 	// process verification data
@@ -1449,7 +1501,7 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 
 				if ( i == 0) 
 				{
-					Log(STDUSERTABLOG,(char*)"%d Missing keyword %s.%d.%d <= %s\r\n",++err,topic,TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),test);
+					Log(STDTRACETABLOG,(char*)"%d Missing keyword %s.%d.%d <= %s\r\n",++err,topic,TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),test);
 					failTest = true;
 				}
 			}
@@ -1472,12 +1524,12 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 			{
 				char label[MAX_WORD_SIZE];
 				GetLabel(rule, label);
-				if (wantFailMatch) Log(STDUSERTABLOG,(char*)"Pattern matched inappropriately %d %s.%d.%d: %s => %c: %s %s\r\n    Adjusted Input: ",++err,topic,TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),test,*rule,label,pattern);
-				else Log(STDUSERTABLOG,(char*)"Pattern failed to match %d %s.%d.%d: %s => %c: %s %s\r\n    Adjusted Input: ",++err,topic,TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),test,*rule,label,pattern);
-				for (int i = 1; i <= wordCount; ++i) Log(STDUSERLOG,(char*)"%s ",wordStarts[i]);
-				Log(STDUSERLOG,(char*)"\r\n    Canonical Input: ");
-				for (int i = 1; i <= wordCount; ++i) Log(STDUSERLOG,(char*)"%s ",wordCanonical[i]);
-				Log(STDUSERLOG,(char*)"\r\n\r\n");
+				if (wantFailMatch) Log(STDTRACETABLOG,(char*)"Pattern matched inappropriately %d %s.%d.%d: %s => %c: %s %s\r\n    Adjusted Input: ",++err,topic,TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),test,*rule,label,pattern);
+				else Log(STDTRACETABLOG,(char*)"Pattern failed to match %d %s.%d.%d: %s => %c: %s %s\r\n    Adjusted Input: ",++err,topic,TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),test,*rule,label,pattern);
+				for (int i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s ",wordStarts[i]);
+				Log(STDTRACELOG,(char*)"\r\n    Canonical Input: ");
+				for (int i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s ",wordCanonical[i]);
+				Log(STDTRACELOG,(char*)"\r\n\r\n");
 				failTest = true;
 	
 				// redo with tracing on if selected so we can watch it fail
@@ -1495,7 +1547,7 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 					RuleTest(rule);
 					SetContext(false);
 					trace = 0;
-					Log(STDUSERTABLOG, "\r\n:testpattern %s %s\r \n \r\n", pattern, test);				
+					Log(STDTRACETABLOG, "\r\n:testpattern %s %s\r \n \r\n", pattern, test);				
 				}
 				continue;
 			}
@@ -1538,6 +1590,8 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 			{
 				data = rejoinderTop;
 				id = rejoinderTopID;
+				output = " "; // rejoinders block each other whether or not they generate output,
+				// except BUG that sequence does not.
 				while (data < rule)
 				{
 					if (*data == *rule)// all rules of this same level and before us
@@ -1576,11 +1630,11 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 				}
 				if (!output || *output == ENDUNIT) continue;	// no text output found
 
-				if (REJOINDERID(id)) Log(STDUSERTABLOG,(char*)"Blocking %d Rejoinder %d.%d ",++err,TOPLEVELID(id),REJOINDERID(id));
-				else  Log(STDUSERTABLOG,(char*)"Blocking %d TopLevel %d.%d ",++err,TOPLEVELID(id),REJOINDERID(id));
-				TraceSample(topicID,id,STDUSERTABLOG);
-				Log(STDUSERLOG,(char*)"   %s\r\n",ShowRule(data));
-				Log(STDUSERTABLOG,(char*)"    blocks %d.%d %s\r\n    given: %s\r\n\r\n",TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),ShowRule(rule),test);
+				if (REJOINDERID(id)) Log(STDTRACETABLOG,(char*)"Blocking %d Rejoinder %d.%d ",++err,TOPLEVELID(id),REJOINDERID(id));
+				else  Log(STDTRACETABLOG,(char*)"Blocking %d TopLevel %d.%d ",++err,TOPLEVELID(id),REJOINDERID(id));
+				TraceSample(topicID,id,STDTRACETABLOG);
+				Log(STDTRACELOG,(char*)"   %s\r\n",ShowRule(data));
+				Log(STDTRACETABLOG,(char*)"    blocks %d.%d %s\r\n    given: %s\r\n\r\n",TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),ShowRule(rule),test);
 				failTest = true;
 			}
 		}
@@ -1652,10 +1706,10 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 
 					char wantrule[MAX_WORD_SIZE];
 					strcpy(wantrule,ShowRule(rule));
-					Log(STDUSERTABLOG,(char*)"Bad sample topic: %d  (%s.%d.%d)   %s  =>   %s  (%s) \r\n   want: : %s\r\n    got: %s%s\r\n",++err,topic,TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),test,responseData[0].response,GetTopicName(replytopic),wantrule,
+					Log(STDTRACETABLOG,(char*)"Bad sample topic: %d  (%s.%d.%d)   %s  =>   %s  (%s) \r\n   want: : %s\r\n    got: %s%s\r\n",++err,topic,TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),test,responseData[0].response,GetTopicName(replytopic),wantrule,
 						responseData[0].id,gotrule);
-					if (gotrule2) Log(STDUSERTABLOG,(char*)"    via %s.%d.%d: %s" ,GetTopicName(replytopic2),TOPLEVELID(gotid2),REJOINDERID(gotid2),gotrule2);
-					Log(STDUSERLOG,(char*)"\r\n\r\n");
+					if (gotrule2) Log(STDTRACETABLOG,(char*)"    via %s.%d.%d: %s" ,GetTopicName(replytopic2),TOPLEVELID(gotid2),REJOINDERID(gotid2),gotrule2);
+					Log(STDTRACELOG,(char*)"\r\n\r\n");
 				}
 				if (end) *end = ENDUNIT;
 			}
@@ -1705,11 +1759,11 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 					{
 						char tmp[MAX_WORD_SIZE];
 						strcpy(tmp,ShowRule(rule));
-						Log(STDUSERTABLOG,(char*)"Bad sample rule %d %s  For: %s \r\n   want- %d.%d %s\n   got - %s => %s",++err,topic,test,
+						Log(STDTRACETABLOG,(char*)"Bad sample rule %d %s  For: %s \r\n   want- %d.%d %s\n   got - %s => %s",++err,topic,test,
 							TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),tmp,
 							responseData[0].id+1,ShowRule(gotrule));
-						if (*gotrule2) Log(STDUSERLOG,(char*)"\n   via %s.%d.%d: %s" ,GetTopicName(replytopic2),TOPLEVELID(gotid2),REJOINDERID(gotid2),gotrule2);
-							Log(STDUSERLOG,(char*)"\r\n\r\n");
+						if (*gotrule2) Log(STDTRACELOG,(char*)"\n   via %s.%d.%d: %s" ,GetTopicName(replytopic2),TOPLEVELID(gotid2),REJOINDERID(gotid2),gotrule2);
+							Log(STDTRACELOG,(char*)"\r\n\r\n");
 					}
 					*end = ENDUNIT;
 				}
@@ -1717,7 +1771,7 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 			strcpy(computerIDwSpace,oldcomputer);
 		}
 	}
-	fclose(in);
+	FClose(in);
 	RemovePendingTopic(topicID);
 	FreeBuffer(); // copyBuffer
 	trace = oldtrace;
@@ -1759,7 +1813,7 @@ static void C_Verify(char* input)
 	err = 0;
 	char* ptr = SkipWhitespace(input);
 	// :verify    or    :verify blocking   or  :verify blocking ~family   or  :verify ~family or :verify sample
-	if (*ptr == '$') // tokenize this way
+	if (*ptr == USERVAR_PREFIX) // tokenize this way
 	{
 		ptr = ReadCompiledWord(ptr,tokens);
 		char* value  = GetUserVariable(tokens);
@@ -1804,7 +1858,7 @@ static void C_Verify(char* input)
 		if (*topic == '~'  && !strchr(topic,'*')) GambitTestTopic(topic);
 		else AllGambitTests(topic);
 	}
-	Log(STDUSERLOG,(char*)"%d verify findings of %d trials.\r\n",err,trials);
+	Log(STDTRACELOG,(char*)"%d verify findings of %d trials.\r\n",err,trials);
 	ResetToPreUser();
 }
 
@@ -1897,7 +1951,7 @@ static void PennWrite(char* name,uint64 flags)
 
 			if (!content && !stanfordParser)
 			{
-				if (IsLowerCase(*word)) Log(STDUSERLOG,(char*)"LOWER START? %s in %s \r\n",readBuffer,name);
+				if (IsLowerCase(*word)) Log(STDTRACELOG,(char*)"LOWER START? %s in %s \r\n",readBuffer,name);
 			}
 			content = true;
 
@@ -1912,7 +1966,7 @@ static void PennWrite(char* name,uint64 flags)
 		*ptr = 0;
 		fprintf(out,(char*)"%s\r\n",buffer);
 	}
-	fclose(in);
+	FClose(in);
 	FreeBuffer();
 }
 
@@ -1929,13 +1983,13 @@ static void C_PennFormat(char* file)
 	FILE* out = FopenUTF8Write(outfile);
 	if (!out) return;
 	WalkDirectory(indir,PennWrite,(uint64)out);
-	fclose(out);
+	FClose(out);
 }
 
 static void ShowFailCount(WORDP D,uint64 junk)
 {
 	if (!(D->internalBits & DELETED_MARK)) return;
-	Log(STDUSERLOG,(char*)"%s:%d  ",D->word,D->w.planArgCount);
+	Log(STDTRACELOG,(char*)"%s:%d  ",D->word,D->w.planArgCount);
 	D->internalBits ^= DELETED_MARK;
 	D->w.planArgCount = 0;
 }
@@ -1947,7 +2001,7 @@ static void C_PennMatch(char* file)
 	bool ambig = false;
 	bool showUsed = false;
 	unsigned int ambigLocation = 0;
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	strcpy(filename,(char*)"REGRESS/PENNTAGS/penn.txt");
 	clock_t startTime = ElapsedMilliseconds(); 
 	int sentenceLengthLimit = 0;
@@ -1959,7 +2013,7 @@ reloop:
 	FILE* in = FopenReadOnly(filename); // REGRESS/PENNTAGS/
 	if (!in) 
 	{
-		Log(STDUSERLOG,(char*)"No such file %s\r\n",filename);
+		Log(STDTRACELOG,(char*)"No such file %s\r\n",filename);
 		return;
 	}
 	while (*file) // " ambig 1"  or "raw -10" limit to 10 length  or "raw 15 to do sentence 15"
@@ -2019,7 +2073,7 @@ reloop:
 	unsigned int parseBad = 0;
 	unsigned int ambigSentences = 0;
 
-	ReturnToLayer(1,true);
+	ReturnToAfterLayer(1,true);
 	StoreWord((char*)"NN");
 	StoreWord((char*)"NNS");
 	StoreWord((char*)"NNP");
@@ -2052,7 +2106,7 @@ reloop:
 	StoreWord((char*)"CD");
 	StoreWord((char*)"EX");
 	StoreWord((char*)"FW");
-	LockLayer(1);
+	LockLayer(1,false);
 	ambiguousWords = 0;
 
 	FILE* oldin = NULL;
@@ -2061,7 +2115,7 @@ reloop:
 	{
 		if (!*readBuffer && !readBuffer[2]) // continue from nested call
 		{
-			fclose(in);
+			FClose(in);
 			in = oldin;
 			oldin = NULL;
 			continue;
@@ -2080,14 +2134,14 @@ reloop:
 		{
 			if (oldin) 
 			{
-				Log(STDUSERLOG,(char*)"Bad include");
+				Log(STDTRACELOG,(char*)"Bad include");
 				return;
 			}
 			oldin = in;
 			in = FopenReadOnly(ptr+9);  // :include
 			if (!in) 
 			{
-				Log(STDUSERLOG,(char*)"include failed %s\r\n",ptr+9);
+				Log(STDTRACELOG,(char*)"include failed %s\r\n",ptr+9);
 				in = oldin;
 				oldin = NULL;
 			}
@@ -2139,7 +2193,7 @@ reloop:
 			else if (*word1 == '\'' && word1[1] == '\'') 
 			{
 				if (first) 
-					Log(STDUSERLOG,(char*)"Closing quote at start: %d %s \r\n",currentFileLine,originalPtr);
+					Log(STDTRACELOG,(char*)"Closing quote at start: %d %s \r\n",currentFileLine,originalPtr);
 				strcat(at,(char*)"\""); // close quote
 				matchedquote |= 2;
 			}
@@ -2152,11 +2206,11 @@ reloop:
 		}
 		if (matchedquote == 1 && !showUsed)
 		{
-	//		Log(STDUSERLOG,(char*)"No closing quote: %d %s \r\n",currentFileLine,buffer);
+	//		Log(STDTRACELOG,(char*)"No closing quote: %d %s \r\n",currentFileLine,buffer);
 		}
 		if (matchedquote == 2 && !showUsed)
 		{
-		//	Log(STDUSERLOG,(char*)"No opening quote: %d %s \r\n",currentFileLine,buffer);
+		//	Log(STDTRACELOG,(char*)"No opening quote: %d %s \r\n",currentFileLine,buffer);
 		}
 		if (len == 0) continue; // on to next
 		*at = 0;
@@ -2165,7 +2219,7 @@ reloop:
 		char* answer1;
 		tokenControl = STRICT_CASING | DO_ESSENTIALS | DO_POSTAG | DO_CONTRACTIONS | NO_HYPHEN_END | NO_COLON_END | NO_SEMICOLON_END | TOKEN_AS_IS;
 		if (!raw && !ambig && !showUsed) tokenControl |= DO_PARSE;
-		ReturnToLayer(1,false);
+		ReturnToAfterLayer(1,false);
 		PrepareSentence(buffer,true,true);	
 		if (sentenceLengthLimit && (int)wordCount != sentenceLengthLimit) continue; // looking for easy sentences to fix
 		int actualLen = len;
@@ -2190,7 +2244,7 @@ reloop:
 				++ambigItems;
 			}
 			if (ambig && bad && (!ambigLocation || loc == (int)ambigLocation) ) 
-				Log(STDUSERLOG,(char*)"** AMBIG %d: line: %d %s\r\n",++ambigSentences,currentFileLine,answer1);
+				Log(STDTRACELOG,(char*)"** AMBIG %d: line: %d %s\r\n",++ambigSentences,currentFileLine,answer1);
 		}
 
 		char* xxhold = answer1; // for debugging
@@ -2209,13 +2263,13 @@ reloop:
 		int oldRight = right;
 		if ((a-1) != wordCount && !showUsed)
 		{
-			Log(STDUSERLOG,(char*)"Tag MisCount: %d instead of %d %s \r\n",a,wordCount,buffer);
+			Log(STDTRACELOG,(char*)"Tag MisCount: %d instead of %d %s \r\n",a,wordCount,buffer);
 			while (++a <= wordCount) *mytags[a] = 0;
 		}
 
 		if (actualLen != wordCount && !showUsed ) 
 		{
-			Log(STDUSERLOG,(char*)"MisCount: %d %s \r\n",currentFileLine,buffer);
+			Log(STDTRACELOG,(char*)"MisCount: %d %s \r\n",currentFileLine,buffer);
 		}
 		strcpy(prior,buffer);
 		int oldright = right;
@@ -2230,7 +2284,7 @@ retry:
 			
 			if (bitCounts[i] != 1 && (tokenControl & DO_PARSE) == DO_PARSE  ) // did not solve even when parsed
 			{
-				Log(STDUSERLOG,(char*)"Parse result- Ambiguous %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				Log(STDTRACELOG,(char*)"Parse result- Ambiguous %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			} 
 			
 			else if (ignoreRule != -1 && !stricmp(wordStarts[i],(char*)"than")) ++right; // special against rule mode
@@ -2238,32 +2292,32 @@ retry:
 			else if (!stricmp(tags[i],(char*)"-LRB-"))
 			{
 				if (*wordStarts[i] == '(') ++right;
-				else if (!showUsed || usedWordIndex == i) Log(STDUSERLOG,(char*)"** Bad left paren %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i) Log(STDTRACELOG,(char*)"** Bad left paren %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"-RRB-"))
 			{
 				if (*wordStarts[i] == ')') ++right;
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad right paren %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad right paren %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"-LSB-"))
 			{
 				if (*wordStarts[i] == '[') ++right;
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad left square bracket %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad left square bracket %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"-RSB-"))
 			{
 				if (*wordStarts[i] == ']') ++right;
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad right square bracket %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad right square bracket %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"-LCB-"))
 			{
 				if (*wordStarts[i] == '{') ++right;
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad left curly bracket %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad left curly bracket %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"-RCB-"))
 			{
 				if (*wordStarts[i] == '}') ++right;
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad right curly bracket %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad right curly bracket %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (posValues[i] & IDIOM) ++right;
 			else if (!stricmp(tags[i],(char*)"TO")) ++right;	// always correct
@@ -2278,7 +2332,7 @@ retry:
 				else if (posValues[i-1] == IDIOM) ++right; // "by the *time I got here, she left"
 				else if (posValues[i] & NOUN_GERUND && allOriginalWordBits[i] & NOUN_SINGULAR) ++right; // "*spitting is good"
 				else if (posValues[i] & PRONOUN_BITS) ++right; // someone, anyone, etc
-				else if (!showUsed || (usedWordIndex == i && usedType & (NOUN_SINGULAR|ADJECTIVE_NOUN)))  Log(STDUSERLOG,(char*)"** Bad NN (singular) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & (NOUN_SINGULAR|ADJECTIVE_NOUN)))  Log(STDTRACELOG,(char*)"** Bad NN (singular) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"NNS")) 
 			{
@@ -2288,7 +2342,7 @@ retry:
 				else if (posValues[i] & PRONOUN_BITS) ++right; // others
 				else if (posValues[i] & NOUN_NUMBER) ++right; // 1920s
 				else if (posValues[i] & NOUN_SINGULAR && ( allOriginalWordBits[i] &  NOUN_PLURAL || lcSysFlags[i] & NOUN_NODETERMINER)) ++right;
-				else if (!showUsed || (usedWordIndex == i && usedType & (NOUN_PLURAL|ADJECTIVE_NOUN)))  Log(STDUSERLOG,(char*)"** Bad NNS (plural) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & (NOUN_PLURAL|ADJECTIVE_NOUN)))  Log(STDTRACELOG,(char*)"** Bad NNS (plural) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"NNP")) // proper singular
 			{
@@ -2301,7 +2355,7 @@ retry:
 				else if (posValues[i] & ADJECTIVE_NORMAL && allOriginalWordBits[i] & NOUN_PROPER_SINGULAR) ++right; // things like French can be adjective or noun, we often call them adjectives instead of adjective_noun
 				else if (posValues[i] & NOUN_PROPER_PLURAL) ++right; // if it ended in s like Atomos.
 				else if (posValues[i] & NOUN_SINGULAR) ++right; // "Bear had to eat a lot in raw mode
-				else if (!showUsed || (usedWordIndex == i && usedType & (NOUN_PROPER_SINGULAR|ADJECTIVE_NOUN)))  Log(STDUSERLOG,(char*)"** Bad NNP (propersingular) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & (NOUN_PROPER_SINGULAR|ADJECTIVE_NOUN)))  Log(STDTRACELOG,(char*)"** Bad NNP (propersingular) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"NNPS"))  // proper plural
 			{
@@ -2309,7 +2363,7 @@ retry:
 				else if (posValues[i] & NOUN_PROPER_SINGULAR && allOriginalWordBits[i] & NOUN_PROPER_PLURAL) ++right; // we just picked the other side
 				else if (posValues[i] & NOUN_PROPER_SINGULAR) ++right; // confusion like Mercedes which is singualr
 				else if (posValues[i] & NOUN_PLURAL) ++right;
-				else if (!showUsed ||  (usedWordIndex == i && usedType & NOUN_PROPER_PLURAL))  Log(STDUSERLOG,(char*)"** Bad NNPS (properplural) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & NOUN_PROPER_PLURAL))  Log(STDTRACELOG,(char*)"** Bad NNPS (properplural) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"IN")) 
 			{
@@ -2317,28 +2371,28 @@ retry:
 				else if (posValues[i] & IDIOM && allOriginalWordBits[i] & PREPOSITION) ++right; // "a couple *of days"
 				else if (posValues[i] & PARTICLE && allOriginalWordBits[i] & PREPOSITION) ++right; 
 				else if (!showUsed ||  (usedWordIndex == i && usedType & (CONJUNCTION_SUBORDINATE|PREPOSITION)))  
-					Log(STDUSERLOG,(char*)"** Bad IN %s word %d(%s) line %d: %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+					Log(STDTRACELOG,(char*)"** Bad IN %s word %d(%s) line %d: %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"PDT")) 
 			{
 				if (posValues[i] & PREDETERMINER) ++right;
 				else if (posValues[i] & DETERMINER) ++right; // close enough
-				else if (!showUsed || (usedWordIndex == i && usedType & DETERMINER_BITS))  Log(STDUSERLOG,(char*)"** Bad PDT %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & DETERMINER_BITS))  Log(STDTRACELOG,(char*)"** Bad PDT %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"POS")) 
 			{
 				if (posValues[i] & POSSESSIVE) ++right;
-				else if (!showUsed || (usedWordIndex == i && usedType & POSSESSIVE))  Log(STDUSERLOG,(char*)"** Bad POS %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,mytags[i],buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & POSSESSIVE))  Log(STDTRACELOG,(char*)"** Bad POS %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,mytags[i],buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"LS")) // bullet point
 			{
 				if (posValues[i] & NOUN_NUMBER) ++right;
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad LS %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad LS %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"CC")) 
 			{
 				if (posValues[i] & CONJUNCTION_COORDINATE) ++right;
-				else if (!showUsed || (usedWordIndex == i && usedType & CONJUNCTION_COORDINATE))  Log(STDUSERLOG,(char*)"** Bad CC %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & CONJUNCTION_COORDINATE))  Log(STDTRACELOG,(char*)"** Bad CC %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"JJ")) 
 			{
@@ -2355,52 +2409,52 @@ retry:
 				else if (posValues[i] & ADVERB && allOriginalWordBits[i] & ADJECTIVE_NORMAL && posValues[i+1] & ADJECTIVE_BITS) ++right; // we consider them adverbs
 				else if (posValues[i] & PARTICLE) ++right; // "take it for *granted"
 				else if (posValues[i] & VERB_PRESENT_PARTICIPLE && allOriginalWordBits[i] & ADJECTIVE_BITS) ++right;	// she is *willing to go"
-				else if (!showUsed || (usedWordIndex == i && usedType & ADJECTIVE_BITS))  Log(STDUSERLOG,(char*)"** Bad JJ %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & ADJECTIVE_BITS))  Log(STDTRACELOG,(char*)"** Bad JJ %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"JJR")) 
 			{
 				if (originalLower[i]  && posValues[i] & ADJECTIVE_NORMAL && allOriginalWordBits[i] & MORE_FORM) ++right;
 				else if ( posValues[i] & DETERMINER && allOriginalWordBits[i] & MORE_FORM) ++right;
-				else if (!showUsed || (usedWordIndex == i && usedType & ADJECTIVE_BITS))  Log(STDUSERLOG,(char*)"** Bad JJR %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & ADJECTIVE_BITS))  Log(STDTRACELOG,(char*)"** Bad JJR %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"JJS")) 
 			{
 				if (originalLower[i] && posValues[i] & ADJECTIVE_NORMAL && allOriginalWordBits[i] & MOST_FORM) ++right;
 				else if ( posValues[i] & DETERMINER && allOriginalWordBits[i] & MOST_FORM) ++right;
-				else if (!showUsed || (usedWordIndex == i && usedType & ADJECTIVE_BITS))  Log(STDUSERLOG,(char*)"** Bad JJS %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & ADJECTIVE_BITS))  Log(STDTRACELOG,(char*)"** Bad JJS %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"RB")) 
 			{
 				if (posValues[i] & ADVERB) ++right;
 				else  if (posValues[i] & PARTICLE && allOriginalWordBits[i] & ADVERB)  ++right;
-				else if (!showUsed || (usedWordIndex == i && usedType & ADVERB))  Log(STDUSERLOG,(char*)"** Bad RB %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & ADVERB))  Log(STDTRACELOG,(char*)"** Bad RB %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"RBR")) 
 			{
 				if (posValues[i] & ADVERB && allOriginalWordBits[i] & MORE_FORM) ++right;
-				else if (!showUsed ||  (usedWordIndex == i && usedType & ADVERB))  Log(STDUSERLOG,(char*)"** Bad RBR %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & ADVERB))  Log(STDTRACELOG,(char*)"** Bad RBR %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"RBS")) 
 			{
 				if (posValues[i] & ADVERB && allOriginalWordBits[i] & MOST_FORM) ++right;
-				else if (!showUsed ||  (usedWordIndex == i && usedType & ADVERB))  Log(STDUSERLOG,(char*)"** Bad RBS %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & ADVERB))  Log(STDTRACELOG,(char*)"** Bad RBS %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 		    }
 			else if (!stricmp(tags[i],(char*)"UH")) 
 			{
 				if (posValues[i] & INTERJECTION) ++right;
 				else if (wordCount == 1) ++right;	// anything COULD be...
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad UH %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad UH %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 		    }
 			else if (!stricmp(tags[i],(char*)"MD")) 
 			{
 				if (posValues[i] & AUX_VERB) ++right;
-				else if (!showUsed ||  (usedWordIndex == i && usedType & AUX_VERB_TENSES))  Log(STDUSERLOG,(char*)"** Bad MD %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & AUX_VERB_TENSES))  Log(STDTRACELOG,(char*)"** Bad MD %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"RP")) 
 			{
 				if (posValues[i] & PARTICLE) ++right;
 				else if (posValues[i] & ADVERB) ++right; // who can say if ideomatic particle verb or adverb.... 
-				else if (!showUsed || (usedWordIndex == i && usedType & PARTICLE))  Log(STDUSERLOG,(char*)"** Bad RP %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & PARTICLE))  Log(STDTRACELOG,(char*)"** Bad RP %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"DT")) 
 			{
@@ -2414,59 +2468,59 @@ retry:
 				//else if (!stricmp(wordStarts[i],(char*)"every") || !stricmp(wordStarts[i],(char*)"no") || !stricmp(wordStarts[i],(char*)"another")
 				//	 || !stricmp(wordStarts[i],(char*)"any") || !stricmp(wordStarts[i],(char*)"some")
 				else if (!showUsed || (usedWordIndex == i && usedType & DETERMINER_BITS))   
-					Log(STDUSERLOG,(char*)"** Bad DT %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+					Log(STDTRACELOG,(char*)"** Bad DT %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"PRP$")) 
 			{
 				if (posValues[i] & PRONOUN_POSSESSIVE) ++right;
-				else if (!showUsed ||  (usedWordIndex == i && usedType & PRONOUN_POSSESSIVE))  Log(STDUSERLOG,(char*)"** Bad PRP$ %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & PRONOUN_POSSESSIVE))  Log(STDTRACELOG,(char*)"** Bad PRP$ %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"PRP")) 
 			{
 				if (posValues[i] & (PRONOUN_BITS)) ++right;
-				else if (!showUsed ||  (usedWordIndex == i && usedType & PRONOUN_BITS))  Log(STDUSERLOG,(char*)"** Bad PRP %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & PRONOUN_BITS))  Log(STDTRACELOG,(char*)"** Bad PRP %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"VB")) // infinitive
 			{
 				if (posValues[i] & (NOUN_INFINITIVE|VERB_INFINITIVE)) ++right;  
 				else if (posValues[i] & AUX_VERB && allOriginalWordBits[i] &  VERB_INFINITIVE) ++right;  // includes our modals 
-				else if (!showUsed ||  (usedWordIndex == i && usedType & (NOUN_INFINITIVE|VERB_INFINITIVE)))  Log(STDUSERLOG,(char*)"** Bad VB (infinitive) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & (NOUN_INFINITIVE|VERB_INFINITIVE)))  Log(STDTRACELOG,(char*)"** Bad VB (infinitive) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"VBD")) // past
 			{
 				if (posValues[i] & VERB_PAST || (posValues[i] & AUX_VERB &&  allOriginalWordBits[i] &  VERB_PAST) ) ++right;  // includes our modals that can have this tense as verbs
 				else if (posValues[i] & VERB_PAST_PARTICIPLE && allOriginalWordBits[i] & VERB_PAST) ++right; 
-				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PAST))  Log(STDUSERLOG,(char*)"** Bad VBD (past) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PAST))  Log(STDTRACELOG,(char*)"** Bad VBD (past) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"VBG"))  // gerund present participle
 			{
 				if (allOriginalWordBits[i] & (VERB_PRESENT_PARTICIPLE|NOUN_GERUND)) ++right;  // includes our modals that can have this tense as verbs
-				else if (!showUsed || (usedWordIndex == i && usedType & (VERB_PRESENT_PARTICIPLE|NOUN_GERUND)))   Log(STDUSERLOG,(char*)"** Bad VBG (present participle) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & (VERB_PRESENT_PARTICIPLE|NOUN_GERUND)))   Log(STDTRACELOG,(char*)"** Bad VBG (present participle) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 		    }
 			else if (!stricmp(tags[i],(char*)"VBN")) // past particple
 			{
 				if (posValues[i] & VERB_PAST_PARTICIPLE || ( posValues[i] & AUX_VERB && allOriginalWordBits[i] & (VERB_PAST_PARTICIPLE|VERB_PRESENT_PARTICIPLE))) ++right;  // includes our modals that can have this tense as verbs - he has said
 				else if (posValues[i] & (ADJECTIVE_PARTICIPLE|ADJECTIVE_NORMAL|NOUN_ADJECTIVE) && allOriginalWordBits[i] & VERB_PAST_PARTICIPLE) ++right;
-				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PAST_PARTICIPLE))   Log(STDUSERLOG,(char*)"** Bad VBN (past participle) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PAST_PARTICIPLE))   Log(STDTRACELOG,(char*)"** Bad VBN (past participle) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"VBP")) // present
 			{
 				if (posValues[i] & VERB_PRESENT || (posValues[i] & AUX_VERB && allOriginalWordBits[i]  &  VERB_PRESENT)) ++right;  // includes our modals that can have this tense as verbs
-				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PRESENT))  Log(STDUSERLOG,(char*)"** Bad VBP (present) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PRESENT))  Log(STDTRACELOG,(char*)"** Bad VBP (present) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"VBZ")) // 3ps
 			{
 				if (posValues[i] & VERB_PRESENT_3PS || (posValues[i] & AUX_VERB && allOriginalWordBits[i]  &  VERB_PRESENT_3PS)) ++right; // includes our modals that can have this tense as verbs
-				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PRESENT_3PS))  Log(STDUSERLOG,(char*)"** Bad VBZ (present_3ps) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || (usedWordIndex == i && usedType & VERB_PRESENT_3PS))  Log(STDTRACELOG,(char*)"** Bad VBZ (present_3ps) %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"WDT")) 
 			{
 				if (!stricmp(wordStarts[i],(char*)"that") || !stricmp(wordStarts[i],(char*)"what") ||!stricmp(wordStarts[i],(char*)"whatever") ||!stricmp(wordStarts[i],(char*)"which") ||!stricmp(wordStarts[i],(char*)"whichever"))
 				{ 
 					if (posValues[i] & (DETERMINER|PRONOUN_BITS|CONJUNCTION_SUBORDINATE)) ++right; // what dog is that
-					else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad WDT %s word %d(%s) line %d: %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+					else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad WDT %s word %d(%s) line %d: %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 				}
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad WDT %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad WDT %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"WP")) 
 			{
@@ -2474,18 +2528,18 @@ retry:
 				if ( !stricmp(wordStarts[i],(char*)"what") || !stricmp(wordStarts[i],(char*)"who") || !stricmp(wordStarts[i],(char*)"whom"))
 				{ // that whatever which WDT - whatsoever RB -  whosoever NN
 					if (posValues[i] & (PRONOUN_BITS|CONJUNCTION_SUBORDINATE | DETERMINER | PREDETERMINER)) ++right; // what is that
-					else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad WP %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+					else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad WP %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 				}
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad WP %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad WP %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"WP$")) 
 			{
 				if (!stricmp(wordStarts[i],(char*)"whose"))
 				{
 					if (posValues[i] & (PRONOUN_POSSESSIVE | DETERMINER)) ++right; // whose dog is that -- do we do both? or only one?
-					else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad WP$ %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+					else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad WP$ %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 				}
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad WP$ %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad WP$ %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"WRB")) 
 			{
@@ -2496,7 +2550,7 @@ retry:
 					++right; 
 					// however, whence, wherever, whereof are NOT wrb?
 				}
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad WRB %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad WRB %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!IsAlphaUTF8(*tags[i]) || !stricmp(tags[i],(char*)"SYM") ) 
 			{
@@ -2508,19 +2562,19 @@ retry:
 				else if (posValues[i] & NOUN_PLURAL && IsDigit(*wordStarts[i])) ++right; // 1960s
 				else if (posValues[i] & NOUN_PROPER_SINGULAR && FindWord(wordStarts[i],0,LOWERCASE_LOOKUP) && FindWord(wordStarts[i],0,LOWERCASE_LOOKUP)->properties & NOUN_NUMBER) ++right;
 				else if (allOriginalWordBits[i] & NOUN_NUMBER) ++right;  // one as pronoun sometimes
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad CD %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad CD %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"EX")) 
 			{
 				if (posValues[i]  &  THERE_EXISTENTIAL) ++right;
-				else if (!showUsed ||  (usedWordIndex == i && usedType & THERE_EXISTENTIAL))  Log(STDUSERLOG,(char*)"** Bad EX %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed ||  (usedWordIndex == i && usedType & THERE_EXISTENTIAL))  Log(STDTRACELOG,(char*)"** Bad EX %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
 			else if (!stricmp(tags[i],(char*)"FW")) 
 			{
 				if (strstr(mytags[i],(char*)"unknown-word") || allOriginalWordBits[i] & FOREIGN_WORD) ++right;
-				else if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad FW %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				else if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad FW %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}
-			else if (!sep) if (!showUsed || usedWordIndex == i)  Log(STDUSERLOG,(char*)"** Bad Unknown tag word %d(%s) line %d: %s %s\r\n",i,wordStarts[i],currentFileLine,tags[i],buffer);
+			else if (!sep) if (!showUsed || usedWordIndex == i)  Log(STDTRACELOG,(char*)"** Bad Unknown tag word %d(%s) line %d: %s %s\r\n",i,wordStarts[i],currentFileLine,tags[i],buffer);
 
 			// composite choices
 			if (sep && right == ok) // didn't match it yet
@@ -2535,7 +2589,7 @@ retry:
 				while (--at >= 1 && !(posValues[at] & (VERB_BITS|NOUN_INFINITIVE|NOUN_GERUND|ADJECTIVE_PARTICIPLE))){;} // find verb linked across any sentence fragment
 				if (!(posValues[at] & (VERB_BITS|NOUN_INFINITIVE|NOUN_GERUND|ADJECTIVE_PARTICIPLE))) // should NOT HAPPEN - we MUST find or particle option would have been removed
 				{
-					 if (!showUsed || usedWordIndex == i) Log(STDUSERLOG,(char*)"** Faulty RP Cannot find verb before particle %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
+					 if (!showUsed || usedWordIndex == i) Log(STDTRACELOG,(char*)"** Faulty RP Cannot find verb before particle %s word %d(%s) line %d:  %s\r\n",mytags[i],i,wordStarts[i],currentFileLine,buffer);
 				}
 				char word[MAX_WORD_SIZE];
 				*word = 0;
@@ -2561,7 +2615,7 @@ retry:
 					strcat(word,(char*)"_");
 					strcat(word,wordStarts[i]);
 				}
-				 if (!showUsed || usedWordIndex == i) Log(STDUSERLOG,(char*)"** Faulty RP %s %s word %d(%s) line %d:  %s\r\n",word,mytags[i],i,wordStarts[i],currentFileLine,buffer);
+				 if (!showUsed || usedWordIndex == i) Log(STDTRACELOG,(char*)"** Faulty RP %s %s word %d(%s) line %d:  %s\r\n",word,mytags[i],i,wordStarts[i],currentFileLine,buffer);
 			}		
 
 			// it was considered wrong
@@ -2576,10 +2630,10 @@ retry:
 			}
 		}
 		if (showUsed && *usedTrace && logged) {
-			Log(STDUSERLOG,(char*)"** USED: line: %d %s\r\n",currentFileLine,answer1);
+			Log(STDTRACELOG,(char*)"** USED: line: %d %s\r\n",currentFileLine,answer1);
 		}
 		if (reveal && *usedTrace) {
-			Log(STDUSERLOG,(char*)"** USED: line: %d %s\r\n",currentFileLine,answer1);
+			Log(STDTRACELOG,(char*)"** USED: line: %d %s\r\n",currentFileLine,answer1);
 			continue;
 		}
 		if ((tokenControl & DO_PARSE) == DO_PARSE ) 
@@ -2587,7 +2641,7 @@ retry:
 			if ((right-oldRight) != wordCount){;} // pos is bad so parse is by definition bad
 			else if (tokenFlags & FAULTY_PARSE && !(tokenFlags & NOT_SENTENCE)) 
 			{
-				Log(STDUSERLOG,(char*)"** Faulty parse %d words line %d: %s\r\n",wordCount,currentFileLine,buffer);
+				Log(STDTRACELOG,(char*)"** Faulty parse %d words line %d: %s\r\n",wordCount,currentFileLine,buffer);
 				++parseBad;
 			}
 			else ++parseOK;
@@ -2599,27 +2653,27 @@ retry:
 				if (roles[i] & (SUBJECT2|MAINSUBJECT)) subject = i;
 				if (roles[i] & (VERB2|MAINVERB))
 				{
-					if (subject && posValues[subject] == NOUN_SINGULAR && posValues[i] == VERB_PRESENT && !(lcSysFlags[i] & NOUN_NODETERMINER)) Log(STDUSERLOG,(char*)"*** Warning singular noun %s to plural verb %s in %s\r\n",wordStarts[subject],wordStarts[i],buffer);
-					if (subject && posValues[subject] == NOUN_PLURAL && posValues[i] == VERB_PRESENT_3PS) Log(STDUSERLOG,(char*)"*** Warning plural noun %s to singular verb %s in %s\r\n",wordStarts[subject],wordStarts[i],buffer);
-					if (subject && posValues[subject] == PRONOUN_BITS && posValues[i] == VERB_PRESENT && !(lcSysFlags[i] & PRONOUN_SINGULAR)) Log(STDUSERLOG,(char*)"*** Warning singular pronoun %s to plural verb %s in %s\r\n",wordStarts[subject],wordStarts[i],buffer);
-					if (subject && posValues[subject] == PRONOUN_BITS && posValues[i] == VERB_PRESENT_3PS && lcSysFlags[i] & PRONOUN_SINGULAR) Log(STDUSERLOG,(char*)"*** Warning plural pronoun %s to singular verb %s in %s\r\n",wordStarts[subject],wordStarts[i],buffer);
+					if (subject && posValues[subject] == NOUN_SINGULAR && posValues[i] == VERB_PRESENT && !(lcSysFlags[i] & NOUN_NODETERMINER)) Log(STDTRACELOG,(char*)"*** Warning singular noun %s to plural verb %s in %s\r\n",wordStarts[subject],wordStarts[i],buffer);
+					if (subject && posValues[subject] == NOUN_PLURAL && posValues[i] == VERB_PRESENT_3PS) Log(STDTRACELOG,(char*)"*** Warning plural noun %s to singular verb %s in %s\r\n",wordStarts[subject],wordStarts[i],buffer);
+					if (subject && posValues[subject] == PRONOUN_BITS && posValues[i] == VERB_PRESENT && !(lcSysFlags[i] & PRONOUN_SINGULAR)) Log(STDTRACELOG,(char*)"*** Warning singular pronoun %s to plural verb %s in %s\r\n",wordStarts[subject],wordStarts[i],buffer);
+					if (subject && posValues[subject] == PRONOUN_BITS && posValues[i] == VERB_PRESENT_3PS && lcSysFlags[i] & PRONOUN_SINGULAR) Log(STDTRACELOG,(char*)"*** Warning plural pronoun %s to singular verb %s in %s\r\n",wordStarts[subject],wordStarts[i],buffer);
 					subject = 0;
 				}
 				if (roles[i] & (SUBJECT2|MAINSUBJECT|OBJECT2|MAINOBJECT|INDIRECTOBJECT2|MAININDIRECTOBJECT) && posValues[i] & NOUN_SINGULAR && originalLower[i] && !(originalLower[i]->properties & PRONOUN_BITS) &&  !(lcSysFlags[i] & NOUN_NODETERMINER) )
 				{
 					int det;
-					if (!IsDeterminedNoun(i,det)) Log(STDUSERLOG,(char*)"   *** Warning undetermined noun %s in %s\r\n",wordStarts[i],buffer);
+					if (!IsDeterminedNoun(i,det)) Log(STDTRACELOG,(char*)"   *** Warning undetermined noun %s in %s\r\n",wordStarts[i],buffer);
 				}
 			}
 		}
 	}
-	fclose(in);
+	FClose(in);
 	FreeBuffer();
 	if (ignoreRule >= 0 && ignoreRule < (int) tagRuleCount) 
 	{
 		if (total-right)
 		{
-			Log(STDUSERLOG,(char*)"Rule fail: %s\r\n",comments[ignoreRule]);
+			Log(STDTRACELOG,(char*)"Rule fail: %s\r\n",comments[ignoreRule]);
 		}
 		++ignoreRule;
 		goto reloop;
@@ -2638,10 +2692,10 @@ retry:
 	unsigned int tokensec = (timediff) ? ((total * 1000) / timediff) : 0; 
 	FreeBuffer();
 
-	Log(STDUSERLOG,(char*)"\r\nambigWords:%d  wrong:%d  notWrong:%d total:%d percent:%d sentences:%d parsed:%d parseBad:%d badSentencePercent:%d initialAmbiguousWords:%d percentambigLeft:%d initialAmbigpercent:%d\r\n\r\n",ambigItems,total-right,right,total,val,sentences,parseOK,parseBad,val1,ambiguousWords,val2,val3);
-	if (!raw && !ambig) Log(STDUSERLOG,(char*)"parsed:%d parseBad:%d badSentenceRate:%d initialAmbiguousWords:%d percentambigLeft:%d initialAmbigpercent:%d\r\n\r\n",parseOK,parseBad,val1,ambiguousWords,val2,val3);
+	Log(STDTRACELOG,(char*)"\r\nambigWords:%d  wrong:%d  notWrong:%d total:%d percent:%d sentences:%d parsed:%d parseBad:%d badSentencePercent:%d initialAmbiguousWords:%d percentambigLeft:%d initialAmbigpercent:%d\r\n\r\n",ambigItems,total-right,right,total,val,sentences,parseOK,parseBad,val1,ambiguousWords,val2,val3);
+	if (!raw && !ambig) Log(STDTRACELOG,(char*)"parsed:%d parseBad:%d badSentenceRate:%d initialAmbiguousWords:%d percentambigLeft:%d initialAmbigpercent:%d\r\n\r\n",parseOK,parseBad,val1,ambiguousWords,val2,val3);
 	WalkDictionary(ShowFailCount,0);
-	Log(STDUSERLOG,(char*)"\r\n");
+	Log(STDTRACELOG,(char*)"\r\n");
 	ignoreRule = -1;
 	if (line) 
 	{ 
@@ -2654,7 +2708,7 @@ static void C_PennNoun(char* file)
 {
 	char word[MAX_WORD_SIZE];
 	file = ReadCompiledWord(file,word);
-	char filename[MAX_WORD_SIZE];
+	char filename[SMALL_WORD_SIZE];
 	if (*word) sprintf(filename,(char*)"REGRESS/PENNTAGS/%s.txt",word);
 	else strcpy(filename,(char*)"REGRESS/PENNTAGS/penn.txt");  // REGRESS/PENTAGS
 	FILE* in = FopenReadOnly(filename);
@@ -2725,14 +2779,14 @@ static void C_PennNoun(char* file)
 					if (D && !IsAlphaUTF8(*D->word)) break;	 // not a normal word
 					if (D && D->systemFlags & NOUN_NODETERMINER)
 						break;
-					Log(STDUSERLOG,(char*)"%s: %s %s  %s\r\n",tokens[i],tags[x],tokens[x], buffer); // unxpected
+					Log(STDTRACELOG,(char*)"%s: %s %s  %s\r\n",tokens[i],tags[x],tokens[x], buffer); // unxpected
 					break;
 	
 				}
 			}
 		}
 	}
-	fclose(in);
+	FClose(in);
 	FreeBuffer();
 }
 
@@ -2763,7 +2817,7 @@ static void C_VerifyPos(char* file)
 			DoCommand(ptr,output);
 			continue;
 		}
-		ReturnToLayer(1,false); // dont let dictionary tamper affect this. A problem with ANY multiple sentence input...
+		ReturnToAfterLayer(1,false); // dont let dictionary tamper affect this. A problem with ANY multiple sentence input...
 	
 		++count;
 		strcpy(sentence,ptr);
@@ -2809,9 +2863,9 @@ static void C_VerifyPos(char* file)
 			liveParse[i] = 0;
 			strcat(liveParse,(char*)"\r\n--> ");
 			strcat(liveParse,hold1);
-			Log(STDUSERLOG,(char*)"\r\nMismatch at %d: %s\r\n",count,sentence);
-			Log(STDUSERLOG,(char*)"          got: %s\r\n",liveParse);
-			Log(STDUSERLOG,(char*)"         want: %s\r\n",parseForm);
+			Log(STDTRACELOG,(char*)"\r\nMismatch at %d: %s\r\n",count,sentence);
+			Log(STDTRACELOG,(char*)"          got: %s\r\n",liveParse);
+			Log(STDTRACELOG,(char*)"         want: %s\r\n",parseForm);
 			int old = trace;
 			trace |= TRACE_POS;
 			PrepareSentence(sentence,true,true);
@@ -2820,9 +2874,9 @@ static void C_VerifyPos(char* file)
 		}
 	}
 
-	fclose(in);
+	FClose(in);
 
-	Log(STDUSERLOG,(char*)"%d sentences tested, %d failed doing %d tokens in %d ms\r\n",count,fail,tokens, ElapsedMilliseconds() - start);
+	Log(STDTRACELOG,(char*)"%d sentences tested, %d failed doing %d tokens in %d ms\r\n",count,fail,tokens, ElapsedMilliseconds() - start);
 	tokenControl = oldtokencontrol;
 	prepareMode = NO_MODE; 
 }
@@ -2846,9 +2900,9 @@ static void C_TimePos(char* file) // how many wps for pos tagging
 		words += wordCount;
 	}
 
-	fclose(in);
+	FClose(in);
 	float wps = (float)words / ((float)posTiming/(float)1000.0);
-	Log(STDUSERLOG,(char*)"%d words tagged in %d ms wps: %d.\r\n",words,posTiming, (unsigned int) wps);
+	Log(STDTRACELOG,(char*)"%d words tagged in %d ms wps: %d.\r\n",words,posTiming, (unsigned int) wps);
 	tokenControl = oldtokencontrol;
 	prepareMode = NO_MODE; 
 }
@@ -2874,7 +2928,7 @@ static void C_VerifySpell(char* file) // test spell checker against a file of en
 		WORDP D = FindWord(wrongWord);
 		if (D && D->properties & (PART_OF_SPEECH|FOREIGN_WORD)) // already has a meaning
 		{
-			Log(STDUSERLOG,(char*)"%s already in dictionary\r\n",wrongWord);
+			Log(STDTRACELOG,(char*)"%s already in dictionary\r\n",wrongWord);
 			continue;
 		}
 
@@ -2882,13 +2936,13 @@ static void C_VerifySpell(char* file) // test spell checker against a file of en
 		if (fix && !strcmp(fix,rightWord)) ++right;
 		else
 		{
-			Log(STDUSERLOG,(char*)"%s wanted %s but got %s\r\n",wrongWord,rightWord,fix);
+			Log(STDTRACELOG,(char*)"%s wanted %s but got %s\r\n",wrongWord,rightWord,fix);
 			++wrong;
 		}
 	}
 
-	fclose(in);
-	Log(STDUSERLOG,(char*)"Right:%d  Wrong:%d\r\n",right,wrong);
+	FClose(in);
+	Log(STDTRACELOG,(char*)"Right:%d  Wrong:%d\r\n",right,wrong);
 }
 
 static void VerifySubstitutes1(WORDP D, uint64 unused)
@@ -2941,7 +2995,7 @@ static void VerifySubstitutes1(WORDP D, uint64 unused)
 
 	WORDP S = GetSubstitute(D);
 	if (!S && wordCount == 0) return;	//   erased just fine
-	if (!S) Log(STDUSERLOG,(char*)"Substitute failed: %s didn't erase itself, got %s\r\n",D->word,resultText);
+	if (!S) Log(STDTRACELOG,(char*)"Substitute failed: %s didn't erase itself, got %s\r\n",D->word,resultText);
 	else
 	{
 		strcpy(expectedText,S->word);
@@ -2949,7 +3003,7 @@ static void VerifySubstitutes1(WORDP D, uint64 unused)
 		char* at;
 		while ((at = strchr(expectedText,'+'))) *at = ' '; //   break up answer
 		if (!stricmp(resultText,expectedText)) return;	//   got what was expected
-		Log(STDUSERLOG,(char*)"Substitute failed: %s got %s not %s\r\n",D->word,resultText,expectedText);
+		Log(STDTRACELOG,(char*)"Substitute failed: %s got %s not %s\r\n",D->word,resultText,expectedText);
 	}
 }
 
@@ -3044,7 +3098,7 @@ static bool FlushEmbedded(char* & ptr,char* ref,char* notref,unsigned int &contr
 
 static void C_WikiText(char* ptr)
 { // fromfile directory, size
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	char directoryout[MAX_WORD_SIZE];
 	int size = 100000;
 	bool split = false;
@@ -3067,10 +3121,10 @@ static void C_WikiText(char* ptr)
 	FILE* out = FopenUTF8Write(outfile);
 	if (!out)
 	{
-		Log(STDUSERLOG,(char*)"Cannot open directory %s\r\n",directoryout);
+		Log(STDTRACELOG,(char*)"Cannot open directory %s\r\n",directoryout);
 		return;
 	}
-	else Log(STDUSERLOG,(char*)"Starting file: %s\r\n", outfile);
+	else Log(STDTRACELOG,(char*)"Starting file: %s\r\n", outfile);
 
 	FILE* in = NULL;
 	unsigned int inputid = 0;
@@ -3111,7 +3165,7 @@ static void C_WikiText(char* ptr)
 			inputdirectory = false;
 			if (!in) 
 			{
-				Log(STDUSERLOG,(char*)"No such file %s\r\n",file);
+				Log(STDTRACELOG,(char*)"No such file %s\r\n",file);
 				break;
 			}
 		}
@@ -3121,7 +3175,7 @@ static void C_WikiText(char* ptr)
 			sprintf(filex,(char*)"%sfile%d.txt",file,inputid);
 			in = FopenReadNormal(filex); // WIKITEXT
 			if (!in) break; // end of files in directory
-			Log(STDUSERLOG,(char*)"Reading %s\r\n",filex);
+			Log(STDTRACELOG,(char*)"Reading %s\r\n",filex);
 			++inputid;
 		}
 
@@ -3141,12 +3195,12 @@ static void C_WikiText(char* ptr)
 			{
 				if ((int)len > size) // start in new file, this file is getting too big
 				{
-					fclose(out);
+					FClose(out);
 					++id;
 					sprintf(outfile,(char*)"%s/file%d.txt",directoryout,id); // the output file
 					out = FopenUTF8Write(outfile);
 					len = 0;
-					Log(STDUSERLOG,(char*)"Starting file: %s\r\n", outfile);
+					Log(STDTRACELOG,(char*)"Starting file: %s\r\n", outfile);
 				}
 			}
 			fprintf(out,(char*)"%s\r\n",readBuffer);
@@ -3344,12 +3398,12 @@ static void C_WikiText(char* ptr)
 			if ((int)len > size) // start in new file, this file is getting too big
 			{
 				char outfile[MAX_WORD_SIZE];
-				fclose(out);
+				FClose(out);
 				++id;
 				sprintf(outfile,(char*)"%s/file%d.txt",directoryout,id); // the output file
 				out = FopenUTF8Write(outfile);
 				len = 0;
-				Log(STDUSERLOG,(char*)"Starting file: %s\r\n", outfile);
+				Log(STDTRACELOG,(char*)"Starting file: %s\r\n", outfile);
 			}
 			span = citex = includex = galleryx = mathx = prex = squ = 0;
 			paragraph = false;
@@ -3452,13 +3506,13 @@ static void C_WikiText(char* ptr)
 				}
 				if (strchr(titlename,':') || strchr(titlename,'/')) // discard unusual articles, like: Wikipedia:AutoWikiBrowser/Typos
 				{
-					// Log(STDUSERLOG,(char*)"Discarding page about %s\r\n",titlename);
+					// Log(STDTRACELOG,(char*)"Discarding page about %s\r\n",titlename);
 					*titlename = 0;
 					page = false;
 				}
 				if (strstr(titlename,(char*)"disambiguation"))
 				{
-					// Log(STDUSERLOG,(char*)"Discarding disambiguation page about %s\r\n",titlename);
+					// Log(STDTRACELOG,(char*)"Discarding disambiguation page about %s\r\n",titlename);
 					*titlename = 0;
 					page = false;
 				}
@@ -3803,10 +3857,10 @@ static void C_WikiText(char* ptr)
 			strcat(content,start);
 		}
 	}
-	fclose(in);
+	FClose(in);
 
 	} // end MAIN loop
-	fclose(out);
+	FClose(out);
 }
 
 /////////////////////////////////////////////////////
@@ -3824,11 +3878,10 @@ static void C_Bot(char* name)
 	wasCommand = BEGINANEW;	// make system save revised user file
 }
 
-
-
 static void C_Build(char* input)
 {
 #ifndef DISCARDSCRIPTCOMPILER
+	mystart(input);
 	char oldlogin[MAX_WORD_SIZE];
 	char oldbot[MAX_WORD_SIZE];
 	char oldbotspace[MAX_WORD_SIZE];
@@ -3837,7 +3890,7 @@ static void C_Build(char* input)
 	strcpy(oldbot,computerID);
 	strcpy(oldbotspace,computerIDwSpace);
 	strcpy(oldloginname,loginName);
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	char control[MAX_WORD_SIZE];
 	input = ReadCompiledWord(input,file);
 	input = SkipWhitespace(input);
@@ -3864,22 +3917,25 @@ static void C_Build(char* input)
 		}
 	}
 	size_t len = strlen(file);
-	ClearTemps();
-	if (!*file) Log(STDUSERLOG,(char*)"missing build label");
+	if (!*file) Log(STDTRACELOG,(char*)"missing build label");
 	else
 	{
 		sprintf(logFilename,(char*)"%s/build%s_log.txt",users,file); //   all data logged here by default
 		FILE* in = FopenUTF8Write(logFilename);
-		if (in) fclose(in);
-		Log(STDUSERLOG,(char*)"ChatScript Version %s  compiled %s\r\n",version,compileDate);
+		FClose(in);
+		Log(STDTRACELOG,(char*)"ChatScript Version %s  compiled %s\r\n",version,compileDate);
 		char word[MAX_WORD_SIZE];
 		sprintf(word,(char*)"files%s.txt",file);
 		if (file[len-1] == '0') buildId = BUILD0;
 		else if  (file[len-1] == '2') buildId = BUILD2;
 		else buildId = BUILD1; // global so SaveCanon can work
+		ClearVolleyWordMaps();
+		remove((char*)"TOPIC/missingSets.txt"); // precautionary
+		remove((char*)"TOPIC/missingLabel.txt");
 		ReadTopicFiles(word,buildId,spell); 
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
 		ClearPendingTopics(); // flush in case topic ids change or go away
+		ClearVolleyWordMaps();
 		CreateSystem();
 		systemReset = (reset) ? 2 : 1;
 	}
@@ -3894,35 +3950,39 @@ static void C_Build(char* input)
 
 static void C_Quit(char* input)
 {
-	Log(STDUSERLOG,(char*)"Exiting ChatScript via Quit\r\n");
+	Log(STDTRACELOG,(char*)"Exiting ChatScript via Quit\r\n");
 	quitting = true;
 }
 
 static void C_Restart(char* input)
 {
-	char initialInput[MAX_WORD_SIZE];
-	*initialInput = 0;
-	trace = 0;
-	ClearUserVariables();
-	PartiallyCloseSystem();
-	CreateSystem();
-	InitStandalone();
-	if (!server)
+	static char arg0[200];
+	static char arg1[200];
+	static char arg2[200];
+	static char arg3[200];
+	static char* arglist[5];
+	arglist[1] = arg1;
+	arglist[2] = arg2;
+	arglist[3] = arg3;
+	arglist[4] = arg0;
+	char word[MAX_WORD_SIZE];
+	char* hold = ReadCompiledWord(input,word);
+	if (!stricmp(word,"erase"))
 	{
-		printf("%s",(char*)"\r\nEnter user name: ");
-		ReadALine(mainInputBuffer,stdin);
-		printf("%s",(char*)"\r\n");
-		if (*mainInputBuffer == '*') // let human go first
-		{
-			memmove(mainInputBuffer,mainInputBuffer+1,strlen(mainInputBuffer));
-			printf("%s",(char*)"\r\nEnter starting input: ");
-			ReadALine(initialInput,stdin);
-			printf("%s",(char*)"\r\n");
-		}
-		echo = false;
-		PerformChat(mainInputBuffer,computerID,initialInput,callerIP,mainOutputBuffer);
+		input = hold;
+		pendingUserReset = true;
 	}
-	else Log(STDUSERLOG,(char*)"System restarted\r\n");
+	if (*input) // change params
+	{
+		argv = arglist;
+		argc = 1;
+		while (*input && argc < 5)
+		{
+			input = ReadCompiledWord(input,arglist[argc++]);
+		}
+	}
+
+	wasCommand = RESTART;
 }
 
 static void C_User(char* username)
@@ -3940,7 +4000,7 @@ static void C_User(char* username)
 static void C_Crash(char* x)
 {
 	int xx = 0;
-	xx = xx / xx;
+	xx = 1 / xx;
 }
 
 static void C_Flush(char* x)
@@ -3961,7 +4021,7 @@ static void DrawSynsets(MEANING M)
 	if (!limit)
 	{
 		MEANING T = MakeMeaning(D,0);
-		Log(STDUSERLOG,(char*)" %s",WriteMeaning(T,true)); // simple member
+		Log(STDTRACELOG,(char*)" %s",WriteMeaning(T,true)); // simple member
 	}
 	for (unsigned int i = 1; i <= limit; ++i)
 	{
@@ -3969,17 +4029,17 @@ static void DrawSynsets(MEANING M)
 		MEANING at = GetMeanings(D)[i];
 		unsigned int n = 0;
 		MEANING T = MakeMeaning(D,i);
-		Log(STDUSERLOG,(char*)"%s ",WriteMeaning(T,true)); // simple member
+		Log(STDTRACELOG,(char*)"%s ",WriteMeaning(T,true)); // simple member
 		while ((at &= (INDEX_BITS|MEANING_BASE)) != (T & (INDEX_BITS|MEANING_BASE))) // find the correct ptr to return. The marked ptr means OUR dict entry is master, not that the ptr points to.
 		{
-			Log(STDUSERLOG,(char*)"%s ",WriteMeaning(at,true)); // simple member
+			Log(STDTRACELOG,(char*)"%s ",WriteMeaning(at,true)); // simple member
 			WORDP X = Meaning2Word(at);
 			unsigned int ind = Meaning2Index(at);
 			at = GetMeanings(X)[ind];
 			if (++n >= 20) break; // force an end arbitrarily
 		}
 	}
-	Log(STDUSERLOG,(char*)"\r\n "); 
+	Log(STDTRACELOG,(char*)"\r\n "); 
 }
 
 static void DrawDownHierarchy(MEANING T,unsigned int depth,unsigned int limit,bool sets)
@@ -4010,18 +4070,18 @@ static void DrawDownHierarchy(MEANING T,unsigned int depth,unsigned int limit,bo
 				{
 					if (*S->word == '~' && (depth + 1) < limit) // expand to lower level
 					{
-						Log(STDUSERLOG,(char*)"\r\n");
-						for (unsigned int j = 0; j < (depth*2); ++j) Log(STDUSERLOG,(char*)" "); // depth inclusive because tabbing for next level
-						Log(STDUSERLOG,(char*)"%s ",WriteMeaning(M)); // simple member
+						Log(STDTRACELOG,(char*)"\r\n");
+						for (unsigned int j = 0; j < (depth*2); ++j) Log(STDTRACELOG,(char*)" "); // depth inclusive because tabbing for next level
+						Log(STDTRACELOG,(char*)"%s ",WriteMeaning(M)); // simple member
 						DrawDownHierarchy(M,depth+1,limit,sets);
-						Log(STDUSERLOG,(char*)"\r\n");
-						for (unsigned int j = 0; j < (depth*2); ++j) Log(STDUSERLOG,(char*)" ");
+						Log(STDTRACELOG,(char*)"\r\n");
+						for (unsigned int j = 0; j < (depth*2); ++j) Log(STDTRACELOG,(char*)" ");
 					}
 					else DrawSynsets(M);
 					if ( ++i >= 10)
 					{
-						Log(STDUSERLOG,(char*)"\r\n");
-						for (unsigned int j = 0; j < (depth*2); ++j) Log(STDUSERLOG,(char*)" ");
+						Log(STDTRACELOG,(char*)"\r\n");
+						for (unsigned int j = 0; j < (depth*2); ++j) Log(STDTRACELOG,(char*)" ");
 						i = 0;
 					}
 				}
@@ -4047,7 +4107,7 @@ static void DrawDownHierarchy(MEANING T,unsigned int depth,unsigned int limit,bo
         //   for the current T meaning
 		char* gloss = GetGloss(Meaning2Word(T),Meaning2Index(T));
 		if (!gloss) gloss = "";
-        if (depth++ == 0 && size)  Log(STDUSERLOG,(char*)"\r\n<%s.%d => %s %s\r\n",D->word,k,WriteMeaning(T),gloss); //   header for this top level meaning is OUR entry and MASTER
+        if (depth++ == 0 && size)  Log(STDTRACELOG,(char*)"\r\n<%s.%d => %s %s\r\n",D->word,k,WriteMeaning(T),gloss); //   header for this top level meaning is OUR entry and MASTER
         int l = 0;
         while (++l) //   find the children of the meaning of T
         {
@@ -4060,10 +4120,10 @@ static void DrawDownHierarchy(MEANING T,unsigned int depth,unsigned int limit,bo
 			}
 
 			 //   child and all syn names of child
-            for (unsigned int j = 0; j <= (depth*2); ++j) Log(STDUSERLOG,(char*)" "); 
+            for (unsigned int j = 0; j <= (depth*2); ++j) Log(STDTRACELOG,(char*)" "); 
    			gloss = GetGloss(Meaning2Word(child),Meaning2Index(child));
 			if (!gloss) gloss = "";
-			Log(STDUSERLOG,(char*)"%d. (%s) ",depth,gloss);
+			Log(STDTRACELOG,(char*)"%d. (%s) ",depth,gloss);
 			DrawSynsets(child);
 
 			// below child master
@@ -4162,7 +4222,7 @@ static void C_Concepts(char* input)
 	MEANING M = ReadMeaning(word,false);
 	if (!M) return;
 	M = GetMaster(M);
-	Log(STDUSERLOG,(char*)"%s: ",word);
+	Log(STDTRACELOG,(char*)"%s: ",word);
 	NextInferMark();
 
 	meaningList = (MEANING*) AllocateBuffer();
@@ -4199,10 +4259,10 @@ static void C_Concepts(char* input)
 	while (meaningList < meaningLimit) 
 	{
 		WORDP E = Meaning2Word(*meaningList);
-		if (*E->word == '~') Log(STDUSERLOG,(E->internalBits & TOPIC) ? (char*) "T%s " : (char*) "%s ",E->word);
+		if (*E->word == '~') Log(STDTRACELOG,(E->internalBits & TOPIC) ? (char*) "T%s " : (char*) "%s ",E->word);
 		ShowConcepts(*meaningList++);
 	}
-	Log(STDUSERLOG,(char*)"\n");
+	Log(STDTRACELOG,(char*)"\n");
 
 	FreeBuffer();
 }
@@ -4219,12 +4279,12 @@ static void C_Down(char* input)
 	MEANING M = ReadMeaning(word,false);
 	M = GetMaster(M);
     DrawDownHierarchy(M,1,limit+1,!stricmp(input,(char*)"sets"));
-	Log(STDUSERLOG,(char*)"\r\n");
+	Log(STDTRACELOG,(char*)"\r\n");
 }
 
 static void FindXWord(WORDP D, uint64 pattern)
 {
-	if (D->word && MatchesPattern(D->word,(char*) pattern)) Log(STDUSERLOG,(char*)"%s\r\n",D->word);
+	if (D->word && MatchesPattern(D->word,(char*) pattern)) Log(STDTRACELOG,(char*)"%s\r\n",D->word);
 }
 
 static void C_FindWords(char* input)
@@ -4243,7 +4303,7 @@ static bool TestSetPath(MEANING T,unsigned int depth) // once you are IN a set, 
 		MEANING parent = FindSetParent(T,k); //   next set we are member of
 		if (!parent)  break;
 		WORDP D = Meaning2Word(parent);	// topic or concept
-		if (trace) Log(STDUSERLOG,(char*)"%s\r\n",D->word);
+		if (trace & TRACE_PATTERN) Log(STDTRACELOG,(char*)"%s\r\n",D->word);
 		if (D == topLevel) return true;
 		if (TestSetPath(parent,depth+1)) return true; // follow up depth first
 	}
@@ -4311,7 +4371,7 @@ static void TestSet(WORDP D,uint64 flags)
 	MEANING M = MakeMeaning(D);
 	NextInferMark();
 	if (TestUpHierarchy(M,0)) return;
-	Log(STDUSERLOG,(char*)"%s\r\n",D->word);
+	Log(STDTRACELOG,(char*)"%s\r\n",D->word);
 }
 
 static void C_Nonset(char* buffer) // NOUN ~sizes
@@ -4347,11 +4407,11 @@ static void C_HasFlag(char* buffer)
 			WORDP S = Meaning2Word(F->subject);
 			if (S->systemFlags & flag)
 			{
-				if (!notflag) Log(STDUSERLOG,(char*)"%s has %s\r\n",S->word,type);
+				if (!notflag) Log(STDTRACELOG,(char*)"%s has %s\r\n",S->word,type);
 			}
 			else
 			{
-				if (notflag) Log(STDUSERLOG,(char*)"%s lacks %s\r\n",S->word,type);
+				if (notflag) Log(STDTRACELOG,(char*)"%s lacks %s\r\n",S->word,type);
 			}
 		}
 		F = GetObjectNondeadNext(F);
@@ -4398,7 +4458,7 @@ static void C_Overlap(char* buffer)
 		printf((char*)"no such set %s\r\n",set2);
 		return;
 	}
-	Log(STDUSERLOG,(char*)"These members of %s are also in %s:\r\n",set1,set2);
+	Log(STDTRACELOG,(char*)"These members of %s are also in %s:\r\n",set1,set2);
 
 	// walk members of set1, seeing if they intersect set2
 	FACT* F = GetObjectNondeadHead(E);
@@ -4408,7 +4468,7 @@ static void C_Overlap(char* buffer)
 		if (F->verb == Mmember && *E->word != '~') // see if word is member of set2
 		{
 			NextInferMark();
-			if (HitTest(E,D)) Log(STDUSERLOG,(char*)"%s\r\n",E->word);
+			if (HitTest(E,D)) Log(STDTRACELOG,(char*)"%s\r\n",E->word);
 		}
 		F = GetObjectNondeadNext(F);
 	}
@@ -4442,10 +4502,10 @@ static bool DumpSetPath(MEANING T,unsigned int depth) // once you are IN a set, 
  		WORDP E = Meaning2Word(parent);
 		if (E->inferMark == inferMark) continue;
 		E->inferMark = inferMark;
-        Log(STDUSERLOG,(char*)"    ");
-		for (unsigned int j = 0; j < depth; ++j) Log(STDUSERLOG,(char*)"   "); 
-		if (E->internalBits & TOPIC) Log(STDUSERLOG,(char*)"T%s \r\n",WriteMeaning(parent)); 
-		else Log(STDUSERLOG,(char*)"%s \r\n",WriteMeaning(parent)); 
+        Log(STDTRACELOG,(char*)"    ");
+		for (unsigned int j = 0; j < depth; ++j) Log(STDTRACELOG,(char*)"   "); 
+		if (E->internalBits & TOPIC) Log(STDTRACELOG,(char*)"T%s \r\n",WriteMeaning(parent)); 
+		else Log(STDTRACELOG,(char*)"%s \r\n",WriteMeaning(parent)); 
 		if (!DumpSetPath(parent,depth+1)) return false; // follow up depth first
 	}
 	return true;
@@ -4462,8 +4522,8 @@ static bool DumpUpHierarchy(MEANING T,int depth)
 	unsigned int index = Meaning2Index(T);
     if (depth == 0)  
 	{
-		Log(STDUSERLOG,(char*)"\r\nFor %s:\r\n",E->word); 
-		Log(STDUSERLOG,(char*)" Set hierarchy:\r\n"); 
+		Log(STDTRACELOG,(char*)"\r\nFor %s:\r\n",E->word); 
+		Log(STDTRACELOG,(char*)" Set hierarchy:\r\n"); 
 
 		if (!DumpSetPath(T,depth)) return false;	
 		if (*E->word == '~') return true;	// we are done, it is not a word
@@ -4472,7 +4532,7 @@ static bool DumpUpHierarchy(MEANING T,int depth)
 		unsigned int meaningCount = GetMeaningCount(E);
 		unsigned int size = meaningCount;
 		if (!size) size = 1;	//   always at least 1, itself
-		Log(STDUSERLOG,(char*)" Wordnet hierarchy:\r\n"); 
+		Log(STDTRACELOG,(char*)" Wordnet hierarchy:\r\n"); 
 
 		//   draw wordnet hierarchy based on each meaning
 		for  (unsigned int k = 1; k <= size; ++k)
@@ -4490,16 +4550,16 @@ static bool DumpUpHierarchy(MEANING T,int depth)
 			}
 			WORDP D1 = Meaning2Word(T);
 			unsigned int restrict = GETTYPERESTRICTION(T);
-			Log(STDUSERLOG,(char*)"  ");
-			Log(STDUSERLOG,(char*)"%s~%d:",E->word,k);
-			if (restrict & NOUN) Log(STDUSERLOG,(char*)"N   ");
-			else if (restrict & VERB) Log(STDUSERLOG,(char*)"V   ");
-			else if (restrict & ADJECTIVE) Log(STDUSERLOG,(char*)"Adj ");
-			else if (restrict & ADVERB) Log(STDUSERLOG,(char*)"Adv ");
-			else if (restrict & PREPOSITION) Log(STDUSERLOG,(char*)"Prep ");
+			Log(STDTRACELOG,(char*)"  ");
+			Log(STDTRACELOG,(char*)"%s~%d:",E->word,k);
+			if (restrict & NOUN) Log(STDTRACELOG,(char*)"N   ");
+			else if (restrict & VERB) Log(STDTRACELOG,(char*)"V   ");
+			else if (restrict & ADJECTIVE) Log(STDTRACELOG,(char*)"Adj ");
+			else if (restrict & ADVERB) Log(STDTRACELOG,(char*)"Adv ");
+			else if (restrict & PREPOSITION) Log(STDTRACELOG,(char*)"Prep ");
 			char* gloss = GetGloss(D1,Meaning2Index(T));
-			if (gloss) Log(STDUSERLOG,(char*)" %s ",gloss);
-			Log(STDUSERLOG,(char*)"\r\n"); 
+			if (gloss) Log(STDTRACELOG,(char*)" %s ",gloss);
+			Log(STDTRACELOG,(char*)"\r\n"); 
 		
 			if (!DumpSetPath(T,depth)) return false;
 			unsigned int count = 0;
@@ -4508,11 +4568,11 @@ static bool DumpUpHierarchy(MEANING T,int depth)
 			{
 				//   walk wordnet hierarchy
 				WORDP P = Meaning2Word(parent);
-				Log(STDUSERLOG,(char*)"   ");
-				Log(STDUSERLOG,(char*)" is %s ",WriteMeaning(parent)); //   we show the immediate parent
+				Log(STDTRACELOG,(char*)"   ");
+				Log(STDTRACELOG,(char*)" is %s ",WriteMeaning(parent)); //   we show the immediate parent
 				char* gloss = GetGloss(P,Meaning2Index(parent));
-				if (gloss) Log(STDUSERLOG,(char*)" %s ",gloss);
-				Log(STDUSERLOG,(char*)"\r\n"); 
+				if (gloss) Log(STDTRACELOG,(char*)" %s ",gloss);
+				Log(STDTRACELOG,(char*)"\r\n"); 
 				if (!DumpSetPath(parent,depth)) return false;
 				if (!DumpUpHierarchy(parent,depth+1)) return false; //   we find out what sets PARENT is in (will be none- bug)
 			}
@@ -4527,12 +4587,12 @@ static bool DumpUpHierarchy(MEANING T,int depth)
 			//   walk wordnet hierarchy
 			WORDP P = Meaning2Word(parent);
 			unsigned int index = Meaning2Index(parent);
-			Log(STDUSERLOG,(char*)"   ");
-			for (int j = 0; j < depth; ++j) Log(STDUSERLOG,(char*)"   "); 
-			Log(STDUSERLOG,(char*)" is %s",WriteMeaning(parent)); //   we show the immediate parent
+			Log(STDTRACELOG,(char*)"   ");
+			for (int j = 0; j < depth; ++j) Log(STDTRACELOG,(char*)"   "); 
+			Log(STDTRACELOG,(char*)" is %s",WriteMeaning(parent)); //   we show the immediate parent
 			char* gloss = GetGloss(P,index);
-			if (gloss) Log(STDUSERLOG,(char*)" %s ",gloss);
-			Log(STDUSERLOG,(char*)"\r\n");
+			if (gloss) Log(STDTRACELOG,(char*)" %s ",gloss);
+			Log(STDTRACELOG,(char*)"\r\n");
 			if (!DumpSetPath(parent,depth)) return false;
 			if (!DumpUpHierarchy(parent,depth+1)) return false; //   we find out what sets PARENT is in (will be none- bug)
 		}
@@ -4576,30 +4636,30 @@ static void C_Word(char* input)
 			uint64 n = FindValueByName(word+1);
 			if (n) 
 #ifdef WIN32
-				Log(STDUSERLOG,(char*)"Value: %I64u  %llx\r\n",n,n);
+				Log(STDTRACELOG,(char*)"Value: %I64u  %llx\r\n",n,n);
 #else
-				Log(STDUSERLOG,(char*)"Value: %llu  %llx\r\n",n,n); 
+				Log(STDTRACELOG,(char*)"Value: %llu  %llx\r\n",n,n); 
 #endif
 			n = FindSystemValueByName(word+1);
 			if (n) 
 #ifdef WIN32
-				Log(STDUSERLOG,(char*)"System: %I64u %llx\r\n",n,n);
+				Log(STDTRACELOG,(char*)"System: %I64u %llx\r\n",n,n);
 #else
-				Log(STDUSERLOG,(char*)"System: %llu  %llx\r\n",n,n); 
+				Log(STDTRACELOG,(char*)"System: %llu  %llx\r\n",n,n); 
 #endif
 			n = FindParseValueByName(word+1);
 			if (n) 
 #ifdef WIN32
-				Log(STDUSERLOG,(char*)"Parse: %I64u  %llx\r\n",n,n);
+				Log(STDTRACELOG,(char*)"Parse: %I64u  %llx\r\n",n,n);
 #else
-				Log(STDUSERLOG,(char*)"Parse: %llu  %llx\r\n",n,n); 
+				Log(STDTRACELOG,(char*)"Parse: %llu  %llx\r\n",n,n); 
 #endif
 			n = FindMiscValueByName(word+1);
 			if (n) 
 #ifdef WIN32
-				Log(STDUSERLOG,(char*)"Misc: %I64u  %llx\r\n",n,n);
+				Log(STDTRACELOG,(char*)"Misc: %I64u  %llx\r\n",n,n);
 #else
-				Log(STDUSERLOG,(char*)"Misc: %llu  %llz\r\n",n,n); 
+				Log(STDTRACELOG,(char*)"Misc: %llu  %llz\r\n",n,n); 
 #endif
 		}
 		else DumpDictionaryEntry(word,limit);  
@@ -4609,7 +4669,56 @@ static void C_Word(char* input)
 static void WordDump(WORDP D,uint64 flags)
 {
 	if (!strstr(D->word,(char*)"_music")) return;
-	Log(STDUSERLOG,(char*)"%s %d\r\n",D->word,GetMeaningCount(D));
+	Log(STDTRACELOG,(char*)"%s %d\r\n",D->word,GetMeaningCount(D));
+}
+
+static void C_VerifySentence(char* input)
+{
+	printf((char*)"\r\nMarkings: \r\n");
+	for (int i = 1; i <= wordCount; ++i)
+	{
+		printf((char*)"%s",wordStarts[i]);
+		int start = derivationIndex[i] >> 8;
+		int end = derivationIndex[i] & 0x00ff;
+		if (start == end && wordStarts[i] == derivationSentence[start]) {;} // unchanged from original
+		else // it came from somewhere else
+		{
+			int start = derivationIndex[i] >> 8;
+			int end = derivationIndex[i] & 0x00Ff;
+			printf((char*)"(");
+			for (int j = start; j <= end; ++j)
+			{
+				if (j != start) printf((char*)" ");
+				printf("%s",derivationSentence[j]);
+			}
+			printf((char*)")");
+		}
+		printf((char*)" %s ",wordCanonical[i]);
+	
+		char* invert[10000];
+		int index = 0;
+		int list = concepts[i];
+		while (list)
+		{
+			MEANING* data = (MEANING*) Index2String(list);
+			MEANING M = *data;
+			WORDP D = Meaning2Word(M);
+			invert[index++] = D->word;
+			list = data[1];
+		}
+
+		list = topics[i];
+		while (list)
+		{
+			MEANING* data = (MEANING*) Index2String(list);
+			MEANING M = *data;
+			WORDP D = Meaning2Word(M);
+			invert[index++] = D->word;
+			list = data[1];
+		}
+		while (index--) printf("%s, ",invert[index]);
+		printf("\r\n\r\n");
+	}
 }
 
 static void C_WordDump(char* input)
@@ -4620,7 +4729,7 @@ static void C_WordDump(char* input)
 	WORDP D = FindWord(input);
 	if (!D) 
 	{
-		Log(STDUSERLOG,(char*)"No such set %s\r\n",input);
+		Log(STDTRACELOG,(char*)"No such set %s\r\n",input);
 		return;
 	}
 	FACT* F = GetObjectNondeadHead(D);
@@ -4629,7 +4738,7 @@ static void C_WordDump(char* input)
 		if (F->verb == Mmember)
 		{
 			if (D->systemFlags & VERB_TAKES_VERBINFINITIVE)
-				Log(STDUSERLOG,(char*)"redundant %s\r\n",D->word);
+				Log(STDTRACELOG,(char*)"redundant %s\r\n",D->word);
 		}
 		F = GetObjectNondeadNext(F);
 	}
@@ -4645,8 +4754,12 @@ static void FindConceptWord(WORDP D, uint64 pattern)
 	char* prefix = (char*) pattern;
 	if (D->internalBits & CONCEPT && !(D->internalBits & TOPIC))
 	{
-		if (!*prefix) Log(STDUSERLOG,(char*)"%s\r\n",D->word);
-		else if ( MatchesPattern(D->word,prefix)) Log(STDUSERLOG,(char*)"%s\r\n",D->word);
+		if (!stricmp(D->word,"~state_abbreviations"))
+		{
+			int xx = 0;
+		}
+		if (!*prefix) Log(STDTRACELOG,(char*)"%s\r\n",D->word);
+		else if ( MatchesPattern(D->word,prefix)) Log(STDTRACELOG,(char*)"%s\r\n",D->word);
 	}
 }
 
@@ -4657,9 +4770,9 @@ static void C_Context(char* input)
 	{
 		if (--i == -1) i = MAX_RECENT - 1;
 		if ( i == (int)contextIndex) break;
-		if (InContext(topicContext[i], labelContext[i])) Log(STDUSERLOG,(char*)"%s: %s %d\r\n",GetTopicName(topicContext[i]),labelContext[i],inputContext[i]);
+		if (InContext(topicContext[i], labelContext[i])) Log(STDTRACELOG,(char*)"%s: %s %d\r\n",GetTopicName(topicContext[i]),labelContext[i],inputContext[i]);
 	}
-	Log(STDUSERLOG,(char*)"end of contexts");
+	Log(STDTRACELOG,(char*)"end of contexts");
 }
 
 static void C_ConceptList(char* input)
@@ -4671,7 +4784,7 @@ static void C_Commands(char* x)
 {
 	int i = 0;
 	CommandInfo *routine;
-	while ((routine = &commandSet[++i]) && routine->word) Log(STDUSERLOG,(char*)"%s - %s\r\n",routine->word,routine->comment); // linear search
+	while ((routine = &commandSet[++i]) && routine->word) Log(STDTRACELOG,(char*)"%s - %s\r\n",routine->word,routine->comment); // linear search
 }
 
 static void C_Definition(char* x)
@@ -4679,18 +4792,18 @@ static void C_Definition(char* x)
 	char name[MAX_WORD_SIZE];
 	ReadCompiledWord(x,name);
 	WORDP D = FindWord(name);
-	if (!D || !(D->internalBits & FUNCTION_NAME)) Log(STDUSERLOG,(char*)"No such name\r\n");
-	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) Log(STDUSERLOG,(char*)"Plan macro\r\n");
-	else if (D->x.codeIndex && (D->internalBits & FUNCTION_BITS) != IS_TABLE_MACRO) Log(STDUSERLOG,(char*)"Engine API function\r\n");
-	else if ((D->internalBits & FUNCTION_BITS) == IS_OUTPUT_MACRO) Log(STDUSERLOG,(char*)"output macro: %s\r\n",D->w.fndefinition+1); // skip arg count
-	else Log(STDUSERLOG,(char*)"pattern macro: %s\r\n",D->w.fndefinition+1); // skip arg count
+	if (!D || !(D->internalBits & FUNCTION_NAME)) Log(STDTRACELOG,(char*)"No such name\r\n");
+	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"Plan macro\r\n");
+	else if (D->x.codeIndex && (D->internalBits & FUNCTION_BITS) != IS_TABLE_MACRO) Log(STDTRACELOG,(char*)"Engine API function\r\n");
+	else if ((D->internalBits & FUNCTION_BITS) == IS_OUTPUT_MACRO) Log(STDTRACELOG,(char*)"output macro: %s\r\n",D->w.fndefinition+1); // skip arg count
+	else Log(STDTRACELOG,(char*)"pattern macro: %s\r\n",D->w.fndefinition+1); // skip arg count
 }
 
 static void DumpMatchVariables()
 {
 	for (unsigned int i = 0; i <=  MAX_WILDCARDS; ++i)
 	{
-		Log(STDUSERLOG,(char*)"_%d (%d-%d) =  %s (%s)\r\n",i,WILDCARD_START(wildcardPosition[i]),WILDCARD_END(wildcardPosition[i]),wildcardOriginalText[i],wildcardCanonicalText[i]);  // spot wild cards can be stored
+		Log(STDTRACELOG,(char*)"_%d (%d-%d) =  %s (%s)\r\n",i,WILDCARD_START(wildcardPosition[i]),WILDCARD_END(wildcardPosition[i]),wildcardOriginalText[i],wildcardCanonicalText[i]);  // spot wild cards can be stored
 	}
 }
 
@@ -4704,8 +4817,8 @@ static void C_Variables(char* input)
 		DumpUserVariables();
 		DumpSystemVariables();
 		DumpMatchVariables(); 
-		Log(STDUSERLOG,(char*)"Max Buffers used %d\r\n",maxBufferUsed);
-		Log(STDUSERLOG,(char*)"%s\r\n",ShowPendingTopics());
+		Log(STDTRACELOG,(char*)"Max Buffers used %d\r\n",maxBufferUsed);
+		Log(STDTRACELOG,(char*)"%s\r\n",ShowPendingTopics());
 	}
 } 	
 
@@ -4717,18 +4830,18 @@ static void C_Functions(char* input)
 static void C_Identify(char* input)
 {
 	IdentifyCode(input);
-	Log(STDUSERLOG,(char*)"%s",input);
+	Log(STDTRACELOG,(char*)"%s",input);
 }
 
 static void ShowMacro(WORDP D,uint64 junk)
 {
 	if (!(D->internalBits & FUNCTION_NAME)) {;} // not a function or plan
-	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) Log(STDUSERLOG,(char*)"plan: %s (%d)\r\n",D->word,D->w.planArgCount);
+	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"plan: %s (%d)\r\n",D->word,D->w.planArgCount);
 	else if (D->x.codeIndex) {;} //is system function (when not plan)
-	else if (D->internalBits & IS_PATTERN_MACRO && D->internalBits & IS_OUTPUT_MACRO) Log(STDUSERLOG,(char*)"dualmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
-	else if (D->internalBits & IS_PATTERN_MACRO) Log(STDUSERLOG,(char*)"patternmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
-	else if (D->internalBits & IS_OUTPUT_MACRO) 	Log(STDUSERLOG,(char*)"outputmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
-	else if (D->internalBits & IS_PLAN_MACRO) Log(STDUSERLOG,(char*)"tablemacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
+	else if (D->internalBits & IS_PATTERN_MACRO && D->internalBits & IS_OUTPUT_MACRO) Log(STDTRACELOG,(char*)"dualmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
+	else if (D->internalBits & IS_PATTERN_MACRO) Log(STDTRACELOG,(char*)"patternmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
+	else if (D->internalBits & IS_OUTPUT_MACRO) 	Log(STDTRACELOG,(char*)"outputmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
+	else if (D->internalBits & IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"tablemacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
 }
 
 static void C_Macros(char* input)
@@ -4740,10 +4853,10 @@ static void ShowQuery(WORDP D,uint64 junk)
 {
 	if (D->internalBits & QUERY_KIND) 
 	{
-		if (D->internalBits & BUILD0) Log(STDUSERLOG,(char*)"BUILD0 ");
-		if (D->internalBits & BUILD1) Log(STDUSERLOG,(char*)"BUILD1 ");
-		if (D->internalBits & BUILD2) Log(STDUSERLOG,(char*)"BUILD2 ");
-		Log(STDUSERLOG,(char*)"Query: %s \"%s\"\n",D->word,D->w.userValue);
+		if (D->internalBits & BUILD0) Log(STDTRACELOG,(char*)"BUILD0 ");
+		if (D->internalBits & BUILD1) Log(STDTRACELOG,(char*)"BUILD1 ");
+		if (D->internalBits & BUILD2) Log(STDTRACELOG,(char*)"BUILD2 ");
+		Log(STDTRACELOG,(char*)"Query: %s \"%s\"\n",D->word,D->w.userValue);
 	}
 }
 
@@ -4752,32 +4865,64 @@ static void C_Queries(char* input)
 	WalkDictionary(ShowQuery,0);
 }
 
-static void TracedFunction(WORDP D,uint64 junk)
+static void TracedFunction(WORDP D,uint64 junk) // functions and variables
 {
-	if (D->internalBits & MACRO_TRACE) Log(STDUSERLOG,(char*)"%s\r\n",D->word);
+	if (D->internalBits & FUNCTION_BITS) {
+		if ((D->internalBits & FN_TRACE_BITS) == MACRO_TRACE) Log(ECHOSTDTRACELOG, (char*)"%s: on\r\n", D->word);
+		if ((D->internalBits & FN_TRACE_BITS) == (MACRO_TRACE | NOTRACE_FN)) Log(ECHOSTDTRACELOG, (char*)"%s: on off\r\n", D->word);
+		if ((D->internalBits & FN_TRACE_BITS) == NOTRACE_FN) Log(ECHOSTDTRACELOG, (char*)"%s: off\r\n", D->word);
+	}
 }
 
 static void ClearTracedFunction(WORDP D,uint64 junk)
 {
-	if (D->internalBits & MACRO_TRACE) D->internalBits ^= MACRO_TRACE;
+	if (D->internalBits & FUNCTION_BITS && D->internalBits & MACRO_TRACE) D->internalBits ^= MACRO_TRACE;
 }
 
-static void TracedTopic(WORDP D,uint64 junk)
+static void C_TracedFunctions(char* input)
+{
+	WalkDictionary(TracedFunction, 0);
+}
+
+static void TimedFunction(WORDP D, uint64 junk) // functions
+{
+	if (D->internalBits & FUNCTION_BITS) {
+		if ((D->internalBits & FN_TIME_BITS) == MACRO_TIME) Log(ECHOSTDTRACELOG, (char*)"%s: on\r\n", D->word);
+		if ((D->internalBits & FN_TIME_BITS) == (MACRO_TIME | NOTIME_FN)) Log(ECHOSTDTRACELOG, (char*)"%s: on off\r\n", D->word);
+		if ((D->internalBits & FN_TIME_BITS) == NOTIME_FN) Log(ECHOSTDTRACELOG, (char*)"%s: off\r\n", D->word);
+	}
+}
+
+static void ClearTimedFunction(WORDP D, uint64 junk)
+{
+	if (D->internalBits & FUNCTION_BITS && D->internalBits & MACRO_TIME) D->internalBits ^= MACRO_TIME;
+}
+
+static void C_TimedFunctions(char* input)
+{
+	WalkDictionary(TimedFunction, 0);
+}
+
+static void TracedTopic(WORDP D,uint64 style)
 {
 	if (D->internalBits & TOPIC) 
 	{
 		int topic = FindTopicIDByName(D->word);
 		topicBlock* block = TI(topic);
 		if (block->topicDebug) 
-			Log(STDUSERLOG,(char*)"%s %d\r\n",D->word,block->topicDebug);
-		if (D->internalBits & NOTRACE_TOPIC) 
-			Log(STDUSERLOG,(char*)"Not tracing %s\r\n",D->word);
+		{
+			Log(ECHOSTDTRACELOG,(char*)"%s:",D->word);
+			if (style == 0) Log(ECHOSTDTRACELOG, (char*)"  0x%x", block->topicDebug);
+			Log(ECHOSTDTRACELOG, (char*)"\r\n");
+			if (style == 1) ShowTrace(block->topicDebug, false);
+			isTracing = true;
+		}
+		if (D->internalBits & NOTRACE_TOPIC) {
+			Log(ECHOSTDTRACELOG, (char*)"%s:", D->word);
+			if (style == 1) Log(ECHOSTDTRACELOG, (char*)"\r\n");
+			Log(ECHOSTDTRACELOG, (char*)"  Not tracing\r\n");
+		}
 	}
-}
-
-static void C_TracedFunctions(char* input) 
-{
-	WalkDictionary(TracedFunction,0);
 }
 
 static void ClearTracedTopic(WORDP D,uint64 junk)
@@ -4795,6 +4940,43 @@ static void C_TracedTopics(char* input)
 	WalkDictionary(TracedTopic,0);
 }
 
+static void TimedTopic(WORDP D, uint64 style)
+{
+	if (D->internalBits & TOPIC)
+	{
+		int topic = FindTopicIDByName(D->word);
+		topicBlock* block = TI(topic);
+		if (block->topicTiming)
+		{
+			Log(ECHOSTDTRACELOG, (char*)"%s:", D->word);
+			if (style == 0) Log(ECHOSTDTRACELOG, (char*)"  0x%x", block->topicTiming);
+			Log(ECHOSTDTRACELOG, (char*)"\r\n");
+			if (style == 1) ShowTiming(block->topicTiming, false);
+			isTiming = true;
+		}
+		if (D->internalBits & NOTIME_TOPIC) {
+			Log(ECHOSTDTRACELOG, (char*)"%s:", D->word);
+			if (style == 1) Log(ECHOSTDTRACELOG, (char*)"\r\n");
+			Log(ECHOSTDTRACELOG, (char*)"  Not timing\r\n");
+		}
+	}
+}
+
+static void ClearTimedTopic(WORDP D, uint64 junk)
+{
+	if (D->internalBits & TOPIC)
+	{
+		int topic = FindTopicIDByName(D->word);
+		topicBlock* block = TI(topic);
+		block->topicTiming = 0;
+	}
+}
+
+static void C_TimedTopics(char* input)
+{
+	WalkDictionary(TimedTopic,0);
+}
+
 void C_MemStats(char* input)
 {
 	unsigned int factUsedMemKB = ( factFree-factBase) * sizeof(FACT) / 1000;
@@ -4808,7 +4990,7 @@ void C_MemStats(char* input)
 
 	char buf[MAX_WORD_SIZE];
 	strcpy(buf,StdIntOutput(factFree-factBase));
-	Log(STDUSERLOG,(char*)"Used: words %s (%dkb) facts %s (%dkb) text %dkb buffers %d overflowBuffers %d\r\n",
+	Log(STDTRACELOG,(char*)"Used: words %s (%dkb) facts %s (%dkb) text %dkb buffers %d overflowBuffers %d\r\n",
 		StdIntOutput(dictionaryFree-dictionaryBase), 
 		dictUsedMemKB,
 		buf,
@@ -4823,13 +5005,13 @@ void C_MemStats(char* input)
 #else
 	unsigned int textFreeMemKB = ( stringFree- stringEnd) / 1000;
 #endif
-
-	Log(STDUSERLOG,(char*)"Free:  fact %dKb text %dKB\r\n\r\n",factFreeMemKB,textFreeMemKB);
+	Log(STDTRACELOG,(char*)"Free:  fact %dKb text %dKB\r\n",factFreeMemKB,textFreeMemKB);
+	Log(STDTRACELOG,(char*)"MaxInverseStringGap %dKB\r\n\r\n",maxInverseStringGap/ 1024);
 }
 
 static void C_Who(char*input)
 {
-	Log(STDUSERLOG,(char*)"%s talking to %s\r\n",loginID,computerID);
+	Log(STDTRACELOG,(char*)"%s talking to %s\r\n",loginID,computerID);
 }
 
 //////////////////////////////////////////////////////////
@@ -4843,6 +5025,7 @@ void InitCommandSystem() // set dictionary to match builtin functions
 TestMode Command(char* input,char* output,bool scripted)
 {
 	char word[MAX_WORD_SIZE];
+	*word = 0;
 	fromScript = scripted;
 	bool oldecho = echo;
 	if (!scripted) echo = true;	// see outputs sent to log file on console also
@@ -4851,7 +5034,7 @@ TestMode Command(char* input,char* output,bool scripted)
 	if (!commandsAllowed && !stricmp(input,(char*)":commands on")) 
 	{
 		commandsAllowed =  true;
-		if (!scripted) Log(STDUSERLOG,(char*)":commands enabled\r\n");
+		if (!scripted) Log(STDTRACELOG,(char*)":commands enabled\r\n");
 		echo = oldecho;
 		return COMMANDED;
 	}
@@ -4859,7 +5042,7 @@ TestMode Command(char* input,char* output,bool scripted)
 	if (!stricmp(input,(char*)":commands off"))
 	{
 		commandsAllowed = false;
-		if (!scripted) Log(STDUSERLOG,(char*)":commands disabled\r\n");
+		if (!scripted) Log(STDTRACELOG,(char*)":commands disabled\r\n");
 		echo = oldecho;
 		return COMMANDED;
 	}
@@ -4883,13 +5066,7 @@ TestMode Command(char* input,char* output,bool scripted)
 		CommandInfo* info;
 		info = &commandSet[i];
 		input = SkipWhitespace(input+strlen(info->word));
-		char data[MAX_WORD_SIZE];
-		if (strlen(input) > (MAX_WORD_SIZE-1)) 
-		{
-			ReportBug((char*)"Command data too large- %s %s\r\n",word,input)
-			echo = oldecho;
-			return COMMANDED; // ignore it
-		}
+		char* data = AllocateBuffer();
 		strcpy(data,input);
 		TrimSpaces(data,false); // safe from change
 		wasCommand = COMMANDED;
@@ -4897,8 +5074,9 @@ TestMode Command(char* input,char* output,bool scripted)
 		if (output) *output = 0;
 		(*info->fn)(data);
 		testOutput = NULL;
+		FreeBuffer();
 		if (strcmp(info->word,(char*)":trace")   && strcmp(info->word,(char*)":echo") && !prepareMode) echo = oldecho;
-		if (scripted) echo = oldecho;
+		if (scripted && strcmp(info->word,(char*)":echo")) echo = oldecho;
 		return wasCommand;
 	}
 	echo = oldecho;
@@ -4915,7 +5093,7 @@ void C_Gambits(char* buffer)
 	int topic = FindTopicIDByName(buffer);
 	if (!topic) 
 	{
-		Log(STDUSERLOG,(char*)"No such topic %s\r\n",buffer);
+		Log(STDTRACELOG,(char*)"No such topic %s\r\n",buffer);
 		return;
 	}
 	
@@ -4937,8 +5115,8 @@ void C_Gambits(char* buffer)
 		char* output = GetPattern( ptr,label,pattern);
 		if (strlen(pattern) == 4) *pattern = 0;
 		if (*label) strcat(label,(char*)":");
-		if (!UsableRule(topic,ruleID)) Log(STDUSERLOG,(char*)"- %d %s %s    %s\r\n",n,label,output,pattern);
-		else Log(STDUSERLOG,(char*)"%d  %s %s    %s\r\n",n,label,output,pattern);
+		if (!UsableRule(topic,ruleID)) Log(STDTRACELOG,(char*)"- %d %s %s    %s\r\n",n,label,output,pattern);
+		else Log(STDTRACELOG,(char*)"%d  %s %s    %s\r\n",n,label,output,pattern);
 		*end = ENDUNIT;
 		ruleID = *++map;
 	}
@@ -4946,7 +5124,7 @@ void C_Gambits(char* buffer)
 
 void C_Pending(char* buffer)
 {
-	Log(STDUSERLOG,(char*)"Pending topics: %s\r\n", ShowPendingTopics());
+	Log(STDTRACELOG,(char*)"Pending topics: %s\r\n", ShowPendingTopics());
 }
 
 static void CountConcept(WORDP D, uint64 count)
@@ -5041,10 +5219,10 @@ static void C_TopicStats(char* input)
 		totalresponders += responders;
 		totalrejoinders += rejoinders;
 		totalempties += empties;
-		Log(STDUSERLOG,(char*)"    %s     gambits %d responders %d rejoinders %d empties %d\r\n", name,gambits,responders,rejoinders,empties);
+		Log(STDTRACELOG,(char*)"    %s     gambits %d responders %d rejoinders %d empties %d\r\n", name,gambits,responders,rejoinders,empties);
 	}
 	unsigned int totalrules = totalgambits + totalresponders + totalrejoinders;
-	Log(STDUSERLOG,(char*)"Concepts %d Topics %d rules %d empties %d\r\n  gambits %d  responders %d (?: %d s: %d  u: %d) rejoinders %d  \r\n",conceptCount,topicCount,totalrules,totalempties,totalgambits,totalresponders,totalquestions,totalstatements,totaldual,totalrejoinders);
+	Log(STDTRACELOG,(char*)"Concepts %d Topics %d rules %d empties %d\r\n  gambits %d  responders %d (?: %d s: %d  u: %d) rejoinders %d  \r\n",conceptCount,topicCount,totalrules,totalempties,totalgambits,totalresponders,totalquestions,totalstatements,totaldual,totalrejoinders);
 }
 
 static void C_TopicDump(char* input)
@@ -5085,8 +5263,8 @@ static void C_TopicDump(char* input)
 		}
 		fprintf(out,(char*)"%s",(char*)"000 x\r\n"); // end of topic
 	}
-	fclose(out);
-	Log(STDUSERLOG,(char*)"Done.\r\n");
+	FClose(out);
+	Log(STDTRACELOG,(char*)"Done.\r\n");
 }
 
 static bool shownItem;
@@ -5108,11 +5286,11 @@ static void TrackFactsUp(MEANING T,FACT* G,WORDP base) //   show what matches up
 		if (!shownItem)
 		{
 			shownItem = true;
-			Log(STDUSERLOG,(char*)"  %s: ",base->word);
+			Log(STDTRACELOG,(char*)"  %s: ",base->word);
 		}
 		if (Meaning2Word(G->subject) == base) sprintf(word,(char*)" %s ",D->word);
 		else sprintf(word,(char*)" %s(%s)",D->word,WriteMeaning(G->subject));
-		Log(STDUSERLOG,(char*)"%s ",word);
+		Log(STDTRACELOG,(char*)"%s ",word);
 		return;	
 	}
 	else if (D->internalBits & CONCEPT)
@@ -5150,8 +5328,8 @@ static void TrackFactsUp(MEANING T,FACT* G,WORDP base) //   show what matches up
 
 static void TabInset(unsigned int depth,bool eol)
 {
-	if (eol) Log(STDUSERLOG,(char*)"\r\n");
-	for (unsigned int i = 0; i < depth; ++i) Log(STDUSERLOG,(char*)"  ");
+	if (eol) Log(STDTRACELOG,(char*)"\r\n");
+	for (unsigned int i = 0; i < depth; ++i) Log(STDTRACELOG,(char*)"  ");
 }
 
 static void TrackFactsDown(MEANING M,FACT* F,unsigned int depth,size_t& length,bool display) // look at each keyword of this set
@@ -5162,7 +5340,7 @@ static void TrackFactsDown(MEANING M,FACT* F,unsigned int depth,size_t& length,b
 	if (shownItem)
 	{
 		shownItem = false;
-		Log(STDUSERLOG,(char*)"\r\n");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	if (*D->word == '~')  // its a set or topic-- nest and do the set
 	{
@@ -5170,7 +5348,7 @@ static void TrackFactsDown(MEANING M,FACT* F,unsigned int depth,size_t& length,b
 		{
 			if ( length != depth)  TabInset(depth,true);
 			// header
-			Log(STDUSERLOG,(char*)"%s\r\n",D->word);
+			Log(STDTRACELOG,(char*)"%s\r\n",D->word);
 			// indent 
 			TabInset(depth+2,true);
 			length = depth + 2;
@@ -5197,12 +5375,12 @@ static void TrackFactsDown(MEANING M,FACT* F,unsigned int depth,size_t& length,b
 			char word[MAX_WORD_SIZE];
 			if (!index)	sprintf(word,(char*)"%s ",D->word);
 			else sprintf(word,(char*)"%s~%d ",D->word,index);
-			Log(STDUSERLOG,(char*)"%s",word);
+			Log(STDTRACELOG,(char*)"%s",word);
 			size_t wlen = strlen(word)  + 1;
 			length += wlen;
 			while (wlen < 20) // force each word to be 20 wide
 			{
-				Log(STDUSERLOG,(char*)" ");
+				Log(STDTRACELOG,(char*)" ");
 				++wlen;
 				++length;
 			}
@@ -5255,7 +5433,7 @@ static void C_Topics(char* input)
 		WORDP N = Meaning2Word(F->object);
 		int topic = FindTopicIDByName(D->word);
         char* name = GetTopicName(topic);
-		Log(STDUSERLOG,(char*)"%s (%s) : ",name,N->word);
+		Log(STDTRACELOG,(char*)"%s (%s) : ",name,N->word);
         //   look at references for this topic
         int start = -1;
 		int startPosition = 0;
@@ -5265,12 +5443,12 @@ static void C_Topics(char* input)
             // value of match of this topic in this sentence
             for (int k = startPosition; k <= endPosition; ++k) 
 			{
-				if (k != startPosition) Log(STDUSERLOG,(char*)"_");
-				Log(STDUSERLOG,(char*)"%s",wordStarts[k]);
+				if (k != startPosition) Log(STDTRACELOG,(char*)"_");
+				Log(STDTRACELOG,(char*)"%s",wordStarts[k]);
 			}
-			Log(STDUSERLOG,(char*)" ");
+			Log(STDTRACELOG,(char*)" ");
 		}
-		Log(STDUSERLOG,(char*)"\r\n");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	impliedSet = ALREADY_HANDLED;
 	
@@ -5301,7 +5479,7 @@ static void C_TopicInfo(char* input)
 		topicBlock* block = TI(topicid);
 
 		WORDP D = FindWord(tname);
-		Log(STDUSERLOG,(char*)"\r\nTopic: %s  ",D->word);
+		Log(STDTRACELOG,(char*)"\r\nTopic: %s  ",D->word);
 		int rejoinderOffset = -1;
 		if ((int)topicid == inputRejoinderTopic) rejoinderOffset = inputRejoinderRuleID;
 		bool used = true;
@@ -5332,20 +5510,20 @@ static void C_TopicInfo(char* input)
 		if (!gambit && !responder && !rejoinder) used = available = false;
 		if (all) 
 		{
-			Log(STDUSERLOG,(char*)"%s",DisplayTopicFlags(topicid));
-			Log(STDUSERLOG,(char*)"Bot: %s\r\n",block->topicRestriction ? block->topicRestriction : (char*)"all");
-			if (block->topicLastGambitted == 0 && block->topicLastRespondered == 0 && block->topicLastRejoindered == 0) Log(STDUSERLOG,(char*)"  Seen: never visited");
-			else Log(STDUSERLOG,(char*)"  Seen: last gambit %d   last rejoinder %d  lastresponder\r\n", block->topicLastGambitted,block->topicLastRespondered,block->topicLastRejoindered);
+			Log(STDTRACELOG,(char*)"%s",DisplayTopicFlags(topicid));
+			Log(STDTRACELOG,(char*)"Bot: %s\r\n",block->topicRestriction ? block->topicRestriction : (char*)"all");
+			if (block->topicLastGambitted == 0 && block->topicLastRespondered == 0 && block->topicLastRejoindered == 0) Log(STDTRACELOG,(char*)"  Seen: never visited");
+			else Log(STDTRACELOG,(char*)"  Seen: last gambit %d   last rejoinder %d  lastresponder\r\n", block->topicLastGambitted,block->topicLastRespondered,block->topicLastRejoindered);
 		}
 
 		if (keys) // display all keys (execpt recursive wordnet)
 		{
-			Log(STDUSERLOG,(char*)"\r\n  Keys:\r\n");
+			Log(STDTRACELOG,(char*)"\r\n  Keys:\r\n");
 			NextInferMark();
 			if (D->internalBits & HAS_EXCLUDE) MarkExclude(D);
 			FACT* F = GetObjectNondeadHead(D);
 			size_t length = 2;
-			Log(STDUSERLOG,(char*)"    ");
+			Log(STDTRACELOG,(char*)"    ");
 			while (F)
 			{
 				shownItem = false;
@@ -5356,7 +5534,7 @@ static void C_TopicInfo(char* input)
 		shownItem = false;
 		if (overlap)
 		{
-			if (GetObjectNondeadHead(D)) Log(STDUSERLOG,(char*)"\r\n");
+			if (GetObjectNondeadHead(D)) Log(STDTRACELOG,(char*)"\r\n");
 			FACT* F = GetObjectNondeadHead(D);
 			NextInferMark();
 			D->inferMark = inferMark;
@@ -5369,12 +5547,12 @@ static void C_TopicInfo(char* input)
 				{
 					if (!started)
 					{
-						Log(STDUSERLOG,(char*)"\r\nKey Overlap: %s\r\n",D->word);
+						Log(STDTRACELOG,(char*)"\r\nKey Overlap: %s\r\n",D->word);
 						started = true;
 					}
 					if (shownItem) 
 					{
-						Log(STDUSERLOG,(char*)"\r\n");
+						Log(STDTRACELOG,(char*)"\r\n");
 						shownItem = false;
 					}
 					TrackFactsDown(F->subject,F,1,length,false); 
@@ -5395,7 +5573,7 @@ static void C_TopicInfo(char* input)
 		char* name = GetTopicName(topicid);
 		char* data = GetTopicData(topicid);
 		bool access = true;
-		Log(STDUSERLOG,(char*)"\r\n  Rules:\r\n");
+		Log(STDTRACELOG,(char*)"\r\n  Rules:\r\n");
 		while (data && *data) // walk data
 		{
 			char* rule = ShowRule(data);
@@ -5413,13 +5591,13 @@ static void C_TopicInfo(char* input)
 				{
 					if (used) 
 					{
-						Log(STDUSERLOG,(char*)"  - %d(%d) %s\r\n",id,block->ruleOffset[id],rule);
+						Log(STDTRACELOG,(char*)"  - %d(%d) %s\r\n",id,block->ruleOffset[id],rule);
 						access = true;
 					}
 				}
 				else // rule is accessible
 				{
-					if (available) Log(STDUSERLOG,(char*)"    %d(%d) %s\r\n",id,block->ruleOffset[id],rule);
+					if (available) Log(STDTRACELOG,(char*)"    %d(%d) %s\r\n",id,block->ruleOffset[id],rule);
 					else access = false;
 				}
 			}
@@ -5428,14 +5606,14 @@ static void C_TopicInfo(char* input)
 				if (access)
 				{
 					unsigned int depth = *rule - 'a';
-					while (depth--) Log(STDUSERLOG,(char*)"    "); // indent appropriately
-					if (id == rejoinderOffset) Log(STDUSERLOG,(char*)"  ***  (%d) %s\r\n",REJOINDERID(id),rule); // current rejoinder
-					else Log(STDUSERLOG,(char*)"       (%d) %s\r\n",REJOINDERID(id),rule);
+					while (depth--) Log(STDTRACELOG,(char*)"    "); // indent appropriately
+					if (id == rejoinderOffset) Log(STDTRACELOG,(char*)"  ***  (%d) %s\r\n",REJOINDERID(id),rule); // current rejoinder
+					else Log(STDTRACELOG,(char*)"       (%d) %s\r\n",REJOINDERID(id),rule);
 				}
 			}
 			data = FindNextRule(NEXTRULE,data,id);
 		}
-		if (all) Log(STDUSERLOG,(char*)"  gambits: %d  responders: %d (?:%d s:%d u:%d)  rejoinders: %d\r\n", gambits,statements+questions+dual,statements, questions, dual,rejoinders);
+		if (all) Log(STDTRACELOG,(char*)"  gambits: %d  responders: %d (?:%d s:%d u:%d)  rejoinders: %d\r\n", gambits,statements+questions+dual,statements, questions, dual,rejoinders);
 	}
 }
 
@@ -5459,14 +5637,14 @@ static void LoadDescriptions (char* file)
 		D->inferMark = MakeMeaning(E); 
 	}
 	dictionaryLocked = lock;
-	fclose(in);
+	FClose(in);
 }
 
 static void FreeDescriptions(WORDP D, uint64 junk)
 {
 	if (D->internalBits & DEFINES)
 	{
-		if (*D->word == '$'  || *D->word == '~' ) 
+		if (*D->word == USERVAR_PREFIX  || *D->word == '~' ) 
 		{
 			D->internalBits ^= DEFINES;
 			D->inferMark = 0;
@@ -5513,7 +5691,7 @@ static void C_List(char* input)
 	char word[MAX_WORD_SIZE];
 	unsigned int count = 0;
 	MEANING verb = MakeMeaning(StoreWord((char*)":list"));
-	if (all || strchr(input,'$')) // do permanent user variables
+	if (all || strchr(input,USERVAR_PREFIX)) // do permanent user variables
 	{
 		NextInferMark();
 		for (int topicid = 1; topicid <= numberOfTopics; ++topicid) 
@@ -5526,7 +5704,7 @@ static void C_List(char* input)
 				data = strstr(data,(char*)"$");
 				if (!data) continue;
 				data = ReadCompiledWord(data,word);
-				if (!word[1] || (word[1] == '$' || IsDigit(word[1]))) continue; // ignore temp vars, $, and money
+				if (!word[1] || (word[1] == LOCALVAR_PREFIX ||  word[1] == TRANSIENTVAR_PREFIX || IsDigit(word[1]))) continue; // ignore temp vars, $, and money
 				char* at = word;
 				while (*++at && (IsAlphaUTF8(*at) || IsDigit(*at) || *at == '-' || *at == '_'));
 				*at = 0;
@@ -5578,36 +5756,36 @@ static void C_List(char* input)
 		if (sorted) SortFacts((char*)"@4subject",true);
 	}
 
-	LoadDescriptions((char*)"TOPIC/describe0.txt");
-	LoadDescriptions((char*)"TOPIC/describe1.txt");
-	if (all || strchr(input,'$'))
+	LoadDescriptions((char*)"TOPIC/BUILD0/describe0.txt");
+	LoadDescriptions((char*)"TOPIC/BUILD1/describe1.txt");
+	if (all || strchr(input,USERVAR_PREFIX))
 	{
 		count = FACTSET_COUNT(0);
-		Log(STDUSERLOG,(char*)"User Variables:\r\n");
+		Log(STDTRACELOG,(char*)"User Variables:\r\n");
 		for (unsigned int i = 1; i <= count; ++i)
 		{
 			WORDP D = Meaning2Word(factSet[0][i]->subject);
 			if (D->internalBits & DEFINES) 
 			{
-				Log(STDUSERLOG,(char*)"    %s %s\r\n",D->word, Meaning2Word(D->inferMark)->word);
+				Log(STDTRACELOG,(char*)"    %s %s\r\n",D->word, Meaning2Word(D->inferMark)->word);
 				D->internalBits ^= DEFINES;
 			}
-			else Log(STDUSERLOG,(char*)"    %s\r\n",D->word);
+			else Log(STDTRACELOG,(char*)"    %s\r\n",D->word);
 		}
 	}
 
 	if (all || strchr(input,'@'))
 	{
 		count = FACTSET_COUNT(1);
-		Log(STDUSERLOG,(char*)"Fact Sets:\r\n");
+		Log(STDTRACELOG,(char*)"Fact Sets:\r\n");
 		for (unsigned int i = 1; i <= count; ++i)
 		{
 			WORDP D = Meaning2Word(factSet[1][i]->subject);
 			if (D->internalBits & DEFINES)
 			{
-				Log(STDUSERLOG,(char*)"    %s ",D->word);
-				if ((setControl & (uint64) (1ull << i))) Log(STDUSERLOG,(char*)" SAVED ");
-				Log(STDUSERLOG,(char*)" %s\r\n",Meaning2Word(D->inferMark)->word);
+				Log(STDTRACELOG,(char*)"    %s ",D->word);
+				if ((setControl & (uint64) (1ull << i))) Log(STDTRACELOG,(char*)" SAVED ");
+				Log(STDTRACELOG,(char*)" %s\r\n",Meaning2Word(D->inferMark)->word);
 				D->internalBits ^= DEFINES;
 				D->inferMark = 0;
 			}
@@ -5617,14 +5795,14 @@ static void C_List(char* input)
 	if (all || strchr(input,'_'))
 	{
 		count = FACTSET_COUNT(2);
-		Log(STDUSERLOG,(char*)"Match Variables:\r\n");
+		Log(STDTRACELOG,(char*)"Match Variables:\r\n");
 		for (unsigned int i = 1; i <= count; ++i)
 		{
 			WORDP D = Meaning2Word(factSet[2][i]->subject);
 			if (D->internalBits & DEFINES)
 			{
 				D->internalBits ^= DEFINES;
-				Log(STDUSERLOG,(char*)"    %s %s\r\n",D->word, Meaning2Word(D->inferMark)->word);
+				Log(STDTRACELOG,(char*)"    %s %s\r\n",D->word, Meaning2Word(D->inferMark)->word);
 				D->inferMark = 0;
 			}
 		}
@@ -5633,13 +5811,13 @@ static void C_List(char* input)
 	if (all || strchr(input,'^')) 
 	{
 		count = FACTSET_COUNT(3);
-		Log(STDUSERLOG,(char*)"User Macros:\r\n");
+		Log(STDTRACELOG,(char*)"User Macros:\r\n");
 		for (unsigned int i = 1; i <= count; ++i)
 		{
 			WORDP D = Meaning2Word(factSet[3][i]->subject);
 			if (D->internalBits & DEFINES) 
 			{
-				Log(STDUSERLOG,(char*)"    %s %s\r\n",D->word, Meaning2Word(D->inferMark)->word);
+				Log(STDTRACELOG,(char*)"    %s %s\r\n",D->word, Meaning2Word(D->inferMark)->word);
 				D->internalBits ^= DEFINES;
 				D->inferMark = 0;
 			}
@@ -5649,13 +5827,13 @@ static void C_List(char* input)
 	if (all || strchr(input,'~')) 
 	{
 		count = FACTSET_COUNT(4);
-		Log(STDUSERLOG,(char*)"Topics:\r\n");
+		Log(STDTRACELOG,(char*)"Topics:\r\n");
 		for (unsigned int i = 1; i <= count; ++i)
 		{
 			WORDP D = Meaning2Word(factSet[4][i]->subject);
 			if (D->internalBits & DEFINES) 
 			{
-				Log(STDUSERLOG,(char*)"    %s %s\r\n",D->word, Meaning2Word(D->inferMark)->word);
+				Log(STDTRACELOG,(char*)"    %s %s\r\n",D->word, Meaning2Word(D->inferMark)->word);
 				D->internalBits ^= DEFINES;
 				D->inferMark = 0;
 			}
@@ -5668,7 +5846,7 @@ static void C_List(char* input)
 static void C_Where(char* input)
 {
 	int topic = FindTopicIDByName(input);
-	if (topic)	Log(STDUSERLOG,(char*)"%s is from %s\r\n",input,GetTopicFile(topic));
+	if (topic)	Log(STDTRACELOG,(char*)"%s is from %s\r\n",input,GetTopicFile(topic));
 }
 
 //////////////////////////////////////////////////////////
@@ -5702,7 +5880,7 @@ static void C_Facts(char* input)
 		G = FindFact(ReadMeaning(arg1,false),ReadMeaning(arg2,false),ReadMeaning(arg3,false),0); 
 		if (!G) 
 		{
-			Log(STDUSERLOG,(char*)"No such facts\r\n");
+			Log(STDTRACELOG,(char*)"No such facts\r\n");
 			return;
 		}
 	}
@@ -5711,10 +5889,10 @@ static void C_Facts(char* input)
 		int set = GetSetID(word);
 		if (set == ILLEGAL_FACTSET)
 		{
-			Log(STDUSERLOG,(char*)"Illegal fact set %s\r\n",word);
+			Log(STDTRACELOG,(char*)"Illegal fact set %s\r\n",word);
 			return;
 		}
-		Log(STDUSERLOG,(char*)"Fact set %s: %d facts\r\n",word,FACTSET_COUNT(set));
+		Log(STDTRACELOG,(char*)"Fact set %s: %d facts\r\n",word,FACTSET_COUNT(set));
 		for (unsigned int i = 1; i <= FACTSET_COUNT(set); ++i)
 		{
 			TraceFact(factSet[set][i]);
@@ -5727,7 +5905,7 @@ static void C_Facts(char* input)
 		index = Meaning2Index(M);
 		if (!M)
 		{
-			Log(STDUSERLOG,(char*)"No such meaning exists\r\n");
+			Log(STDTRACELOG,(char*)"No such meaning exists\r\n");
 			return;
 		}
 		D = Meaning2Word(M);
@@ -5798,11 +5976,11 @@ static void C_UserFacts(char* input)
 		unsigned int count = FACTSET_COUNT(i);
 		if (!count) continue;
 		// save this set
-		Log(STDUSERLOG,(char*)"Set %d[%d]\r\n",i,count); 
+		Log(STDTRACELOG,(char*)"Set %d[%d]\r\n",i,count); 
         for (unsigned int j = 1; j <= count; ++j)
 		{
 			char* fact = WriteFact(factSet[i][j],false,buffer,false,false);
-			Log(STDUSERLOG, "%s  # %d %s\r\n",fact, Fact2Index(factSet[i][j]),WriteFactFlags(factSet[i][j]));
+			Log(STDTRACELOG, "%s  # %d %s\r\n",fact, Fact2Index(factSet[i][j]),WriteFactFlags(factSet[i][j]));
 		}
     }
 	FreeBuffer();
@@ -5813,9 +5991,9 @@ static void C_UserFacts(char* input)
 		char word[MAX_WORD_SIZE];
 		++count;
 		char* fact = WriteFact(F,false,word,false,false);
-		Log(STDUSERLOG,(char*)"%s  # %d %s\r\n",fact,Fact2Index(F), WriteFactFlags(F));
+		Log(STDTRACELOG,(char*)"%s  # %d %s\r\n",fact,Fact2Index(F), WriteFactFlags(F));
 	}
-	Log(STDUSERLOG,(char*)"user facts: %d\r\n",count);
+	Log(STDTRACELOG,(char*)"user facts: %d\r\n",count);
 }
 
 //////////////////////////////////////////////////////////
@@ -5838,17 +6016,17 @@ static void C_Do(char* input)
 	char* answer = AllocateBuffer();
 #ifndef DISCARDSCRIPTCOMPILER
 	hasErrors = 0;
-	ReadOutput(input, NULL,out,NULL,false);
-	if (hasErrors) Log(STDUSERLOG,(char*)"\r\nScript errors prevent execution.");
+	ReadOutput(input, NULL,out,NULL,NULL,NULL,false);
+	if (hasErrors) Log(STDTRACELOG,(char*)"\r\nScript errors prevent execution.");
 	else 
 	{
 		FunctionResult result;
 		FreshOutput(data,answer,result);
-		if (trace) Log(STDUSERLOG,(char*)"   result: %s  output: %s\r\n",ResultCode(result),answer);
+		if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"   result: %s  output: %s\r\n",ResultCode(result),answer);
 		AddResponse(answer,responseControl);
 	}
 #else
-	Log(STDUSERLOG,(char*)"Script compiler not installed.");
+	Log(STDTRACELOG,(char*)"Script compiler not installed.");
 #endif
 	FreeBuffer();
 	FreeBuffer();
@@ -5863,7 +6041,7 @@ static void C_Silent(char* input)
 
 static void C_Retry(char* input)
 {
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	if (server && !serverRetryOK) return;
 
 	char word[MAX_WORD_SIZE];
@@ -5881,7 +6059,7 @@ static void C_Retry(char* input)
 			sprintf(which,(char*)"%d",n);
 			if (!*at) 
 			{
-				Log(STDUSERLOG,(char*)"You must supply input to go back. changing to :retry \r\n");
+				Log(STDTRACELOG,(char*)"You must supply input to go back. changing to :retry \r\n");
 				*which = 0; // ordinary retry
 			}
 		}
@@ -5925,7 +6103,7 @@ static void C_Redo(char* input)
 
 static void C_Log(char* input)
 {
-	Log(STDUSERLOG,(char*)"Log: %s\r\n",input);
+	Log(STDTRACELOG,(char*)"Log: %s\r\n",input);
 }
 
 static void C_Skip(char* buffer)
@@ -5933,7 +6111,7 @@ static void C_Skip(char* buffer)
 	int topic = GetPendingTopicUnchanged();
 	if (!topic) 
 	{
-		Log(STDUSERLOG,(char*)"No pending topic\r\n");
+		Log(STDTRACELOG,(char*)"No pending topic\r\n");
 		return;
 	}
 	topicBlock* block = TI(topic);
@@ -5949,7 +6127,7 @@ static void C_Skip(char* buffer)
 		if (TopLevelGambit(rule) && UsableRule(topic,ruleID) && --n == 0) SetRuleDisableMark(topic, ruleID);
 		ruleID = *++map;
 	}
-	if (ruleID != NOMORERULES) Log(STDUSERLOG,(char*)"Next gambit of %s is: %s...\r\n",GetTopicName(topic),ShowRule(GetRule(topic,ruleID)));
+	if (ruleID != NOMORERULES) Log(STDTRACELOG,(char*)"Next gambit of %s is: %s...\r\n",GetTopicName(topic),ShowRule(GetRule(topic,ruleID)));
 	WriteUserData(0);
 }
 
@@ -5965,219 +6143,292 @@ static void C_Show(char* input)
 	{
 		if (*value) all = set;
 		else all = !all;
-		Log(STDUSERLOG,(char*)"All set to %d\n",all);
+		Log(STDTRACELOG,(char*)"All set to %d\n",all);
 	}
 	else if (!stricmp(word,(char*)"oob"))
 	{
 		if (*value) oob = set;
 		else oob = !oob;
-		Log(STDUSERLOG,(char*)" oob set to %d\n",oob);
+		Log(STDTRACELOG,(char*)" oob set to %d\n",oob);
 	}
 	else if (!stricmp(word,(char*)"newline"))
 	{
 		if (*value) newline = set;
 		else newline = !newline;
-		Log(STDUSERLOG,(char*)" newline set to %d\n",newline);
+		Log(STDTRACELOG,(char*)" newline set to %d\n",newline);
 	}
 	else if (!stricmp(word,(char*)"depth"))
 	{
 		if (*value) showDepth = set;
 		else showDepth = !showDepth;
-		Log(STDUSERLOG,(char*)" showDepth set to %d\n",showDepth);
+		Log(STDTRACELOG,(char*)" showDepth set to %d\n",showDepth);
 	}
 	else if (!stricmp(word,(char*)"echo"))
 	{
 		if (*value) echo = set;
 		else echo = !echo;
-		Log(STDUSERLOG,(char*)" echo set to %d\n",echo);
+		Log(STDTRACELOG,(char*)" echo set to %d\n",echo);
 	}
 	else if (!stricmp(word,(char*)"echoserver"))
 	{
 		if (*value) echoServer = set;
 		else echoServer = !echoServer;
-		Log(STDUSERLOG,(char*)" echoServer set to %d\n",echoServer);
+		Log(STDTRACELOG,(char*)" echoServer set to %d\n",echoServer);
 	}
 	else if (!stricmp(word,(char*)"input"))
 	{
 		showInput = !showInput;
-		Log(STDUSERLOG,(char*)" input set to %d\n",showInput);
+		Log(STDTRACELOG,(char*)" input set to %d\n",showInput);
 	}
 	else if (!stricmp(word,(char*)"reject"))
 	{
 		showReject = !showReject;
-		Log(STDUSERLOG,(char*)" reject set to %d\n",showReject);
+		Log(STDTRACELOG,(char*)" reject set to %d\n",showReject);
 	}
 	else if (!stricmp(word,(char*)"memory"))
 	{
 		showmem = !showmem;
-		Log(STDUSERLOG,(char*)" showmem set to %d\n",showmem);
+		Log(STDTRACELOG,(char*)" showmem set to %d\n",showmem);
 	}	
 	else if (!stricmp(word,(char*)"mark"))
 	{
 		showMark = !showMark;
-		Log(STDUSERLOG,(char*)" showMark set to %d\n",showMark);
+		Log(STDTRACELOG,(char*)" showMark set to %d\n",showMark);
 	}
 	else if (!stricmp(word,(char*)"number"))
 	{
 		if (*value) autonumber = set;
 		else autonumber = !autonumber;
-		Log(STDUSERLOG,(char*)" autonumber set to %d\n",autonumber);
+		Log(STDTRACELOG,(char*)" autonumber set to %d\n",autonumber);
 	}
 	else if (!stricmp(word,(char*)"pos"))
 	{
 		if (*value) shortPos = set;
 		else shortPos = !shortPos;
-		Log(STDUSERLOG,(char*)" Pos set to %d\n",shortPos);
+		Log(STDTRACELOG,(char*)" Pos set to %d\n",shortPos);
 	}
 	else if (!stricmp(word,(char*)"serverLog"))
 	{
 		if (*value) serverLog = set;
 		else serverLog = !serverLog;
-		Log(STDUSERLOG,(char*)" serverLog set to %d\n",serverLog);
+		Log(STDTRACELOG,(char*)" serverLog set to %d\n",serverLog);
 	}
 	else if (!stricmp(word,(char*)"stats"))
 	{
 		ruleCount = 0;
 		if (*value) stats = set;
 		else stats = !stats;
-		Log(STDUSERLOG,(char*)" stats set to %d\n",stats);
+		Log(STDTRACELOG,(char*)" stats set to %d\n",stats);
 	}
 	else if (!stricmp(word,(char*)"topic"))
 	{
 		if (*value) showTopic = set;
 		else showTopic = !showTopic;
-		Log(STDUSERLOG,(char*)" topic set to %d\n",showTopic);
+		Log(STDTRACELOG,(char*)" topic set to %d\n",showTopic);
 	}
 	else if (!stricmp(word,(char*)"topics"))
 	{
 		if (*value) showTopics = set;
 		else showTopics = !showTopics;
-		Log(STDUSERLOG,(char*)" topics set to %d\n",showTopics);
+		Log(STDTRACELOG,(char*)" topics set to %d\n",showTopics);
 	}
 	else if (!stricmp(word,(char*)"why"))
 	{
 		if (*value) showWhy = set;
 		else showWhy = !showWhy;
-		Log(STDUSERLOG,(char*)" why set to %d\n",showWhy);
+		Log(STDTRACELOG,(char*)" why set to %d\n",showWhy);
 	}
 } 
 
 static void TraceTopicFunction(WORDP D, uint64 data)
 {
-	
-	if (D->internalBits & TOPIC && D->word[0] ==  '~')
-	{
-		topicBlock* block = TI(D->x.topicIndex);
-		if (block->topicDebug) 
-		{
-			Log(STDUSERLOG,(char*)"%s: \r\n",D->word);
-			ShowTrace(block->topicDebug,false);
-		}
-	}
-	else if (D->word[0] == '^' && (D->internalBits & (MACRO_TRACE|FN_NO_TRACE)))
-	{
-		if ((D->internalBits & FN_TRACE_BITS) == MACRO_TRACE) Log(STDUSERLOG,(char*)"%s: on\r\n",D->word);
-		if ((D->internalBits & FN_TRACE_BITS) ==  (MACRO_TRACE|FN_NO_TRACE)) Log(STDUSERLOG,(char*)"%s: on off\r\n",D->word);
-		if ((D->internalBits & FN_TRACE_BITS) ==  FN_NO_TRACE) Log(STDUSERLOG,(char*)"%s: off\r\n",D->word);
-	}
+	if (D->internalBits & TOPIC && D->word[0] ==  '~') TracedTopic(D, data);
+	else if (D->word[0] == '^' && (D->internalBits & FN_TRACE_BITS)) TracedFunction(D, data);
+}
+
+static void TimingTopicFunction(WORDP D, uint64 data)
+{
+	if (D->internalBits & TOPIC && D->word[0] == '~') TimedTopic(D, data);
+	else if (D->word[0] == '^' && (D->internalBits & FN_TIME_BITS)) TimedFunction(D, data);
 }
 
 static void ShowTrace(unsigned int bits, bool original)
 {
-	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH);
+	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH|TRACE_FLOW);
 	unsigned int mild = (TRACE_OUTPUT|TRACE_PREPARE|TRACE_PATTERN);
-	unsigned int deep = (TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
-	if (!original) Log(STDUSERLOG,(char*)"  ");
+	unsigned int deep = (TRACE_ALWAYS|TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
 
 	// general
 	if (bits & general) 
 	{
-		Log(STDUSERLOG,(char*)"Enabled simple: ");
-		if (bits & TRACE_MATCH) Log(STDUSERLOG,(char*)"match ");
-		if (bits & TRACE_VARIABLE) Log(STDUSERLOG,(char*)"variables ");
-		Log(STDUSERLOG,(char*)"\r\n");
-		if (!original) Log(STDUSERLOG,(char*)"  ");
+		if (!original) Log(STDTRACELOG, (char*)"  ");
+		Log(STDTRACELOG,(char*)"Enabled simple: ");
+		if (bits & TRACE_MATCH) Log(STDTRACELOG,(char*)"match ");
+		if (bits & TRACE_FLOW) Log(STDTRACELOG,(char*)"ruleflow ");
+		if (bits & TRACE_VARIABLE) Log(STDTRACELOG,(char*)"variables ");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 
 	// mild detail
 	if (bits & mild) 
 	{
-		Log(STDUSERLOG,(char*)"Enabled mild detail: ");
-		if (bits & TRACE_OUTPUT) Log(STDUSERLOG,(char*)"output ");
-		if (bits & TRACE_PREPARE) Log(STDUSERLOG,(char*)"prepare ");
-		if (bits & TRACE_PATTERN) Log(STDUSERLOG,(char*)"pattern ");
-		Log(STDUSERLOG,(char*)"\r\n");
-		if (!original) Log(STDUSERLOG,(char*)"  ");
+		if (!original) Log(STDTRACELOG, (char*)"  ");
+		Log(STDTRACELOG,(char*)"Enabled mild detail: ");
+		if (bits & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"output ");
+		if (bits & TRACE_PREPARE) Log(STDTRACELOG,(char*)"prepare ");
+		if (bits & TRACE_PATTERN) Log(STDTRACELOG,(char*)"pattern ");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	// deep detail
 	if (bits & deep) 
 	{
-		Log(STDUSERLOG,(char*)"Enabled deep detail: ");
-		if (bits & TRACE_FACT) Log(STDUSERLOG,(char*)"fact ");
-		if (bits & TRACE_INFER) Log(STDUSERLOG,(char*)"infer ");
-		if (bits & TRACE_HIERARCHY) Log(STDUSERLOG,(char*)"hierarchy ");
-		if (bits & TRACE_SUBSTITUTE) Log(STDUSERLOG,(char*)"substitute ");
-		if (bits & TRACE_VARIABLESET) Log(STDUSERLOG,(char*)"varassign ");
-		if (bits & TRACE_QUERY) Log(STDUSERLOG,(char*)"query ");
-		if (bits & TRACE_USER) Log(STDUSERLOG,(char*)"user ");
-		if (bits & TRACE_POS) Log(STDUSERLOG,(char*)"pos ");
-		if (bits & TRACE_TCP) Log(STDUSERLOG,(char*)"tcp ");
-		if (bits & TRACE_JSON) Log(STDUSERLOG,(char*)"json ");
-		if (bits & TRACE_USERFN) Log(STDUSERLOG,(char*)"macro ");
-		if (bits & TRACE_USERCACHE) Log(STDUSERLOG,(char*)"usercache ");
-		if (bits & TRACE_SQL) Log(STDUSERLOG,(char*)"sql ");
-		if (bits & TRACE_SAMPLE) Log(STDUSERLOG,(char*)"sample ");
-		if (bits & TRACE_LABEL) Log(STDUSERLOG,(char*)"label ");
-		if (bits & TRACE_TOPIC) Log(STDUSERLOG,(char*)"topic ");
-		Log(STDUSERLOG,(char*)"\r\n");
-		if (!original) Log(STDUSERLOG,(char*)"  ");
+		if (!original) Log(STDTRACELOG, (char*)"  ");
+		Log(STDTRACELOG,(char*)"Enabled deep detail: ");
+		if (bits & TRACE_FACT) Log(STDTRACELOG,(char*)"fact ");
+		if (bits & TRACE_INFER) Log(STDTRACELOG,(char*)"infer ");
+		if (bits == TRACE_HIERARCHY) Log(STDTRACELOG,(char*)"hierarchy ");
+		if (bits & TRACE_SUBSTITUTE) Log(STDTRACELOG,(char*)"substitute ");
+		if (bits & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"varassign ");
+		if (bits & TRACE_QUERY) Log(STDTRACELOG,(char*)"query ");
+		if (bits & TRACE_USER) Log(STDTRACELOG,(char*)"user ");
+		if (bits & TRACE_POS) Log(STDTRACELOG,(char*)"pos ");
+		if (bits & TRACE_TCP) Log(STDTRACELOG,(char*)"tcp ");
+		if (bits & TRACE_JSON) Log(STDTRACELOG,(char*)"json ");
+		if (bits & TRACE_USERFN) Log(STDTRACELOG,(char*)"macro ");
+		if (bits & TRACE_USERCACHE) Log(STDTRACELOG,(char*)"usercache ");
+		if (bits & TRACE_SQL) Log(STDTRACELOG,(char*)"sql ");
+		if (bits & TRACE_SAMPLE) Log(STDTRACELOG,(char*)"sample ");
+		if (bits & TRACE_LABEL) Log(STDTRACELOG,(char*)"label ");
+		if (bits & TRACE_TOPIC) Log(STDTRACELOG,(char*)"topic ");
+		if (bits & TRACE_ALWAYS) Log(STDTRACELOG,(char*)"always ");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 
 	// general
 	if ((bits & general) != general) 
 	{
-		Log(STDUSERLOG,(char*)"Disabled simple: ");
-		if (!(bits & TRACE_MATCH)) Log(STDUSERLOG,(char*)"match ");
-		if (!(bits & TRACE_VARIABLE)) Log(STDUSERLOG,(char*)"variables ");
-		Log(STDUSERLOG,(char*)"\r\n");
-		if (!original) Log(STDUSERLOG,(char*)"  ");
+		if (!original) Log(STDTRACELOG, (char*)"  ");
+		Log(STDTRACELOG,(char*)"Disabled simple: ");
+		if (!(bits & TRACE_MATCH)) Log(STDTRACELOG,(char*)"match ");
+		if (!(bits & TRACE_VARIABLE)) Log(STDTRACELOG,(char*)"variables ");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 
 	// mild detail
 	if ((bits & mild) != mild) 
 	{
-		Log(STDUSERLOG,(char*)"Disabled mild detail: ");
-		if (!(bits & TRACE_OUTPUT)) Log(STDUSERLOG,(char*)"output ");
-		if (!(bits & TRACE_PREPARE)) Log(STDUSERLOG,(char*)"prepare ");
-		if (!(bits & TRACE_PATTERN)) Log(STDUSERLOG,(char*)"pattern ");
-		Log(STDUSERLOG,(char*)"\r\n");
-		if (!original) Log(STDUSERLOG,(char*)"  ");
+		if (!original) Log(STDTRACELOG, (char*)"  ");
+		Log(STDTRACELOG,(char*)"Disabled mild detail: ");
+		if (!(bits & TRACE_OUTPUT)) Log(STDTRACELOG,(char*)"output ");
+		if (!(bits & TRACE_PREPARE)) Log(STDTRACELOG,(char*)"prepare ");
+		if (!(bits & TRACE_PATTERN)) Log(STDTRACELOG,(char*)"pattern ");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 
 	// deep detail
 	if ((bits & deep) != deep)
 	{
-		Log(STDUSERLOG,(char*)"Disabled deep detail: ");
-		if (!(bits & TRACE_FACT)) Log(STDUSERLOG,(char*)"fact ");
-		if (!(bits & TRACE_INFER)) Log(STDUSERLOG,(char*)"infer ");
-		if (!(bits & TRACE_SAMPLE)) Log(STDUSERLOG,(char*)"sample ");
-		if (!(bits & TRACE_HIERARCHY)) Log(STDUSERLOG,(char*)"hierarchy ");
-		if (!(bits & TRACE_SUBSTITUTE)) Log(STDUSERLOG,(char*)"substitute ");
-		if (!(bits & TRACE_VARIABLESET)) Log(STDUSERLOG,(char*)"varassign ");
-		if (!(bits & TRACE_QUERY)) Log(STDUSERLOG,(char*)"query ");
-		if (!(bits & TRACE_USER)) Log(STDUSERLOG,(char*)"user ");
-		if (!(bits & TRACE_POS)) Log(STDUSERLOG,(char*)"pos ");
-		if (!(bits & TRACE_TCP)) Log(STDUSERLOG,(char*)"tcp ");
-		if (!(bits & TRACE_JSON)) Log(STDUSERLOG,(char*)"json ");
-		if (!(bits & TRACE_USERFN)) Log(STDUSERLOG,(char*)"macro ");
-		if (!(bits & TRACE_USERCACHE)) Log(STDUSERLOG,(char*)"usercache ");
-		if (!(bits & TRACE_SQL)) Log(STDUSERLOG,(char*)"sql ");
-		if (!(bits & TRACE_LABEL)) Log(STDUSERLOG,(char*)"label ");
-		if (!(bits & TRACE_TOPIC)) Log(STDUSERLOG,(char*)"topic ");
-		Log(STDUSERLOG,(char*)"\r\n");
-		if (!original) Log(STDUSERLOG,(char*)"  ");
+		if (!original) Log(STDTRACELOG, (char*)"  ");
+		Log(STDTRACELOG,(char*)"Disabled deep detail: ");
+		if (!(bits & TRACE_FACT)) Log(STDTRACELOG,(char*)"fact ");
+		if (!(bits & TRACE_INFER)) Log(STDTRACELOG,(char*)"infer ");
+		if (!(bits & TRACE_SAMPLE)) Log(STDTRACELOG,(char*)"sample ");
+		if ((bits != TRACE_HIERARCHY)) Log(STDTRACELOG,(char*)"hierarchy ");
+		if (!(bits & TRACE_SUBSTITUTE)) Log(STDTRACELOG,(char*)"substitute ");
+		if (!(bits & TRACE_VARIABLESET)) Log(STDTRACELOG,(char*)"varassign ");
+		if (!(bits & TRACE_QUERY)) Log(STDTRACELOG,(char*)"query ");
+		if (!(bits & TRACE_USER)) Log(STDTRACELOG,(char*)"user ");
+		if (!(bits & TRACE_POS)) Log(STDTRACELOG,(char*)"pos ");
+		if (!(bits & TRACE_TCP)) Log(STDTRACELOG,(char*)"tcp ");
+		if (!(bits & TRACE_JSON)) Log(STDTRACELOG,(char*)"json ");
+		if (!(bits & TRACE_USERFN)) Log(STDTRACELOG,(char*)"macro ");
+		if (!(bits & TRACE_USERCACHE)) Log(STDTRACELOG,(char*)"usercache ");
+		if (!(bits & TRACE_SQL)) Log(STDTRACELOG,(char*)"sql ");
+		if (!(bits & TRACE_LABEL)) Log(STDTRACELOG,(char*)"label ");
+		if (!(bits & TRACE_TOPIC)) Log(STDTRACELOG,(char*)"topic ");
+		if (!(bits & TRACE_ALWAYS)) Log(STDTRACELOG,(char*)"always ");
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
-	if (original) WalkDictionary(TraceTopicFunction);
+	if (original) WalkDictionary(TraceTopicFunction,1);
+}
+
+static void ShowTiming(unsigned int bits, bool original)
+{
+	unsigned int general = TRACE_FLOW;
+	unsigned int mild = (TRACE_PREPARE | TRACE_PATTERN);
+	unsigned int deep = (TRACE_ALWAYS | TRACE_JSON | TRACE_TOPIC | TRACE_QUERY | TRACE_USER | TRACE_TCP | TRACE_USERFN | TRACE_USERCACHE | TRACE_SQL);
+
+	// general
+	if (bits & general)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Enabled simple: ");
+		if (bits & TRACE_FLOW) Log(ECHOSTDTRACELOG, (char*)"ruleflow ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+
+	// mild detail
+	if (bits & mild)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Enabled mild detail: ");
+		if (bits & TRACE_PREPARE) Log(ECHOSTDTRACELOG, (char*)"prepare ");
+		if (bits & TRACE_PATTERN) Log(ECHOSTDTRACELOG, (char*)"pattern ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+	// deep detail
+	if (bits & deep)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Enabled deep detail: ");
+		if (bits & TRACE_QUERY) Log(ECHOSTDTRACELOG, (char*)"query ");
+		if (bits & TRACE_USER) Log(ECHOSTDTRACELOG, (char*)"user ");
+		if (bits & TRACE_TCP) Log(ECHOSTDTRACELOG, (char*)"tcp ");
+		if (bits & TRACE_JSON) Log(ECHOSTDTRACELOG, (char*)"json ");
+		if (bits & TRACE_USERFN) Log(ECHOSTDTRACELOG, (char*)"macro ");
+		if (bits & TRACE_USERCACHE) Log(ECHOSTDTRACELOG, (char*)"usercache ");
+		if (bits & TRACE_SQL) Log(ECHOSTDTRACELOG, (char*)"sql ");
+		if (bits & TRACE_TOPIC) Log(ECHOSTDTRACELOG, (char*)"topic ");
+		if (bits & TRACE_ALWAYS) Log(ECHOSTDTRACELOG, (char*)"always ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+
+	// general
+	if ((bits & general) != general)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Disabled simple: ");
+		if (!(bits & TRACE_FLOW)) Log(ECHOSTDTRACELOG, (char*)"ruleflow ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+
+	// mild detail
+	if ((bits & mild) != mild)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Disabled mild detail: ");
+		if (!(bits & TRACE_PREPARE)) Log(ECHOSTDTRACELOG, (char*)"prepare ");
+		if (!(bits & TRACE_PATTERN)) Log(ECHOSTDTRACELOG, (char*)"pattern ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+
+	// deep detail
+	if ((bits & deep) != deep)
+	{
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG, (char*)"Disabled deep detail: ");
+		if (!(bits & TRACE_QUERY)) Log(ECHOSTDTRACELOG, (char*)"query ");
+		if (!(bits & TRACE_USER)) Log(ECHOSTDTRACELOG, (char*)"user ");
+		if (!(bits & TRACE_TCP)) Log(ECHOSTDTRACELOG, (char*)"tcp ");
+		if (!(bits & TRACE_JSON)) Log(ECHOSTDTRACELOG, (char*)"json ");
+		if (!(bits & TRACE_USERFN)) Log(ECHOSTDTRACELOG, (char*)"macro ");
+		if (!(bits & TRACE_USERCACHE)) Log(ECHOSTDTRACELOG, (char*)"usercache ");
+		if (!(bits & TRACE_SQL)) Log(ECHOSTDTRACELOG, (char*)"sql ");
+		if (!(bits & TRACE_TOPIC)) Log(ECHOSTDTRACELOG, (char*)"topic ");
+		if (!(bits & TRACE_ALWAYS)) Log(ECHOSTDTRACELOG, (char*)"always ");
+		Log(ECHOSTDTRACELOG, (char*)"\r\n");
+	}
+	if (original) WalkDictionary(TimingTopicFunction,1);
 }
 
 static void C_Say(char* input)
@@ -6186,34 +6437,56 @@ static void C_Say(char* input)
 	wasCommand = OUTPUTASGIVEN;
 }
 
-static void C_NoTrace(char* input)
+static void NoTraceTime(char* input, unsigned int topicflag, unsigned int macroflag, char* cmd)
 {
 	char word[MAX_WORD_SIZE];
-	unsigned int val = NOTRACE_TOPIC;
+	unsigned int mode = 1;
 	while (input) 
 	{
-		input = ReadCompiledWord(input,word); // if using trace in a table, use closer "end" if you are using named flags
+		input = ReadCompiledWord(input,word); // if using in a table, use closer "end" if you are using named flags
 		if (!*word) break;
 		input = SkipWhitespace(input);
-		if (*word != '~') 
+		if (*word != '~' && *word != '^')
 		{
-			if (!stricmp(word,(char*)"on")) val = NOTRACE_TOPIC;
-			else if (!stricmp(word,(char*)"off")) val = 0;
-			else Log(STDUSERLOG,(char*)"Bad topic notrace request %s\r\n",word);
+			if (!stricmp(word, (char*)"on")) mode = 1;
+			else if (!stricmp(word,(char*)"off")) mode = 0;
+			else Log(STDTRACELOG,(char*)"Bad :%s request %s\r\n",cmd,word);
 		}
 		else
 		{
-			WORDP T = StoreWord(word);
-			if (val) T->internalBits |= val;
-			else T->internalBits &= -1 ^ NOTRACE_TOPIC;
+			unsigned int flag;
+			WORDP D = StoreWord(word);
+
+			if (D->word[0] == '~') flag = topicflag;
+			else if (D->word[0] == '^') flag = macroflag;
+			else continue;
+
+			if (mode == 1) D->internalBits |= flag;
+			else D->internalBits &= -1 ^ flag;
+
+			if (!fromScript) Log(STDTRACELOG, (char*)" %s %s %s\n", cmd, word, (mode == 1) ? (char*)"on" : (char*)"off");
 		}
 	}
+}
+
+static void C_NoTrace(char* input)
+{
+	NoTraceTime(input, NOTRACE_TOPIC, NOTRACE_FN, (char*)"notrace");
+	SaveTracedFunctions();
+}
+
+static void C_NoTime(char* input)
+{
+	NoTraceTime(input, NOTIME_TOPIC, NOTIME_FN, (char*)"notime");
+	SaveTimedFunctions();
 }
 
 static void C_Trace(char* input)
 {
 	char word[MAX_WORD_SIZE];
+	isTracing = false;
 	unsigned int flags = trace;
+	input = SkipWhitespace(input);
 	if (!*input) 
 	{
 		ShowTrace(trace,true);
@@ -6224,6 +6497,19 @@ static void C_Trace(char* input)
 	{
 		WalkDictionary(ClearTracedFunction,0);
 		WalkDictionary(ClearTracedTopic,0);
+	}
+	
+	if (!strnicmp(input,"factcreate",10)) // tracing on 
+	{
+		input = ReadCompiledWord(input+11,word); 
+		strcpy(traceSubject,word);
+		if (!stricmp(word,"null")) *traceSubject = 0;
+		input = ReadCompiledWord(input,word); 
+		strcpy(traceVerb,word);
+		if (!stricmp(word,"null")) *traceVerb = 0;
+		input = ReadCompiledWord(input,word); 
+		strcpy(traceObject,word);
+		if (!stricmp(word,"null")) *traceObject = 0;
 	}
 
 	while (input) 
@@ -6236,8 +6522,8 @@ static void C_Trace(char* input)
 			if (word[1]) memmove(word,word+1,strlen(word));
 			else continue;
 		}
-
-		if (!stricmp(word,(char*)"all")) flags = (unsigned int)-1;
+		
+		if (!stricmp(word,(char*)"all") ) flags = ((unsigned int)-1) ^ TRACE_ALWAYS;
 		else if (!stricmp(word,(char*)"none")) flags = 0;
 		else if (*word == '-') // remove this flag
 		{
@@ -6248,6 +6534,7 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"variables")) flags &= -1 ^ TRACE_VARIABLE; 
 			else if (!stricmp(word,(char*)"simple")) flags &= -1 ^ (TRACE_MATCH|TRACE_VARIABLE); 
 			else if (!stricmp(word,(char*)"input")) flags &= -1 ^ TRACE_INPUT;
+			else if (!stricmp(word,(char*)"ruleflow")) flags &= -1 ^ TRACE_FLOW;
 
 			else if (!stricmp(word,(char*)"prepare")) flags &= -1 ^ TRACE_PREPARE; 
 			else if (!stricmp(word,(char*)"output")) flags &= -1 ^ TRACE_OUTPUT;
@@ -6270,9 +6557,10 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"sql")) flags &= -1 ^  TRACE_SQL;
 			else if (!stricmp(word,(char*)"label")) flags &= -1 ^  TRACE_LABEL;
 			else if (!stricmp(word,(char*)"topic")) flags &= -1 ^  TRACE_TOPIC;
-			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
+			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
+			else if (!stricmp(word,(char*)"always")) flags &= -1 ^  TRACE_ALWAYS;
 		}
-		else if (IsNumberStarter(*word)) 
+		else if (IsNumberStarter(*word) && !IsAlphaUTF8(word[1])) 
 		{
 			ReadInt(word,*(int*)&flags);
 			break; // there wont be morez flags -- want :trace -1 in a table to be safe from reading the rest
@@ -6282,6 +6570,7 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"variables")) flags |= TRACE_VARIABLE; 
 		else if (!stricmp(word,(char*)"simple")) flags |= (TRACE_MATCH|TRACE_VARIABLE); 
 		else if (!stricmp(word,(char*)"input")) flags |= TRACE_INPUT;
+		else if (!stricmp(word,(char*)"ruleflow")) flags |= TRACE_FLOW;
 
 		else if (!stricmp(word,(char*)"prepare")) flags |= TRACE_PREPARE; 
 		else if (!stricmp(word,(char*)"output")) flags |= TRACE_OUTPUT;
@@ -6304,18 +6593,22 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"sql")) flags |= TRACE_SQL;
 		else if (!stricmp(word,(char*)"label")) flags |= TRACE_LABEL;
 		else if (!stricmp(word,(char*)"topic")) flags |= TRACE_TOPIC;
-		else if (!stricmp(word,(char*)"deep")) flags |= (TRACE_JSON|TRACE_TOPIC|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
+		else if (!stricmp(word,(char*)"deep")) flags |= (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
 		else if (!stricmp(word,(char*)"notthis")) flags |=  TRACE_NOT_THIS_TOPIC;
+		else if (!stricmp(word,(char*)"always")) flags |= TRACE_ALWAYS;
 
-		else if (!stricmp(word,(char*)"0") || !stricmp(word,(char*)"clear")) trace = 0;
+		else if (!stricmp(word,(char*)"0") || !stricmp(word,(char*)"clear")) flags = 0;
 		else if (!stricmp(word,(char*)"end")) break; // safe end
-		else if (*word == '!') // NOT tracing a topic 
+
+		else if (*word == '!') // NOT tracing a topic or function
 		{
 			if (word[1]) memmove(word,word+1,strlen(word));  // ! jammed against topic, separate it
 			else input = ReadCompiledWord(input,word);
 			WORDP D = FindWord(word);
-			if (D) D->internalBits |= NOTRACE_TOPIC;
-			SetTopicDebugMark(FindTopicIDByName(word),0); // clear any explicit trace on it
+			if (D->word[0] == '~') {
+				D->internalBits |= NOTRACE_TOPIC;
+				SetTopicDebugMark(FindTopicIDByName(word), 0); // clear any explicit trace on it
+			}
 		}
 		else if (*word == '^')
 		{
@@ -6326,19 +6619,31 @@ static void C_Trace(char* input)
 				if (!fromScript)
 				{
 					echo = true;
-					Log(STDUSERLOG,(char*)" tracing %s %s\n",word, (FN->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
+					Log(STDTRACELOG,(char*)" tracing %s %s\n",word, (FN->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
 				}
 			}
-			else Log(STDUSERLOG,(char*)"No such function %s\r\n",word);
+			else Log(STDTRACELOG,(char*)"No such function %s\r\n",word);
+		}
+		else if (*word == USERVAR_PREFIX)
+		{
+			WORDP D = StoreWord(word);
+			D->internalBits ^= MACRO_TRACE;
+			PrepareVariableChange(D,"",false);
+			if (!fromScript)
+			{
+				echo = true;
+				Log(STDTRACELOG,(char*)" tracing %s %s\n",word, (D->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
+			}
 		}
 		else if (*word == '~') // tracing a topic or rule by label
 		{
 			char* period = strchr(word,'.');
 			if (period) *period = 0;
 			int topic = FindTopicIDByName(word);
-			if (topic == 0) Log(STDUSERLOG,(char*)"No such topic %s\r\n",word);
+			if (topic == 0) Log(STDTRACELOG,(char*)"No such topic %s\r\n",word);
 			else if (!period) 
 			{
+				if (flags & TRACE_ON) flags ^= TRACE_ON;
 				if (!TI(topic)->topicDebug && !flags) SetTopicDebugMark(topic,(unsigned int)-1); // default all
 				else if (flags) SetTopicDebugMark(topic,flags); // just those named previously
 				else SetTopicDebugMark(topic,0); // disable
@@ -6355,29 +6660,215 @@ static void C_Trace(char* input)
 					found = true;
 					which = FindNextRule(NEXTRULE,which,id);
 				}
-				if (!found)  Log(STDUSERLOG,(char*)"cannot find %s.%s\r\n",word,period+1);
+				if (!found)  Log(STDTRACELOG,(char*)"cannot find %s.%s\r\n",word,period+1);
 			}
 			else if (IsDigit(period[1]))// did he use number notation?
 			{
 				int id = 0;
 				*period = '.';
 				char* rule = GetRuleTag(topic,id,word);
-				if (rule) SetDebugRuleMark(topic,id);
-				else Log(STDUSERLOG,(char*)"cannot find %s.%s\r\n",word,period+1);
+				if (rule) 
+				{
+					SetDebugRuleMark(topic,id);
+				}
+				else Log(STDTRACELOG,(char*)"cannot find %s.%s\r\n",word,period+1);
 			}
 		}
 	}
 	trace = flags;
-	if (!fromScript)
+	if (trace == TRACE_HIERARCHY) {;}
+	if (!fromScript) // do not show things automatically is
 	{
 		bool oldecho = echo;
 		echo = true;
-		Log(STDUSERLOG,(char*)" trace = %d (0x%x)\n",trace,trace);
-		if (trace) ShowTrace(trace,true);
-		SaveTracedFunctions();
-		WalkDictionary(TracedTopic,0);
+		if (trace && trace != TRACE_ON) 
+		{
+			isTracing = true;
+			ShowTrace(trace,true);
+		}
+		else trace = 0;
+		if (SaveTracedFunctions()) isTracing = true;
+		WalkDictionary(TracedTopic,1);
+		if (AreDebugMarksSet()) isTracing = true; // some rule is marked to trace
 		echo = oldecho;
+		if (isTracing) 
+		{
+			trace |= TRACE_ON;
+			echo = true;
+		}
+		else echo = false;
+		Log(STDTRACELOG,(char*)" trace = %d (0x%x)\n",trace,trace);
 	}	
+	else echo = true;
+	wasCommand = TRACECMD; // save results to user file
+}
+
+static void C_Time(char* input)
+{
+	char word[MAX_WORD_SIZE];
+	isTiming = false;
+	unsigned int flags = timing;
+	input = SkipWhitespace(input);
+	if (!*input)
+	{
+		ShowTiming(timing,true);
+		return;
+	}
+	ReadCompiledWord(input,word);
+	if (!stricmp(word,(char*)"none")) // turn off all topics and macros as well
+	{
+		WalkDictionary(ClearTimedFunction,0);
+		WalkDictionary(ClearTimedTopic,0);
+	}
+	
+	while (input)
+	{
+		input = ReadCompiledWord(input,word); // if using time in a table, use closer "end" if you are using named flags
+		if (!*word) break;
+		input = SkipWhitespace(input);
+		if (*word == '+') // add this flag is the default
+		{
+			if (word[1]) memmove(word, word + 1, strlen(word));
+			else continue;
+		}
+
+		if (!stricmp(word, (char*)"all")) flags = ((unsigned int)-1) ^ TIME_ALWAYS;
+		else if (!stricmp(word, (char*)"none")) flags = 0;
+		else if (*word == '-') // remove this flag
+		{
+			if (!word[1]) input = ReadCompiledWord(input, word);
+			else memmove(word, word + 1, strlen(word));
+			if (!stricmp(word, (char*)"notthis")) flags &= -1 ^ TIME_NOT_THIS_TOPIC;
+			if (!stricmp(word, (char*)"ruleflow")) flags &= -1 ^ TIME_FLOW;
+
+			if (!stricmp(word, (char*)"prepare")) flags &= -1 ^ TIME_PREPARE;
+			else if (!stricmp(word, (char*)"pattern")) flags &= -1 ^ TIME_PATTERN;
+			else if (!stricmp(word, (char*)"mild")) flags &= -1 ^ (TIME_PREPARE | TIME_PATTERN);
+
+			else if (!stricmp(word, (char*)"query")) flags &= -1 ^ TIME_QUERY;
+			else if (!stricmp(word, (char*)"user")) flags &= -1 ^ TIME_USER;
+			else if (!stricmp(word, (char*)"tcp")) flags &= -1 ^ TIME_TCP;
+			else if (!stricmp(word, (char*)"json")) flags &= -1 ^ TIME_JSON;
+			else if (!stricmp(word, (char*)"macro")) flags &= -1 ^ TIME_USERFN;
+			else if (!stricmp(word, (char*)"usercache")) flags &= -1 ^ TIME_USERCACHE;
+			else if (!stricmp(word, (char*)"sql")) flags &= -1 ^ TIME_SQL;
+			else if (!stricmp(word, (char*)"topic")) flags &= -1 ^ TIME_TOPIC;
+			else if (!stricmp(word, (char*)"deep")) flags &= -1 ^ (TIME_JSON | TIME_TOPIC | TIME_USERFN | TIME_QUERY | TIME_USER | TIME_TCP | TIME_USERCACHE | TIME_SQL);
+			else if (!stricmp(word, (char*)"always")) flags &= -1 ^ TIME_ALWAYS;
+		}
+		else if (IsNumberStarter(*word) && !IsAlphaUTF8(word[1]))
+		{
+			ReadInt(word, *(int*)&flags);
+			break; // there wont be morez flags -- want :time -1 in a table to be safe from reading the rest
+		}
+		else if (!stricmp(word, (char*)"ruleflow")) flags |= TIME_FLOW;
+
+		else if (!stricmp(word, (char*)"prepare")) flags |= TIME_PREPARE;
+		else if (!stricmp(word, (char*)"pattern")) flags |= TIME_PATTERN;
+		else if (!stricmp(word, (char*)"mild")) flags |= (TIME_PREPARE | TIME_PATTERN);
+
+		else if (!stricmp(word, (char*)"query")) flags |= TIME_QUERY;
+		else if (!stricmp(word, (char*)"user")) flags |= TIME_USER;
+		else if (!stricmp(word, (char*)"tcp")) flags |= TIME_TCP;
+		else if (!stricmp(word, (char*)"json")) flags |= TIME_JSON;
+		else if (!stricmp(word, (char*)"macro")) flags |= TIME_USERFN;
+		else if (!stricmp(word, (char*)"usercache")) flags |= TIME_USERCACHE;
+		else if (!stricmp(word, (char*)"sql")) flags |= TIME_SQL;
+		else if (!stricmp(word, (char*)"topic")) flags |= TIME_TOPIC;
+		else if (!stricmp(word, (char*)"deep")) flags |= (TIME_JSON | TIME_TOPIC | TIME_USERFN | TIME_QUERY | TIME_USER | TIME_TCP | TIME_USERCACHE | TIME_SQL);
+		else if (!stricmp(word, (char*)"notthis")) flags |= TIME_NOT_THIS_TOPIC;
+		else if (!stricmp(word, (char*)"always")) flags |= TIME_ALWAYS;
+
+		else if (!stricmp(word, (char*)"0") || !stricmp(word, (char*)"clear")) flags = 0;
+		else if (!stricmp(word, (char*)"end")) break; // safe end
+
+		else if (*word == '!') // NOT timing a topic 
+		{
+			if (word[1]) memmove(word, word + 1, strlen(word));  // ! jammed against topic, separate it
+			else input = ReadCompiledWord(input, word);
+			WORDP D = FindWord(word);
+			if (D->word[0] == '~') {
+				D->internalBits |= NOTIME_TOPIC;
+				SetTopicTimingMark(FindTopicIDByName(word), 0); // clear any explicit timing on it
+			}
+		}
+		else if (*word == '^')
+		{
+			WORDP FN = FindWord(word);
+			if (FN)
+			{
+				FN->internalBits ^= MACRO_TIME;
+				if (!fromScript)
+				{
+					Log(ECHOSTDTRACELOG, (char*)" timing %s %s\n", word, (FN->internalBits & MACRO_TIME) ? (char*)"on" : (char*)"off");
+				}
+			}
+			else Log(ECHOSTDTRACELOG, (char*)"No such function %s\r\n", word);
+		}
+		else if (*word == '~') // timing a topic or rule by label
+		{
+			char* period = strchr(word, '.');
+			if (period) *period = 0;
+			int topic = FindTopicIDByName(word);
+			if (topic == 0) Log(ECHOSTDTRACELOG, (char*)"No such topic %s\r\n", word);
+			else if (!period)
+			{
+				if (flags & TIME_ON) flags ^= TIME_ON;
+				if (!TI(topic)->topicTiming && !flags) SetTopicTimingMark(topic, (unsigned int)-1); // default all
+				else if (flags) SetTopicTimingMark(topic, flags); // just those named previously
+				else SetTopicTimingMark(topic, 0); // disable
+				flags = 0;
+			}
+			else if (IsAlphaUTF8(period[1])) // find ALL labelled statement and mark them
+			{
+				int id = 0;
+				char* which = GetTopicData(topic);
+				bool found = false;
+				while (which && *which && (which = FindNextLabel(topic, period + 1, which, id, true)))
+				{
+					SetTimingRuleMark(topic, id);
+					found = true;
+					which = FindNextRule(NEXTRULE, which, id);
+				}
+				if (!found)  Log(ECHOSTDTRACELOG, (char*)"cannot find %s.%s\r\n", word, period + 1);
+			}
+			else if (IsDigit(period[1]))// did he use number notation?
+			{
+				int id = 0;
+				*period = '.';
+				char* rule = GetRuleTag(topic, id, word);
+				if (rule)
+				{
+					SetTimingRuleMark(topic, id);
+				}
+				else Log(ECHOSTDTRACELOG, (char*)"cannot find %s.%s\r\n", word, period + 1);
+			}
+		}
+	}
+	timing = flags;
+	if (!fromScript) // do not show things automatically 
+	{
+		if (timing && timing != TIME_ON)
+		{
+			isTiming = true;
+			ShowTiming(timing, true);
+		}
+		else timing = 0;
+		if (SaveTimedFunctions()) isTiming = true;
+		WalkDictionary(TimedTopic,1);
+		if (AreTimingMarksSet()) isTiming = true; // some rule is marked to time
+		if (isTiming)
+		{
+			timing |= TIME_ON;
+		}
+		Log(ECHOSTDTRACELOG, (char*)" time = %d (0x%x)\n", timing, timing);
+	}
+	wasCommand = TRACECMD; // save results to user file
+}
+
+void C_Authorize(char* buffer)
+{
+	overrideAuthorization = (*buffer) ? true : false;
 }
 
 void C_Why(char* buffer)
@@ -6388,12 +6879,12 @@ void C_Why(char* buffer)
 		int topic = responseData[order].topic;
 		int id;
 		char* rest = GetRuleIDFromText(responseData[order].id,id);
-		Log(STDUSERLOG,(char*)"%s%s  %s\r\n",GetTopicName(topic),responseData[order].id,ShowRule(GetRule(topic,id)));
+		Log(STDTRACELOG,(char*)"%s%s  %s\r\n",GetTopicName(topic),responseData[order].id,ShowRule(GetRule(topic,id)));
 		if (*rest) // format will be ~topic.3.0.5.3.3  where last 3 are the via rule info
 		{
 			topic = atoi(rest+1);
 			GetRuleIDFromText(rest+1,id);
-			Log(STDUSERLOG,(char*)" via %s%s  %s\r\n",GetTopicName(topic),rest,ShowRule(GetRule(topic,id)));
+			Log(STDTRACELOG,(char*)" via %s%s  %s\r\n",GetTopicName(topic),rest,ShowRule(GetRule(topic,id)));
 		}
 	}
 }
@@ -6416,7 +6907,7 @@ static void CleanIt(char* word,uint64 junk) // remove cr from source lines for L
 
 	fseek (in, 0, SEEK_SET);
 	unsigned int val = (unsigned int) fread(buf,1,size,in);
-	fclose(in);
+	FClose(in);
 	if ( val != size) return;
 	buf[size] = 0;	// force an end
 
@@ -6427,7 +6918,7 @@ static void CleanIt(char* word,uint64 junk) // remove cr from source lines for L
 		if (buf[i] != '\r' && buf[i] != 26) fwrite(buf+i,1,1,out);	// remove cr and ^Z
 	}
 	if (buf[size-1] != '\n') fwrite((char*)"\n",1,1,out); // force ending line feed
-	fclose(out);
+	FClose(out);
 	free(buf);
 }
 
@@ -6456,7 +6947,7 @@ static void C_Clean(char* word) // remove CR for LINUX
 	WalkDirectory((char*)"src",CleanIt,0);
 }
 
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 static void C_EndPGUser(char* word)
 {
 	PGUserFilesCloseCode();
@@ -6494,7 +6985,7 @@ To get concepts in a file sorted alphabetically (both by concept and within) , d
 		AddInternalFlag(D,BUILD0|CONCEPT);
 	}
 
-	fclose(FopenUTF8Write((char*)"cset.txt"));
+	FClose(FopenUTF8Write((char*)"cset.txt"));
 	if (!*input) // hide this on second pass
 	{
 		WORDP D = FindWord((char*)"~a_dummy");
@@ -6513,7 +7004,7 @@ static void DisplayTables(char* topic)
 {
 	char args[MAX_WORD_SIZE];
 	sprintf(args,(char*)"( %s )",topic);
-	Callback(FindWord(GetUserVariable((char*)"$cs_abstract")),args);
+	Callback(FindWord(GetUserVariable((char*)"$cs_abstract")),args,false);
 }
 
 static void DoHeader(int count,char* basic,FILE* in,int id,unsigned int spelling)
@@ -6524,7 +7015,7 @@ static void DoHeader(int count,char* basic,FILE* in,int id,unsigned int spelling
 		if (!lineLimit)	
 		{
 			TabInset(count,false);
-			Log(STDUSERLOG,(char*)"%s",basic); 
+			Log(STDTRACELOG,(char*)"%s",basic); 
 		}
 		return;
 	}
@@ -6546,14 +7037,14 @@ retry:
 		if (!(spelling & ABSTRACT_PRETTY)) test += 2;
 		if ((type == 'x' || type == 'X') && *test != ' ' && ((TOPLEVELID(id) > TOPLEVELID(readID)) ||  (TOPLEVELID(id) == TOPLEVELID(readID) && REJOINDERID(id) > REJOINDERID(readID)) )) // global topic comment, dump it immediately and keep going
 		{
-			Log(STDUSERLOG,(char*)"\r\n%s\r\n",test+1); 
+			Log(STDTRACELOG,(char*)"\r\n%s\r\n",test+1); 
 			readID = -1;
 		}
 	}
 
 	if (test && (type == 'x' || type == 'X') && *test != ' ' && readID == id) // global topic comment for current match
 	{
-		Log(STDUSERLOG,(char*)"\r\n%s\r\n",test+1); 
+		Log(STDTRACELOG,(char*)"\r\n%s\r\n",test+1); 
 		readID = -1;
 		goto retry;
 	}
@@ -6570,18 +7061,18 @@ retry:
 	if (spelling & ABSTRACT_PRETTY && id == readID)  
 	{
 		TabInset(count,false);
-		Log(STDUSERLOG,(char*)"%s\r\n",test);
+		Log(STDTRACELOG,(char*)"%s\r\n",test);
 	}
 	if (!lineLimit)	
 	{
 		TabInset(count,false);
-		Log(STDUSERLOG,(char*)"%s",basic); 
+		Log(STDTRACELOG,(char*)"%s",basic); 
 	}
 
 	// display verify as pattern
 	if (id == readID && !lineLimit && !(spelling & ABSTRACT_PRETTY)) 
 	{
-		Log(STDUSERLOG,(char*)" %s =>   ",test);
+		Log(STDTRACELOG,(char*)" %s =>   ",test);
 	}
 }
 
@@ -6597,23 +7088,23 @@ static void DisplayTopic(char* name,int spelling)
 	if (spelling & ABSTRACT_PRETTY)
 	{
 		unsigned int lineSize = 0;
-		Log(STDUSERLOG,(char*)"\r\nTOPIC: %s",name);
+		Log(STDTRACELOG,(char*)"\r\nTOPIC: %s",name);
 		unsigned int flags = GetTopicFlags(topicID);
-		if (flags & TOPIC_SYSTEM) Log(STDUSERLOG,(char*)" SYSTEM");
-		if (flags & TOPIC_KEEP) Log(STDUSERLOG,(char*)" KEEP");
-		if (flags & TOPIC_REPEAT) Log(STDUSERLOG,(char*)" REPEAT");
-		if (flags & TOPIC_RANDOM) Log(STDUSERLOG,(char*)" RANDOM");
-		if (flags & TOPIC_NOSTAY) Log(STDUSERLOG,(char*)" NOSTAY");
-		if (flags & TOPIC_PRIORITY) Log(STDUSERLOG,(char*)" PRIORITY");
-		if (flags & TOPIC_LOWPRIORITY) Log(STDUSERLOG,(char*)" DEPRIORITIZE");
-		if (flags & TOPIC_NOBLOCKING) Log(STDUSERLOG,(char*)" NOBLOCKING");
-		if (flags & TOPIC_NOPATTERNS) Log(STDUSERLOG,(char*)" NOPATTERNS");
-		if (flags & TOPIC_NOGAMBITS) Log(STDUSERLOG,(char*)" NOGAMBITS");
-		if (flags & TOPIC_NOSAMPLES) Log(STDUSERLOG,(char*)" NOSAMPLES");
-		if (flags & TOPIC_NOKEYS) Log(STDUSERLOG,(char*)" NOKEYS");
-		if (flags & TOPIC_SAFE) Log(STDUSERLOG,(char*)" SAFE");
-		if (flags & TOPIC_SHARE) Log(STDUSERLOG,(char*)" SHARE");
-		Log(STDUSERLOG,(char*)" ((char*)");
+		if (flags & TOPIC_SYSTEM) Log(STDTRACELOG,(char*)" SYSTEM");
+		if (flags & TOPIC_KEEP) Log(STDTRACELOG,(char*)" KEEP");
+		if (flags & TOPIC_REPEAT) Log(STDTRACELOG,(char*)" REPEAT");
+		if (flags & TOPIC_RANDOM) Log(STDTRACELOG,(char*)" RANDOM");
+		if (flags & TOPIC_NOSTAY) Log(STDTRACELOG,(char*)" NOSTAY");
+		if (flags & TOPIC_PRIORITY) Log(STDTRACELOG,(char*)" PRIORITY");
+		if (flags & TOPIC_LOWPRIORITY) Log(STDTRACELOG,(char*)" DEPRIORITIZE");
+		if (flags & TOPIC_NOBLOCKING) Log(STDTRACELOG,(char*)" NOBLOCKING");
+		if (flags & TOPIC_NOPATTERNS) Log(STDTRACELOG,(char*)" NOPATTERNS");
+		if (flags & TOPIC_NOGAMBITS) Log(STDTRACELOG,(char*)" NOGAMBITS");
+		if (flags & TOPIC_NOSAMPLES) Log(STDTRACELOG,(char*)" NOSAMPLES");
+		if (flags & TOPIC_NOKEYS) Log(STDTRACELOG,(char*)" NOKEYS");
+		if (flags & TOPIC_SAFE) Log(STDTRACELOG,(char*)" SAFE");
+		if (flags & TOPIC_SHARE) Log(STDTRACELOG,(char*)" SHARE");
+		Log(STDTRACELOG,(char*)" ((char*)");
 		WORDP D = FindWord(name);
 		FACT* F = GetObjectNondeadHead(D);
 		while (F) 
@@ -6623,26 +7114,26 @@ static void DisplayTopic(char* name,int spelling)
 				char word[MAX_WORD_SIZE];
 				if (F->flags & ORIGINAL_ONLY) sprintf(word,(char*)"'%s ",WriteMeaning(F->subject));
 				else sprintf(word,(char*)"%s ",WriteMeaning(F->subject));
-				if (F->verb == Mexclude) Log(STDUSERLOG,(char*)"!");
+				if (F->verb == Mexclude) Log(STDTRACELOG,(char*)"!");
 				size_t wlen = strlen(word);
 				lineSize += wlen;
-				Log(STDUSERLOG,(char*)"%s",word);
+				Log(STDTRACELOG,(char*)"%s",word);
 				if (lineSize > 500) // avoid long lines
 				{
-					Log(STDUSERLOG,(char*)"\r\n     ");
+					Log(STDTRACELOG,(char*)"\r\n     ");
 					lineSize = 0;
 				}
 			}
 			F = GetObjectNondeadNext(F);
 		}
-		Log(STDUSERLOG,(char*)")\r\n\r\n");
+		Log(STDTRACELOG,(char*)")\r\n\r\n");
 	}
 	else 
 	{
-		Log(STDUSERLOG,(char*)"\r\n****** TOPIC: %s",name);
+		Log(STDTRACELOG,(char*)"\r\n****** TOPIC: %s",name);
 		topicBlock* block = TI(topicID);
-		if (block->topicRestriction) Log(STDUSERLOG,(char*)"  restricted to: %s\r\n",block->topicRestriction);
-		Log(STDUSERLOG,(char*)"\r\n");
+		if (block->topicRestriction) Log(STDTRACELOG,(char*)"  restricted to: %s\r\n",block->topicRestriction);
+		Log(STDTRACELOG,(char*)"\r\n");
 	}
 
 	WORDP D = FindWord(name);
@@ -6697,7 +7188,7 @@ static void DisplayTopic(char* name,int spelling)
 			*end = 0;
 			if (*rule == QUESTION || *rule == STATEMENT_QUESTION)
 			{
-				if (!*label && strstr(output,(char*)"factanswer")) Log(STDUSERLOG,(char*)"No label for: %s %s\r\n",pattern,output);
+				if (!*label && strstr(output,(char*)"factanswer")) Log(STDTRACELOG,(char*)"No label for: %s %s\r\n",pattern,output);
 			}
 			*end = ENDUNIT;
 			rule = FindNextRule(NEXTRULE,rule,id);
@@ -6733,7 +7224,8 @@ static void DisplayTopic(char* name,int spelling)
 					WORDP entry, canonical;
 					uint64 sysflags = 0;
 					uint64 cansysflags = 0;
-					GetPosData(2,word,entry,canonical,sysflags,cansysflags);
+					WORDP revise;
+					GetPosData(-1,word,revise,entry,canonical,sysflags,cansysflags);
 					if (canonical)
 					{
 						// if canonical is upper and entry is lower, dont show canonical
@@ -6867,7 +7359,7 @@ static void DisplayTopic(char* name,int spelling)
 				{ 
 					int len =  outputPtr - choiceStart; // size of [] 
 					strcpy(outputPtr++,(char*)"]");
-					if (!spelling && len >= lineLimit && len && lineLimit) Log(STDUSERLOG,(char*)"(%d) %s\r\n",len,choiceStart);
+					if (!spelling && len >= lineLimit && len && lineLimit) Log(STDTRACELOG,(char*)"(%d) %s\r\n",len,choiceStart);
 					choiceCharacters += len; 
 				}
 				break;
@@ -6890,20 +7382,20 @@ static void DisplayTopic(char* name,int spelling)
 					continue;
 				}
 				break;
-			case '$':
+			case USERVAR_PREFIX:
 				if (IsDigit(word[1])) break; // money $
 				// flow into these other variables
-			case '%': case '_': case '@': // match variable or set variable
+			case SYSVAR_PREFIX: case '_': case '@': // match variable or set variable
 				if (*output == '=' || output[1] == '=') // assignment
 				{
 					output = ReadCompiledWord(output,word); // assign op
 					output = ReadCompiledWord(output,word); // rhs item
-					if (*word == '^' && *output == '(') output = BalanceParen(output+1); // rhs function call
+					if (*word == '^' && *output == '(') output = BalanceParen(output+1,true,false); // rhs function call
 					while (IsArithmeticOperator(output)) // arithmetic with assignment
 					{
 						output = ReadCompiledWord(output,word); // op
 						output = ReadCompiledWord(output,word);  // next rhs item
-						if (*word == '^' && *output == '(') output = BalanceParen(output+1); // rhs function call
+						if (*word == '^' && *output == '(') output = BalanceParen(output+1,true,false); // rhs function call
 					}
 					continue;
 				}
@@ -6934,7 +7426,7 @@ static void DisplayTopic(char* name,int spelling)
 					output = strchr(output,'{') + 2;
 					continue;
 				}
-				else if (*output == '(') output = BalanceParen(output+1); //  end call
+				else if (*output == '(') output = BalanceParen(output+1,true,false); //  end call
 				break;
 			case ':':  // shouldnt be label inside []
 				break;
@@ -6944,7 +7436,7 @@ static void DisplayTopic(char* name,int spelling)
 				if (*old == ' ') // erase left hand of assignment
 				{
 					outputPtr = old + 1;
-					if (*outputPtr == '$' || *outputPtr == '_' || *outputPtr == '@' || *outputPtr == '%') *outputPtr = 0;
+					if (*outputPtr == USERVAR_PREFIX || *outputPtr == '_' || *outputPtr == '@' || *outputPtr == SYSVAR_PREFIX) *outputPtr = 0;
 				}
 				if (*output != '^') output = ReadCompiledWord(output,word);	// swallow next when not a function call
 				break;
@@ -7002,11 +7494,11 @@ static void DisplayTopic(char* name,int spelling)
 						}
 						if (D && (D->properties & PART_OF_SPEECH || D->internalBits & HAS_SUBSTITUTE)){;} //  we know this word
 						else if (D && D->internalBits & QUERY_KIND) {;} // a query
-						else if (IsUrl(copy,0) || apostrophe || copy[0] == '_' || copy[0] == '$' || copy[0] == '%' || copy[0] == '@' || copy[0] == '"') {;} 
+						else if (IsUrl(copy,0) || apostrophe || copy[0] == '_' || copy[0] == USERVAR_PREFIX || copy[0] == SYSVAR_PREFIX || copy[0] == '@' || copy[0] == '"') {;} 
 						else if (!FindCanonical( copy, 1,true)) wrong = badspell = true;
 					}
 					if (wrong) 
-						Log(STDUSERLOG,(char*)"%s\r\n",word);
+						Log(STDTRACELOG,(char*)"%s\r\n",word);
 					else sprintf(outputPtr,(char*)"%s ",word);
 					outputPtr += strlen(outputPtr);
 				}
@@ -7079,7 +7571,7 @@ static void DisplayTopic(char* name,int spelling)
 							start += wsize + 1;
 						}
 						if (choiceCharacters) len -= choiceCharacters - 1; // dont zero out len
-						if ((int)len > lineLimit) Log(STDUSERLOG,(char*)"(%d) %s\r\n",len,start);
+						if ((int)len > lineLimit) Log(STDTRACELOG,(char*)"(%d) %s\r\n",len,start);
 						choiceCharacters = 0;
 						*esc = '\\';
 						start = at = esc + 3; // skip \n and space
@@ -7091,7 +7583,7 @@ static void DisplayTopic(char* name,int spelling)
 				size_t wsize = strlen(word);
 				if (word[wsize-1] == ':') len -= wsize + 1;		// remove speaker flag
 				if (choiceCharacters) len -= choiceCharacters - 1; // dont zero out len
-				if ((int)len > lineLimit) Log(STDUSERLOG,(char*)"(%d) %s\r\n",len,at);
+				if ((int)len > lineLimit) Log(STDTRACELOG,(char*)"(%d) %s\r\n",len,at);
 				choiceCharacters = 0;
 			}
 			else 
@@ -7107,13 +7599,13 @@ static void DisplayTopic(char* name,int spelling)
 					memmove(lf+2 + gap,lf+2,strlen(lf+2)+1);
 					for (unsigned int i = 0; i < gap; ++i) lf[2+i] = ' ';
 				}
-				Log(STDUSERLOG,(char*)"%s\r\n",buffer);
+				Log(STDTRACELOG,(char*)"%s\r\n",buffer);
 			}
 		}
 		*end = ENDUNIT;
 		rule = FindNextRule(NEXTRULE,rule,id);
 	}
-	if (in) fclose(in);
+	FClose(in);
 	FreeBuffer();
 	FreeBuffer();
 }
@@ -7139,60 +7631,6 @@ static void MarkDownHierarchy(MEANING T)
 			F = GetObjectNondeadNext(F);
 		}
 	}
-}
-
-void CopyFile2File(const char* newname,const char* oldname, bool automaticNumber)
-{
-	char name[MAX_WORD_SIZE];
-	FILE* out;
-	if (automaticNumber) // get next number
-	{
-		const char* at = strchr(newname,'.');	//   get suffix
-		int len = at - newname;
-		strncpy(name,newname,len);
-		strcpy(name,newname); //   base part
-		char* endbase = name + len;
-		int j = 0;
-		while (++j)
-		{
-			sprintf(endbase,(char*)"%d.%s",j,at+1);
-			out = FopenReadWritten(name);
-			if (out) fclose(out);
-			else break;
-		}
-	}
-	else strcpy(name,newname);
-
-	FILE* in = FopenReadWritten(oldname);
-	if (!in) 
-	{
-		unlink(name); // kill any old one
-		return;	
-	}
-	out = FopenUTF8Write(name);
-	if (!out) // cannot create 
-	{
-		return;
-	}
-	fseek (in, 0, SEEK_END);
-	unsigned long size = ftell(in);
-	fseek (in, 0, SEEK_SET);
-
-	char buffer[RECORD_SIZE];
-	while (size >= RECORD_SIZE)
-	{
-		fread(buffer,1,RECORD_SIZE,in);
-		fwrite(buffer,1,RECORD_SIZE,out);
-		size -= RECORD_SIZE;
-	}
-	if (size > 0)
-	{
-		fread(buffer,1,size,in);
-		fwrite(buffer,1,size,out);
-	}
-
-	fclose(out);
-	fclose(in);
 }
 
 static void C_Abstract(char* input)
@@ -7246,7 +7684,7 @@ static void C_Abstract(char* input)
 	}
 	else if (*input && *input != '~') // from topic file
 	{
-		char filename[MAX_WORD_SIZE];
+		char filename[SMALL_WORD_SIZE];
 		ReadCompiledWord(input,filename);
 		for (int i = 1; i <= numberOfTopics; ++i) 
 		{
@@ -7265,7 +7703,7 @@ static void C_Abstract(char* input)
 		DisplayTables((char*)"*");
 	}
 	FreeBuffer();
-	if (lineLimit) Log(STDUSERLOG,(char*)"%d lines were over length %d\r\n",longLines,lineLimit);
+	if (lineLimit) Log(STDTRACELOG,(char*)"%d lines were over length %d\r\n",longLines,lineLimit);
 }
 
 
@@ -7281,14 +7719,14 @@ static void C_Diff(char* input)
 	FILE* in1 = FopenReadWritten(file1);
 	if (!in1) 
 	{
-		Log(STDUSERLOG,(char*)"%s does not exist\r\n",file1);
+		Log(STDTRACELOG,(char*)"%s does not exist\r\n",file1);
 		return;
 	}
 	FILE* in2 = FopenReadWritten(file2);
 	if (!in2) 
 	{
-		Log(STDUSERLOG,(char*)"%s does not exist\r\n",file2);
-		fclose(in1);
+		Log(STDTRACELOG,(char*)"%s does not exist\r\n",file2);
+		FClose(in1);
 		return;
 	}
 	char name[MAX_WORD_SIZE];
@@ -7305,7 +7743,7 @@ static void C_Diff(char* input)
 		{
 			if (fgets(buf2,maxBufferSize,in2)) 
 			{
-				Log(STDUSERLOG,(char*)"2nd file has more at line %d: %s\r\n",n,buf2);
+				Log(STDTRACELOG,(char*)"2nd file has more at line %d: %s\r\n",n,buf2);
 				fprintf(out,(char*)"2nd file has more at line %d: %s\r\n",n,buf2);
 				++err;
 			}
@@ -7314,7 +7752,7 @@ static void C_Diff(char* input)
 		if (!fgets(buf2,maxBufferSize,in2)) 
 		{
 			++err;
-			Log(STDUSERLOG,(char*)"1st file has more at line %d: %s\r\n",n,buf1);
+			Log(STDTRACELOG,(char*)"1st file has more at line %d: %s\r\n",n,buf1);
 			fprintf(out,(char*)"1st file has more at line %d: %s\r\n",n,buf1);
 			break;
 		}
@@ -7339,8 +7777,8 @@ static void C_Diff(char* input)
 		{
 			if (sep1) *sep1 = ':';
 			if (sep2) *sep2 = ':';
-			Log(STDUSERLOG,(char*)"%5d<<    %s\r\n",n,start1);
-			Log(STDUSERLOG,(char*)"     >>    %s\r\n",start2);
+			Log(STDTRACELOG,(char*)"%5d<<    %s\r\n",n,start1);
+			Log(STDTRACELOG,(char*)"     >>    %s\r\n",start2);
 			fprintf(out,(char*)"%5d<<    %s\r\n",n,start1);
 			fprintf(out,(char*)"     >>    %s\r\n",start2);
 		++err;
@@ -7348,11 +7786,11 @@ static void C_Diff(char* input)
 	}
 	FreeBuffer();
 	FreeBuffer();
-	fclose(in2);
-	fclose(in1);
+	FClose(in2);
+	FClose(in1);
 	fprintf(out,(char*)"For %s vs %s -  %d lines differ.\r\n",file1,file2,err);
-	Log(STDUSERLOG,(char*)"For %s vs %s - %d lines differ.\r\n",file1,file2,err);
-	fclose(out);
+	Log(STDTRACELOG,(char*)"For %s vs %s - %d lines differ.\r\n",file1,file2,err);
+	FClose(out);
 }
 
 static void IndentDisplay(char* one, char* two,char* display)
@@ -7430,7 +7868,7 @@ static void TrimIt(char* name,uint64 flag)
 	bool header = false;
 	FILE* out = FopenUTF8WriteAppend((char*)"TMP/tmp.txt");
 	if (!out) return;
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	*file = 0;
 	*prior = 0;
 	char* at;
@@ -7461,11 +7899,11 @@ static void TrimIt(char* name,uint64 flag)
 		{
 			if (flag == 9)
 			{
-				char file[MAX_WORD_SIZE];
+				char file[SMALL_WORD_SIZE];
 				sprintf(file,(char*)"%s/log-%s.txt",users,user);
 				FILE* out1 = FopenUTF8WriteAppend(file);
 				fprintf(out1,(char*)"%s\r\n",copy);
-				fclose(out1);
+				FClose(out1);
 			}
 			// other things you could do with start line here
 			continue;
@@ -7596,11 +8034,11 @@ static void TrimIt(char* name,uint64 flag)
 		else if ( flag == 8) sprintf(display,(char*)"%s\r\n\t(%s) %s\r\n",input,topic,output); // 2liner, indented computer   + topic
 		else if ( flag == 9) // build user logs
 		{
-			char file[MAX_WORD_SIZE];
+			char file[SMALL_WORD_SIZE];
 			sprintf(file,(char*)"%s/log-%s.txt",users,user);
 			FILE* out1 = FopenUTF8WriteAppend(file);
 			fprintf(out1,(char*)"%s\r\n",copy);
-			fclose(out1);
+			FClose(out1);
 			continue;
 		}
 		else if (flag == 10) // build stats
@@ -7666,15 +8104,15 @@ static void TrimIt(char* name,uint64 flag)
 
 		strcpy(prior,output); // what bot said previously
 	}
-    fclose(in);
-    fclose(out);
-	Log(STDUSERLOG,(char*)"Trim %s complete\r\n",name);
+    FClose(in);
+    FClose(out);
+	Log(STDTRACELOG,(char*)"Trim %s complete\r\n",name);
 }
 
 static void C_Trim(char* input) // create simple file of user chat from directory
 {   
  	char word[MAX_WORD_SIZE];
-	char file[MAX_WORD_SIZE];
+	char file[SMALL_WORD_SIZE];
 	char* original = input;
 	*file = 0;
 	input = ReadCompiledWord(input,word);
@@ -7697,7 +8135,7 @@ static void C_Trim(char* input) // create simple file of user chat from director
 		*directory = 0;	
 		sprintf(file,(char*)"%s/log-%s.txt",users,word);
 		FILE* x = FopenReadWritten(file);
-		if (x) fclose(x); // see if file exists. if not, then its a directory name
+		if (x) FClose(x); // see if file exists. if not, then its a directory name
 		else 
 		{
 			strcpy(directory,word);
@@ -7719,8 +8157,8 @@ static void C_Trim(char* input) // create simple file of user chat from director
 	
 	FILE* out = FopenUTF8Write((char*)"TMP/tmp.txt");
 	fprintf(out,(char*)"# %s\r\n",original);
-	Log(STDUSERLOG,(char*)"# %s\r\n",input);
-	fclose(out);
+	Log(STDTRACELOG,(char*)"# %s\r\n",input);
+	FClose(out);
 
 	if (!*file) WalkDirectory(directory,TrimIt,flag);
 	else TrimIt(file,flag);
@@ -7736,15 +8174,18 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":silent",C_Silent,(char*)"toggle silent - dont show outputs"}, 
 	{ (char*)":log",C_Log,(char*)"dump message into log file"}, 
 	{ (char*)":noreact",C_NoReact,(char*)"Disable replying to input"}, 
-	{ (char*)":notrace",C_NoTrace,(char*)"Toggle notracing during this topic"},
-	{ (char*)":redo",C_Redo,(char*)"Back up to turn n and try replacement user input"}, 
+	{ (char*)":notime",C_NoTime,(char*)"Toggle notiming during this topic"},
+	{ (char*)":notrace",C_NoTrace,(char*)"Toggle notracing during this topic" },
+	{ (char*)":redo",C_Redo,(char*)"Back up to turn n and try replacement user input"},
 	{ (char*)":retry",C_Retry,(char*)"Back up and try replacement user input or just redo last sentence"}, 
 	{ (char*)":say",C_Say,(char*)"Make chatbot say this line"}, 
 	{ (char*)":skip",C_Skip,(char*)"Erase next n gambits"}, 
 	{ (char*)":show",C_Show,(char*)"All, Input, Mark, Number, Pos, Stats, Topic, Topics, Why, Reject, Newlines"},
+	{ (char*)":time",C_Time,(char*)"Set timing variable (all none prepare match ruleflow pattern query json macro user usercache sql tcp topic)" },
 	{ (char*)":trace",C_Trace,(char*)"Set trace variable (all none basic prepare match output pattern infer query substitute hierarchy fact control topic pos)"},
 	{ (char*)":why",C_Why,(char*)"Show rules causing most recent output"}, 
-	
+	{ (char*)":authorize",C_Authorize,(char*)"Flip authorization for all debug commands"},
+
 	{ (char*)"\r\n---- Fact info",0,(char*)""}, 
 	{ (char*)":allfacts",C_AllFacts,(char*)"Write all facts to TMP/facts.tmp"}, 
 	{ (char*)":facts",C_Facts,(char*)"Display all facts with given word or meaning or fact set"}, 
@@ -7770,6 +8211,8 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":memstats",C_MemStats,(char*)"Show memory allocations"},
 	{ (char*)":list",C_List,(char*)"$ (variables) @ (factsets)  _  (match variables)   ^ (macros)   ~ (topics&concepts)"}, 
 	{ (char*)":queries",C_Queries,(char*)"List all defined queries"},
+	{ (char*)":timedfunctions",C_TimedFunctions,(char*)"List all user defined macros currently being timed" },
+	{ (char*)":timedtopics",C_TimedTopics,(char*)"List all topics currently being timed" },
 	{ (char*)":tracedfunctions",C_TracedFunctions,(char*)"List all user defined macros currently being traced"},
 	{ (char*)":tracedtopics",C_TracedTopics,(char*)"List all topics currently being traced"},
 	{ (char*)":variables",C_Variables,(char*)"Display current user/sysytem/match/all variables"}, 
@@ -7818,7 +8261,7 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":topicdump",C_TopicDump,(char*)"Dump topic data suitable for inclusion as extra topics into TMP/tmp.txt (:extratopic or PerformChatGivenTopic)"},
 	{ (char*)":builddict",BuildDictionary,(char*)" basic, layer0, layer1, or wordnet are options instead of default full"}, 
 	{ (char*)":clean",C_Clean,(char*)"Convert source files to NL instead of CR/LF for unix"},
-#ifndef DISCARDDATABASE
+#ifndef DISCARDPOSTGRES
 	{ (char*)":endpguser",C_EndPGUser,(char*)"Switch from postgres user topic to file system"},
 #endif
 	{ (char*)":extratopic",C_ExtraTopic,(char*)"given topic name and file as output from :topicdump, build in core topic and use it thereafter"},
@@ -7832,51 +8275,13 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":verifyspell",C_VerifySpell,(char*)"Regress spell checker against file"}, 
 	{ (char*)":verifysubstitutes",C_VerifySubstitutes,(char*)"Regress test substitutes of all kinds"}, 
 	{ (char*)":worddump",C_WordDump,(char*)"show words via hardcoded test"}, 
-
+	{ (char*)":verifySentence",C_VerifySentence,(char*)"verification data"}, 
+	
+#ifdef PRIVATE_CODE
+#include "../privatecode/privatetestingtable.cpp"
+#endif
 	{0,0,(char*)""},	
 };
-
-bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
-{
-	char buffer[MAX_WORD_SIZE];
-	if ( authorizations == (char*)1) // command line does not authorize
-	{
-		if (in) fclose(in);
-		return false;
-	}
-
-	//  check command line params
-	char* at = authorizations;
-	if (at) // command line given
-	{
-		if (*at == '"') ++at;
-		while (*at)
-		{
-			at = ReadCompiledWord(at,buffer);
-			size_t len = strlen(buffer);
-			if (at[len-1] == '"') at[len-1] = 0;
-			if (!stricmp(buffer,(char*)"all") || !stricmp(buffer,callerIP) || (*buffer == 'L' && buffer[1] == '_' && !stricmp(buffer+2,loginID))) //   allowed by IP or L_loginname
-			{
-				if (in) fclose(in);
-				return true;
-			}
-		}
-	}
-
-	if (!in) return (authorizations) ? false : true;			//   no restriction file
-
-	bool result = false;
-	while (ReadALine(buffer,in) >= 0 )
-    {
-		if (!stricmp(buffer,(char*)"all") || !stricmp(buffer,callerIP) || (*buffer == 'L' && buffer[1] == '_' && !stricmp(buffer+2,loginID))) //   allowed by IP or L_loginname
-		{ 
-			result = true;
-			break;
-		}
-	}
-	fclose(in);
-	return result;
-}
 
 void SortTopic(WORDP D,uint64* junk)
 {
@@ -8005,7 +8410,7 @@ void Sortit(char* name,int oneline)
 	}
 	if (drop) fprintf(out,(char*)"%s)\r\n",buffer);
 	FreeBuffer();
-	fclose(out);
+	FClose(out);
 }
 
 #endif
@@ -8020,7 +8425,7 @@ TestMode DoCommand(char* input,char* output,bool authorize)
 		Log(SERVERLOG,(char*)"Command %s issued but not authorized\r\n",input);
 		return FAILCOMMAND;
 	}
-	if (authorize) Log(STDUSERLOG,(char*)"Command: %s\r\n",input);
+	if (authorize) Log(STDTRACELOG,(char*)"Command: %s\r\n",input);
 	*currentFilename = 0;
 	char* ptr = NULL;
 	ReadNextSystemToken(NULL,ptr,NULL,false,false);		// flush any pending data in input cache

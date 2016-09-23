@@ -31,7 +31,7 @@ extern uint64 usedType;
 void SetRole( int i, uint64 role, bool revise = false,  int currentVerb = verbStack[roleIndex]);
 void DecodeTag(char* buffer, uint64 type, uint64 tie,uint64 originalbits);
 
-uint64 GetPosData( int at, char* original,WORDP &entry,WORDP &canonical,uint64 &sysflags,uint64 &cansysflags, bool firstTry = true,bool nogenerate = false,int start = 0);
+uint64 GetPosData( int at, char* original,WORDP &revise,WORDP &entry,WORDP &canonical,uint64 &sysflags,uint64 &cansysflags, bool firstTry = true,bool nogenerate = false,int start = 0);
 char* GetAdjectiveBase(char* word,bool nonew);
 char* GetAdverbBase(char* word,bool nonew);
 char* GetPastTense(char* word);

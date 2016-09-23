@@ -9,18 +9,20 @@ uint64* tags = NULL;
 char** comments = NULL;
 static char* Describe(int i,char* buffer);
 
+WORDP wordTag[MAX_SENTENCE_LENGTH]; 
+WORDP wordRole[MAX_SENTENCE_LENGTH];
 char* wordCanonical[MAX_SENTENCE_LENGTH]; //   chosen canonical form
-WORDP originalLower[MAX_SENTENCE_LENGTH];
-WORDP originalUpper[MAX_SENTENCE_LENGTH];
-WORDP canonicalLower[MAX_SENTENCE_LENGTH];
-WORDP canonicalUpper[MAX_SENTENCE_LENGTH];
-uint64 finalPosValues[MAX_SENTENCE_LENGTH];
-uint64 allOriginalWordBits[MAX_SENTENCE_LENGTH];	// starting pos tags in this word position
-uint64 lcSysFlags[MAX_SENTENCE_LENGTH];      // current system tags lowercase in this word position (there are no interesting uppercase flags)
+WORDP originalLower[MAX_SENTENCE_LENGTH]; // transient during marking
+WORDP originalUpper[MAX_SENTENCE_LENGTH]; // transient during marking
+WORDP canonicalLower[MAX_SENTENCE_LENGTH]; // transient during marking
+WORDP canonicalUpper[MAX_SENTENCE_LENGTH]; // transient during marking
+uint64 finalPosValues[MAX_SENTENCE_LENGTH]; // needed during execution
+uint64 allOriginalWordBits[MAX_SENTENCE_LENGTH];	// starting pos tags in this word position -- should merge some to finalpos
+uint64 lcSysFlags[MAX_SENTENCE_LENGTH];      // transient current system tags lowercase in this word position (there are no interesting uppercase flags)
 uint64 posValues[MAX_SENTENCE_LENGTH];			// current pos tags in this word position
 uint64 canSysFlags[MAX_SENTENCE_LENGTH];		// canonical sys flags lowercase in this word position 
 unsigned int parseFlags[MAX_SENTENCE_LENGTH];
-
+static unsigned char wasDescribed[256];
 static unsigned char describeVerbal[100];
 static unsigned char describePhrase[100];
 static unsigned char describeClause[100];
@@ -140,6 +142,9 @@ static char* DescribeComponent(int i,char* buffer,char* open, char* close) // ve
 
 static char* Describe(int i,char* buffer)
 {
+	if (wasDescribed[i]) 
+		return buffer; // protect against infinite xref loops
+	wasDescribed[i] = 1;
 	// before
 	int currentPhrase = phrases[i] & (-1 ^ phrases[i-1]); // only the new bit
 	if (!currentPhrase) currentPhrase = phrases[i];
@@ -326,6 +331,7 @@ void DumpSentence(int start,int end)
 	describedVerbals = 0;
 	describedPhrases = 0;
 	describedClauses = 0;
+	memset(wasDescribed,0,sizeof(wasDescribed));
 
 	for ( i = start; i <= to; ++i) // main sentence
 	{
@@ -512,7 +518,7 @@ void DumpSentence(int start,int end)
 		if (roles[i] & TAGQUESTION) strcat(buffer,(char*)" TAGQUESTION ");
 	}
 
-	Log(STDUSERLOG,(char*)"%s\r\n",buffer);
+	Log(STDTRACELOG,(char*)"%s\r\n",buffer);
 
 	FreeBuffer();
 	if (to < end) DumpSentence(to+1,end); // show next piece
@@ -525,9 +531,9 @@ char* roleSets[] =
 	(char*)"~whenunit",(char*)"~whereunit",(char*)"~howunit",(char*)"~whyunit",
 	(char*)"~subject2",(char*)"~verb2",(char*)"~object2",(char*)"~indirectobject2",(char*)"~byobject2",(char*)"~ofobject2",
 	(char*)"~appositive",(char*)"~adverbial",(char*)"~adjectival",
-	(char*)"~subjectcomplement",(char*)"~objectcomplement",(char*)"~address",(char*)"~postnominal_adjective",(char*)"adjective_complement",(char*)"omitted_time_prep",(char*)"omitted_of_prep",
-	(char*)"~comma_phrase",(char*)"tagquestion",(char*)"~absolute_phrase",(char*)"~omitted_subject_verb",(char*)"~reflexive",(char*)"~DISTANCE_NOUN_MODIFY_ADVERB",(char*)"~DISTANCE_NOUN_MODIFY_ADJECTIVE",(char*)"~TIME_NOUN_MODIFY_ADVERB",(char*)"~TIME_NOUN_MODIFY_ADJECTIVE",
-	(char*)"~conjunct_noun",(char*)"~conjunct_verb",(char*)"~conjunct_adjective",(char*)"conjunct_adverb",(char*)"conjunct_phrase",(char*)"conjunct_clause",(char*)"conjunct_sentence",
+	(char*)"~subjectcomplement",(char*)"~objectcomplement",(char*)"~address",(char*)"~postnominal_adjective",(char*)"~adjective_complement",(char*)"~omitted_time_prep",(char*)"~omitted_of_prep",
+	(char*)"~comma_phrase",(char*)"~tagquestion",(char*)"~absolute_phrase",(char*)"~omitted_subject_verb",(char*)"~reflexive",(char*)"~DISTANCE_NOUN_MODIFY_ADVERB",(char*)"~DISTANCE_NOUN_MODIFY_ADJECTIVE",(char*)"~TIME_NOUN_MODIFY_ADVERB",(char*)"~TIME_NOUN_MODIFY_ADJECTIVE",
+	(char*)"~conjunct_noun",(char*)"~conjunct_verb",(char*)"~conjunct_adjective",(char*)"~conjunct_adverb",(char*)"~conjunct_phrase",(char*)"~conjunct_clause",(char*)"~conjunct_sentence",
 	NULL
 };
 	

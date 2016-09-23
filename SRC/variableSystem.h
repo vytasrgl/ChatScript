@@ -15,8 +15,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #endif
 
 #define ALREADY_HANDLED -1
-#define MAX_USER_VARS 5000
-#define MAX_USERVAR_SIZE 5000
+#define MAX_USER_VARS 15000
+#define MAX_USERVAR_SIZE 20000
 
 #define ILLEGAL_MATCHVARIABLE -1
 
@@ -50,19 +50,22 @@ void ClearBotVariables();
 void ReestablishBotVariables();
 void NoteBotVariables();
 void InitVariableSystem();
+void SetWildCardGivenValue(char* original, char* canonical,int start, int end, int index);
 
 // debug data
 void ShowChangedVariables();
 void DumpUserVariables();
+void SetWildCardNull();
+void PrepareVariableChange(WORDP D,char* word,bool init);
 
 // user variable accessors
 void ClearUserVariableSetFlags();
 void ClearUserVariables(char* above = 0);
-char* GetUserVariable(const char* word);
-void SetUserVariable(const char* var, char* word, bool reuse = false);
+char* GetUserVariable(const char* word, bool nojson = false);
+void SetUserVariable(const char* var, char* word);
 void Add2UserVariable(char* var, char* word,char* op);
 
-char* PerformAssignment(char* word,char* ptr,FunctionResult& result);
+char* PerformAssignment(char* word,char* ptr,FunctionResult& result,bool nojson = false);
 
 
 #endif

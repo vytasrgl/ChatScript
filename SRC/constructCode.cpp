@@ -11,6 +11,7 @@ static void TestIf(char* ptr,FunctionResult& result)
 	//   if ($var) example of existence
 	//   if ('_3 == 5)  quoted matchvar
 	//   if (1) what an else does
+	ChangeDepth(1,"testif");
 	char* word1 = AllocateBuffer();
 	char* word2 = AllocateBuffer();
 	char op[MAX_WORD_SIZE];
@@ -37,9 +38,9 @@ resume:
 		if (result & SUCCESSCODES) result = NOPROBLEM_BIT;	// legal way to terminate the piece with success at any  level
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 		{
-			if (result & ENDCODES) id = Log(STDUSERTABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
-			else if (*word1 == '1' && word1[1] == 0) id = Log(STDUSERTABLOG,(char*)"else ");
-			else id = Log(STDUSERTABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
+			if (result & ENDCODES) id = Log(STDTRACETABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
+			else if (*word1 == '1' && word1[1] == 0) id = Log(STDTRACETABLOG,(char*)"else ");
+			else id = Log(STDTRACETABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
 		}
 		ChangeDepth(-1,(char*)"TestIf");
 		ptr = ReadCompiledWord(ptr,op); // find out what happens next after function call
@@ -63,23 +64,22 @@ resume:
 	}
 	else //   existence of non-failure or any content
 	{
-		if (*word1 == '%' || *word1 == '_' || *word1 == '$' || *word1 == '@' || *word1 == '?' || *word1 == '^')
+		if (*word1 == SYSVAR_PREFIX || *word1 == '_' || *word1 == USERVAR_PREFIX || *word1 == '@' || *word1 == '?' || *word1 == '^')
 		{
 			char remap[MAX_WORD_SIZE];
 			strcpy(remap,word1); // for tracing
-			if (*word1 == '^' && IsDigit(word1[1])) // simple function var, remap it
-			{
-				strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]); 
-			}
+			if (*word1 == '^' && IsDigit(word1[1])) strcpy(word1,callArgumentList[atoi(word1+1)+fnVarBase]);  // simple function var, remap it
 			char* found;
-			if (*word1 == '%') found = SystemVariable(word1,NULL);
+			if (word1[0] == LCLVARDATA_PREFIX && word1[1] == LCLVARDATA_PREFIX) 
+				found = word1 + 2;	// preevaled function variable
+			else if (*word1 == SYSVAR_PREFIX) found = SystemVariable(word1,NULL);
 			else if (*word1 == '_') found = wildcardCanonicalText[GetWildcardID(word1)];
-			else if (*word1 == '$') found = GetUserVariable(word1);
+			else if (*word1 == USERVAR_PREFIX) found = GetUserVariable(word1);
 			else if (*word1 == '?') found = (tokenFlags & QUESTIONMARK) ? (char*) "1" : (char*) "";
-			else if (*word1 == '^' && word1[1] == '$') // indirect var
+			else if (*word1 == '^' && word1[1] == USERVAR_PREFIX) // indirect var
 			{
 				found = GetUserVariable(word1+1);
-				found = GetUserVariable(found);
+				found = GetUserVariable(found,true);
 			}
 			else if (*word1 == '^' && word1[1] == '^' && IsDigit(word1[2])) found = ""; // indirect function var 
 			else if (*word1 == '^' && word1[1] == '_') found = ""; // indirect var
@@ -94,13 +94,13 @@ resume:
 				if (*remap == '^') sprintf(label,"%s->%s",remap,word1);
 				if (!*found) 
 				{
-					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (null) ",label);
-					else id = Log(STDUSERTABLOG,(char*)"If %s (null) ",label);
+					if (invert) id = Log(STDTRACETABLOG,(char*)"If !%s (null) ",label);
+					else id = Log(STDTRACETABLOG,(char*)"If %s (null) ",label);
 				}
 				else 
 				{
-					if (invert) id = Log(STDUSERTABLOG,(char*)"If !%s (%s) ",label,found);
-					else id = Log(STDUSERTABLOG,(char*)"If %s (%s) ",label,found);
+					if (invert) id = Log(STDTRACETABLOG,(char*)"If !%s (%s) ",label,found);
+					else id = Log(STDTRACETABLOG,(char*)"If %s (%s) ",label,found);
 				}
 			}
 			if (!*found) result = FAILRULE_BIT;
@@ -110,9 +110,9 @@ resume:
 		{
 			if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 			{
-				if (result & ENDCODES) id = Log(STDUSERTABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
-				else if (*word1 == '1' && word1[1] == 0) id = Log(STDUSERTABLOG,(char*)"else ");
-				else id = Log(STDUSERTABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
+				if (result & ENDCODES) id = Log(STDTRACETABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
+				else if (*word1 == '1' && word1[1] == 0) id = Log(STDTRACETABLOG,(char*)"else ");
+				else id = Log(STDTRACETABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
 			}
 			ptr -= strlen(word1) + 3; //   back up to process the word and space
 			ptr = FreshOutput(ptr,word2,result,OUTPUT_ONCE|OUTPUT_KEEPSET) + 2; //   returns on the closer and we skip to accel
@@ -124,31 +124,33 @@ resume:
 	{
 		if (!(result & ENDCODES)) 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" AND ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" AND ");
 			goto resume;
 			//   If he fails (result is one of ENDCODES), we fail
 		}
 		else 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" ... ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" ... ");
 		}
 	}
 	else if (*op == 'o') //  OR
 	{
 		if (!(result & ENDCODES)) 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" ... ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" ... ");
 			result = NOPROBLEM_BIT;
 		}
 		else 
 		{
-			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDUSERLOG,(char*)" OR ");
+			if (trace & TRACE_OUTPUT && CheckTopicTrace()) id = Log(STDTRACELOG,(char*)" OR ");
+			
 			goto resume;
 		}
 	}
 
 	FreeBuffer();
 	FreeBuffer();
+	ChangeDepth(-1,"testif");
 	if (trace & TRACE_OUTPUT &&  (result & ENDCODES) && CheckTopicTrace()) Log(id,(char*)"%s\r\n", "FAIL-if");
 	impliedIf = ALREADY_HANDLED;
 }
@@ -165,12 +167,12 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 
 		if (*ptr == '(') // old format - std if internals
 		{
-			endptr = strchr(ptr,'{') - 3;
+			endptr = strchr(ptr,'{') - 3; // offset to jump past pattern
 		}
 		else // new format, can use std if or pattern match
 		{
 			endptr = ptr + Decode(ptr);
-			ptr += 3; // skip jump to end of pattern
+			ptr += 3; // skip jump to end of pattern and point to pattern
 		}
 
 		//   Perform TEST condition
@@ -178,42 +180,40 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 		{
 			int start = 0;
 			int end = 0;
-			unsigned int wildcardSelector = 0;
 			unsigned int gap = 0;
 			wildcardIndex = 0;
 			bool uppercasem = false;
-			int positionStart, positionEnd;
 			int whenmatched = 0;
-			++globalDepth; // indent pattern
 			bool failed = false;
-			if (!Match(ptr+10,0,start,(char*)"(",true,gap,wildcardSelector,start,end,uppercasem,whenmatched,positionStart,positionEnd)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
-			--globalDepth;
+			if (!Match(ptr+10,0,start,(char*)"(",1,0,start,end,uppercasem,whenmatched,0,0)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
 			if (clearUnmarks) // remove transient global disables.
 			{
 				clearUnmarks = false;
 				for (int i = 1; i <= wordCount; ++i) unmarked[i] = 1;
 			}
+			ShowMatchResult((failed) ? FAILRULE_BIT : NOPROBLEM_BIT, ptr+10,NULL);
+
 			if (!failed) 
 			{
 				if (trace & (TRACE_PATTERN|TRACE_MATCH|TRACE_SAMPLE)  && CheckTopicTrace() ) //   display the entire matching responder and maybe wildcard bindings
 				{
-					Log(STDUSERTABLOG,(char*)"  **  Match: ");
+					Log(STDTRACETABLOG,(char*)"  **  Match: ");
 					if (wildcardIndex)
 					{
-						Log(STDUSERTABLOG,(char*)"  Wildcards: (");
+						Log(STDTRACETABLOG,(char*)"  Wildcards: (");
 						for (int i = 0; i < wildcardIndex; ++i)
 						{
-							if (*wildcardOriginalText[i]) Log(STDUSERLOG,(char*)"_%d=%s / %s   ",i,wildcardOriginalText[i],wildcardCanonicalText[i]);
-							else Log(STDUSERLOG,(char*)"_%d=  ",i);
+							if (*wildcardOriginalText[i]) Log(STDTRACELOG,(char*)"_%d=%s / %s (%d-%d)   ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
+							else Log(STDTRACELOG,(char*)"_%d=  ",i);
 						}
 					}
-					Log(STDUSERLOG,(char*)"\r\n");
+					Log(STDTRACELOG,(char*)"\r\n");
 				}
 			}
 			result = (failed) ? FAILRULE_BIT : NOPROBLEM_BIT;
 		}
 		else TestIf(ptr+2,result); 
-		ptr = endptr; // the end on accelerator of body
+		ptr = endptr; // now after pattern, pointing to the skip data to go past body.
 						
 		//   perform SUCCESS branch and then end if
 		if (!(result & ENDCODES)) //   IF test success - we choose this branch
@@ -223,6 +223,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			ptr = Output(ptr+5,buffer,result); //   skip accelerator-3 and space and { and space - returns on next useful token
 			ChangeDepth(-1,(char*)"HandleIf");
 			ptr += Decode(ptr);	//   offset to end of if entirely
+			if (*(ptr-1) == 0)  --ptr;// no space after?
 			ChangeDepth(-1,(char*)"HandleIf");
 			break;
 		}
@@ -230,9 +231,10 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			result = NOPROBLEM_BIT;		//   test result is not the IF result
 	
 		//   On fail, move to next test
-		ptr += Decode(ptr);
+		ptr +=  Decode(ptr);
+		if (*(ptr-1) == 0) return --ptr; // the if ended abruptly as a stream like in NOTRACE, and there is no space here
 		if (strncmp(ptr,(char*)"else ",5))  break; //   not an ELSE, the IF is over. 
-		ptr += 5; //   skip over ELSE space, aiming at the (of the condition
+		ptr += 5; //   skip over ELSE space, aiming at the ( of the next condition condition
 	}
 	return ptr;
 } 
@@ -269,7 +271,7 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 	while (counter-- > 0)
 	{
 		ChangeDepth(1,(char*)"HandleLoop");
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"loop (%d)\r\n",counter+1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"loop (%d)\r\n",counter+1);
 		FunctionResult result1;
 		Output(ptr,buffer,result1,OUTPUT_LOOP);
 		buffer += strlen(buffer);
@@ -283,7 +285,7 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 			break;//   potential failure if didnt add anything to buffer
 		}
 	}
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDUSERTABLOG,(char*)"end of loop\r\n");
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"end of loop\r\n");
 	--withinLoop;
 
 	currentIterator = oldIterator;
@@ -326,7 +328,8 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 				int junk;
 				if (GetNextSpot(D,index-1,junk,junk) == index) result = NOPROBLEM_BIT; // otherwise failed and we would have known
 			}
-			if (result == FAILRULE_BIT && !index) // laborious match try now
+			char* was = wildcardOriginalText[GetWildcardID(word1)];
+			if (result == FAILRULE_BIT && (!index || strchr(was,'_') || strchr(was,' '))) // laborious match try now
 			{
 				D1 = FindWord(val1);
 				if (D1 && D)
@@ -380,8 +383,8 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 		// convert null to numeric operator for < or >  -- but not for equality
 		if (!*val1 && IsDigit(*val2) && IsNumber(val2) && (*op == '<' || *op == '>')) strcpy(val1,(char*)"0");
 		else if (!*val2 && IsDigit(*val1) && IsNumber(val1) && (*op == '<' || *op == '>')) strcpy(val2,(char*)"0");
-
-		if (!IsDigitWord(val1,true) || !IsDigitWord(val2,true)) //   non-numeric string compare - bug, can be confused if digit starts text string
+		// treat #123 as string but +21545 and -12345 as numbers
+		if (*val1 == '#' || !IsDigitWord(val1,true) || *val2 == '#' ||  !IsDigitWord(val2,true)) //   non-numeric string compare - bug, can be confused if digit starts text string
 		{
 			char* arg1 = val1;
 			char* arg2 = val2;
@@ -479,21 +482,21 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 		}
 		if (!stricmp(word1,val1)) 
 		{
-			if (*word1) Log(STDUSERTABLOG,(char*)"if %s %s ",(*x) ? x : word1,op); // no need to show value
-			else Log(STDUSERTABLOG,(char*)"if null %s ",op);
+			if (*word1) Log(STDTRACETABLOG,(char*)"if %s %s ",(*x) ? x : word1,op); // no need to show value
+			else Log(STDTRACETABLOG,(char*)"if null %s ",op);
 		}
-		else if (!*val1) Log(STDUSERTABLOG,(char*)"if  %s (null) %s ",word1,op);
-		else if (*op == '&')  Log(STDUSERTABLOG,(char*)"if  %s (%s) %s ",word1,x,op);
-		else Log(STDUSERTABLOG,(char*)"if  %s (%s) %s ",word1,val1,op);
+		else if (!*val1) Log(STDTRACETABLOG,(char*)"if  %s (null) %s ",word1,op);
+		else if (*op == '&')  Log(STDTRACETABLOG,(char*)"if  %s (%s) %s ",word1,x,op);
+		else Log(STDTRACETABLOG,(char*)"if  %s (%s) %s ",word1,val1,op);
 
 		if (!strcmp(word2,val2)) 
 		{
-			if (*val2) id = Log(STDUSERLOG,(char*)" %s ",(*y) ? y : word2); // no need to show value
-			else id = Log(STDUSERLOG,(char*)" null "); 
+			if (*val2) id = Log(STDTRACELOG,(char*)" %s ",(*y) ? y : word2); // no need to show value
+			else id = Log(STDTRACELOG,(char*)" null "); 
 		}
-		else if (!*val2)  id = Log(STDUSERLOG,(char*)" %s (null) ",word2);
-		else if (*op == '&') id = Log(STDUSERLOG,(char*)" %s (%s) ",word2,y);
-		else id = Log(STDUSERLOG,(char*)" %s (%s) ",word2,val2);
+		else if (!*val2)  id = Log(STDTRACELOG,(char*)" %s (null) ",word2);
+		else if (*op == '&') id = Log(STDTRACELOG,(char*)" %s (%s) ",word2,y);
+		else id = Log(STDTRACELOG,(char*)" %s (%s) ",word2,val2);
 	}
 	else if (trace & TRACE_PATTERN && !output && CheckTopicTrace()) 
 	{

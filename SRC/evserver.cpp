@@ -22,7 +22,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 Copyright (C) 2011-2012Outfit7
 by Igor Lautar <igor.lautar@outfit7.com>
 
-Server implementation uses libev to trigger requests.
+Server implementation uses libev to trigger requests. Each request on a core is single-threaded
+so there are no concurrency issues.
 To compile, define EVSERVER during compilation, otherwise old pthread implementation is used.
 
 Server listener:
@@ -44,7 +45,11 @@ Handling client:
  - once data is written, client instance is deregistered from libev, socket closed and object destroyed
 */
 #include "common.h"
-#include "ev.h"
+#ifdef WIN32
+	#include "ev.h"
+#else
+	#include "evserver/ev.h"
+#endif
 #include "evserver.h"
 
 #include <vector>
@@ -566,15 +571,28 @@ int evsrv_do_chat(Client_t *client)
  	clock_t starttime = ElapsedMilliseconds(); 
     client->prepare_for_chat();
 	size_t len = strlen(client->message);
-	if (len >= MAX_BUFFER_SIZE) client->message[MAX_BUFFER_SIZE-1] = 0;
+	if (len >= MAX_BUFFER_SIZE - 100) client->message[MAX_BUFFER_SIZE-1] = 0;
 	strcpy(ourMainInputBuffer,client->message);
+	echo = false;
+	if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s\r\n",client->user,client->bot,ourMainInputBuffer);
+
     int turn = PerformChat(
         client->user,
         client->bot,
         ourMainInputBuffer, // input
         (char*)client->ip.c_str(),
         client->data); // where output goes
-	 
+	if (!strnicmp(ourMainOutputBuffer,"$#$",3) || pendingRestart) // special messages for a restart or a restart
+	{
+		strcpy(client->data,ourMainOutputBuffer+3);
+		*ourMainOutputBuffer = 0;
+		if (pendingRestart)
+		{
+			strcat(client->data," Restarting server. Please try again in a minute.\r\n");
+			Restart();
+		}
+	}
+		
 	if (*client->data == 0) 
 	{
 		client->data[0] = ' ';

@@ -4,7 +4,7 @@ bool showDepth = false;
 char serverLogfileName[200];				// file to log server to
 char logFilename[MAX_WORD_SIZE];			// file to user log to
 bool logUpdated = false;					// has logging happened
-char* logmainbuffer = 0;					// where we build a log line
+char logmainbuffer[MAX_BUFFER_SIZE];					// where we build a log line
 static bool pendingWarning = false;			// log entry we are building is a warning message
 static bool pendingError = false;			// log entry we are building is an error message
 struct tm* ptm;
@@ -17,11 +17,15 @@ bool oob = false;							// show oob data
 bool silent = false;						// dont display outputs of chat
 bool logged = false;
 bool showmem = false;
+int filesystemOverride = NORMALFILES;
 bool inLog = false;
 char* testOutput = NULL;					// testing commands output reroute
 
 // buffer information
 #define MAX_BUFFER_COUNT 22
+unsigned int maxInverseString = 0;
+unsigned int maxInverseStringGap = 0xffffffff;
+
 unsigned int maxBufferLimit = MAX_BUFFER_COUNT;		// default number of system buffers for AllocateBuffer
 unsigned int maxBufferSize = MAX_BUFFER_SIZE;		// how big std system buffers from AllocateBuffer should be
 unsigned int maxBufferUsed = 0;						// worst case buffer use - displayed with :variables
@@ -32,10 +36,12 @@ char* buffers = 0;							//   collection of output buffers
 static char* overflowBuffers[MAX_OVERFLOW_BUFFERS];	// malloced extra buffers if base allotment is gone
 
 unsigned char memDepth[512];				// memory usage at depth
+char* inverseStringDepth[512];				// inverseString at start of depth
+static char* nameDepth[512];				// who are we?
+static char* ruleDepth[512];				// current rule
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
-
 
 USERFILESYSTEM userFileSystem;
 static char staticPath[MAX_WORD_SIZE]; // files that never change
@@ -100,17 +106,30 @@ void JumpBack()
 	longjmp(scriptJump[jumpIndex], 1);
 }
 
-void myexit(char* msg)
+void myexit(char* msg, int code)
 {	
 	char name[MAX_WORD_SIZE];
 	sprintf(name,(char*)"%s/exitlog.txt",logs);
 	FILE* in = FopenUTF8WriteAppend(name);
 	if (in) 
 	{
-		fprintf(in,(char*)"%s - called myexit\r\n",msg);
-		fclose(in);
+		fprintf(in,(char*)"%s %d - called myexit at %s\r\n",msg,code,GetTimeInfo(true));
+		FClose(in);
 	}
-	exit(0);
+	if (code == 0) exit(0);
+	else exit(EXIT_FAILURE);
+}
+
+void mystart(char* msg)
+{	
+	char name[MAX_WORD_SIZE];
+	sprintf(name,(char*)"%s/startlog.txt",logs);
+	FILE* in = FopenUTF8WriteAppend(name);
+	if (in) 
+	{
+		fprintf(in,(char*)"System startup %s %s\r\n",msg,GetTimeInfo(true));
+		FClose(in);
+	}
 }
 
 /////////////////////////////////////////////////////////
@@ -121,7 +140,8 @@ void ResetBuffers()
 {
 	globalDepth = 0;
 	bufferIndex = baseBufferIndex;
-	memset(memDepth,0,511); 
+	memset(memDepth,0,sizeof(memDepth)); 
+	memset(inverseStringDepth,0,sizeof(inverseStringDepth)); 
 }
 
 void CloseBuffers()
@@ -138,14 +158,14 @@ void CloseBuffers()
 char* AllocateBuffer()
 {// CANNOT USE LOG INSIDE HERE, AS LOG ALLOCATES A BUFFER
 	char* buffer = buffers + (maxBufferSize * bufferIndex); 
-	if (showmem) Log(STDUSERLOG,(char*)"BUff alloc %d\r\n",bufferIndex);
+	if (showmem) Log(STDTRACELOG,(char*)"New BUff alloc %d\r\n",bufferIndex+1);
 	if (++bufferIndex >= maxBufferLimit ) // want more than nominally allowed
 	{
 		if (bufferIndex > (maxBufferLimit+2) || overflowIndex > 20) 
 		{
 			char word[MAX_WORD_SIZE];
 			sprintf(word,(char*)"Corrupt bufferIndex %d or overflowIndex %d\r\n",bufferIndex,overflowIndex);
-			Log(STDUSERLOG,(char*)"%s\r\n",word);
+			Log(STDTRACELOG,(char*)"%s\r\n",word);
 			myexit(word);
 		}
 		--bufferIndex;
@@ -156,12 +176,12 @@ char* AllocateBuffer()
 			overflowBuffers[overflowLimit] = (char*) malloc(maxBufferSize);
 			if (!overflowBuffers[overflowLimit]) 
 			{
-				Log(STDUSERLOG,(char*)"out of buffers\r\n");
+				Log(STDTRACELOG,(char*)"out of buffers\r\n");
 				myexit((char*)"out of buffers");
 			}
 			overflowLimit++;
 			if (overflowLimit >= MAX_OVERFLOW_BUFFERS) myexit((char*)"Out of overflow buffers\r\n");
-			Log(STDUSERLOG,(char*)"Allocated extra buffer %d\r\n",overflowLimit);
+			Log(STDTRACELOG,(char*)"Allocated extra buffer %d\r\n",overflowLimit);
 		}
 		buffer = overflowBuffers[overflowIndex++];
 	}
@@ -181,22 +201,99 @@ void FreeBuffer()
 	if (overflowIndex) --overflowIndex; // keep the dynamically allocated memory for now.
 	else if (bufferIndex)  --bufferIndex; 
 	else ReportBug((char*)"Buffer allocation underflow")
-	if (showmem) Log(STDUSERLOG,(char*)"Buffer free %d\r\n",bufferIndex);
+	if (showmem) Log(STDTRACELOG,(char*)"Buffer free %d\r\n",bufferIndex);
 }
 
 /////////////////////////////////////////////////////////
 /// FILE SYSTEM
 /////////////////////////////////////////////////////////
 
+int FClose(FILE* file)
+{
+	if (file) fclose(file);
+	*currentFilename = 0;
+	return 0;
+}
+
 void InitUserFiles()
 { 
 	// these are dynamically stored, so CS can be a DLL.
 	userFileSystem.userCreate = FopenBinaryWrite;
 	userFileSystem.userOpen = FopenReadWritten;
-	userFileSystem.userClose = fclose;
+	userFileSystem.userClose = FClose;
 	userFileSystem.userRead = fread;
 	userFileSystem.userWrite = fwrite;
-	userFileSystem.userSize = FileSize;
+	userFileSystem.userDelete = FileDelete;
+	userFileSystem.userDecrypt = NULL;
+	userFileSystem.userEncrypt = NULL;
+	filesystemOverride = NORMALFILES;
+}
+
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file)
+{
+	size_t len = userFileSystem.userRead(buffer,size,count,file);
+	if (userFileSystem.userDecrypt) userFileSystem.userDecrypt(buffer,size,count,file);
+	return len;
+}
+
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file)
+{
+	if (userFileSystem.userEncrypt) userFileSystem.userEncrypt(buffer,size,count,file);
+	return userFileSystem.userWrite(buffer,size,count,file);
+}
+
+void CopyFile2File(const char* newname,const char* oldname, bool automaticNumber)
+{
+	char name[MAX_WORD_SIZE];
+	FILE* out;
+	if (automaticNumber) // get next number
+	{
+		const char* at = strchr(newname,'.');	//   get suffix
+		int len = at - newname;
+		strncpy(name,newname,len);
+		strcpy(name,newname); //   base part
+		char* endbase = name + len;
+		int j = 0;
+		while (++j)
+		{
+			sprintf(endbase,(char*)"%d.%s",j,at+1);
+			out = FopenReadWritten(name);
+			if (out) fclose(out);
+			else break;
+		}
+	}
+	else strcpy(name,newname);
+
+	FILE* in = FopenReadWritten(oldname);
+	if (!in) 
+	{
+		unlink(name); // kill any old one
+		return;	
+	}
+	out = FopenUTF8Write(name);
+	if (!out) // cannot create 
+	{
+		return;
+	}
+	fseek (in, 0, SEEK_END);
+	unsigned long size = ftell(in);
+	fseek (in, 0, SEEK_SET);
+
+	char buffer[RECORD_SIZE];
+	while (size >= RECORD_SIZE)
+	{
+		fread(buffer,1,RECORD_SIZE,in);
+		fwrite(buffer,1,RECORD_SIZE,out);
+		size -= RECORD_SIZE;
+	}
+	if (size > 0)
+	{
+		fread(buffer,1,size,in);
+		fwrite(buffer,1,size,out);
+	}
+
+	fclose(out);
+	fclose(in);
 }
 
 int MakeDirectory(char* directory)
@@ -235,7 +332,7 @@ void C_Directories(char* x)
 	if (bytes >= 0) 
 	{
 		word[bytes] = 0;
-		Log(STDUSERLOG,(char*)"execution path: %s\r\n",word);
+		Log(STDTRACELOG,(char*)"execution path: %s\r\n",word);
 	}
 
 #ifdef WIN32
@@ -245,11 +342,11 @@ void C_Directories(char* x)
     #include <unistd.h>
     #define GetCurrentDir getcwd
 #endif
-	if (GetCurrentDir(word, MAX_WORD_SIZE)) Log(STDUSERLOG,(char*)"current directory path: %s\r\n",word);
+	if (GetCurrentDir(word, MAX_WORD_SIZE)) Log(STDTRACELOG,(char*)"current directory path: %s\r\n",word);
 
-	Log(STDUSERLOG,(char*)"readPath: %s\r\n",readPath);
-	Log(STDUSERLOG,(char*)"writeablePath: %s\r\n",writePath);
-	Log(STDUSERLOG,(char*)"untouchedPath: %s\r\n",staticPath);
+	Log(STDTRACELOG,(char*)"readPath: %s\r\n",readPath);
+	Log(STDTRACELOG,(char*)"writeablePath: %s\r\n",writePath);
+	Log(STDTRACELOG,(char*)"untouchedPath: %s\r\n",staticPath);
 }
 
 void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath)
@@ -299,10 +396,14 @@ FILE* FopenReadNormal(char* name) // normal C read unrelated to special paths
 	return fopen(name,(char*)"rb");
 }
 
-size_t FileSize(FILE* in)
+void FileDelete(const char* name)
+{
+}
+
+int FileSize(FILE* in, char* buffer, size_t allowedSize)
 {
 	fseek(in, 0, SEEK_END);
-	unsigned int actualSize = (unsigned int) ftell(in);
+	int actualSize = (int) ftell(in);
 	fseek(in, 0, SEEK_SET);
 	return actualSize;
 }
@@ -353,7 +454,7 @@ FILE* FopenUTF8WriteAppend(const char* filename,const char* flags)
 	else strcpy(path,filename);
 
 	FILE* in = fopen(path,(char*)"rb"); // see if file already exists
-	if (in) fclose(in);
+	if (in) fclose(in); // dont erase currentfilame, dont call FClose
 	FILE* out = fopen(path,flags);
 	if (out && !in) // mark file as UTF8 if new
 	{
@@ -499,12 +600,12 @@ char* GetUserPath(char* login)
 #ifdef USERPATHPREFIX
 	if (server)
 	{
-#ifndef DISCARDDATABASE
-		if (pguserdb) return path; // do not use this with postgres storage
-#endif
-		userPath = GetUserPathString(login);
-		MakePath(users, userPath);
-		path = (char*) userPath.c_str();
+		if (!filesystemOverride)  // do not use this with db storage
+		{
+			userPath = GetUserPathString(login);
+			MakePath(users, userPath);
+			path = (char*) userPath.c_str();
+		}
 	}
 #endif
 	return path;
@@ -514,16 +615,16 @@ char* GetUserPath(char* login)
 /// TIME FUNCTIONS
 /////////////////////////////////////////////////////////
 
-char* GetTimeInfo() //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
+char* GetTimeInfo(bool nouser,bool utc) //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
 {
     time_t curr = time(0); // local machine time
     if (regression) curr = 44444444; 
 	ptm = localtime (&curr);
-
-	char* utcoffset = GetUserVariable((char*)"$cs_utcoffset");
-	if (*utcoffset) // report relative time
+	char* utcoffset = (nouser) ? (char*)"" : GetUserVariable((char*)"$cs_utcoffset");
+	if (utc) utcoffset = (char*)"+0";
+	if (*utcoffset) // report UTC relative time - so if time is 1PM and offset is -1:00, time reported to user is 12 PM.  
 	{
-		ptm = gmtime (&curr); // UTC time reference structure
+		ptm = gmtime (&curr); 
 
 		// determine leap year status
 		int year = ptm->tm_year + 1900;
@@ -651,6 +752,7 @@ char* GetMyTime(time_t curr)
 	char *mytime = ctime(&curr); //	Www Mmm dd hh:mm:ss yyyy
 	static char when[40];
 	strncpy(when,mytime+4,3); // mmm
+	if (mytime[8] == ' ') mytime[8] = '0';
 	strncpy(when+3,mytime+8,2); // dd
 	when[5] = '\'';
 	strncpy(when+6,mytime+22,2); // yy
@@ -800,6 +902,7 @@ uint64 Hashit(unsigned char * data, int len,bool & hasUpperCharacters, bool & ha
 			c = GetLowercaseData(c);
 			hasUpperCharacters = true;
 		}
+		if (c == ' ') c = '_';	// force common hash on space vs _
 		crc = X64_Table[(crc >> 56) ^ c ] ^ (crc << 8 );
 	}
 	return crc;
@@ -817,23 +920,39 @@ unsigned int random(unsigned int range)
 /////////////////////////////////////////////////////////
 uint64 logCount = 0;
 
+void BugBacktrace(FILE* out)
+{
+	int i = globalDepth +1;
+	char rule[MAX_WORD_SIZE];
+	while (--i > 0) 
+	{
+		strncpy(rule,ruleDepth[i],50);
+		rule[50] = 0;
+		fprintf(out,"BugDepth %d: %s - %s\r\n",i,nameDepth[i],rule);
+	}
+}
+
 void ChangeDepth(int value,char* where)
 {
 	if (value < 0)
 	{
 		if (memDepth[globalDepth] != bufferIndex)
 		{
-			ReportBug((char*)"depth %d not closing bufferindex correctly at %s\r\n",globalDepth,where);
+			ReportBug((char*)"depth %d not closing bufferindex correctly at %s bufferindex now %d was %d\r\n",globalDepth,where,bufferIndex,memDepth[globalDepth]);
 			memDepth[globalDepth] = 0;
 		}
+		stringInverseFree = inverseStringDepth[globalDepth]; // deallocoate ARGUMENT space
 		globalDepth += value;
-		if (showDepth) Log(STDUSERLOG,(char*)"-depth after %s %d\r\n", where, globalDepth);
+		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d\r\n", globalDepth,where, bufferIndex);
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDUSERLOG,(char*)"+depth before %s %d\r\n", where, globalDepth);
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d\r\n",globalDepth, where, bufferIndex);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
+		nameDepth[globalDepth] = where;
+		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
+		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
 	}
 	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
 	if (globalDepth >= 511)
@@ -845,21 +964,47 @@ void ChangeDepth(int value,char* where)
 
 unsigned int Log(unsigned int channel,const char * fmt, ...)
 {
+	int channelID;
+	if (channel == SERVERLOG) channelID = 2;
+	else channelID = 1;
+
+	bool tracing = false;
+	if (channel == STDTRACELOG)
+	{
+		tracing = true;
+		channel = STDUSERLOG;
+	}
+	else if (channel == STDTRACETABLOG || channel == STDTRACEATTNLOG) tracing = true;
+
 	static unsigned int id = 1000;	if (quitting) return id;
 	logged = true;
 	bool localecho = false;
-	if (channel == ECHOSTDUSERLOG)
+	bool noecho = false;
+	if (channel == ECHOSTDTRACELOG)
 	{
 		localecho = true;
 		channel = STDUSERLOG;
 	}
-	if (!userLog && (channel == STDUSERLOG || channel > 1000 || channel == id) && !testOutput) return id;
-    if (!fmt || !logmainbuffer)  return id; // no format or no buffer to use
-	if ((channel == BUGLOG || channel == SERVERLOG) && server && !serverLog)  return id; // not logging server data
+	if (channel == STDTIMELOG) {
+		noecho = true;
+		channel = STDUSERLOG;
+	}
+	if (channel == STDTIMETABLOG) {
+		noecho = true;
+		channel = STDTRACETABLOG;
+	}
+	// allow user logging if trace is on.
+	if (!userLog && (channel == STDUSERLOG || channel > 1000 || channel == id) && !testOutput && !trace) return id;
+    if (!fmt)  return id; // no format or no buffer to use
+	if ((channel == SERVERLOG) && server && !serverLog)  return id; // not logging server data
+	if (channel == BUGLOG && server && !serverLog)  return id; // not logging server data
 
 	static char last = 0;
 	static int priordepth = 0;
-    char* at = logmainbuffer;
+	char* logbase = logmainbuffer;
+
+	// start writing normal data here
+    char* at = logbase;
     *at = 0;
     va_list ap; 
     va_start(ap,fmt);
@@ -878,11 +1023,11 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		at += 4;
 	}
 	//   any channel above 1000 is same as 101
-	else if (channel > 1000) channel = STDUSERTABLOG; //   force result code to indent new line
+	else if (channel > 1000) channel = STDTRACELOG; //   force result code to indent new line
 
 	//   channels above 100 will indent when prior line not ended
-	if (channel >= STDUSERTABLOG && last != '\\') //   indented by call level and not merged
-	{ //   STDUSERTABLOG 101 is std indending characters  201 = attention getting
+	if (channel >= STDTRACELOG && last != '\\') //   indented by call level and not merged
+	{ //   STDTRACELOG 101 is std indending characters  201 = attention getting
 		if (last == 1 && globalDepth == priordepth) {} // we indented already
 		else if (last == 1 && globalDepth > priordepth) // we need to indent a bit more
 		{
@@ -909,7 +1054,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (n < 0) n = 0; //   just in case
 			for (int i = 0; i < n; i++)
 			{
-				if (channel == STDUSERATTNLOG) *at++ = (i == 1) ? '*' : ' ';
+				if (channel == STDTRACEATTNLOG) *at++ = (i == 1) ? '*' : ' ';
 				else *at++ = (i == 4 || i == 9) ? ',' : '.';
 				// *at++ = ' ';
 			}
@@ -981,33 +1126,33 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
         at += strlen(at);
 		if (!ptr) break;
+		if ((at-logbase) >= (MAX_BUFFER_SIZE - 2000)) break; // prevent log overflow
     }
     *at = 0;
     va_end(ap); 
 
-	last = *(at-1); //   ends on NL?
+	last = (at > logbase) ? *(at-1) : 0; //   ends on NL?
 	if (fmt && !*fmt) last = 1; // special marker 
 	if (last == '\\') *--at = 0;	//   dont show it (we intend to merge lines)
 	logUpdated = true; // in case someone wants to see if intervening output happened
-	size_t bufLen = at - logmainbuffer;
- 	logmainbuffer[bufLen] = 0;
+	size_t bufLen = at - logbase;
 	inLog = true;
 	bool bugLog = false;
 		
 	if (pendingWarning)
 	{
-		AddWarning(logmainbuffer);
+		AddWarning(logbase);
 		pendingWarning = false;
 	}
-	else if (!strnicmp(logmainbuffer,(char*)"*** Warning",11)) 
+	else if (!strnicmp(logbase,(char*)"*** Warning",11)) 
 		pendingWarning = true;// replicate for easy dump later
 	
 	if (pendingError)
 	{
-		AddError(logmainbuffer);
+		AddError(logbase);
 		pendingError= false;
 	}
-	else if (!strnicmp(logmainbuffer,(char*)"*** Error",9)) 
+	else if (!strnicmp(logbase,(char*)"*** Error",9)) 
 		pendingError = true;// replicate for easy dump later
 
 #ifndef DISCARDSERVER
@@ -1024,37 +1169,47 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		FILE* bug = FopenUTF8WriteAppend(name);
 		char located[MAX_WORD_SIZE];
 		*located = 0;
-		if (currentTopicID && currentRule) sprintf(located,(char*)"%s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
+		if (currentTopicID && currentRule) sprintf(located,(char*)" script: %s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
 		if (bug) //   write to a bugs file
 		{
-			if (*currentFilename) fprintf(bug,(char*)"   in %s at %d: %s\r\n",currentFilename,currentFileLine,readBuffer);
-			if (channel == BUGLOG && *currentInput) fprintf(bug,(char*)"input:%d %s %s caller:%s callee:%s in sentence: %s at %s\r\n",volleyCount,GetTimeInfo(),logmainbuffer,loginID,computerID,currentInput,located);
-			fwrite(logmainbuffer,1,bufLen,bug);
-			fclose(bug);
+			if (*currentFilename) fprintf(bug,(char*)"BUG in %s at %d: %s ",currentFilename,currentFileLine,readBuffer);
+			if (!compiling && !loading && channel == BUGLOG && *currentInput)  
+			{
+				char* buffer = AllocateBuffer();
+				if (buffer)
+				{
+					fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located,currentInput);
+				}
+				else fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located);
+				FreeBuffer();
+			}
+			fwrite(logbase,1,bufLen,bug);
+			if (!compiling && !loading) BugBacktrace(bug);
+			fclose(bug); // dont use FClose
 
 		}
 		if ((echo||localecho) && !silent && !server)
 		{
 			if (*currentFilename) fprintf(stdout,(char*)"\r\n   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(),currentInput);
+			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
-		strcat(logmainbuffer,(char*)"\r\n");	//   end it
+		strcat(logbase,(char*)"\r\n");	//   end it
 		channel = STDUSERLOG;	//   use normal logging as well
 	}
 
 	if (server){} // dont echo  onto server console 
-    else if (((echo||localecho) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) fwrite(logmainbuffer,1,bufLen,stdout);
+    else if ((!noecho && (echo||localecho) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) fwrite(logbase,1,bufLen,stdout);
 	bool doserver = true;
 
     FILE* out = NULL;
 	
 	if (server && trace && !userLog) channel = SERVERLOG;	// force traced server to go to server log since no user log
 
-#ifndef DISCARDDATABASE 
-	if (pguserdb)
+#ifndef DISCARDPOSTGRES 
+	if (postgresparams)
 	{
 		doserver = false;
-		pguserLog(logmainbuffer,bufLen);
+		pguserLog(logbase,bufLen);
 	}
 	else
 #endif
@@ -1070,7 +1225,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (!out && !inLog) ReportBug((char*)"unable to create user logfile %s",logFilename);
 		}
 	}
-    else 
+    else // do server log 
 	{
 		out = FopenUTF8WriteAppend(serverLogfileName); 
  		if (!out) // see if we can create the directory (assuming its missing)
@@ -1086,26 +1241,27 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
     {
 		if (doserver)
 		{
-			fwrite(logmainbuffer,1,bufLen,out);
+			fwrite(logbase,1,bufLen,out);
 			if (!bugLog);
  			else if (*currentFilename) fprintf(out,(char*)"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(),currentInput);
+			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
-		fclose(out);
-		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logmainbuffer);
+		fclose(out); // dont use FClose
+		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logbase);
     }
 	
 #ifndef DISCARDSERVER
 	if (testOutput && server) // command outputs
 	{
 		size_t len = strlen(testOutput);
-		if ((len + bufLen) < (maxBufferSize - 10)) strcat(testOutput,logmainbuffer);
+		if ((len + bufLen) < (maxBufferSize - 10)) strcat(testOutput,logbase);
 	}
 
 #ifndef EVSERVER
     if (server) ReleaseLogLock();
 #endif
 #endif
+
 	inLog = false;
 	return ++id;
 }
