@@ -2717,6 +2717,23 @@ static FunctionResult ActualInputRangeCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+static FunctionResult OriginalInputRangeCode(char* buffer) 
+{ // for range of actual input words, get the original input range
+	int start = atoi(ARGUMENT(1));
+	int end = atoi(ARGUMENT(2));
+	if (start < 0 || start > wordCount) return FAILRULE_BIT;
+	if (end < 0 || end > wordCount || end < start) return FAILRULE_BIT;
+
+	// set derivation data on original words of user before we do substitution
+	int first = 0;
+	int last = 0;
+	// actual word is from this range in original
+	int a = derivationIndex[start] >> 8; // from here
+	int b  = (derivationIndex[end] & 0x00ff);  // to here including here  The end may be beyond wordCount if words have been deducted by now
+	sprintf(buffer,"%d",(a << 8) + b);
+	return NOPROBLEM_BIT;
+}
+
 static FunctionResult InputCode(char* buffer) 
 {      // when supplying multiple sentences, must do them in last first order
 	if (inputCounter++ > 5) 
@@ -3408,6 +3425,17 @@ static FunctionResult PostPrintAfterCode(char* buffer) // only works if post pro
 	return result;
 }
 
+static FunctionResult SleepCode(char* buffer)
+{
+	int milliseconds = atoi(ARGUMENT(1));
+#ifdef WIN32
+    Sleep(milliseconds);
+#else
+    usleep(milliseconds * 1000);
+#endif 
+	return NOPROBLEM_BIT;
+}
+
 static FunctionResult ReviseOutputCode(char* buffer)
 {
 	// if (postProcessing) return FAILRULE_BIT;
@@ -3470,6 +3498,8 @@ static FunctionResult ReturnCode(char* buffer)
 		int xx = 0;
 	}
 	//	memmove(functionAnswerBase,output,strlen(output)+1);
+	if (!stricmp(buffer,"null")) 
+		*buffer = 0;	// treat null as null
 	return ENDCALL_BIT;
 }
 
@@ -3668,6 +3698,7 @@ static FunctionResult SaveSentenceCode(char* buffer)
 	
 	int total = size;
 	if (total & 1) ++total; // round to even set of words, for int64 align
+	total += 1; // save bits for moretocome and moretocomequestion
 
 	unsigned int* memory = (unsigned int*) AllocateString(NULL,total/2,8,false); // int64 aligned
 	memory[0] = savedSentences;
@@ -3675,7 +3706,9 @@ static FunctionResult SaveSentenceCode(char* buffer)
 	savedSentences = String2Index((char*) memory);
 	((uint64*)memory)[1] = tokenFlags; // 2,3
 	memory[4] = wordCount;
-	int n = 5; // store from here
+	memory[5] = (moreToCome) ? 1 : 0;
+	if (moreToComeQuestion) memory[5] |= 2;
+	int n = 6; // store from here
 	WORDP D;
 	for (int i = 1; i <= wordCount; ++i)
 	{
@@ -3757,7 +3790,10 @@ static FunctionResult RestoreSentenceCode(char* buffer)
 	ClearWhereInSentence();
 	tokenFlags = ((uint64*)memory)[2]; // 2,3
 	wordCount = memory[4];
-	int n = 5; 
+	moreToCome = (memory[5] & 1) ? true : false;
+	moreToComeQuestion = (memory[5] & 2) ? true : false;
+	
+	int n = 6; 
 	WORDP D;
 	for (int i = 1; i <= wordCount; ++i)
 	{
@@ -7717,7 +7753,8 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^decodeinputtoken",DecodeInputTokenCode,1,SAMELINE,(char*)"Display flags of a cs_token or %token value "}, 
 	{ (char*)"^input",InputCode,STREAM_ARG,0,(char*)"submit stream as input immediately after current input"},
 	{ (char*)"^original",OriginalCode,STREAM_ARG,0,(char*)"retrieve raw user input corresponding to this match variable"},
-	{ (char*)"^actualinputrange",ActualInputRangeCode,2,0,(char*)"what range in actual input does this range in input generate"},
+	{ (char*)"^actualinputrange",ActualInputRangeCode,2,0,(char*)"what range in actual input does this range in original input generate"},
+	{ (char*)"^originalinputrange",OriginalInputRangeCode,2,0,(char*)"what range in original input does this range in actual input come from"},
 	{ (char*)"^partofspeech",PartOfSpeechCode,STREAM_ARG,SAMELINE,(char*)"given index of word in sentence return 64-bit pos data from parsing"}, 
 	{ (char*)"^phrase",PhraseCode,STREAM_ARG,0,(char*)"get noun or prep phrase at location, possibly canonical"},
 	{ (char*)"^removetokenflags",RemoveTokenFlagsCode,1,SAMELINE,(char*)"remove value from tokenflags"}, 
@@ -7780,6 +7817,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^notrace",NoTraceCode,STREAM_ARG,0,(char*)"execute code with trace off (except for topics and functions)"}, 
 	{ (char*)"^savesentence",SaveSentenceCode,1,0,(char*)"memorize current sentence analysis given label"}, 
 	{ (char*)"^restoresentence",RestoreSentenceCode,1,0,(char*)"recover prior saved sentence analysis given label"}, 
+	{ (char*)"^sleep",SleepCode,1,0,(char*)"wait n milliseconds"}, 
 	{ (char*)"^if",IfCode,STREAM_ARG,0,(char*)"the if statement"}, 
 	{ (char*)"^loop",LoopCode,STREAM_ARG,0,(char*)"the loop statement"}, 
 

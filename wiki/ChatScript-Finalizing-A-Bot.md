@@ -1,6 +1,8 @@
 # ChatScript Finalizing a Bot Manual
 
 >© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
+
+
 >Revision 1/21/2016 cs6.1a
 
 OK. You've written a bot. It sort of seems to work. Now, before releasing it, you should
