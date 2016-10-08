@@ -273,7 +273,7 @@ If you stick a rule into Harry's `~introductions` topic like:
 u: (what are you) I am a robot
 ```
 
-Then `:verify sample` will complain about the sample. It is saying hat if you are not
+Then `:verify sample` will complain about the sample. It is saying that if you are not
 ALREADY in the topic `~introductions`, then the input you give will get answered by
 some other topic (quibble) and not by this topic. The reason this would be true is that
 there are no keywords in the `~introduction` topic that could allow it to be found 
