@@ -58,6 +58,7 @@
     <ClCompile Include="..\SRC\jsmn.cpp" />
     <ClCompile Include="..\SRC\json.cpp" />
     <ClCompile Include="..\SRC\mongodb.cpp" />
+    <ClCompile Include="..\SRC\mysql.cpp" />
     <ClCompile Include="..\SRC\os.cpp" />
     <ClCompile Include="..\SRC\functionExecute.cpp" />
     <ClCompile Include="..\SRC\infer.cpp" />
@@ -91,6 +92,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Static</UseOfMfc>
+    <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -113,8 +115,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\..\BINARIES</OutDir>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>c:\chatscript/privatesrc;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
-    <LibraryPath>$(ProjectDir)..SRC/;../SRC/curl;$(LibraryPath)</LibraryPath>
+    <IncludePath>c:\chatscript\SRC\mysql\include;c:\chatscript/privatesrc;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
+    <LibraryPath>c:\chatscript/BINARIES;$(ProjectDir)..SRC/;../SRC/curl;$(LibraryPath)</LibraryPath>
     <SourcePath>$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

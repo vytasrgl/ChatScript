@@ -287,8 +287,8 @@ SOURCE:
 	{
 		char file[SMALL_WORD_SIZE];
 		ReadCompiledWord(ptr+8,file);
-		FILE* source = fopen(file,(char*)"rb");
-		ReadALine(ptr,source,100000 - 100);
+		FILE* sourcefile = fopen(file,(char*)"rb");
+		ReadALine(ptr,sourcefile,100000 - 100);
 	}
 
 	echo = 1;
@@ -326,25 +326,25 @@ SOURCE:
 			if (!strnicmp(SkipWhitespace(ptr),(char*)":restart",8)) 
 			{
 				// send restart on to server...
-				size_t len = (ptr-data) + 1 + strlen(ptr);
-				TCPSocket *sock = new TCPSocket(serverIP, (unsigned short)port);
+				len = (ptr-data) + 1 + strlen(ptr);
+				sock = new TCPSocket(serverIP, (unsigned short)port);
 				sock->send(data, len );
 				printf((char*)":restart sent data to port %d\r\n",port);
 
 				int bytesReceived = 1;              // Bytes read on each recv()
-				int totalBytesReceived = 0;         // Total bytes read
-				char* base = ptr;
+				int totalBytesRead = 0;         // Total bytes read
+				char* inbase = ptr;
 				while (bytesReceived > 0) 
 				{
 					// Receive up to the buffer size bytes from the sender
-					bytesReceived = sock->recv(base, MAX_WORD_SIZE);
-					totalBytesReceived += bytesReceived;
-					base += bytesReceived;
+					bytesReceived = sock->recv(inbase, MAX_WORD_SIZE);
+					totalBytesRead += bytesReceived;
+					inbase += bytesReceived;
 					printf((char*)"Received %d bytes\r\n",bytesReceived);
-					if (totalBytesReceived > 2 && ptr[totalBytesReceived-3] == 0 && ptr[totalBytesReceived-2] == 0xfe && ptr[totalBytesReceived-1] == 0xff) break; // positive confirmation was enabled
+					if (totalBytesRead > 2 && ptr[totalBytesRead-3] == 0 && ptr[totalBytesRead-2] == 0xfe && ptr[totalBytesRead-1] == 0xff) break; // positive confirmation was enabled
 				}
 				delete(sock);
-				*base = 0;
+				*inbase = 0;
 				Log(STDTRACELOG,(char*)"%s",ptr); 	// chatbot replies this
 
 				printf((char*)"%s",(char*)"\r\nEnter client user name: ");
@@ -1057,6 +1057,7 @@ static void* MainChatbotServer()
 	printf((char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
 	serverLog = oldserverlog;
 	int returnValue = 0;
+
 	while (1)
 	{
 #ifdef WIN32
@@ -1065,9 +1066,11 @@ static void* MainChatbotServer()
 	try {
 #endif
 		if (quitting) return NULL; 
+
 		ServerGetChatLock();
 		startServerTime = ElapsedMilliseconds(); 
-
+		bool restarted = false;
+RESTART_RETRY:
 		// chatlock mutex controls whether server is processing data or client can hand server data.
 		// That we now have it means a client has data for us.
 		// we own the chatLock again from here on so no new client can try to pass in data. 
@@ -1092,6 +1095,21 @@ static void* MainChatbotServer()
 		if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s %s\r\n",user,bot,ourMainInputBuffer, dateLog);
 
 		returnValue = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
+
+		// special controls
+		if (returnValue == PENDING_RESTART) // special messages
+		{
+			if (!restarted) 
+			{
+				Restart();
+				restarted = true;
+				Log(SERVERLOG,(char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
+				printf((char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
+				goto RESTART_RETRY;
+			}
+			strcpy(ourMainOutputBuffer,(char*)"Restart completed.");
+		}
+		*((int*)clientBuffer) = returnValue;
 	} // end try block on calling cs performchat
 #ifdef WIN32
 	_except(true)
@@ -1105,17 +1123,7 @@ static void* MainChatbotServer()
 #else
 	try {
 #endif
-		*((int*)clientBuffer) = returnValue;
-
-		// special controls
-		if (!strnicmp(ourMainOutputBuffer,"$#$",3)) // special messages
-		{
-			memmove(ourMainOutputBuffer,ourMainOutputBuffer+3,strlen(ourMainOutputBuffer)-2);
-			if (pendingRestart) strcat(ourMainOutputBuffer," Restarting server. Please try again in a minute.\r\n");
-		}
-
 		ServerTransferDataToClient();
-		if (pendingRestart) Restart();
 	}
 #ifdef WIN32
 	_except(true) 

@@ -572,26 +572,28 @@ int evsrv_do_chat(Client_t *client)
     client->prepare_for_chat();
 	size_t len = strlen(client->message);
 	if (len >= MAX_BUFFER_SIZE - 100) client->message[MAX_BUFFER_SIZE-1] = 0;
-	strcpy(ourMainInputBuffer,client->message);
 	echo = false;
+RESTART_RETRY:
+	strcpy(ourMainInputBuffer,client->message);
     char* dateLog = GetTimeInfo(true)+SKIPWEEKDAY;
 	if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s %s\r\n",client->user,client->bot,ourMainInputBuffer, dateLog);
-
+	bool restarted = false;
     int turn = PerformChat(
         client->user,
         client->bot,
         ourMainInputBuffer, // input
         (char*)client->ip.c_str(),
         client->data); // where output goes
-	if (!strnicmp(ourMainOutputBuffer,"$#$",3) || pendingRestart) // special messages for a restart or a restart
+	if (turn == PENDING_RESTART) // do user over again in a moment
 	{
-		strcpy(client->data,ourMainOutputBuffer+3);
-		*ourMainOutputBuffer = 0;
-		if (pendingRestart)
+		if (!restarted)
 		{
-			strcat(client->data," Restarting server. Please try again in a minute.\r\n");
 			Restart();
+			*client->data = 0;
+			restarted = true;
+			goto RESTART_RETRY;
 		}
+		strcpy(client->data,(char*)"Restart completed."); // in case code redoes restart with same input
 	}
 		
 	if (*client->data == 0) 

@@ -585,7 +585,7 @@ DATA:
  part England ~city [Dudley Dundee Eastbourne Edinburgh Exeter Glasgow Gloucester Huddersfield Ipswich Kingston_upon_Hull Leeds Leicester Liverpool London Luton Manchester]
  part England ~city [Middlesbrough Milton_Keynes Newcastle_upon_Tyne Newport Northampton Norwich Nottingham Oldbury  Smethwick Oldham Oxford Peterborough Plymouth Poole]
  part England ~city [Portsmouth Preston  Rotherham Sheffield Slough Southampton Southend-on-Sea St._Helens Stockport Stoke-on-Trent Sunderland Sutton_Coldfield ]
- part England ~city [ Swansea Swindon Walsall Watford West_Bromwich Woking  Byfleet Wolverhampton York]
+ part England ~city [ Swansea Swindon Walsall Watford West_Bromwich Woking  Byfleet Wolverhampton ]
  # avoid Reading, collides with reading
 
  part Jordan ~sea "Dead Sea"

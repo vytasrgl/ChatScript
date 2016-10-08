@@ -51,7 +51,7 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 
 
 #ifndef DISCARDTESTING
-
+static bool nooob = false;
 static int lineLimit = 0; // in abstract report lines that are longer than this...
 static WORDP topLevel = 0;
 static unsigned int err = 0;
@@ -7635,6 +7635,86 @@ static void MarkDownHierarchy(MEANING T)
 	}
 }
 
+static void C_Coverage(char* input)
+{
+	FILE* out = FopenUTF8Write((char*)"TMP/coverage.txt");
+	if (!out) return;
+	for (int i = 1; i <= numberOfTopics; ++i) 
+	{
+		char* name = GetTopicName(i);
+		char* data = GetTopicData(i);
+		int id = 0;
+		while (data && *data)
+		{
+			char label[MAX_WORD_SIZE];
+			char pattern[MAX_WORD_SIZE];
+			GetPattern(data,label,pattern);
+			if (data[2] != ' ') // write out used ones
+			{
+				int referenceValue = (unsigned char)data[2]; // centered around 32 which is blank
+				if (referenceValue == 31) referenceValue = 254;
+				else if (referenceValue > 32) referenceValue -= 32; // counted
+				else referenceValue = (0xff - 32) + referenceValue;	// counting up
+				fprintf(out,"%s.%d.%d %d %s\r\n",name,TOPLEVELID(id),REJOINDERID(id),referenceValue,label);
+			}
+			data = FindNextRule(NEXTRULE,data,id);
+		}
+	}
+	fclose(out);
+}
+
+static void C_ShowCoverage(char* input)
+{
+	FILE* in = FopenReadOnly((char*)"TMP/coverage.txt");
+	if (!in) return;
+	FILE* out = FopenUTF8Write((char*)"TMP/coverageresult.txt");
+	if (!out)
+	{
+		fclose(out);
+		return;
+	}
+	currentFileLine = 0;
+	ReadALine(readBuffer,in); // get a data
+	char topictag[MAX_WORD_SIZE];
+	char* ptr = ReadCompiledWord(readBuffer,topictag);
+	for (int i = 1; i <= numberOfTopics; ++i) 
+	{
+		char* name = GetTopicName(i);
+		fprintf(out,"\r\ntopic: %s\r\n",name);
+		char* data = GetTopicData(i);
+		int id = 0;
+		while (data && *data)
+		{
+			char label[MAX_WORD_SIZE];
+			char pattern[MAX_WORD_SIZE];
+			char* output = GetPattern(data,label,pattern);
+			pattern[40] = 0;
+			char tag[MAX_WORD_SIZE];
+			sprintf(tag,"%s.%d.%d",name,TOPLEVELID(id),REJOINDERID(id));
+			char c = output[40];
+			output[40] = 0;
+			if (*data >= 'a' && *data <= 'q')
+			{
+				int tab = *data - 'a' + 1;
+				while (tab--) fprintf(out,"  ");
+			}
+			if (!stricmp(tag,topictag)) // we have data
+			{
+				char count[MAX_WORD_SIZE];
+				ReadCompiledWord(ptr,count);
+				fprintf(out,"%3d   %c: %s %s %s\r\n",atoi(count),*data,label,pattern,output);
+				ReadALine(readBuffer,in); // get  next data
+				ptr = ReadCompiledWord(readBuffer,topictag);
+			}
+			else fprintf(out,"      %c: %s %s %s\r\n",*data,label,pattern,output);
+			output[40] = c;
+			data = FindNextRule(NEXTRULE,data,id);
+		}
+	}
+	fclose(out);
+	fclose(in);
+}
+
 static void C_Abstract(char* input)
 {
 	int spelling = 0;
@@ -7960,6 +8040,25 @@ static void TrimIt(char* name,uint64 flag)
 		char display[MAX_BUFFER_SIZE];
 		display[0] = 0;
 
+		if (nooob)
+		{
+			char* at = output-1;
+			char* oobstart = strchr(output,'[');
+			if (oobstart) while (*++at) if (*at != ' ' && *at != '\t') break;
+			bool quote = false;
+			int depth = 1;
+			if (at == oobstart) while (*++at) // we have one. find the end
+			{
+				if (*at == '"') quote = !quote;
+				else if (*at == '[' && !quote) ++depth;
+				else if (*at == ']' && !quote)
+				{
+					if (--depth == 0) break;
+				}
+			}
+			if (oobstart && *at) memmove(oobstart,at+1,strlen(at));
+		}
+
 		if (flag == 0) sprintf(display,(char*)"\r\n%s   =>   %s\r\n",input,output); //  showing both as pair, user first
 		else if (flag == 1)  sprintf(display,(char*)"\r\n%s   =>   %s\r\n",prior,input);  // pair, bot first
 		else if ( flag == 2) sprintf(display,(char*)"\r\n%s %s   =>   %s\r\n",topic,input,output); //  showing both as pair, user first, with topic of response
@@ -8157,7 +8256,10 @@ static void C_Trim(char* input) // create simple file of user chat from director
 	else if (!stricmp(word,(char*)"usersfromsystem")) flag = 9;
 	else if (!stricmp(word,(char*)"statistics")) flag = 10;
 	else flag = atoi(word); 
-	
+
+	input = ReadCompiledWord(input,word);
+	nooob = !stricmp(word,"nooob");
+
 	FILE* out = FopenUTF8Write((char*)"TMP/tmp.txt");
 	fprintf(out,(char*)"# %s\r\n",original);
 	Log(STDTRACELOG,(char*)"# %s\r\n",input);
@@ -8257,6 +8359,8 @@ CommandInfo commandSet[] = // NEW
 
 	{ (char*)"\r\n---- Analytics",0,(char*)""}, 
 	{ (char*)":abstract",C_Abstract,(char*)"Display overview of ChatScript topics"}, 
+	{ (char*)":coverage",C_Coverage,(char*)"Save execution coverage of ChatScript rules"}, 
+	{ (char*)":showcoverage",C_ShowCoverage,(char*)"Display execution coverage of ChatScript rules"}, 
 	{ (char*)":diff",C_Diff,(char*)"match 2 files and report lines that differ"}, 
 	{ (char*)":trim",C_Trim,(char*)"Strip excess off chatlog file to make simple file TMP/tmp.txt"}, 
 	

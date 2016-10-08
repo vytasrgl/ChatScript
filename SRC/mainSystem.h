@@ -33,6 +33,8 @@ typedef struct RESPONSE
 
 #define TIMEOUT_INSTANCE 1000000
 
+#define PENDING_RESTART -1	// perform chat returns this flag on turn
+
 #define START_BIT 0x8000000000000000ULL	// used looping thru bit masks
 
 // values of prepareMode
@@ -79,8 +81,8 @@ extern bool oobExists;
 extern char hostname[100];
 extern int argc;
 extern char** argv;
-extern volatile bool pendingRestart;
-extern volatile bool pendingUserReset;
+extern  bool pendingRestart;
+extern  bool pendingUserReset;
 extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;
@@ -180,7 +182,7 @@ unsigned int SaveTimedFunctions();
 // Input processing
 void MainLoop();
 void FinishVolley(char* input,char* output,char* summary);
-unsigned int ProcessInput(char* input);
+int ProcessInput(char* input);
 FunctionResult DoSentence(char* prepassTopic,bool atlimit);
 #ifdef DLL
 extern "C" __declspec(dllexport) int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output);

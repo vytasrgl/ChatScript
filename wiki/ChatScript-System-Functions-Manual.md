@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 9/25/2016 cs6.84
+> Revision 10/8/2016 cs6.85
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -778,6 +778,8 @@ and later
 ^match(~mytopic.test)
 ```
 
+'`$$csmatch_start` and `$$csmatch_end` are assigned to provide the range of words that `^match` used.
+
 ### `^matches`() 
 Returns a string of indices of words that matched the most recent pattern
 match. The indices are in order, so you can know the range of the match or the specific
@@ -1038,6 +1040,10 @@ Obviously, you must first have done something like `^query` to populate the fact
 ^export(myfacts.txt @3)
 ```
 
+If the name includes the substring "ltm", then the file will not be appendable, but will
+be encryptable and routes to databases if the filesystem has been overridden by Mongo, Postgres,
+or MySQL.
+
 ### `^import`( name set erase transient )
 `name` is the file to read from. Set is where to put the read facts. 
 `erase` can be `erase` meaning delete the file after use or `keep` meaning
@@ -1047,8 +1053,12 @@ erase at end of volley) or `permanent` meaning keep the facts as part of user da
 ```
 ^import(myfacts.txt @3).
 ```
-If `set` is null, then facts are created but not stored into any fact-set.
+If `set` is null, then facts are created but not stored into any fact-set and the subject of
+the first fact is returned as the answer (presumed to be a json structure).
 
+If the name includes the substring "ltm", then the file will 
+be decryptable and routes to databases if the filesystem has been overridden by Mongo, Postgres,
+or MySQL.
 
 ## Debugging Function `^debug`()
 
@@ -1093,12 +1103,15 @@ JSON functions and JSON are described more fully in the ChatScript JSON manual.
 
 ### `^jsonarrayinsert`( arrayname value ) 
 Given the name of a json array and a value, it addsthe value to the end of the array.
+`SAFE` protects any nested JSON data from being deleted. See JSON manual.
 
-### `^jsonarraydelete`( [INDEX, VALUE] arrayname value ) 
+### `^jsonarraydelete`( [INDEX, VALUE] arrayname value {ALL} ) 
 This deletes a single entry from a JSON array. It does not damage the thing deleted, 
 just its member in the array. If the first argument is `INDEX`, 
 then value is a number which is the array index (0 … n-1).
 If the first argument is `VALUE`, then value is the value to find and remove as the object of the json fact.
+
+You can delete every matching `VALUE` entry by adding the optional 4th argument `ALL`.
 
 ### `^jsoncreate`( type )
 Type is either array or object and a json composite with no content is created and its name returned.
@@ -1106,8 +1119,14 @@ Type is either array or object and a json composite with no content is created a
 ### `^jsondelete`( factid ) 
 Deprecated in favor of `^delete`.
 
-^jsongather`( factset jsonid )
+^jsongather`( {factset} jsonid )
 Takes the facts involved in the json data (as returned by `^jsonparse` or `^jsonopen` and stores them in the named factset. This allows you to remove their transient flags or save them in the users permanent data file.
+
+You can omit fact-set as an argument if you are using an assignment statement:
+`@1 = ^jsongather(jsonid)'
+
+`^Jsongather` normally gathers all levels of the data recursively. You can limit how far down it goes by
+supplying `level`. Level 0 is all. Level 1 is the top level of data. Etc.
 
 ### `^jsonlabel`( label )
 Assigns a text sequence to add to `jo-` and `ja-` items created thereafter.
@@ -1122,10 +1141,11 @@ different naming for user json created later and code can determine the source o
 Removes all json escape markers back to normal for possible printout to a user. 
 This translates `\n` to newline, `\r` to carriage return, `\t` to tab, and `\"` to a simple quote.
 
-### `^jsonobjectinsert`( objectname key value )
+### `^jsonobjectinsert`( {DUPLICATE} objectname key value )
 Inserts the key value pair into the object named. 
 The key does not require quoting. Inserting a json string as value requires a
-quoted string. Duplicate keys are allowed but not advised (standards differ on legality).
+quoted string. Duplicate keys are ignored unless the optional 1st argument `DUPLICATE` is given.
+`SAFE` protects any nested JSON data from being deleted. See JSON manual.
 
 ### `^jsonopen`( {UNIQUE} kind url postdata header )
 This function queries a website and returns a JSON datastructure as facts. 

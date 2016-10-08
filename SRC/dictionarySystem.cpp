@@ -361,6 +361,7 @@ WORDP dictionaryFree;				// current next dict space available going forward (not
 char* stringBase;					// start of string space (runs backward)
 char* stringFree;					// current free string ptr
 char* stringInverseFree;
+char* stringInverseStart;
 char* stringEnd;
 
 // return-to values for layers
@@ -652,6 +653,7 @@ nnn											StringBase -- allocates downwards
 	stringFree = stringBase = stringEnd + size; // allocate backwards
 	stringInverseFree = stringEnd;
 #endif
+	stringInverseStart = stringInverseFree;
 	//   The bucket list is threaded thru WORDP nodes, and consists of indexes, not addresses.
 
 	dictionaryPreBuild[0] = dictionaryPreBuild[1] = dictionaryPreBuild[2] = 0;	// in initial dictionary
@@ -706,10 +708,9 @@ char* expandAllocation(char* old, char* word,int size)
 char* AllocateInverseString(char* word, size_t len)
 {
 	if (len == 0) len =  strlen(word);
-
     if ((stringInverseFree + len + 1) >= (stringFree - 5000)) // dont get close
     {
-		ReportBug((char*)"Out of transient inverse string space\r\n")
+		ReportBug((char*)"Out of transient inverse string space stringSpace:%d inverseStringspace:%d \r\n",stringBase-stringFree,stringInverseFree - stringInverseStart);
 		return NULL;
     }
 	char* answer = stringInverseFree;
@@ -3148,8 +3149,8 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	{
 		if (sysflags & bit)
 		{
-			char word[MAX_WORD_SIZE];
-			if (!(bit & ESSENTIAL_FLAGS)) Log(STDTRACELOG,(char*)"%s ",MakeLowerCopy(word,FindSystemNameByValue(bit)));
+			char xword[MAX_WORD_SIZE];
+			if (!(bit & ESSENTIAL_FLAGS)) Log(STDTRACELOG,(char*)"%s ",MakeLowerCopy(xword,FindSystemNameByValue(bit)));
 		}
 		bit >>= 1;
 	}
@@ -3176,8 +3177,8 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	{
 		if (D->parseBits & bit)
 		{
-			char word[MAX_WORD_SIZE];
-			Log(STDTRACELOG,(char*)"%s ",MakeLowerCopy(word,FindParseNameByValue(bit)));
+			char xword[MAX_WORD_SIZE];
+			Log(STDTRACELOG,(char*)"%s ",MakeLowerCopy(xword,FindParseNameByValue(bit)));
 		}
 		bit >>= 1;
 	}
@@ -3276,7 +3277,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	for ( int i = count; i >= 1; --i)
 	{
 		if (index && i != index) continue;
-		MEANING M = GetMeaning(D,i);
+		M = GetMeaning(D,i);
 		uint64 k1 = GETTYPERESTRICTION(M);
 		if (kind != k1)
 		{

@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 9/25/2016 cs6.84
+> Revision 10/8/2016 cs6.85
 
 
 # Real World JSON
@@ -81,9 +81,11 @@ volley unless you work to save them). You can override this default by saying
 permanent or transient. This applies to `^jsonopen`, `^jsonparse`, `^jsoncreate`,
 `^jsonobjectinsert`, `^jsonarrayinsert`, `^jsoncopy`.
 
-You can also add a flag safe to `^jsonparse`. See `^jsonparse`
-You can also add a flag unique to `^jsonarrayinsert`. See `^jsonarrayinsert`.
+You can also add a flag safe to `^jsonparse`, `^jsonobjectinsert`, `^jsonarraydelete`. 
+You can also add a flag unique to `^jsonarrayinsert`.
+You can also add `DUPLICATE` to ^jsonobjectinsert.
 
+When multiple flags are desired, put them into a simple string, `"DUPLICATE PERMANENT"`. Case doesn't matter.
 
 ### `^jsonparse`( {JSONFLAGS} string )
 `string` is a JSON text string (as might be returned from a website) and this parses into facts. 
@@ -217,7 +219,8 @@ If you need to handle the full range of legal keys in json, you can use text str
 ## Direct access via JSON variables `$myvar.field`
 
 If a variable holds a JSON object value, you can directly set and get from fields of that object
-using dotted notation. This must be a fixed static fieldname you give- `$myvar.$myfield` is illegal.
+using dotted notation. This can be a fixed static fieldname you give or a variable value:
+ `$myvar.$myfield` is legal.
 Dotted notation is cleaner and faster than `^jsonpath` and `jsonobjectinsert` and for get, has
 the advantage that it never fails, it only returns null if it can't find the field. 
 On the other hand, assignment fails if the path does not contain a json object at some level.
@@ -226,6 +229,33 @@ $x = $$$obj.name.value.data.side
 $$$obj.name.value.data.side = 7
 ```
 
+**NOTE** JSON is normally a non-recursive structure with no shared pointers. But ChatScript allows you to store 
+references to JSON structures in multiple places of other JSON structures. This has its hazards. It presents no
+problem when transcribing to text for a website using `^jsonwrite` . And when you have something like this:
+```
+$x = ^jsoncreate(object)
+$y = ^jsoncreate(object)
+$x.field = $y
+$x.field1 = $y
+$x.field = null
+```
+Assuming that a JSON structure is not available in multiple places, the assignment of null (or any other value)
+to a field that already has a JSON structure will normally cause the old value structure  to be fully deleted,
+since it's only reference is removed. And the system does check and delete the structure if it is not referred 
+to by some other JSON field.
+But there are limits. The system has no idea if you have a pointer to it in a variable. Or if it is part of a
+pathological indirection sequence like this:
+```
+$x = ^jsoncreate(object)
+$y = ^jsoncreate(object)
+$x.field = $y
+$y.field = $x
+$x.field = null
+```
+The two structures point to each other, each only once. So assigning null will kill off both structures.
+
+Assigning `null` will remove a JSON key entirely. Assigning `""` `^""` will set the field to the JSON literal
+`null`.
 
 ### `^length`( jsonid )
 Returns the number of top-level members in a json array or object.
@@ -266,6 +296,14 @@ This deletes a single entry from a JSON array. It does not damage the thing dele
 If the first argument is INDEX, then value is a number which is the array index (0 … n-1). 
 If the first argument is VALUE, then value is the value to find and remove as the object of the json fact.
 
+You can delete every matching `VALUE` entry by adding the optional argument `ALL`. Like:
+`^jsonarraydelete("INDEX ALL" $array 4)`
+
+If the key has an existing value then if the value is a json object it will be
+recursively deleted provided its data is not referenced by some other fact (not by any variables). You can
+suppress this with the `SAFE` flag. `jsonarraydelete(SAFE $obj $key)`.
+
+
 ### `^jsonarraysize`( name ) 
 deprecated in favor of ^length
 
@@ -275,16 +313,26 @@ Given the name of a json structure, makes a duplicate of it.
 ### `^jsonobjectinsert`( {JSONFLAGS} objectname key value ) 
 inserts the key value pair into the object named. The key does not require quoting. 
 Inserting a json string as value requires a quoted string. 
-Duplicate keys are allowed but not advised (standards differ on legality). 
+Duplicate keys are ignored unless the optional 1st argument `DUPLICATE` is given.
 See writeup earlier about optional json flags.
+
+If the key has an existing value and `DUPLICATE` is not a factor, then if the value is a json object it will be
+recursively deleted provided its data is not referenced by some other fact (not by any variables). You can
+suppress this with the `SAFE` flag. `jsonobjectinsert(SAFE $obj $key null)`.
 
 ### `^jsondelete`( factid ) 
 deprecated in favor of ^delete
 
-### `^jsongather`( fact-set jsonid ) 
+### `^jsongather`( {fact-set} jsonid {level}) 
 takes the facts involved in the json data (as returned by `^jsonparse` or `^jsonopen`) 
 and stores them in the named factset. 
 This allows you to remove their transient flags or save them in the users permanent data file.
+
+You can omit fact-set as an argument if you are using an assignment statement:
+`@1 = ^jsongather(jsonid)'
+
+`^Jsongather` normally gathers all levels of the data recursively. You can limit how far down it goes by
+supplying `level`. Level 0 is all. Level 1 is the top level of data. Etc.
 
 ### `^jsonlabel`( label )
 assigns a text sequence to add to jo- and ja- items created thereafter. See System functions manual.

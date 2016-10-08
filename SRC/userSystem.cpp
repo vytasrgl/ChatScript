@@ -211,8 +211,8 @@ static bool ReadUserFacts()
 	    while (ReadALine(readBuffer, 0)>= 0) 
 		{
 			if (*readBuffer == '#') break;
-			char* ptr = readBuffer;
-			FACT* F = ReadFact(ptr,0);
+			char* lclptr = readBuffer;
+			FACT* F = ReadFact(lclptr,0);
 			AddFact(setid,F);
 			if (trace & TRACE_USER) TraceFact(F);
         }
@@ -370,11 +370,11 @@ void RecoverUser() // regain stuff we loaded from user
 	pendingTopicIndex = originalPendingTopicIndex;
 }
 
-char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
+char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 {
 	if (!ptr) return NULL;
 	unsigned int index = userVariableIndex;
-	if (index == 0 && !compiling) 
+	if (index == 0 && !compiled) 
 	{
 		ReportBug("No user variables in file write of %s",loginID);
 		return NULL;
@@ -389,11 +389,6 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
 		else if ( (D->word[1] != LOCALVAR_PREFIX && D->word[1] !=  TRANSIENTVAR_PREFIX) && (D->w.userValue || (D->internalBits & MACRO_TRACE))) // transients not dumped, nor are NULL values
 		{
 			char* val = D->w.userValue;
-			if (!stricmp(D->word,(char*)"$cs_trace")) 
-			{
-				trace = 0; // assume no trace for next user
-				echo = false;
-			}
 			if (!val) val = ""; // for null variables being marked as traced
 			if (D->internalBits & MACRO_TRACE) 
 			{
@@ -402,7 +397,7 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
 			}
 			else sprintf(ptr,(char*)"%s=%s\r\n",D->word,SafeLine(val));
 			ptr += strlen(ptr);
-			if (!compiling)
+			if (!compiled)
 			{
 				if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 			}
@@ -410,15 +405,13 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiling)
         D->w.userValue = NULL;
 		RemoveInternalFlag(D,VAR_CHANGED);
     }
-	if (server && trace) // trace is on for this user only
-	{
-		printf(ptr,(char*)"$cs_trace=%s\r\n",trace);
-		trace = 0;
-		echo = false;
-	}
+	sprintf(ptr,(char*)"$cs_trace=%d\r\n",trace);
+	ptr += strlen(ptr);
+	trace = 0;
+	echo = false;
 	strcpy(ptr,(char*)"#`end variables\r\n");
 	ptr += strlen(ptr);
-	
+
 	return ptr;
 }
 
@@ -441,7 +434,7 @@ static bool ReadUserVariables()
  		if (!stricmp(readBuffer,(char*)"$cs_trace")) 
 		{
 			trace = atoi(ptr+1); // trace now on this user
-			echo = true;
+			if (trace) echo = true;
 		}
 
 		if (trace & TRACE_VARIABLE) Log(STDTRACELOG,(char*)"uservar: %s=%s\r\n",readBuffer,ptr+1);
@@ -533,13 +526,13 @@ void WriteUserData(time_t curr)
 #ifndef DISCARDTESTING
 	if (filesystemOverride == NORMALFILES && (!server || serverRetryOK) && !documentMode && !callback)  
 	{
-		char name[MAX_WORD_SIZE];
-		sprintf(name,(char*)"TMP/backup-%s_%s.bin",loginID,computerID);
-		CopyFile2File(name,userDataBase,false);	// backup for debugging BUT NOT if callback of some kind...
+		char fname[MAX_WORD_SIZE];
+		sprintf(fname,(char*)"TMP/backup-%s_%s.bin",loginID,computerID);
+		CopyFile2File(fname,userDataBase,false);	// backup for debugging BUT NOT if callback of some kind...
 		if (redo) // multilevel backup enabled
 		{
-			sprintf(name,(char*)"TMP/backup%d-%s_%s.bin",volleyCount,loginID,computerID);
-			CopyFile2File(name,userDataBase,false);	// backup for debugging BUT NOT if callback of some kind...
+			sprintf(fname,(char*)"TMP/backup%d-%s_%s.bin",volleyCount,loginID,computerID);
+			CopyFile2File(fname,userDataBase,false);	// backup for debugging BUT NOT if callback of some kind...
 		}
 	}
 #endif

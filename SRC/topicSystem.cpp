@@ -593,7 +593,7 @@ bool TopLevelQuestion(char* word)
 	if (!word || !*word) return false; 
 	if (word[1] != ':') return false;
 	if (*word != QUESTION && *word != STATEMENT_QUESTION) return false;
-	if (word[2] && word[2] != ' ') return false;
+ //	if (word[2] && word[2] != ' ') return false;
 	return true;
 }
 
@@ -602,7 +602,7 @@ bool TopLevelStatement(char* word)
 	if (!word || !*word) return false; 
 	if (word[1] != ':') return false;
 	if (*word != STATEMENT && *word != STATEMENT_QUESTION) return false;
-	if (word[2] && word[2] != ' ') return false;
+	// if (word[2] && word[2] != ' ') return false;
 	return true;
 }
 
@@ -611,7 +611,7 @@ bool TopLevelGambit(char* word)
 	if (!word || !*word) return false; 
 	if (word[1] != ':') return false;
 	if (*word != RANDOM_GAMBIT && *word != GAMBIT) return false;
-	if (word[2] && word[2] != ' ') return false;
+	// if (word[2] && word[2] != ' ') return false;
 	return true;
 }
 
@@ -626,7 +626,7 @@ bool TopLevelRule(char* word)
 bool Rejoinder(char* word)
 {
 	if (!word || !*word) return false; 
-	if ((word[2] != 0 && word[2] != ' ') || word[1] != ':' || !IsAlphaUTF8(*word)) return false;
+	if (word[1] != ':' || !IsAlphaUTF8(*word)) return false;
 	return (*word >= 'a' && *word <= 'q') ? true : false;
 }
 
@@ -851,18 +851,18 @@ void SetTimingRuleMark(int topic, unsigned int id)
 static bool HasTimingRuleMark(int topic)
 {
 	if (!topic || topic > numberOfTopics) return false;
-	bool timing = false;
+	bool doTiming = false;
 	topicBlock* block = TI(topic);
 	for (int i = 0; i < block->topicBytesRules; ++i)
 	{
 		if (block->topicTimingRule[i])
 		{
-			timing = true;
+			doTiming = true;
 			Log(STDTRACELOG, (char*)" Some rule(s) being timed in %s\n", GetTopicName(topic));
 
 		}
 	}
-	return timing;
+	return doTiming;
 }
 
 bool AreTimingMarksSet()
@@ -1084,6 +1084,13 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	char label[MAX_LABEL_SIZE];
 	char* ptr = GetPattern(rule,label,pattern,100);  // go to output
 
+	// coverage counter
+	int coverage = (unsigned char) rule[2];
+	if (coverage == 31) {
+			int x = 0;} // hit limit
+	else if (coverage == 0xff) rule[2] = 1; // cross over
+	else rule[2] = (char) ++coverage;
+
 	if (trace & TRACE_FLOW)
 	{
 		char* output = AllocateBuffer();
@@ -1300,8 +1307,8 @@ retry:
 		// we (a responder) called ^retry(TOPRULE) but were not ourselves called from refine. Make it a ^reuse()
 		else if (result & RETRYTOPRULE_BIT && !refine && !TopLevelRule(rule)) 
 		{
-			char* rule = GetRule(currentTopicID, TOPLEVELID(currentRuleID));
-			result = RegularReuse(currentTopicID, TOPLEVELID(currentRuleID), rule,buffer,"",false);
+			char* xrule = GetRule(currentTopicID, TOPLEVELID(currentRuleID));
+			result = RegularReuse(currentTopicID, TOPLEVELID(currentRuleID), xrule,buffer,"",false);
 		}
 	}
 exit:
@@ -1418,7 +1425,7 @@ static FunctionResult FindRandomGambitContinuation(char type, char* buffer, unsi
 	FunctionResult result = NOPROBLEM_BIT;
 	int oldResponseIndex = responseIndex;
 	bool available = false;
-	bool tried = false;
+	bool xtried = false;
  	while (gambitID != NOMORERULES)
     {
 		char* ptr = base + block->ruleOffset[gambitID];
@@ -1432,7 +1439,7 @@ static FunctionResult FindRandomGambitContinuation(char type, char* buffer, unsi
 			if (available) //   we can try it
 			{
 				result = TestRule(gambitID,ptr,buffer);
-				tried = true;
+				xtried = true;
 				if (result == FAILMATCH_BIT) result = FAILRULE_BIT;
 				if (result & (FAILRULE_BIT | ENDRULE_BIT)) oldResponseIndex = responseIndex; // update in case he added response AND claimed failure
  				else if (result & ENDCODES || responseIndex > oldResponseIndex) break;
@@ -1444,7 +1451,7 @@ static FunctionResult FindRandomGambitContinuation(char type, char* buffer, unsi
 		gambitID = *++rulemap;
 	}
 	if (result & (FAILSENTENCE_BIT | ENDSENTENCE_BIT | RETRYSENTENCE_BIT| ENDINPUT_BIT|RETRYINPUT_BIT )) return result;
-	if (!tried) return FAILRULE_BIT;
+	if (!xtried) return FAILRULE_BIT;
 	return (result & (ENDCODES-ENDTOPIC_BIT)) ? FAILTOPIC_BIT : NOPROBLEM_BIT; 
 }
 
@@ -2018,14 +2025,14 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 	if (!in) return;
 
 	char count[MAX_WORD_SIZE];
-	char* ptr = count;
+	char* xptr = count;
 
 	ReadALine(count,in);
-	ptr = ReadCompiledWord(ptr,tmpWord);	// skip the number of topics
+	xptr = ReadCompiledWord(xptr,tmpWord);	// skip the number of topics
 	if (!plan)
 	{
-		ptr = ReadCompiledWord(ptr,timeStamp[layer]); // Jan04'15
-		ptr = ReadCompiledWord(ptr,buildStamp[layer]);
+		xptr = ReadCompiledWord(xptr,timeStamp[layer]); // Jan04'15
+		xptr = ReadCompiledWord(xptr,buildStamp[layer]);
 	}
 
 	// plan takes 2 lines:

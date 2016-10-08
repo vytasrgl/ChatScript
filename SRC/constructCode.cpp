@@ -50,7 +50,7 @@ resume:
 			 call = false;	// proceed normally
 		}
 		else if (result != NOPROBLEM_BIT) {;} // failed
-		else if (!stricmp(word2,(char*)"0") || !stricmp(word2,(char*)"null") ) result = FAILRULE_BIT;	// treat 0 or null as failure along with actual failures
+		else if (!stricmp(word2,(char*)"0") || !stricmp(word2,(char*)"false")) result = FAILRULE_BIT;	// treat 0 and false as failure along with actual failures
 	}
 		
 	if (call){;} // call happened
@@ -416,20 +416,20 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 			char* comma = 0; 
 			while ((comma = strchr(val1,',')))  memmove(comma,comma+1,strlen(comma+1)); // remove embedded commas
 			while ((comma = strchr(val2,',')))  memmove(comma,comma+1,strlen(comma+1)); // remove embedded commas
-			float v1 = (float) atof(val1);
-			float v2 = (float) atof(val2);
-			if (*op == '=') result = (v1 == v2) ? NOPROBLEM_BIT : FAILRULE_BIT;
+			float v1f = (float) atof(val1);
+			float v2f = (float) atof(val2);
+			if (*op == '=') result = (v1f == v2f) ? NOPROBLEM_BIT : FAILRULE_BIT;
 			else if (*op == '<') 
 			{
-				if (!op[1]) result =  (v1 < v2) ? NOPROBLEM_BIT : FAILRULE_BIT;
-				else result =  (v1 <= v2) ? NOPROBLEM_BIT : FAILRULE_BIT;
+				if (!op[1]) result =  (v1f < v2f) ? NOPROBLEM_BIT : FAILRULE_BIT;
+				else result =  (v1f <= v2f) ? NOPROBLEM_BIT : FAILRULE_BIT;
 			}
 			else if (*op == '>') 
 			{
-				if (!op[1]) result =  (v1 > v2) ? NOPROBLEM_BIT : FAILRULE_BIT;
-				else result =  (v1 >= v2) ? NOPROBLEM_BIT : FAILRULE_BIT;
+				if (!op[1]) result =  (v1f > v2f) ? NOPROBLEM_BIT : FAILRULE_BIT;
+				else result =  (v1f >= v2f) ? NOPROBLEM_BIT : FAILRULE_BIT;
 			}
-			else if (*op == '!') result = (v1 != v2) ? NOPROBLEM_BIT : FAILRULE_BIT;
+			else if (*op == '!') result = (v1f != v2f) ? NOPROBLEM_BIT : FAILRULE_BIT;
 			else result = FAILRULE_BIT;
 		}
 		else //   int compare

@@ -15,6 +15,8 @@ int jsonIndex;
 int jsonOpenSize = 0;
 unsigned int jsonPermanent = FACTTRANSIENT;
 bool jsonNoduplicate = false;
+bool jsonDuplicate = false;
+bool jsonDontKill = false;
 bool directJsonText = false;
 static int arraycnt = 0;
 static int objectcnt = 0;
@@ -28,6 +30,7 @@ static int JSONArgs()
 	bool used = false;
 	jsonPermanent = FACTTRANSIENT; // default
 	jsonNoduplicate = false;
+	jsonDuplicate = true;
 	char* arg1 = ARGUMENT(1);
 	if (*arg1 == '"') // remove quotes
 	{
@@ -47,6 +50,11 @@ static int JSONArgs()
 		else if (!stricmp(word,(char*)"unique"))  
 		{
 			jsonNoduplicate = true;
+			used = true;
+		}
+		else if (!stricmp(word,(char*)"duplicate"))  
+		{
+			jsonDuplicate = true;
 			used = true;
 		}
 		else if (!stricmp(word,(char*)"transient"))  used = true;
@@ -97,6 +105,7 @@ static char* IsJsonNumber(char* str)
 			else if (*at == ' ' || *at == ',' || *at == '}' || *at == ']') return at;
 			else if (!IsDigit(*at)) return NULL; // cannot be number
 		}
+		return at;
 	}
 	return NULL;
 }
@@ -1018,7 +1027,8 @@ static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bo
 				return NOPROBLEM_BIT;
 			}
 
-			if (!F) return FAILRULE_BIT;
+			if (!F) 
+				return FAILRULE_BIT;
 		}
 		else return FAILRULE_BIT;
 	}
@@ -1208,30 +1218,44 @@ FunctionResult JSONLabelCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
-static void jsonGather(WORDP D, int subject )
+static bool jsonGather(WORDP D,int limit, int depth)
 {
-	if (!(subject & (JSON_OBJECT_VALUE |JSON_ARRAY_VALUE)) && subject & JSON_FLAGS) return;
-	FACT* F = GetSubjectNondeadHead(MakeMeaning(D));
-	if (!F || !(F->flags & JSON_FLAGS)) return;	// not a json fact
+	if (limit && depth >= limit) return true;	// not allowed to do this level or lower
+	FACT* F = GetSubjectNondeadHead(D);
 	while (F) // flip the order
 	{
-		factSet[jsonStore][++jsonIndex] = F;
-		if (F->flags & JSON_ARRAY_FACT)  jsonGather( Meaning2Word(F->object),F->flags & JSON_FLAGS);
-		else if (F->flags & JSON_OBJECT_FACT)  jsonGather( Meaning2Word(F->object),F->flags & JSON_FLAGS);
+		if (jsonIndex >= MAX_FIND) return false; // abandon extra
+		if (F->flags & JSON_FLAGS) factSet[jsonStore][++jsonIndex] = F;
+		if (F->flags & (JSON_ARRAY_FACT | JSON_OBJECT_FACT) && !jsonGather(Meaning2Word(F->object),limit,depth+1)) return false;
 		F = GetSubjectNondeadNext(F);
-		if (jsonIndex >= MAX_FIND) break; // abandon extra
 	}
+	return true;
 }
 
 FunctionResult JSONGatherCode(char* buffer) // jason FACT cluster by name to factSet
 {
-	jsonStore = GetSetID(ARGUMENT(1)); 
-	if (jsonStore == ILLEGAL_FACTSET) return FAILRULE_BIT;
-	jsonIndex = 0;
-	WORDP D = FindWord(ARGUMENT(2));
+	int index = 1;
+	if (impliedSet != ALREADY_HANDLED) jsonStore = impliedSet;
+	else
+	{
+		jsonStore = GetSetID(ARGUMENT(index++)); 
+		if (jsonStore == ILLEGAL_FACTSET) return FAILRULE_BIT;
+	}
+	if (impliedSet == ALREADY_HANDLED) // clear the set passed as argument
+	{
+		jsonIndex = 0;
+		SET_FACTSET_COUNT(jsonStore,0);
+	}
+	else jsonIndex = FACTSET_COUNT(jsonStore); // keep going in set (like +=)
+	
+	WORDP D = FindWord(ARGUMENT(index++));
 	if (!D) return FAILRULE_BIT;
-	jsonGather(D,0);
+	if (strnicmp(D->word,"jo-",3) && strnicmp(D->word,"ja-",3)) return FAILRULE_BIT;
+	char* depth = ARGUMENT(index);
+	int level = atoi(depth);	// 0 is infinite, 1 is top level
+	if (!jsonGather(D,level,0)) return FAILRULE_BIT;
 	SET_FACTSET_COUNT(jsonStore,jsonIndex);
+	impliedSet = ALREADY_HANDLED;
 	return NOPROBLEM_BIT;
 }
 
@@ -1543,38 +1567,53 @@ FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectkey objec
 		++keyname;
 	}
 
-	WORDP keyvalue = StoreWord(keyname,AS_IS); // new key
+	WORDP keyvalue = StoreWord(keyname,AS_IS); // new key - can be ANYTHING
 	char* val = ARGUMENT(index);
 	MEANING key = MakeMeaning(keyvalue);
 	MEANING object = MakeMeaning(D);
 
-	// remove old value if it exists, do not allow multiple values
+	// remove old value if it exists, do not allow multiple values UNLESS jsonDuplicate is set
 	FACT* F = GetSubjectNondeadHead(D);
-	while (F)	// already there, delete it
+	if (jsonDuplicate) F = NULL; // allow multiple values - if not allowing multiple values, remove all
+	while (F)	// already there, delete it, 
 	{
+		FACT* G = GetSubjectNondeadNext(F);
 		if (F->verb == key)
 		{
-			KillFact(F);
-			break;
+			WORDP object = Meaning2Word(F->object);
+			FACT* H = GetObjectNondeadHead(object);
+			bool jsonkill = false;
+			if (safeJsonParse) jsonkill = false; // dont destroy (assumed stored on global var)
+			else if (!H) jsonkill = true; // should never be true, since this fact counts
+			else if (!GetObjectNondeadNext(H)) jsonkill = true;
+			KillFact(F,jsonkill);
 		}
-		F = GetSubjectNondeadNext(F);
+		F = G;
 	}
 
-	MEANING value = jsonValue(val,flags);
-	CreateFact(object, key,value, flags);
+	if (stricmp(val,"null")) // null means the removal, "" means the use of JSON null
+	{
+		MEANING value = jsonValue(val,flags);
+		CreateFact(object, key,value, flags);
+	}
 	currentFact = NULL;	 // used up by putting into json
 	return NOPROBLEM_BIT;
 }
 
-FunctionResult JSONVariableAssign(char* word,char* dot,char* value)
+FunctionResult JSONVariableAssign(char* word,char* value)
 {
+	char variable[MAX_WORD_SIZE];
 	// get the object referred to
-	dot = strchr(word+1,'.'); // find first level
+	char* dot = strchr(word+1,'.'); // find first level
 	*dot = 0;
+
 	char* val = GetUserVariable(word); // walks down to deepest record value
-	if (strnicmp(val,"jo-",3)) return FAILRULE_BIT;	// not a json object
+	if (strnicmp(val,"jo-",3)) 
+		return FAILRULE_BIT;	// not a json object
+	strcpy(variable,val);
 	WORDP objectname = FindWord(val);
-	if (!objectname) return FAILRULE_BIT;	// doesnt exist?
+	if (!objectname) 
+		return FAILRULE_BIT;	// doesnt exist?
 
 LOOP:
 	*dot = '.';
@@ -1583,8 +1622,26 @@ LOOP:
 
 	// get final key to use
 	WORDP keyname;
-	keyname = (dot1) ? FindWord(dot+1) : StoreWord(dot+1,AS_IS);	
-	if (!keyname) return FAILRULE_BIT;	// unable to find intermediate name
+	char keyx[MAX_WORD_SIZE];
+	strcpy(keyx,dot+1);
+	if (*keyx == '$') // indirection key
+	{
+		char* answer = GetUserVariable(keyx);
+		strcpy(keyx,answer);
+		if (*keyx == '$') 
+		{
+			if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s.%s\r\n",variable,keyx);
+			return FAILRULE_BIT;	// cannot be indirection
+		}
+	}
+	keyname = (dot1) ? FindWord(keyx) : StoreWord(keyx,AS_IS);	
+	if (!keyname) 
+	{
+		if (trace &  TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s\r\n",variable);
+		return FAILRULE_BIT;	// unable to find intermediate name
+	}
+	strcat(variable,".");
+	strcat(variable,keyx);
 	
 	// make it exist
 	if (dot1) 
@@ -1611,17 +1668,29 @@ LOOP:
 
 	// remove old value if it exists, do not allow multiple values
 	FACT* F = GetSubjectNondeadHead(objectname);
-	while (F)	// already there, delete it
+	while (F)	// already there, delete it if not referenced elsewhere
 	{
 		if (F->verb == key)
 		{
-			KillFact(F);
+			WORDP object = Meaning2Word(F->object);
+			FACT* G = GetObjectNondeadHead(object);
+			bool jsonkill = false;
+			if (!G) jsonkill = true; // should never be true, since this fact counts
+			else if (!GetObjectNondeadNext(G)) jsonkill = true;
+			if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar kill: %s (%s)\r\n",variable,object->word);
+			KillFact(F,jsonkill);
+
 			break;
 		}
 		F = GetSubjectNondeadNext(F);
 	}
-	MEANING valx = jsonValue(value,flags);
-	CreateFact(object, key,valx, flags);
+
+	if (stricmp(value,"null")) // not deleting using json literal   ^"" or "" would be the literal null in json
+	{
+		MEANING valx = jsonValue(value,flags);
+		CreateFact(object, key,valx, flags);
+	}
+	if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s -> %s\r\n",variable,value);
 	currentFact = NULL;	 // used up by putting into json
 	return NOPROBLEM_BIT;
 }
@@ -1637,12 +1706,16 @@ FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index
 	char arrayname[MAX_WORD_SIZE];
 	int index = 0;
 	MEANING object = 0;
+	int argument = 1;
 	char* arg1 = ARGUMENT(1);
 	bool useIndex = true;
+	MakeLowerCase(arg1);
 
 	// check mode of use 
-	if (!strnicmp(arg1,"INDEX",5)) index = atoi(ARGUMENT(3)); 
-	else if (!strnicmp(arg1,"VALUE",5))
+	bool all = false;
+	bool safe = false;
+	if (strstr(arg1,"index")) index = atoi(ARGUMENT(3)); 
+	else if (strstr(arg1,"value"))
 	{
 		char* match = ARGUMENT(3);
 		WORDP D = FindWord(match);
@@ -1651,14 +1724,18 @@ FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index
 		useIndex = false;
 	}
 	else return FAILRULE_BIT; 
+	if (strstr(arg1,"all")) all = true; // default is one but can do ALL
+	if (strstr(arg1,"safe")) safe = true; // default is delete
 
 	// get array and prove it legal
 	strcpy(arrayname,ARGUMENT(2));
 	if (strnicmp(arrayname,(char*)"ja-",3)) return FAILRULE_BIT;
 	WORDP O = FindWord(arrayname);
 	if (!O) return FAILRULE_BIT;
-	
-	// find the fact we want (we only delete 1 fact per call) if you have dups, thats your problem
+
+	bool once = false;
+DOALL:	
+	// find the fact we want (we only delete 1 fact per call) if you have dups say all
 	FACT* F = GetSubjectNondeadHead(O);
 	while (F) 
 	{
@@ -1670,10 +1747,20 @@ FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index
 		else if (object == F->object) break;
 		F = GetSubjectNondeadNext(F);
 	}
-	if (!F) return FAILRULE_BIT;		// not findable.
-
+	if (!F) 
+	{
+		if (once) return NOPROBLEM_BIT;
+		return FAILRULE_BIT;		// not findable.
+	}
+	once = true;
 	int indexsize = orderJsonArrayMembers(O, stack,JSON_LIMIT); 
-	KillFact(F);		// delete it, not recursive json structure, just array element
+	WORDP objectx = Meaning2Word(F->object);
+	FACT* G = GetObjectNondeadHead(objectx);
+	bool jsonkill = false;
+	if (safe) jsonkill = false;
+	else if (!G) jsonkill = true; // should never be true, since this fact counts
+	else if (!GetObjectNondeadNext(G)) jsonkill = true;
+	KillFact(F,jsonkill);		// delete it, not recursive json structure, just array element
 	for (int i = index+1; i < indexsize; ++i) // renumber these downwards
 	{
 		F = stack[i];
@@ -1686,6 +1773,7 @@ FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index
 		ARGUMENT(4) = AllocateInverseString(Meaning2Word(F->object)->word);
 		FunctionResult result = ReviseFactCode(buffer);
 	}
+	if (all) goto DOALL; // keep trying
 	return NOPROBLEM_BIT;
 }
 
@@ -1707,12 +1795,18 @@ FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectvalue  BEF
 	// how many existing elements
 	FACT* F = GetSubjectNondeadHead(O);
 	int count = 0;
+	FACT* lastF = F;
 	while (F) 
 	{
-		if (jsonNoduplicate && F->object == value)  return NOPROBLEM_BIT;	// already there
+		lastF = F;
+		if (jsonNoduplicate && F->object == value)  return NOPROBLEM_BIT;	// already there UNIQUE flag given else defaults DUPLICATE
 		++count;
 		F = GetSubjectNondeadNext(F);
 	}
+
+	// you may NOT add permanent values after transient values lest earlier elements disappear out of order
+	if (lastF && lastF->flags & FACTTRANSIENT)  flags |=  FACTTRANSIENT;	
+
 	sprintf(arrayIndex,(char*)"%d",count); // add at end
 	WORDP Idex = StoreWord(arrayIndex);
 

@@ -50,7 +50,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 9/25/2016 cs6.84</p>
+<p>Revision 10/8/2016 cs6.85</p>
 </blockquote>
 <h1 id="real-world-json">Real World JSON</h1>
 <p>JSON (JavaScript Object Notation) is an open standard format using human-readable text to transmit data objects over the web. It is a common standard largely replacing XML which is too wordy and hard to read. JSON has two datatypes that represents collections of values, the array and the object. A JSON array is a list of JSON entities separated by commas and placed within [], e.g.,</p>
@@ -93,7 +93,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Note that JSON has no mechanism for sharing JSON subtrees. Hence anytime you create a json fact structure in CS, the facts will all be unique.</p>
 <h2 id="jsonflags---optional-1st-arg-to-some-json-routines">JSONFLAGS - Optional 1st arg to some JSON routines</h2>
 <p>Routines that will create facts for JSON will by default create them as transients (they die at end of volley unless you work to save them). You can override this default by saying permanent or transient. This applies to <code>^jsonopen</code>, <code>^jsonparse</code>, <code>^jsoncreate</code>, <code>^jsonobjectinsert</code>, <code>^jsonarrayinsert</code>, <code>^jsoncopy</code>.</p>
-<p>You can also add a flag safe to <code>^jsonparse</code>. See <code>^jsonparse</code> You can also add a flag unique to <code>^jsonarrayinsert</code>. See <code>^jsonarrayinsert</code>.</p>
+<p>You can also add a flag safe to <code>^jsonparse</code>, <code>^jsonobjectinsert</code>, <code>^jsonarraydelete</code>. You can also add a flag unique to <code>^jsonarrayinsert</code>. You can also add <code>DUPLICATE</code> to ^jsonobjectinsert.</p>
+<p>When multiple flags are desired, put them into a simple string, <code>&quot;DUPLICATE PERMANENT&quot;</code>. Case doesn't matter.</p>
 <h3 id="jsonparse-jsonflags-string"><code>^jsonparse</code>( {JSONFLAGS} string )</h3>
 <p><code>string</code> is a JSON text string (as might be returned from a website) and this parses into facts. It returns the name of the root node JSON composite. This name will look like this:</p>
 <p><code>ja-0</code> – a json array numbered <code>0</code>.</p>
@@ -138,9 +139,23 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ^jsonpath(.name[4]* $$obj)</code></pre>
 <p>If you need to handle the full range of legal keys in json, you can use text string notation like this <code>^jsonpath(.&quot;st. helen&quot;.data $tmp)</code>.</p>
 <h2 id="direct-access-via-json-variables-myvar.field">Direct access via JSON variables <code>$myvar.field</code></h2>
-<p>If a variable holds a JSON object value, you can directly set and get from fields of that object using dotted notation. This must be a fixed static fieldname you give- <code>$myvar.$myfield</code> is illegal. Dotted notation is cleaner and faster than <code>^jsonpath</code> and <code>jsonobjectinsert</code> and for get, has the advantage that it never fails, it only returns null if it can't find the field. On the other hand, assignment fails if the path does not contain a json object at some level.</p>
+<p>If a variable holds a JSON object value, you can directly set and get from fields of that object using dotted notation. This can be a fixed static fieldname you give or a variable value: <code>$myvar.$myfield</code> is legal. Dotted notation is cleaner and faster than <code>^jsonpath</code> and <code>jsonobjectinsert</code> and for get, has the advantage that it never fails, it only returns null if it can't find the field. On the other hand, assignment fails if the path does not contain a json object at some level.</p>
 <pre><code>$x = $$$obj.name.value.data.side 
 $$$obj.name.value.data.side = 7</code></pre>
+<p><strong>NOTE</strong> JSON is normally a non-recursive structure with no shared pointers. But ChatScript allows you to store references to JSON structures in multiple places of other JSON structures. This has its hazards. It presents no problem when transcribing to text for a website using <code>^jsonwrite</code> . And when you have something like this:</p>
+<pre><code>$x = ^jsoncreate(object)
+$y = ^jsoncreate(object)
+$x.field = $y
+$x.field1 = $y
+$x.field = null</code></pre>
+<p>Assuming that a JSON structure is not available in multiple places, the assignment of null (or any other value) to a field that already has a JSON structure will normally cause the old value structure to be fully deleted, since it's only reference is removed. And the system does check and delete the structure if it is not referred to by some other JSON field. But there are limits. The system has no idea if you have a pointer to it in a variable. Or if it is part of a pathological indirection sequence like this:</p>
+<pre><code>$x = ^jsoncreate(object)
+$y = ^jsoncreate(object)
+$x.field = $y
+$y.field = $x
+$x.field = null</code></pre>
+<p>The two structures point to each other, each only once. So assigning null will kill off both structures.</p>
+<p>Assigning <code>null</code> will remove a JSON key entirely. Assigning <code>&quot;&quot;</code> <code>^&quot;&quot;</code> will set the field to the JSON literal <code>null</code>.</p>
 <h3 id="length-jsonid"><code>^length</code>( jsonid )</h3>
 <p>Returns the number of top-level members in a json array or object.</p>
 <h2 id="printing-json-structures">Printing JSON structures</h2>
@@ -157,16 +172,21 @@ $$$obj.name.value.data.side = 7</code></pre>
 <p>Given the name of a json array and a value, it adds the value to the end of the array. See writeup earlier about optional json flags. If you use the flag unique then if value already exists in the array, no duplicate will be added.</p>
 <h3 id="jsonarraydelete-index-value-arrayname-value"><code>^jsonarraydelete</code>( [INDEX, VALUE] arrayname value )</h3>
 <p>This deletes a single entry from a JSON array. It does not damage the thing deleted, just its member in the array. If the first argument is INDEX, then value is a number which is the array index (0 … n-1). If the first argument is VALUE, then value is the value to find and remove as the object of the json fact.</p>
+<p>You can delete every matching <code>VALUE</code> entry by adding the optional argument <code>ALL</code>. Like: <code>^jsonarraydelete(&quot;INDEX ALL&quot; $array 4)</code></p>
+<p>If the key has an existing value then if the value is a json object it will be recursively deleted provided its data is not referenced by some other fact (not by any variables). You can suppress this with the <code>SAFE</code> flag. <code>jsonarraydelete(SAFE $obj $key)</code>.</p>
 <h3 id="jsonarraysize-name"><code>^jsonarraysize</code>( name )</h3>
 <p>deprecated in favor of ^length</p>
 <h3 id="jsoncopy-name"><code>^jsoncopy</code>( name )</h3>
 <p>Given the name of a json structure, makes a duplicate of it.</p>
 <h3 id="jsonobjectinsert-jsonflags-objectname-key-value"><code>^jsonobjectinsert</code>( {JSONFLAGS} objectname key value )</h3>
-<p>inserts the key value pair into the object named. The key does not require quoting. Inserting a json string as value requires a quoted string. Duplicate keys are allowed but not advised (standards differ on legality). See writeup earlier about optional json flags.</p>
+<p>inserts the key value pair into the object named. The key does not require quoting. Inserting a json string as value requires a quoted string. Duplicate keys are ignored unless the optional 1st argument <code>DUPLICATE</code> is given. See writeup earlier about optional json flags.</p>
+<p>If the key has an existing value and <code>DUPLICATE</code> is not a factor, then if the value is a json object it will be recursively deleted provided its data is not referenced by some other fact (not by any variables). You can suppress this with the <code>SAFE</code> flag. <code>jsonobjectinsert(SAFE $obj $key null)</code>.</p>
 <h3 id="jsondelete-factid"><code>^jsondelete</code>( factid )</h3>
 <p>deprecated in favor of ^delete</p>
-<h3 id="jsongather-fact-set-jsonid"><code>^jsongather</code>( fact-set jsonid )</h3>
+<h3 id="jsongather-fact-set-jsonid-level"><code>^jsongather</code>( {fact-set} jsonid {level})</h3>
 <p>takes the facts involved in the json data (as returned by <code>^jsonparse</code> or <code>^jsonopen</code>) and stores them in the named factset. This allows you to remove their transient flags or save them in the users permanent data file.</p>
+<p>You can omit fact-set as an argument if you are using an assignment statement: `<span class="citation">@1</span> = ^jsongather(jsonid)'</p>
+<p><code>^Jsongather</code> normally gathers all levels of the data recursively. You can limit how far down it goes by supplying <code>level</code>. Level 0 is all. Level 1 is the top level of data. Etc.</p>
 <h3 id="jsonlabel-label"><code>^jsonlabel</code>( label )</h3>
 <p>assigns a text sequence to add to jo- and ja- items created thereafter. See System functions manual.</p>
 <h3 id="jsonundecodestring-string"><code>^jsonundecodestring</code>( string )</h3>

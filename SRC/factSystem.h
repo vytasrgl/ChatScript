@@ -64,7 +64,7 @@ void InitFactWords();
 FACT* FindFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties = 0);
 FACT* CreateFact(FACTOID_OR_MEANING subject,FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned int properties = 0);
 FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties);
-void KillFact(FACT* F);
+void KillFact(FACT* F,bool jsonrecurse = true);
 FACT* SpecialFact(FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned int flags);
 void FreeFact(FACT* F);
 char* GetSetEnd(char* x);

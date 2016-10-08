@@ -41,6 +41,7 @@ int maxRefSentence = (((MAX_XREF_SENTENCE  * 2) + 3) / 4) * 4; // start+end offs
 bool showMark = false;
 static unsigned int markLength = 0; // prevent long lines in mark listing trace
 #define MARK_LINE_LIMIT 80
+int upperCount, lowerCount;
 
 char unmarked[MAX_SENTENCE_LENGTH]; // can completely disable a word from mark recognition
 
@@ -576,7 +577,8 @@ static void StdMark(MEANING M, unsigned int start, unsigned int end, bool canoni
 void MarkAllImpliedWords()
 {
 	int i;
- 	for (i = 1; i <= wordCount; ++i)  capState[i] = IsUpperCase(*wordStarts[i]); // note cap state
+	for (i = 1; i <= wordCount; ++i)  capState[i] = IsUpperCase(*wordStarts[i]); // note cap state
+
 	TagIt(); // pos tag and maybe parse
 	if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) 
 	{
@@ -593,6 +595,7 @@ void MarkAllImpliedWords()
 	//   now mark every word in sentence
     for (i = startSentence; i <= endSentence; ++i) //   mark that we have found this word, either in original or canonical form
     {
+		if (i == startSentence && upperCount > 10 && lowerCount < 5) MarkFacts(MakeMeaning(StoreWord("~shout")),i,i);
 		char* original =  wordStarts[i];
 		if (!*original)
 			continue;	// ignore this

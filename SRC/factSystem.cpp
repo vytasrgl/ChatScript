@@ -318,7 +318,7 @@ FACT* SpecialFact(FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned in
 	return factFree;
 }
 
-void KillFact(FACT* F)
+void KillFact(FACT* F,bool jsonrecurse)
 {
 	if (!F || F->flags & FACTDEAD) return; // already dead
 	
@@ -334,12 +334,12 @@ void KillFact(FACT* F)
 	}
 #ifndef DISCARDJSON
 	// recurse on JSON datastructures below if they are being deleted on right side
-	if (F->flags & JSON_ARRAY_VALUE)
+	if (F->flags & JSON_ARRAY_VALUE && jsonrecurse)
 	{
 		WORDP jsonarray = Meaning2Word(F->object);
 		jkillfact(jsonarray);
 	}
-	if (F->flags & JSON_OBJECT_VALUE)
+	if (F->flags & JSON_OBJECT_VALUE && jsonrecurse)
 	{
 		WORDP jsonobject = Meaning2Word(F->object);
 		jkillfact(jsonobject);
@@ -569,14 +569,24 @@ bool ExportFacts(char* name, int set,char* append)
 		}
 		buffer += strlen(buffer);
 	}
-	FILE* out = userFileSystem.userCreate(name); // user ltm file
+	FILE* out;
+	if (strstr(name,"ltm")) out = userFileSystem.userCreate(name); // user ltm file
+	else out = (append && !stricmp(append,"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
 	if (!out) 
 	{
 		FreeBuffer();
 		return false;
 	}
-	EncryptableFileWrite(base,1,(buffer-base),out); // can change content of buffer
-	userFileSystem.userClose(out);
+	if (strstr(name,"ltm")) 
+	{
+		EncryptableFileWrite(base,1,(buffer-base),out); // can change content of buffer
+		userFileSystem.userClose(out);
+	}
+	else
+	{
+		fprintf(out,(char*)"%s",base);
+		fclose(out);
+	}
 	FreeUserCache();
 	FreeBuffer();
 	return true;
@@ -625,13 +635,23 @@ FunctionResult ExportJson(char* name, char* jsonitem, char* append)
 		if (name[len-1] == '"') name[len-1] = 0;
 	}
 
-	FILE* out = userFileSystem.userCreate(name); // user ltm file
+	FILE* out;
+	if (strstr(name,"ltm")) out = userFileSystem.userCreate(name); // user ltm file
+	else out = (append && !stricmp(append,"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
 	if (!out) return FAILRULE_BIT;
 
 	char* buffer = GetFreeCache(); // filesize limit
 	ExportJson1(jsonitem, buffer);
-	EncryptableFileWrite(buffer,1,strlen(buffer),out);
-	userFileSystem.userClose(out);
+	if (strstr(name,"ltm"))
+	{
+		EncryptableFileWrite(buffer,1,strlen(buffer),out);
+		userFileSystem.userClose(out);
+	}
+	else
+	{
+		fprintf(out,(char*)"%s",buffer);
+		fclose(out);
+	}
 	FreeUserCache();
 	return NOPROBLEM_BIT;
 }
@@ -813,13 +833,24 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 		size_t len = strlen(name);
 		if (name[len-1] == '"') name[len-1] = 0;
 	}
-	FILE* in = userFileSystem.userOpen(name); 
+	FILE* in;
+	if (strstr(name,"ltm")) in = userFileSystem.userOpen(name);
+	else in = in = FopenReadWritten(name);
 	if (!in) return false;
 
 	ChangeDepth(1, (char*)"ImportFacts");
 	char* filebuffer = GetFreeCache();
-	size_t readit = DecryptableFileRead(filebuffer,1,userCacheSize,in);	// LTM file read, read it all in, including BOM
-	userFileSystem.userClose(in);
+	size_t readit;
+	if (strstr(name,"ltm"))
+	{
+		readit = DecryptableFileRead(filebuffer,1,userCacheSize,in);	// LTM file read, read it all in, including BOM
+		userFileSystem.userClose(in);
+	}
+	else
+	{
+		readit = fread(filebuffer,1,userCacheSize,in);	
+		fclose(in);
+	}
 	filebuffer[readit] = 0;
 	filebuffer[readit+1] = 0; // insure fully closed off
 
@@ -837,7 +868,7 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 		ReadCompiledWord(readBuffer,word);
 		if (!stricmp(word,(char*)"null")) 
 		{
-			if (store > 0) AddFact(store,NULL);
+			if (store >= 0) AddFact(store,NULL);
 		}
 		else if (*word == '(')
 		{
@@ -851,7 +882,7 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 				continue;
 			}
 			G->flags |= flags;
-			if (store > 0) AddFact(store,G);
+			if (store >= 0) AddFact(store,G);
 			else if (!*buffer) strcpy(buffer,Meaning2Word(G->subject)->word); // to return the name
 		}
 	}

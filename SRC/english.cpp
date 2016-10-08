@@ -315,7 +315,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		return 0;
 	}
 
-	if (at >= 0 && wordStarts[at-1] && *wordStarts[at-1] == '"') 
+	if (at >= 2 && wordStarts[at-1] && *wordStarts[at-1] == '"') 
 	{
 		int x = at-1;
 		while (--x >= start) if (*wordStarts[x] == '"') break;
@@ -1260,17 +1260,17 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 				alternate[0] = toUppercaseData[alternate[0]];
 			}
 			WORDP D1,D2;
-			WORDP revise;
-			uint64 flags1 = GetPosData(at,alternate,revise,D1,D2,sysflags,cansysflags,false,nogenerate,start);
+			WORDP xrevise;
+			uint64 flags1 = GetPosData(at,alternate,xrevise,D1,D2,sysflags,cansysflags,false,nogenerate,start);
 			if (revise) 
 			{
-				wordStarts[at] = revise->word;
-				original = revise->word;
+				wordStarts[at] = xrevise->word;
+				original = xrevise->word;
 			}
 			if (flags1) 
 			{
 				original = reuseAllocation(original,D1->word);
-				if (revise) wordStarts[at] = revise->word;
+				if (revise) wordStarts[at] = xrevise->word;
 				entry = D1;
 				canonical = D2;
 				return flags1;

@@ -24,11 +24,13 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //#define DISCARDPARSER 1
 //#define DISCARDTESTING 1
 //#define DISCARDTCPOPEN 1
+//#define DISCARDMYSQL 1
 //#define DISCARDPOSTGRES 1
 //#define DISCARDMONGO 1
 //#define DISCARDDICTIONARYBUILD 1 // only a windows version can build a dictionary from scratch
 //#define DISCARDJSON 1 
 //#define DISCARDJAVASCRIPT 1
+#define DISCARDMYSQL 1
 
 #ifdef LOEBNER
 #undef SEPARATE_STRING_SPACE
@@ -36,6 +38,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DISCARDSCRIPTCOMPILER 1
 #define DISCARDTESTING 1
 #define DISCARDTCPOPEN 1
+#define DISCARDMYSQL 1
 #define DISCARDPOSTGRES 1
 #define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
@@ -45,6 +48,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #elif WIN32
 //#define USERPATHPREFIX 1
+#define DISCARDMYSQL 1
 #define DISCARDPOSTGRES 1
 #define DISCARDMONGO 1
 //#undef  DISCARDDICTIONARYBUILD  // only a windows version can build a dictionary from scratch
@@ -52,31 +56,30 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #elif IOS
 #define DISCARDCOUNTER 1
+#define DISCARDMYSQL 1
 #define DISCARDPOSTGRES 1
 #define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
 #define DISCARDJSON 1
-#define DISCARDJAVASCRIPT 1
 
 #elif ANDROID
 #define DISCARDCOUNTER 1
+#define DISCARDMYSQL 1
 #define DISCARDPOSTGRES 1
 #define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
 #define DISCARDJSON 1
-#define DISCARDJAVASCRIPT 1
 
 #elif __MACH__
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
-#define DISCARDJAVASCRIPT 1
 #define DISCARDPOSTGRES 1
+#define DISCARDMYSQL 1
 //#define DISCARDMONGO 1
 
 #else // GENERIC LINUX
-#define DISCARDJAVASCRIPT 1
 #endif
 
 // These can be used to include LINUX EVSERVER component - this is automatically done by the makefile in src - EV Server does not work under windows
@@ -195,6 +198,7 @@ using namespace std;
 #include "json.h"
 #include "markSystem.h"
 #include "mongodb.h"
+#include "my_sql.h"
 #include "outputSystem.h"
 #include "patternSystem.h"
 #include "postgres.h"

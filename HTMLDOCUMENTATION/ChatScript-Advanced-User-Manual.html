@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 9/25/2016 cs6.84</p>
+<p>Revision 10/8/2016 cs6.85</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
@@ -121,93 +121,125 @@ u: ( dog) I hate dogs</code></pre>
 <p>The first are topic flags, that control a topic's overall behavior. These are placed between the topic name and the ( keywords list). You may have multiple flags. E.g.</p>
 <pre><code>topic: ~rust keep random [rust iron oxide]</code></pre>
 <p>The flags and their meanings are:</p>
-<table style="width:35%;">
-<colgroup>
-<col width="18%" />
-<col width="16%" />
-</colgroup>
+<table>
 <thead>
 <tr class="header">
-<th>flag</th>
+<th align="left">flag</th>
 <th>description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>Random</code></td>
+<td align="left"><code>Random</code></td>
 <td>search rules randomly instead of linearly</td>
 </tr>
 <tr class="even">
-<td><code>NoRandom</code></td>
+<td align="left"><code>NoRandom</code></td>
 <td>(default) search rules linearly</td>
 </tr>
 <tr class="odd">
-<td><code>Keep</code></td>
+<td align="left"><code>Keep</code></td>
 <td>do not erase responders ever. Gambits (and rejoinders) are not affected by this</td>
 </tr>
 <tr class="even">
-<td><code>Erase</code></td>
-<td>(default) erase responders that successfully generate output. (Gambits automatically erase unless you suppress them specifically</td>
+<td align="left"><code>Erase</code></td>
+<td>(default) erase responders that successfully generate output.</td>
 </tr>
 <tr class="odd">
-<td><code>NoStay</code></td>
+<td align="left"></td>
+<td>(Gambits automatically erase unless you suppress them specifically.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>NoStay</code></td>
 <td>do not consider this a topic to remain in, leave it (except for rejoinders)</td>
 </tr>
-<tr class="even">
-<td><code>Stay</code></td>
+<tr class="odd">
+<td align="left"><code>Stay</code></td>
 <td>(default) make this a pending topic when it generates output</td>
 </tr>
-<tr class="odd">
-<td><code>Repeat</code></td>
+<tr class="even">
+<td align="left"><code>Repeat</code></td>
 <td>allow rules to generate output which has been output recently</td>
 </tr>
-<tr class="even">
-<td><code>NoRepeat</code></td>
+<tr class="odd">
+<td align="left"><code>NoRepeat</code></td>
 <td>(default) do not generate output if it matches output made recently</td>
 </tr>
-<tr class="odd">
-<td><code>Priority</code></td>
+<tr class="even">
+<td align="left"><code>Priority</code></td>
 <td>raise the priority of this topic when matching keywords</td>
 </tr>
-<tr class="even">
-<td><code>Normal</code></td>
+<tr class="odd">
+<td align="left"><code>Normal</code></td>
 <td>(default) give this topic normal priority when matching keywords</td>
 </tr>
-<tr class="odd">
-<td><code>Deprioritize</code></td>
+<tr class="even">
+<td align="left"><code>Deprioritize</code></td>
 <td>lower the priority of this topic when matching keywords</td>
 </tr>
+<tr class="odd">
+<td align="left"><code>System</code></td>
+<td>this is a system topic. It is automatically <code>NoStay</code>, <code>Keep</code>.</td>
+</tr>
 <tr class="even">
-<td><code>System</code></td>
-<td>this is a system topic. It is automatically <code>NoStay</code>, <code>Keep</code>. <code>Keep</code> automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files</td>
+<td align="left"></td>
+<td><code>Keep</code> automatically applies to gambits as well.</td>
 </tr>
 <tr class="odd">
-<td><code>User</code></td>
+<td align="left"></td>
+<td>The system never looks to these topics for gambits.</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td>System topics can never be considered pending (defined shortly).</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td>They can not have themselves or their rules be enabled or disabled.</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td>Their status/data is never saved to user files.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>User</code></td>
 <td>(default) this is a normal topic</td>
 </tr>
 <tr class="even">
-<td><code>NoBlocking</code></td>
-<td><code>:verify</code> should not perform any blocking tests on this topic</td>
+<td align="left"><code>NoBlocking</code></td>
+<td>should not perform any blocking tests on this topic in <code>:verify</code></td>
 </tr>
 <tr class="odd">
-<td><code>NoPatterns</code></td>
-<td><code>:verify</code> should not perform any pattern tests on this topic</td>
+<td align="left"><code>NoPatterns</code></td>
+<td>should not perform any pattern tests on this topic in <code>:verify</code></td>
 </tr>
 <tr class="even">
-<td><code>NoSamples</code></td>
-<td><code>:verify</code> should not perform any sample tests on this topic</td>
+<td align="left"><code>NoSamples</code></td>
+<td>should not perform any sample tests on this topic in <code>:verify</code></td>
 </tr>
 <tr class="odd">
-<td><code>NoKeys</code></td>
-<td><code>:verify</code> should not perform any keyword tests on this topic</td>
+<td align="left"><code>NoKeys</code></td>
+<td>should not perform any keyword tests on this topic in <code>:verify</code></td>
 </tr>
 <tr class="even">
-<td><code>More</code></td>
-<td>Normally if you try to redeclare a concept, you get an error. MORE tells CS you intend to extend the topic and allows additional keywords for it</td>
+<td align="left"><code>More</code></td>
+<td>normally if you try to redeclare a concept, you get an error.</td>
 </tr>
 <tr class="odd">
-<td><code>Bot=name</code></td>
-<td>if this is given, only named bots are allowed to use this topic. <br>You can name multiple bots separated by commas with no extra spaces. E.g. <code>topic: ~mytopic bot=harry,,roman [mykeyword]</code></td>
+<td align="left"></td>
+<td>MORE tells CS you intend to extend the concept and allows additional keywords.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Bot=name</code></td>
+<td>if this is given, only named bots are allowed to use this topic.</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td>You can name multiple bots separated by commas with no extra spaces.</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td>E.g. <code>topic: ~mytopic bot=harry,,roman [mykeyword]</code></td>
 </tr>
 </tbody>
 </table>
@@ -508,13 +540,13 @@ else
 <ol style="list-style-type: decimal">
 <li>A variable – if it is defined, the test passes</li>
 <li><code>!</code> variable – if it is not defined, the test passes (same as relation variable <code>==</code> null)</li>
-<li>A function call – if it doesn't fail or return the values 0 or null or nil, it passes</li>
+<li>A function call – if it doesn't fail and doesn't return the values 0 or false, it passes</li>
 <li>A relation – one of <code>==</code> <code>!=</code> <code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code> <code>?</code> <code>!?</code></li>
 </ol>
 <p>For the purposes of numeric comparison <code>(&lt; &lt;= &gt; &gt;=)</code> a null value compared against a number will be considers as 0.</p>
 <p>You may have a series of test conditions separated by <code>AND</code> and <code>OR</code>. The failure of the test condition can be any end or fail code. It does not affect outside the condition; it merely controls which branch of the if gets taken.</p>
 <pre><code>if ($var) { } # if $var has a value
-if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn&#39;t fail</code></pre>
+if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn&#39;t fail or return 0 or false</code></pre>
 <p>Comparison tests between two text strings is case insensitive.</p>
 <p>A word of warning on the <code>?</code> (in set) relation test. It only works for actual concepts that have enumerated values. A number of sets marked by the engine for patterns do not consist of enumerated members. All of the pos-tagging and parse-related concepts are like this, so you cannot use <code>~number</code>, <code>~noun</code>, <code>~verb</code>, etc here.</p>
 <p>It will work if you compare a match variable derived from input, because that has access to knowing all the marked concepts of that particular word.</p>
@@ -589,9 +621,6 @@ Topic: ~mytopic(keyword1 keyword2) ($$tmp $$global $$tmp2)
 <p>Output macros can be passed system function names and output macro names, allowing you to indirectly call things. E.g.</p>
 <pre><code>outputmacro: ^indirect(^fn ^value)
     $$tmp = ^fn(^value)</code></pre>
-<p>Outputmacros cannot be passed a factset name. These are not legal calls:</p>
-<pre><code>^mymacro(@0)
-^mymacro(@0subject)</code></pre>
 <p>The above will evaluate <code>^fn</code>, and if it finds that it is a function name, will use that in a call. The only tricky part is creating the name of the function to call in the first place.</p>
 <p>If you just write a function name with ^ in output, the compiler will complain about your call. So you have to synthesize the name somehow. Here are two ways:</p>
 <pre><code>outputmacro: ^mycall()
@@ -674,9 +703,10 @@ _0 = $$stuff</code></pre>
 <pre><code>_0 = _10</code></pre>
 <p>This is a transfer from one match variable to another, so no data is lost</p>
 <h2 id="json-dotted-notation-for-variables">Json dotted notation for variables</h2>
-<p>If a variable holds a JSON object value, you can directly set and get from fields of that object using dotted notation. This must be a fixed static fieldname you give- <code>$myvar.$myfield</code> is illegal. Dotted notation is cleaner and faster than <code>^jsonpath</code> and <code>jsonobjectinsert</code> and for get, has the advantage that it never fails, it only returns null if it can't find the field. On the other hand, assignment fails if the path does not contain a json object at some level.</p>
+<p>If a variable holds a JSON object value, you can directly set and get from fields of that object using dotted notation. This can be a fixed static fieldname or a variable value- <code>$myvar.$myfield</code> is legal. Dotted notation is cleaner and faster than <code>^jsonpath</code> and <code>jsonobjectinsert</code> and for get, has the advantage that it never fails, it only returns null if it can't find the field. On the other hand, assignment fails if the path does not contain a json object at some level.</p>
 <pre><code>$x = $$$obj.name.value.data.side 
 $$$obj.name.value.data.side = 7</code></pre>
+<p>Assigning <code>null</code> will remove a JSON key entirely. Assigning <code>&quot;&quot;</code> <code>^&quot;&quot;</code> will set the field to the JSON literal <code>null</code>.</p>
 <h1 id="out-of-band-communication">Out of band Communication</h1>
 <p>ChatScript can neither see nor act, but it can interact with systems that do. The convention is that out-of-band information occurs at the start of input or output, and is encased in <code>[ ]</code>.</p>
 <p>ChatScript does not attempt to postag and parse any input sentence which begins with <code>[</code> and has a closing <code>]</code>. It will automatically not try to spellcheck that part or perform any kind of merge (date, number, propername). In fact, the <code>[…]</code> will be split off into its own sentence. You can use normal CS rules to detect and react to incoming oob messaging. E.g, input like this</p>
@@ -759,7 +789,9 @@ some junk
 so you can do:
 @myset += createfact( 1 2 3)
 $$tmp = first(@mysetsubject)</code></pre>
-<p>You can also declare your own 32 or 64-bit integer constants.</p>
+<p>You can also declare your own 32 or 64-bit integer constants. You must use ## when you define it and when you refer to it.</p>
+<pre><code>rename: ##first 1
+$tmp = ##first</code></pre>
 <h2 id="defining-private-queries">Defining private Queries</h2>
 <p>see fact manual.</p>
 <h2 id="documenting-variables-functions-factsets-and-match-variables">Documenting variables, functions, factsets, and match variables</h2>
@@ -1031,10 +1063,12 @@ loop()
 <p><code>users=xxx</code> – name relative or absolute path to where you want the USERS folder to be. Do not add trailing /. <br><code>logs=xxx</code> – name relative or absolute path to where you want the LOGS folder to be. Do not add trailing /.</p>
 <p>Other options: <code>trace</code> – turn on all tracing.</p>
 <p><code>redo</code> – see documentation for :redo in debugging manual</p>
-<p><code>userfacts=n</code> limit a user file to saving only the n most recently created facts of a user (this does not include facts stored in fact sets). Overridden if the user has <code>$cs_userfactlimit</code> set to some value. <br><code>userlog</code> - Store a user-bot log in USERS directory (default). <br><code>nouserlog</code> - Don't store a user-bot log. <br><code>login=xxxx</code> - The same as you would name when asked for a login, this avoids having to ask for it. Can be <code>login=george</code> or <code>login=george:harry</code> or whatever. <br><code>build0=filename` runs `:build` on the filename as level0 and exits with 0 on success or 4 on failure. &lt;br&gt;`build1=filename` runs :build on the filename as level1 and exits with 0 on success or 4 on failure. Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0. &lt;br&gt;</code>debug=:xxx<code>xxx runs the given debug command and then exits.  Useful for</code>:trim<code>, for example or more specific</code>:build<code>commands. &lt;br&gt;``param=xxxxx</code> data to be passed to your private code <br><code>login=xxxxx` initial user id (bypass asking you for user) &lt;br&gt;</code>encrypt=xxxxx<code>data evailable to encrpytion code &lt;br&gt;``decrypt=xxxxx</code> data evailable to decrpytion code <br>`<code>bootcmd=xxx</code> runs this command string before CSBOOT is run use it to trace the boot process</p>
+<p><code>userfacts=n</code> limit a user file to saving only the n most recently created facts of a user (this does not include facts stored in fact sets). Overridden if the user has <code>$cs_userfactlimit</code> set to some value. <br><code>userlog</code> - Store a user-bot log in USERS directory (default). <br><code>nouserlog</code> - Don't store a user-bot log. <br><code>source=xxxx</code> - Analogous to the <code>:source</code> command. The file is executed. <br><code>login=xxxx</code> - The same as you would name when asked for a login, this avoids having to ask for it. Can be <code>login=george</code> or <code>login=george:harry</code> or whatever. <br><code>build0=filename` runs `:build` on the filename as level0 and exits with 0 on success or 4 on failure. &lt;br&gt;`build1=filename` runs :build on the filename as level1 and exits with 0 on success or 4 on failure. Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0. &lt;br&gt;</code>debug=:xxx<code>xxx runs the given debug command and then exits.  Useful for</code>:trim<code>, for example or more specific</code>:build<code>commands. &lt;br&gt;``param=xxxxx</code> data to be passed to your private code <br><code>login=xxxxx` initial user id (bypass asking you for user) &lt;br&gt;</code>encrypt=xxxxx<code>data evailable to encrpytion code &lt;br&gt;``decrypt=xxxxx</code> data evailable to decrpytion code <br>`<code>bootcmd=xxx</code> runs this command string before CSBOOT is run use it to trace the boot process</p>
 <h2 id="bot-variables-1">Bot variables</h2>
 <p>You can create predefined bot variables by simply naming permanent variables on the command line, using V to replace $ (since Linux shell scripts don't like $). Eg.</p>
-<p><br>ChatScript Vmyvar=fatcat <br>ChatScript Vmyvar=&quot;tony is here&quot; <br>ChatScript &quot;Vmyvar=tony is here&quot;</p>
+<p>ChatScript Vmyvar=fatcat</p>
+<p>ChatScript Vmyvar=&quot;tony is here&quot;</p>
+<p>ChatScript &quot;Vmyvar=tony is here&quot;</p>
 <p>Quoted strings will be stored without the quotes. Bot variables are always reset to their original value at each volley, even if you overwrite them during a volley. This can be used to provide server-host specific values into a script.</p>
 <h2 id="no-such-bot-specific---nosuchbotrestarttrue">No such bot-specific - nosuchbotrestart=true</h2>
 <p>If the system does not recognize the bot name requested, it can automatically restart a server (on the presumption that something got damaged). If you don't expect no such bot to happen, you can enable this restart using <code>nosuchbotrestart=true</code>. Default is false.</p>

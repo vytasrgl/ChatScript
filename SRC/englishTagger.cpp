@@ -478,7 +478,6 @@ static void PerformPosTag(int start, int end, bool externed)
 	// decide if sentence has too many caps, is a titled thing that should be considered all lower case
 	unsigned int total = 0; // words within quotes
 	uint64 oldTokenControl = tokenControl;
-	unsigned int upperCount = 0;
 	unsigned int maxContigLower = 0;
 	unsigned int contigLower = 0;
 	bool majorLower = false;
@@ -489,7 +488,6 @@ static void PerformPosTag(int start, int end, bool externed)
 		++total;
 		if (capState[j]) 
 		{
-			++upperCount; // see if its a quoted title maybe
 			if (contigLower > maxContigLower) maxContigLower = contigLower;
 			contigLower = 0;
 		}
@@ -6703,7 +6701,7 @@ static unsigned int GuessAmbiguousVerb(int i, bool &changed)
 
 	if (needRoles[roleIndex] & (MAINSUBJECT|OBJECT2|MAINOBJECT|SUBJECT2) && posValues[i] & VERB_INFINITIVE)
 	{
-		if (i == startSentence && posValues[i] & VERB_INFINITIVE && posValues[NextPos(i)] & (PRONOUN_BITS|DETERMINER_BITS|ADJECTIVE_BITS|NOUN))
+		if (i == startSentence && posValues[NextPos(i)] & (PRONOUN_BITS|DETERMINER_BITS|ADJECTIVE_BITS|NOUN))
 		{
 			 if (LimitValues(i,VERB_INFINITIVE,(char*)"Potential command at start has object after it be infintiive",changed)) return GUESS_RETRY;  // "let him go"
 		}

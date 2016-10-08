@@ -232,7 +232,7 @@ char* GetUserVariable(const char* word,bool nojson)
 	int len = 0;
 	const char* dot = (nojson) ? (const char*) NULL : strchr(word,'.');
 	if (dot) len = dot - word;
-	bool localvar = word[1] == LOCALVAR_PREFIX;
+	bool localvar = strstr(word,"$_") != NULL; // local var anywhere in the chain?
     char* item = NULL;
     
 	WORDP D = FindWord((char*) word,len,LOWERCASE_LOOKUP);
@@ -251,17 +251,27 @@ char* GetUserVariable(const char* word,bool nojson)
 
 	if (dot) // json object
 	{
+		char path[MAX_WORD_SIZE];
+		strcpy(path,item);
 LOOPDEEPER:
 		if (strncmp(item,"jo-",3)) goto NULLVALUE; // cannot be dotted
 		D = FindWord(item);
 		if (!D) goto NULLVALUE;
-		FACT* F = GetSubjectHead(D);
+		FACT* F = GetSubjectNondeadHead(D);
 
 		char* dot1 = (char*)strchr(dot+1,'.');	// more dot like $x.y.z?
 		if (dot1) *dot1 = 0;
 		WORDP key = FindWord(dot+1); // case sensitive find
 		if (dot1) *dot1 = '.';
 		if (!key) goto NULLVALUE; // dont recognize such a name
+		if (key->word[0] == '$') // key is a variable name, go get it to use real key
+		{
+			char* keyval = GetUserVariable(key->word);
+			key = FindWord(keyval);
+			if (!key) goto NULLVALUE;	// cannot find
+		}
+		strcat(path,".");
+		strcat(path,key->word);
 
 		MEANING verb = MakeMeaning(key);
 		while (F)
@@ -287,13 +297,16 @@ LOOPDEEPER:
 					char* buffer = AllocateBuffer();
 					strcpy(buffer,"``");
 					strcpy(buffer+2,answer);
-					char* answer = AllocateInverseString(buffer);
+					char* ans = AllocateInverseString(buffer);
 					FreeBuffer();
-					return answer + 2;
+					if (!ans) return "``";	// if exhausted, return nothing
+					if (trace & TRACE_VARIABLE) Log(STDTRACELOG,"(%s->%s)",path,ans);
+					return ans + 2;
 				}
+				if (trace & TRACE_VARIABLE) Log(STDTRACELOG,"(%s->%s)",path,answer);
 				return answer;
 			}
-			F = GetSubjectNext(F);
+			F = GetSubjectNondeadNext(F);
 		}
 		goto NULLVALUE;
 	}
@@ -401,8 +414,7 @@ void SetUserVariable(const char* var, char* word)
 	{
 		*wildcardSeparator = (*word == '"') ? word[1] : *word; // 1st char in string if need be
 	}	
-	if (trace == TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"Var: %s -> %s\r\n",D->word,word);
-	else if (D->internalBits & MACRO_TRACE) 
+	if (trace && D->internalBits & MACRO_TRACE) 
 	{
 		char pattern[100];
 		char label[MAX_LABEL_SIZE];
@@ -510,7 +522,7 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 		char* dot = strchr(var,'.');
 		if (!dot) SetUserVariable(var,result);
 #ifndef DISCARDJSON
-		else JSONVariableAssign(var,dot,result);// json object insert
+		else JSONVariableAssign(var,result);// json object insert
 #endif
 	}
 	else if (*var == '^') strcpy(callArgumentList[atoi(var+1)+fnVarBase],result); 
@@ -614,7 +626,6 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 	int oldImpliedWild = impliedWild;	// in case nested calls happen
     int assignFromWild = ALREADY_HANDLED;
 	result = NOPROBLEM_BIT;
-	impliedSet = ALREADY_HANDLED;
 	
 	if (*word == '^' && word[1] == '^' && IsDigit(word[2])) // indirect function variable assign
 	{
@@ -643,6 +654,8 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 		strcpy(word,value); // change over to assign onto caller var
 	}
 
+	impliedSet = ALREADY_HANDLED;
+	impliedWild = ALREADY_HANDLED;
 	if (*word == '@')
 	{
 		impliedSet = GetSetID(word);
@@ -651,9 +664,15 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 			result = FAILRULE_BIT;
 			return ptr;
 		}
+		char* at = word + 1;
+		while (*++at && IsDigit(*at)){;} // find end
+		if (*at) // not allowed to assign onto annotated factset
+		{
+			result = FAILRULE_BIT;
+			return ptr;
+		}
 	}
-	impliedWild = ALREADY_HANDLED;
-	if (*word == '_')  
+	else if (*word == '_')  
 	{
 		impliedWild = GetWildcardID(word);	// if a wildcard save location
 		if (impliedWild == ILLEGAL_MATCHVARIABLE) 
@@ -706,7 +725,8 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 		// A fact was created but not used up by retrieving some field of it. Convert to a reference to fact. -- eg $$f = createfact()
 		else if (currentFact && setToImply == impliedSet && setToWild == impliedWild && (setToWild != ALREADY_HANDLED || setToImply != ALREADY_HANDLED || otherassign)) sprintf(word1,(char*)"%d",currentFactIndex());
 	}
-   	if (!stricmp(word1,(char*)"null")) *word1 = 0;
+	// normally null is empty string, but for assignment allow the word, which means null as in removal
+   	if (!stricmp(word1,(char*)"null") && (*word != USERVAR_PREFIX || !strchr(word,'.'))) *word1 = 0; 
 
 	//   now sort out who we are assigning into and if its arithmetic or simple assign
 	if (*word == '@')
@@ -800,7 +820,6 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 			else Log(STDTRACETABLOG,(char*)"%s(%s) %s %s(%s) => ",word,GetUserVariable(word),op,originalWord1,GetUserVariable(originalWord1));
 		}
 		if (*word == '^') result = FAILRULE_BIT;	// not allowed to increment locally at present...
-		else if (*word == USERVAR_PREFIX && strchr(word,'.') && !nojson) result = FAILRULE_BIT; // illegal on json object insert
 		else Add2UserVariable(word,word1,op,originalWord1);
 	}
 	else if (*word == '_') //   assign to wild card
@@ -822,7 +841,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 		char* dot = strchr(word,'.');
 		if (!dot || nojson) SetUserVariable(word,word1);
 #ifndef DISCARDJSON
-		else result = JSONVariableAssign(word,dot,word1);// json object insert
+		else result = JSONVariableAssign(word,word1);// json object insert
 #endif
 	}
 	else if (*word == '\'' && word[1] == USERVAR_PREFIX) 
@@ -867,7 +886,6 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 	// debug
 	if (trace & TRACE_OUTPUT && CheckTopicTrace())
 	{
-		char* answer = AllocateBuffer();
 		logUpdated = false;
 		if (*word == '@') 
 		{
@@ -877,9 +895,8 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 			unsigned int id = Fact2Index(F);
 			char fact[MAX_WORD_SIZE];
 			WriteFact(F,false,fact,false,false);
-			sprintf(answer,(char*)"last value @%d[%d] is %d %s",set,count,id,fact ); // show last item in set
+			Log(STDUSERLOG,(char*)"last value @%d[%d] is %d %s",set,count,id,fact ); // show last item in set
 		}
-		FreeBuffer();
 	}
 	
 exit:

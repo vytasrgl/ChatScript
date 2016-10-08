@@ -15,17 +15,22 @@ bool compiling = false;			// script compiler in progress
 bool patternContext = false;	// current compiling a pattern
 unsigned int buildId; // current build
 char* overrideSystemToken = 0;
+static int callingSystem = 0;
+static bool chunking = false;
 static bool overrriding = false;
+static unsigned int substitutes;
+static unsigned int cases;
+static unsigned int badword;
+static unsigned int functionCall;
 
-#define MAX_WARNINGS 150
+#define MAX_WARNINGS 200
 static char warnings[MAX_WARNINGS][MAX_WORD_SIZE];
 static unsigned int warnIndex = 0;
-static char baseName[MAX_WORD_SIZE];
+static char baseName[SMALL_WORD_SIZE];
 
-#define MAX_ERRORS 150
+#define MAX_ERRORS 200
 static char errors[MAX_ERRORS][MAX_WORD_SIZE];
 static unsigned int errorIndex = 0;
-
 static char functionArguments[MAX_ARGUMENT_COUNT+1][500];
 static int functionArgumentCount = 0;
 static char botheader[MAX_WORD_SIZE];
@@ -62,6 +67,11 @@ void InitScriptSystem()
 void AddWarning(char* buffer)
 {
 	sprintf(warnings[warnIndex++],(char*)"line %d of %s: %s",currentFileLine,currentFilename,buffer);
+	if (strstr(warnings[warnIndex-1],(char*)"is not a known word")) {++badword;}
+	else if (strstr(warnings[warnIndex-1],(char*)" changes ")) {++substitutes;}
+	else if (strstr(warnings[warnIndex-1],(char*)"is unknown as a word")) {++badword;}
+	else if (strstr(warnings[warnIndex-1],(char*)"in opposite case")){++cases;}
+	else if (strstr(warnings[warnIndex-1],(char*)"a function call")){++functionCall;}
 	if (warnIndex >= MAX_WARNINGS) --warnIndex;
 }
 
@@ -83,10 +93,13 @@ void AddError(char* buffer)
 
 void ScriptError()
 {
-	++hasErrors; 
+	callingSystem = 0;
+	chunking = false;
+
 	renameInProgress = false;
 	if (compiling)
 	{
+		++hasErrors; 
 		patternContext = false; 
 		Log(STDTRACELOG,(char*)"*** Error- line %d of %s: ",currentFileLine,currentFilename);
 	}
@@ -432,6 +445,8 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 			++ptr;
 		}
 		char* end = ReadQuote(ptr,word,backslash,noblank);	//   swallow ending marker and points past
+		if (!callingSystem && !chunking && !functionString && *word == '"' && word[1] != '^' && strstr(word,"$_")) 
+			WARNSCRIPT((char*)"%s has potential local var $_ in it. This cannot be passed as argument to user macros. Is it intended to be?\r\n",word)
 		if (end)  
 		{
 			if (*word == '"' && word[1] != FUNCTIONSTRING && !functionString) return end; // all legal within
@@ -895,9 +910,9 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		if (at[1] == '$' || at[1] == '_') ++at;	// skip over 2ndary marker
 		--at;
 		while (LegalVarChar(*++at) );  // find end of initial word
-		if (*word == '$' && *at == '.' && LegalVarChar(at[1]))// allow $x.y as a complete name
+		if (*word == '$' && *at == '.' && (LegalVarChar(at[1]) || at[1] == '$') )// allow $x.y as a complete name
 		{
-			while (LegalVarChar(*++at) || *at == '.' );  // find end of field name sequence
+			while (LegalVarChar(*++at) || *at == '.' || *at == '$');  // find end of field name sequence
 			if (*(at-1) == '.') --at; // tailing period cannot be part of it
 		}  
 		if (*at && IsPunctuation(*at) & ARITHMETICS && *at != '=')
@@ -1103,7 +1118,7 @@ bool TopLevelUnit(char* word) // major headers (not kinds of rules)
 		!stricmp(word,(char*)"describe:") ||  !stricmp(word,(char*)"bot:") || !stricmp(word,(char*)"topic:") || (*word == ':' && IsAlphaUTF8(word[1])) );	// :xxx is a debug command
 }
 
-static char* FlushToTopLevel(FILE* in,char* ptr,unsigned int depth,char* data)
+static char* FlushToTopLevel(FILE* in,unsigned int depth,char* data)
 {
 	globalDepth = depth;
 	if (data) *data = 0; // remove data
@@ -1111,8 +1126,8 @@ static char* FlushToTopLevel(FILE* in,char* ptr,unsigned int depth,char* data)
 	int oldindex = jumpIndex;
 	jumpIndex = -1; // prevent ReadNextSystemToken from possibly crashing.
 	*newBuffer = 0;
-	ptr = ReadNextSystemToken(NULL,NULL,word,false);	// clear out anything ahead
-	ptr = readBuffer + strlen(readBuffer) - 1;
+	ReadNextSystemToken(NULL,NULL,word,false);	// clear out anything ahead
+	char* ptr = readBuffer + strlen(readBuffer) - 1;
 	while (ALWAYS)
 	{
 		char* quote = NULL;
@@ -1334,7 +1349,8 @@ static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char argset[ARGSETLI
 	}	
 	else if(!stricmp(D->word,(char*)"^jsonarraydelete"))
 	{
-		if (stricmp(arg1,(char*)"INDEX") && stricmp(arg1,(char*)"VALUE") )
+		MakeLowerCase(arg1);
+		if (!strstr(arg1,(char*)"index") && !strstr(arg1,(char*)"value") )
 			BADSCRIPT((char*)"CALL- ? 1st argument to ^jsonarraydelete must be INDEX or VALUE - %s",arg1)
 	}
 	else if(!stricmp(D->word,(char*)"^keephistory"))
@@ -1527,7 +1543,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	char reuseTarget1[SMALL_WORD_SIZE];
 	char reuseTarget2[SMALL_WORD_SIZE];
 	char* startit = data;
-	
+	int oldcallingsystem = callingSystem;
 	*reuseTarget2 = *reuseTarget1  = 0;	//   in case this turns out to be a ^reuse call, we want to test for its target
 	char argset[ARGSETLIMIT+1][SMALL_WORD_SIZE];
 	char word[MAX_WORD_SIZE];
@@ -1550,6 +1566,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	bool isStream = false;		//   dont check contents of stream, just format it
 	if (!(D->internalBits & FUNCTION_BITS))			//   system function  (not pattern macro, outputmacro, dual macro, tablemacro, or plan macro)
 	{
+		++callingSystem;
 		info = &systemFunctionSet[D->x.codeIndex];
 		if (info->argumentCount == STREAM_ARG) isStream = true;
 
@@ -1779,7 +1796,9 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 		
 	spellCheck = oldspell;
 	patternContext = oldContext;
-	
+	if (!(D->internalBits & FUNCTION_BITS))	 --callingSystem;
+
+	callingSystem = oldcallingsystem;
 	*data++ = ')'; //   outer layer generates trailing space
 	FreeBuffer();
 	return ptr;	
@@ -2194,8 +2213,11 @@ name of topic  or concept
 					// you can quote a string, because you are quoting its members
 					variableGapSeen = false;
 					strcpy(word,JoinWords(BurstWord(word,CONTRACTIONS)));// change from string to std token
-					if (!livecall) WritePatternWord(word); 
-					if (!livecall) WriteKey(word);
+					if (!livecall) 
+					{
+						WritePatternWord(word); 
+						WriteKey(word);
+					}
 					unsigned int n = 0;
 					char* ptr = word;
 					while ((ptr = strchr(ptr,'_')))
@@ -2276,8 +2298,8 @@ name of topic  or concept
 			{
 				quoteSeen = false;
 				memmove(word+1,word,strlen(word)+1);
-				++comparison;	 // moved over for the added ' 
 				*word = '\'';
+				++comparison;	 // moved over for the added ' 
 			}
 
 			char* rhs = comparison+1;
@@ -2488,6 +2510,7 @@ name of topic  or concept
 
 static char* GatherChunk(char* ptr, FILE* in, char* save, char body) // get unformated data til closing marker
 {
+	chunking = true;
 	char* original = save;
 	char word[MAX_WORD_SIZE];
 	char* start = save;
@@ -2582,6 +2605,7 @@ static char* GatherChunk(char* ptr, FILE* in, char* save, char body) // get unfo
 		*save++ = ' ';
 	}
 	*save = 0;
+	chunking = false;
 	return ptr;
 }
 
@@ -3609,7 +3633,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 	{
 		if (setjmp(scriptJump[jumpIndex])) // flush on error
 		{
-			ptr = FlushToTopLevel(in,ptr,holdDepth,0);
+			ptr = FlushToTopLevel(in,holdDepth,0);
 			break;
 		}
 		ptr = ReadNextSystemToken(in,ptr,word,false,false); 
@@ -3955,7 +3979,7 @@ static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 	bool stayRequested = false;
 	if (setjmp(scriptJump[++jumpIndex])) 
 	{
-		ptr = FlushToTopLevel(in,ptr,holdDepth,data); //   if error occurs lower down, flush to here
+		ptr = FlushToTopLevel(in,holdDepth,data); //   if error occurs lower down, flush to here
 	}
 	while (ALWAYS) //   read as many tokens as needed to complete the definition
 	{
@@ -4253,7 +4277,7 @@ static char* ReadPlan(char* ptr, FILE* in,unsigned int build)
 
 	if (setjmp(scriptJump[++jumpIndex])) 
 	{
-		ptr = FlushToTopLevel(in,ptr,holdDepth,data); //   if error occurs lower down, flush to here
+		ptr = FlushToTopLevel(in,holdDepth,data); //   if error occurs lower down, flush to here
 	}
 	while (ALWAYS) //   read as many tokens as needed to complete the definition
 	{
@@ -4545,6 +4569,8 @@ static char* ReadConcept(char* ptr, FILE* in,unsigned int build)
 
 static void ReadTopicFile(char* name,uint64 buildid) //   read contents of a topic file (.top or .tbl)
 {	
+	callingSystem = 0;
+	chunking = false;
 	unsigned int build = (unsigned int) buildid;
 	size_t len = strlen(name);
 	if (len > 1 && name[len-1] == '~') return; // unix backup editor file
@@ -4573,7 +4599,7 @@ static void ReadTopicFile(char* name,uint64 buildid) //   read contents of a top
 	char* ptr = "";
 	if (setjmp(scriptJump[++jumpIndex])) 
 	{
-		ptr = FlushToTopLevel(in,ptr,holdDepth,0);
+		ptr = FlushToTopLevel(in,holdDepth,0);
 	}
 	char word[MAX_WORD_SIZE];
 	while (ALWAYS) 
@@ -4895,23 +4921,18 @@ static void DumpErrors()
 	for (unsigned int i = 0; i < errorIndex; ++i) Log(STDTRACELOG,(char*)"  %s\r\n",errors[i]);
 }
 
-static unsigned int DumpWarnings(unsigned int& substitutes,unsigned int &cases, unsigned int &function)
+static void DumpWarnings()
 {
 	if (warnIndex) Log(STDTRACELOG,(char*)"\r\nWARNING SUMMARY: \r\n");
-	unsigned int count = 0;
-	cases = 0;
-	substitutes = 0;
-	function = 0;
 	for (unsigned int i = 0; i < warnIndex; ++i) 
 	{
-		if (strstr(warnings[i],(char*)"is not a known word")) {++count;}
-		else if (strstr(warnings[i],(char*)" changes ")) {++substitutes;}
-		else if (strstr(warnings[i],(char*)"is unknown as a word")) {++count;}
-		else if (strstr(warnings[i],(char*)"in opposite case")){++cases;}
-		else if (strstr(warnings[i],(char*)"a function call")){++function;}
+		if (strstr(warnings[i],(char*)"is not a known word")) {}
+		else if (strstr(warnings[i],(char*)" changes ")) {}
+		else if (strstr(warnings[i],(char*)"is unknown as a word")) {}
+		else if (strstr(warnings[i],(char*)"in opposite case")){}
+		else if (strstr(warnings[i],(char*)"a function call")){}
 		else Log(STDTRACELOG,(char*)"  %s\r\n",warnings[i]);
 	}
-	return count;
 }
 
 static void EmptyVerify(char* name, uint64 junk)
@@ -4990,8 +5011,9 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 
 	ClearUserVariables();
 	compiling = true;
-	errorIndex = warnIndex = hasWarnings = hasErrors = 0;
-	
+	errorIndex = warnIndex = hasWarnings = hasErrors =  0;
+	substitutes = cases = functionCall = badword = 0;
+
 	//   store known pattern words in pattern file that we want to recognize (not spellcorrect on input)
 	char filename[SMALL_WORD_SIZE];
 	sprintf(filename,(char*)"TOPIC/BUILD%s/patternWords%s.txt",baseName,baseName);
@@ -5113,12 +5135,9 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	}
 	else if (hasWarnings) 
 	{
-		unsigned int substitutes;
-		unsigned int cases;
-		unsigned int function;
-		unsigned int count = DumpWarnings(substitutes,cases,function);
+		DumpWarnings();
 		if (missingFiles) Log(STDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
-		Log(STDTRACELOG,(char*)"%d function warnings,  %d more serious warnings, %d spelling warnings, %d case warnings, %d substitution warnings\r\n    ",function,hasWarnings-count-substitutes-cases,count,cases,substitutes);
+		Log(STDTRACELOG,(char*)"%d serious warnings, %d function warnings, %d spelling warnings, %d case warnings, %d substitution warnings\r\n    ",hasWarnings-badword-substitutes-cases,functionCall,badword,cases,substitutes);
 	}
 	else 
 	{

@@ -25,6 +25,7 @@
     <ClInclude Include="..\SRC\json.h" />
     <ClInclude Include="..\SRC\mprintf.h" />
     <ClInclude Include="..\SRC\multi.h" />
+    <ClInclude Include="..\SRC\my_sql.h" />
     <ClInclude Include="..\SRC\os.h" />
     <ClInclude Include="..\SRC\functionExecute.h" />
     <ClInclude Include="..\SRC\infer.h" />
@@ -57,6 +58,7 @@
     <ClCompile Include="..\SRC\javascript.cpp" />
     <ClCompile Include="..\SRC\jsmn.cpp" />
     <ClCompile Include="..\SRC\json.cpp" />
+    <ClCompile Include="..\SRC\mysql.cpp" />
     <ClCompile Include="..\SRC\os.cpp" />
     <ClCompile Include="..\SRC\functionExecute.cpp" />
     <ClCompile Include="..\SRC\infer.cpp" />
@@ -115,7 +117,7 @@
     <OutDir>$(SolutionDir)..\BINARIES\</OutDir>
     <GenerateManifest>false</GenerateManifest>
     <IncludePath>c:\chatscript/privatesrc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..SRC/;../SRC/curl;$(LibraryPath)</LibraryPath>
+    <LibraryPath>c:\chatscript/BINARIES/$(ProjectDir)..SRC/;../SRC/curl;$(LibraryPath)</LibraryPath>
     <SourcePath>$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;</SourcePath>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>

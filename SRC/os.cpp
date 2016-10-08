@@ -317,8 +317,8 @@ void DecryptInit(char* params) // required
 void EncryptRestart() // required
 {
 #ifndef DISCARDJSON
-	if (encryptServer && *encryptServer) userFileSystem.userEncrypt = Encrypt; // reestablish encrypt/decrypt bindings
-	if (decryptServer && *decryptServer) userFileSystem.userDecrypt = Decrypt; // reestablish encrypt/decrypt bindings
+	if (*encryptServer) userFileSystem.userEncrypt = Encrypt; // reestablish encrypt/decrypt bindings
+	if (*decryptServer) userFileSystem.userDecrypt = Decrypt; // reestablish encrypt/decrypt bindings
 #endif
 }
 
@@ -1044,7 +1044,7 @@ void ChangeDepth(int value,char* where)
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d\r\n",globalDepth, where, bufferIndex);
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d inverse:%d\r\n",globalDepth, where, bufferIndex,stringInverseFree - stringInverseStart);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 		nameDepth[globalDepth] = where;

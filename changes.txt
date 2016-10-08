@@ -1,3 +1,23 @@
+version 6.85 10-8-2016
+1. If (^function()) fails     if function returns false (as well as previously returning 0 or failing
+2. @4 = ^jsongather(jsonstructure) - now allowed in addition to ^jsongather(@4 jsonstructure)
+3. source= command line parameter will start up using that file as input
+4. ^jsongather(xx xx limit) gets facts thru the limit level deep.
+5 :trim xx xx nooob  - display outputs without oob data
+6. $x.a = null clears as does ^jsonobjectinsert($x a)  use of "" or ^"" sets json literal null
+9. $$csmatch_start $$csmatch_end tell range of where ^match matched
+8. ^jsonarraydelete(VALUE $array value ALL)
+9. ^jsonobjectinsert(DUPLICATE $object name value)
+10:  $t.test.$foo =   or $test.test.foo +=    are now legal
+11: :coverage and :showcoverage -  the first dumps data on what rules have been output executed so far into
+	/TMP/coverage.txt. The latter displays an abstract of all of your scripts, marking rules that
+	have been executed and those that have not (by omission)
+12: ^import and ^export have special behaviors if the name includes the substring "ltm"
+13: outputmacros may now be called with factset references as arguments
+14: safe as argument to jsonobjectinsert or jsonarraydelete will not recursively delete json content
+	^jsonarraydelete("safe index" $array 3)
+	^jsonobjectinsert(safe $object $key null)
+
 version 6.84 9/25/2016
 1. supports json path argument with string for key so you can do ^jsonpath(."st. helens".data $$x)
 2. dotted notation supports $x.y.z and $x.y.z = 

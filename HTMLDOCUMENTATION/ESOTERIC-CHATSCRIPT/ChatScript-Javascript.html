@@ -26,25 +26,7 @@ lines of javascript</code></pre>
 <p>The second word describes the context. CS maintains two different Javascript contexts. The first is <code>permanent</code>, lasting for the duration of the CS engine (server or local mode). The second is <code>transient</code>, which lasts during a volley only. Neither context can see data in the other context.</p>
 <p>The third word describes whether to interpret the code upon execution of the outputmacro.</p>
 <p>The javascript code is only executed when the outputmacro is invoked. And it will only be executed once no matter how many times you invoke the outputmacro. This is not a call to a javascript function (yet), this is how you declare code.</p>
-<p>If you want to process your code into a context when building layer 0 or layer 1 (normal <code>:build</code> commands), you should arrange to invoke your output macro when the engine starts up by calling it from a <code>^csboot</code> function. Example:</p>
-<pre><code>outputmacro: ^testx(^arg1) JavaScript permanent call void test int eval
-
-// fib.js
-function fib(n) {
-    if (n == 0) { return 0; }
-    if (n == 1) { return 1; }
-    return fib(n-1) + fib(n-2);
-}
-
-function test(i) {
-     var res = [];
-     for (i = 0; i &lt; 5; i++) {
-     res.push(fib(i));
-     }
- print(res.join(&#39; &#39;));
-}
-
-outputmacro: ^normalcs() hello.</code></pre>
+<p>If you want to process your code into a context when building layer 0 or layer 1 (normal <code>:build</code> commands), you should arrange to invoke your output macro when the engine starts up by calling it from a <code>^csboot</code> function.</p>
 <h2 id="loading-javascript-files">Loading javascript files</h2>
 <p>Instead of declaring lines of javascript locally, you can name files to load from. Just put</p>
 <pre><code>file filename
@@ -62,9 +44,32 @@ file &quot;test.js&quot;</code></pre>
 <pre><code>outputmacro: ^func(^a1) Javascript permanent call void test string eval
 bunch of javascript code</code></pre>
 <p>The first time you invoke the CS function, it will load the javascript into the designated context. And then it will perform the call. Future invocations of the CS function will not reload the javascript, merely perform the call.</p>
+<p>Example:</p>
+<pre><code>outputmacro: ^testx(^arg1) JavaScript permanent call void test int eval
+
+// fib.js
+function fib(n) {
+    if (n == 0) { return 0; }
+    if (n == 1) { return 1; }
+    return fib(n-1) + fib(n-2);
+}
+
+function test(i) {
+     var res = [];
+     for (i = 0; i &lt; 5; i++) {
+     res.push(fib(i));
+     }
+ print(res.join(&#39; &#39;));
+}
+
+topic: ~keywordless()
+u: (test) ^testx(4)
+</code></pre>
+<p>In the above example, if the <code>~keywordless</code> topic sees an input of <code>test</code> it will call <code>^testx</code> with a value of four. This will cause the javascript to be loaded and the javascript function <code>test</code> called with an integer value 4. This will, in turn, print out on the console <code>0 1 1 2 3</code> (but since that is not ChatScript output the system will move on to some other rule to try to generate output).</p>
 <h2 id="notes-restrictions">Notes &amp; Restrictions</h2>
 <p>Currently the javascript is presumed correct (not verified by CS during <code>:build</code>). When the code is evaled, if there is an error, the rule making the outputmacro call will fail, but you have no indication of where in the javascript your code was in error.</p>
 <p>Likewise there are nominal limits of 1500 bytes for a string argument or return value. These are not enforced at present, so you could damage the system if you exceed that. In the future restrictions and debuggability will be improved.</p>
 <p>At present you can only pass in or return float, int, string. Any exception taken while running your script will end the ChatScript instance (this will get changed). Some obvious things... if you use print() you only see it on a local console.</p>
+<p>On some OS compiles like IOS and Android, JavaScript support is by default not compiled into the engine. You would need to remove the appropriate #define DISCARDJAVASCRIPT 1 from common.h if you see as output something like <code>*JavaScript permanent...</code> instead of what you are expecting.</p>
 </body>
 </html>

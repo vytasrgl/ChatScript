@@ -493,6 +493,9 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	{
 		int xx = 0;
 	}
+	char* oldFunctionAnswerBase = functionAnswerBase;
+	char* oldFunctionAnswerName = functionAnswerName;
+	unsigned int oldFnVarBase = fnVarBase;
 
 	if (D->x.codeIndex && !(D->internalBits & (IS_PLAN_MACRO|IS_TABLE_MACRO))) // system function --  macroFlags are also on codeindex, but IS_TABLE_MACRO distinguishes  but PLAN also has a topicindex which is a codeindex
 	{
@@ -518,8 +521,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				callArgumentList[callArgumentIndex] = AllocateInverseString(buffer);
 				ptr = SkipWhitespace(ptr);
 				FreeBuffer();
-				if (callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX && // NOT by reference but by value
-					callArgumentList[callArgumentIndex][1] == LOCALVAR_PREFIX)
+				if (callArgumentList[callArgumentIndex] && callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX &&
+					strstr(callArgumentList[callArgumentIndex],"$_")) // NOT by reference but by value somewhere in the chain
 				{
 					callArgumentList[callArgumentIndex] = AllocateInverseString(GetUserVariable(callArgumentList[callArgumentIndex])); // pass by unmarked value - no one will try to store thru it
 				}
@@ -533,13 +536,24 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				while (start[len-1] == ' ') --len; // dont want trailing blanks
 				callArgumentList[callArgumentIndex] = AllocateInverseString(start,len);
 			}
+			if (!callArgumentList[callArgumentIndex])
+			{
+				ReportBug("Inverse String space exhausted %s",D->word);
+				result = FAILRULE_BIT;
+				goto TERMINATE;
+			}
 
 			if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 			{
 				if (info->argumentCount == STREAM_ARG) Log(STDTRACELOG,(char*)"STREAM: ");
 				Log(STDTRACELOG,(char*)" (%s), ",callArgumentList[callArgumentIndex]);
 			}
-			if (++callArgumentIndex >= MAX_ARG_LIST) --callArgumentIndex; // too many arguments globally
+			if (++callArgumentIndex >= MAX_ARG_LIST) 
+			{
+				ReportBug("Globally too many arguments %s",D->word);
+				result = FAILRULE_BIT;
+				goto TERMINATE;
+			}
 			if (info->argumentCount == STREAM_ARG) break; // end of arguments
 		}
 		callArgumentList[callArgumentIndex] = (char*) ""; //  mark end of arg list with null value
@@ -547,24 +561,15 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		callArgumentList[callArgumentIndex+2] = (char*) ""; // optional arguments excess
 		if ((trace & TRACE_OUTPUT  || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) Log(STDTRACELOG,(char*)") = ");
 		if (result & ENDCODES); // failed during argument processing
-		else if (callArgumentIndex >= (MAX_ARG_LIST-1))	
-		{
-			ReportBug((char*)"System function nesting too deep %d",MAX_ARGUMENT_COUNT);
-			result = FAILRULE_BIT;	// too deep calling
-		}
 		else result = (*info->fn)(buffer);
-		ChangeDepth(-1,D->word); // HandleSystemCall
 	} 
 	else //   user function (plan macro, inputmacro, outputmacro, tablemacro)) , eg  ^call (_10 ^2 it ^call2 (3 ) )  spot each token has 1 space separator 
 	{
-		char* oldFunctionAnswerBase = functionAnswerBase;
-		char* oldFunctionAnswerName = functionAnswerName;
 		functionAnswerBase = buffer; // let ^return be transparent by only tracking user routines for this data
 		functionAnswerName = D->word;
 		callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
 		callStack[callIndex++] = D;
 
-		unsigned int oldFnVarBase = fnVarBase;
 		unsigned int args = 0;
 		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 			Log(STDTRACETABLOG, "Call %s(",name);
@@ -645,7 +650,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				strcpy(arg,currentOutputBase);
 				FreeOutputBuffer();
 			}
-			if (arg[0] == USERVAR_PREFIX && arg[1] == LOCALVAR_PREFIX) 
+			if (arg[0] == USERVAR_PREFIX && strstr(arg,"$_")) 
 			{
 				strcpy(arg,GetUserVariable(arg)-2); // NOT by reference but by marked value
 			}
@@ -672,8 +677,15 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			if (!stricmp(arg,(char*)"null")) *arg = 0;	 // pass NOTHING as the value
 
 			callArgumentList[callArgumentIndex++] = AllocateInverseString(arg);
-			if (callArgumentIndex >= MAX_ARGUMENT_COUNT) --callArgumentIndex; // force lock to fail but swallow all args to update ptr
 			FreeBuffer();
+			if (!callArgumentList[callArgumentIndex-1])
+			{
+				if (callIndex) --callIndex;
+				result = FAILRULE_BIT;
+				FreeBuffer();
+				goto TERMINATE;
+			}
+			if (callArgumentIndex >= MAX_ARGUMENT_COUNT) --callArgumentIndex; // force lock to fail but swallow all args to update ptr
 			++j;
 		} // end of argument processing
 		FreeBuffer(); // argcopy
@@ -740,13 +752,15 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		if (definition && basedisplay) RestoreDisplay(baseinvert,basedisplay);
 
 		trace = oldtrace;
-		fnVarBase = oldFnVarBase;
 		if (callIndex) --callIndex; // safe decrement
 		if (result & ENDCALL_BIT) result = (FunctionResult) (result ^ ENDCALL_BIT); // terminated user call 
-		ChangeDepth(-1,D->word); //"HandleUserCall"
-		functionAnswerBase = oldFunctionAnswerBase;
-		functionAnswerName = oldFunctionAnswerName;
 	} // end user function
+
+TERMINATE:
+	ChangeDepth(-1,D->word); //"HandleUserCall"
+	fnVarBase = oldFnVarBase;
+	functionAnswerBase = oldFunctionAnswerBase;
+	functionAnswerName = oldFunctionAnswerName;
 
 	//   pop argument list
 	callArgumentIndex = oldArgumentIndex;	 
@@ -1646,22 +1660,18 @@ static FunctionResult RejoinderCode(char* buffer)
 
 	int id = inputRejoinderRuleID;
 	
-    char level[400];
-    char word[MAX_WORD_SIZE];
-    ReadCompiledWord(ptr,level); //   what marks this level
+    char level;
+    level = *ptr; //   what marks this level
 	ChangeDepth(1,(char*)"RejoinderCode");
 	unsigned int oldTopicDisplay = currentTopicDisplay;
 	currentTopicDisplay = currentTopicID;
 	char* locals = GetTopicLocals(currentTopicID);
 
-
     while (ptr && *ptr) //   loop will search for a level answer it can use
     {
-        ReadCompiledWord(ptr,word); // read responder type
-        if (!*word) break; //   no more data
-        if (TopLevelRule(word)) break; // failed to find rejoinder
-        else if (*word < *level) break;  // end of local choices
-        else if (!stricmp(word,level)) // check rejoinder
+        if (TopLevelRule(ptr)) break; // failed to find rejoinder
+        else if (*ptr < level) break;  // end of local choices
+        else if (*ptr == level) // check rejoinder
         {
 			result = TestRule(id,ptr,buffer);
 			if (result == FAILMATCH_BIT) result = FAILRULE_BIT; // convert 
@@ -3640,10 +3650,12 @@ FunctionResult MatchCode(char* buffer)
 	bool uppercasem = false;
 	int matched = 0;
 	wildcardIndex = 0;  //   reset wildcard allocation on top-level pattern match
-	int junk;
+	int first = 0;
+	int last = 0;
 	if (*base == '(') ++base;		// skip opening paren of a pattern
  	if (*base == ' ') ++base;		// skip opening space of a pattern
-    bool match = Match(base,0,0,(char*)"(",1,0,junk,junk,uppercasem,matched,0,0) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
+    bool match = Match(base,0,0,(char*)"(",1,0,first,last,uppercasem,matched,0,0) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
+	
 	if (clearUnmarks) // remove transient global disables.
 	{
 		clearUnmarks = false;
@@ -3651,6 +3663,11 @@ FunctionResult MatchCode(char* buffer)
 	}
 	ShowMatchResult(!match ? FAILRULE_BIT : NOPROBLEM_BIT ,base,NULL);
 	if (!match) return FAILRULE_BIT;
+	char data[10];
+	sprintf(data,"%d",first);
+	SetUserVariable("$$csmatch_start",data);
+	sprintf(data,"%d",last);
+	SetUserVariable("$$csmatch_end",data);
 	return NOPROBLEM_BIT;
 }
 
@@ -5107,7 +5124,7 @@ static FunctionResult FindTextCode(char* buffer)
 	if (*target != '_') Convert2Blanks(target); // if we explicitly request _, use it
 	if (*find != '_') Convert2Blanks(find); // if we explicitly request _, use it
 
-	if (!strstr(ARGUMENT(4),(char*)"insensitive")) 
+	if (strstr(ARGUMENT(4),(char*)"insensitive")) 
 	{
 		MakeLowerCase(find);
 		MakeLowerCase(target);
@@ -5372,7 +5389,6 @@ static bool WordPropogate(MEANING at, MEANING find)
 	// propogate to find set
 	while(F) 
 	{
-		TraceFact(F);
 		if (F->verb == Mmember && WordPropogate(F->object,find)) return true;
 		F = GetSubjectNext(F);
 	}
@@ -6779,13 +6795,27 @@ FunctionResult ReviseFactCode(char* buffer)
 
 static void GenerateConceptList(bool tracing,int list, int set,char* filter,size_t len,int wordindex)
 {
+	int x = concepts[wordindex];
+	x = 0;
+	while (x)
+	{
+		MEANING* data = (MEANING*) Index2String(x);
+		MEANING M = *data;
+		WORDP D = Meaning2Word(M);
+		x = data[1];
+	}
+
 	while (list)
 	{
 		MEANING* at = (MEANING*)Index2String(list);
 		list = (unsigned int) at[1];
 		MEANING M = *at;
 		WORDP X = Meaning2Word(M);
-		if (!(X->systemFlags & NOCONCEPTLIST) && (!len || !strnicmp(X->word,filter,len))) 
+		if (!X) // THIS SHOULD NOT HAPPEN BUT DID
+		{
+			int xx = 0;
+		}
+		if (X && !(X->systemFlags & NOCONCEPTLIST) && (!len || !strnicmp(X->word,filter,len))) 
 		{
 			// found at this word index, get its correct range
 			int actualStart, actualEnd;
@@ -7914,10 +7944,10 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ "^jsoncopy", JSONCopyCode, VARIABLE_ARG_COUNT, 0, "given json array or json object, creates a duplicate copy" },
 	{ "^jsoncreate", JSONCreateCode, VARIABLE_ARG_COUNT, 0, "given array or object, creates a new one" },
 	{ "^jsondelete", JSONDeleteCode, 1, 0, "deprecated in favor of ^delete" },
-	{ "^jsongather", JSONGatherCode, 2, 0, "stores the json facts referred to by the name into a fact set" },
+	{ "^jsongather", JSONGatherCode, VARIABLE_ARG_COUNT, 0, "stores the json facts referred to by the name into a fact set" },
 	{ "^jsonarraysize", JSONArraySizeCode, 1, 0, "deprecated in favor of ^length" },
 	{ "^jsonarrayinsert", JSONArrayInsertCode, VARIABLE_ARG_COUNT, 0, "given name of json array fact, adds given  value BEFORE or AFTER the given" },
-	{ "^jsonarraydelete", JSONArrayDeleteCode, 3, 0, "given name of json array and index of fact to remove, removes it and renumbers all after it down" },
+	{ "^jsonarraydelete", JSONArrayDeleteCode, VARIABLE_ARG_COUNT, 0, "given name of json array and index of fact to remove, removes it and renumbers all after it down" },
 	{ "^jsonobjectinsert", JSONObjectInsertCode, VARIABLE_ARG_COUNT, 0, "given name of json object, adds given key and value" },
 	{ "^jsonparse", JSONParseCode, VARIABLE_ARG_COUNT, 0, "parses the provided string argument to a set of facts accessible from ChatScript code" },
 	{ "^jsonparsefile", JSONParseFileCode, VARIABLE_ARG_COUNT, 0, "parses the provided filename to a set of facts accessible from ChatScript code" },

@@ -21,7 +21,7 @@ FunctionResult JSONPathCode(char* buffer);
 FunctionResult JSONFormatCode(char* buffer);
 FunctionResult JSONParseFileCode(char* buffer);
 FunctionResult JSONObjectInsertCode(char* buffer) ;
-FunctionResult JSONVariableAssign(char* word,char* dot,char* value);
+FunctionResult JSONVariableAssign(char* word,char* value);
 FunctionResult JSONArrayInsertCode(char* buffer) ;
 FunctionResult JSONOpenCode(char* buffer);
 FunctionResult JSONLabelCode(char* buffer) ;

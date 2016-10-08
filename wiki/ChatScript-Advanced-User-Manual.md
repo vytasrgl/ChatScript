@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 9/25/2016 cs6.84
+> Revision 10/8/2016 cs6.85
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -307,27 +307,36 @@ topic: ~rust keep random [rust iron oxide]
 ```
 The flags and their meanings are:
 
-| flag           | description |
-| ------------   | ----------- |
-| `Random`       | search rules randomly instead of linearly |
-| `NoRandom`     | (default) search rules linearly |
-| `Keep`         | do not erase responders ever. Gambits (and rejoinders) are not affected by this |
-| `Erase`        | (default) erase responders that successfully generate output. (Gambits automatically erase unless you suppress them specifically |
-| `NoStay`       | do not consider this a topic to remain in, leave it (except for rejoinders) |
-| `Stay`         | (default) make this a pending topic when it generates output |
-| `Repeat`       | allow rules to generate output which has been output recently |
-| `NoRepeat`     | (default) do not generate output if it matches output made recently |
-| `Priority`     | raise the priority of this topic when matching keywords |
-| `Normal`       | (default) give this topic normal priority when matching keywords |
-| `Deprioritize` | lower the priority of this topic when matching keywords |
-| `System`       | this is a system topic. It is automatically `NoStay`, `Keep`. `Keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files |
-| `User`       | (default) this is a normal topic |
-| `NoBlocking` | `:verify` should not perform any blocking tests on this topic |
-| `NoPatterns` | `:verify` should not perform any pattern tests on this topic |
-| `NoSamples`  | `:verify` should not perform any sample tests on this topic |
-| `NoKeys`     | `:verify` should not perform any keyword tests on this topic |
-| `More`       | Normally if you try to redeclare a concept, you get an error. MORE tells CS you intend to extend the topic and allows additional keywords for it |
-| `Bot=name`  | if this is given, only named bots are allowed to use this topic. <br>You can name multiple bots separated by commas with no extra spaces. E.g. `topic: ~mytopic bot=harry,,roman [mykeyword]`  |
+  flag             description 
+  ------------     -----------  
+  `Random`         search rules randomly instead of linearly
+  `NoRandom`       (default) search rules linearly
+  `Keep`           do not erase responders ever. Gambits (and rejoinders) are not affected by this
+  `Erase`          (default) erase responders that successfully generate output. 
+                     (Gambits automatically erase unless you suppress them specifically.
+  `NoStay`         do not consider this a topic to remain in, leave it (except for rejoinders)
+  `Stay`           (default) make this a pending topic when it generates output
+  `Repeat`         allow rules to generate output which has been output recently
+  `NoRepeat`       (default) do not generate output if it matches output made recently
+  `Priority`       raise the priority of this topic when matching keywords
+  `Normal`         (default) give this topic normal priority when matching keywords
+  `Deprioritize`   lower the priority of this topic when matching keywords
+  `System`         this is a system topic. It is automatically `NoStay`, `Keep`. 
+                    `Keep` automatically applies to gambits as well. 
+                    The system never looks to these topics for gambits. 
+                    System topics can never be considered pending (defined shortly). 
+                    They can not have themselves or their rules be enabled or disabled. 
+                    Their status/data is never saved to user files.
+  `User`           (default) this is a normal topic
+  `NoBlocking`     should not perform any blocking tests on this topic in `:verify`
+  `NoPatterns`     should not perform any pattern tests on this topic in `:verify`
+  `NoSamples`      should not perform any sample tests on this topic in `:verify`
+  `NoKeys`         should not perform any keyword tests on this topic in `:verify`
+  `More`           normally if you try to redeclare a concept, you get an error. 
+                     MORE tells CS you intend to extend the concept and allows additional keywords.
+  `Bot=name`       if this is given, only named bots are allowed to use this topic. 
+                    You can name multiple bots separated by commas with no extra spaces. 
+                    E.g. `topic: ~mytopic bot=harry,,roman [mykeyword]`
 
 To support **multiple bots**, you may create multiple copies of a topic name, which vary in
 their bot restrictions and content. The set of keywords given for a topic is the union of the
@@ -1238,7 +1247,7 @@ The test condition can be:
 
 1. A variable – if it is defined, the test passes
 2. `!` variable – if it is not defined, the test passes (same as relation variable `==` null)
-3. A function call – if it doesn't fail or return the values 0 or null or nil, it passes
+3. A function call – if it doesn't fail and doesn't return the values 0 or false, it passes
 4. A relation – one of `==` `!=` `<` `<=` `>` `>=` `?` `!?`
 
 For the purposes of numeric comparison `(< <= > >=)` a null value compared against a
@@ -1249,7 +1258,7 @@ test condition can be any end or fail code. It does not affect outside the condi
 merely controls which branch of the if gets taken.
 ```
 if ($var) { } # if $var has a value
-if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn't fail
+if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn't fail or return 0 or false
 ```
 
 Comparison tests between two text strings is case insensitive.
@@ -1435,12 +1444,6 @@ you to indirectly call things. E.g.
 ```
 outputmacro: ^indirect(^fn ^value)
     $$tmp = ^fn(^value)
-```
-
-Outputmacros cannot be passed a factset name. These are not legal calls:
-```
-^mymacro(@0)
-^mymacro(@0subject)
 ```
 
 The above will evaluate `^fn`, and if it finds that it is a function name, will use that in a
@@ -1670,7 +1673,7 @@ This is a transfer from one match variable to another, so no data is lost
 
 ## Json dotted notation for variables
 If a variable holds a JSON object value, you can directly set and get from fields of that object
-using dotted notation. This must be a fixed static fieldname you give- `$myvar.$myfield` is illegal.
+using dotted notation. This can be a fixed static fieldname or a variable value- `$myvar.$myfield` is legal.
 Dotted notation is cleaner and faster than `^jsonpath` and `jsonobjectinsert` and for get, has
 the advantage that it never fails, it only returns null if it can't find the field. 
 On the other hand, assignment fails if the path does not contain a json object at some level.
@@ -1678,6 +1681,9 @@ On the other hand, assignment fails if the path does not contain a json object a
 $x = $$$obj.name.value.data.side 
 $$$obj.name.value.data.side = 7
 ```
+
+Assigning `null` will remove a JSON key entirely. Assigning `""` `^""` will set the field to the JSON literal
+`null`.
 
 # Out of band Communication
 
@@ -1920,8 +1926,12 @@ so you can do:
 @myset += createfact( 1 2 3)
 $$tmp = first(@mysetsubject)
 ```
-You can also declare your own 32 or 64-bit integer constants.
-
+You can also declare your own 32 or 64-bit integer constants. You must use ## when you define it and when you
+refer to it.
+```
+rename: ##first 1
+$tmp = ##first
+```
 
 ## Defining private Queries 
 
@@ -2621,6 +2631,7 @@ Other options:
 Overridden if the user has `$cs_userfactlimit` set to some value.
 <br>`userlog` - Store a user-bot log in USERS directory (default).
 <br>`nouserlog` - Don't store a user-bot log.
+<br>`source=xxxx` - Analogous to the `:source` command. The file is executed.
 <br>`login=xxxx` - The same as you would name when asked for a login, this avoids having
 to ask for it. Can be `login=george` or `login=george:harry` or whatever.
 <br>``build0=filename` runs `:build` on the filename as level0 and exits with 0 on success or 4 on
@@ -2641,9 +2652,11 @@ Useful for `:trim`, for example or more specific `:build` commands.
 You can create predefined bot variables by simply naming permanent variables on the
 command line, using V to replace $ (since Linux shell scripts don't like $). Eg.
 
-<br>ChatScript Vmyvar=fatcat
-<br>ChatScript Vmyvar="tony is here"
-<br>ChatScript "Vmyvar=tony is here"
+ ChatScript Vmyvar=fatcat
+
+ ChatScript Vmyvar="tony is here"
+
+ ChatScript "Vmyvar=tony is here"
 
 Quoted strings will be stored without the quotes. Bot variables are always reset to their
 original value at each volley, even if you overwrite them during a volley. This can be

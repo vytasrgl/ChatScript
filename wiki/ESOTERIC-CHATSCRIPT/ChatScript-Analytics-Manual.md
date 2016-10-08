@@ -99,7 +99,7 @@ You can do all topics in a file by naming the file name instead of the topicname
 path, just the actual name of the file. 
 
 
-# Views over User Logs
+# Views over User Logs - :trim
 
 If you get a lot of user logs (say thousands), reading through them becomes a chore. The logs have a
 bunch of excess information and are in a bunch of different files. This is where `:trim` comes in, making
@@ -138,3 +138,7 @@ Trim will read every file and generate output depending on the integer code give
 rule comes from the calling rule, not the output rule.
 | `8`  |  puts the user and chatbot on separate lines, indenting the chatbots line and prefixes it with the topic generating the response. Easier to read and debug.
 
+Normally trim displays everything. But with an optional 3rd argument `nooob`, you can omit out-of-bands data. E.g.,
+```
+:trim bob 6 nooob
+```

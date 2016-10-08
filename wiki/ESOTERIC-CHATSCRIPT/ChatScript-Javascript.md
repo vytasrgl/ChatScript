@@ -46,27 +46,6 @@ call to a javascript function (yet), this is how you declare code.
 If you want to process your code into a context when building layer 0 or layer 1
 (normal `:build` commands), you should arrange to invoke your output macro when the
 engine starts up by calling it from a `^csboot` function.
-Example:
-```
-outputmacro: ^testx(^arg1) JavaScript permanent call void test int eval
-
-// fib.js
-function fib(n) {
-    if (n == 0) { return 0; }
-    if (n == 1) { return 1; }
-    return fib(n-1) + fib(n-2);
-}
-
-function test(i) {
-     var res = [];
-     for (i = 0; i < 5; i++) {
-     res.push(fib(i));
-     }
- print(res.join(' '));
-}
-
-outputmacro: ^normalcs() hello.
-````
 
 ## Loading javascript files
 
@@ -114,7 +93,36 @@ bunch of javascript code
 The first time you invoke the CS function, it will load the javascript into the designated
 context. And then it will perform the call. Future invocations of the CS function will not
 reload the javascript, merely perform the call. 
- 
+
+Example:
+```
+outputmacro: ^testx(^arg1) JavaScript permanent call void test int eval
+
+// fib.js
+function fib(n) {
+    if (n == 0) { return 0; }
+    if (n == 1) { return 1; }
+    return fib(n-1) + fib(n-2);
+}
+
+function test(i) {
+     var res = [];
+     for (i = 0; i < 5; i++) {
+     res.push(fib(i));
+     }
+ print(res.join(' '));
+}
+
+topic: ~keywordless()
+u: (test) ^testx(4)
+
+````
+
+In the above example, if the `~keywordless` topic sees an input of `test` it will call
+`^testx` with a value of four. This will cause the javascript to be loaded and the 
+javascript function `test` called with an integer value 4. This will,
+in turn, print out on the console `0 1 1 2 3` (but since that is not ChatScript output
+the system will move on to some other rule to try to generate output).
  
 ## Notes & Restrictions
 
@@ -129,4 +137,8 @@ In the future restrictions and debuggability will be improved.
 At present you can only pass in or return float, int, string. Any exception taken while
 running your script will end the ChatScript instance (this will get changed).
 Some obvious things... if you use print() you only see it on a local console.
+
+On some OS compiles like IOS and Android, JavaScript support is by default not compiled into the engine.
+You would need to remove the appropriate #define DISCARDJAVASCRIPT 1 from common.h if you see as output
+something like `*JavaScript permanent...` instead of what you are expecting.
 

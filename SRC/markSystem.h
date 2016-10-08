@@ -23,7 +23,7 @@ extern char unmarked[MAX_SENTENCE_LENGTH];
 extern bool showMark;
 extern int concepts[MAX_SENTENCE_LENGTH]; 
 extern int topics[MAX_SENTENCE_LENGTH]; 
-
+extern int upperCount, lowerCount;
 unsigned int GetNextSpot(WORDP D,int start,int& startx,int& endx,bool reverse = false);
 unsigned int GetIthSpot(WORDP D,int i,int& start,int& end);
 void MarkWordHit(WORDP D,  int start,int end);

@@ -176,6 +176,7 @@ extern WORDP dictionaryBase;
 extern char* stringBase;
 extern char* stringFree;
 extern char* stringInverseFree;
+extern char* stringInverseStart;
 extern char* stringEnd;
 extern uint64 maxDictEntries;
 extern unsigned long maxStringBytes;

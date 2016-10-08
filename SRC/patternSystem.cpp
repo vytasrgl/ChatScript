@@ -77,7 +77,7 @@ static void MarkMatchLocation(int start, int end, int depth)
 	{
 		int offset = i / 64; // which unit
 		int index = i % 64;  // which bit
-		uint64 mask = 1 << index;
+		uint64 mask = ((uint64)1) << index;
 		matchedBits[depth][offset] |= mask;
 	}
 }
@@ -307,6 +307,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 	ChangeDepth(1,(char*)"Match");
     bool matched;
 	unsigned int startNest = functionNest;
+	int wildcardBase = wildcardIndex;
 	unsigned int result;
     WORDP D;
 	unsigned int oldtrace = trace;
@@ -1046,7 +1047,11 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						else SetWildCardGiven(positionEnd + 1,oldStart-1,true,index );  //   wildcard legal swallow between elements
 					}	
 					else if ((positionStart - memorizationStart) == 0) SetWildCardGivenValue((char*)"",(char*)"",0,oldEnd+1, index); // empty gap
-					else SetWildCardGiven(memorizationStart,positionStart-1,true, index);  //   wildcard legal swallow between elements
+					else 
+					{
+						SetWildCardGiven(memorizationStart,positionStart-1,true, index);  //   wildcard legal swallow between elements
+						if (positionEnd < (positionStart - 1)) positionEnd = positionStart - 1;	// gap closes out 
+					}
 				}
 				if (wildcardSelector & WILDMEMORIZESPECIFIC) 
 				{
@@ -1206,9 +1211,10 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					//   reset to initial conditions, mostly 
 					reverse = false;
 					ptr = orig;
-					wildcardIndex = 0; 
+					wildcardIndex = wildcardBase; 
 					basicStart = positionEnd = firstMatched;  //   THIS is different from inital conditions
 					firstMatched = -1; 
+					beginmatch = -1; // RETRY PATTERN
 					positionStart = INFINITE_MATCH; 
 					wildcardSelector = 0;
 					statusBits &= -1 ^ (NOT_BIT | FREEMODE_BIT | NOTNOT_BIT);

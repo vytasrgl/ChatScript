@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 9/25/2016 cs6.84
+> Revision 10/8/2016 cs6.85
 
 
 * [Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
@@ -473,3 +473,6 @@ contents.
 | `$cs_randindex`         |  current value of the random generator value| 
 | `$cs_bot`               |  name of the bot currently in use| 
 | `$cs_login`             |  login name of the user |
+| `$$csmatch_start`  |  start of found words from ^match |
+| `$$csmatch_end` | end of found words from ^match |
+

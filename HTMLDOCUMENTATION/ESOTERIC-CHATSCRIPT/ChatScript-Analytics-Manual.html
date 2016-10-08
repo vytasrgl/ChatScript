@@ -64,7 +64,7 @@ s: &quot;Knock&quot; =&gt; Who&#39;s there? </code></pre>
 <p>will prettyprint and rewrite patterns using the canonical form of words.</p>
 <pre><code>:abstract nocode </code></pre>
 <p>will not display rules that only have code output You can do all topics in a file by naming the file name instead of the topicname. Don't use the full path, just the actual name of the file.</p>
-<h1 id="views-over-user-logs">Views over User Logs</h1>
+<h1 id="views-over-user-logs---trim">Views over User Logs - :trim</h1>
 <p>If you get a lot of user logs (say thousands), reading through them becomes a chore. The logs have a bunch of excess information and are in a bunch of different files. This is where <code>:trim</code> comes in, making it easier to see things. <code>:trim</code> assumes all files in the LOGS directory are user logs and will process them in some manner. It will normally put its output in <code>TMP/tmp.txt</code>. Your first argument to trim can also be just the name of a user (whose log file will be in <code>USERS/log-xxx.txt</code>) or if that doesn't exist then it is the directory to use, or you can use the name of a log file within the USERs directory (the name should begin &quot;log-&quot; and not include the directory and need not include the .txt suffix). E.g.,</p>
 <pre><code>:trim c:\FULLLOGS 6</code></pre>
 <p>a directory to read all files within</p>
@@ -121,5 +121,7 @@ s: &quot;Knock&quot; =&gt; Who&#39;s there? </code></pre>
 </tbody>
 </table>
 <p>rule comes from the calling rule, not the output rule. | <code>8</code> | puts the user and chatbot on separate lines, indenting the chatbots line and prefixes it with the topic generating the response. Easier to read and debug.</p>
+<p>Normally trim displays everything. But with an optional 3rd argument <code>nooob</code>, you can omit out-of-bands data. E.g.,</p>
+<pre><code>:trim bob 6 nooob</code></pre>
 </body>
 </html>

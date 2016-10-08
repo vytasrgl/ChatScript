@@ -1,11 +1,9 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.84";
-
-// Technically using atomic is not helpful here. EVServer runs a single thread per core (excluding the event library)
-// and the alternate server code in csocket has a single thread for the engine so it cannot be out of synch with these variables.
-volatile bool pendingRestart = false;
-volatile bool pendingUserReset = false;
+char* version = "6.85";
+char sourceInput[200];
+bool pendingRestart = false;
+bool pendingUserReset = false;
 static bool assignedLogin = false;
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
@@ -443,6 +441,16 @@ void ProcessArguments(int argc, char* argv[])
 			chdir(argv[i]+5);
 #endif
 		}
+		else if (!strnicmp(argv[i],(char*)"source=",7)) 
+		{
+			if (argv[i][7] == '"') 
+			{
+				strcpy(sourceInput,argv[i]+8);
+				size_t len = strlen(sourceInput);
+				if (sourceInput[len-1] == '"') sourceInput[len-1] = 0;
+			}
+			else strcpy(sourceInput,argv[i]+7);
+		}
 		else if (!strnicmp(argv[i],(char*)"login=",6)) 
 		{
 			assignedLogin = true;
@@ -555,6 +563,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 { // this work mostly only happens on first startup, not on a restart
 	strcpy(hostname,(char*)"local");
 	MakeDirectory((char*)"TMP");
+	*sourceInput = 0;
 	argc = argcx;
 	argv = argvx;
 	InitFileSystem(unchangedPath,readablePath,writeablePath);
@@ -957,6 +966,7 @@ bool ProcessInputDelays(char* buffer,bool hitkey)
 
 void ProcessInputFile()
 {
+	int turn = 0;
 	while (ALWAYS)
     {
 		if (*oktest) // self test using OK or WHY as input
@@ -992,8 +1002,6 @@ void ProcessInputFile()
 			if ((!documentMode || *ourMainOutputBuffer) && !silent) printf((char*)"%s",(char*)"\r\n");
 
 			if (showWhy) printf((char*)"%s",(char*)"\r\n"); // line to separate each chunk
-			if (pendingRestart) Restart();
-
 
 			//output user prompt
 			if (documentMode || silent) {;} // no prompt in document mode
@@ -1028,9 +1036,10 @@ inputRetry:
 				if (echoSource == SOURCE_ECHO_USER) printf((char*)"< %s\r\n",ourMainInputBuffer);
 			}
 		}
-		if (!server && extraTopicData) PerformChatGivenTopic(loginID,computerID,ourMainInputBuffer,NULL,ourMainOutputBuffer,extraTopicData); 
-		else PerformChat(loginID,computerID,ourMainInputBuffer,NULL,ourMainOutputBuffer); // no ip
-    }
+		if (!server && extraTopicData) turn = PerformChatGivenTopic(loginID,computerID,ourMainInputBuffer,NULL,ourMainOutputBuffer,extraTopicData); 
+		else turn = PerformChat(loginID,computerID,ourMainInputBuffer,NULL,ourMainOutputBuffer); // no ip
+		if (turn == PENDING_RESTART) Restart();
+	}
 	if (sourceFile != stdin) 
 	{
 		FClose(sourceFile);  // to get here, must have been a source file that ended
@@ -1043,6 +1052,7 @@ void MainLoop() //   local machine loop
 {	
 	char user[MAX_WORD_SIZE];
 	sourceFile = stdin; // keep up the conversation indefinitely
+	if (*sourceInput)	sourceFile = FopenReadNormal(sourceInput); 
 	*ourMainInputBuffer = 0;
 	if (!*loginID)
 	{
@@ -1343,7 +1353,7 @@ int PerformChatGivenTopic(char* user, char* usee, char* incoming,char* ip,char* 
 	return answer;
 }
 
-int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) // returns volleycount or 0 if command done
+int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) // returns volleycount or 0 if command done or -1 PENDING_RESTART
 { //   primary entrypoint for chatbot -- null incoming treated as conversation start.
 	pendingUserReset = false;
 	volleyStartTime = ElapsedMilliseconds(); // time limit control
@@ -1467,7 +1477,6 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 		}
 
 		ReportBug((char*) "No such bot  %s - %s - %s status: %s", user, usee, incoming,fact);
-		if (server) strcpy(ourMainOutputBuffer,"$#$No such bot.");
 		ReadComputerID(); // presume default bot log file
 		CopyUserTopicFile("nosuchbot");
 		if (nosuchbotrestart) pendingRestart = true;
@@ -1484,7 +1493,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	RestoreTracedFunctions();
 	RestoreTimedFunctions();
 
-	unsigned int ok = true;
+	int ok = 1;
     if (!*incoming && !hadIncoming)  //   begin a conversation - bot goes first
 	{
 		*readBuffer = 0;
@@ -1521,7 +1530,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 
 	ok = ProcessInput(copy);
 
-	if (!ok) return 0; // command processed
+	if (ok <= 0) return ok; // command processed
 	
 	if (!server) // refresh prompts from a loaded bot since mainloop happens before user is loaded
 	{
@@ -1599,7 +1608,8 @@ void Restart()
 		echo = false;
 		char initialInput[MAX_WORD_SIZE];
 		*initialInput = 0;
-		PerformChat(us,computerID,initialInput,callerIP,mainOutputBuffer);
+		int turn = PerformChat(us,computerID,initialInput,callerIP,mainOutputBuffer);
+		// ignore any PENDING_RESTART == turn response here.
 	}
 	else 
 	{
@@ -1608,7 +1618,7 @@ void Restart()
 	pendingRestart = false;
 }
 
-unsigned int ProcessInput(char* input)
+int ProcessInput(char* input)
 {
 	startTimeInfo =  ElapsedMilliseconds();
 	// aim to be able to reset some global data of user
@@ -1654,8 +1664,8 @@ unsigned int ProcessInput(char* input)
 		}
 		else if (commanded == RESTART)
 		{
-			Restart();
-			return 0;	// nothing more can be done here.
+			pendingRestart = true;
+			return PENDING_RESTART;	// nothing more can be done here.
 		}
 		else if (commanded == BEGINANEW)  
 		{ 
@@ -1735,7 +1745,7 @@ loopback:
 		if (result == RESTART_BIT)
 		{
 			pendingRestart = true;
-			if (pendingUserReset)
+			if (pendingUserReset) // erase user file?
 			{
 				ResetToPreUser(); // back to empty state before any user
 				ReadNewUser();
@@ -2153,14 +2163,19 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	if (!strncmp(ptr,(char*)"... ",4)) ptr += 4;  
 
     ptr = Tokenize(ptr,wordCount,wordStarts,false,false,oobstart); 
-	int size;
-	for (int x = 1; x <= wordCount; ++x)
+ 	upperCount = 0;
+	lowerCount = 0;
+	for (int i = 1; i <= wordCount; ++i)   // see about SHOUTing
 	{
-		size = strlen(wordStarts[x]);
-		if (size >= MAX_WORD_SIZE)
+		char* at = wordStarts[i] - 1;
+		while (*++at)
 		{
-			int xx = 0;
-		}
+			if (IsAlphaUTF8(*at))
+			{
+				if (IsUpperCase(*at)) ++upperCount;
+				else ++lowerCount;
+			}
+		}	
 	}
 
 	// set derivation data on original words of user before we do substitution
@@ -2238,7 +2253,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	if (tokenControl & (DO_SUBSTITUTE_SYSTEM|DO_PRIVATE)  && !oobExists)  
 	{
 		// test for punctuation not done by substitutes (eg "?\")
-		char c = (wordCount) ? *wordStarts[wordCount] : 0;
+	char c = (wordCount) ? *wordStarts[wordCount] : 0;
 		if ((c == '?' || c == '!') && wordStarts[wordCount])  
 		{
 			char* tokens[3];

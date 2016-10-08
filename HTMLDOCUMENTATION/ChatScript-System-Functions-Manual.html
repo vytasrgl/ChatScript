@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 9/25/2016 cs6.84</p>
+<p>Revision 10/8/2016 cs6.85</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
@@ -487,6 +487,7 @@ if ($$newtype == $$type AND match($$newrule)) # we would match this rule</code><
 <pre><code>s: TEST (some fancy pattern)</code></pre>
 <p>and later</p>
 <pre><code>^match(~mytopic.test)</code></pre>
+<p>'<code>$$csmatch_start</code> and <code>$$csmatch_end</code> are assigned to provide the range of words that <code>^match</code> used.</p>
 <h3 id="matches"><code>^matches</code>()</h3>
 <p>Returns a string of indices of words that matched the most recent pattern match. The indices are in order, so you can know the range of the match or the specific word indices that were seen. Currently matches only include the words/concepts that were matched, not things like <code>(sag* )</code> where the word is not fully named.</p>
 <h3 id="nofail-code-script"><code>^nofail</code>( code … script … )</h3>
@@ -663,10 +664,12 @@ else {$$tcpopen_error}</code></pre>
 <p>From must be a fact set to export. Name is the file to write them to. An optional 3rd argument <code>append</code> means to add to the file at the end, rather than recreate the file from scratch. Obviously, you must first have done something like <code>^query</code> to populate the fact set. Eg.</p>
 <pre><code>^query(direct_sv item label ? -1 ? @3)
 ^export(myfacts.txt @3)</code></pre>
+<p>If the name includes the substring &quot;ltm&quot;, then the file will not be appendable, but will be encryptable and routes to databases if the filesystem has been overridden by Mongo, Postgres, or MySQL.</p>
 <h3 id="import-name-set-erase-transient"><code>^import</code>( name set erase transient )</h3>
 <p><code>name</code> is the file to read from. Set is where to put the read facts. <code>erase</code> can be <code>erase</code> meaning delete the file after use or <code>keep</code> meaning leave the file alone. <code>transient</code> can be <code>transient</code> meaning mark facts as temporary (to self erase at end of volley) or <code>permanent</code> meaning keep the facts as part of user data. Eg</p>
 <pre><code>^import(myfacts.txt @3).</code></pre>
-<p>If <code>set</code> is null, then facts are created but not stored into any fact-set.</p>
+<p>If <code>set</code> is null, then facts are created but not stored into any fact-set and the subject of the first fact is returned as the answer (presumed to be a json structure).</p>
+<p>If the name includes the substring &quot;ltm&quot;, then the file will be decryptable and routes to databases if the filesystem has been overridden by Mongo, Postgres, or MySQL.</p>
 <h2 id="debugging-function-debug">Debugging Function <code>^debug</code>()</h2>
 <p>As a last ditch, you can add this function call into a pattern or the output and it will call DebugCode in <code>functionExecute.cpp</code> so you know exactly where you are and can use a debugger to follow code thereafter if you can debug c code.</p>
 <h2 id="logging-function-log-...">Logging Function <code>^log</code>( ... )</h2>
@@ -683,21 +686,24 @@ else {$$tcpopen_error}</code></pre>
 <h1 id="json-functions">JSON Functions</h1>
 <p>JSON functions and JSON are described more fully in the ChatScript JSON manual.</p>
 <h3 id="jsonarrayinsert-arrayname-value"><code>^jsonarrayinsert</code>( arrayname value )</h3>
-<p>Given the name of a json array and a value, it addsthe value to the end of the array.</p>
-<h3 id="jsonarraydelete-index-value-arrayname-value"><code>^jsonarraydelete</code>( [INDEX, VALUE] arrayname value )</h3>
+<p>Given the name of a json array and a value, it addsthe value to the end of the array. <code>SAFE</code> protects any nested JSON data from being deleted. See JSON manual.</p>
+<h3 id="jsonarraydelete-index-value-arrayname-value-all"><code>^jsonarraydelete</code>( [INDEX, VALUE] arrayname value {ALL} )</h3>
 <p>This deletes a single entry from a JSON array. It does not damage the thing deleted, just its member in the array. If the first argument is <code>INDEX</code>, then value is a number which is the array index (0 … n-1). If the first argument is <code>VALUE</code>, then value is the value to find and remove as the object of the json fact.</p>
+<p>You can delete every matching <code>VALUE</code> entry by adding the optional 4th argument <code>ALL</code>.</p>
 <h3 id="jsoncreate-type"><code>^jsoncreate</code>( type )</h3>
 <p>Type is either array or object and a json composite with no content is created and its name returned.</p>
 <h3 id="jsondelete-factid"><code>^jsondelete</code>( factid )</h3>
 <p>Deprecated in favor of <code>^delete</code>.</p>
-<p><sup>jsongather<code>( factset jsonid ) Takes the facts involved in the json data (as returned by</code></sup>jsonparse<code>or</code>^jsonopen` and stores them in the named factset. This allows you to remove their transient flags or save them in the users permanent data file.</p>
+<p><sup>jsongather<code>( {factset} jsonid ) Takes the facts involved in the json data (as returned by</code></sup>jsonparse<code>or</code>^jsonopen` and stores them in the named factset. This allows you to remove their transient flags or save them in the users permanent data file.</p>
+<p>You can omit fact-set as an argument if you are using an assignment statement: `<span class="citation">@1</span> = ^jsongather(jsonid)'</p>
+<p><code>^Jsongather</code> normally gathers all levels of the data recursively. You can limit how far down it goes by supplying <code>level</code>. Level 0 is all. Level 1 is the top level of data. Etc.</p>
 <h3 id="jsonlabel-label"><code>^jsonlabel</code>( label )</h3>
 <p>Assigns a text sequence to add to <code>jo-</code> and <code>ja-</code> items created thereafter. E.g. <code>^jsonlabel(x)</code> generates <code>jo-x1</code> and <code>ja-x1</code>. You can turn it back off again with <code>^jsonlabel(&quot;&quot;)</code></p>
 <p>This allows you to create json namespaces which will not conflict. Eg, you may load a bunch of json during a system bootup (<code>^csboot</code>) under one naming and then use a different naming for user json created later and code can determine the source of the data.</p>
 <h3 id="jsonundecodestring-string"><code>^jsonundecodestring</code>( string )</h3>
 <p>Removes all json escape markers back to normal for possible printout to a user. This translates <code>\n</code> to newline, <code>\r</code> to carriage return, <code>\t</code> to tab, and <code>\&quot;</code> to a simple quote.</p>
-<h3 id="jsonobjectinsert-objectname-key-value"><code>^jsonobjectinsert</code>( objectname key value )</h3>
-<p>Inserts the key value pair into the object named. The key does not require quoting. Inserting a json string as value requires a quoted string. Duplicate keys are allowed but not advised (standards differ on legality).</p>
+<h3 id="jsonobjectinsert-duplicate-objectname-key-value"><code>^jsonobjectinsert</code>( {DUPLICATE} objectname key value )</h3>
+<p>Inserts the key value pair into the object named. The key does not require quoting. Inserting a json string as value requires a quoted string. Duplicate keys are ignored unless the optional 1st argument <code>DUPLICATE</code> is given. <code>SAFE</code> protects any nested JSON data from being deleted. See JSON manual.</p>
 <h3 id="jsonopen-unique-kind-url-postdata-header"><code>^jsonopen</code>( {UNIQUE} kind url postdata header )</h3>
 <p>This function queries a website and returns a JSON datastructure as facts. It uses the standard CURL library, so it's arguments and how to use them are generally defined by CURL documentation and the website you intend to access. See ChatScript JSON manual for details.</p>
 <h3 id="jsonprint-name"><code>^jsonprint</code>( name )</h3>

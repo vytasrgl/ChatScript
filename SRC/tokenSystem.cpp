@@ -1880,7 +1880,7 @@ static WORDP ViableIdiom(char* text,int i,unsigned int n,unsigned int caseform)
 	return 0;
 }
 
-static bool ProcessMyIdiom(int i,unsigned int max,char* buffer,WORDP D, char* ptr)
+static bool ProcessMyIdiom(int i,unsigned int max,char* buffer,char* ptr)
 {//   buffer is 1st word, ptr is end of it
     WORDP word;
     WORDP found = NULL;
@@ -1997,7 +1997,7 @@ static bool ProcessMyIdiom(int i,unsigned int max,char* buffer,WORDP D, char* pt
 
 	if (!found) return false;
 
-	D = GetSubstitute(found);
+	WORDP D = GetSubstitute(found);
     if (D == found)  return false;
 
 	bool result = false;
@@ -2083,7 +2083,7 @@ void ProcessSubstitutes() // revise contiguous words based on LIVEDATA files
 		}
         
 		//   use max count
-        if (count && ProcessMyIdiom(i,count-1,buffer,D,ptr)) 
+        if (count && ProcessMyIdiom(i,count-1,buffer,ptr)) 
 		{
 			if (cycles > 20) // something is probably wrong
 			{

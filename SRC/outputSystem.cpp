@@ -148,13 +148,11 @@ static char* ReadUserVariable(char* input, char* var)
 {		
 	char* at = input++; // skip $ and below either $ or _ if one exists or first legal char
 	bool once = false;
-	while (LegalVarChar(*++input) || *input == '.')
+	while (LegalVarChar(*++input) || *input == '.' || (*input == '$' && *(input-1) == '.'))
 	{
 		if (*input == '.')
 		{
-			if (once) break;
-			if (LegalVarChar(input[1])) once = true;
-			else break;
+			if (!LegalVarChar(input[1]) && input[1] != '$') break; // not a var dot, just an ordinary one 
 		}
 	} 
 	strncpy(var,at,input-at);
@@ -237,7 +235,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 		else if (*input == '\'' && input[1] == '_' && IsDigit(input[2])) // quoted match variable
 		{
 			var[0] = '\'';
-			input = ReadUserVariable(input+1,var+1); // end up after the var
+			input = ReadMatchVariable(input+1,var+1); // end up after the var
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
@@ -245,7 +243,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 		{
 			var[0] = '^';
 			var[1] = '\'';
-			input = ReadUserVariable(input+2,var+2); // end up after the var
+			input = ReadMatchVariable(input+2,var+2); // end up after the var
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
@@ -663,7 +661,7 @@ static char* Output_Function(char* word, char* ptr,  bool space,char* buffer, un
 			if (word[1] == USERVAR_PREFIX) // direct retry to avoid json issues
 			{
 				strcpy(word,GetUserVariable(word+1));
-				Output_Dollar(word, "", space,buffer,controls,result,false,true);
+				Output_Dollar(word, "", space,buffer,controls,result,false,false); // allow json processing
 			}
 			else *word = ENDUNIT;	// marker for retry
 		}
@@ -918,7 +916,8 @@ static char* Output_Dollar(char* word, char* ptr, bool space,char* buffer, unsig
 	// handles user variable assignment: $myvar = 4
 	// handles user variables:  $myvar
 	// handles US money: $1000.00
-	if (word[1] && !IsDigit(word[1])) // variable
+	if ((word[1] == '$' || word[1] == '_') && !word[2]) StdNumber(word,buffer,controls, space); // simple $_ or $$
+	else if (word[1] && !IsDigit(word[1])) // variable
     {
 		if (controls & OUTPUT_EVALCODE && !(controls & OUTPUT_KEEPVAR)) 
 		{

@@ -1,1 +1,1 @@
- pandoc ChatScript-Advanced-User-Manual.md -s -o ../PDFX/ChatScript-Advanced-User-Manual.pdf
+ pandoc ChatScript-Advanced-User-Manual.md -s -o ../PDFDOCUMENTATION/ChatScript-Advanced-User-Manual.pdf

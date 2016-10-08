@@ -17,11 +17,7 @@ char* postgresparams = 0; // init string for pguser
 
 void PostgresShutDown()
 {
-	if (conn) 
-	{
-		PQfinish(conn);
-		FreeBuffer();
-	}
+	if (conn)  PQfinish(conn);
 	conn = NULL;
 }
 
