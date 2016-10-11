@@ -496,12 +496,13 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	char* oldFunctionAnswerBase = functionAnswerBase;
 	char* oldFunctionAnswerName = functionAnswerName;
 	unsigned int oldFnVarBase = fnVarBase;
-
+	clock_t start_time = ElapsedMilliseconds();
+	unsigned int firstArgument = callArgumentIndex;
+	ChangeDepth(1,D->word); // HandleSystemCall
+	
 	if (D->x.codeIndex && !(D->internalBits & (IS_PLAN_MACRO|IS_TABLE_MACRO))) // system function --  macroFlags are also on codeindex, but IS_TABLE_MACRO distinguishes  but PLAN also has a topicindex which is a codeindex
 	{
 		callArgumentBase = callArgumentIndex - 1;
-		ChangeDepth(1,D->word); // HandleSystemCall
-		if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) Log(STDTRACETABLOG, "System Call %s(",name);
 		info = &systemFunctionSet[D->x.codeIndex];
 		char* start = ptr;
 		int flags = 0x00000100;	// do we leave this unevaled?
@@ -543,11 +544,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				goto TERMINATE;
 			}
 
-			if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE)  && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
-			{
-				if (info->argumentCount == STREAM_ARG) Log(STDTRACELOG,(char*)"STREAM: ");
-				Log(STDTRACELOG,(char*)" (%s), ",callArgumentList[callArgumentIndex]);
-			}
 			if (++callArgumentIndex >= MAX_ARG_LIST) 
 			{
 				ReportBug("Globally too many arguments %s",D->word);
@@ -559,7 +555,20 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		callArgumentList[callArgumentIndex] = (char*) ""; //  mark end of arg list with null value
 		callArgumentList[callArgumentIndex+1] = (char*) ""; // optional arguments excess
 		callArgumentList[callArgumentIndex+2] = (char*) ""; // optional arguments excess
-		if ((trace & TRACE_OUTPUT  || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) Log(STDTRACELOG,(char*)") = ");
+		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
+		{
+			Log(STDTRACETABLOG,(char*) "System call %s(",D->word);
+			for (unsigned int i = firstArgument; i < callArgumentIndex; ++i)
+			{	
+				char c = callArgumentList[i][40];
+				callArgumentList[i][40] = 0;
+				Log(STDTRACELOG, (char*) "%s",callArgumentList[i]);
+				if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)",");
+				callArgumentList[i][40] = c;
+			}
+			Log(STDTRACELOG, ") = ");
+		}
+
 		if (result & ENDCODES); // failed during argument processing
 		else result = (*info->fn)(buffer);
 	} 
@@ -571,8 +580,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		callStack[callIndex++] = D;
 
 		unsigned int args = 0;
-		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
-			Log(STDTRACETABLOG, "Call %s(",name);
 		if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
 		{
 			definition = NULL; 
@@ -589,11 +596,9 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			args = MACRO_ARGUMENT_COUNT(D); // expected args
 		}
 
-		ChangeDepth(1,D->word); // "HandleUserCall"
-
 		// now process arguments
 		unsigned int argflags = D->x.macroFlags;
-		char* argcopy = AllocateBuffer();
+		char* startRawArg = ptr;
         while (definition && ptr && *ptr && *ptr != ')') //   ptr is after opening (and before an arg but may have white space
         {
 			char* arg = AllocateBuffer();
@@ -601,7 +606,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			if (currentRule == NULL) //   this is a table function- DONT EVAL ITS ARGUMENTS AND... keep quoted item intact
 			{
 				ptr = ReadCompiledWord(ptr,arg); // return dq args as is
-				strcpy(argcopy,arg);
 #ifndef DISCARDSCRIPTCOMPILER
 				if (compiling && ptr == NULL) BADSCRIPT((char*)"TABLE-11 Arguments to %s ran out",name)
 #endif
@@ -611,7 +615,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				bool stripQuotes =  (argflags & ( 1 << j)) ? 1 : 0; // want to use quotes 
 				// arguments to user functions are not evaluated, they will be used, in place, in the function.
 				// EXCEPT evaluation of ^arguments must be immediate to maintain current context- both ^arg and ^"xxx" stuff
-				ReadCompiledWord(ptr,argcopy); // for tracing
 				ptr = ReadArgument(ptr,arg); //   ptr returns on next significant char
 				if (*arg == '"' && stripQuotes)
 				{
@@ -650,30 +653,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				strcpy(arg,currentOutputBase);
 				FreeOutputBuffer();
 			}
-			if (arg[0] == USERVAR_PREFIX && strstr(arg,"$_")) 
-			{
-				strcpy(arg,GetUserVariable(arg)-2); // NOT by reference but by marked value
-			}
+			if (arg[0] == USERVAR_PREFIX && strstr(arg,"$_"))  strcpy(arg,GetUserVariable(arg)-2); // NOT by reference but by marked value
 				
-			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN)  && CheckTopicTrace())
-			{
-				if (*argcopy == '^') Log(STDTRACELOG, "%s->%s",argcopy,arg);
-				else if (*argcopy == '"' && argcopy[1] == '^') Log(STDTRACELOG, "  %s",argcopy); // show original format string- but it may be redundant display from evaling it
-				else Log(STDTRACELOG, "%s",arg);
-				if (*arg == USERVAR_PREFIX) Log(STDTRACELOG,(char*)" (%s)",GetUserVariable(arg));
-				else if (*arg == '_' && IsDigit(arg[1])) 
-				{
-					int id = GetWildcardID(arg);
-					if (id >= 0) Log(STDTRACELOG,(char*)" (%s)",wildcardOriginalText[id]);
-				}
-				else if (*arg == '\'' && arg[1] == '_' && IsDigit(arg[2])) 
-				{
-					int id = GetWildcardID(arg+1);
-					if (id >= 0) Log(STDTRACELOG,(char*)" (%s)",wildcardCanonicalText[id]);
-				}
-				else if (*argcopy == '^' || (*argcopy == '"' && argcopy[1] == '^')) Log(STDTRACELOG, " (%s)",arg); // active string
-				Log(STDTRACELOG, ", ");
-			}
 			if (!stricmp(arg,(char*)"null")) *arg = 0;	 // pass NOTHING as the value
 
 			callArgumentList[callArgumentIndex++] = AllocateInverseString(arg);
@@ -688,7 +669,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			if (callArgumentIndex >= MAX_ARGUMENT_COUNT) --callArgumentIndex; // force lock to fail but swallow all args to update ptr
 			++j;
 		} // end of argument processing
-		FreeBuffer(); // argcopy
 
 		// handle any display variables
 		char* basedisplay = 0;
@@ -707,12 +687,55 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) Log(STDTRACELOG, "null, ");
 			callArgumentList[callArgumentIndex++] = AllocateInverseString("",0);
 		}
-		if (trace == TRACE_USERFN)  Log(STDTRACELOG, ") => ");
-		else if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
+
+		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 		{
+			char a = *(ptr-1);
+			*(ptr-1) = 0;
+			if (callArgumentIndex > firstArgument) Log(STDTRACETABLOG,(char*) "User call %s(%s):(",D->word,startRawArg);
+			char* buf = AllocateBuffer();
+			for (unsigned int i = firstArgument; i < callArgumentIndex; ++i)
+			{	
+				char* x = callArgumentList[i];
+				if (*x == USERVAR_PREFIX) 
+				{
+					strncpy(buf,GetUserVariable(x,false,true),40);
+					x = buf;
+				}
+				else if (*x == '_' && IsDigit(x[1])) 
+				{
+					int id = GetWildcardID(x);
+					if (id >= 0) 
+					{
+						strncpy(buf,wildcardOriginalText[id],40);
+						x = buf;
+					}
+				}
+				else if (*x == '\'' && x[1] == '_' && IsDigit(x[2])) 
+				{
+					int id = GetWildcardID(x+1);
+					if (id >= 0) 
+					{
+						strncpy(buf,wildcardCanonicalText[id],40);
+						x = buf;
+					}
+				}
+				else if (*x == '`') x += 2;
+
+				// limited to 40, provide ... and restore
+				char d[4];
+				strncpy(d,x+40,4);
+				strcpy(x+40,"...");
+				Log(STDTRACELOG, (char*) "%s",x);
+				strncpy(x+40,d,4);
+				if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)", ");
+			}
+			FreeBuffer();
 			Log(STDTRACELOG, ")\r\n");
 			Log(STDTRACETABLOG,(char*)"");
+			*(ptr-1) = a;
 		}
+
 		fnVarBase = callArgumentBase = oldArgumentIndex; 
 	
 		//   run the definition
@@ -725,7 +748,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			// undo any display variables
 			if (definition && basedisplay) RestoreDisplay(baseinvert,basedisplay);
 			ReportBug((char*)"User function nesting too deep %d",MAX_ARGUMENT_COUNT);
-			ChangeDepth(-1,D->word); // "HandleUserCall"
 			result = FAILRULE_BIT;
 		}
 		else if (definition && (D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
@@ -738,14 +760,9 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 #endif
 		else if (definition)
 		{
-			clock_t start_time = ElapsedMilliseconds();
 			unsigned int flags = OUTPUT_FNDEFINITION;
 			if (!(D->internalBits & IS_OUTPUT_MACRO)) flags|= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
 			Output((char*)definition,buffer,result,flags);
-			if ((timing & TIME_USERFN || D->internalBits & MACRO_TIME) && !(D->internalBits & NOTIME_FN) && CheckTopicTime()) {
-				int diff = ElapsedMilliseconds() - start_time;
-				if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"%s time: %d ms\r\n", name,diff);
-			}
 		}
 
 		// undo any display variables
@@ -757,22 +774,49 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	} // end user function
 
 TERMINATE:
-	ChangeDepth(-1,D->word); //"HandleUserCall"
 	fnVarBase = oldFnVarBase;
 	functionAnswerBase = oldFunctionAnswerBase;
 	functionAnswerName = oldFunctionAnswerName;
 
+	if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE || (trace & TRACE_USERFN && definition)) && CheckTopicTrace()) 
+	{
+		// make a short description for which call this is, if we can
+		char word[MAX_WORD_SIZE];
+		*word = 0;
+		if (callArgumentIndex > firstArgument) 
+		{
+			strncpy(word,callArgumentList[firstArgument],40);
+			if (*word == '$') strncpy(word,GetUserVariable(word),40);
+			word[40] = 0;	
+		}
+		if (trace == TRACE_USERFN)  Log(STDTRACELOG,(char*)"%s %s(%s) => %s\r\n",ResultCode(result),name,word,buffer);
+		else if (info && info->properties & SAMELINE) Log(STDTRACELOG,(char*)"%s %s(%s) => %s\r\n",ResultCode(result),name,word,buffer);	// stay on same line to save visual space in log
+		else Log(STDTRACETABLOG,(char*)"%s %s(%s) => %s\r\n",ResultCode(result),name,word,buffer);
+	}
+	// currently only user functions- NOTRACE printouts would be boring
+	if (definition && (timing & TIME_USERFN || D->internalBits & MACRO_TIME) && !(D->internalBits & NOTIME_FN) && CheckTopicTime()) {
+		int diff = ElapsedMilliseconds() - start_time;
+		if (diff > 0 || timing & TIME_ALWAYS ) 
+		{
+			// make a short description for which call this is, if we can
+			char word[MAX_WORD_SIZE];
+			*word = 0;
+			if (callArgumentIndex > firstArgument) 
+			{
+				strncpy(word,callArgumentList[firstArgument],40);
+				if (*word == '$') strncpy(word,GetUserVariable(word),40);
+				word[40] = 0;	
+			}
+			
+			Log(STDTIMETABLOG, (char*)"%s(%s) time: %d ms\r\n", name,word,diff);
+		}
+	}
+	if (D->internalBits & MACRO_TRACE) echo = oldecho; // allow eval call to change tracing status
+	
 	//   pop argument list
 	callArgumentIndex = oldArgumentIndex;	 
 	callArgumentBase = oldArgumentBase;
-
-	if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE || (trace & TRACE_USERFN && definition)) && CheckTopicTrace()) 
-	{
-		if (trace == TRACE_USERFN)  Log(STDTRACELOG,(char*)"%s (%s) => %s\r\n",ResultCode(result),name,buffer);
-		else if (info && info->properties & SAMELINE) Log(STDTRACELOG,(char*)"%s (%s) => %s\r\n",ResultCode(result),name,buffer);	// stay on same line to save visual space in log
-		else Log(STDTRACETABLOG,(char*)"%s (%s) => %s\r\n",ResultCode(result),name,buffer);
-	}
-	if (D->internalBits & MACRO_TRACE) echo = oldecho; // allow eval call to change tracing status
+	ChangeDepth(-1,D->word);
 
 	impliedIf = oldimpliedIf;
 	if (ptr && *ptr == ')') // skip ) and space if there is one...
@@ -3702,9 +3746,10 @@ static FunctionResult SaveSentenceCode(char* buffer)
 	char* arg1 = ARGUMENT(1);
 	MEANING M = MakeMeaning(StoreWord(arg1,AS_IS));
 
-	// compute words needed
+	// compute words (4byte int) needed
 	int size = 2; // basic list
 	size += 2;	// tokenflags
+	size += 1;	// preparation count
 	++size; // wordcount
 	size += 6 * wordCount;	// wordStarts + wordCanonical + finalpos(2) + topics and concepts
 	size += 1 + derivationLength + 256/2; // derivation count and sentence words and derivation index
@@ -3719,13 +3764,15 @@ static FunctionResult SaveSentenceCode(char* buffer)
 
 	unsigned int* memory = (unsigned int*) AllocateString(NULL,total/2,8,false); // int64 aligned
 	memory[0] = savedSentences;
-	memory[1] = M;
-	savedSentences = String2Index((char*) memory);
-	((uint64*)memory)[1] = tokenFlags; // 2,3
+	savedSentences = String2Index((char*) memory); // threaded list
+	memory[1] = M; // key 
+	memory[2] = sentencePreparationIndex;
+	((uint64*)memory)[3] = tokenFlags; // 3,4
 	memory[4] = wordCount;
 	memory[5] = (moreToCome) ? 1 : 0;
 	if (moreToComeQuestion) memory[5] |= 2;
-	int n = 6; // store from here
+
+	int n = 7; // store from here
 	WORDP D;
 	for (int i = 1; i <= wordCount; ++i)
 	{
@@ -3804,13 +3851,16 @@ static FunctionResult RestoreSentenceCode(char* buffer)
 	}
 	if (!list) return FAILRULE_BIT;
 
+	if ((unsigned int) lastRestoredIndex == memory[2]) return NOPROBLEM_BIT;	// is already current
+	lastRestoredIndex = memory[2];
+
 	ClearWhereInSentence();
-	tokenFlags = ((uint64*)memory)[2]; // 2,3
-	wordCount = memory[4];
-	moreToCome = (memory[5] & 1) ? true : false;
-	moreToComeQuestion = (memory[5] & 2) ? true : false;
+	tokenFlags = ((uint64*)memory)[3]; // 3,4
+	wordCount = memory[5];
+	moreToCome = (memory[6] & 1) ? true : false;
+	moreToComeQuestion = (memory[6] & 2) ? true : false;
 	
-	int n = 6; 
+	int n = 7; 
 	WORDP D;
 	for (int i = 1; i <= wordCount; ++i)
 	{

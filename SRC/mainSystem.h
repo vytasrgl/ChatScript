@@ -87,6 +87,8 @@ extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;
 extern char* version;
+extern int sentencePreparationIndex;
+extern int lastRestoredIndex;
 extern unsigned int tokenCount;
 extern unsigned int choiceCount;
 extern bool redo;

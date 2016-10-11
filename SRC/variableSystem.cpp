@@ -227,7 +227,7 @@ char* GetwildcardText(unsigned int i, bool canon)
     return canon ? wildcardCanonicalText[i] : wildcardOriginalText[i];
 }
 
-char* GetUserVariable(const char* word,bool nojson)
+char* GetUserVariable(const char* word,bool nojson,bool fortrace)
 {
 	int len = 0;
 	const char* dot = (nojson) ? (const char*) NULL : strchr(word,'.');
@@ -251,6 +251,7 @@ char* GetUserVariable(const char* word,bool nojson)
 
 	if (dot) // json object
 	{
+		if (fortrace) localvar = false;	// dont allocate memory
 		char path[MAX_WORD_SIZE];
 		strcpy(path,item);
 LOOPDEEPER:
@@ -300,10 +301,10 @@ LOOPDEEPER:
 					char* ans = AllocateInverseString(buffer);
 					FreeBuffer();
 					if (!ans) return "``";	// if exhausted, return nothing
-					if (trace & TRACE_VARIABLE) Log(STDTRACELOG,"(%s->%s)",path,ans);
+					if (trace & TRACE_VARIABLE && !fortrace) Log(STDTRACELOG,"(%s->%s)",path,ans);
 					return ans + 2;
 				}
-				if (trace & TRACE_VARIABLE) Log(STDTRACELOG,"(%s->%s)",path,answer);
+				if (trace & TRACE_VARIABLE && !fortrace) Log(STDTRACELOG,"(%s->%s)",path,answer);
 				return answer;
 			}
 			F = GetSubjectNondeadNext(F);
@@ -385,7 +386,6 @@ void SetUserVariable(const char* var, char* word)
 	}
 
 	PrepareVariableChange(D,word,true);
-	
 	if (planning && !documentMode) // handle undoable assignment (cannot use text sharing as done in document mode)
 	{
 		if (D->w.userValue == NULL) SpecialFact(MakeMeaning(D),(MEANING)1,0);

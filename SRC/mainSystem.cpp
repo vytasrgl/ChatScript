@@ -5,6 +5,8 @@ char sourceInput[200];
 bool pendingRestart = false;
 bool pendingUserReset = false;
 static bool assignedLogin = false;
+int sentencePreparationIndex = 0;
+int lastRestoredIndex = 0;
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
 char revertBuffer[MAX_BUFFER_SIZE];			// copy of user input so can :revert if desired
@@ -17,7 +19,8 @@ int timerLimit = 0;						// limit time per volley
 int timerCheckRate = 0;					// how often to check calls for time
 clock_t volleyStartTime = 0;
 int timerCheckInstance = 0;
-char* privateParams = NULL;
+static char* privateParams = NULL;
+static char* treetaggerParams = NULL;
 char* encryptParams = NULL;
 char* decryptParams = NULL;
 char hostname[100];
@@ -485,6 +488,7 @@ void ProcessArguments(int argc, char* argv[])
 		else if (!strnicmp(argv[i],(char*)"users=",6 )) strcpy(users,argv[i]+6);
 		else if (!strnicmp(argv[i],(char*)"logs=",5 )) strcpy(logs,argv[i]+5);
 		else if (!strnicmp(argv[i],(char*)"private=",8)) privateParams = argv[i]+8;
+		else if (!strnicmp(argv[i],(char*)"treetagger=",11)) treetaggerParams = argv[i]+11;
 		else if (!strnicmp(argv[i],(char*)"encrypt=",8)) encryptParams = argv[i]+8;
 		else if (!strnicmp(argv[i],(char*)"decrypt=",8)) decryptParams = argv[i]+8;
 		else if (!strnicmp(argv[i],(char*)"livedata=",9) ) 
@@ -706,6 +710,9 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	echo = false;
 
 	InitStandalone();
+
+	UnlockLevel(); // unlock it to add stuff
+
 #ifndef DISCARDPOSTGRES
 	if (postgresparams)  PGUserFilesCode();
 #endif
@@ -713,11 +720,16 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	if (mongodbparams)  MongoSystemInit(mongodbparams);
 #endif
 	
+#ifdef TREETAGGER
+	InitTreeTagger(treetaggerParams);
+#endif
+
 #ifdef PRIVATE_CODE
 	PrivateInit(privateParams); 
 #endif
 	EncryptInit(encryptParams);
 	DecryptInit(decryptParams);
+	LockLayer(1,false); 
 	return 0;
 }
 
@@ -1620,6 +1632,8 @@ void Restart()
 
 int ProcessInput(char* input)
 {
+	lastRestoredIndex = 0;
+	sentencePreparationIndex = 0;	// set id for save/restore sentence optimization
 	startTimeInfo =  ElapsedMilliseconds();
 	// aim to be able to reset some global data of user
 	unsigned int oldInputSentenceCount = inputSentenceCount;
@@ -2148,6 +2162,7 @@ bool AddResponse(char* msg, unsigned int responseControl)
 
 void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart,bool atlimit) // set currentInput and nextInput
 {
+	lastRestoredIndex = ++sentencePreparationIndex; // an id marker
 	char* original[MAX_SENTENCE_LENGTH];
 	unsigned int mytrace = trace;
 	clock_t start_time = ElapsedMilliseconds();

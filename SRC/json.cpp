@@ -847,6 +847,14 @@ static char* jwritehierarchy(int depth, char* buffer, WORDP D, int subject, int 
 		if (subject & JSON_STRING_VALUE) *buffer++ = '"';
 		return buffer;
 	}
+
+	if (D->inferMark == inferMark)
+	{
+		char* kind = (D->word[1] == 'a') ? (char*)"[...]" : (char*) "{...}";
+		sprintf(buffer,"%s %s",D->word,kind);
+		return buffer + strlen(buffer);
+	}
+	D->inferMark = inferMark;
 	
 	if (D->word[1] == 'a') strcat(buffer,(char*)"[    # ");
 	else strcat(buffer,(char*)"{    # ");
@@ -928,6 +936,7 @@ FunctionResult JSONTreeCode(char* buffer)
 	char* arg2 = ARGUMENT(2);
 	int nest = atoi(arg2);
 	strcpy(buffer,(char*)"JSON=> \n");
+	NextInferMark();
 	buffer += strlen(buffer);
 	buffer = jwritehierarchy(2,buffer,D,(arg1[1] == 'o') ? JSON_OBJECT_VALUE : JSON_ARRAY_VALUE,nest > 0 ? nest : 20000); // nest of 0 (unspecified) is infinitiy
 	strcpy(buffer,(char*)"\n<=JSON \n");
@@ -1126,6 +1135,14 @@ static char* jwrite(char* buffer, WORDP D, int subject )
 		return buffer;
 	}
 
+	// CS (not JSON) can have recursive structures. Protect against this
+	if (D->inferMark == inferMark)
+	{
+		strcpy(buffer,D->word);
+		return buffer + strlen(buffer);
+	}
+	D->inferMark = inferMark;
+
 	if (D->word[1] == 'a')  strcpy(buffer,(char*)"[");
 	else strcpy(buffer,(char*)"{ ");
 	buffer += strlen(buffer);
@@ -1184,6 +1201,7 @@ FunctionResult JSONWriteCode(char* buffer) // FACT to text
 	WORDP D = FindWord(arg1);
 	if (!D) return FAILRULE_BIT;
 	clock_t start_time = ElapsedMilliseconds();
+	NextInferMark();
 	jwrite(buffer,D,true);
 	if (timing & TIME_JSON) {
 		int diff = ElapsedMilliseconds() - start_time;

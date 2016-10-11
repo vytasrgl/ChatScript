@@ -42,7 +42,7 @@ bool showMark = false;
 static unsigned int markLength = 0; // prevent long lines in mark listing trace
 #define MARK_LINE_LIMIT 80
 int upperCount, lowerCount;
-
+ExternalTaggerFunction externalPostagger = NULL;
 char unmarked[MAX_SENTENCE_LENGTH]; // can completely disable a word from mark recognition
 
 void RemoveMatchValue(WORDP D, int position)
@@ -579,7 +579,14 @@ void MarkAllImpliedWords()
 	int i;
 	for (i = 1; i <= wordCount; ++i)  capState[i] = IsUpperCase(*wordStarts[i]); // note cap state
 
-	TagIt(); // pos tag and maybe parse
+	if (externalPostagger)
+	{
+		(*externalPostagger)();
+		startSentence = 1; // default when you dont know any better
+		endSentence = wordCount;
+	}
+	else TagIt(); // pos tag and maybe parse
+
 	if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) 
 	{
 		return;
@@ -649,12 +656,12 @@ void MarkAllImpliedWords()
 			}
 		}
 
-		if (!wordTag[i]) MarkTags(i);
-		else MarkFacts(MakeMeaning(wordTag[i]),i,i);
+		MarkFacts(MakeMeaning(wordTag[i]),i,i); // may do nothing
+		MarkTags(i);
 
-		if (wordRole[i]) MarkFacts(MakeMeaning(wordRole[i]),i,i);
+		MarkFacts(MakeMeaning(wordRole[i]),i,i); // may do nothing
 #ifndef DISCARDPARSER
-		else MarkRoles(i);
+		MarkRoles(i);
 #endif
 
 		if ((*wordStarts[i] == '@' || *wordStarts[i] == '#')  && strlen(wordStarts[i]) > 2)
@@ -674,7 +681,7 @@ void MarkAllImpliedWords()
 		}
 	
 		// mark general number property
-		if (D->properties & ( NOUN_NUMBER | ADJECTIVE_NUMBER))   // a date can become an idiom, marking it as a proper noun and not a number
+		if (finalPosValues[i] & ( NOUN_NUMBER | ADJECTIVE_NUMBER))   // a date can become an idiom, marking it as a proper noun and not a number
 		{
 			if (IsDigit(*wordStarts[i]) && IsDigit(wordStarts[i][1])  && IsDigit(wordStarts[i][2]) && IsDigit(wordStarts[i][3])  && !wordStarts[i][4]) MarkFacts(MakeMeaning(FindWord((char*)"~yearnumber")),i,i);
 			if (!wordCanonical[i][1] || !wordCanonical[i][2]) // 2 digit or 1 digit

@@ -407,8 +407,6 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
     }
 	sprintf(ptr,(char*)"$cs_trace=%d\r\n",trace);
 	ptr += strlen(ptr);
-	trace = 0;
-	echo = false;
 	strcpy(ptr,(char*)"#`end variables\r\n");
 	ptr += strlen(ptr);
 
@@ -477,6 +475,8 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 		ReportBug("User file variable data too big %s",loginID)
 		return NULL;
 	}
+	trace = 0;
+	echo = false;
 	if (verifyUserFacts) CheckUserFacts();	// verify they are good for now
 	ptr = WriteUserFacts(ptr,sharefile,count);  // json safe
 	if (!ptr)
