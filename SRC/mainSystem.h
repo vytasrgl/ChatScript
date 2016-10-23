@@ -36,6 +36,7 @@ typedef struct RESPONSE
 #define PENDING_RESTART -1	// perform chat returns this flag on turn
 
 #define START_BIT 0x8000000000000000ULL	// used looping thru bit masks
+#define INPUTMARKER '`'	// used to start and end ^input data
 
 // values of prepareMode
  enum PrepareMode { // how to treat input

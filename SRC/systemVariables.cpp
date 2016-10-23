@@ -161,8 +161,8 @@ static char* SleapYear(char* value)
 	struct tm* timeinfo = localtime (&rawtime );
     int year = timeinfo->tm_year + 1900;
 	bool leap = false;
-	if ((year / 400) == 0) leap = true;
-	else if ((year / 100) != 0 && (year / 4) == 0) leap = true;
+	if ((year % 400) == 0) leap = true;
+	else if ((year % 100) != 0 && (year % 4) == 0) leap = true;
     return leap ? (char*)"1" : (char*)"";
 }  
 

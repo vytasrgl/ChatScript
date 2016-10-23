@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 10/8/2016 cs6.85
+> Revision 10/23/2016 cs6.86
 
 
 # Real World JSON
@@ -154,6 +154,24 @@ path fails cannot be found.
 ^jsonparse(transient NOFAIL "{ a: $var, b: _0.e[2] }")
 ```
 
+Note: You cannot send JSON text as normal input from a user because CS tokenization is set to handle human input. So
+doing something like this as input will not work:
+```
+doLogin {"token": "myid", "accounts": ["whatever"]}
+```
+
+Instead you should  call a website using `^jsonopen` which will automatically convert returned JSON data
+into internal CS data. Or you can pass JSON data on input via OOB notation:
+```
+[ {"token": "myid", "accounts": ["whatever"]}]  User message
+```
+and then have a pattern to grab the OOB data and call `jsonparse` with it (using SAFE as a parameter).
+OOB input is not subject to human tokenization behavior, spellchecking, etc.
+
+Note: There is a limit to how much JSON you can pass as OOB data 
+nominally, because it is considered a single token. You can bypass this limit by asking the tokenizer to directly process OOB data, returning the JSON structure name instead of all the content. Just enable `#JSON_DIRECT_OOB`  on the `$cs_token` value and if it finds OOB data that is entirely JSON, it will parse it and return something like `jo-t1` or `ja-t1` in its place. Eg.
+`[ { "key": "value} ]` will return tokenized as `[jo-t1]`.
+
 ##jsonformat(string)`
 Because technically JSON requires you put quotes around field names
 (though various places ignore that requirement) and because CS doesn't, the function takes in a slack
@@ -225,9 +243,19 @@ Dotted notation is cleaner and faster than `^jsonpath` and `jsonobjectinsert` an
 the advantage that it never fails, it only returns null if it can't find the field. 
 On the other hand, assignment fails if the path does not contain a json object at some level.
 ```
-$x = $$$obj.name.value.data.side 
-$$$obj.name.value.data.side = 7
+$x = $$obj.name.value.data.side 
+$$obj.name.value.data.side = 7
 ```
+
+Similarly you can access JSON arrays using array notation:
+```
+$x = $$array[5]
+$x = $$array[$_tmp]
+$$obj.name[4] += 3
+```
+
+The only restriction on arrays is that you cannot add a new array index value without using ^jsonarrayinsert
+as you are not allowed to create discontiguous indices.
 
 **NOTE** JSON is normally a non-recursive structure with no shared pointers. But ChatScript allows you to store 
 references to JSON structures in multiple places of other JSON structures. This has its hazards. It presents no
@@ -308,7 +336,7 @@ suppress this with the `SAFE` flag. `jsonarraydelete(SAFE $obj $key)`.
 deprecated in favor of ^length
 
 ### `^jsoncopy`( name ) 
-Given the name of a json structure, makes a duplicate of it.
+Given the name of a json structure, makes a duplicate of it. If it is not the name of a json structure, it merely returns what you pass it.
 
 ### `^jsonobjectinsert`( {JSONFLAGS} objectname key value ) 
 inserts the key value pair into the object named. The key does not require quoting. 
@@ -343,7 +371,7 @@ to a user. This translates \\n to newline, \\r to carriage return, \\t to tab, a
 
 ## WEB JSON
 
-### `^jsonopen`( {JSONFLAGS} kind url postdata header)
+### `^jsonopen`( {JSONFLAGS} kind url postdata header {timeout})
 this function queries a website and returns a JSON datastructure as facts. 
 It uses the standard CURL library, so it's arguments and how to use them are 
 generally defined by CURL documentation and the website you intend to access. 
@@ -355,6 +383,7 @@ See writeup earlier about optional json flag.
 | `url`        | is the url to query |
 | `postdata`   | is either "" if this is not a post or is the data to send as post or put | 
 | `header`     | is any needed extra request headers or "". Multiple header entries must be separated by a tilde |
+| `timeout`     | optional seconds limitation for connection and then for transfer. else $cs_jsontimeout rules |
 
 A sample call might be:
 ```

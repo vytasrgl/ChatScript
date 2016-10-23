@@ -290,6 +290,7 @@ static bool FindPhrase(char* word, int start,bool reverse, int & actualStart, in
 	return matched;
 }
 
+// NOTE: in reverse mode, positionStart is still earlier in the sentence than PositionEnd. We do not flip viewpoint.
 // rebindable refers to ability to relocate firstmatched on failure
 // returnStart and returnEnd are the range of the match that happened
 // Firstmatched is a real word (not wildcard) where we first bound a match (for rebinding restarts)
@@ -311,7 +312,6 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 	unsigned int result;
     WORDP D;
 	unsigned int oldtrace = trace;
-	bool oldecho = echo;
 	int beginmatch = -1; // for ( ) where did we actually start matching
 	bool success = false;
 	int at;
@@ -508,8 +508,16 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 				if (beginmatch == -1) beginmatch = startposition + 1;
 				if (word[1] == '-') //   backward grab, -1 is word before now -- BUG does not respect unmark system
 				{
-					int at = positionEnd - (word[2] - '0') - 1; // limited to 9 back
-					if (at >= 0) //   no earlier than pre sentence start
+					int at;
+					if (!reverse) at = positionEnd - (word[2] - '0') - 1; // limited to 9 back
+					else  at = positionEnd + (word[2] - '0') - 1; 
+					if (reverse && at > wordCount)
+					{
+						oldEnd = at; //   set last match AFTER our word
+						positionStart = positionEnd = at - 1; //   cover the word now
+						matched = true; 
+					}
+					else if (!reverse && at >= 0) //   no earlier than pre sentence start
 					{
 						oldEnd = at; //   set last match BEFORE our word
 						positionStart = positionEnd = at + 1; //   cover the word now
@@ -614,7 +622,10 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 					matched = !(result & ENDCODES); 
 
 					// allowed to do comparisons on answers from system functions but cannot have space before them, but not from user macros
-					if (*ptr == '!' && ptr[1] == ' ' ){;} // simple not operator
+					if (*ptr == '!' && ptr[1] == ' ' )// simple not operator or no operator
+					{
+						if (!stricmp(currentOutputBase,(char*)"0") || !stricmp(currentOutputBase,(char*)"false")) result = FAILRULE_BIT;	// treat 0 and false as failure along with actual failures
+					}
 					else if (ptr[1] == '<' || ptr[1] == '>'){;} // << and >> are not comparison operators in a pattern
 					else if (IsComparison(*ptr) && *(ptr-1) != ' ' && (*ptr != '!' || ptr[1] == '='))  // ! w/o = is not a comparison
 					{
@@ -681,7 +692,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 					// read arguments
 					while (*ptr && *ptr != ')' ) 
 					{
-						char* buf = AllocateBuffer();
+						char* buf = AllocateBuffer(); // cannot use AllocateInverseString 
 						ptr = ReadArgument(ptr,buf);  // gets the unevealed arg
 						callArgumentList[callArgumentIndex++] = AllocateInverseString(buf);
 						if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s, ",buf); 
@@ -691,12 +702,11 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 					fnVarBase = callArgumentBase = argStack[functionNest];
 					ptrStack[functionNest++] = ptr+2; // skip closing paren and space
 					ptr = (char*) D->w.fndefinition + 1; // continue processing within the macro, skip argument count
-					oldecho = echo;
 					oldtrace = trace;
 					if (D->internalBits & MACRO_TRACE  && CheckTopicTrace()) 
 					{
 						trace = (unsigned int)-1;
-						echo = true;
+						if (oldtrace && !(oldtrace & TRACE_ECHO)) trace ^= TRACE_ECHO;
 					}
 					if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s=> ",word);
 					continue;
@@ -717,8 +727,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
                     callArgumentBase = baseStack[functionNest]; //   base of callArgumentList
                     fnVarBase = fnVarBaseStack[functionNest];
 					ptr = ptrStack[functionNest]; // continue using prior code
-					trace = oldtrace;
-                    echo = oldecho;
+					trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 					continue;
                 }
                 else 
@@ -815,6 +824,11 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					{
 						wildcardSelector = 0;
 						matched = false; //   force match failure
+					}
+					else if (reverse) 
+					{
+						positionEnd = positionStart - 1; 
+						positionStart = 1;
 					}
 					else positionStart = wordCount + 1; //   at top level a close implies > )
 				}
@@ -1043,8 +1057,8 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					int index = (wildcardSelector >> GAP_SHIFT) & 0x0000001f;
 					if (reverse)
 					{
-						if ((started - positionEnd) == 0) SetWildCardGivenValue((char*)"",(char*)"",0,positionEnd+1,index); // empty gap
-						else SetWildCardGiven(positionEnd + 1,oldStart-1,true,index );  //   wildcard legal swallow between elements
+						if ((started - positionStart) == 0) SetWildCardGivenValue((char*)"",(char*)"",0,positionEnd+1,index); // empty gap
+						else SetWildCardGiven(positionStart,started,true,index );  //   wildcard legal swallow between elements
 					}	
 					else if ((positionStart - memorizationStart) == 0) SetWildCardGivenValue((char*)"",(char*)"",0,oldEnd+1, index); // empty gap
 					else 

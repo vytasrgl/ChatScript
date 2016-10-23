@@ -391,6 +391,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	{
 		if (count == 0 && *ptr == '[') return ptr + 1;	// start of oob
 		int level = 0;
+		char* jsonStart = ptr;
 		--ptr;
 		bool quote = false;
 		while (*++ptr)
@@ -404,9 +405,23 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			else if (*ptr == '}' || *ptr == ']')
 			{
 				if (*(ptr-1) != '\\') --level;
-				if (level == 0) return ptr + 1;
+				if (level == 0) 
+				{
+					if (tokenControl & JSON_DIRECT_FROM_OOB) // allow full json no tokenlimit
+					{
+						ARGUMENT(1) = "TRANSIENT SAFE";
+						ARGUMENT(2) = jsonStart;
+						char word[MAX_WORD_SIZE];
+						FunctionResult result = JSONParseCode(word);
+						++count;
+						if (result == NOPROBLEM_BIT) words[count] = reuseAllocation(words[count],word); // insert json object
+						else words[count] = reuseAllocation(words[count],(char*)"bad json");
+					}
+					return ptr + 1;
+				}
 			}
 		}
+
 		return ptr;
 	}
 	// OOB only separates ( [ { ) ] }   - the rest remain joined as given
@@ -478,12 +493,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	else if (c == '\'' && next == '\'' && ptr[2] == '\'' && ptr[3] == '\'') return ptr + 4;	// '''' marker
 	else if (c == '\'' && next == '\'' && ptr[2] == '\'') return ptr + 3;	// ''' marker
 	else if (c == '\'' && next == '\'') return ptr + 2;	// '' marker
-	else if (c == '&' && !(tokenControl & TOKEN_AS_IS))  //  we need to change this to "and"
-	{
-		++count;
-		words[count] = reuseAllocation(words[count],(char*)"and"); 
-		return ptr + 1;
-	}
 	//   arithmetic operator between numbers -  . won't be seen because would have been swallowed already if part of a float, 
 	else if ((kind & ARITHMETICS || c == 'x' || c == 'X') && IsDigit(*priorToken) && IsDigit(next)) 
 	{
@@ -699,7 +708,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				else return ptr;
 			}
 			if ( c == ']' || c == ')') break; //closers
-			if (c == '&') break; // must represent "and" 
 			if (ptr != start && IsDigit(*(ptr-1)) && IsWordTerminator(ptr[1]) && (c == '"' || c == '\'' )) break; // special markers on trailing end of numbers get broken off. 50' and 50" 
 			if ((c == 'x' || c== 'X') && IsDigit(*start) && IsDigit(next)) break; // break  4x4
 			// allow 24%
@@ -783,15 +791,13 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 	unsigned int paren = 0;
 	while (ptr) // find tokens til end of sentence or end of tokens
 	{
+		ptr = SkipWhitespace(ptr);
 		//test input added markers
-		if (*ptr == '`') // internal marker from ^input
+		if (*ptr == INPUTMARKER) 
 		{
 			++ptr;
-			if (*ptr == '`') ++ptr;
-			if (*ptr == ' ') ++ptr;
-			continue;
+			break; // start or end of a sentence from ^input, do not include markers
 		}
-		ptr = SkipWhitespace(ptr);
 		if (!*ptr) break; 
 		if (!(tokenControl & TOKEN_AS_IS)) while (*ptr == ptr[1] && !IsAlphaUTF8OrDigit(*ptr)  && *ptr != '-' && *ptr != '.' && *ptr != '[' && *ptr != ']' && *ptr != '(' && 
 			*ptr != ')' && *ptr != '{' && *ptr != '}') 
@@ -812,6 +818,12 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		int oldCount = count;
 		if (!*ptr) break; 
 		char* end = FindWordEnd(ptr,priorToken,words,count,nomodify,oobStart,oobJson);
+		if (count != oldCount)	// FindWordEnd performed allocation already 
+		{
+			if (count > 0) strcpy(priorToken,words[count]);
+			ptr = SkipWhitespace(end);
+			continue;
+		}
 		if ((end-ptr) > (MAX_WORD_SIZE-3)) 
 		{
 			char word[MAX_WORD_SIZE];
@@ -820,7 +832,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 			ReportBug("Token too big: %s size %d limited to %d\r\n",word, (end-ptr), MAX_WORD_SIZE-25);
 			end = ptr + MAX_WORD_SIZE - 25; // abort, too much jammed together. no token to reach MAX_WORD_SIZE
 		}
-		if (count != oldCount || *ptr == ' ')	// FindWordEnd performed allocation already or removed stage direction start
+		if (*ptr == ' ')	// FindWordEnd removed stage direction start
 		{
 			if (count > 0) strcpy(priorToken,words[count]);
 			ptr = SkipWhitespace(end);

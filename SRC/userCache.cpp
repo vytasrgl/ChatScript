@@ -17,8 +17,7 @@ void InitCache(unsigned int dictStringSize)
 	if (!cacheBase)
 	{
 		printf((char*)"Out of  memory space for dictionary w user cache %d %d %d %d\r\n",dictStringSize,userTopicStoreSize,userTableSize,MAX_ENTRIES);
-		ReportBug((char*)"Cannot allocate memory space for dictionary %ld\r\n",(long int)(dictStringSize + userTopicStoreSize))
-		myexit((char*)"out of memory space for dictionary to allocate");
+		ReportBug((char*)"FATAL: Cannot allocate memory space for dictionary %ld\r\n",(long int)(dictStringSize + userTopicStoreSize))
 	}
 	cacheIndex = (unsigned int*) (cacheBase + userTopicStoreSize); // linked list for caches - each entry is [3] wide 0=prior 1=next 2=TIMESTAMP
 	char* ptr = cacheBase;

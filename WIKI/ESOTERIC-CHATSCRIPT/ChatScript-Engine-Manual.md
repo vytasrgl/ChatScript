@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 7/3/2014 cs5.5
+> Revision 10/23/2014 cs6.86
 
 This does not cover ChatScript the scripting language. It covers how the internals of the engine work
 and how to extend it with private code.
@@ -72,16 +72,21 @@ startup via command line parameters.
 
 This does not mean CS has a perfect memory management system. Merely that it is extremely fast. It is
 based on mark/release, so it allocates space rapidly, and at the end of the volley, it releases all the space
-it used back into its own pool.
-
-You might run out of memory allocated to dictionary items while still having memory available for
-facts. This means you need to rebalance your allocations. But most people never run into these
-problems unless they are on mobile versions of CS.
+it used back into its own pool. And incorporated extensions, like Curl, JavaScript, PostGres, Mongo, etc
+all do their own memory management that CS cannot control.
 
 Memory is divided into dictionary, fact, string space, and buffers. All text (which is not being computed on the fly
 for various actions in script) goes into string space. That which is loaded as part of layers 0 and 1 are 
 considered permanent. That is which is generated during the user volley is considered "transient" and will be 
-released at the end of the volley.
+released at the end of the volley.  String space itself uses AllocateString to allocate memory for the duration
+of the volley and AllocateInverseString (which runs in the opposite direction in the same string chunk) to allocate
+memory that is only supposed to last for the duraction of a function. And there is AllocateBuffer, which has a 
+limited preallocated collection of 80K buffers (current output size limit) that can be allocated (FreeBuffer) to release
+within some scope.
+
+You might run out of memory allocated to dictionary items while still having memory available for
+facts. This means you need to rebalance your allocations. But most people never run into these
+problems unless they are on mobile versions of CS.
 
 The other problem is that memory is not released until the volley is over. So conceivably memory is
 free but hasn't been freed. But CS supports planning, which means backtracking, which means memory
@@ -89,6 +94,7 @@ is really not free along the way because the system might revert things back to 
 problem of free memory mostly shows up in document mode, where reading long paragraphs of text
 are all considered a single volley and therefore one might run out of memory. CS provides a memory
 mark and memory free function so you can explicitly control this while reading a document.
+
 
 # Run-time Model
 
@@ -102,8 +108,16 @@ Outputmacros are scriper-written stuff that CS dynamically processes at executio
 mixture of script statements and user output words. They can have arguments passed to them, but these
 arguments are typically not evaluated. This is not pass by value. Outputmacro code is executed as
 though it were directly spliced into the original caller's code. ^args are processed by converting them
-into what the caller was using, except for format strings ^”xxx” which are evaluated in the caller's
+into what the caller was using, except for format strings ^"xxx" which are evaluated in the caller's
 context before being passed as an argument to a macro.
+
+Calls to engine functions may evaluate their arguments or pass the raw script stream, depending on what
+they need to do. Calls to user-defined outputmacros will normally just pass their arguments untouched
+(pass by reference) so the macro could write back onto the variable passed. The exception to this
+is passing a local variable like `$_xx`. Since nobody outside the caller is allowed to access or touch
+this variable, the system computes the value and passes that, along with a `` marker prefixing it. That
+way various system routines can detect that it is already evaluated, not reevaluate it, and not try to
+write back onto it.
 
 # Script Execution
 

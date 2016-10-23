@@ -8862,7 +8862,7 @@ restart:
 			WORDP X =  canonicalLower[i];
 			if (!X) X = canonicalUpper[i];
 			if (!X) X = StoreWord("Missing canonical");
-			Log(STDTRACELOG,(char*)"%d) \"%s %s\"",i,word,X->word);
+			Log(STDTRACELOG,(char*)"%d) \"raw: %s canonical: %s\"",i,word,X->word);
 			if (phrasalVerb[i] && phrasalVerb[i] > i && posValues[i] & (VERB_BITS|NOUN_INFINITIVE|NOUN_GERUND|ADJECTIVE_PARTICIPLE))
 			{
 				WORDP verb = GetPhrasalVerb(i);
@@ -9919,6 +9919,10 @@ void ParseSentence(bool &resolved,bool &changed)
 // TreeTagger is something you must license for postagging a collection of foreign languages
 // Buying a license will get the the library you need to load with this code
 // http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/
+
+#ifdef WIN32
+//#pragma comment(lib, "../treetagger/tree-tagger.lib")
+#endif
 
 typedef struct {
   int  number_of_words;  /* number of words to be tagged */

@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 10/8/2016 cs6.85
+> Revision 10/23/2016 cs6.86
 
 
 * [Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
@@ -319,19 +319,19 @@ These enable various LIVEDATA files to perform substitutions on input:
 
 | flag                        | description |
 | ----                        | ------- |
-| `DO_ESSENTIALS`             |  perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead
-| `DO_SUBSTITUTES`            |  perform LIVEDATA/substitutes 
-| `DO_CONTRACTIONS`           |  perform LIVEDATA/contractions, expanding contractions  
-| `DO_INTERJECTIONS`          |  perform LIVEDATA/interjections, changing phrases to interjections
-| `DO_BRITISH`                |  perform LIVEDATA/british, respelling brit words to American 
-| `DO_SPELLING`               |  performs the LIVEDATA/spelling file (manual spell correction)  
-| `DO_TEXTING`                |  performs the LIVEDATA/texting file (expand texting notation)
-| `DO_SUBSTITUTE_SYSTEM`      |  do all LIVEDATA file expansions
-| `DO_INTERJECTION_SPLITTING` |  break off leading interjections into own sentence 
-| `DO_NUMBER_MERGE`           |  merge multiple word numbers into one (_four and twenty_)  
-| `DO_PROPERNAME_MERGE`       |  merge multiple proper name into one (_George Harrison-)  
-| `DO_DATE_MERGE`             |  merge month day and/or year sequences (_January 2, 1993_)  
-
+| `#DO_ESSENTIALS`             |  perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead
+| `#DO_SUBSTITUTES`            |  perform LIVEDATA/substitutes 
+| `#DO_CONTRACTIONS`           |  perform LIVEDATA/contractions, expanding contractions  
+| `#DO_INTERJECTIONS`          |  perform LIVEDATA/interjections, changing phrases to interjections
+| `#DO_BRITISH`                |  perform LIVEDATA/british, respelling brit words to American 
+| `#DO_SPELLING`               |  performs the LIVEDATA/spelling file (manual spell correction)  
+| `#DO_TEXTING`                |  performs the LIVEDATA/texting file (expand texting notation)
+| `#DO_SUBSTITUTE_SYSTEM`      |  do all LIVEDATA file expansions
+| `#DO_INTERJECTION_SPLITTING` |  break off leading interjections into own sentence 
+| `#$DO_NUMBER_MERGE`           |  merge multiple word numbers into one (_four and twenty_)  
+| `#$DO_PROPERNAME_MERGE`       |  merge multiple proper name into one (_George Harrison)  
+|`#DO_DATE_MERGE`             |  merge month day and/or year sequences (_January 2, 1993_)  
+|`#JSON_DIRECT_OOB`             |  asking the tokenizer to directly process OOB data. See ^jsonparse in JSON manual. 
 
 If any of the above items affect the input, they will be echoed as values into
 %tokenFlags so you can detect they happened. 

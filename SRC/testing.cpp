@@ -103,7 +103,8 @@ std::map <const char*, int> statistics; // statistics data
 int CountSet(WORDP D,unsigned int baseStamp) //   full recursive referencing
 {
 	if (!D) return 0;
-
+	if (D->inferMark == inferMark) return 0;
+	D->inferMark = inferMark;
 	int count = 0;
 	FACT* F = GetObjectNondeadHead(D);
 	FACT* G;
@@ -392,7 +393,7 @@ static void C_POS(char* input)
 		PrepareSentence(input,true,true);	
 		tmpPrepareMode = NO_MODE;
 		tokenControl = oldTokenControl;
-		trace = oldtrace;
+		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	}
 }
 
@@ -438,7 +439,7 @@ static void C_Prepare(char* input)
 			prepareMode = NO_MODE;
 			if (prepass && PrepassSentence(prepassTopic)) continue;
 		}
-		trace = oldtrace;
+		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	}
 	tokenControl = oldToken;
 }
@@ -1215,7 +1216,7 @@ static void C_TestPattern(char* input)
 	}
 	
 	SetContext(false);
-	trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	if (result) 
 	{
 		Log(STDTRACELOG,(char*)" Matched\r\n");
@@ -1774,7 +1775,7 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 	FClose(in);
 	RemovePendingTopic(topicID);
 	FreeBuffer(); // copyBuffer
-	trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 }
 
 static void VerifyAllTopics(char kind,char* prepassTopic,char* topic)
@@ -2866,10 +2867,10 @@ static void C_VerifyPos(char* file)
 			Log(STDTRACELOG,(char*)"\r\nMismatch at %d: %s\r\n",count,sentence);
 			Log(STDTRACELOG,(char*)"          got: %s\r\n",liveParse);
 			Log(STDTRACELOG,(char*)"         want: %s\r\n",parseForm);
-			int old = trace;
+			int oldtrace = trace;
 			trace |= TRACE_POS;
 			PrepareSentence(sentence,true,true);
-			trace = old;
+			trace = oldtrace;
 			++fail;
 		}
 	}
@@ -4912,7 +4913,7 @@ static void TracedTopic(WORDP D,uint64 style)
 		topicBlock* block = TI(topic);
 		if (block->topicDebug) 
 		{
-			Log(ECHOSTDTRACELOG,(char*)"%s:",D->word);
+			Log(ECHOSTDTRACELOG,(char*)"%s",D->word);
 			if (style == 0) Log(ECHOSTDTRACELOG, (char*)"  0x%x", block->topicDebug);
 			Log(ECHOSTDTRACELOG, (char*)"\r\n");
 			if (style == 1) ShowTrace(block->topicDebug, false);
@@ -5076,7 +5077,7 @@ TestMode Command(char* input,char* output,bool scripted)
 		(*info->fn)(data);
 		testOutput = NULL;
 		FreeBuffer();
-		if (strcmp(info->word,(char*)":trace")   && strcmp(info->word,(char*)":echo") && !prepareMode) echo = oldecho;
+		if (strcmp(info->word,(char*)":echo") && !prepareMode) echo = oldecho;
 		if (scripted && strcmp(info->word,(char*)":echo")) echo = oldecho;
 		return wasCommand;
 	}
@@ -5151,7 +5152,7 @@ static bool EmptyReuse(char* output, int topic)
 		{
 			char pattern[MAX_WORD_SIZE];
 			char* output1 = SkipWhitespace(GetPattern(rule,label,pattern));
-			return (*output1 == '`');
+			return (*output1 == ENDUNIT);
 		}
 	}
 	return false;
@@ -5200,7 +5201,7 @@ static void C_TopicStats(char* input)
 			char pattern[MAX_WORD_SIZE];
 			char* output = SkipWhitespace(GetPattern(data,label,pattern));
 			bool norule = EmptyReuse(output,i);
-			if (!*output || *output == '`' || norule) 
+			if (!*output || *output == ENDUNIT || norule) 
 			{
 				if (*data < 'a' ||*data > 'q') 
 					++empties; // we dont care if rejoinder is empty.
@@ -5256,10 +5257,10 @@ static void C_TopicDump(char* input)
 		int id = 0;
 		while (data && *data)
 		{
-			char* end = strchr(data,'`');
+			char* end = strchr(data,ENDUNIT);
 			*end = 0;
-			fprintf(out,(char*)"%s`\r\n",data-JUMP_OFFSET);
-			*end = '`';
+			fprintf(out,(char*)"%s%c\r\n",data-JUMP_OFFSET,ENDUNIT);
+			*end = ENDUNIT;
 			data = FindNextRule(NEXTRULE,data,id);
 		}
 		fprintf(out,(char*)"%s",(char*)"000 x\r\n"); // end of topic
@@ -6256,100 +6257,102 @@ static void TimingTopicFunction(WORDP D, uint64 data)
 
 static void ShowTrace(unsigned int bits, bool original)
 {
-	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH|TRACE_FLOW);
+	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH|TRACE_FLOW|TRACE_ECHO);
 	unsigned int mild = (TRACE_OUTPUT|TRACE_PREPARE|TRACE_PATTERN);
 	unsigned int deep = (TRACE_ALWAYS|TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
 
 	// general
 	if (bits & general) 
 	{
-		if (!original) Log(STDTRACELOG, (char*)"  ");
-		Log(STDTRACELOG,(char*)"Enabled simple: ");
-		if (bits & TRACE_MATCH) Log(STDTRACELOG,(char*)"match ");
-		if (bits & TRACE_FLOW) Log(STDTRACELOG,(char*)"ruleflow ");
-		if (bits & TRACE_VARIABLE) Log(STDTRACELOG,(char*)"variables ");
-		Log(STDTRACELOG,(char*)"\r\n");
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG,(char*)"Enabled simple: ");
+		if (bits & TRACE_ECHO) Log(ECHOSTDTRACELOG,(char*)"echo ");
+		if (bits & TRACE_MATCH) Log(ECHOSTDTRACELOG,(char*)"match ");
+		if (bits & TRACE_FLOW) Log(ECHOSTDTRACELOG,(char*)"ruleflow ");
+		if (bits & TRACE_VARIABLE) Log(ECHOSTDTRACELOG,(char*)"variables ");
+		Log(ECHOSTDTRACELOG,(char*)"\r\n");
 	}
 
 	// mild detail
 	if (bits & mild) 
 	{
-		if (!original) Log(STDTRACELOG, (char*)"  ");
-		Log(STDTRACELOG,(char*)"Enabled mild detail: ");
-		if (bits & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"output ");
-		if (bits & TRACE_PREPARE) Log(STDTRACELOG,(char*)"prepare ");
-		if (bits & TRACE_PATTERN) Log(STDTRACELOG,(char*)"pattern ");
-		Log(STDTRACELOG,(char*)"\r\n");
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG,(char*)"Enabled mild detail: ");
+		if (bits & TRACE_OUTPUT) Log(ECHOSTDTRACELOG,(char*)"output ");
+		if (bits & TRACE_PREPARE) Log(ECHOSTDTRACELOG,(char*)"prepare ");
+		if (bits & TRACE_PATTERN) Log(ECHOSTDTRACELOG,(char*)"pattern ");
+		Log(ECHOSTDTRACELOG,(char*)"\r\n");
 	}
 	// deep detail
 	if (bits & deep) 
 	{
-		if (!original) Log(STDTRACELOG, (char*)"  ");
-		Log(STDTRACELOG,(char*)"Enabled deep detail: ");
-		if (bits & TRACE_FACT) Log(STDTRACELOG,(char*)"fact ");
-		if (bits & TRACE_INFER) Log(STDTRACELOG,(char*)"infer ");
-		if (bits == TRACE_HIERARCHY) Log(STDTRACELOG,(char*)"hierarchy ");
-		if (bits & TRACE_SUBSTITUTE) Log(STDTRACELOG,(char*)"substitute ");
-		if (bits & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"varassign ");
-		if (bits & TRACE_QUERY) Log(STDTRACELOG,(char*)"query ");
-		if (bits & TRACE_USER) Log(STDTRACELOG,(char*)"user ");
-		if (bits & TRACE_POS) Log(STDTRACELOG,(char*)"pos ");
-		if (bits & TRACE_TCP) Log(STDTRACELOG,(char*)"tcp ");
-		if (bits & TRACE_JSON) Log(STDTRACELOG,(char*)"json ");
-		if (bits & TRACE_USERFN) Log(STDTRACELOG,(char*)"macro ");
-		if (bits & TRACE_USERCACHE) Log(STDTRACELOG,(char*)"usercache ");
-		if (bits & TRACE_SQL) Log(STDTRACELOG,(char*)"sql ");
-		if (bits & TRACE_SAMPLE) Log(STDTRACELOG,(char*)"sample ");
-		if (bits & TRACE_LABEL) Log(STDTRACELOG,(char*)"label ");
-		if (bits & TRACE_TOPIC) Log(STDTRACELOG,(char*)"topic ");
-		if (bits & TRACE_ALWAYS) Log(STDTRACELOG,(char*)"always ");
-		Log(STDTRACELOG,(char*)"\r\n");
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG,(char*)"Enabled deep detail: ");
+		if (bits & TRACE_FACT) Log(ECHOSTDTRACELOG,(char*)"fact ");
+		if (bits & TRACE_INFER) Log(ECHOSTDTRACELOG,(char*)"infer ");
+		if (bits == TRACE_HIERARCHY) Log(ECHOSTDTRACELOG,(char*)"hierarchy ");
+		if (bits & TRACE_SUBSTITUTE) Log(ECHOSTDTRACELOG,(char*)"substitute ");
+		if (bits & TRACE_VARIABLESET) Log(ECHOSTDTRACELOG,(char*)"varassign ");
+		if (bits & TRACE_QUERY) Log(ECHOSTDTRACELOG,(char*)"query ");
+		if (bits & TRACE_USER) Log(ECHOSTDTRACELOG,(char*)"user ");
+		if (bits & TRACE_POS) Log(ECHOSTDTRACELOG,(char*)"pos ");
+		if (bits & TRACE_TCP) Log(ECHOSTDTRACELOG,(char*)"tcp ");
+		if (bits & TRACE_JSON) Log(ECHOSTDTRACELOG,(char*)"json ");
+		if (bits & TRACE_USERFN) Log(ECHOSTDTRACELOG,(char*)"macro ");
+		if (bits & TRACE_USERCACHE) Log(ECHOSTDTRACELOG,(char*)"usercache ");
+		if (bits & TRACE_SQL) Log(ECHOSTDTRACELOG,(char*)"sql ");
+		if (bits & TRACE_SAMPLE) Log(ECHOSTDTRACELOG,(char*)"sample ");
+		if (bits & TRACE_LABEL) Log(ECHOSTDTRACELOG,(char*)"label ");
+		if (bits & TRACE_TOPIC) Log(ECHOSTDTRACELOG,(char*)"topic ");
+		if (bits & TRACE_ALWAYS) Log(ECHOSTDTRACELOG,(char*)"always ");
+		Log(ECHOSTDTRACELOG,(char*)"\r\n");
 	}
 
 	// general
 	if ((bits & general) != general) 
 	{
-		if (!original) Log(STDTRACELOG, (char*)"  ");
-		Log(STDTRACELOG,(char*)"Disabled simple: ");
-		if (!(bits & TRACE_MATCH)) Log(STDTRACELOG,(char*)"match ");
-		if (!(bits & TRACE_VARIABLE)) Log(STDTRACELOG,(char*)"variables ");
-		Log(STDTRACELOG,(char*)"\r\n");
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG,(char*)"Disabled simple: ");
+		if (!(bits & TRACE_ECHO)) Log(ECHOSTDTRACELOG,(char*)"echo ");
+		if (!(bits & TRACE_MATCH)) Log(ECHOSTDTRACELOG,(char*)"match ");
+		if (!(bits & TRACE_VARIABLE)) Log(ECHOSTDTRACELOG,(char*)"variables ");
+		Log(ECHOSTDTRACELOG,(char*)"\r\n");
 	}
 
 	// mild detail
 	if ((bits & mild) != mild) 
 	{
-		if (!original) Log(STDTRACELOG, (char*)"  ");
-		Log(STDTRACELOG,(char*)"Disabled mild detail: ");
-		if (!(bits & TRACE_OUTPUT)) Log(STDTRACELOG,(char*)"output ");
-		if (!(bits & TRACE_PREPARE)) Log(STDTRACELOG,(char*)"prepare ");
-		if (!(bits & TRACE_PATTERN)) Log(STDTRACELOG,(char*)"pattern ");
-		Log(STDTRACELOG,(char*)"\r\n");
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG,(char*)"Disabled mild detail: ");
+		if (!(bits & TRACE_OUTPUT)) Log(ECHOSTDTRACELOG,(char*)"output ");
+		if (!(bits & TRACE_PREPARE)) Log(ECHOSTDTRACELOG,(char*)"prepare ");
+		if (!(bits & TRACE_PATTERN)) Log(ECHOSTDTRACELOG,(char*)"pattern ");
+		Log(ECHOSTDTRACELOG,(char*)"\r\n");
 	}
 
 	// deep detail
 	if ((bits & deep) != deep)
 	{
-		if (!original) Log(STDTRACELOG, (char*)"  ");
-		Log(STDTRACELOG,(char*)"Disabled deep detail: ");
-		if (!(bits & TRACE_FACT)) Log(STDTRACELOG,(char*)"fact ");
-		if (!(bits & TRACE_INFER)) Log(STDTRACELOG,(char*)"infer ");
-		if (!(bits & TRACE_SAMPLE)) Log(STDTRACELOG,(char*)"sample ");
-		if ((bits != TRACE_HIERARCHY)) Log(STDTRACELOG,(char*)"hierarchy ");
-		if (!(bits & TRACE_SUBSTITUTE)) Log(STDTRACELOG,(char*)"substitute ");
-		if (!(bits & TRACE_VARIABLESET)) Log(STDTRACELOG,(char*)"varassign ");
-		if (!(bits & TRACE_QUERY)) Log(STDTRACELOG,(char*)"query ");
-		if (!(bits & TRACE_USER)) Log(STDTRACELOG,(char*)"user ");
-		if (!(bits & TRACE_POS)) Log(STDTRACELOG,(char*)"pos ");
-		if (!(bits & TRACE_TCP)) Log(STDTRACELOG,(char*)"tcp ");
-		if (!(bits & TRACE_JSON)) Log(STDTRACELOG,(char*)"json ");
-		if (!(bits & TRACE_USERFN)) Log(STDTRACELOG,(char*)"macro ");
-		if (!(bits & TRACE_USERCACHE)) Log(STDTRACELOG,(char*)"usercache ");
-		if (!(bits & TRACE_SQL)) Log(STDTRACELOG,(char*)"sql ");
-		if (!(bits & TRACE_LABEL)) Log(STDTRACELOG,(char*)"label ");
-		if (!(bits & TRACE_TOPIC)) Log(STDTRACELOG,(char*)"topic ");
-		if (!(bits & TRACE_ALWAYS)) Log(STDTRACELOG,(char*)"always ");
-		Log(STDTRACELOG,(char*)"\r\n");
+		if (!original) Log(ECHOSTDTRACELOG, (char*)"  ");
+		Log(ECHOSTDTRACELOG,(char*)"Disabled deep detail: ");
+		if (!(bits & TRACE_FACT)) Log(ECHOSTDTRACELOG,(char*)"fact ");
+		if (!(bits & TRACE_INFER)) Log(ECHOSTDTRACELOG,(char*)"infer ");
+		if (!(bits & TRACE_SAMPLE)) Log(ECHOSTDTRACELOG,(char*)"sample ");
+		if ((bits != TRACE_HIERARCHY)) Log(ECHOSTDTRACELOG,(char*)"hierarchy ");
+		if (!(bits & TRACE_SUBSTITUTE)) Log(ECHOSTDTRACELOG,(char*)"substitute ");
+		if (!(bits & TRACE_VARIABLESET)) Log(ECHOSTDTRACELOG,(char*)"varassign ");
+		if (!(bits & TRACE_QUERY)) Log(ECHOSTDTRACELOG,(char*)"query ");
+		if (!(bits & TRACE_USER)) Log(ECHOSTDTRACELOG,(char*)"user ");
+		if (!(bits & TRACE_POS)) Log(ECHOSTDTRACELOG,(char*)"pos ");
+		if (!(bits & TRACE_TCP)) Log(ECHOSTDTRACELOG,(char*)"tcp ");
+		if (!(bits & TRACE_JSON)) Log(ECHOSTDTRACELOG,(char*)"json ");
+		if (!(bits & TRACE_USERFN)) Log(ECHOSTDTRACELOG,(char*)"macro ");
+		if (!(bits & TRACE_USERCACHE)) Log(ECHOSTDTRACELOG,(char*)"usercache ");
+		if (!(bits & TRACE_SQL)) Log(ECHOSTDTRACELOG,(char*)"sql ");
+		if (!(bits & TRACE_LABEL)) Log(ECHOSTDTRACELOG,(char*)"label ");
+		if (!(bits & TRACE_TOPIC)) Log(ECHOSTDTRACELOG,(char*)"topic ");
+		if (!(bits & TRACE_ALWAYS)) Log(ECHOSTDTRACELOG,(char*)"always ");
+		Log(ECHOSTDTRACELOG,(char*)"\r\n");
 	}
 	if (original) WalkDictionary(TraceTopicFunction,1);
 }
@@ -6513,7 +6516,7 @@ static void C_Trace(char* input)
 		strcpy(traceObject,word);
 		if (!stricmp(word,"null")) *traceObject = 0;
 	}
-
+	bool noecho = false;
 	while (input) 
 	{
 		input = ReadCompiledWord(input,word); // if using trace in a table, use closer "end" if you are using named flags
@@ -6537,7 +6540,11 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"simple")) flags &= -1 ^ (TRACE_MATCH|TRACE_VARIABLE); 
 			else if (!stricmp(word,(char*)"input")) flags &= -1 ^ TRACE_INPUT;
 			else if (!stricmp(word,(char*)"ruleflow")) flags &= -1 ^ TRACE_FLOW;
-
+			else if (!stricmp(word,(char*)"echo")) 
+			{
+				flags &= -1 ^ TRACE_ECHO;
+				noecho = true;
+			}
 			else if (!stricmp(word,(char*)"prepare")) flags &= -1 ^ TRACE_PREPARE; 
 			else if (!stricmp(word,(char*)"output")) flags &= -1 ^ TRACE_OUTPUT;
 			else if (!stricmp(word,(char*)"pattern")) flags &= -1 ^ TRACE_PATTERN;
@@ -6573,6 +6580,7 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"simple")) flags |= (TRACE_MATCH|TRACE_VARIABLE); 
 		else if (!stricmp(word,(char*)"input")) flags |= TRACE_INPUT;
 		else if (!stricmp(word,(char*)"ruleflow")) flags |= TRACE_FLOW;
+		else if (!stricmp(word,(char*)"echo")) flags |= TRACE_ECHO;
 
 		else if (!stricmp(word,(char*)"prepare")) flags |= TRACE_PREPARE; 
 		else if (!stricmp(word,(char*)"output")) flags |= TRACE_OUTPUT;
@@ -6620,11 +6628,10 @@ static void C_Trace(char* input)
 				FN->internalBits ^= MACRO_TRACE;
 				if (!fromScript)
 				{
-					echo = true;
-					Log(STDTRACELOG,(char*)" tracing %s %s\n",word, (FN->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
+					Log(ECHOSTDTRACELOG,(char*)" tracing %s %s\n",word, (FN->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
 				}
 			}
-			else Log(STDTRACELOG,(char*)"No such function %s\r\n",word);
+			else Log(ECHOSTDTRACELOG,(char*)"No such function %s\r\n",word);
 		}
 		else if (*word == USERVAR_PREFIX)
 		{
@@ -6633,8 +6640,7 @@ static void C_Trace(char* input)
 			PrepareVariableChange(D,"",false);
 			if (!fromScript)
 			{
-				echo = true;
-				Log(STDTRACELOG,(char*)" tracing %s %s\n",word, (D->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
+				Log(ECHOSTDTRACELOG,(char*)" tracing %s %s\n",word, (D->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
 			}
 		}
 		else if (*word == '~') // tracing a topic or rule by label
@@ -6642,11 +6648,11 @@ static void C_Trace(char* input)
 			char* period = strchr(word,'.');
 			if (period) *period = 0;
 			int topic = FindTopicIDByName(word);
-			if (topic == 0) Log(STDTRACELOG,(char*)"No such topic %s\r\n",word);
+			if (topic == 0) Log(ECHOSTDTRACELOG,(char*)"No such topic %s\r\n",word);
 			else if (!period) 
 			{
 				if (flags & TRACE_ON) flags ^= TRACE_ON;
-				if (!TI(topic)->topicDebug && !flags) SetTopicDebugMark(topic,(unsigned int)-1); // default all
+				if (!TI(topic)->topicDebug && !flags) SetTopicDebugMark(topic,(unsigned int)(-1 ^ TRACE_ALWAYS)); // default all
 				else if (flags) SetTopicDebugMark(topic,flags); // just those named previously
 				else SetTopicDebugMark(topic,0); // disable
 				flags = 0;
@@ -6673,7 +6679,7 @@ static void C_Trace(char* input)
 				{
 					SetDebugRuleMark(topic,id);
 				}
-				else Log(STDTRACELOG,(char*)"cannot find %s.%s\r\n",word,period+1);
+				else Log(ECHOSTDTRACELOG,(char*)"cannot find %s.%s\r\n",word,period+1);
 			}
 		}
 	}
@@ -6681,27 +6687,24 @@ static void C_Trace(char* input)
 	if (trace == TRACE_HIERARCHY) {;}
 	if (!fromScript) // do not show things automatically is
 	{
-		bool oldecho = echo;
-		echo = true;
+		if (SaveTracedFunctions()) isTracing = true;
+		WalkDictionary(TracedTopic,1);
+		if (AreDebugMarksSet()) isTracing = true; // some rule is marked to trace
 		if (trace && trace != TRACE_ON) 
 		{
+			trace |= TRACE_ON | TRACE_ECHO;
+			if (noecho) trace ^= TRACE_ECHO;	// requested to be off
 			isTracing = true;
 			ShowTrace(trace,true);
 		}
 		else trace = 0;
-		if (SaveTracedFunctions()) isTracing = true;
-		WalkDictionary(TracedTopic,1);
-		if (AreDebugMarksSet()) isTracing = true; // some rule is marked to trace
-		echo = oldecho;
-		if (isTracing) 
+		if (isTracing)  
 		{
-			trace |= TRACE_ON;
-			echo = true;
+			trace |= TRACE_ON | TRACE_ECHO;
+			if (noecho) trace ^= TRACE_ECHO;	// requested to be off
 		}
-		else echo = false;
-		Log(STDTRACELOG,(char*)" trace = %d (0x%x)\n",trace,trace);
+		Log(ECHOSTDTRACELOG,(char*)" trace = %d (0x%x)\n",trace,trace);
 	}	
-	else echo = true;
 	wasCommand = TRACECMD; // save results to user file
 }
 
@@ -7160,7 +7163,7 @@ static void DisplayTopic(char* name,int spelling)
 		char* output = GetPattern(rule,label,pattern);
 		char* end = strchr(output,'`');
 		bool norule = EmptyReuse(output,topicID);
-		if (!*output || *output == '`' || norule) 
+		if (!*output || *output == ENDUNIT || norule) 
 		{
 			rule = FindNextRule(NEXTRULE,rule,id);
 			continue;

@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 4/30/2016 cs6.54
+> Revision 10/23/2016 cs6.86
 
 ChatScript ships with code and WINDOWS libraries for accessing PostgreSQL but you need a database
 somewhere. All builds with the postgres client are `ChatScriptpg` in naming as opposed to
@@ -42,10 +42,8 @@ You do not specify the dbname. The system assumes you have a db named `users`. I
 it will try to open a root database named `postgres`. If it can find that, it will then create the `users` db.
 
 Obviously put the correct data for your postgres machine. CS will automatically create a `users`
-database and `userfiles` and `userlogs` and `userbugs` tables. 
-Each user will get an entry in the userfiles table and log entries will be stored in the userlogs table 
-instead of going into the server logs.
-Similarly any bugs detected will be posted to the central database instead of the LOGS folder locally. 
+database and a `userfiles` tables. 
+Each user will get an entry in the userfiles table.
 If Postgres is not available, the CS server will quit. Hopefully you have an automatic restart cron job and
 it will be able to connect to Postgres the next time.
 

@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define MAX_WILDCARDS 20  // _0 ... _20 inclusive
 #define WILDCARD_START(x) (x & 0x0000ffff)
 #define WILDCARD_END(x) ( x >> 16)
+extern  unsigned int modifiedTraceVal;
+extern bool	modifiedTrace;
 
 extern  int wildcardIndex;
 extern char wildcardOriginalText[MAX_WILDCARDS+1][MAX_USERVAR_SIZE+1];  //   spot wild cards can be stored
@@ -62,7 +64,7 @@ void PrepareVariableChange(WORDP D,char* word,bool init);
 void ClearUserVariableSetFlags();
 void ClearUserVariables(char* above = 0);
 char* GetUserVariable(const char* word, bool nojson = false,bool notracing = false);
-void SetUserVariable(const char* var, char* word);
+void SetUserVariable(const char* var, char* word, bool assignment = false);
 void Add2UserVariable(char* var, char* word,char* op);
 
 char* PerformAssignment(char* word,char* ptr,FunctionResult& result,bool nojson = false);

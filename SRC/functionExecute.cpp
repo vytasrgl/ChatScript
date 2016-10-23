@@ -439,8 +439,6 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 	return result; // these are swallowed
 }
 
-unsigned long functionCount = 0;
-
 char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // DoCall(
 {
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
@@ -478,21 +476,13 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			}
 		}
 	}
-	
 	char* paren = ptr;
 	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
-	bool oldecho = echo; 
-	if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) echo = true;
 	SystemFunctionInfo* info = NULL;
 	unsigned int oldArgumentBase = callArgumentBase;
 	unsigned int oldArgumentIndex = callArgumentIndex;
 	unsigned char* definition = NULL;
 	unsigned int j = 0;
-	++functionCount; // used for debugging
-	if (functionCount == 176421)// used for debugging
-	{
-		int xx = 0;
-	}
 	char* oldFunctionAnswerBase = functionAnswerBase;
 	char* oldFunctionAnswerName = functionAnswerName;
 	unsigned int oldFnVarBase = fnVarBase;
@@ -557,6 +547,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		callArgumentList[callArgumentIndex+2] = (char*) ""; // optional arguments excess
 		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 		{
+			--globalDepth; // patch depth because call data should be outside of depth
 			Log(STDTRACETABLOG,(char*) "System call %s(",D->word);
 			for (unsigned int i = firstArgument; i < callArgumentIndex; ++i)
 			{	
@@ -566,7 +557,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)",");
 				callArgumentList[i][40] = c;
 			}
-			Log(STDTRACELOG, ") = ");
+			Log(STDTRACELOG, ")\r\n");
+			++globalDepth;
 		}
 
 		if (result & ENDCODES); // failed during argument processing
@@ -690,6 +682,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 
 		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 		{
+			--globalDepth; // patch depth because call data should be outside of depth
 			char a = *(ptr-1);
 			*(ptr-1) = 0;
 			if (callArgumentIndex > firstArgument) Log(STDTRACETABLOG,(char*) "User call %s(%s):(",D->word,startRawArg);
@@ -720,7 +713,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 						x = buf;
 					}
 				}
-				else if (*x == '`') x += 2;
+				else if (*x == LCLVARDATA_PREFIX) x += 2; // skip ``
 
 				// limited to 40, provide ... and restore
 				char d[4];
@@ -734,13 +727,18 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			Log(STDTRACELOG, ")\r\n");
 			Log(STDTRACETABLOG,(char*)"");
 			*(ptr-1) = a;
+			++globalDepth;
 		}
 
 		fnVarBase = callArgumentBase = oldArgumentIndex; 
 	
 		//   run the definition
 		unsigned int oldtrace = trace;
-		if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) trace = (unsigned int) -1;
+		if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) 
+		{
+			trace = (unsigned int) -1;
+			if (oldtrace && !(oldtrace & TRACE_ECHO)) trace ^= TRACE_ECHO;
+		}
 		else if (D->internalBits & NOTRACE_FN) trace = 0;
 		if (result & ENDCODES){;}
 		else if (callArgumentIndex >= (MAX_ARGUMENT_COUNT-1)) 	// pinned max (though we could legally arrive by accident on this last one)
@@ -768,7 +766,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		// undo any display variables
 		if (definition && basedisplay) RestoreDisplay(baseinvert,basedisplay);
 
-		trace = oldtrace;
+		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 		if (callIndex) --callIndex; // safe decrement
 		if (result & ENDCALL_BIT) result = (FunctionResult) (result ^ ENDCALL_BIT); // terminated user call 
 	} // end user function
@@ -777,6 +775,7 @@ TERMINATE:
 	fnVarBase = oldFnVarBase;
 	functionAnswerBase = oldFunctionAnswerBase;
 	functionAnswerName = oldFunctionAnswerName;
+	ChangeDepth(-1,D->word);
 
 	if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE || (trace & TRACE_USERFN && definition)) && CheckTopicTrace()) 
 	{
@@ -811,12 +810,9 @@ TERMINATE:
 			Log(STDTIMETABLOG, (char*)"%s(%s) time: %d ms\r\n", name,word,diff);
 		}
 	}
-	if (D->internalBits & MACRO_TRACE) echo = oldecho; // allow eval call to change tracing status
-	
 	//   pop argument list
 	callArgumentIndex = oldArgumentIndex;	 
 	callArgumentBase = oldArgumentBase;
-	ChangeDepth(-1,D->word);
 
 	impliedIf = oldimpliedIf;
 	if (ptr && *ptr == ')') // skip ) and space if there is one...
@@ -1197,7 +1193,7 @@ unsigned int Callback(WORDP D,char* arguments, bool boot)
 		if (server) Log(SERVERLOG, "Boot response: %s\r\n",currentOutputBase);
 	}
 	FreeOutputBuffer();
-	trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	return result;
 }
 
@@ -1610,7 +1606,7 @@ static FunctionResult DoRefine(char* buffer,char* arg1, bool fail, bool all)
 
 	RESTOREOLDCONTEXT()
 
-	trace = oldTrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldTrace;
 	// finding none does not fail unless told to fail
 	if (fail && (!currentRule || level != *currentRule)) result = FAILRULE_BIT;
 	return result; 
@@ -1748,7 +1744,7 @@ static FunctionResult RejoinderCode(char* buffer)
         inputRejoinderRuleID = NO_REJOINDER;
         unusedRejoinder = false;
     }
-    trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	return  result;
 }
 
@@ -1986,7 +1982,7 @@ FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg
 	currentReuseID = oldreuseid;
 	currentReuseTopic = oldreusetopic;
 
-	trace = oldTrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldTrace;
 
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)""); //   restore index from lower level
 	if (!result && holdindex == responseIndex && !stricmp(arg3,(char*)"FAIL")) return FAILRULE_BIT; // user wants notification of failure
@@ -2813,13 +2809,7 @@ static FunctionResult InputCode(char* buffer)
 
 	if (!strcmp(lastInputSubstitution,buffer)) return FAILRULE_BIT; // same result as before, apparently looping
 
-	if (showInput)
-	{
-		bool oldecho = echo;
-		echo = true;
-		Log(STDTRACELOG,(char*)"^input: %s\r\n",buffer);
-		echo = oldecho;
-	}
+	if (showInput) Log(ECHOSTDTRACELOG,(char*)"^input: %s\r\n",buffer);
 	else if (trace & TRACE_FLOW) Log(STDTRACELOG,(char*)"^input given: %s\r\n",buffer);
 	AddInput(buffer);
 	strcpy(lastInputSubstitution,buffer);
@@ -3490,6 +3480,14 @@ static FunctionResult SleepCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+static FunctionResult EnvironmentCode(char* buffer)
+{
+	const char* env_p = std::getenv(ARGUMENT(1));
+	if (!env_p || !*env_p) return FAILRULE_BIT;
+	strcpy(buffer,env_p);
+	return NOPROBLEM_BIT;
+}
+
 static FunctionResult ReviseOutputCode(char* buffer)
 {
 	// if (postProcessing) return FAILRULE_BIT;
@@ -3731,7 +3729,7 @@ static FunctionResult NoTraceCode(char* buffer)
 	char* arg1 = ARGUMENT(1);
 	Output(arg1,buffer,result);
 	ChangeDepth(-1,(char*)"NoTraceCode");
-	trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	return result; 
 }
 
@@ -3744,6 +3742,7 @@ static FunctionResult SaveSentenceCode(char* buffer)
 {
 	if (documentMode) return FAILRULE_BIT;
 	char* arg1 = ARGUMENT(1);
+	if (!*arg1) return FAILRULE_BIT;	// need an id
 	MEANING M = MakeMeaning(StoreWord(arg1,AS_IS));
 
 	// compute words (4byte int) needed
@@ -3768,9 +3767,9 @@ static FunctionResult SaveSentenceCode(char* buffer)
 	memory[1] = M; // key 
 	memory[2] = sentencePreparationIndex;
 	((uint64*)memory)[3] = tokenFlags; // 3,4
-	memory[4] = wordCount;
-	memory[5] = (moreToCome) ? 1 : 0;
-	if (moreToComeQuestion) memory[5] |= 2;
+	memory[5] = wordCount;
+	memory[6] = (moreToCome) ? 1 : 0;
+	if (moreToComeQuestion) memory[6] |= 2;
 
 	int n = 7; // store from here
 	WORDP D;
@@ -3839,6 +3838,7 @@ static FunctionResult RestoreSentenceCode(char* buffer)
 {
 	if (documentMode) return FAILRULE_BIT;
 	char* arg1 = ARGUMENT(1);
+	if (!*arg1) return FAILRULE_BIT;	// need an id
 	MEANING M = MakeMeaning(StoreWord(arg1,AS_IS));
 
 	unsigned int list = savedSentences;
@@ -4176,6 +4176,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 		size_t len = strlen(ptr);
 		if (ptr[len-1] == '"') ptr[len-1] = 0;
 	}
+	ChangeDepth(1,"^Burst");
 
 	if (*scan == '"' ) // if a quoted string as burst char, remove the quotes
 	{
@@ -4222,6 +4223,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 
 			impliedSet = impliedWild = ALREADY_HANDLED;	
 			currentFact = NULL;
+			ChangeDepth(-1,"^Burst");
 			return NOPROBLEM_BIT;
 		}
 		scan1 = scan;
@@ -4302,6 +4304,7 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 	else if (!*buffer) strcpy(buffer,ptr);
 
 	if (tracing) Log(STDTRACELOG,(char*)"%d: %s ",counter,ptr);
+	ChangeDepth(-1,"^Burst");
 	impliedSet = impliedWild = ALREADY_HANDLED;	//   we did the assignment
 	currentFact = NULL; // should not advertise any created facts
 	return NOPROBLEM_BIT;
@@ -4488,7 +4491,7 @@ static FunctionResult JoinCode(char* buffer)
  		else 
 		{
 			FunctionResult result;
-			char* bigword = AllocateBuffer();
+			char* bigword = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 			ptr = ReadCommandArg(ptr,bigword,result,0,MAX_BUFFER_SIZE);
 			if (!(result & ENDCODES))
 			{
@@ -4500,21 +4503,19 @@ static FunctionResult JoinCode(char* buffer)
 					ReportBug((char*)"join of %d exceeded caller limit of %d. Truncated: %s\r\n",olen,currentOutputLimit,buffer);
 				}
 				else strcpy(buffer,bigword);
-				FreeBuffer();
+				ReleaseInverseString(bigword);
 			}
 			else 
 			{
-				FreeBuffer();
+				ReleaseInverseString(bigword);
 				return result;
 			}
 		}
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s ",buffer);
 		bool did = *buffer != 0;
 		buffer += strlen(buffer);
 		if (autospace && did) *buffer++ = ' '; 
     }
 	if (autospace && original != buffer) *--buffer = 0;
-	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)") = %s ",original);
  	return NOPROBLEM_BIT;
 }
 
@@ -6423,7 +6424,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 	}
 	clock_t start_time = ElapsedMilliseconds();
 	int size = 0;
-	char* tcpbuffer = AllocateBuffer();
+	char* tcpbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	char* startContent = tcpbuffer;
 	try 
 	{
@@ -6494,7 +6495,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 		SetUserVariable((char*)"$$tcpopen_error",msg);	// pass along the error
 		Log(STDTRACELOG,msg);
 		Log(STDTRACELOG,(char*)"failed to connect to server %s %d\r\n",url,port); 
-		FreeBuffer(); 
+		ReleaseInverseString(tcpbuffer); 
 		return FAILRULE_BIT;
 	}
 
@@ -6506,7 +6507,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 			char* msg = "tcpopen- no HTTP ack code\r\n";
 			SetUserVariable((char*)"$$tcpopen_error",msg);	
 			Log(STDTRACELOG,msg);
-			FreeBuffer();
+			ReleaseInverseString(tcpbuffer);
 			return FAILRULE_BIT;
 		}
 		char* space = strchr(tcpbuffer,' ');
@@ -6519,13 +6520,13 @@ static FunctionResult TCPOpenCode(char* buffer)
 			sprintf(msg,(char*)"tcpopen- HTTP ack code bad %s\r\n",space);
 			SetUserVariable((char*)"$$tcpopen_error",msg);	
 			Log(STDTRACELOG,msg);
-			FreeBuffer();
+			ReleaseInverseString(tcpbuffer);
 			return FAILRULE_BIT;	// failure code of some kind
 		}
 	}
 	
 	userRecordSourceBuffer = startContent;
-	char* buf1 = AllocateBuffer();
+	char* buf1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	buf1[0] = '(';
 	buf1[1] = ' ';
 	buf1[2] = '"'; // strippable string marker
@@ -6554,8 +6555,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 		}
 	}
 	userRecordSourceBuffer = NULL;
-	FreeBuffer();
-	FreeBuffer();
+	ReleaseInverseString(tcpbuffer);
 	return result;
 #endif
 }
@@ -6987,7 +6987,6 @@ static FunctionResult DeleteCode(char* buffer) //   delete all facts in collecti
 			KillFact(F);
 		}
 	}
-	else return FAILRULE_BIT;
 	return NOPROBLEM_BIT;
 }
 
@@ -7494,7 +7493,7 @@ static FunctionResult QueryCode(char* buffer)
 			if (*word == '@') ARGUMENT(argcount) = AllocateInverseString(word); // no eval of such
 			else 
 			{
-				char* buf = AllocateBuffer();
+				char* buf = AllocateBuffer(); // cannot use AllocateInverseString here
 				ReadShortCommandArg(word,buf,result);
 				ARGUMENT(argcount) = AllocateInverseString(buf);
 				FreeBuffer();
@@ -7900,6 +7899,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^sleep",SleepCode,1,0,(char*)"wait n milliseconds"}, 
 	{ (char*)"^if",IfCode,STREAM_ARG,0,(char*)"the if statement"}, 
 	{ (char*)"^loop",LoopCode,STREAM_ARG,0,(char*)"the loop statement"}, 
+	{ (char*)"^environment",EnvironmentCode,1,0,(char*)"get os environment variable"}, 
 
 	{ (char*)"\r\n---- External Databases",0,0,0,(char*)""},
 #ifndef DISCARDPOSTGRES

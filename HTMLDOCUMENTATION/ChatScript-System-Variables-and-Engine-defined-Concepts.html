@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 10/8/2016 cs6.85</p>
+<p>Revision 10/23/2016 cs6.86</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#engine-defined-concepts">Engine-defined Concepts</a></li>
@@ -485,52 +485,56 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>DO_ESSENTIALS</code></td>
+<td><code>#DO_ESSENTIALS</code></td>
 <td>perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead</td>
 </tr>
 <tr class="even">
-<td><code>DO_SUBSTITUTES</code></td>
+<td><code>#DO_SUBSTITUTES</code></td>
 <td>perform LIVEDATA/substitutes</td>
 </tr>
 <tr class="odd">
-<td><code>DO_CONTRACTIONS</code></td>
+<td><code>#DO_CONTRACTIONS</code></td>
 <td>perform LIVEDATA/contractions, expanding contractions</td>
 </tr>
 <tr class="even">
-<td><code>DO_INTERJECTIONS</code></td>
+<td><code>#DO_INTERJECTIONS</code></td>
 <td>perform LIVEDATA/interjections, changing phrases to interjections</td>
 </tr>
 <tr class="odd">
-<td><code>DO_BRITISH</code></td>
+<td><code>#DO_BRITISH</code></td>
 <td>perform LIVEDATA/british, respelling brit words to American</td>
 </tr>
 <tr class="even">
-<td><code>DO_SPELLING</code></td>
+<td><code>#DO_SPELLING</code></td>
 <td>performs the LIVEDATA/spelling file (manual spell correction)</td>
 </tr>
 <tr class="odd">
-<td><code>DO_TEXTING</code></td>
+<td><code>#DO_TEXTING</code></td>
 <td>performs the LIVEDATA/texting file (expand texting notation)</td>
 </tr>
 <tr class="even">
-<td><code>DO_SUBSTITUTE_SYSTEM</code></td>
+<td><code>#DO_SUBSTITUTE_SYSTEM</code></td>
 <td>do all LIVEDATA file expansions</td>
 </tr>
 <tr class="odd">
-<td><code>DO_INTERJECTION_SPLITTING</code></td>
+<td><code>#DO_INTERJECTION_SPLITTING</code></td>
 <td>break off leading interjections into own sentence</td>
 </tr>
 <tr class="even">
-<td><code>DO_NUMBER_MERGE</code></td>
+<td><code>#$DO_NUMBER_MERGE</code></td>
 <td>merge multiple word numbers into one (<em>four and twenty</em>)</td>
 </tr>
 <tr class="odd">
-<td><code>DO_PROPERNAME_MERGE</code></td>
-<td>merge multiple proper name into one (_George Harrison-)</td>
+<td><code>#$DO_PROPERNAME_MERGE</code></td>
+<td>merge multiple proper name into one (_George Harrison)</td>
 </tr>
 <tr class="even">
-<td><code>DO_DATE_MERGE</code></td>
+<td><code>#DO_DATE_MERGE</code></td>
 <td>merge month day and/or year sequences (<em>January 2, 1993</em>)</td>
+</tr>
+<tr class="odd">
+<td><code>#JSON_DIRECT_OOB</code></td>
+<td>asking the tokenizer to directly process OOB data. See ^jsonparse in JSON manual.</td>
 </tr>
 </tbody>
 </table>

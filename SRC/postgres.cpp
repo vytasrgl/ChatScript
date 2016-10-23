@@ -152,13 +152,8 @@ static size_t convertFromHex(unsigned char* ptr,unsigned char* from)
 {
 	unsigned char* start = ptr;
 	*ptr = 0;
-	if (!from) return (size_t) -1;
-
-	if (*from++ != '\\') 
-	{
-		strcpy((char*)ptr,(char*)from);
-		return strlen((char*)ptr);
-	}
+	if (!from || !*from) return 0;
+	if (*from++ != '\\') return 0;
 	else if (*from++ != 'x') return 0;
 
 	while (*from)
@@ -168,24 +163,47 @@ static size_t convertFromHex(unsigned char* ptr,unsigned char* from)
 		c = (c <= '9') ? (c - '0') : (c - 'a' + 10); 
 		d = (d <= '9') ? (d - '0') : (d - 'a' + 10); 
 		*ptr++ = (c << 4) | d;
+		if ((ptr-start+10) > (int)userCacheSize)
+		{
+			*start = 0;
+			ReportBug("User %s file too big",loginID);
+			return 0;
+		}
 	}
 	*ptr = 0;
 	return ptr - start;
 }
 
-size_t pguserRead(void* buffer,size_t size, size_t count, FILE* file)
+size_t pguserRead(void* buf,size_t size, size_t count, FILE* file)
 {
-	convertFromHex((unsigned char*)pgfilesbuffer,(unsigned char*)buffer);
-	size *= count;
+	char* buffer = (char*)buf;
+	sprintf(buffer,(char*)"SELECT file FROM userfiles WHERE userid = '%s' ;",pguserFilename); // one table per user
+	PGresult   *res = PQexec(usersconn, (const char*)buffer);  
+	int status = (int) PQresultStatus(res);
+	char* msg = PQerrorMessage(usersconn);
+	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
+    {
+		char* msg = PQerrorMessage(conn);
+        PQclear(res);
+		return 0;
+    }
+	size = 0;
+	*buffer = 0;
+	// process answers
+	if (status == PGRES_TUPLES_OK && PQntuples(res) == 1)  // shall only be 1 record matching at most and we get back just one field
+	{
+		size = convertFromHex((unsigned char*)buffer,(unsigned char*)PQgetvalue(res, 0, 0));
+	}
+	PQclear(res);
 	return size;
 }
 
-static void convert2Hex(unsigned char* ptr, size_t len, unsigned char* buffer, unsigned int & before, unsigned int& after)
+static void convert2Hex(unsigned char* ptr, size_t len, unsigned char* buffer,unsigned int& before,  unsigned int& after)
 {
 	unsigned char* start = buffer;
-	sprintf((char*)buffer,(char*)"INSERT into userfiles VALUES ('%s', ",pguserFilename); // learn the space needed
+	sprintf((char*)buffer,(char*)"INSERT into userfiles VALUES ('%s', ",pguserFilename); 
 	buffer += strlen((char*) buffer);
-	before = buffer - start;
+	before = buffer-start;
 	strcpy((char*)buffer,(char*)"E'\\\\x");
 	buffer += strlen((char*) buffer);
 	while (len--)
@@ -197,32 +215,30 @@ static void convert2Hex(unsigned char* ptr, size_t len, unsigned char* buffer, u
 	}
 	*buffer++ = '\'';
 	*buffer++ = ' ';
-	*buffer = 0;
-	after = buffer - start;
-	strcpy((char*)pgfilesbuffer + after, ");");
+	after = buffer-start;
+	sprintf((char*)buffer,(char*)" );");
  }
-
-size_t pguserWrite(const void* buffer,size_t size, size_t count, FILE* file)
+ 	
+size_t pguserWrite(const void* buf,size_t size, size_t count, FILE* file)
 {
 	unsigned int before, after;
-	convert2Hex((unsigned char*)buffer, size * count,(unsigned char*) pgfilesbuffer,before,after); // does an update
+	unsigned char* buffer = (unsigned char*)buf;
+	convert2Hex(buffer, size * count,(unsigned char*) pgfilesbuffer,before,after); // does an update
 	PGresult   *res = PQexec(usersconn, pgfilesbuffer);  // do insert first (which may fail or succeed)-- want upsert pending postgres 9.5
 	int status = (int) PQresultStatus(res);
 	char* msg = PQerrorMessage(usersconn);
 	PQclear(res);
-	if (status == PGRES_FATAL_ERROR) // we already have a record
+	if (status == PGRES_FATAL_ERROR) // we dont already have a record
 	{
-		memset(pgfilesbuffer,' ',before); // clear out old command
-		char* val = "UPDATE userfiles SET mydata = ";
-		int len = strlen(val);
-		strncpy(pgfilesbuffer,val,len);
-		sprintf((char*) pgfilesbuffer + after,(char*)"WHERE username = '%s';",pguserFilename);
+		sprintf((char*)pgfilesbuffer,(char*)"UPDATE userfiles SET file = "); 
+		char* at = pgfilesbuffer + strlen(pgfilesbuffer);
+		memset(at,' ',(pgfilesbuffer+before-at)); // blank fill
+		sprintf(pgfilesbuffer+after,(char*)" WHERE userid = '%s' ;",pguserFilename);
 		res = PQexec(usersconn,pgfilesbuffer);  
 		status = (int) PQresultStatus(res);
 		msg = PQerrorMessage(usersconn);
  		PQclear(res);
 	}
-	//PGresult   *res = PQexec(usersconn, pgfilesbuffer);
 
     if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR) 
 	{
@@ -231,48 +247,10 @@ size_t pguserWrite(const void* buffer,size_t size, size_t count, FILE* file)
 	return size * count;
 }
 
-void pguserBug(const void* buffer,size_t size)
-{
-	AdjustQuotes((char*)buffer,true);
-	sprintf((char*)pgfilesbuffer,(char*)"INSERT into userbugs VALUES ('%s');",buffer);
-	PGresult   *res = PQexec(usersconn, pgfilesbuffer );  
-	int status = (int) PQresultStatus(res);
-	char* msg = PQerrorMessage(usersconn);
- 	PQclear(res);
- 	
-	//PGresult   *res = PQexec(usersconn, pgfilesbuffer);
-    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR) myexit((char*)"failed to write user bug to postgres");
-}
-
-void pguserLog(const void* buffer,size_t size)
-{
-	if (!pgfilesbuffer) 
-	{
-		return; // cannot log here
-	}
-	AdjustQuotes((char*)buffer,true);
-	sprintf((char*)pgfilesbuffer,(char*)"INSERT into userlogs VALUES ('%s','%s');",pguserFilename,buffer);
-	PGresult   *res = PQexec(usersconn, pgfilesbuffer );  
-	int status = (int) PQresultStatus(res);
-	char* msg = PQerrorMessage(usersconn);
- 	PQclear(res);
- 	
-	//PGresult   *res = PQexec(usersconn, pgfilesbuffer);
-    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
-    {
-		ReportBug((char*)"Failed to write %s to postgres user log entry- %s",pguserFilename,buffer);
-		myexit((char*)"failed to write user log to postgres");
-	}
-}
-
 void PGUserFilesCode()
 {
 #ifdef WIN32
-	if (InitWinsock() == FAILRULE_BIT)
-	{
-		ReportBug((char*)"WSAStartup failed\r\n");
-		myexit((char*)"WSAStartup failed\r\n");
-	}
+	if (InitWinsock() == FAILRULE_BIT) ReportBug((char*)"FATAL: WSAStartup failed\r\n");
 #endif
     /* Make a connection to the database */
 	char query[MAX_WORD_SIZE];
@@ -286,8 +264,7 @@ void PGUserFilesCode()
 		if (statusType != CONNECTION_OK) // cant reach postgres
 		{
 			DBCloseCode(NULL);
-			ReportBug((char*)"Failed to open postgres db %s and root db postgres",postgresparams);
-			myexit((char*)"Failed to open pg user db");
+			ReportBug((char*)"FATAL: Failed to open postgres db %s and root db postgres",postgresparams);
 		}
   
 		PGresult   *res  = PQexec(usersconn, "CREATE DATABASE users;");
@@ -297,8 +274,7 @@ void PGUserFilesCode()
 		if (PQstatus(usersconn) != CONNECTION_OK) // cant reach postgres
 		{
 			DBCloseCode(NULL);
-			ReportBug((char*)"Failed to open users db %s",postgresparams);
-			myexit((char*)"Failed to create users db");
+			ReportBug((char*)"FATAL: Failed to open users db %s",postgresparams);
 		}
 		
 		sprintf(query,(char*)"%s dbname = users ",postgresparams);
@@ -306,8 +282,7 @@ void PGUserFilesCode()
 		if (PQstatus(usersconn) != CONNECTION_OK) // users not there yet...
 		{
 			DBCloseCode(NULL);
-			ReportBug((char*)"Failed to open users db %s",postgresparams);
-			myexit((char*)"Failed to create users db");
+			ReportBug((char*)"FATAL: Failed to open users db %s",postgresparams);
 		}
 	}
 	
@@ -321,18 +296,9 @@ void PGUserFilesCode()
 	userFileSystem.userDelete = NULL;
 	filesystemOverride = POSTGRESFILES;
 	
-// user file table
-    PGresult   *res  = PQexec(usersconn, "CREATE TABLE userfiles (username varchar(100) PRIMARY KEY, mydata bytea);");
+    PGresult   *res  = PQexec(usersconn, "CREATE TABLE userfiles (userid varchar(400) PRIMARY KEY, file bytea);");
 	int status = (int) PQresultStatus(res);
 	char* msg;
-	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)  msg = PQerrorMessage(usersconn);
-	// make corresponding user log table
-	
-	PGresult   *res1  = PQexec(usersconn, "CREATE TABLE userlogs (username varchar(100),log text,id SERIAL UNIQUE);");
-	status = (int) PQresultStatus(res1);
-	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)  msg = PQerrorMessage(usersconn);
-	res1  = PQexec(usersconn, "CREATE TABLE userbugs(log text,id SERIAL UNIQUE);");
-	status = (int) PQresultStatus(res1);
 	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)  msg = PQerrorMessage(usersconn);
 	msg = NULL;
 }
@@ -391,9 +357,9 @@ FunctionResult DBExecuteCode(char* buffer)
         PQclear(res);
 		return FAILRULE_BIT;
      }
+	char* psBuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	if (*function && status == PGRES_TUPLES_OK) // do something with the answers
 	{
-		char psBuffer[MAX_BUFFER_SIZE];
 		psBuffer[0] = '(';
 		psBuffer[1] = ' ';
 	
@@ -417,6 +383,7 @@ FunctionResult DBExecuteCode(char* buffer)
 				if (len > (maxBufferSize - 100))  // overflow
 				{
 					PQclear(res);
+					ReleaseInverseString(psBuffer);
 					return FAILRULE_BIT;
 				}
 				if (keepQuotes)
@@ -440,7 +407,7 @@ FunctionResult DBExecuteCode(char* buffer)
 				}
 				*at++ = ' ';
 
-				if ((at - psBuffer) > (maxBufferSize - 100)) 
+				if ((unsigned int)(at - psBuffer) > (maxBufferSize - 100)) 
 				{
 					ReportBug((char*)"postgres answer overflow %s -> %s\r\n",query,psBuffer);
 					break;
@@ -463,7 +430,7 @@ FunctionResult DBExecuteCode(char* buffer)
 			}
 		}
 	}
-
+	ReleaseInverseString(psBuffer);
 	PQclear(res);
 	return result;
 } 

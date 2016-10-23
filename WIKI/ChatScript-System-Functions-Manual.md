@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 10/8/2016 cs6.85
+> Revision 10/23/2016 cs6.86
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -19,7 +19,7 @@
 
 System functions are predefined and can be intermixed with direct output. Generally
 they are used from the output side of a rule, but in many cases nothing prevents you from
-invoking them from inside a pattern.
+invoking them from inside a pattern.  When used in a pattern, they do not write out any text output to the user. But their output will be tested the same as it would from an `if` statement, meaning 0 and false are failures.
 
 You can write them with or without a `^` in front of their name. With is clearer, but you
 don’t have to. The only time you must is if the first thing you want to do in a gambit is
@@ -874,6 +874,11 @@ u: (^incontext(PLAYTENNIS) why) because it was fun.
 
 # External Access Functions
 
+### `^environment`( variablename )
+Access environment variables of the operating system. E.g.
+```
+^environment(path)
+```
 
 ### `^system`( any number of arguments )
 The arguments, separated by spaces, are passed as a text string to the operating system for execution as a command. 
@@ -1709,6 +1714,8 @@ If you actually want to destroy facts, you can query them into a fact-set and th
 You can also delete an individual fact who's id is sitting on some variable
 
 `^delete($$f)` And you can delete a json array or object, including all of its substructure the same way.
+
+If you pass something that is not deleteable, the system will do nothing and does not fail.
 
 ### `^length`( factset or `~set` or jsonid or word )
 If you want to know how many facts a fact-set has, you can do this:

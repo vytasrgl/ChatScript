@@ -114,7 +114,9 @@ struct Client_t
 
         this->ev_r.data = this;
         this->ev_w.data = this;
-
+#ifndef DISCARDPOSTGRES
+		if (postgresparams)  PGUserFilesCode(); //Forked must hook uniquely AFTER forking
+#endif
         ev_io_start(this->l, &this->ev_r);
     }
 
@@ -345,10 +347,7 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
 
                 if (option == "fork") {
 					no_children_g = atoi(val.c_str());
-   					Log(SERVERLOG, "evserver: fork request total: %d of %d\n",no_children_g,MAX_CHILDREN_D);
-                    if (no_children_g > MAX_CHILDREN_D) {
-                        no_children_g = MAX_CHILDREN_D;
-                    }
+                    if (no_children_g > MAX_CHILDREN_D)  no_children_g = MAX_CHILDREN_D;
                 }
             } 
 			else  ReportBug((char*)"Invalid argument to evserver: '%s'\n", command.c_str());
@@ -392,8 +391,11 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
 #endif
     
     // non blocking
-    if (setnonblocking(srv_socket_g) == -1)  return -1;
-
+    if (setnonblocking(srv_socket_g) == -1)  
+	{
+		Log(SERVERLOG, "evsrv_init: non-blocking ending init\n");
+ 		return -1;
+	}
 	// bind the socket to its port
 	sockaddr_in localAddr;
 	memset(&localAddr, 0, sizeof(localAddr));
@@ -404,7 +406,10 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
     }
 	localAddr.sin_port = htons(port_g);
     
-	if (bind(srv_socket_g, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) return -1; // typical when server is already running and cron tries to start
+	if (bind(srv_socket_g, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) 
+	{
+ 		return -1; // typical when server is already running and cron tries to start
+	}
 
 #ifdef EVSERVER_FORK
     int parent_after_fork = -1;
@@ -448,7 +453,7 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
     // socket listener
     ev_io_init(&ev_accept_r_g, evsrv_accept, srv_socket_g, EV_READ);
     ev_io_start(l_g, &ev_accept_r_g);
-	 Log(SERVERLOG, "  evserver: running\n");
+	Log(SERVERLOG, "  evserver: running\n");
 
     return 1;
 }

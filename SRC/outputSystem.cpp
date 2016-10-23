@@ -148,11 +148,11 @@ static char* ReadUserVariable(char* input, char* var)
 {		
 	char* at = input++; // skip $ and below either $ or _ if one exists or first legal char
 	bool once = false;
-	while (LegalVarChar(*++input) || *input == '.' || (*input == '$' && *(input-1) == '.'))
+	while (LegalVarChar(*++input) || *input == '.' || *input == '[' || *input == ']' || (*input == '$' && *(input-1) == '.'))
 	{
-		if (*input == '.')
+		if (*input == '.'  || *input == '[' || *input == ']')
 		{
-			if (!LegalVarChar(input[1]) && input[1] != '$') break; // not a var dot, just an ordinary one 
+			if (!LegalVarChar(input[1]) && input[1] != '$' && input[1] != '[') break; // not a var dot, just an ordinary one 
 		}
 	} 
 	strncpy(var,at,input-at);
@@ -968,7 +968,7 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 	}
 
     bool quoted = false;
-	char word[MAX_WORD_SIZE]; // must survive TCPOPEN data return maybe--- but cant be max arg size because stack will blow. Would have to allocate via
+	char* word = AllocateInverseString(NULL,MAX_BUFFER_SIZE); 
 	// nested depth assignments from our string space
 	int paren = 0;
 
@@ -993,7 +993,7 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 		}
 		else if (*word == FUNCTIONSTRING && (word[1] == '"' || word[1] == '\'' )  ) {;} // function strings can all sorts of stuff in them
 		else if ((*word == '"') && word[1] == FUNCTIONSTRING) {;}   // function strings can all sorts of stuff in them
-		else // separate closing brackets from token in case not run thru script compilation
+		else if (*word != '$') // separate closing brackets from token in case not run thru script compilation
 		{
 			bool quote = false;
 			char* at = word-1;
@@ -1066,7 +1066,7 @@ retry:
 
 		// variables of various flavors
         case USERVAR_PREFIX: //   user variable or money
-			ptr = Output_Dollar(word, ptr, space, buffer, controls,result,once,false);
+ 			ptr = Output_Dollar(word, ptr, space, buffer, controls,result,once,false);
 			break;
  		case '_': //   wildcard or standalone _ OR just an ordinary token
 			ptr = Output_Underscore(word, ptr, space, buffer, controls,result,once);
@@ -1121,6 +1121,7 @@ retry:
 			if (quitting == true) 
 			{
 				result = FAILINPUT_BIT;
+				ReleaseInverseString(word);
 				return NULL;
 			}
 			if (FAILCOMMAND != answer) 
@@ -1185,5 +1186,6 @@ retry:
 		}
 		if (once) break;    
 	}
+	ReleaseInverseString(word);
     return ptr;
 }

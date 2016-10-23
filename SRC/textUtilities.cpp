@@ -609,7 +609,6 @@ void AcquirePosMeanings()
 	CreateFact(M,Mmember,pos);
 	CreateFact(MakeMeaning(FindWord((char*)"~paren")),Mmember,M);
 	CreateFact(MakeMeaning(FindWord((char*)"~comma")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~punctuation")),Mmember,M);
 	CreateFact(MakeMeaning(FindWord((char*)"~quote")),Mmember,M);
 	CreateFact(MakeMeaning(FindWord((char*)"~currency")),Mmember,M);
 
@@ -1235,6 +1234,7 @@ char* ReadFlags(char* ptr,uint64& flags,bool &bad, bool &response)
 char* ReadInt(char* ptr, int &value)
 {
 	ptr = SkipWhitespace(ptr);
+
     value = 0;
     if (!ptr || !*ptr ) return ptr;
     if (*ptr == '0' && (ptr[1]== 'x' || ptr[1] == 'X'))  // hex number
@@ -1771,7 +1771,7 @@ Used for function calls, to read their callArgumentList. Arguments are not evalu
         char c = *ptr;
 		int x = GetNestingData(c);
 		if (paren == 0 && (c == ' ' || x == -1  || c == ENDUNIT)) break; // simple arg separator or outer closer or end of data
-        if ((buffer-start) < (maxBufferSize-2)) *buffer++ = c; // limit overflow into argument area
+        if ((unsigned int)(buffer-start) < (unsigned int)(maxBufferSize-2)) *buffer++ = c; // limit overflow into argument area
         *buffer = 0;
 		if (x) paren += x;
     }
@@ -1854,8 +1854,8 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 
 			if (special) // try to end a variable if not utf8 char or such
 			{
-				if (special == '$' && c == '.' && (LegalVarChar(*ptr) || *ptr == '$')) {;} // not a trailing .
-				else if ( !IsAlphaUTF8OrDigit(c) && c != special && c != '_' && c != '-' ) break;
+				if (special == '$' && (c == '.' ||c == '['|| c == ']') && (LegalVarChar(*ptr) || *ptr == '$' || *ptr == ']' ||  *ptr == '[')) {;} // not a trailing .
+				else if ( !IsAlphaUTF8OrDigit(c) && c != special && c != '_' && c != '-' && c == '['&& c == ']') break;
 			}
 
 			if ((word-original) > (MAX_WORD_SIZE - 3)) break;
@@ -2552,22 +2552,10 @@ RETRY: // for sampling loopback
 
 	if (readAhead >= 6)
 		Log(STDTRACELOG,(char*)"Heavy long line? %s\r\n",documentBuffer);
-	if (autonumber) 
-	{
-		bool oldecho = echo;
-		echo = true;
-		Log(STDTRACELOG,(char*)"%d: %s\r\n",inputSentenceCount,inBuffer);
-		echo = oldecho;
-	}
+	if (autonumber) Log(ECHOSTDTRACELOG,(char*)"%d: %s\r\n",inputSentenceCount,inBuffer);
 	else if (docstats)
 	{
-		if ((++docSentenceCount % 1000) == 0) 
-		{
-			bool oldecho = echo;
-			echo = true;
-			Log(STDTRACELOG,(char*)"%d: %s\r\n",docSentenceCount,inBuffer);
-			echo = oldecho;
-		}	
+		if ((++docSentenceCount % 1000) == 0)  Log(ECHOSTDTRACELOG,(char*)"%d: %s\r\n",docSentenceCount,inBuffer);
 	}
 	wasEmptyLine = false;
 	if (docOut) fprintf(docOut,(char*)"\r\n%s\r\n",inBuffer);

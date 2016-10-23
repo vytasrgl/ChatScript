@@ -647,8 +647,7 @@ nnn											StringBase -- allocates downwards
 	if (!stringEnd)
 	{
 		printf((char*)"Out of  memory space for text space %d\r\n",(int)size);
-		ReportBug((char*)"Cannot allocate memory space for text %d\r\n",(int)size)
-		myexit((char*)"out of memory space for text space to allocate");
+		ReportBug((char*)"FATAL: Cannot allocate memory space for text %d\r\n",(int)size)
 	}
 	stringFree = stringBase = stringEnd + size; // allocate backwards
 	stringInverseFree = stringEnd;
@@ -705,16 +704,16 @@ char* expandAllocation(char* old, char* word,int size)
 	return old;
 }
 
-char* AllocateInverseString(char* word, size_t len)
+char* AllocateInverseString(char* word, size_t len) // call with (0,len) to get a buffer
 {
-	if (len == 0) len =  strlen(word);
+	if (len == 0) len = strlen(word);
     if ((stringInverseFree + len + 1) >= (stringFree - 5000)) // dont get close
     {
 		ReportBug((char*)"Out of transient inverse string space stringSpace:%d inverseStringspace:%d \r\n",stringBase-stringFree,stringInverseFree - stringInverseStart);
 		return NULL;
     }
 	char* answer = stringInverseFree;
-	strncpy(answer,word,len);
+	if (word) strncpy(answer,word,len);
 	answer[len++] = 0;
 	answer[len++] = 0;
 	stringInverseFree += len;
@@ -723,11 +722,16 @@ char* AllocateInverseString(char* word, size_t len)
 	return answer;
 }
 
+void ReleaseInverseString(char* word)
+{
+	stringInverseFree = word;
+}
+
 bool AllocateInverseSlot(char* variable)
 {
 	WORDP D = StoreWord(variable);
 
-	int len = sizeof(char*);
+	unsigned int len = sizeof(char*);
     if ((stringInverseFree + len + 1) >= (stringFree - 5000)) // dont get close
     {
 		ReportBug((char*)"Out of transient inverse string space\r\n")
@@ -830,8 +834,7 @@ Allocations happen during volley processing as
 	 if (stringFree < (char*) stringEnd) 
 #endif
     {
-		ReportBug((char*)"Out of transient string space\r\n")
-		myexit((char*)"no more transient string space");
+		ReportBug((char*)"FATAL: Out of transient string space\r\n")
     }
     if (word) 
 	{
@@ -1061,8 +1064,7 @@ static WORDP AllocateEntry()
 	if (Word2Index(D) >= maxDictEntries)
 #endif
 	{
-		ReportBug((char*)"used up all dict nodes\r\n")
-		myexit((char*)"used up all dict nodes");
+		ReportBug((char*)"FATAL: used up all dict nodes\r\n")
 	}
     memset(D,0,sizeof(WORDENTRY));
 	return D;
@@ -1802,8 +1804,7 @@ static WORDP ReadBinaryEntry(FILE* in)
 			GetMeaning(D,i) = Read32(0);
 			if (GetMeaning(D,i) == 0)
 			{
-				ReportBug((char*)"binary entry meaning is null %s",name)
-				myexit((char*)"null meaning for binary dict entry");
+				ReportBug((char*)"FATAL: binary entry meaning is null %s",name)
 			}
 		}
 	}
@@ -3190,7 +3191,11 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	NextInferMark();  
 
 #ifndef DISCARDTESTING 
-	if (D->internalBits & CONCEPT  && !(D->internalBits & TOPIC)) Log(STDTRACELOG,(char*)"concept (%d members) ",CountSet(D,basestamp));
+	if (D->internalBits & CONCEPT  && !(D->internalBits & TOPIC)) 
+	{
+		NextInferMark();
+		Log(STDTRACELOG,(char*)"concept (%d members) ",CountSet(D,basestamp));
+	}
 #endif
 
 	if (D->internalBits & QUERY_KIND) Log(STDTRACELOG,(char*)"query ");

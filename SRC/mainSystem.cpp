@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.85";
+char* version = "6.86";
 char sourceInput[200];
 bool pendingRestart = false;
 bool pendingUserReset = false;
@@ -211,7 +211,7 @@ void CreateSystem()
 	strcat(data,(char*)"\r\n");
 	printf((char*)"%s",data);
 
-	int old = trace; // in case trace turned on by default
+	int oldtrace = trace; // in case trace turned on by default
 	trace = 0;
 	*oktest = 0;
 
@@ -281,7 +281,7 @@ void CreateSystem()
 		}
 		NoteBotVariables(); // convert user variables read into bot variables
 		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
-		trace = oldtrace;
+		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	}
 	InitSpellCheck(); // after boot vocabulary added
 
@@ -359,7 +359,7 @@ void CreateSystem()
 	if (server) Log(SERVERLOG,(char*)"%s",data);
 	else printf((char*)"%s",data);
 
-	trace = old;
+	trace = oldtrace;
 #ifdef DISCARDSERVER 
 	printf((char*)"    Server disabled.\r\n");
 #endif
@@ -714,7 +714,9 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	UnlockLevel(); // unlock it to add stuff
 
 #ifndef DISCARDPOSTGRES
-	if (postgresparams)  PGUserFilesCode();
+#ifndef EVSERVER
+	if (postgresparams)  PGUserFilesCode(); // unforked process can hook directly. Forked must hook AFTER forking
+#endif
 #endif
 #ifndef DISCARDMONGO
 	if (mongodbparams)  MongoSystemInit(mongodbparams);
@@ -772,6 +774,9 @@ void CloseSystem()
 #endif
 #ifdef PRIVATE_CODE
 	PrivateShutdown();  // must come last after any mongo/postgress 
+#endif
+#ifndef DISCARDJSON
+	CurlShutdown();
 #endif
 }
 
@@ -1277,7 +1282,7 @@ char* ConcatResult()
 		strcpy(result+size,piece);
 		size += len;
 	}
-	trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	tokenControl = control;
     return result;
 }
@@ -1370,6 +1375,8 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	pendingUserReset = false;
 	volleyStartTime = ElapsedMilliseconds(); // time limit control
 	timerCheckInstance = 0;
+	modifiedTraceVal = 0;
+	modifiedTrace = false;
 
 	if (!documentMode) tokenCount = 0;
 #ifndef DISCARDJSON
@@ -1735,8 +1742,7 @@ loopback:
 	if (trace &  TRACE_OUTPUT) Log(STDTRACELOG,(char*)"\r\n\r\nInput: %d to %s: %s \r\n",volleyCount,computerID,input);
 	strcpy(currentInput,input);	//   this is what we respond to, literally.
 
-	if (!strncmp(buffer,(char*)"... ",4)) buffer += 4;	// a marker from ^input
-	else if (!strncmp(buffer,(char*)". ",2)) buffer += 2;	//   maybe separator after ? or !
+	if (!strncmp(buffer,(char*)". ",2)) buffer += 2;	//   maybe separator after ? or !
 
 	//   process input now
 	char prepassTopic[MAX_WORD_SIZE];
@@ -1747,9 +1753,9 @@ loopback:
 	while (((nextInput && *nextInput) || startConversation) && loopcount < SENTENCE_LIMIT) // loop on user input sentences
 	{
 		nextInput = SkipWhitespace(nextInput);
-		if (nextInput[0] == '`') // submitted by ^input `` is start,  ` is end
+		if (nextInput[0] == INPUTMARKER) // submitted by ^input `` is start,  ` is end
 		{
-			if (nextInput[1] == '`') ++inputNest;
+			if (nextInput[1] == INPUTMARKER) ++inputNest;
 			else --inputNest;
 			nextInput += 2;
 			continue;
@@ -1867,7 +1873,7 @@ retry:
 		char* at = nextInput-1;
 		while (*++at)
 		{
-			if (*at == ' ' || *at == '`' || *at == '\n' || *at == '\r') continue;	// ignore this junk
+			if (*at == ' ' || *at == INPUTMARKER || *at == '\n' || *at == '\r') continue;	// ignore this junk
 			moreToCome = true;	// there is more input coming
 			break;
 		}
@@ -2110,7 +2116,7 @@ bool AddResponse(char* msg, unsigned int responseControl)
 		at = word;
 		while ((at = strchr(at,'\r'))) *at = ' ';
 		ReportBug((char*)"response too big %s...",word)
-		strcpy(msg+OUTPUT_BUFFER_SIZE-5,(char*)"..."); //   prevent trouble
+		strcpy(msg+OUTPUT_BUFFER_SIZE-5,(char*)" ... "); //   prevent trouble
 		len = strlen(msg);
 	}
 
@@ -2172,11 +2178,6 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 
 	char* ptr = input;
 	tokenFlags |= (user) ? USERINPUT : 0; // remove any question mark
-
-	// skip the ... from ^input() joining
-	ptr = SkipWhitespace(ptr);
-	if (!strncmp(ptr,(char*)"... ",4)) ptr += 4;  
-
     ptr = Tokenize(ptr,wordCount,wordStarts,false,false,oobstart); 
  	upperCount = 0;
 	lowerCount = 0;

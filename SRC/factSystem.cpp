@@ -216,10 +216,10 @@ char* GetSetEnd(char* x)
 
 void TraceFact(FACT* F,bool ignoreDead)
 {
-	char* word = AllocateBuffer();
+	char* word = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	Log(STDTRACELOG,(char*)"%d: %s\r\n",Fact2Index(F),WriteFact(F,false,word,ignoreDead,false));
 	Log(STDTRACETABLOG,(char*)"");
-	FreeBuffer();
+	ReleaseInverseString(word);
 }
 
 void ClearUserFacts()
@@ -554,7 +554,7 @@ bool ExportFacts(char* name, int set,char* append)
 	char* buffer = GetFreeCache();
 	char* base = buffer;
 
-	char* word = AllocateBuffer();
+	char* word = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	unsigned int count = FACTSET_COUNT(set);
 	for (unsigned int i = 1; i <= count; ++i)
 	{
@@ -574,7 +574,7 @@ bool ExportFacts(char* name, int set,char* append)
 	else out = (append && !stricmp(append,"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
 	if (!out) 
 	{
-		FreeBuffer();
+		ReleaseInverseString(word);
 		return false;
 	}
 	if (strstr(name,"ltm")) 
@@ -588,7 +588,7 @@ bool ExportFacts(char* name, int set,char* append)
 		fclose(out);
 	}
 	FreeUserCache();
-	FreeBuffer();
+	ReleaseInverseString(word);
 	return true;
 }
 
@@ -1036,10 +1036,10 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 
 	if (trace & TRACE_FACT && CheckTopicTrace())
 	{
-		char* buffer = AllocateBuffer(); // fact might be big, cant use mere WORD_SIZE
+		char* buffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE); // fact might be big, cant use mere WORD_SIZE
 		buffer = WriteFact(currentFact,false,buffer,true,false);
 		Log(STDTRACELOG,(char*)"create %s",buffer);
-		FreeBuffer();
+		ReleaseInverseString(buffer);
 	}	
 	return currentFact;
 }

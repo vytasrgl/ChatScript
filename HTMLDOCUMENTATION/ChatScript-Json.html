@@ -50,7 +50,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 10/8/2016 cs6.85</p>
+<p>Revision 10/23/2016 cs6.86</p>
 </blockquote>
 <h1 id="real-world-json">Real World JSON</h1>
 <p>JSON (JavaScript Object Notation) is an open standard format using human-readable text to transmit data objects over the web. It is a common standard largely replacing XML which is too wordy and hard to read. JSON has two datatypes that represents collections of values, the array and the object. A JSON array is a list of JSON entities separated by commas and placed within [], e.g.,</p>
@@ -118,6 +118,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <pre><code>u: ( \[ _* ) and call ^jsonparse(safe _0)</code></pre>
 <p>This will figure out where the OOB marker actually is and only parse within it. You can add NOFAIL before the string argument, to tell it to return null but not fail if a dereference path fails cannot be found.</p>
 <pre><code>^jsonparse(transient NOFAIL &quot;{ a: $var, b: _0.e[2] }&quot;)</code></pre>
+<p>Note: You cannot send JSON text as normal input from a user because CS tokenization is set to handle human input. So doing something like this as input will not work:</p>
+<pre><code>doLogin {&quot;token&quot;: &quot;myid&quot;, &quot;accounts&quot;: [&quot;whatever&quot;]}</code></pre>
+<p>Instead you should call a website using <code>^jsonopen</code> which will automatically convert returned JSON data into internal CS data. Or you can pass JSON data on input via OOB notation:</p>
+<pre><code>[ {&quot;token&quot;: &quot;myid&quot;, &quot;accounts&quot;: [&quot;whatever&quot;]}]  User message</code></pre>
+<p>and then have a pattern to grab the OOB data and call <code>jsonparse</code> with it (using SAFE as a parameter). OOB input is not subject to human tokenization behavior, spellchecking, etc.</p>
+<p>Note: There is a limit to how much JSON you can pass as OOB data nominally, because it is considered a single token. You can bypass this limit by asking the tokenizer to directly process OOB data, returning the JSON structure name instead of all the content. Just enable <code>#JSON_DIRECT_OOB</code> on the <code>$cs_token</code> value and if it finds OOB data that is entirely JSON, it will parse it and return something like <code>jo-t1</code> or <code>ja-t1</code> in its place. Eg. <code>[ { &quot;key&quot;: &quot;value} ]</code> will return tokenized as <code>[jo-t1]</code>.</p>
 <h2 id="jsonformatstring">jsonformat(string)`</h2>
 <p>Because technically JSON requires you put quotes around field names (though various places ignore that requirement) and because CS doesn't, the function takes in a slack json text string and outputs a strict one.</p>
 <h2 id="accessing-json-structures">Accessing JSON structures</h2>
@@ -140,8 +146,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>If you need to handle the full range of legal keys in json, you can use text string notation like this <code>^jsonpath(.&quot;st. helen&quot;.data $tmp)</code>.</p>
 <h2 id="direct-access-via-json-variables-myvar.field">Direct access via JSON variables <code>$myvar.field</code></h2>
 <p>If a variable holds a JSON object value, you can directly set and get from fields of that object using dotted notation. This can be a fixed static fieldname you give or a variable value: <code>$myvar.$myfield</code> is legal. Dotted notation is cleaner and faster than <code>^jsonpath</code> and <code>jsonobjectinsert</code> and for get, has the advantage that it never fails, it only returns null if it can't find the field. On the other hand, assignment fails if the path does not contain a json object at some level.</p>
-<pre><code>$x = $$$obj.name.value.data.side 
-$$$obj.name.value.data.side = 7</code></pre>
+<pre><code>$x = $$obj.name.value.data.side 
+$$obj.name.value.data.side = 7</code></pre>
+<p>Similarly you can access JSON arrays using array notation:</p>
+<pre><code>$x = $$array[5]
+$x = $$array[$_tmp]
+$$obj.name[4] += 3</code></pre>
+<p>The only restriction on arrays is that you cannot add a new array index value without using ^jsonarrayinsert as you are not allowed to create discontiguous indices.</p>
 <p><strong>NOTE</strong> JSON is normally a non-recursive structure with no shared pointers. But ChatScript allows you to store references to JSON structures in multiple places of other JSON structures. This has its hazards. It presents no problem when transcribing to text for a website using <code>^jsonwrite</code> . And when you have something like this:</p>
 <pre><code>$x = ^jsoncreate(object)
 $y = ^jsoncreate(object)
@@ -177,7 +188,7 @@ $x.field = null</code></pre>
 <h3 id="jsonarraysize-name"><code>^jsonarraysize</code>( name )</h3>
 <p>deprecated in favor of ^length</p>
 <h3 id="jsoncopy-name"><code>^jsoncopy</code>( name )</h3>
-<p>Given the name of a json structure, makes a duplicate of it.</p>
+<p>Given the name of a json structure, makes a duplicate of it. If it is not the name of a json structure, it merely returns what you pass it.</p>
 <h3 id="jsonobjectinsert-jsonflags-objectname-key-value"><code>^jsonobjectinsert</code>( {JSONFLAGS} objectname key value )</h3>
 <p>inserts the key value pair into the object named. The key does not require quoting. Inserting a json string as value requires a quoted string. Duplicate keys are ignored unless the optional 1st argument <code>DUPLICATE</code> is given. See writeup earlier about optional json flags.</p>
 <p>If the key has an existing value and <code>DUPLICATE</code> is not a factor, then if the value is a json object it will be recursively deleted provided its data is not referenced by some other fact (not by any variables). You can suppress this with the <code>SAFE</code> flag. <code>jsonobjectinsert(SAFE $obj $key null)</code>.</p>
@@ -192,7 +203,7 @@ $x.field = null</code></pre>
 <h3 id="jsonundecodestring-string"><code>^jsonundecodestring</code>( string )</h3>
 <p>removes all json escape markers back to normal for possible printout to a user. This translates \n to newline, \r to carriage return, \t to tab, and \&quot; to a simple quote.</p>
 <h2 id="web-json">WEB JSON</h2>
-<h3 id="jsonopen-jsonflags-kind-url-postdata-header"><code>^jsonopen</code>( {JSONFLAGS} kind url postdata header)</h3>
+<h3 id="jsonopen-jsonflags-kind-url-postdata-header-timeout"><code>^jsonopen</code>( {JSONFLAGS} kind url postdata header {timeout})</h3>
 <p>this function queries a website and returns a JSON datastructure as facts. It uses the standard CURL library, so it's arguments and how to use them are generally defined by CURL documentation and the website you intend to access. See writeup earlier about optional json flag.</p>
 <table style="width:81%;">
 <colgroup>
@@ -221,6 +232,10 @@ $x.field = null</code></pre>
 <tr class="even">
 <td align="center"><code>header</code></td>
 <td>is any needed extra request headers or &quot;&quot;. Multiple header entries must be separated by a tilde</td>
+</tr>
+<tr class="odd">
+<td align="center"><code>timeout</code></td>
+<td>optional seconds limitation for connection and then for transfer. else $cs_jsontimeout rules</td>
 </tr>
 </tbody>
 </table>

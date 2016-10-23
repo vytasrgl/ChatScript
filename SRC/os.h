@@ -15,6 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
+#define SAFE_BUFFER_MARGIN 2000
+
 // EXCEPTION/ERROR
 // error recovery
 #define SERVER_RECOVERY 4
@@ -155,7 +157,7 @@ extern bool silent;
 extern uint64 logCount;
 extern char* testOutput;
 
-#define ReportBug(...) {Bug(); Log(BUGLOG, __VA_ARGS__);}
+#define ReportBug(...) {Log(BUGLOG, __VA_ARGS__);}
 
 extern char logFilename[MAX_WORD_SIZE];
 extern bool logUpdated;
@@ -167,7 +169,6 @@ extern bool serverPreLog;
 extern bool serverctrlz;
 
 unsigned int Log(unsigned int spot,const char * fmt, ...);
-void Bug();
 void ChangeDepth(int value,char* where);
 void BugBacktrace(FILE* out);
 

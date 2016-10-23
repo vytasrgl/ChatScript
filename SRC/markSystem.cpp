@@ -411,21 +411,22 @@ static void HuntMatch(char* word,bool strict,int start, int end, unsigned int& u
 		if (*D->word == 'I' && !D->word[1]){;}
 		else MarkFacts(MakeMeaning(D),start,end,false,true); 
 	}
-	trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 }
 
 static void SetSequenceStamp() //   mark words in sequence, original and canonical (but not mixed) - detects proper name potential up to 5 words  - and does discontiguous phrasal verbs
 {
 	// these use underscores
-	char* rawbuffer = AllocateBuffer();
-	char* originalbuffer = AllocateBuffer(); // includes typos
-	char* canonbuffer = AllocateBuffer();
+	char* rawbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* originalbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE); // includes typos
+	char* canonbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	unsigned int oldtrace = trace;
 	unsigned int usetrace = trace;
 	if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
 	{
 		Log(STDTRACELOG,(char*)"\r\nSequences:\r\n");
 		usetrace = (unsigned int) -1;
+		if (oldtrace && !(oldtrace & TRACE_ECHO)) usetrace ^= TRACE_ECHO;
 	}
 	uint64 logbase = logCount; // see if we logged anything
 
@@ -560,10 +561,8 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 	}
 	if (trace & TRACE_PATTERN) Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
 
-	trace = oldtrace;
-	FreeBuffer();
-	FreeBuffer();
-	FreeBuffer();
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
+	ReleaseInverseString(rawbuffer);
 }
 
 static void StdMark(MEANING M, unsigned int start, unsigned int end, bool canonical) 
@@ -655,7 +654,6 @@ void MarkAllImpliedWords()
 				AddSystemFlag(D,ACTUAL_TIME);
 			}
 		}
-
 		MarkFacts(MakeMeaning(wordTag[i]),i,i); // may do nothing
 		MarkTags(i);
 

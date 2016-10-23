@@ -617,6 +617,9 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 
 	// the normal composite token
 	bool quote = false;
+	char* orig = ptr;
+	bool var = (*ptr == '$');
+	int brackets = 0;
 	while (*ptr) 
 	{
 		if (*ptr == ENDUNIT) break;
@@ -627,7 +630,22 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		char c = *ptr++;
 		*word++ = c;
 		*word = 0;
-		if (GetNestingData(c)) // break off nesting attached to a started token unless its an escaped token
+		// want to leave array json notation alone but react to [...] touching a variable - $var]
+		if (var && c == '[') // ANY variable should be separated by space from a [ if not json array
+		{
+			++brackets; // this MUST then be a json array and brackets will balance
+			if (brackets > 1) BADSCRIPT("$var MUST be separated from [ unless you intend json array reference")
+		}
+		else if (var && c == ']') 
+		{
+			if (--brackets < 0) // if brackets is set, we must be in json array
+			{
+				--ptr;
+				--word;
+				break;  
+			}
+		}
+		else if (GetNestingData(c)) // break off nesting attached to a started token unless its an escaped token
 		{
 			size_t len = word - start;
 			if (len == 1) break;		// automatically token by itself
@@ -910,9 +928,9 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		if (at[1] == '$' || at[1] == '_') ++at;	// skip over 2ndary marker
 		--at;
 		while (LegalVarChar(*++at) );  // find end of initial word
-		if (*word == '$' && *at == '.' && (LegalVarChar(at[1]) || at[1] == '$') )// allow $x.y as a complete name
+		if (*word == '$' && (*at == '.'  || *at == '[' || *at == ']') &&  (LegalVarChar(at[1]) || at[1] == '$' || at[1] == '[' || at[1] == ']'))// allow $x.y as a complete name
 		{
-			while (LegalVarChar(*++at) || *at == '.' || *at == '$');  // find end of field name sequence
+			while (LegalVarChar(*++at) || *at == '.' || *at == '$' || (*at == '[' || *at == ']') );  // find end of field name sequence
 			if (*(at-1) == '.') --at; // tailing period cannot be part of it
 		}  
 		if (*at && IsPunctuation(*at) & ARITHMETICS && *at != '=')
@@ -1673,7 +1691,8 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 					*mydata++ = ' ';
 					continue;
 				}
-				if (*word == '^' && *nextToken != '(' && word[1] != '^' && word[1] != USERVAR_PREFIX && word[1] != '_' && word[1] != '"' && !IsDigit(word[1]))
+				if (*word == '^' && word[1] == '\''){;}
+				else if (*word == '^' && *nextToken != '(' && word[1] != '^' && word[1] != USERVAR_PREFIX && word[1] != '_' && word[1] != '"' && !IsDigit(word[1]))
 				 // ^^ indicated a deref of something
 					BADSCRIPT((char*)"%s is either a function missing arguments or an undefined function variable.",word) //   not function call or function var ref
 				// track only initial arguments for verify. can have any number when its a stream
@@ -2118,7 +2137,8 @@ name of topic  or concept
 				if (memorizeSeen && !ifstatement) BADSCRIPT((char*)"PATTERN-27 Cannot use _ before  )")
 				if (variableGapSeen && nestIndex > 1) 
 					BADSCRIPT((char*)"PATTERN-26 Cannot have wildcard followed by )")
-				if (nestKind[--nestIndex] != '(') BADSCRIPT((char*)"PATTERN-9 ) is not closing corresponding (")
+				if (nestKind[--nestIndex] != '(') 
+					BADSCRIPT((char*)"PATTERN-9 ) is not closing corresponding (")
 				break;
 			case '[':	//   list of pattern choices begin
 				if (quoteSeen) BADSCRIPT((char*)"PATTERN-30 Quoting [ is meaningless.");
@@ -2128,7 +2148,8 @@ name of topic  or concept
 				if (quoteSeen) BADSCRIPT((char*)"PATTERN-31 Quoting ] is meaningless.");
 				if (memorizeSeen) BADSCRIPT((char*)"PATTERN-32 Cannot use _ before  ]")
 				if (variableGapSeen) BADSCRIPT((char*)"PATTERN-33 Cannot have wildcard followed by ]")
-				if (nestKind[--nestIndex] != '[') BADSCRIPT((char*)"PATTERN-34 ] is not closing corresponding [")
+				if (nestKind[--nestIndex] != '[') 
+					BADSCRIPT((char*)"PATTERN-34 ] is not closing corresponding [")
 				break;
 			case '{':	//   list of optional choices begins
 				if (variableGapSeen)
@@ -3134,8 +3155,7 @@ char* ReadOutput(char* ptr, FILE* in,char* &data,char* rejoinders,char* suppleme
 		if (*word == '^' && *nextToken != '(' && word[1] != '^'  && word[1] != '=' && word[1] != USERVAR_PREFIX && word[1] != '_' && word[1] != '"' && word[1] != '\'' && !IsDigit(word[1])) BADSCRIPT((char*)"%s either references a function w/o arguments or names a function variable that doesn't exist",word)
 	
 		// note left hand of assignment
-		if (!stricmp(nextToken,(char*)"|^=") || !stricmp(nextToken,(char*)"&=") || !stricmp(nextToken,(char*)"|=") || !stricmp(nextToken,(char*)"^=") || !stricmp(nextToken,(char*)"=") || !stricmp(nextToken,(char*)"+=") || !stricmp(nextToken,(char*)"-=") || !stricmp(nextToken,(char*)"/=") || !stricmp(nextToken,(char*)"*="))  strcpy(assignlhs,word);
-
+		if (!stricmp(nextToken,(char*)"&=") || !stricmp(nextToken,(char*)"|=") || !stricmp(nextToken,(char*)"^=") || !stricmp(nextToken,(char*)"=") || !stricmp(nextToken,(char*)"+=") || !stricmp(nextToken,(char*)"-=") || !stricmp(nextToken,(char*)"/=") || !stricmp(nextToken,(char*)"*="))  strcpy(assignlhs,word);
 		if (*nextToken == '=' && !nextToken[1]) // simple assignment
 		{
 			*assignKind = 0;
@@ -4917,13 +4937,13 @@ static void ClearTopicConcept(WORDP D, uint64 build)
 
 static void DumpErrors()
 {
-	if (errorIndex) Log(STDTRACELOG,(char*)"\r\n ERROR SUMMARY: \r\n");
-	for (unsigned int i = 0; i < errorIndex; ++i) Log(STDTRACELOG,(char*)"  %s\r\n",errors[i]);
+	if (errorIndex) Log(ECHOSTDTRACELOG,(char*)"\r\n ERROR SUMMARY: \r\n");
+	for (unsigned int i = 0; i < errorIndex; ++i) Log(ECHOSTDTRACELOG,(char*)"  %s\r\n",errors[i]);
 }
 
 static void DumpWarnings()
 {
-	if (warnIndex) Log(STDTRACELOG,(char*)"\r\nWARNING SUMMARY: \r\n");
+	if (warnIndex) Log(ECHOSTDTRACELOG,(char*)"\r\nWARNING SUMMARY: \r\n");
 	for (unsigned int i = 0; i < warnIndex; ++i) 
 	{
 		if (strstr(warnings[i],(char*)"is not a known word")) {}
@@ -4931,7 +4951,7 @@ static void DumpWarnings()
 		else if (strstr(warnings[i],(char*)"is unknown as a word")) {}
 		else if (strstr(warnings[i],(char*)"in opposite case")){}
 		else if (strstr(warnings[i],(char*)"a function call")){}
-		else Log(STDTRACELOG,(char*)"  %s\r\n",warnings[i]);
+		else Log(ECHOSTDTRACELOG,(char*)"  %s\r\n",warnings[i]);
 	}
 }
 
@@ -5128,24 +5148,24 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	{
 		EraseTopicFiles(build,baseName);
 		DumpErrors();
-		if (missingFiles) Log(STDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
-		Log(STDTRACELOG,(char*)"r\n%d errors - press Enter to quit. Then fix and try again.\r\n",hasErrors);
+		if (missingFiles) Log(ECHOSTDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
+		Log(ECHOSTDTRACELOG,(char*)"r\n%d errors - press Enter to quit. Then fix and try again.\r\n",hasErrors);
 		if (!server && !commandLineCompile) ReadALine(readBuffer,stdin);
 		resultcode = 4; // error
 	}
 	else if (hasWarnings) 
 	{
 		DumpWarnings();
-		if (missingFiles) Log(STDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
-		Log(STDTRACELOG,(char*)"%d serious warnings, %d function warnings, %d spelling warnings, %d case warnings, %d substitution warnings\r\n    ",hasWarnings-badword-substitutes-cases,functionCall,badword,cases,substitutes);
+		if (missingFiles) Log(ECHOSTDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
+		Log(ECHOSTDTRACELOG,(char*)"%d serious warnings, %d function warnings, %d spelling warnings, %d case warnings, %d substitution warnings\r\n    ",hasWarnings-badword-substitutes-cases,functionCall,badword,cases,substitutes);
 	}
 	else 
 	{
-		if (missingFiles) Log(STDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
-		Log(STDTRACELOG,(char*)"No errors or warnings\r\n\r\n");
+		if (missingFiles) Log(ECHOSTDTRACELOG,(char*)"%d topic files were missing.\r\n",missingFiles);
+		Log(ECHOSTDTRACELOG,(char*)"No errors or warnings\r\n\r\n");
 	}
 	ReturnDictionaryToWordNet();
-	Log(STDTRACELOG,(char*)"\r\n\r\nFinished compile\r\n\r\n");
+	Log(ECHOSTDTRACELOG,(char*)"\r\n\r\nFinished compile\r\n\r\n");
 	return resultcode;
 }
 

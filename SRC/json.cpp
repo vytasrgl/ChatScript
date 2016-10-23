@@ -5,6 +5,7 @@
 // GENERAL JSON SUPPORT
 
 #include "jsmn.h"
+static bool curl_done_init = false; 
 
 #define MAX_JSON_LABEL 50
 static char jsonLabel[MAX_JSON_LABEL+1];
@@ -227,7 +228,7 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken, MEANING *r
 		break;
 	}
 	default: 
-		myexit((char*)"(factsJsonHelper) Unknown JSON type encountered.");
+		ReportBug((char*)"FATAL: (factsJsonHelper) Unknown JSON type encountered.");
 	} 
 	currentFact = NULL;
 	return retToken;
@@ -400,6 +401,12 @@ static int EncodingValue(char* name, char* field, int value)
 	return 1;
 }
 
+void CurlShutdown()
+{
+	if (curl_done_init) curl_global_cleanup ();
+}
+
+
 // Open a URL using the given arguments and return the JSON object's returned by querying the given URL as a set of ChatScript facts.
 FunctionResult JSONOpenCode(char* buffer)
 {
@@ -456,6 +463,10 @@ FunctionResult JSONOpenCode(char* buffer)
 
 	extraRequestHeadersRaw = ARGUMENT(index++);
 
+	char* timeout = GetUserVariable("$cs_jsontimeout");
+	if (IsDigit(*ARGUMENT(index))) timeout = ARGUMENT(index); // local override
+	long timelimit = (*timeout) ? atoi(timeout) : 300L;
+
 	// Make sure the raw extra REQUEST headers parameter value is not empty and
 	//  not the ChatScript empty argument character.
 	if (strlen(extraRequestHeadersRaw) > 0)
@@ -499,7 +510,6 @@ FunctionResult JSONOpenCode(char* buffer)
 	output.size = 0;
 
 	// Get curl ready -- do this ONCE only during run of CS
-	static bool curl_done_init = false; 
 	if (!curl_done_init) {
 #ifdef WIN32
 		if (InitWinsock() == FAILRULE_BIT) // only init winsock one per any use- we might have done this from TCPOPEN or PGCode
@@ -639,11 +649,10 @@ FunctionResult JSONOpenCode(char* buffer)
 	val = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&output); // store output here
 	val = curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, my_trace);
-	char* timeout = GetUserVariable("$cs_jsontimeout");
-	long timelimit = 300L;
-	if (*timeout) timelimit = atoi(timeout);
 	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, timelimit); // 300 second timeout to connect (once connected no effect)
-	
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, timelimit);
+	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1); // dont generate signals in unix
+
 	/* the DEBUGFUNCTION has no effect until we enable VERBOSE */
 	if (trace & TRACE_JSON && deeptrace) curl_easy_setopt(curl, CURLOPT_VERBOSE, (long)1);
 	res = curl_easy_perform(curl);
@@ -716,16 +725,10 @@ FunctionResult JSONOpenCode(char* buffer)
 	}
 	if (trace & TRACE_JSON)
 	{
-		char c;
-		if (output.size > (MAX_BUFFER_SIZE - 100)) // too much to log completely
-		{
-			c = output.buffer[MAX_BUFFER_SIZE - 10];
-			output.buffer[MAX_BUFFER_SIZE - 10] = 0;
-		}
 		Log(STDTRACELOG,(char*)"\r\n");
-		Log(STDTRACETABLOG,(char*)"Json response code: %d size: %d %s\r\n",http_response,output.size,output.buffer);
+		if (output.size > (MAX_BUFFER_SIZE - SAFE_BUFFER_MARGIN)) Log(STDTRACETABLOG,(char*)"\r\nJson response code: %d size: %dr\n",http_response,output.size);
+		else Log(STDTRACETABLOG,(char*)"\r\nJson response code: %d size: %d %s\r\n",http_response,output.size,output.buffer);
 		Log(STDTRACETABLOG,(char*)"");
-		if (output.size > (MAX_BUFFER_SIZE - 100)) output.buffer[MAX_BUFFER_SIZE - 10] = c; // too much to log completely
 	}
 
 	return result;
@@ -1289,6 +1292,8 @@ FunctionResult JSONParseCode(char* buffer)
 	size_t len = strlen(data);
 	if (len && data[len-1] == '"') data[--len] = 0;
 	data = SkipWhitespace(data);
+	char close = 0;
+	char* closer = NULL;
 
 	// if safe, locate proper end of OOB data we assume all [] are balanced except for final OOB which has the extra ]
 	int bracket = 1; // for the initial one  - match off {} and [] and stop immediately after
@@ -1312,6 +1317,8 @@ FunctionResult JSONParseCode(char* buffer)
 				// have we ended the item
 				if (bracket <= 1) 
 				{
+					closer = at+1;
+					close = *closer;
 					at[1] = 0;
 					break;
 				}
@@ -1326,6 +1333,7 @@ FunctionResult JSONParseCode(char* buffer)
 		len = strlen(data);
 	}
 	FunctionResult result = ParseJson(buffer, data, len,nofail);
+	if (close) *closer = close;
 	return result;
 }
 
@@ -1622,26 +1630,42 @@ FunctionResult JSONVariableAssign(char* word,char* value)
 {
 	char variable[MAX_WORD_SIZE];
 	// get the object referred to
-	char* dot = strchr(word+1,'.'); // find first level
-	*dot = 0;
+	char* separator = strchr(word+1,'.'); // find first level - we MUST find a dot because we dont allow direct array ops
+	if (!separator) return FAILRULE_BIT;
+	char* bracket = strchr(word+1,'['); 
+	if (bracket && bracket < separator) separator = bracket;
+	char c = *separator;
+	*separator = 0;
 
-	char* val = GetUserVariable(word); // walks down to deepest record value
-	if (strnicmp(val,"jo-",3)) 
+	char* val = GetUserVariable(word); // gets the initial variable
+	if (*separator == '.' && strnicmp(val,"jo-",3)) 
 		return FAILRULE_BIT;	// not a json object
+	else if (*separator == '[' && strnicmp(val,"ja-",3)) 
+		return FAILRULE_BIT;	// not a json array
 	strcpy(variable,val);
 	WORDP objectname = FindWord(val);
 	if (!objectname) 
 		return FAILRULE_BIT;	// doesnt exist?
 
-LOOP:
-	*dot = '.';
-	char* dot1 = strchr(dot+1,'.');
-	if (dot1) *dot1 = 0;
+LOOP: // now we look at $x.key or $x[0]
+	*separator = c; // are we about to do .key or [array]
+
+	// is there a followon after this or is it final
+	char* separator1 = strchr(separator+1,'.');
+	char* bracket1 = strchr(separator+1,'[');
+	if (separator1 && bracket1 && bracket1 < separator1) separator1 = bracket1;
+	else if (!separator1 && bracket1) separator1 = bracket1;
+	if (separator1) // the current level is not the end, there will be more
+	{
+		if (*(separator1-1) == ']') --separator1;	// true end of key token if we have $x[5][$t]
+		c = *separator1;
+		*separator1 = 0; // end of current key name
+	}
 
 	// get final key to use
 	WORDP keyname;
 	char keyx[MAX_WORD_SIZE];
-	strcpy(keyx,dot+1);
+	strcpy(keyx,separator+1);
 	if (*keyx == '$') // indirection key
 	{
 		char* answer = GetUserVariable(keyx);
@@ -1652,17 +1676,22 @@ LOOP:
 			return FAILRULE_BIT;	// cannot be indirection
 		}
 	}
-	keyname = (dot1) ? FindWord(keyx) : StoreWord(keyx,AS_IS);	
+	// now we have retrieved the key/index
+	if (separator1) keyname = FindWord(keyx);// its a key along the way
+	else keyname =  StoreWord(keyx,AS_IS); // its a terminal key, create it (not needed for arrays because we dont allow blind assignment)
 	if (!keyname) 
 	{
 		if (trace &  TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s\r\n",variable);
-		return FAILRULE_BIT;	// unable to find intermediate name
+		return FAILRULE_BIT;	// unable to find key or index
 	}
-	strcat(variable,".");
+	if (*separator == '.') strcat(variable,".");
+	else strcat(variable,".[");
 	strcat(variable,keyx);
-	
-	// make it exist
-	if (dot1) 
+	if (*separator == '[') strcat(variable,"]");
+	if (separator1) *separator1 = c; // restore normal values
+
+	// does it exist, we must find this and keep going if there is something later
+	if (separator1) 
 	{
 		FACT* F = GetSubjectNondeadHead(objectname);
 		while (F)
@@ -1672,12 +1701,13 @@ LOOP:
 		}
 		if (!F) return FAILRULE_BIT;
 		objectname = Meaning2Word(F->object);
-		dot = dot1;
+		separator = separator1;
+		if (*separator == ']') ++separator;
+		c = *separator;
 		goto LOOP;
 	}
 
 	// now at final resting place
-
 	unsigned int flags = JSON_OBJECT_FACT;
 	if (objectname->word[3] == 't') flags |= FACTTRANSIENT; // like jo-t34
 
@@ -1839,8 +1869,11 @@ FunctionResult JSONCopyCode(char* buffer)
 	int index = JSONArgs();
 	char* arg = ARGUMENT(index++);
 	WORDP D = FindWord(arg);
-	if (!D) return FAILRULE_BIT;
-	if (strncmp(D->word,(char*)"ja-",3) && strncmp(D->word,(char*)"jo-",3)) return FAILRULE_BIT;
+	if (!D || (strncmp(D->word,(char*)"ja-",3) && strncmp(D->word,(char*)"jo-",3))) 
+	{
+		strcpy(buffer,arg);
+		return NOPROBLEM_BIT;
+	}
 	MEANING M = jcopy(D);
 	currentFact = NULL; // used up in json
 	D = Meaning2Word(M);

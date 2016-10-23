@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 10/8/2016 cs6.85</p>
+<p>Revision 10/23/2016 cs6.86</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
@@ -28,7 +28,7 @@
 <li><a href="ChatScript-System-Functions-Manual.html#multipurpose-functions">Multipurpose Functions</a></li>
 <li><a href="ChatScript-System-Functions-Manual.html#fact-functions">Facts Functions</a></li>
 </ul>
-<p>System functions are predefined and can be intermixed with direct output. Generally they are used from the output side of a rule, but in many cases nothing prevents you from invoking them from inside a pattern.</p>
+<p>System functions are predefined and can be intermixed with direct output. Generally they are used from the output side of a rule, but in many cases nothing prevents you from invoking them from inside a pattern. When used in a pattern, they do not write out any text output to the user. But their output will be tested the same as it would from an <code>if</code> statement, meaning 0 and false are failures.</p>
 <p>You can write them with or without a <code>^</code> in front of their name. With is clearer, but you don’t have to. The only time you must is if the first thing you want to do in a gambit is call a function (unlikely).</p>
 <pre><code>t: name(xxxx) </code></pre>
 <p>This is ambiguous. Is it function call or label and pattern?</p>
@@ -573,6 +573,9 @@ rule. This has a 5 volley context and are used in normal rule patterns.
 ```
 u: (^incontext(PLAYTENNIS) why) because it was fun.</code></pre>
 <h1 id="external-access-functions">External Access Functions</h1>
+<h3 id="environment-variablename"><code>^environment</code>( variablename )</h3>
+<p>Access environment variables of the operating system. E.g.</p>
+<pre><code>^environment(path)</code></pre>
 <h3 id="system-any-number-of-arguments"><code>^system</code>( any number of arguments )</h3>
 <p>The arguments, separated by spaces, are passed as a text string to the operating system for execution as a command. The function always succeeds, returning the return code of the call. You can transfer data back and forth via files by using <code>^import</code> and <code>^export</code> of facts.</p>
 <h3 id="popen-commandstring-function"><code>^popen</code>( commandstring <code>'function</code>)</h3>
@@ -974,6 +977,7 @@ concept: ~canine (dog)</code></pre>
 <p>If you actually want to destroy facts, you can query them into a fact-set and then do this:</p>
 <p><code>^delete(@1)</code> And all facts in <code>@1</code> will be deleted and the set erased You can also delete an individual fact who's id is sitting on some variable</p>
 <p><code>^delete($$f)</code> And you can delete a json array or object, including all of its substructure the same way.</p>
+<p>If you pass something that is not deleteable, the system will do nothing and does not fail.</p>
 <h3 id="length-factset-or-set-or-jsonid-or-word"><code>^length</code>( factset or <code>~set</code> or jsonid or word )</h3>
 <p>If you want to know how many facts a fact-set has, you can do this:</p>
 <p><code>^length(@1)</code> - outputs the count of facts</p>

@@ -1070,7 +1070,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	bool traceChanged = false;
 	if ( GetDebugRuleMark(currentTopicID,id))  
 	{
-		trace = (unsigned int) -1;
+		trace = (unsigned int) -1; 
 		traceChanged = true;
 	}
 	if (GetTimingRuleMark(currentTopicID, id))
@@ -1176,10 +1176,12 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 		else if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, "%s rule %c:%d.%d %s time: %d ms\r\n", GetTopicName(currentTopicID), *rule, TOPLEVELID(id), REJOINDERID(id), pattern, diff);
 	}
 
-	if (traceChanged) {
-		trace = oldtrace;
+	if (traceChanged) 
+	{
+		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 		timing = oldtiming;
 	}
+	else if (modifiedTrace) trace = modifiedTraceVal;
 	norejoinder = oldnorejoinder;
 
     return result;
@@ -1315,7 +1317,8 @@ exit:
 	RESTOREOLDCONTEXT()
 	currentIterator = oldIterator;
 	
-	if (traceChanged) trace = oldtrace;
+	if (traceChanged) trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
+	else if (modifiedTrace) trace = modifiedTraceVal;
 	return result; 
 }
 
@@ -1571,8 +1574,6 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 		Callback(E,value,false); 
 		cstopicsystem = false;
 	}
-
-	trace = oldtrace;
 	timing = oldtiming;
 	currentTopicID = oldTopic;
 	return (result & (RESTART_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYINPUT_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|FAILINPUT_BIT|FAILRULE_BIT)) ? result : NOPROBLEM_BIT;
@@ -1663,7 +1664,7 @@ char* WriteUserTopics(char* ptr,bool sharefile)
 			ptr = FullEncode(block->topicLastRejoindered,ptr);
 			strcpy(ptr,(char*)"\r\n");
 			ptr += 2;
-			if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+			if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 		}
     }
 	strcpy(ptr,(char*)"#`end topics\r\n"); 
@@ -2050,13 +2051,11 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 		if (!*name) break;
 		if (!plan && stricmp(name,(char*)"topic:"))
 		{
-			ReportBug((char*)"bad topic alignment %s\r\n",name)
-			myexit((char*)"bad topic alignment");
+			ReportBug((char*)"FATAL: bad topic alignment %s\r\n",name)
 		}
 		if (plan && stricmp(name,(char*)"plan:"))
 		{
-			ReportBug((char*)"bad plan alignment %s\r\n",name)
-			myexit((char*)"bad plan alignment");
+			ReportBug((char*)"FATAL: bad plan alignment %s\r\n",name)
 		}
 		ptr = ReadCompiledWord(ptr,name);
 		if (!topicBlockPtrs[layer]) //  || !topicBlockPtrs[layer]->topicName
@@ -2081,7 +2080,7 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 		int topic = FindTopicIDByName(name,true); // may preexist (particularly if this is layer 2)
 		compiling = false;
 		if (!topic || build == BUILD2) topic = ++numberOfTopics;
-		else if (plan) myexit((char*)"duplicate plan name");
+		else if (plan) ReportBug((char*)"FATAL: duplicate plan name");
 		
 		topicBlock* block = TI(topic);
 		int topLevelRules = 0;
@@ -2116,11 +2115,7 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 		// read \r\n or \n carefully, since windows and linux do things differently
 		char c = 0;
 		didread = fread(&c,1,1,in); // \n or \r\n
-		if (c != '\r' && c != '\n') 
-		{
-			ReportBug((char*)"failed to end topic/plan %s properly\r\n",name)
-			myexit((char*)"failed to end topic/plan properly");
-		}
+		if (c != '\r' && c != '\n')  ReportBug((char*)"FATAL: failed to end topic/plan %s properly\r\n",name)
 		block->topicSourceFileName = AllocateString(ptr); // name of file topic came from
 
 		//   bot restriction if any
@@ -2435,7 +2430,7 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 					holdparse[holdindex] = parse;
 					holdrequired[holdindex] = required;
 					++holdindex;
-					if (holdindex >= 10000) myexit((char*)"Too much concept recursion in keywordinit");
+					if (holdindex >= 10000) ReportBug((char*)"FATAL: Too much concept recursion in keywordinit");
 				}
 			}
 	
@@ -2529,7 +2524,7 @@ unsigned int InContext(int topic, char* label)
 {
 	if (contextResult) return 1; // testing override
 	int i = contextIndex; // most recent
-	while (--i != contextIndex) // ring buffer
+	while (--i != (int)contextIndex) // ring buffer
 	{
 		if (i < 0) i = MAX_RECENT; // loop back
 		if (topicContext[i] == 0) break;	// has no context
@@ -2560,7 +2555,7 @@ char* WriteUserContext(char* ptr,bool sharefile )
 		if ((int)inputContext[i] <= ((int)volleyCount - 5)) break; //  not close 
 		sprintf(ptr,(char*)"%s %d %s ", GetTopicName(topicContext[i]),inputContext[i],labelContext[i]);
 		ptr += strlen(ptr);
-		if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+		if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 	}
 	strcpy(ptr,(char*)"\r\n");
 	ResetContext();

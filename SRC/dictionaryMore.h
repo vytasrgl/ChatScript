@@ -238,6 +238,7 @@ extern bool dictionaryBitsChanged;
 extern char livedata[500];
 extern char englishFolder[500];
 extern char systemFolder[500];
+void ReleaseInverseString(char* word);
 char* expandAllocation(char* old, char* word,int size);
 char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
 char* AllocateInverseString(char* word, size_t len = 0);
@@ -265,7 +266,7 @@ char* reuseAllocation(char* old, char* word,int len);
 char* UseDictionaryFile(char* name);
 char* Index2String(unsigned int offset);
 void ClearWhereInSentence();
-inline unsigned int String2Index(char* str) {return (!str) ? 0 : (stringBase - str);}
+inline unsigned int String2Index(char* str) {return (!str) ? 0 : (unsigned int)(stringBase - str);}
 inline unsigned int GlossIndex(MEANING M) { return M >> 24;}
 void ReadAbbreviations(char* file);
 void ReadLiveData();
