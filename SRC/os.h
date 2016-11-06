@@ -32,6 +32,8 @@ void mystart(char* msg);
 #define POSTGRESFILES 2
 extern bool logged;
 extern int filesystemOverride;
+extern char* ruleDepth[512];
+extern char* nameDepth[512];
 
 #define RECORD_SIZE 4000
 

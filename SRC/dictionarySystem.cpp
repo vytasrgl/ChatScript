@@ -207,7 +207,7 @@ void ClearWhereInSentence() // erases  the WHEREINSENTENCE and the TRIEDBITS
 
 void SetFactBack(WORDP D, MEANING M)
 {
-	if (GetFactBack(D) == NULL)
+	if (GetFactBack(D) == 0)
 	{
 		backtracks[D] = M;
 	}
@@ -363,6 +363,7 @@ char* stringFree;					// current free string ptr
 char* stringInverseFree;
 char* stringInverseStart;
 char* stringEnd;
+unsigned long minStringAvailable;
 
 // return-to values for layers
 WORDP dictionaryPreBuild[NUMBER_OF_LAYERS+1];
@@ -652,6 +653,7 @@ nnn											StringBase -- allocates downwards
 	stringFree = stringBase = stringEnd + size; // allocate backwards
 	stringInverseFree = stringEnd;
 #endif
+	minStringAvailable = maxStringBytes;
 	stringInverseStart = stringInverseFree;
 	//   The bucket list is threaded thru WORDP nodes, and consists of indexes, not addresses.
 
@@ -754,6 +756,19 @@ char* RestoreInverseSlot(char* variable,char* slot)
 	return slot + sizeof(char*);
 }
 
+bool PreallocateString(size_t len) // do we have the space
+{
+	char* used = stringFree - len;
+#ifndef SEPARATE_STRING_SPACE
+	bool ok =  (used > ((char*)dictionaryFree + 2000));
+#else
+	bool ok =  (used > ((char*)stringEnd + 2000));
+#endif
+	if (!ok) 
+		ReportBug("Preallocation fails");
+	return ok;
+}
+ 	
 char* AllocateString(char* word,size_t len,int bytes,bool clear, bool purelocal) // BYTES means size of unit
 { //   string allocation moves BACKWARDS from end of dictionary space (as do meanings)
 /* Allocations during setup as :
@@ -827,6 +842,9 @@ Allocations happen during volley processing as
 	}
 	
 	int nominalLeft = maxStringBytes - (stringBase - stringFree);
+	if (nominalLeft < 25000000) showDepth = 1;
+	else if (nominalLeft > 25000000) showDepth = 0;
+	if ((unsigned long) nominalLeft < minStringAvailable) minStringAvailable = nominalLeft;
 
 #ifndef SEPARATE_STRING_SPACE 
     if (stringFree <= (char*) dictionaryFree) 
@@ -3009,7 +3027,7 @@ char* FindCanonical(char* word, int i,bool notNew)
             if (((float) x) == y) sprintf(word1,(char*)"%d",x); //   use int where you can
             else sprintf(word1,(char*)"%1.2f",atof(word)); 
         }
-		else if (GetCurrency(word,number)) sprintf(word1,(char*)"%d",atoi(number));
+		else if (GetCurrency((unsigned char*) word,number)) sprintf(word1,(char*)"%d",atoi(number));
 #ifdef WIN32
         else sprintf(word1,(char*)"%I64d",Convert2Integer(word)); // integer
 #else

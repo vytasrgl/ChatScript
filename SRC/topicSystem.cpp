@@ -1080,8 +1080,8 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	}
 	clock_t start_time = ElapsedMilliseconds();
 
-	char pattern[100];
 	char label[MAX_LABEL_SIZE];
+	char pattern[110];
 	char* ptr = GetPattern(rule,label,pattern,100);  // go to output
 
 	// coverage counter
@@ -1246,7 +1246,7 @@ retry:
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
 	}
-	int whenmatched;
+	int whenmatched = 0;
 	if (*ptr == '(') // pattern requirement
 	{
 		wildcardIndex = 0;
@@ -1330,7 +1330,7 @@ static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,i
 	int ruleID = 0;
 	topicBlock* block = TI(currentTopicID);
 	unsigned int* map = (type == STATEMENT || type == QUESTION || type == STATEMENT_QUESTION) ? block->responderTag : block->gambitTag;
-	ruleID = *map;
+	ruleID = (map) ? *map : NOMORERULES;
     FunctionResult result = NOPROBLEM_BIT;
 	int oldResponseIndex = responseIndex;
 	unsigned int* indices =  TI(currentTopicID)->ruleOffset;
@@ -1369,7 +1369,7 @@ static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 	unsigned int ruleID = 0;
 	unsigned  int* rulemap;
 	rulemap = (type == STATEMENT || type == QUESTION || type == STATEMENT_QUESTION) ? block->responderTag : block->gambitTag;
-	ruleID = *rulemap;
+	ruleID = (rulemap) ? *rulemap : NOMORERULES;
 
 	//   gather the choices
     unsigned int index = 0;
@@ -1542,6 +1542,8 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	}
 
 	clock_t start_time = ElapsedMilliseconds();
+	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE|TRACE_TOPIC) && CheckTopicTrace()) 
+		Log(STDTRACETABLOG,(char*)"Enter Topic:\r\n",topicName);
 
 	while (result == RETRYTOPIC_BIT && --limit > 0)
 	{
@@ -1555,7 +1557,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	if (!limit) ReportBug((char*)"Exceeded retry topic limit");
 	result = (FunctionResult)(result & (-1 ^ ENDTOPIC_BIT)); // dont propogate 
 	if (result & FAILTOPIC_BIT) result = FAILRULE_BIT; // downgrade
-	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) 
+	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE|TRACE_TOPIC) && CheckTopicTrace()) 
 		id = Log(STDTRACETABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
 
 	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(inverseStringDepth[globalDepth],locals);
@@ -2292,6 +2294,7 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 		sys = 0;
 		unsigned int parse= 0;
 		char word[MAX_WORD_SIZE];
+		*word = 0;
 		char name[MAX_WORD_SIZE];
 		char* ptr = readBuffer;
 		if (*readBuffer == '~' || endseen || *readBuffer == 'T') // concept, not-a-keyword, topic
@@ -2894,7 +2897,7 @@ int PushTopic(int topic) // -1 = failed  0 = unneeded  1 = pushed
         return -1;
     }
 	currentTopicID = topic; 
-  	if (trace & TRACE_TOPIC) Log(STDTRACELOG,(char*)"Pushing Topic %s\r\n",GetTopicName(topic));
+  	if (trace & TRACE_TOPIC) Log(STDTRACETABLOG,(char*)"Pushing Topic %s\r\n",GetTopicName(topic));
 	return 1;
 }
 
@@ -2902,7 +2905,7 @@ void PopTopic()
 {
 	if (topicIndex) 
 	{
- 		if (trace & TRACE_TOPIC) Log(STDTRACELOG,(char*)"Popping Topic %s\r\n",GetTopicName(currentTopicID));
+ 		if (trace & TRACE_TOPIC) Log(STDTRACETABLOG,(char*)"Popping Topic %s\r\n",GetTopicName(currentTopicID));
 		currentTopicID = topicStack[topicIndex--];
 	}
 	else currentTopicID = 0;	// no topic now

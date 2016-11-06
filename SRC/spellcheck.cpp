@@ -570,14 +570,14 @@ bool SpellCheckSentence()
 	return fixedSpell;
 }
 
-static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char* inputSet, int min,
+static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, unsigned char* inputSet, int min,
 		unsigned char realWordLetterCounts[LETTERMAX], int language)
 {//   dictword has no underscores, inputSet is already lower case
-    char dictw[MAX_WORD_SIZE];
-    MakeLowerCopy(dictw,D->word);
-    char* dictinfo = dictw;
-    char* dictstart = dictinfo;
-	char* inputstart = inputSet;
+    unsigned char dictw[MAX_WORD_SIZE];
+    MakeLowerCopy((char*)dictw,D->word);
+    unsigned char* dictinfo = dictw;
+    unsigned char* dictstart = dictinfo;
+	unsigned char* inputstart = (unsigned char*) inputSet;
     int val = 0; //   a difference in length will manifest as a difference in letter count
     //   how many changes  (change a letter, transpose adj letters, insert letter, drop letter)
     if (size != inputLen) 
@@ -618,8 +618,8 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
     }
 	
 	// now look at specific letter errors
-    char* dictend = dictinfo+size;
-    char* inputend = inputSet+inputLen;
+    unsigned char* dictend = dictinfo+size;
+    unsigned char* inputend = inputSet+inputLen;
 	count = 0;
     while (ALWAYS)
     {
@@ -680,7 +680,7 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 		}
         else if (*dictinfo == inputSet[1]) // current dict letter matches matches his next input letter, so maybe his input inserted a char here and need to delete it 
         {
-            char* prior = inputSet-1; // potential extraneous letter
+            char* prior = (char*) inputSet-1; // potential extraneous letter
             if (*prior == *inputSet) val += 5; // low cost for dropping an excess repeated letter - start of word is prepadded with 0 for prior char
             else if (*inputSet == '-') val += 3; //   very low cost for removing a hypen 
             else if (inputSet+1 == inputend && *inputSet == 's') val += 30;    // losing a trailing s is almost not acceptable
@@ -689,7 +689,7 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 		}
         else if (dictinfo[1] == *inputSet) // next dict leter matches current input letter, so maybe his input deleted a char here and needs to insert  it
         {
-            char* prior = (dictinfo == dictstart) ? (char*)" " : (dictinfo-1);
+            char* prior = (dictinfo == dictstart) ? (char*)" " : ((char*)(dictinfo-1));
             if (*dictinfo == *prior  && !IsVowel(*dictinfo )) val += 5; 
             else if (IsVowel(*dictinfo ))  val += 1; //  low cost for missing a vowel ( already charged for short input), might be a texting abbreviation
             else val += 9; // high cost for deleting a character, but not as much as changing it
@@ -758,7 +758,7 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 						dictinfo += 1;
 						continue;
 					}
-					if (*inputSet == 'x' && !strncmp(dictinfo,(char*)"ch",2)) 
+					if (*inputSet == 'x' && !strncmp((char*)dictinfo,(char*)"ch",2)) 
 					{
 						dictinfo += 2;
 						inputSet += 1;
@@ -767,7 +767,7 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 						if (val < 0) val = 0;
 						continue;
 					}
-					if (*inputSet == 'k' && !strncmp(dictinfo,(char*)"qu",2)) 
+					if (*inputSet == 'k' && !strncmp((char*)dictinfo,(char*)"qu",2)) 
 					{
 						dictinfo += 2;
 						inputSet += 1;
@@ -776,7 +776,7 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 						if (val < 0) val = 0;
 						continue;
 					}
-					if (*inputSet == 'o' && !strncmp(dictinfo,(char*)"do",2) && !inputSet[1] && !dictinfo[2]) // at end
+					if (*inputSet == 'o' && !strncmp((char*)dictinfo,(char*)"do",2) && !inputSet[1] && !dictinfo[2]) // at end
 					{
 						dictinfo += 2;
 						inputSet += 1;
@@ -785,7 +785,7 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 						if (val < 0) val = 0;
 						continue;
 					}
-					if (*inputSet == 'w' && !strncmp(dictinfo,(char*)"bue",3)) 
+					if (*inputSet == 'w' && !strncmp((char*)dictinfo,(char*)"bue",3)) 
 					{
 						dictinfo += 3;
 						inputSet += 1;
@@ -794,7 +794,7 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 						if (val < 0) val = 0;
 						continue;
 					}
-					if (*inputSet == 'w' && !strncmp(dictinfo,(char*)"vue",3)) 
+					if (*inputSet == 'w' && !strncmp((char*)dictinfo,(char*)"vue",3)) 
 					{
 						dictinfo += 3;
 						inputSet += 1;
@@ -803,7 +803,7 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 						if (val < 0) val = 0;
 						continue;
 					}
-					if (!strncmp(inputSet,(char*)"ll",2) && *dictinfo == 'y') 
+					if (!strncmp((char*)inputSet,(char*)"ll",2) && *dictinfo == 'y') 
 					{
 						inputSet += 2;
 						dictinfo += 1;
@@ -823,51 +823,51 @@ static int EditDistance(WORDP D, unsigned int size, unsigned int inputLen, char*
 					}
 				}
 
-				if (*inputSet == 't' && !strncmp(dictinfo,(char*)"ght",3)) 
+				if (*inputSet == 't' && !strncmp((char*)dictinfo,(char*)"ght",3)) 
 				{
                     dictinfo += 3;
                     inputSet += 1;
                     val += 5;  
 				}
-				else if (!strncmp(inputSet,(char*)"ci",2) && !strncmp(dictinfo,(char*)"cki",3)) 
+				else if (!strncmp((char*)inputSet,(char*)"ci",2) && !strncmp((char*)dictinfo,(char*)"cki",3)) 
 				{
                     dictinfo += 3;
                     inputSet += 2;
                     val += 5;
 				}
-				else if (*(dictinfo-1) == 'a' && !strcmp(dictinfo,(char*)"ir") && !strcmp(inputSet,(char*)"re")) // prepair prepare as terminal sound
+				else if (*(dictinfo-1) == 'a' && !strcmp((char*)dictinfo,(char*)"ir") && !strcmp((char*)inputSet,(char*)"re")) // prepair prepare as terminal sound
 				{
                     dictinfo += 2;
                     inputSet += 2;
                     val += 3;
 				}
-				else if (!strncmp(inputSet,(char*)"ous",3) && !strncmp(dictinfo,(char*)"eous",4)) 
+				else if (!strncmp((char*)inputSet,(char*)"ous",3) && !strncmp((char*)dictinfo,(char*)"eous",4)) 
 				{
                     dictinfo += 4;
                     inputSet += 3;
                     val += 5; 
                }
-              else if (!strncmp(inputSet,(char*)"of",2) && !strncmp(dictinfo,(char*)"oph",3)) 
+              else if (!strncmp((char*)inputSet,(char*)"of",2) && !strncmp((char*)dictinfo,(char*)"oph",3)) 
                {
                     dictinfo += 3;
                     inputSet += 2;
                     val += 5; 
                }
-			else if (*dictinfo == 'x' && !strncmp(inputSet,(char*)"cks",3)) 
+			else if (*dictinfo == 'x' && !strncmp((char*)inputSet,(char*)"cks",3)) 
                {
                     dictinfo += 1;
                     inputSet += 3;
                     val += 5; 
                }
-               else if (*inputSet == 'k' && !strncmp(dictinfo,(char*)"qu",2)) 
+               else if (*inputSet == 'k' && !strncmp((char*)dictinfo,(char*)"qu",2)) 
                {
                     dictinfo += 2;
                     inputSet += 1;
                     val += 5;  
                }
 			   if (oldval != val){;} // swallowed a multiple letter sound change
-               else if (!strncmp(dictinfo,(char*)"able",4) && !strncmp(inputSet,(char*)"ible",4)) swap = true;
-               else if (!strncmp(dictinfo,(char*)"ible",4) && !strncmp(inputSet,(char*)"able",4)) swap = true;
+               else if (!strncmp((char*)dictinfo,(char*)"able",4) && !strncmp((char*)inputSet,(char*)"ible",4)) swap = true;
+               else if (!strncmp((char*)dictinfo,(char*)"ible",4) && !strncmp((char*)inputSet,(char*)"able",4)) swap = true;
                else if (*dictinfo == 'a' && dictinfo[1] == 'y'     && *inputSet == 'e' && inputSet[1] == 'i') swap = true;
                else if (*dictinfo == 'e' && dictinfo[1] == 'a'     && *inputSet == 'e' && inputSet[1] == 'e') swap = true;
                else if (*dictinfo == 'e' && dictinfo[1] == 'e'     && *inputSet == 'e' && inputSet[1] == 'a') swap = true;
@@ -1054,7 +1054,7 @@ char* SpellFix(char* originalWord,int start,uint64 posflags,int language)
 			if (hasUnderscore && !under) continue;	 // require keep any underscore
 			if (!hasUnderscore && under) continue;	 // require not have any underscore
 			if (isUpper && !(D->internalBits & UPPERCASE_HASH) && start != 1) continue;	// dont spell check to lower a word in upper
-			int val = EditDistance(D, D->length, len, base+1,min,realWordLetterCounts,language);
+			int val = EditDistance(D, D->length, len, (unsigned char*)base+1,min,realWordLetterCounts,language);
 			if (val <= min) // as good or better
 			{
 				if (val < min)

@@ -25,7 +25,7 @@ static char encryptServer[200];
 static char decryptServer[200];
 
 // buffer information
-#define MAX_BUFFER_COUNT 22
+#define MAX_BUFFER_COUNT 30
 unsigned int maxInverseString = 0;
 unsigned int maxInverseStringGap = 0xffffffff;
 
@@ -40,8 +40,9 @@ static char* overflowBuffers[MAX_OVERFLOW_BUFFERS];	// malloced extra buffers if
 
 unsigned char memDepth[512];				// memory usage at depth
 char* inverseStringDepth[512];				// inverseString at start of depth
-static char* nameDepth[512];				// who are we?
-static char* ruleDepth[512];				// current rule
+static unsigned int stringDepth[512];				// string at start of depth
+char* nameDepth[512];				// who are we?
+char* ruleDepth[512];				// current rule
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
@@ -1025,7 +1026,8 @@ void BugBacktrace(FILE* out)
 	{
 		strncpy(rule,ruleDepth[i],50);
 		rule[50] = 0;
-		fprintf(out,"BugDepth %d: %s - %s\r\n",i,nameDepth[i],rule);
+		fprintf(out,"BugDepth %d: stringused: %d buffers:%d inverseused: %d %s - %s\r\n",
+			i,stringDepth[i],memDepth[i],stringFree - inverseStringDepth[globalDepth], nameDepth[i],rule);
 	}
 }
 
@@ -1044,12 +1046,13 @@ void ChangeDepth(int value,char* where)
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d inverse:%d\r\n",globalDepth, where, bufferIndex,stringInverseFree - stringInverseStart);
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d stringused: %d inverseused:%d\r\n",globalDepth, where, bufferIndex,stringBase - stringFree,stringInverseFree - stringInverseStart);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 		nameDepth[globalDepth] = where;
 		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
 		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
+		stringDepth[globalDepth] =  stringBase - stringFree;		
 	}
 	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
 	if (globalDepth >= 511) ReportBug((char*)"FATAL: globaldepth too deep at %s\r\n",where);
@@ -1201,18 +1204,26 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 				if (s) sprintf(at,(char*)"%s",s);
             }
             else if (*ptr == 'x') sprintf(at,(char*)"%x",(unsigned int)va_arg(ap,unsigned int)); // hex 
- 			else if (IsDigit(*ptr)) // int %2d
+ 			else if (IsDigit(*ptr)) // int %2d or %08x
             {
 				i = va_arg(ap,int);
 				unsigned int precision = atoi(ptr);
-				while (*ptr && *ptr != 'd') ++ptr;
-				if (precision == 2) sprintf(at,(char*)"%2d",i);
-				else if (precision == 3) sprintf(at,(char*)"%3d",i);
-				else if (precision == 4) sprintf(at,(char*)"%4d",i);
-				else if (precision == 5) sprintf(at,(char*)"%5d",i);
-				else if (precision == 6) sprintf(at,(char*)"%6d",i);
-				else sprintf(at,(char*)" Bad int precision %d ",precision);
-            }
+				while (*ptr && *ptr != 'd' && *ptr != 'x') ++ptr;
+				if (*ptr == 'd')
+				{
+					if (precision == 2) sprintf(at,(char*)"%2d",i);
+					else if (precision == 3) sprintf(at,(char*)"%3d",i);
+					else if (precision == 4) sprintf(at,(char*)"%4d",i);
+					else if (precision == 5) sprintf(at,(char*)"%5d",i);
+					else if (precision == 6) sprintf(at,(char*)"%6d",i);
+					else sprintf(at,(char*)" Bad int precision %d ",precision);
+				}
+				else
+				{
+					if (precision == 8) sprintf(at,(char*)"%08x",i);
+					else sprintf(at,(char*)" Bad hex precision %d ",precision);
+				}
+			}
             else
             {
                 sprintf(at,(char*)"%s",(char*)"unknown format ");
@@ -1281,7 +1292,12 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 				FreeBuffer();
 			}
 			fwrite(logbase,1,bufLen,bug);
-			if (!compiling && !loading) BugBacktrace(bug);
+			if (!compiling && !loading) 
+			{
+				fprintf(bug,(char*)"MinInverseStringGap %dMB MinStringAvailable %dMB\r\n",maxInverseStringGap/1000000,minStringAvailable/1000000);
+				fprintf(bug,(char*)"MaxBuffers used %d of %d\r\n\r\n",maxBufferUsed,maxBufferLimit);
+				BugBacktrace(bug);
+			}
 			fclose(bug); // dont use FClose
 
 		}

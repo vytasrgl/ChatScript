@@ -10,7 +10,7 @@ static bool curl_done_init = false;
 #define MAX_JSON_LABEL 50
 static char jsonLabel[MAX_JSON_LABEL+1];
 bool safeJsonParse = false;
-
+int jsonIdIncrement = 1;
 int jsonStore = 0; // where to put json fact refs
 int jsonIndex;
 int jsonOpenSize = 0;
@@ -19,7 +19,6 @@ bool jsonNoduplicate = false;
 bool jsonDuplicate = false;
 bool jsonDontKill = false;
 bool directJsonText = false;
-static int arraycnt = 0;
 static int objectcnt = 0;
 static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure,bool raw,bool nofail);
 static MEANING jcopy(WORDP D);
@@ -68,8 +67,8 @@ static int JSONArgs()
 
 void InitJSONNames()
 {
-	arraycnt = 0;
-	objectcnt = 0;
+	objectcnt = 0; // also for json arrays
+	jsonIdIncrement = 1;
 }
 
 MEANING GetUniqueJsonComposite(char* prefix) 
@@ -79,10 +78,12 @@ MEANING GetUniqueJsonComposite(char* prefix)
 	if (jsonPermanent == FACTTRANSIENT) permanence = "t";
 	while (1)
 	{
-		sprintf(namebuff, "%s%s%s%d", prefix,permanence, jsonLabel,objectcnt++);
+		sprintf(namebuff, "%s%s%s%d", prefix,permanence, jsonLabel,objectcnt);
+		objectcnt += jsonIdIncrement;
 		WORDP D = FindWord(namebuff);
 		if (!D) break;
 	}
+	jsonIdIncrement = 1; // return to linear hunting of open slots from here
 	return MakeMeaning(StoreWord(namebuff,AS_IS));
 }
 
@@ -189,6 +190,7 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken, MEANING *r
 		strncpy(str,jsontext + curr.start,size);
 		str[size] = 0;
 		*flags = JSON_STRING_VALUE; // string null
+		if (!PreallocateString(size)) return FAILRULE_BIT;
 		if (size == 0)  *retMeaning = MakeMeaning(StoreWord((char*)"null",AS_IS));
 		else  *retMeaning = MakeMeaning(StoreWord(str,AS_IS));
 		break;
@@ -717,7 +719,7 @@ FunctionResult JSONOpenCode(char* buffer)
 			if (*x) // empty json object should not be returned, will not survive on its own
 			{
 				WORDP X = FindWord(x);
-				if (X && X->subjectHead == NULL) 
+				if (X && X->subjectHead == 0) 
 					*buffer = 0; 
 			}
 		}
@@ -726,8 +728,8 @@ FunctionResult JSONOpenCode(char* buffer)
 	if (trace & TRACE_JSON)
 	{
 		Log(STDTRACELOG,(char*)"\r\n");
-		if (output.size > (MAX_BUFFER_SIZE - SAFE_BUFFER_MARGIN)) Log(STDTRACETABLOG,(char*)"\r\nJson response code: %d size: %dr\n",http_response,output.size);
-		else Log(STDTRACETABLOG,(char*)"\r\nJson response code: %d size: %d %s\r\n",http_response,output.size,output.buffer);
+		Log(STDTRACETABLOG,(char*)"\r\nJSON response: %d size: %d",http_response,output.size);
+		if (output.size < (MAX_BUFFER_SIZE - SAFE_BUFFER_MARGIN)) Log(STDTRACELOG,(char*)"%s\r\n",output.buffer);
 		Log(STDTRACETABLOG,(char*)"");
 	}
 
@@ -736,6 +738,7 @@ FunctionResult JSONOpenCode(char* buffer)
 
 FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 {
+	jsonIdIncrement = 1000; // fast hunt for a slot for names since this collection may be sizeable
 	*buffer = 0;
 	if (trace & TRACE_JSON) 
 	{
@@ -760,7 +763,7 @@ FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 	if (jtokenCount > 0) 
 	{
 		// Now run it with the right number of tokens
-		jsmntok_t *tokens = (jsmntok_t *)AllocateString(NULL,sizeof(jsmntok_t) * jtokenCount,1,false);
+		jsmntok_t *tokens = (jsmntok_t *)AllocateInverseString(NULL,sizeof(jsmntok_t) * jtokenCount);
 		if (!tokens) return FAILRULE_BIT;
 		jsmn_init(&parser);
 		jsmn_parse(&parser, message, size, tokens, jtokenCount);
@@ -769,7 +772,7 @@ FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 			int diff = ElapsedMilliseconds() - start_time;
 			if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Json parse time: %d ms\r\n", diff);
 		}
-
+		ReleaseInverseString((char*)tokens);
 		if (id != 0) // worked
 		{
 			WORDP D = Meaning2Word(id);
@@ -806,6 +809,7 @@ static int orderJsonArrayMembers(WORDP D, FACT** store,int limit)
 			int index = atoi(Meaning2Word(G->verb)->word);
 			if (index >= limit) 
 			{
+				ReportBug((char*)"array fact out of ordering range - %s sample: %s index %d limit %d value %s", D->word,index,limit,Meaning2Word(G->object)->word);
 				return -1; // cannot store this
 			}
 			store[index] = G;
@@ -817,7 +821,9 @@ static int orderJsonArrayMembers(WORDP D, FACT** store,int limit)
 	if (max > size || max < size) 
 	{
 		show = true;
-		ReportBug((char*)"Erased json array fact illegally previously %s max %d size %d", D->word,max,size);
+		G = GetSubjectNondeadHead(D);
+		char* info = (G) ? Meaning2Word(G->object)->word : (char*)"";
+		ReportBug((char*)"Erased json array fact illegally previously - %s sample: %s max %d size %d", D->word,info,max,size);
 		return -1;
 	}
 	return max + 1; // for the 0th value
@@ -1646,6 +1652,7 @@ FunctionResult JSONVariableAssign(char* word,char* value)
 	WORDP objectname = FindWord(val);
 	if (!objectname) 
 		return FAILRULE_BIT;	// doesnt exist?
+	WORDP base = FindWord(word);
 
 LOOP: // now we look at $x.key or $x[0]
 	*separator = c; // are we about to do .key or [array]
@@ -1725,7 +1732,12 @@ LOOP: // now we look at $x.key or $x[0]
 			bool jsonkill = false;
 			if (!G) jsonkill = true; // should never be true, since this fact counts
 			else if (!GetObjectNondeadNext(G)) jsonkill = true;
-			if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar kill: %s (%s)\r\n",variable,object->word);
+			if (trace & TRACE_VARIABLESET) 
+			{
+				char* recurse = (jsonkill) ? (char*)"recurse" : (char*)"once";
+				Log(STDTRACETABLOG,(char*)"JsonVar kill: %s %s ",variable,recurse);
+				TraceFact(F,true);
+			}
 			KillFact(F,jsonkill);
 
 			break;
@@ -1739,6 +1751,16 @@ LOOP: // now we look at $x.key or $x[0]
 		CreateFact(object, key,valx, flags);
 	}
 	if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s -> %s\r\n",variable,value);
+	
+	if (base->internalBits & MACRO_TRACE) 
+	{
+		char pattern[100];
+		char label[MAX_LABEL_SIZE];
+		char* ptr = GetPattern(currentRule,label,pattern,100);  // go to output
+		Log(ECHOSTDTRACELOG,"%s -> %s at %s.%d.%d %s %s\r\n",word,value, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),label,pattern);
+	}
+
+	
 	currentFact = NULL;	 // used up by putting into json
 	return NOPROBLEM_BIT;
 }

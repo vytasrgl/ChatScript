@@ -407,6 +407,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				if (*(ptr-1) != '\\') --level;
 				if (level == 0) 
 				{
+#ifndef DISCARDJSON
 					if (tokenControl & JSON_DIRECT_FROM_OOB) // allow full json no tokenlimit
 					{
 						ARGUMENT(1) = "TRANSIENT SAFE";
@@ -417,6 +418,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 						if (result == NOPROBLEM_BIT) words[count] = reuseAllocation(words[count],word); // insert json object
 						else words[count] = reuseAllocation(words[count],(char*)"bad json");
 					}
+#endif
 					return ptr + 1;
 				}
 			}
@@ -429,6 +431,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	{
 		if (*ptr == '(' || *ptr == ')' || *ptr == '[' || *ptr == ']' || *ptr == '{' || *ptr == '}'  || *ptr == ',' ) return ptr + 1;
 		bool quote = false;
+		--ptr;
 		while (*++ptr)
 		{
 			if (*ptr == '"' && *(ptr-1) != '\\') quote = !quote;
@@ -632,6 +635,15 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		if (W && (W->properties & PART_OF_SPEECH || W->systemFlags & PATTERN_WORD))  return stopper; // recognize word at more splits
 	}
 	char* start = ptr;
+	char token[MAX_WORD_SIZE];
+	ReadCompiledWord(start,token);
+	// see if we have 25,2015
+	size_t tokenlen = strlen(token);
+	if (tokenlen == 7 && IsDigit(token[0]) && IsDigit(token[1]) && token[2] == ',' && IsDigit(token[3]))
+		return ptr + 2;
+	if (tokenlen == 6 && IsDigit(token[0])  && token[1] == ',' && IsDigit(token[2])) // 2,2015
+		return ptr + 1;
+
 	// check for place number
 	char* place = ptr;
 	while (IsDigit(*place)) ++place;
@@ -698,14 +710,19 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				else if (next == '-' ) 
 					break; // the anyways-- break 
 			}
-			// number before things? 8months but not 24%  And dont split 1.23 or time words 10:30 and 30:20:20
-			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(c) && c != '%' && c != '.' && c != ':')
+			// number before things? 8months but not 24%  And dont split 1.23 or time words 10:30 and 30:20:20. dont break 6E
+			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(c) && c != '%' && c != '.' && c != ':' && ptr[1] && ptr[2] && ptr[1] != ' ' && ptr[2] != ' ')
 			{
 				if (c == 's' && ptr[1] == 't'){;} // 1st
 				else if (c == 'n' && ptr[1] == 'd'){;} // 2nd
 				else if (c == 'r' && ptr[1] == 'd'){;} // 3rd
 				else if (c == 't' && ptr[1] == 'h'){;} // 5th
-				else return ptr;
+				else // break apart known word but not single value or non-word
+				{
+					char word[MAX_WORD_SIZE];
+					ReadCompiledWord(ptr-1,word); // what is the word
+					if (FindWord(word,0)) return ptr; // we know this second word after the digit
+				}
 			}
 			if ( c == ']' || c == ')') break; //closers
 			if (ptr != start && IsDigit(*(ptr-1)) && IsWordTerminator(ptr[1]) && (c == '"' || c == '\'' )) break; // special markers on trailing end of numbers get broken off. 50' and 50" 
@@ -743,6 +760,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 	// nomodify is true on analyzing outputs into sentences, because user format may be fixed
     char* ptr = SkipWhitespace(input);
 	int count = 0;
+
 
 	if (tokenControl == UNTOUCHED_INPUT)
 	{
@@ -793,10 +811,12 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 	{
 		ptr = SkipWhitespace(ptr);
 		//test input added markers
-		if (*ptr == INPUTMARKER) 
+		if (*ptr == INPUTMARKER) // double opens single closes
 		{
 			++ptr;
-			break; // start or end of a sentence from ^input, do not include markers
+			if (*ptr != INPUTMARKER) break;	// closer
+			++ptr;
+			continue; // start or end of a sentence from ^input, do not include markers
 		}
 		if (!*ptr) break; 
 		if (!(tokenControl & TOKEN_AS_IS)) while (*ptr == ptr[1] && !IsAlphaUTF8OrDigit(*ptr)  && *ptr != '-' && *ptr != '.' && *ptr != '[' && *ptr != ']' && *ptr != '(' && 
@@ -1565,7 +1585,7 @@ void ProcessCompositeNumber()
 
     for (int i = FindOOBEnd(1); i <= wordCount; ++i) 
     {
-        bool isNumber = IsNumber(wordStarts[i]) && !IsPlaceNumber(wordStarts[i]) && !GetCurrency(wordStarts[i],number);
+        bool isNumber = IsNumber(wordStarts[i]) && !IsPlaceNumber(wordStarts[i]) && !GetCurrency((unsigned char*) wordStarts[i],number);
 		size_t len = strlen(wordStarts[i]);
         if (isNumber || (start == UNINIT && *wordStarts[i] == '-' && i < wordCount && IsDigit(*wordStarts[i+1]))) // is this a number or part of one
         {

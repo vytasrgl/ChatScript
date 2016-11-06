@@ -487,7 +487,7 @@ void DumpSentence(int start,int end)
 			else if (crole == CONJUNCT_PHRASE) strcat(buffer,(char*)"Phrase: ");
 			else strcat(buffer,(char*)"Sentence: ");
 			strcat(buffer,wordStarts[i]);
-			strcat(buffer,(char*)" ((char*)");
+			strcat(buffer,(char*)" (");
 			if (coordinates[i] && coordinates[coordinates[i]])
 			{
 				strcat(buffer,wordStarts[coordinates[coordinates[i]]]); // the before

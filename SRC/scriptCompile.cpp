@@ -3519,6 +3519,13 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 				if (--parenLevel != 0) BADSCRIPT((char*)"MACRO-5 bad closing paren in macro definition %s",macroName)
 				gettingArguments = false;
 				break;
+			case '$': // declaring local
+				if (word[1] != '_') BADSCRIPT((char*)"MACRO-? Variable name as argument must be local %s",word)
+				if (strchr(word,'.') || strchr(word,'[')) BADSCRIPT((char*)"MACRO-? Variable name as argument must be simple, not json reference %s",word)
+				AddDisplay(word);
+				strcpy(functionArguments[functionArgumentCount++],word);
+				if (functionArgumentCount > MAX_ARG_LIMIT)  BADSCRIPT((char*)"MACRO-7 Too many callArgumentList to %s - max is %d",macroName,MAX_ARG_LIMIT)
+				continue;
 			case '^':  //   declaring a new argument
 				if (IsDigit(word[1])) BADSCRIPT((char*)"MACRO-6 Function arguments must be alpha names, not digits like %s ",word)
 				restrict = strchr(word,'.');
@@ -3543,6 +3550,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 					WORDP X = FindWord(word);
 					if (X && X->internalBits & FUNCTION_NAME) BADSCRIPT((char*)"MACRO-8 Function argument %s is also name of a function",word);
 				}
+				AddDisplay(word);
 				strcpy(functionArguments[functionArgumentCount++],word);
 				if (functionArgumentCount > MAX_ARG_LIMIT)  BADSCRIPT((char*)"MACRO-7 Too many callArgumentList to %s - max is %d",macroName,MAX_ARG_LIMIT)
 				continue;

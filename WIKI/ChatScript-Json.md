@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 10/23/2016 cs6.86
+> Revision 11/5/2016 cs6.87
 
 
 # Real World JSON
@@ -329,7 +329,7 @@ You can delete every matching `VALUE` entry by adding the optional argument `ALL
 
 If the key has an existing value then if the value is a json object it will be
 recursively deleted provided its data is not referenced by some other fact (not by any variables). You can
-suppress this with the `SAFE` flag. `jsonarraydelete(SAFE $obj $key)`.
+suppress this with the `SAFE` flag. `^jsonarraydelete(SAFE $obj $key)`.
 
 
 ### `^jsonarraysize`( name ) 

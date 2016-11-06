@@ -34,8 +34,10 @@ extern int impliedSet;
 extern int impliedWild;
 extern char impliedOp;
 extern unsigned int userVariableIndex;
+extern unsigned int tracedFunctionsIndex;
 extern unsigned int botVariableIndex;
 extern WORDP userVariableList[MAX_USER_VARS];
+extern WORDP tracedFunctionsList[MAX_TRACED_FUNCTIONS];
 extern WORDP botVariableList[MAX_USER_VARS];
 extern char wildcardSeparator[2];
 

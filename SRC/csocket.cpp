@@ -1069,7 +1069,6 @@ static void* MainChatbotServer()
 
 		ServerGetChatLock();
 		startServerTime = ElapsedMilliseconds(); 
-		bool restarted = false;
 RESTART_RETRY:
 		// chatlock mutex controls whether server is processing data or client can hand server data.
 		// That we now have it means a client has data for us.
@@ -1099,15 +1098,10 @@ RESTART_RETRY:
 		// special controls
 		if (returnValue == PENDING_RESTART) // special messages
 		{
-			if (!restarted) 
-			{
-				Restart();
-				restarted = true;
-				Log(SERVERLOG,(char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
-				printf((char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
-				goto RESTART_RETRY;
-			}
-			strcpy(ourMainOutputBuffer,(char*)"Restart completed.");
+			Restart();
+			Log(SERVERLOG,(char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
+			printf((char*)"Server restarted - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
+			goto RESTART_RETRY;
 		}
 		*((int*)clientBuffer) = returnValue;
 	} // end try block on calling cs performchat

@@ -686,7 +686,7 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
 	uint64  systemFlags;			//   additional dictionary and non-dictionary properties
 	char*     word;					//   entry name
 	unsigned int internalBits;
-	unsigned int parseBits;	
+	unsigned int parseBits;			// only for words, not for function names or concept names
 
 	//   if you edit this, you may need to change ReadBinaryEntry and WriteBinaryEntry
 	union {
@@ -709,13 +709,13 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
           unsigned short topicIndex;	//   for a ~topic or %systemVariable or plan, this is its id
 		  unsigned short codeIndex;		//   for a system function, its the table index for it
 		  unsigned short debugIndex;	//   for a :test function, its the table index for it
-		  unsigned short macroFlags;	//	 for a table, these bits signify special handling of its arguments (1 bit per argument for 30 argument limit)
+		  unsigned short macroFlags;	//	 for a table, these bits signify special handling of its arguments (1 bit per argument for 16 argument limit)
     }x;
     unsigned short length;		//  length of the word
 	
-	unsigned int inferMark;		// no need to erase been here marker during marking facts, inferencing (for propogation) and during scriptcompile 
-
-    MEANING spellNode;			// next word of same length as this
+  	unsigned int inferMark;		// (functions use as trace control bits) no need to erase been here marker during marking facts, inferencing (for propogation) and during scriptcompile 
+ 
+    MEANING spellNode;			// next word of same length as this - not used for function names (time tracing bits go here) and concept names
   	unsigned int nextNode;		// bucket-link for dictionary hash + top bye GETMULTIWORDHEADER // can this word lead a phrase to be joined - can vary based on :build state -- really only needs 4 bits
 
 #ifndef DISCARDCOUNTER

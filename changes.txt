@@ -1,3 +1,11 @@
+Version 6.87
+1. Backtrace() to show calls to get to you
+2. :trace output ^function  --- you can control function tracing bits in detail
+3. ^pick(jsonarray or jsonboject) returns factid
+4. $xx.subject or $xx.verb or $xx.object if $xx has fact id
+5. %restart - can be set and then retrieved across a system restart (:restart)
+6. can use local vars in function definition: outputmacro: ^x($_arg1 $_myarg)
+
 version 6.86 10/23/2016
 1. ^delete now always succeeds. For undeletable things like text, it merely ignores it
 2. JSON_DIRECT_OOB tokencontrol for json that is too large for being a token

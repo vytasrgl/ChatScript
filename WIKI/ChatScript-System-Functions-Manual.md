@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 10/23/2016 cs6.86
+> Revision 11/5/2016 cs6.87
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -663,6 +663,9 @@ Failure will be reported for n out of range or `^fn` not in the call path.
 This is an alterative access to function variable arguments, 
 useful in a loop instead of having to access by variable name. 
 If `n` is `0`, the system merely tests whether the caller exists and fails if the caller is not in the path of this call.
+
+### `^backtrace`(  )
+Lists the sequence of topics and calls that got you to this point, one per line.
 
 ### `^command`( args )
 Execute this stream of arguments through the `:` command processor.
@@ -1561,6 +1564,10 @@ For a concept, if the member chosen is itself a concept, the system will recurse
 concept. If the argument to pick is a $ or _var, it will be evaluated and then pick will be
 tried on the result (but it won't recurse to try that again).
 
+If the argument is a JSON object it randomly picks a fact whose verb/object is a key-value pair. 
+If the argument is a JSON array, it randomly picks a fact whose verb is the index and whose object is the value.
+The fact id returned can be used with ^field or you can use something like $result.object to get the specific object.
+
 ### `^reset`( what ? )
 What can be user or topic or factset. If what is user, the system drops
 all history and starts the user afresh from first meeting (launching a new conversation),
@@ -1866,6 +1873,8 @@ Fields include: `subject`, `verb`, `object`, `flagsv, `all` (spread onto 3 match
 `all` just displays a human normal dictionary word, so if
 the value were actually `plants~1` you'd get just plants whereas raw would return what was
 actually there `plants~1`.
+
+You can also retrieve a field via `$$f.subject` or `$$f.verb` or `$$f.object`.
 
 ### `^find`( setname itemname )
 given a concept set, find the ordered position of the 2nd

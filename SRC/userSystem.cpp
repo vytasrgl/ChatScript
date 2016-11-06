@@ -420,6 +420,21 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 		sprintf(ptr,(char*)"$cs_trace=%d\r\n",trace);
 		ptr += strlen(ptr);
 	}
+
+	// now put out the function tracing bits
+	index = tracedFunctionsIndex;
+	while (index)
+    {
+        WORDP D = tracedFunctionsList[--index];
+		if (D->inferMark && D->internalBits & (FN_TRACE_BITS | NOTRACE_TOPIC | FN_TIME_BITS))
+		{
+			sprintf(ptr,(char*)"%s=%d %d\r\n",D->word,D->internalBits & (FN_TRACE_BITS | NOTRACE_TOPIC| FN_TIME_BITS),D->inferMark);
+			ptr += strlen(ptr);
+			D->inferMark = 0;	// turn off tracing now
+		}
+		D->internalBits &= -1 ^ (FN_TRACE_BITS | NOTRACE_TOPIC | FN_TIME_BITS);
+	 }
+
 	strcpy(ptr,(char*)"#`end variables\r\n");
 	ptr += strlen(ptr);
 	return ptr;
@@ -427,15 +442,34 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 
 static bool ReadUserVariables()
 {
+	tracedFunctionsIndex = 0;
 	while (ReadALine(readBuffer, 0)>= 0) //   user variables
 	{
-		if (*readBuffer != USERVAR_PREFIX) break; // end of variables
+		if (*readBuffer != USERVAR_PREFIX && *readBuffer != FUNCTIONVAR_PREFIX) break; // end of variables
         char* ptr = strchr(readBuffer,'=');
         *ptr = 0; // isolate user var name from rest of buffer
 		bool traceit = ptr[1] == '`';
 		if (traceit)  ++ptr;
-        SetUserVariable(readBuffer,RemoveEscapesWeAdded(ptr+1));
-		if (traceit) 
+		if (*readBuffer == '$') SetUserVariable(readBuffer,RemoveEscapesWeAdded(ptr+1));
+		else // tracing bits on a function
+		{
+			WORDP F = FindWord(readBuffer,LOWERCASE_LOOKUP);
+			if (F) 
+			{
+				char value[MAX_WORD_SIZE];
+				ptr = ReadCompiledWord(ptr+1,value);
+				int bits = atoi(value); // control flags
+				ptr = ReadCompiledWord(ptr,value);
+				int val = atoi(value); // which tracings
+				if (val || bits)
+				{
+					F->internalBits |= bits; // covers trace and time bits
+					F->inferMark = val;		// set its trace details bits
+					tracedFunctionsList[tracedFunctionsIndex++] = F;
+				}
+			}
+		}
+		if (traceit) // we are tracing this variable, turn on his flag
 		{ 
 			WORDP D = StoreWord(readBuffer);
 			PrepareVariableChange(D,"",false); // keep it alive as long as it is traced
@@ -574,6 +608,7 @@ void WriteUserData(time_t curr)
 		if (ptr) Cache(userDataBase,ptr-userDataBase);
 	}
 	userVariableIndex = 0; // flush all modified variables
+	tracedFunctionsIndex = 0;
 	ChangeDepth(-1,(char*)"WriteUserData");
 
 	if (timing & TIME_USER) {

@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 10/23/2016 cs6.86
+> Revision 11/5/2016 cs6.87
 
 
 * [Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
@@ -271,6 +271,7 @@ your server is in Virginia and you are in Colorado).
 | `%trace`            |  Numeric value of the trace flag (:trace to set) | 
 | `%httpresponse`     |  return code of most recent ^jsonopen call | 
 | `%pid`     |  Linux process id or 0 for other systems | 
+| `%restart`     |  You can set and retrieve a value here across a system restart. | 
 
 
 ## Build data+

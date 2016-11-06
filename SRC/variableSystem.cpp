@@ -23,11 +23,13 @@ char wildcardSeparator[2];
 
 //   list of active variables needing saving
 
+WORDP tracedFunctionsList[MAX_TRACED_FUNCTIONS];	
 WORDP userVariableList[MAX_USER_VARS];	// variables read in from user file
-WORDP botVariableList[MAX_USER_VARS];	// variables created by bot load
+WORDP botVariableList[MAX_USER_VARS];	
 static char* baseVariableValues[MAX_USER_VARS];
+unsigned int tracedFunctionsIndex;
 unsigned int userVariableIndex;
-unsigned int botVariableIndex;
+unsigned int botVariableIndex = 0;
 unsigned int modifiedTraceVal = 0;
 bool modifiedTrace = false;
 
@@ -35,7 +37,7 @@ void InitVariableSystem()
 {
 	*wildcardSeparator = ' ';
 	wildcardSeparator[1] = 0;
-	botVariableIndex = userVariableIndex = 0;
+	botVariableIndex = userVariableIndex = tracedFunctionsIndex = 0;
 }
 
 int GetWildcardID(char* x) // wildcard id is "_10" or "_3"
@@ -234,10 +236,13 @@ char* GetUserVariable(const char* word,bool nojson,bool fortrace)
 	int len = 0;
 	const char* separator = (nojson) ? (const char*) NULL : strchr(word,'.');
 	const char* bracket = (nojson) ? (const char*) NULL : strchr(word,'[');
+	if (!separator && bracket) separator = bracket;
 	if (bracket && bracket < separator) separator = bracket;	// this happens first
 	if (separator) len = separator - word;
 	bool localvar = strstr(word,"$_") != NULL; // local var anywhere in the chain?
     char* item = NULL;
+	char* answer;	
+	char path[MAX_WORD_SIZE];
     
 	WORDP D = FindWord((char*) word,len,LOWERCASE_LOOKUP);
     if (!D) { goto NULLVALUE; }	//   no such variable
@@ -252,25 +257,43 @@ char* GetUserVariable(const char* word,bool nojson,bool fortrace)
 		}
 	}
 	else if (!item) goto NULLVALUE; // null value normal
-	char index[20];
 
 	if (separator) // json object or array follows this
 	{
 		if (fortrace) localvar = false;	// dont allocate memory
-		char path[MAX_WORD_SIZE];
 		strcpy(path,item);
 LOOPDEEPER:
-		D = FindWord(item);
+		bool fact = false;
+		FACT* factvalue = NULL;
+		if (IsDigitWord(item) && (!strnicmp(separator,".subject",8) || !strnicmp(separator,".verb",5) ||!strnicmp(separator,".object",7)) ) // fact id?
+		{
+			int val = atoi(item);
+			factvalue = Index2Fact(val);
+			if (!factvalue) goto NULLVALUE;
+		}
+		else D = FindWord(item); // the basic item
 		if (!D) goto NULLVALUE;
-		if (*separator == '.' && strncmp(item,"jo-",3)) goto NULLVALUE; // cannot be dotted
 		if (*separator == '[' && strncmp(item,"ja-",3)) goto NULLVALUE; // cannot be indexed
+		if (*separator == '.' && strncmp(item,"jo-",3) && !factvalue) goto NULLVALUE; // cannot be dotted
+
+		// is there more later
 		char* separator1 =  (char*)strchr(separator+1,'.');	// more dot like $x.y.z?
-		char* bracket1 = (char*)strchr(separator+1,']');	// more [ like $x[y][z]?
+		char* bracket1 = (char*)strchr(separator+1,'[');	// more [ like $x[y][z]?
+		if (!bracket1) bracket1 = (char*)strchr(separator+1,']'); // is there a closer as final
+		if (bracket1 && !separator1) separator1 = bracket1;
 		if (bracket1 && bracket1 < separator1) separator1 = bracket1;
+
+		// get the label for this current separator
 		char* label = (char*)separator + 1;
 		len = (separator1) ? (separator1 - label) : 0;
 		WORDP key;
-		if (*separator == '.') // it is a key
+		if (factvalue) 
+		{
+			if (separator[1] == 's' || separator[1] == 'S') label = "subject"; 
+			else if (separator[1] == 'v' || separator[1] == 'V') label = "verb";
+			else label = "object";
+		}
+		else if (*separator == '.') // it is a key
 		{
 			key = FindWord(label,len,PRIMARY_CASE_ALLOWED); // case sensitive find
 			if (!key) goto NULLVALUE; // dont recognize such a name
@@ -286,12 +309,10 @@ LOOPDEEPER:
 		{
 			if (IsDigit(*label)) 
 			{
-				*separator1 = 0;
-				strcpy(index,label);
-				key = FindWord(label);
-				*separator1 = ']';
+				char* end = strchr(label,']');
+				key = FindWord(label,end-label);
 				if (!key) goto NULLVALUE;
-				label = index;
+				label = key->word;
 			}
 			else if (*label == '$') // indirect
 			{
@@ -307,6 +328,16 @@ LOOPDEEPER:
 		else strcat(path,"[");
 		strcat(path,label);
 		if (*separator != '.') strcat(path,"]");
+		if (factvalue) // $x.subject
+		{
+			if (separator[1] == 's' || separator[1] == 'S') answer = Meaning2Word(factvalue->subject)->word; 
+			else if (separator[1] == 'v' || separator[1] == 'V') answer = Meaning2Word(factvalue->verb)->word; 
+			else answer = Meaning2Word(factvalue->object)->word;
+			separator = separator1;
+			if (!separator) goto ANSWER;
+			item = item;
+			goto LOOPDEEPER;
+		}
 
 		FACT* F = GetSubjectNondeadHead(D);
 		MEANING verb = MakeMeaning(key);
@@ -314,38 +345,21 @@ LOOPDEEPER:
 		{
 			if (F->verb == verb) 
 			{
-				char* answer = Meaning2Word(F->object)->word;
+				answer = Meaning2Word(F->object)->word;
 				if (!strcmp(answer,"null")) 
 				{
 					item = "``";
 					return item + 2; // null value for locals
 				}
 				// does it continue?
-				if (separator1)
+				if (separator1 && *separator1 == ']') ++separator1; // after current key/index there is another
+				if (separator1 && *separator1) // after current key/index there is another
 				{
 					item = answer;
 					separator = separator1;
-					if (*separator == ']') 
-					{
-						++separator;
-						if (*separator != '.' && *separator != '[') goto NULLVALUE;
-					}
 					goto LOOPDEEPER;
 				}
-
-				if (localvar)
-				{
-					char* buffer = AllocateBuffer(); // cannot use  AllocateInverseString
-					strcpy(buffer,"``");
-					strcpy(buffer+2,answer);
-					char* ans = AllocateInverseString(buffer);
-					FreeBuffer();
-					if (!ans) return "``";	// if exhausted, return nothing
-					if (trace & TRACE_VARIABLE && !fortrace) Log(STDTRACELOG,"(%s->%s)",path,ans);
-					return ans + 2;
-				}
-				if (trace & TRACE_VARIABLE && !fortrace) Log(STDTRACELOG,"(%s->%s)",path,answer);
-				return answer;
+				goto ANSWER;
 			}
 			F = GetSubjectNondeadNext(F);
 		}
@@ -353,6 +367,21 @@ LOOPDEEPER:
 	}
 	return item;
  // OLD NO LONGER VALID? if item is in fact & there are problems   return (*item == '&') ? (item + 1) : item; //   value is quoted or not
+
+ANSWER:
+	if (localvar) 
+	{
+		char* buffer = AllocateBuffer(); // cannot use  AllocateInverseString
+		strcpy(buffer,"``");
+		strcpy(buffer+2,answer);
+		char* ans = AllocateInverseString(buffer);
+		FreeBuffer();
+		if (!ans) return "``";	// if exhausted, return nothing
+		if (trace & TRACE_VARIABLE && !fortrace) Log(STDTRACELOG,"(%s->%s)",path,ans);
+		return ans + 2;
+	}
+	if (trace & TRACE_VARIABLE && !fortrace) Log(STDTRACELOG,"(%s->%s)",path,answer);
+	return answer;
 
 NULLVALUE:
 	if (localvar)
@@ -471,7 +500,7 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 		char pattern[100];
 		char label[MAX_LABEL_SIZE];
 		char* ptr = GetPattern(currentRule,label,pattern,100);  // go to output
-		Log(ECHOSTDTRACELOG," Var: %s -> %s at topic %s.%d.%d %s %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),label,pattern);
+		Log(ECHOSTDTRACELOG,"%s -> %s at %s.%d.%d %s %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),label,pattern);
 	}
 }
 
@@ -593,6 +622,8 @@ void NoteBotVariables() // system defined variables
 	{
 		if (userVariableList[i]->word[1] != TRANSIENTVAR_PREFIX && userVariableList[i]->word[1] != LOCALVAR_PREFIX) // not a transient var
 		{
+			if (!strnicmp(userVariableList[i]->word,"$cs_",4)) continue; // dont force these, they are for user
+
 			botVariableList[botVariableIndex] = userVariableList[i];
 			baseVariableValues[botVariableIndex] = userVariableList[i]->w.userValue;
 			++botVariableIndex;
@@ -635,9 +666,7 @@ void DumpUserVariables()
 
 	
 	// Show the user variables in alphabetically sorted order.
-	WORDP *arySortVariablesHelper;
-
-	arySortVariablesHelper = (WORDP*) AllocateString(NULL,(userVariableIndex) ? userVariableIndex : 1, sizeof(WORDP));
+	WORDP *arySortVariablesHelper = (WORDP*) AllocateInverseString(NULL,((userVariableIndex) ? userVariableIndex : 1) * sizeof(WORDP));
 
 	// Load the array.
 	for (unsigned int i = 0; i < userVariableIndex; i++) arySortVariablesHelper[i] = userVariableList[i];
@@ -664,7 +693,7 @@ void DumpUserVariables()
 			else Log(STDTRACELOG, "  variable: %s = %s\r\n", D->word, value);
 		}
 	}
-	FreeBuffer();
+	ReleaseInverseString((char*) arySortVariablesHelper);
 }
 
 char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)

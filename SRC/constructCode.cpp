@@ -277,7 +277,12 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 	int limit = atoi(value);
 	if (limit == 0) limit = 1000;
 
-	if (counter > limit || counter < 0) counter = limit; //   LIMITED
+	bool infinite = false;
+	if (counter > limit || counter < 0) 
+	{
+		counter = limit; //   LIMITED
+		infinite = true; // loop is bounded by defaults
+	}
 	ChangeDepth(1,(char*)"HandleLoop");
 	while (counter-- > 0)
 	{
@@ -295,6 +300,7 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 		}
 	}
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"end of loop\r\n");
+	if (counter < 0 && infinite) ReportBug("Loop ran to limit");
 	ChangeDepth(-1,(char*)"HandleLoop");
 	--withinLoop;
 

@@ -9921,7 +9921,7 @@ void ParseSentence(bool &resolved,bool &changed)
 // http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/
 
 #ifdef WIN32
-//#pragma comment(lib, "../treetagger/tree-tagger.lib")
+#pragma comment(lib, "c:/ChatScript/treetagger/treetagger.lib")
 #endif
 
 typedef struct {
@@ -9949,7 +9949,7 @@ static void TreeTagger()
 	}
     ts.number_of_words = wordCount;
 	TagInit(); // prepare recipient
-//	tag_sentence(&ts);
+	tag_sentence(&ts);
     if (trace & TRACE_PREPARE) Log(STDTRACELOG,"External Tagging: ");
 
     /* The tagger output is printed */
@@ -9995,7 +9995,7 @@ void InitTreeTagger(char* params)
 	char* end = strchr(language,'"');
 	if (end) *end = 0;
 	language += 9;
-	// init_treetagger(language);  /* Initialization of the tagger with a language parameter file */
+	init_treetagger(language);  /* Initialization of the tagger with a language parameter file */
 	if (end) *end = ' ';
 
 	// read pos tags and assign value

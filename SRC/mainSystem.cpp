@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.86";
+char* version = "6.87";
 char sourceInput[200];
 bool pendingRestart = false;
 bool pendingUserReset = false;
@@ -46,12 +46,6 @@ char *evsrv_arg = NULL;
 unsigned short int derivationIndex[256];
 
 bool overrideAuthorization = false;
-
-#define MAX_TRACED_FUNCTIONS 50
-static char tracedFunctions[MAX_TRACED_FUNCTIONS][100];
-static unsigned int tracedFunctionsIndex = 0;
-static char timedFunctions[MAX_TRACED_FUNCTIONS][100];
-static unsigned int timedFunctionsIndex = 0;
 
 clock_t  startSystem;						// time chatscript started
 unsigned int choiceCount = 0;
@@ -197,14 +191,16 @@ void CreateSystem()
 	}
 	char data[MAX_WORD_SIZE];
 	char* kind;
+	int pid = 0;
 #ifdef EVSERVER
 	kind = "EVSERVER";
+	pid = getpid();
 #elif DEBUG
 	kind = "Debug";
 #else
 	kind = "Release";
 #endif
-	sprintf(data,(char*)"ChatScript %s Version %s  %ld bit %s compiled %s",kind,version,(long int)(sizeof(char*) * 8),os,compileDate);
+	sprintf(data,(char*)"ChatScript %s Version %s pid: %d %ld bit %s compiled %s",kind,version,pid,(long int)(sizeof(char*) * 8),os,compileDate);
 	strcat(data,(char*)" host=");
 	strcat(data,hostname);
 	if (server)  Log(SERVERLOG,(char*)"Server %s\r\n",data);
@@ -282,6 +278,7 @@ void CreateSystem()
 		NoteBotVariables(); // convert user variables read into bot variables
 		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
 		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
+		stringInverseFree = stringInverseStart; // drop any possible inverse used
 	}
 	InitSpellCheck(); // after boot vocabulary added
 
@@ -639,7 +636,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 #ifndef EVSERVER
 		GrabPort(); 
 #else
-		if (evsrv_init(interfaceKind, port, evsrv_arg) < 0)  exit(4); // additional params will apply to each child
+		printf("evcalled pid: %d\r\n",getpid());
+		if (evsrv_init(interfaceKind, port, evsrv_arg) < 0)  exit(4); // additional params will apply to each child and they will load data each
 #endif
 #ifdef WIN32
 		PrepareServer(); 
@@ -701,8 +699,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		Log(SERVERLOG, "\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
 		printf((char*)"\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
 #else
-		Log(SERVERLOG, "\r\n\r\n======== Began EV server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
-		printf((char*)"\r\n\r\n======== Began EV server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
+		Log(SERVERLOG, "\r\n\r\n======== Began EV server pid %d %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",getpid(),version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
+		printf((char*)"\r\n\r\n======== Began EV server pid %d  %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",getpid(),version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
 #endif
 	}
 	serverLog = oldserverlog;
@@ -778,68 +776,6 @@ void CloseSystem()
 #ifndef DISCARDJSON
 	CurlShutdown();
 #endif
-}
-
-static void CheckTracedFunction(WORDP D, uint64 junk)
-{
-	if (tracedFunctionsIndex >= MAX_TRACED_FUNCTIONS || !D->word) return;
-	if (*D->word == '^' && D->internalBits & FN_TRACE_BITS)
-	{
-		sprintf(tracedFunctions[tracedFunctionsIndex++],(char*)"%s %d",D->word,D->internalBits);
-	}
-	else if (*D->word == '~' && D->internalBits & NOTRACE_TOPIC) 
-	{
-		sprintf(tracedFunctions[tracedFunctionsIndex++],(char*)"%s %d",D->word,D->internalBits);
-	}
-}
-
-unsigned int SaveTracedFunctions()
-{
-	tracedFunctionsIndex = 0;
-	WalkDictionary(CheckTracedFunction,0);
-	return tracedFunctionsIndex;
-}
-
-static void RestoreTracedFunctions()
-{
-	for (unsigned int i = 0; i <  tracedFunctionsIndex; ++i)
-	{
-		char word[MAX_WORD_SIZE];
-		char* ptr = ReadCompiledWord(tracedFunctions[i],word);
-		WORDP D = FindWord(word);
-		if (D) D->internalBits |= (atoi(ptr) & (FN_TRACE_BITS | NOTRACE_TOPIC));
-	}
-}
-
-static void CheckTimedFunction(WORDP D, uint64 junk)
-{
-	if (timedFunctionsIndex >= MAX_TRACED_FUNCTIONS || !D->word) return;
-	if (*D->word == '^' && D->internalBits & FN_TIME_BITS)
-	{
-		sprintf(timedFunctions[timedFunctionsIndex++], (char*)"%s %d", D->word, D->internalBits);
-}
-	else if (*D->word == '~' && D->internalBits & NOTIME_TOPIC)
-	{
-		sprintf(timedFunctions[timedFunctionsIndex++], (char*)"%s %d", D->word, D->internalBits);
-	}
-}
-
-unsigned int SaveTimedFunctions()
-{
-	timedFunctionsIndex = 0;
-	WalkDictionary(CheckTimedFunction, 0);
-	return timedFunctionsIndex;
-}
-
-static void RestoreTimedFunctions()
-{
-	for (unsigned int i = 0; i < timedFunctionsIndex; ++i)
-	{
-		char word[MAX_WORD_SIZE];
-		char* ptr = ReadCompiledWord(timedFunctions[i], word);
-		WORDP D = FindWord(word);
-		if (D) D->internalBits |= (atoi(ptr) & (FN_TIME_BITS | NOTIME_TOPIC));
-	}
 }
 
 ////////////////////////////////////////////////////////
@@ -1509,9 +1445,6 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	inputRetryRejoinderRuleID = inputRejoinderRuleID;
 	lastInputSubstitution[0] = 0;
 
-	RestoreTracedFunctions();
-	RestoreTimedFunctions();
-
 	int ok = 1;
     if (!*incoming && !hadIncoming)  //   begin a conversation - bot goes first
 	{
@@ -1576,6 +1509,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 FunctionResult Reply() 
 {
 	callback =  (wordCount > 1 && *wordStarts[1] == OOB_START && (!stricmp(wordStarts[2],(char*)"callback") || !stricmp(wordStarts[2],(char*)"alarm") || !stricmp(wordStarts[2],(char*)"loopback"))); // dont write temp save
+	stringInverseFree = stringInverseStart;
 	withinLoop = 0;
 	choiceCount = 0;
 	callIndex = 0;
@@ -1772,7 +1706,7 @@ loopback:
 				WriteUserData(time(0)); 
 				ResetToPreUser(); // back to empty state before any user
 			}
-			return 0;	// nothing more can be done here.
+			return PENDING_RESTART;	// nothing more can be done here.
 		}
 		else if (result == FAILSENTENCE_BIT) // usually done by substituting a new input
 		{
@@ -1864,12 +1798,12 @@ retry:
 	if (trace & TRACE_INPUT) Log(STDTRACELOG,(char*)"\r\n\r\nInput: %s\r\n",input);
  	if (trace && sentenceRetry) DumpUserVariables(); 
 	PrepareSentence(nextInput,true,true,false,true); // user input.. sets nextinput up to continue
+	nextInput = SkipWhitespace(nextInput);
 
 	// set %more and %morequestion
 	moreToCome = moreToComeQuestion = false;	
 	if (!atlimit)
 	{
- 		nextInput = SkipWhitespace(nextInput);
 		char* at = nextInput-1;
 		while (*++at)
 		{
@@ -1955,6 +1889,7 @@ retry:
 
 void OnceCode(const char* var,char* function) //   run before doing any of his input
 {
+	stringInverseFree = stringInverseStart; // drop any possible inverse used
 	withinLoop = 0;
 	callIndex = 0;
 	topicIndex = currentTopicID = 0; 
@@ -2497,7 +2432,6 @@ int main(int argc, char * argv[])
 #endif
 	}
 	else FClose(in); 
-
 	if (InitSystem(argc,argv)) myexit((char*)"failed to load memory\r\n");
     if (!server) 
 	{

@@ -14,6 +14,7 @@ char* msgPtr = inputMessage;
 char response[30000];
 static 	HWND hwnd;
 char lastName[1000];
+UINT startid;
 
 int delays[] ={
 
@@ -291,22 +292,10 @@ retry:
 #include <direct.h>
 #define GetCurrentDir _getcwd
 
-VOID CALLBACK TimeCheck( HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime) // every 100 ms
+VOID CALLBACK TimeCheck( HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime) // every 50 ms
 {
 	char c;
-	static bool init = false;
 	static int inputCount = 0;
-	if (!init)
-	{
-		init = true;
-	//	char word[MAX_WORD_SIZE];
-	//	GetCurrentDir(word, MAX_WORD_SIZE);
-		InitChatbot(computerName);
-		RECT rect;
-		GetClientRect(hwnd, &rect);
-		InvalidateRect(hwnd, &rect, TRUE);
-		strcpy(response,"Chatbot initialization complete");
-	}
 
 	static int counter = 0;
 	++counter; // increament each timer interrupt, tracking how long since last key input from user
@@ -392,6 +381,22 @@ VOID CALLBACK TimeCheck( HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime) // 
 	}
 }
 
+VOID CALLBACK StartCheck( HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime) 
+{
+	KillTimer(hwnd,startid);
+	static bool init = false;
+	if (!init)
+	{
+		init = true;
+		InitChatbot(computerName);
+		RECT rect;
+		GetClientRect(hwnd, &rect);
+		InvalidateRect(hwnd, &rect, TRUE);
+		strcpy(response,"Chatbot initialization complete");
+		UINT id = SetTimer ( hwnd, 1, 50, TimeCheck ); // 50 ms timeouts
+	}
+}
+
 
 // Global Variables:
 HINSTANCE hInst;								// current instance
@@ -456,7 +461,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	GetClientRect(hwnd, &rect);
 	InvalidateRect(hwnd, &rect, TRUE);
 
-	UINT id = SetTimer ( hwnd, 1, 50, TimeCheck ); // 100 ms timeouts
+	startid = SetTimer ( hwnd, 1, 50, StartCheck ); 
 	strcpy(response,"Chatbot beginning initialization");
 
 	// Main message loop:
@@ -468,8 +473,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 	}
-
-	KillTimer( hwnd, id );
 
 	return 0;
 }

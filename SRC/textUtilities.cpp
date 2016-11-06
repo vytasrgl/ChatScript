@@ -792,16 +792,16 @@ char GetTemperatureLetter(char* ptr)
 	return 0;
 }
    
-char* GetCurrency(char* ptr,char* &number) // does this point to a currency token, return currency and point to number (NOT PROVEN its a number)
+unsigned char* GetCurrency(unsigned char* ptr,char* &number) // does this point to a currency token, return currency and point to number (NOT PROVEN its a number)
 {
 	if (*ptr == '$') // dollar is prefix
 	{
-		number = ptr+1;
+		number = ( char*)ptr+1;
 		return ptr;
 	}
 	else if (*ptr == 0xe2 && ptr[1] == 0x82 && ptr[2] == 0xac) // euro is prefix
 	{
-		number = ptr + 3; 
+		number = ( char*)ptr + 3; 
 		return ptr;
 	}
 	else if (*ptr == 0xc2) // yen is prefix
@@ -809,29 +809,29 @@ char* GetCurrency(char* ptr,char* &number) // does this point to a currency toke
 		char c = ptr[1];
 		if ( c == 0xa2 || c == 0xa3 || c == 0xa4 || c == 0xa5) 
 		{
-			number = ptr+2; 
+			number = ( char*)ptr+2; 
 			return ptr;
 		}
 	}
 	else if (*ptr == 0xc3 && ptr[1] == 0xb1 ) // british pound
 	{
-		number = ptr+2; 
+		number = ( char*)ptr+2; 
 		return ptr;
 	}
-	else if (!strnicmp(ptr,(char*)"yen",3) || !strnicmp(ptr,(char*)"eur",3) ||  !strnicmp(ptr,(char*)"inr",3) ||!strnicmp(ptr,(char*)"usd",3) || !strnicmp(ptr,(char*)"gbp",3) || !strnicmp(ptr,(char*)"cny",3)) 
+	else if (!strnicmp((char*)ptr,(char*)"yen",3) || !strnicmp((char*)ptr,(char*)"eur",3) ||  !strnicmp((char*)ptr,(char*)"inr",3) ||!strnicmp((char*)ptr,(char*)"usd",3) || !strnicmp((char*)ptr,(char*)"gbp",3) || !strnicmp((char*)ptr,(char*)"cny",3)) 
 	{
-		number = ptr + 3;
+		number = ( char*)ptr + 3;
 		return ptr;
 	}
 
 	if (IsDigit(*ptr))  // number first
 	{
-		char* at = ptr;
+		unsigned char* at = ptr;
 		while (IsDigit(*at) || *at == '.') ++at; // get end of number
 		if (*at == '$' ||   (*at == 0xe2 && at[1] == 0x82 && at[2] == 0xac)  || *at == 0xc2 || (*at == 0xc3 && at[1] == 0xb1 ) 
-			|| !strnicmp(at,(char*)"yen",3) || !strnicmp(at,(char*)"inr",3) || !strnicmp(at,(char*)"eur",3) || !strnicmp(at,(char*)"usd",3) || !strnicmp(at,(char*)"gbp",3) || !strnicmp(at,(char*)"cny",3)) // currency suffix
+			|| !strnicmp((char*)at,(char*)"yen",3) || !strnicmp((char*)at,(char*)"inr",3) || !strnicmp((char*)at,(char*)"eur",3) || !strnicmp((char*)at,(char*)"usd",3) || !strnicmp((char*)at,(char*)"gbp",3) || !strnicmp((char*)at,(char*)"cny",3)) // currency suffix
 		{
-			number = ptr;
+			number = ( char*)ptr;
 			return at;
 		}
 	}
@@ -872,7 +872,7 @@ bool IsDigitWord(char* ptr,bool comma) // digitized number
     if (IsNonDigitNumberStarter(*ptr)) ++ptr; //   skip numeric nondigit header (+ - # )
 	char* number = 0;
 	char* currency = 0;
-	if ((currency = GetCurrency(ptr,number))) ptr = number; // if currency, find number start of it
+	if ((currency = ( char*)GetCurrency((unsigned char*) ptr,number))) ptr = number; // if currency, find number start of it
     if (!*ptr) return false;
 
     bool foundDigit = false;
@@ -929,7 +929,7 @@ unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or wor
 	if (word[1] && (word[1] == ':' || word[2] == ':')) return false;	// 05:00 // time not allowed
  	
 	char* number = NULL;
-	char* cur = GetCurrency(word,number);
+	char* cur = (char*)GetCurrency((unsigned char*) word,number);
 	if (cur) 
 	{
 		char c = *cur;
@@ -1725,7 +1725,7 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
     // close with ending quote
     *buffer = ender;	
     *++buffer = 0; 
-	return ptr+1;		// after the quote end
+	return (ptr[1] == ' ') ? (ptr+2) : (ptr+1); // after the quote end and any space
 }
 
 char* ReadArgument(char* ptr, char* buffer) //   looking for a single token OR a list of tokens balanced - insure we start non-space
@@ -1845,6 +1845,8 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 	else 
 	{
 		bool quote = false;
+		bool bracket = false;
+		char priorchar = 0;
 		while ((c = *ptr++) && c != ENDUNIT) 
 		{
 			if (quote) {}
@@ -1854,13 +1856,20 @@ char* ReadCompiledWord(char* ptr, char* word,bool noquote,bool var)
 
 			if (special) // try to end a variable if not utf8 char or such
 			{
-				if (special == '$' && (c == '.' ||c == '['|| c == ']') && (LegalVarChar(*ptr) || *ptr == '$' || *ptr == ']' ||  *ptr == '[')) {;} // not a trailing .
-				else if ( !IsAlphaUTF8OrDigit(c) && c != special && c != '_' && c != '-' && c == '['&& c == ']') break;
+				if (special == '$' && (c == '.' || c == '[') && (LegalVarChar(*ptr) || *ptr == '$' )) {;} // legal data following . or [
+				else if (special == '$' &&  c == ']' && bracket) {;} // allowed trailing array close
+				else if (special == '$' && c == '$' && (priorchar == '.' || priorchar == '[' || priorchar == '$' || priorchar == 0)){;} // legal start of interval variable or transient var continued
+				else if ((special == '%' || special == '_' || special == '@') && priorchar == 0) {;}
+				else if (!LegalVarChar(c)) 
+					break;
+				if (c == '[' && !bracket) bracket = true;
+				else if (c == ']' && bracket) bracket = false;
 			}
 
 			if ((word-original) > (MAX_WORD_SIZE - 3)) break;
 			*word++ = c; //   run til nul or blank or end of rule 
 			if ((word-original) > (MAX_WORD_SIZE-3)) break; // abort, too much jammed together (happens with simplepedia.xml)
+			priorchar = c;
 		}
 	}
 	*word = 0; //   null terminate word

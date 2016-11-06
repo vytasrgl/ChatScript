@@ -333,7 +333,7 @@ QUERY: direct_s<v	"1'is.t 1'member.t 2s<1e 3vq: queue v: match s2"
 
 
 # want a fact matching subject, verb, and object is some scan member of object
-QUERY: direct_svo<	"1'member.t 2s 3vq 4ot: queue_v:match s2o4"
+QUERY: direct_svo<	"1'member.t 2st 3vq 4ot: queue_v:match s2o4"
 # 1: tag member as 1. tag subject as 2. Queue the verb tagged 3.
 # 2: Use verb field facts from queued words.
 # 3: If the subject field of fact is taged with 2, and object field scans to a match with 3, we win

@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 10/23/2016 cs6.86</p>
+<p>Revision 11/5/2016 cs6.87</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
@@ -375,6 +375,8 @@ t: () name(xxx ) # explicitly add an empty pattern</code></pre>
 <p>Retrieves the nth argument of the calling outputmacro (1-based).</p>
 <h3 id="argument-n-fn"><code>^argument</code>( n <code>^fn</code> )</h3>
 <p>Looks backward in the callstack for the named outputmacro, and if found returns the nth argument passed to it. Failure will be reported for n out of range or <code>^fn</code> not in the call path. This is an alterative access to function variable arguments, useful in a loop instead of having to access by variable name. If <code>n</code> is <code>0</code>, the system merely tests whether the caller exists and fails if the caller is not in the path of this call.</p>
+<h3 id="backtrace"><code>^backtrace</code>( )</h3>
+<p>Lists the sequence of topics and calls that got you to this point, one per line.</p>
 <h3 id="command-args"><code>^command</code>( args )</h3>
 <p>Execute this stream of arguments through the <code>:</code> command processor. You can execute debugging commands through here. E.g.,</p>
 <pre><code>^command(:execute ^print(&quot;Hello&quot;) )</code></pre>
@@ -879,6 +881,7 @@ integer floatnumber generate integer if float is exact integer</code></pre>
 <p>If what is a fact set like <code>@1</code>, length returns how many facts are in the set. If what is a word, length counts its characters. If what is a concept set, length returns a count of the top level (nonrecursive) members. If the name of a json array or object, returns how many top level elements it has.</p>
 <h3 id="pick-what"><code>^pick</code>( what )</h3>
 <p>Retrieve a random member of the concept if what is a concept. Pick is also used with factsets to pick a random fact (see FACTS MANUAL). For a concept, if the member chosen is itself a concept, the system will recurse to pick randomly from that concept. If the argument to pick is a $ or _var, it will be evaluated and then pick will be tried on the result (but it won't recurse to try that again).</p>
+<p>If the argument is a JSON object it randomly picks a fact whose verb/object is a key-value pair. If the argument is a JSON array, it randomly picks a fact whose verb is the index and whose object is the value. The fact id returned can be used with ^field or you can use something like $result.object to get the specific object.</p>
 <h3 id="reset-what"><code>^reset</code>( what ? )</h3>
 <p>What can be user or topic or factset. If what is user, the system drops all history and starts the user afresh from first meeting (launching a new conversation), having erased the user topic file. If what is a factset, the &quot;next&quot; pointer for walking the set is reset back to the beginning. If what is a topic, all rules are re-enabled and all last accessed values are reset to 0.</p>
 <h1 id="fact-functions">FACT FUNCTIONS</h1>
@@ -1030,6 +1033,7 @@ concept: ~canine (dog)</code></pre>
 <p><code>^field( $$f object)</code> returns a number <code>(the fact index)</code> and <code>^field($$f Object)</code> returns <code>(he eats beer)</code> as the translation of the fact into text.</p>
 <p>Fields include: <code>subject</code>, <code>verb</code>, <code>object</code>, <code>flagsv,</code>all` (spread onto 3 match variables, raw (spread onto 3 match variables).</p>
 <p><code>all</code> just displays a human normal dictionary word, so if the value were actually <code>plants~1</code> you'd get just plants whereas raw would return what was actually there <code>plants~1</code>.</p>
+<p>You can also retrieve a field via <code>$$f.subject</code> or <code>$$f.verb</code> or <code>$$f.object</code>.</p>
 <h3 id="find-setname-itemname"><code>^find</code>( setname itemname )</h3>
 <p>given a concept set, find the ordered position of the 2nd argument within it. ^Output that index. Used, for example, to compare two poker hands.</p>
 <h3 id="findmarkedfact-subject-verb-mark"><code>^findmarkedfact</code>( subject verb mark )</h3>

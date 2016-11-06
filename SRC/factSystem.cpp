@@ -1096,7 +1096,7 @@ static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead)
 			if (answer[len-1] == '"') quoted = true;
 		}
 		bool embeddedbacktick = strchr(answer,'`') ? true : false;
-		bool embeddedspace = !quoted && strchr(answer,' ')  || strchr(answer,'(') || strchr(answer,')'); // does this need protection? blanks or function call maybe
+		bool embeddedspace = !quoted && (strchr(answer,' ')  || strchr(answer,'(') || strchr(answer,')')); // does this need protection? blanks or function call maybe
 		bool safe = true; 
 		if (strchr(answer,'\n') || strchr(answer,'\r') || strchr(answer,'\t') || strchr(answer,'\\') || strchr(answer,'/')) safe = false;
 		// json must protect: " \ /  nl cr tab  we are not currently protecting bs ff

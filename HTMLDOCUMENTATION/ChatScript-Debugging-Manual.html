@@ -13,9 +13,9 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 9/25/2016 cs6.84</p>
+<p>Revision 11/5/2016 cs6.87</p>
 </blockquote>
-<p>You’ve written script. It doesn’t work. Now what? Now you need to debug it, fix it, and recompile it. Debugging is mostly a matter of tracing what the system does testpaand finding out where it doesn’t do what you expected. Debugging mostly done by issuing commands to the engine, as opposed to chatting.</p>
+<p>You've written script. It doesn't work. Now what? Now you need to debug it, fix it, and recompile it. Debugging is mostly a matter of tracing what the system does testpaand finding out where it doesn't do what you expected. Debugging mostly done by issuing commands to the engine, as opposed to chatting.</p>
 <p>If the system detects bugs during execution, they go into <code>TMP/bugs.txt</code> You can erase the entire contents of the TMP directory a:trny time you want to. But odds are this is not your problem. Debugging generally requires use of some :xxxx commands. I don't always remember them all, so at times I might simply say</p>
 <pre><code>:commands</code></pre>
 <p>to get a list of the commands and a rough description. All commands can be written in full, or most can be abbreviated using <code>:firstletterlastletter</code>, eg <code>:build</code> can be :<code>bd</code></p>
@@ -41,7 +41,7 @@
 <p>The most common issue is that ChatScript will munge with your input in various ways so you don't submit what you think you are submitting. The substitutions files will change words or phrases. Spell correction will change words. Proper name and number merging will adjust words. And individual words of yours will be merged into single words if WordNet lists them as a multiple-word (like <em>TV_star</em>) . So you really need to see what your actual input ended up being before you can tell if your pattern was correct or not. Thus the most common debug command is <code>:prepare</code>.</p>
 <h2 id="most-useful-debug-commands">Most Useful Debug Commands</h2>
 <h3 id="prepare-this-is-my-sample-input"><code>:prepare</code> <em>this is my sample input</em></h3>
-<p>This shows you how the system will tokenize a sentence and what concepts it matches. It’s what the system does to prepare to match topics against your input. From that you can deduce what patterns would match and what topics might be invoked.</p>
+<p>This shows you how the system will tokenize a sentence and what concepts it matches. It's what the system does to prepare to match topics against your input. From that you can deduce what patterns would match and what topics might be invoked.</p>
 <p>If you give no arguments to prepare, it just turns on a prepare trace for all future inputs which disables actually responding. Not usually what you want.</p>
 <p>There is an optional first argument to <code>:prepare</code>, which is a variable. If given it indicates the <code>$cs_token</code> value to use for preparation. E.g</p>
 <pre><code>:prepare $mytoken this is a sentence.</code></pre>
@@ -56,27 +56,26 @@
 <h3 id="trace-all"><code>:trace</code> <em>all</em></h3>
 <h3 id="trace-always"><code>:trace</code> <em>always</em></h3>
 <h3 id="trace-none"><code>:trace</code> <em>none</em></h3>
-<p>The ultimate debugging command dumps a trace of everything that happens during execution onto screen and into the log file. After entering this, you type in your chat and watch what happens (which also gets dumped into the current log file). Problem is, it’s potentially a large trace. You really want to be more focused in your endeavor.</p>
+<p>The ultimate debugging command dumps a trace of everything that happens during execution onto screen and into the log file. After entering this, you type in your chat and watch what happens (which also gets dumped into the current log file). Problem is, it's potentially a large trace. You really want to be more focused in your endeavor.</p>
 <p>But ignoring that, <code>:trace all</code> turns on all tracing. It can be suppressed in areas of code executing within <code>^NOTRACE()</code>.</p>
 <p><code>:trace always</code> ignores ^notrace protection and traces everything.</p>
 <p><code>:trace ignorenotrace</code> allows you to use the limited traces below, and still ignore NOTRACE covered calls.</p>
-<h3 id="trace-education"><code>:trace</code> <em>~education</em></h3>
-<p>this enables tracing for this topic and all the topics it calls. Call it again to restore to normal. This is probably what you need usually to see what went wrong. You know the code you expected to execute, so monitor the topic it is in.</p>
-<h3 id="trace-notthis-education"><code>:trace</code> <em>notthis ~education</em></h3>
-<p>disables tracing for this topic and all topics it calls recursively.</p>
 <h3 id="trace-myfunction"><code>:trace</code> <em>^myfunction</em></h3>
 <p>this enables tracing for the function. Call it again to restore to normal.</p>
 <h3 id="trace-var"><code>:trace</code> <em>$var</em></h3>
 <p>this enables tracing when this variable changes. Local variables only show a trace during the current volley. Global variables show a trace across volleys.</p>
+<h3 id="trace-education"><code>:trace</code> <em>~education</em></h3>
+<p>this enables tracing for this topic and all the topics it calls. Call it again to restore to normal. This is probably what you need usually to see what went wrong. You know the code you expected to execute, so monitor the topic it is in.</p>
 <h3 id="trace-education-1"><code>:trace</code> <em>!~education</em></h3>
 <p>this disables current tracing for this topic and all the topics it calls when <code>:trace all</code> is running. Call it again to restore to normal.</p>
-<h3 id="trace-education.school"><code>:trace</code> <em>~education.school</em></h3>
-<p>this traces all top-level rules in <code>~education</code> that you named school (and its rejoinders and anything it calls. Call it again to turn off the trace.</p>
 <p>Similarly you can do</p>
 <h3 id="trace-education.4.5"><code>:trace</code> <em>~education.4.5</em></h3>
 <p>which says to trace just the 4th top level rule in <code>~education</code>, rejoinder # 5. The above defaults to tracing everything while in that topic. You can specify what you want to trace by naming trace values and then the topic.</p>
 <h3 id="trace-prepare-basic-facts-education"><code>:trace</code> <em>prepare basic facts ~education</em></h3>
 <p>The above will turn on a bunch of trace values and then assign them to the topic, clearing the trace values.</p>
+<h3 id="trace-prepare-basic-facts-myfunc"><code>:trace</code> <em>prepare basic facts ^myfunc</em></h3>
+<p>The above will turn on a bunch of trace values and then assign them to the function, clearing the trace values.</p>
+<p>Note: If you want to set a regular trace value and a topic and/or function, the regular trace values must occur last, after all topic and function traces.</p>
 <h3 id="trace-factcreate-subject-verb-object"><code>:trace</code> <em>factcreate subject verb object</em></h3>
 <p>subject, verb, and object name values of those fields. You can use null when you don't want to name a value. This trace will show whenever facts matching this template are created. You can insert a trace command in the data of a table declaration, to trace a table being built (the log file will be from the build in progress). E.g.,</p>
 <pre><code>table: ~capital (^base ^city)
@@ -97,7 +96,7 @@ RAWDATA/simpletopic.top # things we can chat about
 …
 :trace all</code></pre>
 <p>Tracing is also good in conjunction with some other commands that give you a restricted view. You can name tracing options by subtraction. E.g.,</p>
-<pre><code>:trace all – infer – pattern</code></pre>
+<pre><code>:trace all -infer -pattern</code></pre>
 <p>When I'm doing a thorough trace, I usually do :trace all – query because I want to see fact searches but only need the answers and not all the processing the query did. Note, if you want tracing to start at startup, when you don't have control, login with a botname of trace. E.g, at the login type:</p>
 <pre><code>john:trace</code></pre>
 <p>This will turn on all tracing. <code>:trace</code> also has individual collections and items it can trace. If you just say :trace you get a listing of things.</p>
@@ -228,7 +227,7 @@ RAWDATA/simpletopic.top # things we can chat about
 </tbody>
 </table>
 <p>Example:</p>
-<pre><code>:trace all –query -infer</code></pre>
+<pre><code>:trace all -query -infer</code></pre>
 <p>If you want to trace a topic in a limited manner, set the limits before naming the topic:</p>
 <pre><code>:trace pattern pos ~mytopic</code></pre>
 <p>The system will set the limits, then upon hitting the topic name, swallow them to be used for that topic. This means you can do multiple topics and global limits in one command:</p>
@@ -257,8 +256,8 @@ RAWDATA/simpletopic.top # things we can chat about
 <p>measures milliseconds taken by topics and functions for performance analysis. Just type :time to see keywords.</p>
 <p><code>:time all</code> turns on timing everywhere</p>
 <p>It is similar to <code>:trace</code> (using several of the same keywords) and can be used to limit to just certain topics/rules and ^macros. A simple <code>:time</code> will list those keywords.</p>
-<p>Note the time output is only shown in the user’s log file and is not echoed to the console.</p>
-<p>By default items that don’t take any time will not be shown, but this can be overridden by <code>:time always</code></p>
+<p>Note the time output is only shown in the user's log file and is not echoed to the console.</p>
+<p>By default items that don't take any time will not be shown, but this can be overridden by <code>:time always</code></p>
 <h3 id="notime"><code>:notime</code></h3>
 <p>disables timing for some topic or functions</p>
 <h3 id="timedtopics"><code>:timedtopics</code></h3>

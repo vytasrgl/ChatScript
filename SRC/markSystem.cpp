@@ -715,18 +715,18 @@ void MarkAllImpliedWords()
 
 			// special currency property
 			char* number;
-			char* currency = GetCurrency(wordStarts[i],number); 
+			unsigned char* currency = GetCurrency((unsigned char*) wordStarts[i],number); 
 			if (currency) 
 			{
 				char tmp[MAX_WORD_SIZE];
-				strcpy(tmp,currency);
+				strcpy(tmp,(char*) currency);
 				MarkFacts(Mmoney,i,i); 
-				if (*currency == '$' || !strnicmp(currency,(char*)"usd",3)) MarkFacts(Musd,i,i);
-				else if ( !strnicmp(currency,(char*)"inr",3)) MarkFacts(Minr,i,i);
-				else if ((*currency == 0xe2 && currency[1] == 0x82 && currency[2] == 0xac) || !strnicmp(currency,(char*)"eur",3)) MarkFacts(Meur,i,i);
-				else if ((*currency == 0xc2 && currency[1] == 0xa5) || !strnicmp(currency,(char*)"yen",3)) MarkFacts(Myen,i,i);
-				else if ((*currency == 0xc2 && currency[1] == 0xa3 ) || !strnicmp(currency,(char*)"gbp",3)) MarkFacts(Mgbp,i,i);
-				else if (!strnicmp(currency,(char*)"cny",3) ) MarkFacts(Mcny,i,i);
+				if (*currency == '$' || !strnicmp((char*)currency,(char*)"usd",3)) MarkFacts(Musd,i,i);
+				else if ( !strnicmp((char*)currency,(char*)"inr",3)) MarkFacts(Minr,i,i);
+				else if ((*currency == 0xe2 && currency[1] == 0x82 && currency[2] == 0xac) || !strnicmp((char*)currency,(char*)"eur",3)) MarkFacts(Meur,i,i);
+				else if ((*currency == 0xc2 && currency[1] == 0xa5) || !strnicmp((char*)currency,(char*)"yen",3)) MarkFacts(Myen,i,i);
+				else if ((*currency == 0xc2 && currency[1] == 0xa3 ) || !strnicmp((char*)currency,(char*)"gbp",3)) MarkFacts(Mgbp,i,i);
+				else if (!strnicmp((char*)currency,(char*)"cny",3) ) MarkFacts(Mcny,i,i);
 			}
 		}
 	

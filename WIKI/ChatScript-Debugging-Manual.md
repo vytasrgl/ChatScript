@@ -3,11 +3,11 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 9/25/2016 cs6.84
+> Revision 11/5/2016 cs6.87
 
-You’ve written script. It doesn’t work. Now what? Now you need to debug it, fix it, and
+You've written script. It doesn't work. Now what? Now you need to debug it, fix it, and
 recompile it. Debugging is mostly a matter of tracing what the system does testpaand
-finding out where it doesn’t do what you expected. Debugging mostly done by issuing
+finding out where it doesn't do what you expected. Debugging mostly done by issuing
 commands to the engine, as opposed to chatting.
 
 If the system detects bugs during execution, they go into `TMP/bugs.txt` 
@@ -92,7 +92,7 @@ Thus the most common debug command is `:prepare`.
 
 ### `:prepare` *this is my sample input*
 This shows you how the system will tokenize a sentence and what concepts it matches.
-It’s what the system does to prepare to match topics against your input. From that you
+It's what the system does to prepare to match topics against your input. From that you
 can deduce what patterns would match and what topics might be invoked.
 
 If you give no arguments to prepare, it just turns on a prepare trace for all future inputs
@@ -133,7 +133,7 @@ need tracing.
 ### `:trace` _none_
 The ultimate debugging command dumps a trace of everything that happens during
 execution onto screen and into the log file. After entering this, you type in your chat and
-watch what happens (which also gets dumped into the current log file). Problem is, it’s
+watch what happens (which also gets dumped into the current log file). Problem is, it's
 potentially a large trace. You really want to be more focused in your endeavor.
 
 But ignoring that, `:trace all` turns on all tracing. It can be suppressed in areas of code
@@ -144,14 +144,6 @@ executing within `^NOTRACE()`.
 `:trace ignorenotrace` allows you to use the limited traces below, and still
 ignore NOTRACE covered calls.
 
-### `:trace` _~education_
-this enables tracing for this topic and all the topics it calls. Call it
-again to restore to normal. This is probably what you need usually to see what went
-wrong. You know the code you expected to execute, so monitor the topic it is in.
-
-### `:trace` _notthis ~education_ 
-disables tracing for this topic and all topics it calls recursively.
-
 ### `:trace` _^myfunction_
 this enables tracing for the function. Call it again to restore to
 normal.
@@ -160,12 +152,14 @@ normal.
 this enables tracing when this variable changes. Local variables only show
 a trace during the current volley. Global variables show a trace across volleys.
 
+### `:trace` _~education_
+this enables tracing for this topic and all the topics it calls. Call it
+again to restore to normal. This is probably what you need usually to see what went
+wrong. You know the code you expected to execute, so monitor the topic it is in.
+
 ### `:trace` _!~education_
 this disables current tracing for this topic and all the topics it calls
 when `:trace all` is running. Call it again to restore to normal.
-
-### `:trace` _~education.school_
-this traces all top-level rules in `~education` that you named school (and its rejoinders and anything it calls. Call it again to turn off the trace.
 
 Similarly you can do
 
@@ -177,6 +171,13 @@ want to trace by naming trace values and then the topic.
 ### `:trace` _prepare basic facts ~education_
 The above will turn on a bunch of trace values and then assign them to the topic, clearing
 the trace values.
+
+### `:trace` _prepare basic facts ^myfunc_
+The above will turn on a bunch of trace values and then assign them to the function, clearing
+the trace values.
+
+Note: If you want to set a regular trace value and a topic and/or function, the regular trace values
+must occur last, after all topic and function traces.
 
 ### `:trace` _factcreate subject verb object_
 subject, verb, and object name values of those fields. You can use null when you don't want to name a value. This trace will show whenever facts matching this template are created.
@@ -210,7 +211,7 @@ topic: foo […]
 Tracing is also good in conjunction with some other commands that give you a restricted
 view. You can name tracing options by subtraction. E.g.,
 ```
-:trace all – infer – pattern
+:trace all -infer -pattern
 ```
 When I'm doing a thorough trace, I usually do :trace all – query because I want to see fact searches but only need the answers and not all the processing the query did.
 Note, if you want tracing to start at startup, when you don't have control, login with a
@@ -264,7 +265,7 @@ add more in another call. Here are things you can trace:
 
 Example:
 ```
-:trace all –query -infer
+:trace all -query -infer
 ```
 If you want to trace a topic in a limited manner, set the limits before naming the topic:
 ```
@@ -325,9 +326,9 @@ measures milliseconds taken by topics and functions for performance analysis. Ju
 It is similar to `:trace` (using several of the same keywords) and can be used to limit to just certain topics/rules and ^macros. 
 A simple `:time` will list those keywords.
 
-Note the time output is only shown in the user’s log file and is not echoed to the console.
+Note the time output is only shown in the user's log file and is not echoed to the console.
 
-By default items that don’t take any time will not be shown, but this can be overridden by `:time always`
+By default items that don't take any time will not be shown, but this can be overridden by `:time always`
 
 ### `:notime`
 disables timing for some topic or functions
