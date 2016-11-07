@@ -132,32 +132,32 @@ really advanced users wanting the appropriate mental model.
 
 ## Papers in order
 
-* [Paper - ChatBots 102](../PDFDOCUMENTATION/PAPERS/Paper-%20ChatBots%20102.pdf)
+* [Paper - ChatBots 102](../PAPERS/Paper-%20ChatBots%20102.pdf)
 <br>My first paper, looking at the flaws of AIML and why I felt I could do better (before Suzette won anything).
 
-* [Paper - Pattern Matching for Natural Language](../PDFDOCUMENTATION/PAPERS/Paper-%20Pattern_Matching_for_Natural_Language_Applications.pdf)
+* [Paper - Pattern Matching for Natural Language](../PAPERS/Paper-%20Pattern_Matching_for_Natural_Language_Applications.pdf)
 <br>Compares CS, AIML, and Facade
 
-* [Paper - Suzette The Most Human Computer](../PDFDOCUMENTATION/PAPERS/Paper%20-%20Suzette_The_Most_Human_Computer.pdf)
+* [Paper - Suzette The Most Human Computer](../PAPERS/Paper%20-%20Suzette_The_Most_Human_Computer.pdf)
 <br>How our first chatbot came about, won the Loebner's, and differed from AIML.
 
-* [Paper - Speaker for the Dead](../PDFDOCUMENTATION/PAPERS/Paper-%20Speaker%20for%20theDead.pdf)
+* [Paper - Speaker for the Dead](../PAPERS/Paper-%20Speaker%20for%20theDead.pdf)
 <br>Applying chatbots to manage people's accumulations of papers, photos, etc.
 
-* [Paper - Google Talk](../PDFDOCUMENTATION/PAPERS/Paper%20-%20Google%20Talk.pdf)
+* [Paper - Google Talk](../PAPERS/Paper%20-%20Google%20Talk.pdf)
 <br>A talk I gave at Google about my history, CS, and writing code to act out stories
 
-* [Paper - Writing a Chatbot](../PDFDOCUMENTATION/PAPERS/Paper-%20Writing%20a%20Chatbot.pdf)
+* [Paper - Writing a Chatbot](../PAPERS/Paper-%20Writing%20a%20Chatbot.pdf)
 <br>Useful discussion on how to think about writing a chatbot
 
-* [Paper - ARBOR_ MakingItReal](../PDFDOCUMENTATION/PAPERS/Paper-%20ARBOR-MakingItReal.pdf)
+* [Paper - ARBOR_ MakingItReal](../PAPERS/Paper-%20ARBOR-MakingItReal.pdf)
 <br>Useful discussion on how to think about writing a chatbot
 
-* [Paper - Winning 15 Minute Conversation](../PDFDOCUMENTATION/PAPERS/Paper-%20Winning%2015%20Minute%20Conversation.pdf)
+* [Paper - Winning 15 Minute Conversation](../PAPERS/Paper-%20Winning%2015%20Minute%20Conversation.pdf)
 <br>The conversation (1 of 2) that had our chatbot easily win best 15 minute conversation at ChatBot Battles 2012.
 
-* [Paper - Winning the Loebner's](../PDFDOCUMENTATION/PAPERS/Paper-%20WinningTheLoebners.pdf)
+* [Paper - Winning the Loebner's](../PAPERS/Paper-%20WinningTheLoebners.pdf)
 <br>Realities of the Loebner competition and additional ideas of english applied to chatbots
 
-* [ChatScript Training](../PDFDOCUMENTATION/ChatScript%20Training.pdf)
+* [ChatScript Training](../PDFDOCUMENTATION/OVERVIEWS-AND-TUTORIALS/ChatScript%20Training.pdf)
 <br>A slide series on how CS works and how the engine works.
