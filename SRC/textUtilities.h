@@ -138,7 +138,7 @@ bool IsNumericDate(char* word,char* end);
 bool IsFloat(char* word, char* end);
 char GetTemperatureLetter (char* ptr);
 bool IsLegalName(char* name);
-char* GetCurrency(char* ptr,char* &number);
+unsigned char* GetCurrency(unsigned char* ptr,char* &number);
 bool IsRomanNumeral(char* word, uint64& val);
 
 // conversion reoutines

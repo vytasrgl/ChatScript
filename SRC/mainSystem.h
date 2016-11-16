@@ -30,12 +30,12 @@ typedef struct RESPONSE
 #define MAX_RESPONSE_SENTENCES 20
 #define MAX_SENTENCE_LENGTH 256 // room for +4 after content (keep a power of 4 for savesentence code)
 #define REAL_SENTENCE_LIMIT 252 // stay under char size boundary and leave excess room
-
 #define TIMEOUT_INSTANCE 1000000
 
 #define PENDING_RESTART -1	// perform chat returns this flag on turn
 
 #define START_BIT 0x8000000000000000ULL	// used looping thru bit masks
+#define INPUTMARKER '`'	// used to start and end ^input data
 
 // values of prepareMode
  enum PrepareMode { // how to treat input
@@ -60,6 +60,7 @@ typedef struct RESPONSE
 	SOURCE_ECHO_USER = 1,
 	SOURCE_ECHO_LOG = 2,
 };
+#define MAX_TRACED_FUNCTIONS 50
  
 extern unsigned short int derivationIndex[256];
 extern int derivationLength;
@@ -87,6 +88,8 @@ extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;
 extern char* version;
+extern int sentencePreparationIndex;
+extern int lastRestoredIndex;
 extern unsigned int tokenCount;
 extern unsigned int choiceCount;
 extern bool redo;
@@ -176,14 +179,13 @@ void PartiallyCloseSystem();
 int main(int argc, char * argv[]);
 void ProcessOOB(char* buffer);
 void ComputeWhy(char* buffer, int n);
-unsigned int SaveTracedFunctions();
-unsigned int SaveTimedFunctions();
 
 // Input processing
 void MainLoop();
 void FinishVolley(char* input,char* output,char* summary);
 int ProcessInput(char* input);
 FunctionResult DoSentence(char* prepassTopic,bool atlimit);
+
 #ifdef DLL
 extern "C" __declspec(dllexport) int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output);
 extern "C" __declspec(dllexport) int PerformChatGivenTopic(char* user, char* usee, char* incoming,char* ip,char* output,char* topic);
@@ -191,6 +193,7 @@ extern "C" __declspec(dllexport) int PerformChatGivenTopic(char* user, char* use
 int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output);
 int PerformChatGivenTopic(char* user, char* usee, char* incoming,char* ip,char* output,char* topic);
 #endif
+
 void ResetSentence();
 void ResetToPreUser();
 void PrepareSentence(char* input,bool mark = true,bool user=true, bool analyze = false, bool oobstart = false,bool atlimit = false);

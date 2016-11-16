@@ -151,7 +151,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
 				if (F > factLocked) F->flags |= MARKED_FACT;	 // since we wrote this out here, DONT write out in general writeouts..
 			}
 			ptr += strlen(ptr);
-			if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+			if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 		}
 		sprintf(ptr,(char*)"%s",(char*)"#end set\n"); 
 		ptr += strlen(ptr);
@@ -178,7 +178,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
 			++counter;
 			WriteFact(F,true,ptr,false,true); // facts are escaped safe for JSON
 			ptr += strlen(ptr);
-			if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+			if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 		}
 	}
 	//ClearUserFacts();
@@ -273,7 +273,7 @@ static char* WriteRecentMessages(char* ptr,bool sharefile,int messageCount)
 		if (len > 200) humanSaid[i][200] = 0;
 		sprintf(ptr,(char*)"%s\r\n",SafeLine(humanSaid[i]));
 		ptr += strlen(ptr);
-		if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+		if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 	}
 	strcpy(ptr,(char*)"#`end user\r\n");
 	ptr += strlen(ptr);
@@ -288,7 +288,7 @@ static char* WriteRecentMessages(char* ptr,bool sharefile,int messageCount)
 		if (len > 200) chatbotSaid[i][200] = 0;
 		sprintf(ptr,(char*)"%s\r\n",SafeLine(chatbotSaid[i]));
 		ptr += strlen(ptr);
-		if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+		if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 	}
 	strcpy(ptr,(char*)"#`end chatbot\r\n");
 	ptr += strlen(ptr);
@@ -379,6 +379,9 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 		ReportBug("No user variables in file write of %s",loginID);
 		return NULL;
 	}
+	bool traceseen = false;
+	
+	if (modifiedTrace) trace = modifiedTraceVal; // script set the value
     while (index)
     {
         WORDP D = userVariableList[--index];
@@ -388,7 +391,14 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
   		else if (shared && sharefile && strnicmp(D->word,(char*)"$share_",7)) continue;
 		else if ( (D->word[1] != LOCALVAR_PREFIX && D->word[1] !=  TRANSIENTVAR_PREFIX) && (D->w.userValue || (D->internalBits & MACRO_TRACE))) // transients not dumped, nor are NULL values
 		{
+			char word[100];
 			char* val = D->w.userValue;
+			if (!stricmp(D->word,"$cs_trace")) 
+			{
+				traceseen = true;
+				sprintf(word,(char*)"%d",trace);
+				val = word;
+			}
 			if (!val) val = ""; // for null variables being marked as traced
 			if (D->internalBits & MACRO_TRACE) 
 			{
@@ -399,44 +409,72 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 			ptr += strlen(ptr);
 			if (!compiled)
 			{
-				if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+				if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 			}
 		}
         D->w.userValue = NULL;
 		RemoveInternalFlag(D,VAR_CHANGED);
     }
-	sprintf(ptr,(char*)"$cs_trace=%d\r\n",trace);
-	ptr += strlen(ptr);
-	trace = 0;
-	echo = false;
+	if (!traceseen)
+	{
+		sprintf(ptr,(char*)"$cs_trace=%d\r\n",trace);
+		ptr += strlen(ptr);
+	}
+
+	// now put out the function tracing bits
+	index = tracedFunctionsIndex;
+	while (index)
+    {
+        WORDP D = tracedFunctionsList[--index];
+		if (D->inferMark && D->internalBits & (FN_TRACE_BITS | NOTRACE_TOPIC | FN_TIME_BITS))
+		{
+			sprintf(ptr,(char*)"%s=%d %d\r\n",D->word,D->internalBits & (FN_TRACE_BITS | NOTRACE_TOPIC| FN_TIME_BITS),D->inferMark);
+			ptr += strlen(ptr);
+			D->inferMark = 0;	// turn off tracing now
+		}
+		D->internalBits &= -1 ^ (FN_TRACE_BITS | NOTRACE_TOPIC | FN_TIME_BITS);
+	 }
+
 	strcpy(ptr,(char*)"#`end variables\r\n");
 	ptr += strlen(ptr);
-
 	return ptr;
 }
 
 static bool ReadUserVariables()
 {
+	tracedFunctionsIndex = 0;
 	while (ReadALine(readBuffer, 0)>= 0) //   user variables
 	{
-		if (*readBuffer != USERVAR_PREFIX) break; // end of variables
+		if (*readBuffer != USERVAR_PREFIX && *readBuffer != FUNCTIONVAR_PREFIX) break; // end of variables
         char* ptr = strchr(readBuffer,'=');
         *ptr = 0; // isolate user var name from rest of buffer
 		bool traceit = ptr[1] == '`';
 		if (traceit)  ++ptr;
-        SetUserVariable(readBuffer,RemoveEscapesWeAdded(ptr+1));
-		if (traceit) 
+		if (*readBuffer == '$') SetUserVariable(readBuffer,RemoveEscapesWeAdded(ptr+1));
+		else // tracing bits on a function
+		{
+			WORDP F = FindWord(readBuffer,LOWERCASE_LOOKUP);
+			if (F) 
+			{
+				char value[MAX_WORD_SIZE];
+				ptr = ReadCompiledWord(ptr+1,value);
+				int bits = atoi(value); // control flags
+				ptr = ReadCompiledWord(ptr,value);
+				int val = atoi(value); // which tracings
+				if (val || bits)
+				{
+					F->internalBits |= bits; // covers trace and time bits
+					F->inferMark = val;		// set its trace details bits
+					tracedFunctionsList[tracedFunctionsIndex++] = F;
+				}
+			}
+		}
+		if (traceit) // we are tracing this variable, turn on his flag
 		{ 
 			WORDP D = StoreWord(readBuffer);
 			PrepareVariableChange(D,"",false); // keep it alive as long as it is traced
 			D->internalBits |= MACRO_TRACE;
 		}
- 		if (!stricmp(readBuffer,(char*)"$cs_trace")) 
-		{
-			trace = atoi(ptr+1); // trace now on this user
-			if (trace) echo = true;
-		}
-
 		if (trace & TRACE_VARIABLE) Log(STDTRACELOG,(char*)"uservar: %s=%s\r\n",readBuffer,ptr+1);
     }
 
@@ -477,6 +515,8 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 		ReportBug("User file variable data too big %s",loginID)
 		return NULL;
 	}
+	trace = 0;
+	echo = false;
 	if (verifyUserFacts) CheckUserFacts();	// verify they are good for now
 	ptr = WriteUserFacts(ptr,sharefile,count);  // json safe
 	if (!ptr)
@@ -568,6 +608,7 @@ void WriteUserData(time_t curr)
 		if (ptr) Cache(userDataBase,ptr-userDataBase);
 	}
 	userVariableIndex = 0; // flush all modified variables
+	tracedFunctionsIndex = 0;
 	ChangeDepth(-1,(char*)"WriteUserData");
 
 	if (timing & TIME_USER) {
@@ -734,7 +775,9 @@ void ReadNewUser()
 	currentRuleOutputBase = currentOutputBase = buffer;
 	ChangeDepth(1,(char*)"ReadNewUser");
 	FunctionResult result;
-	DoFunction(D->word,(char*)"()",buffer,result);
+	char arg[15]; // dofunction call needs to be alterable if tracing
+	strcpy(arg,(char*)"()");
+	DoFunction(D->word,arg,buffer,result);
 	PopOutputBuffers();
 	ChangeDepth(-1,(char*)"ReadNewUser");
 	FreeBuffer();

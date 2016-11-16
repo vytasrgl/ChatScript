@@ -1,2 +1,3 @@
-﻿#`end variables
+﻿$cs_trace=0
+#`end variables
 ( harry defaultbot defaultbot )

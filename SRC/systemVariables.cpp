@@ -161,8 +161,8 @@ static char* SleapYear(char* value)
 	struct tm* timeinfo = localtime (&rawtime );
     int year = timeinfo->tm_year + 1900;
 	bool leap = false;
-	if ((year / 400) == 0) leap = true;
-	else if ((year / 100) != 0 && (year / 4) == 0) leap = true;
+	if ((year % 400) == 0) leap = true;
+	else if ((year % 100) != 0 && (year % 4) == 0) leap = true;
     return leap ? (char*)"1" : (char*)"";
 }  
 
@@ -599,6 +599,26 @@ static char* SPID(char* value)
 	return systemValue;
 }
 
+static char* SRestart(char* value)
+{
+	static char systemRestartValue[MAX_WORD_SIZE]; // restart passback
+	static bool inited = false;
+	if (!inited) 
+	{
+		inited = true;
+		*systemRestartValue = 0;
+	}
+
+	if (value && *value == '.') return ""; // ignore init
+	else if (value) 
+	{
+		if (strlen(value) >= MAX_WORD_SIZE) value[MAX_WORD_SIZE-1] = 0;
+		strcpy(systemRestartValue,value);
+		return "";
+	}
+	else return systemRestartValue;
+}
+
 ////////////////////////////////////////////////////
 /// USER INPUT
 ////////////////////////////////////////////////////
@@ -951,6 +971,7 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%topic",Stopic,(char*)"Current interesting topic executing (not system or nostay)"}, 
 	{ (char*)"%trace",STrace,(char*)"Numeric value of trace flag"}, 
 	{ (char*)"%pid",SPID,(char*)"Process id of this instance (linux)"}, 
+	{ (char*)"%restart",SRestart,(char*)"pass string back to a restart"}, 
 
 	{ (char*)"\r\n---- Build variables",0,(char*)""},
 	{ (char*)"%dict",Sdict,(char*)"String - when dictionary was built"}, 

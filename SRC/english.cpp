@@ -683,7 +683,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 		else if (kind == CURRENCY_NUMBER) // money
 		{
-			GetCurrency(original,value);
+			GetCurrency((unsigned char*) original,value);
 			int64 n = Convert2Integer(value);
 			float fn = (float)atof(value);
 			if ((float)n == fn) 

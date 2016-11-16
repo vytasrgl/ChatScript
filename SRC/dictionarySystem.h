@@ -472,6 +472,8 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define TRACE_COVERAGE		0x08000000
 #define TRACE_ALWAYS		0x10000000
 
+#define TRACE_ECHO			0x20000000	// echo trace
+
 // TIME FLAGS
 // simple
 #define TIME_ON				0x00000001	
@@ -606,7 +608,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define TOKEN_AS_IS				0x0000000002000000ULL  // let pennbank tokens be untouched
 #define SPLIT_QUOTE				0x0000000004000000ULL  // separate expressions in single quotes
 #define LEAVE_QUOTE				0x0000000008000000ULL  // do not remove quotes around single words
-// tokencontrol now reflected into tokenflags
+// tokencontrol not reflected into tokenflags
 #define UNTOUCHED_INPUT			0x0000000010000000ULL 
 
 //   values of tokenFlags (seen processing input not eched into tokencontrol) 
@@ -616,7 +618,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define USERINPUT				0x0000000100000000ULL  
 #define COMMANDMARK 			0x0000000200000000ULL
 #define IMPLIED_YOU 			0x0000000400000000ULL // commands and some why questions where you is implied
-#define FOREIGN_TOKENS				0x0000000800000000ULL
+#define FOREIGN_TOKENS			0x0000000800000000ULL
 #define FAULTY_PARSE			0x0000001000000000ULL   
 #define QUOTATION				0x0000002000000000ULL
 #define NOT_SENTENCE				0x0000004000000000ULL   
@@ -629,6 +631,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 // in tokenflags not token control
 #define NO_FIX_UTF					0x0000080000000000ULL   
+#define JSON_DIRECT_FROM_OOB		0x0000400000000000ULL   
 
 // end of tokenflags
 
@@ -683,7 +686,7 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
 	uint64  systemFlags;			//   additional dictionary and non-dictionary properties
 	char*     word;					//   entry name
 	unsigned int internalBits;
-	unsigned int parseBits;	
+	unsigned int parseBits;			// only for words, not for function names or concept names
 
 	//   if you edit this, you may need to change ReadBinaryEntry and WriteBinaryEntry
 	union {
@@ -706,13 +709,13 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
           unsigned short topicIndex;	//   for a ~topic or %systemVariable or plan, this is its id
 		  unsigned short codeIndex;		//   for a system function, its the table index for it
 		  unsigned short debugIndex;	//   for a :test function, its the table index for it
-		  unsigned short macroFlags;	//	 for a table, these bits signify special handling of its arguments (1 bit per argument for 30 argument limit)
+		  unsigned short macroFlags;	//	 for a table, these bits signify special handling of its arguments (1 bit per argument for 16 argument limit)
     }x;
     unsigned short length;		//  length of the word
 	
-	unsigned int inferMark;		// no need to erase been here marker during marking facts, inferencing (for propogation) and during scriptcompile 
-
-    MEANING spellNode;			// next word of same length as this
+  	unsigned int inferMark;		// (functions use as trace control bits) no need to erase been here marker during marking facts, inferencing (for propogation) and during scriptcompile 
+ 
+    MEANING spellNode;			// next word of same length as this - not used for function names (time tracing bits go here) and concept names
   	unsigned int nextNode;		// bucket-link for dictionary hash + top bye GETMULTIWORDHEADER // can this word lead a phrase to be joined - can vary based on :build state -- really only needs 4 bits
 
 #ifndef DISCARDCOUNTER

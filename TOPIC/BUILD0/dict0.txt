@@ -1124,7 +1124,6 @@
 + Hoover_Dam ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
 + Robert_Hooke NOUN_HUMAN NOUN_HE 
 + Windsor ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
-+ York ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
 + Hong_Kong NOUN_TITLE_OF_WORK ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
 + Honduras ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
 + Tegucigalpa ALWAYS_PROPER_NAME_MERGE LOCATIONWORD 
@@ -2595,6 +2594,7 @@
 + voulez FOREIGN_WORD 
 + vous FOREIGN_WORD 
 + close_friend 
++ onions NOUN NOUN_PLURAL KINDERGARTEN 
 + furniture_store 
 + blind_man_'s_bluff 
 + capture_the_flag 
@@ -3868,6 +3868,8 @@
 + speed_skiing 
 + mechanics NOUN NOUN_PLURAL 
 + body_care 
++ its_ok 
++ it_is_ok 
 + ^ 
 + devel 
 + defense_lawyers 
@@ -44737,6 +44739,18 @@
 + 160,000 
 + 67,000 
 + speed_of_sound NOUN NOUN_SINGULAR 
++ appliance_store 
++ auto_dealer 
++ auto_parts_store 
++ barber_shop 
++ book_store 
++ electronics_store 
++ fastfood_place 
++ internet_cafe 
++ laundromat 
++ lost_and_found 
++ photoshop 
++ stationary_store 
 + cold_pack 
 + coals 
 + fry_pan 
@@ -44831,6 +44845,7 @@
 + Verizon NOUN NOUN_PROPER_SINGULAR 
 + TMobile NOUN NOUN_PROPER_SINGULAR 
 + AT&T NOUN NOUN_PROPER_SINGULAR 
++ at&t NOUN NOUN_PROPER_SINGULAR 
 + Avatar_Reality NOUN NOUN_PROPER_SINGULAR 
 + Sears_Roebuck NOUN NOUN_PROPER_SINGULAR 
 + KMart NOUN NOUN_PROPER_SINGULAR 
@@ -44881,6 +44896,11 @@
 + Citibank NOUN NOUN_PROPER_SINGULAR 
 + Citi NOUN NOUN_PROPER_SINGULAR 
 + Citigroup NOUN NOUN_PROPER_SINGULAR 
++ Kony NOUN NOUN_PROPER_SINGULAR 
++ Kore_Inc NOUN NOUN_PROPER_SINGULAR 
++ EMC NOUN NOUN_PROPER_SINGULAR 
++ IOCL NOUN NOUN_PROPER_SINGULAR 
++ Indian_Oil NOUN NOUN_PROPER_SINGULAR 
 + uses 
 + bird~1 
 + sous-chef 

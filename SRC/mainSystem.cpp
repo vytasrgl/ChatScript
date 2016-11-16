@@ -1,10 +1,12 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.85";
+char* version = "6.87";
 char sourceInput[200];
 bool pendingRestart = false;
 bool pendingUserReset = false;
 static bool assignedLogin = false;
+int sentencePreparationIndex = 0;
+int lastRestoredIndex = 0;
 #define MAX_RETRIES 20
 clock_t startTimeInfo;							// start time of current volley
 char revertBuffer[MAX_BUFFER_SIZE];			// copy of user input so can :revert if desired
@@ -17,7 +19,8 @@ int timerLimit = 0;						// limit time per volley
 int timerCheckRate = 0;					// how often to check calls for time
 clock_t volleyStartTime = 0;
 int timerCheckInstance = 0;
-char* privateParams = NULL;
+static char* privateParams = NULL;
+static char* treetaggerParams = NULL;
 char* encryptParams = NULL;
 char* decryptParams = NULL;
 char hostname[100];
@@ -43,12 +46,6 @@ char *evsrv_arg = NULL;
 unsigned short int derivationIndex[256];
 
 bool overrideAuthorization = false;
-
-#define MAX_TRACED_FUNCTIONS 50
-static char tracedFunctions[MAX_TRACED_FUNCTIONS][100];
-static unsigned int tracedFunctionsIndex = 0;
-static char timedFunctions[MAX_TRACED_FUNCTIONS][100];
-static unsigned int timedFunctionsIndex = 0;
 
 clock_t  startSystem;						// time chatscript started
 unsigned int choiceCount = 0;
@@ -194,21 +191,23 @@ void CreateSystem()
 	}
 	char data[MAX_WORD_SIZE];
 	char* kind;
+	int pid = 0;
 #ifdef EVSERVER
 	kind = "EVSERVER";
+	pid = getpid();
 #elif DEBUG
 	kind = "Debug";
 #else
 	kind = "Release";
 #endif
-	sprintf(data,(char*)"ChatScript %s Version %s  %ld bit %s compiled %s",kind,version,(long int)(sizeof(char*) * 8),os,compileDate);
+	sprintf(data,(char*)"ChatScript %s Version %s pid: %d %ld bit %s compiled %s",kind,version,pid,(long int)(sizeof(char*) * 8),os,compileDate);
 	strcat(data,(char*)" host=");
 	strcat(data,hostname);
 	if (server)  Log(SERVERLOG,(char*)"Server %s\r\n",data);
 	strcat(data,(char*)"\r\n");
 	printf((char*)"%s",data);
 
-	int old = trace; // in case trace turned on by default
+	int oldtrace = trace; // in case trace turned on by default
 	trace = 0;
 	*oktest = 0;
 
@@ -278,7 +277,8 @@ void CreateSystem()
 		}
 		NoteBotVariables(); // convert user variables read into bot variables
 		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
-		trace = oldtrace;
+		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
+		stringInverseFree = stringInverseStart; // drop any possible inverse used
 	}
 	InitSpellCheck(); // after boot vocabulary added
 
@@ -356,7 +356,7 @@ void CreateSystem()
 	if (server) Log(SERVERLOG,(char*)"%s",data);
 	else printf((char*)"%s",data);
 
-	trace = old;
+	trace = oldtrace;
 #ifdef DISCARDSERVER 
 	printf((char*)"    Server disabled.\r\n");
 #endif
@@ -485,6 +485,7 @@ void ProcessArguments(int argc, char* argv[])
 		else if (!strnicmp(argv[i],(char*)"users=",6 )) strcpy(users,argv[i]+6);
 		else if (!strnicmp(argv[i],(char*)"logs=",5 )) strcpy(logs,argv[i]+5);
 		else if (!strnicmp(argv[i],(char*)"private=",8)) privateParams = argv[i]+8;
+		else if (!strnicmp(argv[i],(char*)"treetagger=",11)) treetaggerParams = argv[i]+11;
 		else if (!strnicmp(argv[i],(char*)"encrypt=",8)) encryptParams = argv[i]+8;
 		else if (!strnicmp(argv[i],(char*)"decrypt=",8)) decryptParams = argv[i]+8;
 		else if (!strnicmp(argv[i],(char*)"livedata=",9) ) 
@@ -635,7 +636,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 #ifndef EVSERVER
 		GrabPort(); 
 #else
-		if (evsrv_init(interfaceKind, port, evsrv_arg) < 0)  exit(4); // additional params will apply to each child
+		printf("evcalled pid: %d\r\n",getpid());
+		if (evsrv_init(interfaceKind, port, evsrv_arg) < 0)  exit(4); // additional params will apply to each child and they will load data each
 #endif
 #ifdef WIN32
 		PrepareServer(); 
@@ -697,8 +699,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 		Log(SERVERLOG, "\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
 		printf((char*)"\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
 #else
-		Log(SERVERLOG, "\r\n\r\n======== Began EV server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
-		printf((char*)"\r\n\r\n======== Began EV server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
+		Log(SERVERLOG, "\r\n\r\n======== Began EV server pid %d %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",getpid(),version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
+		printf((char*)"\r\n\r\n======== Began EV server pid %d  %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",getpid(),version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
 #endif
 	}
 	serverLog = oldserverlog;
@@ -706,18 +708,28 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	echo = false;
 
 	InitStandalone();
+
+	UnlockLevel(); // unlock it to add stuff
+
 #ifndef DISCARDPOSTGRES
-	if (postgresparams)  PGUserFilesCode();
+#ifndef EVSERVER
+	if (postgresparams)  PGUserFilesCode(); // unforked process can hook directly. Forked must hook AFTER forking
+#endif
 #endif
 #ifndef DISCARDMONGO
 	if (mongodbparams)  MongoSystemInit(mongodbparams);
 #endif
 	
+#ifdef TREETAGGER
+	InitTreeTagger(treetaggerParams);
+#endif
+
 #ifdef PRIVATE_CODE
 	PrivateInit(privateParams); 
 #endif
 	EncryptInit(encryptParams);
 	DecryptInit(decryptParams);
+	LockLayer(1,false); 
 	return 0;
 }
 
@@ -761,68 +773,9 @@ void CloseSystem()
 #ifdef PRIVATE_CODE
 	PrivateShutdown();  // must come last after any mongo/postgress 
 #endif
-}
-
-static void CheckTracedFunction(WORDP D, uint64 junk)
-{
-	if (tracedFunctionsIndex >= MAX_TRACED_FUNCTIONS || !D->word) return;
-	if (*D->word == '^' && D->internalBits & FN_TRACE_BITS)
-	{
-		sprintf(tracedFunctions[tracedFunctionsIndex++],(char*)"%s %d",D->word,D->internalBits);
-	}
-	else if (*D->word == '~' && D->internalBits & NOTRACE_TOPIC) 
-	{
-		sprintf(tracedFunctions[tracedFunctionsIndex++],(char*)"%s %d",D->word,D->internalBits);
-	}
-}
-
-unsigned int SaveTracedFunctions()
-{
-	tracedFunctionsIndex = 0;
-	WalkDictionary(CheckTracedFunction,0);
-	return tracedFunctionsIndex;
-}
-
-static void RestoreTracedFunctions()
-{
-	for (unsigned int i = 0; i <  tracedFunctionsIndex; ++i)
-	{
-		char word[MAX_WORD_SIZE];
-		char* ptr = ReadCompiledWord(tracedFunctions[i],word);
-		WORDP D = FindWord(word);
-		if (D) D->internalBits |= (atoi(ptr) & (FN_TRACE_BITS | NOTRACE_TOPIC));
-	}
-}
-
-static void CheckTimedFunction(WORDP D, uint64 junk)
-{
-	if (timedFunctionsIndex >= MAX_TRACED_FUNCTIONS || !D->word) return;
-	if (*D->word == '^' && D->internalBits & FN_TIME_BITS)
-	{
-		sprintf(timedFunctions[timedFunctionsIndex++], (char*)"%s %d", D->word, D->internalBits);
-}
-	else if (*D->word == '~' && D->internalBits & NOTIME_TOPIC)
-	{
-		sprintf(timedFunctions[timedFunctionsIndex++], (char*)"%s %d", D->word, D->internalBits);
-	}
-}
-
-unsigned int SaveTimedFunctions()
-{
-	timedFunctionsIndex = 0;
-	WalkDictionary(CheckTimedFunction, 0);
-	return timedFunctionsIndex;
-}
-
-static void RestoreTimedFunctions()
-{
-	for (unsigned int i = 0; i < timedFunctionsIndex; ++i)
-	{
-		char word[MAX_WORD_SIZE];
-		char* ptr = ReadCompiledWord(timedFunctions[i], word);
-		WORDP D = FindWord(word);
-		if (D) D->internalBits |= (atoi(ptr) & (FN_TIME_BITS | NOTIME_TOPIC));
-	}
+#ifndef DISCARDJSON
+	CurlShutdown();
+#endif
 }
 
 ////////////////////////////////////////////////////////
@@ -1265,7 +1218,7 @@ char* ConcatResult()
 		strcpy(result+size,piece);
 		size += len;
 	}
-	trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	tokenControl = control;
     return result;
 }
@@ -1358,6 +1311,8 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	pendingUserReset = false;
 	volleyStartTime = ElapsedMilliseconds(); // time limit control
 	timerCheckInstance = 0;
+	modifiedTraceVal = 0;
+	modifiedTrace = false;
 
 	if (!documentMode) tokenCount = 0;
 #ifndef DISCARDJSON
@@ -1490,9 +1445,6 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	inputRetryRejoinderRuleID = inputRejoinderRuleID;
 	lastInputSubstitution[0] = 0;
 
-	RestoreTracedFunctions();
-	RestoreTimedFunctions();
-
 	int ok = 1;
     if (!*incoming && !hadIncoming)  //   begin a conversation - bot goes first
 	{
@@ -1557,6 +1509,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 FunctionResult Reply() 
 {
 	callback =  (wordCount > 1 && *wordStarts[1] == OOB_START && (!stricmp(wordStarts[2],(char*)"callback") || !stricmp(wordStarts[2],(char*)"alarm") || !stricmp(wordStarts[2],(char*)"loopback"))); // dont write temp save
+	stringInverseFree = stringInverseStart;
 	withinLoop = 0;
 	choiceCount = 0;
 	callIndex = 0;
@@ -1620,6 +1573,8 @@ void Restart()
 
 int ProcessInput(char* input)
 {
+	lastRestoredIndex = 0;
+	sentencePreparationIndex = 0;	// set id for save/restore sentence optimization
 	startTimeInfo =  ElapsedMilliseconds();
 	// aim to be able to reset some global data of user
 	unsigned int oldInputSentenceCount = inputSentenceCount;
@@ -1721,8 +1676,7 @@ loopback:
 	if (trace &  TRACE_OUTPUT) Log(STDTRACELOG,(char*)"\r\n\r\nInput: %d to %s: %s \r\n",volleyCount,computerID,input);
 	strcpy(currentInput,input);	//   this is what we respond to, literally.
 
-	if (!strncmp(buffer,(char*)"... ",4)) buffer += 4;	// a marker from ^input
-	else if (!strncmp(buffer,(char*)". ",2)) buffer += 2;	//   maybe separator after ? or !
+	if (!strncmp(buffer,(char*)". ",2)) buffer += 2;	//   maybe separator after ? or !
 
 	//   process input now
 	char prepassTopic[MAX_WORD_SIZE];
@@ -1733,9 +1687,9 @@ loopback:
 	while (((nextInput && *nextInput) || startConversation) && loopcount < SENTENCE_LIMIT) // loop on user input sentences
 	{
 		nextInput = SkipWhitespace(nextInput);
-		if (nextInput[0] == '`') // submitted by ^input `` is start,  ` is end
+		if (nextInput[0] == INPUTMARKER) // submitted by ^input `` is start,  ` is end
 		{
-			if (nextInput[1] == '`') ++inputNest;
+			if (nextInput[1] == INPUTMARKER) ++inputNest;
 			else --inputNest;
 			nextInput += 2;
 			continue;
@@ -1752,7 +1706,7 @@ loopback:
 				WriteUserData(time(0)); 
 				ResetToPreUser(); // back to empty state before any user
 			}
-			return 0;	// nothing more can be done here.
+			return PENDING_RESTART;	// nothing more can be done here.
 		}
 		else if (result == FAILSENTENCE_BIT) // usually done by substituting a new input
 		{
@@ -1844,16 +1798,16 @@ retry:
 	if (trace & TRACE_INPUT) Log(STDTRACELOG,(char*)"\r\n\r\nInput: %s\r\n",input);
  	if (trace && sentenceRetry) DumpUserVariables(); 
 	PrepareSentence(nextInput,true,true,false,true); // user input.. sets nextinput up to continue
+	nextInput = SkipWhitespace(nextInput);
 
 	// set %more and %morequestion
 	moreToCome = moreToComeQuestion = false;	
 	if (!atlimit)
 	{
- 		nextInput = SkipWhitespace(nextInput);
 		char* at = nextInput-1;
 		while (*++at)
 		{
-			if (*at == ' ' || *at == '`' || *at == '\n' || *at == '\r') continue;	// ignore this junk
+			if (*at == ' ' || *at == INPUTMARKER || *at == '\n' || *at == '\r') continue;	// ignore this junk
 			moreToCome = true;	// there is more input coming
 			break;
 		}
@@ -1935,6 +1889,7 @@ retry:
 
 void OnceCode(const char* var,char* function) //   run before doing any of his input
 {
+	stringInverseFree = stringInverseStart; // drop any possible inverse used
 	withinLoop = 0;
 	callIndex = 0;
 	topicIndex = currentTopicID = 0; 
@@ -2096,7 +2051,7 @@ bool AddResponse(char* msg, unsigned int responseControl)
 		at = word;
 		while ((at = strchr(at,'\r'))) *at = ' ';
 		ReportBug((char*)"response too big %s...",word)
-		strcpy(msg+OUTPUT_BUFFER_SIZE-5,(char*)"..."); //   prevent trouble
+		strcpy(msg+OUTPUT_BUFFER_SIZE-5,(char*)" ... "); //   prevent trouble
 		len = strlen(msg);
 	}
 
@@ -2148,6 +2103,7 @@ bool AddResponse(char* msg, unsigned int responseControl)
 
 void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart,bool atlimit) // set currentInput and nextInput
 {
+	lastRestoredIndex = ++sentencePreparationIndex; // an id marker
 	char* original[MAX_SENTENCE_LENGTH];
 	unsigned int mytrace = trace;
 	clock_t start_time = ElapsedMilliseconds();
@@ -2157,11 +2113,6 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 
 	char* ptr = input;
 	tokenFlags |= (user) ? USERINPUT : 0; // remove any question mark
-
-	// skip the ... from ^input() joining
-	ptr = SkipWhitespace(ptr);
-	if (!strncmp(ptr,(char*)"... ",4)) ptr += 4;  
-
     ptr = Tokenize(ptr,wordCount,wordStarts,false,false,oobstart); 
  	upperCount = 0;
 	lowerCount = 0;
@@ -2481,7 +2432,6 @@ int main(int argc, char * argv[])
 #endif
 	}
 	else FClose(in); 
-
 	if (InitSystem(argc,argv)) myexit((char*)"failed to load memory\r\n");
     if (!server) 
 	{

@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 10/8/2016 cs6.85
+> Revision 11/5/2016 cs6.87
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -214,7 +214,8 @@ outputmacro: ^myfunction( ^argument1 ^argument2)
     ^argument1 += 1
 ```
 Whenever you see a function variable, you
-can imagine it is as though the script had its argument immediately substituted in. So if the script call
+can imagine it is as though the script had its argument immediately substituted in. This is a call by
+reference. So if the script call
 was this
 ```
     ^myfunction( $myvar 1)
@@ -222,6 +223,16 @@ was this
 then the effect of `^argument1 += 1` is as though `$myvar += 1` were done and `$myvar` would now be one
 higher. Of course, had you tried to do
 `^argument2 += 1` then that would be the illegal `1 += 1` and the assignment would fail.
+
+
+```
+outputmacro: ^myfunction( $_argument1 $_argument2)
+    $_argument1 += 1
+```
+
+Use of $_ variables in the function definition is a call by value. All $_ variables are purely local and cannot
+be seen outside of the function (or topic) they are used in. You can also mix call by reference and call by
+value arguments.
 
 # ADVANCED CONCEPTS
 
@@ -1372,7 +1383,7 @@ name of what was passed in, and it is generally (but not always) evaluated on us
 `$$xxx` and `$xxx` variables are global, merely transient and permanent. 
 Function variables like `^myval` are restricted in use to the function declaring them, 
 so they are sort of local variables, but they are stand-ins for the arguments passed, which means 
-if you write on the function variable you are changing something above you as well.  
+if you write indirectly the function variable you are changing something above you as well.  
 
 Fortunately there are local variables, `$_xxx`. 
 
@@ -1684,6 +1695,15 @@ $$$obj.name.value.data.side = 7
 
 Assigning `null` will remove a JSON key entirely. Assigning `""` `^""` will set the field to the JSON literal
 `null`.
+
+## Fact dotted notation for variables
+If `$$f` holds a fact id, then
+```$$f.subject
+$$f.verb
+$$f.object
+```
+will return those components. You may NOT, however, assign into them.
+
 
 # Out of band Communication
 

@@ -93,7 +93,7 @@ static bool SetContains1(MEANING set,MEANING M, unsigned int depth)
 	if (depth == 0) 
 	{
 		SetFactBack(D,0); 
-		if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" SetContains %s %s : ",D->word,D1->word);
+		if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s ? %s ",D->word,D1->word);
 	}
 	unsigned int counter = 20000;
 	while (F && --counter)
@@ -154,8 +154,7 @@ static bool SetContains1(MEANING set,MEANING M, unsigned int depth)
 	}
 	if (trace & TRACE_INFER && depth == 0 && CheckTopicTrace())
 	{
-		Log(STDTRACELOG,(char*)" not within\r\n ");
-		Log(STDTRACETABLOG,(char*)"");
+		Log(STDTRACELOG,(char*)" not within ");
 	}
 	return false;
 }

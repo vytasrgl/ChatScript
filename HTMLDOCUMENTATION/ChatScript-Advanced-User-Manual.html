@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 10/8/2016 cs6.85</p>
+<p>Revision 11/5/2016 cs6.87</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
@@ -82,9 +82,12 @@
 <p>For outputmacros,</p>
 <pre><code>outputmacro: ^myfunction( ^argument1 ^argument2)
     ^argument1 += 1</code></pre>
-<p>Whenever you see a function variable, you can imagine it is as though the script had its argument immediately substituted in. So if the script call was this</p>
+<p>Whenever you see a function variable, you can imagine it is as though the script had its argument immediately substituted in. This is a call by reference. So if the script call was this</p>
 <pre><code>    ^myfunction( $myvar 1)</code></pre>
 <p>then the effect of <code>^argument1 += 1</code> is as though <code>$myvar += 1</code> were done and <code>$myvar</code> would now be one higher. Of course, had you tried to do <code>^argument2 += 1</code> then that would be the illegal <code>1 += 1</code> and the assignment would fail.</p>
+<pre><code>outputmacro: ^myfunction( $_argument1 $_argument2)
+    $_argument1 += 1</code></pre>
+<p>Use of $_ variables in the function definition is a call by value. All $_ variables are purely local and cannot be seen outside of the function (or topic) they are used in. You can also mix call by reference and call by value arguments.</p>
 <h1 id="advanced-concepts">ADVANCED CONCEPTS</h1>
 <p>Concepts can have part of speech information attached to them (using <code>dictionarysystem.h</code> values). Eg.</p>
 <pre><code>concept: ~mynouns NOUN NOUN_SINGULAR (boxdead foxtrot)
@@ -584,7 +587,7 @@ u: ( &lt;&lt; what time &gt;&gt; ) $test = ^mymac() join(ok $test)</code></pre>
 <p>However, it is clearer and cleaner if you are returning data to be stored somewhere else (not to be merely immediately sent to the user), to use <code>^return(&quot;tested here&quot;)</code>. This both creates the result, and ends the function immediately even if other code follows.</p>
 <p>Note- calls to macros use &quot;pass by reference&quot;, so the actual value of the ^variable is the name of what was passed in, and it is generally (but not always) evaluated on use.</p>
 <h2 id="save-restore-locals">Save-Restore locals</h2>
-<p><code>$$xxx</code> and <code>$xxx</code> variables are global, merely transient and permanent. Function variables like <code>^myval</code> are restricted in use to the function declaring them, so they are sort of local variables, but they are stand-ins for the arguments passed, which means if you write on the function variable you are changing something above you as well.</p>
+<p><code>$$xxx</code> and <code>$xxx</code> variables are global, merely transient and permanent. Function variables like <code>^myval</code> are restricted in use to the function declaring them, so they are sort of local variables, but they are stand-ins for the arguments passed, which means if you write indirectly the function variable you are changing something above you as well.</p>
 <p>Fortunately there are local variables, <code>$_xxx</code>.</p>
 <p>Without local variables, it is easy to accidentally reuse the same name of a transient variable that you used above you in the call chain. Imagine this:</p>
 <pre><code>outputmacro: ^mycall()
@@ -707,6 +710,11 @@ _0 = $$stuff</code></pre>
 <pre><code>$x = $$$obj.name.value.data.side 
 $$$obj.name.value.data.side = 7</code></pre>
 <p>Assigning <code>null</code> will remove a JSON key entirely. Assigning <code>&quot;&quot;</code> <code>^&quot;&quot;</code> will set the field to the JSON literal <code>null</code>.</p>
+<h2 id="fact-dotted-notation-for-variables">Fact dotted notation for variables</h2>
+<p>If <code>$$f</code> holds a fact id, then</p>
+<pre class="$$f.subject"><code>$$f.verb
+$$f.object</code></pre>
+<p>will return those components. You may NOT, however, assign into them.</p>
 <h1 id="out-of-band-communication">Out of band Communication</h1>
 <p>ChatScript can neither see nor act, but it can interact with systems that do. The convention is that out-of-band information occurs at the start of input or output, and is encased in <code>[ ]</code>.</p>
 <p>ChatScript does not attempt to postag and parse any input sentence which begins with <code>[</code> and has a closing <code>]</code>. It will automatically not try to spellcheck that part or perform any kind of merge (date, number, propername). In fact, the <code>[…]</code> will be split off into its own sentence. You can use normal CS rules to detect and react to incoming oob messaging. E.g, input like this</p>

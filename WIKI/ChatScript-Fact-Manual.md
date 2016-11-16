@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 5/19/2016cs6.5a
+> Revision 11/5/2016 cs6.87
 
 * [Simple Facts](ChatScript-Fact-Manual.md#simple-facts)
 * [Advanced Facts](ChatScript-Fact-Manual.md#advanced-facts)
@@ -533,6 +533,7 @@ and `^field($$f object) returns (he eats beer)`
 `all` just displays a human normal dictionary word, so if the value were actually `plants~1` 
 you'd get just plants whereas raw would return what was actually there `plants~1`.
 
+You can also retrieve a field via `$$f.subject` or `$$f.verb` or `$$f.object`.
 
 ### `^find`( setname itemname )
 given a concept set, find the ordered position of the 2nd

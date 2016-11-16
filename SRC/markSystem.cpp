@@ -42,7 +42,7 @@ bool showMark = false;
 static unsigned int markLength = 0; // prevent long lines in mark listing trace
 #define MARK_LINE_LIMIT 80
 int upperCount, lowerCount;
-
+ExternalTaggerFunction externalPostagger = NULL;
 char unmarked[MAX_SENTENCE_LENGTH]; // can completely disable a word from mark recognition
 
 void RemoveMatchValue(WORDP D, int position)
@@ -411,21 +411,22 @@ static void HuntMatch(char* word,bool strict,int start, int end, unsigned int& u
 		if (*D->word == 'I' && !D->word[1]){;}
 		else MarkFacts(MakeMeaning(D),start,end,false,true); 
 	}
-	trace = oldtrace;
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 }
 
 static void SetSequenceStamp() //   mark words in sequence, original and canonical (but not mixed) - detects proper name potential up to 5 words  - and does discontiguous phrasal verbs
 {
 	// these use underscores
-	char* rawbuffer = AllocateBuffer();
-	char* originalbuffer = AllocateBuffer(); // includes typos
-	char* canonbuffer = AllocateBuffer();
+	char* rawbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* originalbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE); // includes typos
+	char* canonbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	unsigned int oldtrace = trace;
 	unsigned int usetrace = trace;
 	if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
 	{
 		Log(STDTRACELOG,(char*)"\r\nSequences:\r\n");
 		usetrace = (unsigned int) -1;
+		if (oldtrace && !(oldtrace & TRACE_ECHO)) usetrace ^= TRACE_ECHO;
 	}
 	uint64 logbase = logCount; // see if we logged anything
 
@@ -560,10 +561,8 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 	}
 	if (trace & TRACE_PATTERN) Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
 
-	trace = oldtrace;
-	FreeBuffer();
-	FreeBuffer();
-	FreeBuffer();
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
+	ReleaseInverseString(rawbuffer);
 }
 
 static void StdMark(MEANING M, unsigned int start, unsigned int end, bool canonical) 
@@ -579,7 +578,14 @@ void MarkAllImpliedWords()
 	int i;
 	for (i = 1; i <= wordCount; ++i)  capState[i] = IsUpperCase(*wordStarts[i]); // note cap state
 
-	TagIt(); // pos tag and maybe parse
+	if (externalPostagger)
+	{
+		(*externalPostagger)();
+		startSentence = 1; // default when you dont know any better
+		endSentence = wordCount;
+	}
+	else TagIt(); // pos tag and maybe parse
+
 	if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) 
 	{
 		return;
@@ -648,13 +654,12 @@ void MarkAllImpliedWords()
 				AddSystemFlag(D,ACTUAL_TIME);
 			}
 		}
+		MarkFacts(MakeMeaning(wordTag[i]),i,i); // may do nothing
+		MarkTags(i);
 
-		if (!wordTag[i]) MarkTags(i);
-		else MarkFacts(MakeMeaning(wordTag[i]),i,i);
-
-		if (wordRole[i]) MarkFacts(MakeMeaning(wordRole[i]),i,i);
+		MarkFacts(MakeMeaning(wordRole[i]),i,i); // may do nothing
 #ifndef DISCARDPARSER
-		else MarkRoles(i);
+		MarkRoles(i);
 #endif
 
 		if ((*wordStarts[i] == '@' || *wordStarts[i] == '#')  && strlen(wordStarts[i]) > 2)
@@ -674,7 +679,7 @@ void MarkAllImpliedWords()
 		}
 	
 		// mark general number property
-		if (D->properties & ( NOUN_NUMBER | ADJECTIVE_NUMBER))   // a date can become an idiom, marking it as a proper noun and not a number
+		if (finalPosValues[i] & ( NOUN_NUMBER | ADJECTIVE_NUMBER))   // a date can become an idiom, marking it as a proper noun and not a number
 		{
 			if (IsDigit(*wordStarts[i]) && IsDigit(wordStarts[i][1])  && IsDigit(wordStarts[i][2]) && IsDigit(wordStarts[i][3])  && !wordStarts[i][4]) MarkFacts(MakeMeaning(FindWord((char*)"~yearnumber")),i,i);
 			if (!wordCanonical[i][1] || !wordCanonical[i][2]) // 2 digit or 1 digit
@@ -710,18 +715,18 @@ void MarkAllImpliedWords()
 
 			// special currency property
 			char* number;
-			char* currency = GetCurrency(wordStarts[i],number); 
+			unsigned char* currency = GetCurrency((unsigned char*) wordStarts[i],number); 
 			if (currency) 
 			{
 				char tmp[MAX_WORD_SIZE];
-				strcpy(tmp,currency);
+				strcpy(tmp,(char*) currency);
 				MarkFacts(Mmoney,i,i); 
-				if (*currency == '$' || !strnicmp(currency,(char*)"usd",3)) MarkFacts(Musd,i,i);
-				else if ( !strnicmp(currency,(char*)"inr",3)) MarkFacts(Minr,i,i);
-				else if ((*currency == 0xe2 && currency[1] == 0x82 && currency[2] == 0xac) || !strnicmp(currency,(char*)"eur",3)) MarkFacts(Meur,i,i);
-				else if ((*currency == 0xc2 && currency[1] == 0xa5) || !strnicmp(currency,(char*)"yen",3)) MarkFacts(Myen,i,i);
-				else if ((*currency == 0xc2 && currency[1] == 0xa3 ) || !strnicmp(currency,(char*)"gbp",3)) MarkFacts(Mgbp,i,i);
-				else if (!strnicmp(currency,(char*)"cny",3) ) MarkFacts(Mcny,i,i);
+				if (*currency == '$' || !strnicmp((char*)currency,(char*)"usd",3)) MarkFacts(Musd,i,i);
+				else if ( !strnicmp((char*)currency,(char*)"inr",3)) MarkFacts(Minr,i,i);
+				else if ((*currency == 0xe2 && currency[1] == 0x82 && currency[2] == 0xac) || !strnicmp((char*)currency,(char*)"eur",3)) MarkFacts(Meur,i,i);
+				else if ((*currency == 0xc2 && currency[1] == 0xa5) || !strnicmp((char*)currency,(char*)"yen",3)) MarkFacts(Myen,i,i);
+				else if ((*currency == 0xc2 && currency[1] == 0xa3 ) || !strnicmp((char*)currency,(char*)"gbp",3)) MarkFacts(Mgbp,i,i);
+				else if (!strnicmp((char*)currency,(char*)"cny",3) ) MarkFacts(Mcny,i,i);
 			}
 		}
 	

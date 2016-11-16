@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 10/8/2016 cs6.85
+> Revision 11/5/2016 cs6.87
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -19,7 +19,7 @@
 
 System functions are predefined and can be intermixed with direct output. Generally
 they are used from the output side of a rule, but in many cases nothing prevents you from
-invoking them from inside a pattern.
+invoking them from inside a pattern.  When used in a pattern, they do not write out any text output to the user. But their output will be tested the same as it would from an `if` statement, meaning 0 and false are failures.
 
 You can write them with or without a `^` in front of their name. With is clearer, but you
 don’t have to. The only time you must is if the first thing you want to do in a gambit is
@@ -664,6 +664,9 @@ This is an alterative access to function variable arguments,
 useful in a loop instead of having to access by variable name. 
 If `n` is `0`, the system merely tests whether the caller exists and fails if the caller is not in the path of this call.
 
+### `^backtrace`(  )
+Lists the sequence of topics and calls that got you to this point, one per line.
+
 ### `^command`( args )
 Execute this stream of arguments through the `:` command processor.
 You can execute debugging commands through here. E.g.,
@@ -874,6 +877,11 @@ u: (^incontext(PLAYTENNIS) why) because it was fun.
 
 # External Access Functions
 
+### `^environment`( variablename )
+Access environment variables of the operating system. E.g.
+```
+^environment(path)
+```
 
 ### `^system`( any number of arguments )
 The arguments, separated by spaces, are passed as a text string to the operating system for execution as a command. 
@@ -1556,6 +1564,10 @@ For a concept, if the member chosen is itself a concept, the system will recurse
 concept. If the argument to pick is a $ or _var, it will be evaluated and then pick will be
 tried on the result (but it won't recurse to try that again).
 
+If the argument is a JSON object it randomly picks a fact whose verb/object is a key-value pair. 
+If the argument is a JSON array, it randomly picks a fact whose verb is the index and whose object is the value.
+The fact id returned can be used with ^field or you can use something like $result.object to get the specific object.
+
 ### `^reset`( what ? )
 What can be user or topic or factset. If what is user, the system drops
 all history and starts the user afresh from first meeting (launching a new conversation),
@@ -1710,6 +1722,8 @@ You can also delete an individual fact who's id is sitting on some variable
 
 `^delete($$f)` And you can delete a json array or object, including all of its substructure the same way.
 
+If you pass something that is not deleteable, the system will do nothing and does not fail.
+
 ### `^length`( factset or `~set` or jsonid or word )
 If you want to know how many facts a fact-set has, you can do this:
 
@@ -1859,6 +1873,8 @@ Fields include: `subject`, `verb`, `object`, `flagsv, `all` (spread onto 3 match
 `all` just displays a human normal dictionary word, so if
 the value were actually `plants~1` you'd get just plants whereas raw would return what was
 actually there `plants~1`.
+
+You can also retrieve a field via `$$f.subject` or `$$f.verb` or `$$f.object`.
 
 ### `^find`( setname itemname )
 given a concept set, find the ordered position of the 2nd

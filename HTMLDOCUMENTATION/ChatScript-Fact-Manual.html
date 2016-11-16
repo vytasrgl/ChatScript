@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 5/19/2016cs6.5a</p>
+<p>Revision 11/5/2016 cs6.87</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-Fact-Manual.html#simple-facts">Simple Facts</a></li>
@@ -289,6 +289,7 @@ datum: ^secondkeys(~accidents) repair</code></pre>
 ^field( $$f object) # returns a number (the fact index)</code></pre>
 <p>and <code>^field($$f object) returns (he eats beer)</code></p>
 <p><code>fieldname</code> include: <code>subject</code>, <code>verb</code>, <code>object</code>, <code>flags</code>, <code>all</code> (spread onto 3 match variables, <code>raw</code> (spread onto 3 match variables). <code>all</code> just displays a human normal dictionary word, so if the value were actually <code>plants~1</code> you'd get just plants whereas raw would return what was actually there <code>plants~1</code>.</p>
+<p>You can also retrieve a field via <code>$$f.subject</code> or <code>$$f.verb</code> or <code>$$f.object</code>.</p>
 <h3 id="find-setname-itemname"><code>^find</code>( setname itemname )</h3>
 <p>given a concept set, find the ordered position of the 2nd argument within it. ^Output that index. Used, for example, to compare two poker hands.</p>
 <h3 id="first-fact-set-annotated"><code>^first</code>( fact-set-annotated )</h3>

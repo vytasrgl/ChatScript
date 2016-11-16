@@ -18,8 +18,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 void PostgresShutDown();
 void PGUserFilesCode();
 void PGUserFilesCloseCode();
-void pguserLog(const void* buffer,size_t size);
-void pguserBug(const void* buffer,size_t size);
 extern char* postgresparams;
 FunctionResult DBInitCode(char* buffer);
 FunctionResult DBCloseCode(char* buffer);

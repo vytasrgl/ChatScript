@@ -1070,7 +1070,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	bool traceChanged = false;
 	if ( GetDebugRuleMark(currentTopicID,id))  
 	{
-		trace = (unsigned int) -1;
+		trace = (unsigned int) -1; 
 		traceChanged = true;
 	}
 	if (GetTimingRuleMark(currentTopicID, id))
@@ -1080,8 +1080,8 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	}
 	clock_t start_time = ElapsedMilliseconds();
 
-	char pattern[100];
 	char label[MAX_LABEL_SIZE];
+	char pattern[110];
 	char* ptr = GetPattern(rule,label,pattern,100);  // go to output
 
 	// coverage counter
@@ -1176,10 +1176,12 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 		else if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, "%s rule %c:%d.%d %s time: %d ms\r\n", GetTopicName(currentTopicID), *rule, TOPLEVELID(id), REJOINDERID(id), pattern, diff);
 	}
 
-	if (traceChanged) {
-		trace = oldtrace;
+	if (traceChanged) 
+	{
+		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 		timing = oldtiming;
 	}
+	else if (modifiedTrace) trace = modifiedTraceVal;
 	norejoinder = oldnorejoinder;
 
     return result;
@@ -1244,7 +1246,7 @@ retry:
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
 	}
-	int whenmatched;
+	int whenmatched = 0;
 	if (*ptr == '(') // pattern requirement
 	{
 		wildcardIndex = 0;
@@ -1315,7 +1317,8 @@ exit:
 	RESTOREOLDCONTEXT()
 	currentIterator = oldIterator;
 	
-	if (traceChanged) trace = oldtrace;
+	if (traceChanged) trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
+	else if (modifiedTrace) trace = modifiedTraceVal;
 	return result; 
 }
 
@@ -1327,7 +1330,7 @@ static FunctionResult FindLinearRule(char type, char* buffer, unsigned int& id,i
 	int ruleID = 0;
 	topicBlock* block = TI(currentTopicID);
 	unsigned int* map = (type == STATEMENT || type == QUESTION || type == STATEMENT_QUESTION) ? block->responderTag : block->gambitTag;
-	ruleID = *map;
+	ruleID = (map) ? *map : NOMORERULES;
     FunctionResult result = NOPROBLEM_BIT;
 	int oldResponseIndex = responseIndex;
 	unsigned int* indices =  TI(currentTopicID)->ruleOffset;
@@ -1366,7 +1369,7 @@ static FunctionResult FindRandomRule(char type, char* buffer, unsigned int& id)
 	unsigned int ruleID = 0;
 	unsigned  int* rulemap;
 	rulemap = (type == STATEMENT || type == QUESTION || type == STATEMENT_QUESTION) ? block->responderTag : block->gambitTag;
-	ruleID = *rulemap;
+	ruleID = (rulemap) ? *rulemap : NOMORERULES;
 
 	//   gather the choices
     unsigned int index = 0;
@@ -1539,6 +1542,8 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	}
 
 	clock_t start_time = ElapsedMilliseconds();
+	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE|TRACE_TOPIC) && CheckTopicTrace()) 
+		Log(STDTRACETABLOG,(char*)"Enter Topic:\r\n",topicName);
 
 	while (result == RETRYTOPIC_BIT && --limit > 0)
 	{
@@ -1552,7 +1557,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	if (!limit) ReportBug((char*)"Exceeded retry topic limit");
 	result = (FunctionResult)(result & (-1 ^ ENDTOPIC_BIT)); // dont propogate 
 	if (result & FAILTOPIC_BIT) result = FAILRULE_BIT; // downgrade
-	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE) && CheckTopicTrace()) 
+	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE|TRACE_TOPIC) && CheckTopicTrace()) 
 		id = Log(STDTRACETABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
 
 	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(inverseStringDepth[globalDepth],locals);
@@ -1571,8 +1576,6 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 		Callback(E,value,false); 
 		cstopicsystem = false;
 	}
-
-	trace = oldtrace;
 	timing = oldtiming;
 	currentTopicID = oldTopic;
 	return (result & (RESTART_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYINPUT_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|FAILINPUT_BIT|FAILRULE_BIT)) ? result : NOPROBLEM_BIT;
@@ -1663,7 +1666,7 @@ char* WriteUserTopics(char* ptr,bool sharefile)
 			ptr = FullEncode(block->topicLastRejoindered,ptr);
 			strcpy(ptr,(char*)"\r\n");
 			ptr += 2;
-			if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+			if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 		}
     }
 	strcpy(ptr,(char*)"#`end topics\r\n"); 
@@ -2050,13 +2053,11 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 		if (!*name) break;
 		if (!plan && stricmp(name,(char*)"topic:"))
 		{
-			ReportBug((char*)"bad topic alignment %s\r\n",name)
-			myexit((char*)"bad topic alignment");
+			ReportBug((char*)"FATAL: bad topic alignment %s\r\n",name)
 		}
 		if (plan && stricmp(name,(char*)"plan:"))
 		{
-			ReportBug((char*)"bad plan alignment %s\r\n",name)
-			myexit((char*)"bad plan alignment");
+			ReportBug((char*)"FATAL: bad plan alignment %s\r\n",name)
 		}
 		ptr = ReadCompiledWord(ptr,name);
 		if (!topicBlockPtrs[layer]) //  || !topicBlockPtrs[layer]->topicName
@@ -2081,7 +2082,7 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 		int topic = FindTopicIDByName(name,true); // may preexist (particularly if this is layer 2)
 		compiling = false;
 		if (!topic || build == BUILD2) topic = ++numberOfTopics;
-		else if (plan) myexit((char*)"duplicate plan name");
+		else if (plan) ReportBug((char*)"FATAL: duplicate plan name");
 		
 		topicBlock* block = TI(topic);
 		int topLevelRules = 0;
@@ -2116,11 +2117,7 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 		// read \r\n or \n carefully, since windows and linux do things differently
 		char c = 0;
 		didread = fread(&c,1,1,in); // \n or \r\n
-		if (c != '\r' && c != '\n') 
-		{
-			ReportBug((char*)"failed to end topic/plan %s properly\r\n",name)
-			myexit((char*)"failed to end topic/plan properly");
-		}
+		if (c != '\r' && c != '\n')  ReportBug((char*)"FATAL: failed to end topic/plan %s properly\r\n",name)
 		block->topicSourceFileName = AllocateString(ptr); // name of file topic came from
 
 		//   bot restriction if any
@@ -2297,6 +2294,7 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 		sys = 0;
 		unsigned int parse= 0;
 		char word[MAX_WORD_SIZE];
+		*word = 0;
 		char name[MAX_WORD_SIZE];
 		char* ptr = readBuffer;
 		if (*readBuffer == '~' || endseen || *readBuffer == 'T') // concept, not-a-keyword, topic
@@ -2435,7 +2433,7 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 					holdparse[holdindex] = parse;
 					holdrequired[holdindex] = required;
 					++holdindex;
-					if (holdindex >= 10000) myexit((char*)"Too much concept recursion in keywordinit");
+					if (holdindex >= 10000) ReportBug((char*)"FATAL: Too much concept recursion in keywordinit");
 				}
 			}
 	
@@ -2529,7 +2527,7 @@ unsigned int InContext(int topic, char* label)
 {
 	if (contextResult) return 1; // testing override
 	int i = contextIndex; // most recent
-	while (--i != contextIndex) // ring buffer
+	while (--i != (int)contextIndex) // ring buffer
 	{
 		if (i < 0) i = MAX_RECENT; // loop back
 		if (topicContext[i] == 0) break;	// has no context
@@ -2560,7 +2558,7 @@ char* WriteUserContext(char* ptr,bool sharefile )
 		if ((int)inputContext[i] <= ((int)volleyCount - 5)) break; //  not close 
 		sprintf(ptr,(char*)"%s %d %s ", GetTopicName(topicContext[i]),inputContext[i],labelContext[i]);
 		ptr += strlen(ptr);
-		if ((ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+		if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 	}
 	strcpy(ptr,(char*)"\r\n");
 	ResetContext();
@@ -2899,7 +2897,7 @@ int PushTopic(int topic) // -1 = failed  0 = unneeded  1 = pushed
         return -1;
     }
 	currentTopicID = topic; 
-  	if (trace & TRACE_TOPIC) Log(STDTRACELOG,(char*)"Pushing Topic %s\r\n",GetTopicName(topic));
+  	if (trace & TRACE_TOPIC) Log(STDTRACETABLOG,(char*)"Pushing Topic %s\r\n",GetTopicName(topic));
 	return 1;
 }
 
@@ -2907,7 +2905,7 @@ void PopTopic()
 {
 	if (topicIndex) 
 	{
- 		if (trace & TRACE_TOPIC) Log(STDTRACELOG,(char*)"Popping Topic %s\r\n",GetTopicName(currentTopicID));
+ 		if (trace & TRACE_TOPIC) Log(STDTRACETABLOG,(char*)"Popping Topic %s\r\n",GetTopicName(currentTopicID));
 		currentTopicID = topicStack[topicIndex--];
 	}
 	else currentTopicID = 0;	// no topic now

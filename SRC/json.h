@@ -39,6 +39,7 @@ MEANING jsonValue(char* value, unsigned int& flags);
 void JsonRenumber(FACT* F);
 void jkillfact(WORDP D);
 void InitJSONNames();
+void CurlShutdown();
 #endif
 
 #endif

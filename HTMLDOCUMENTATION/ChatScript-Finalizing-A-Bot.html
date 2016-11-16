@@ -118,7 +118,7 @@ s: ($gender=male I * male) You are not my type</code></pre>
 <p>If you stick a rule into Harry's <code>~introductions</code> topic like:</p>
 <pre><code>#! what are you
 u: (what are you) I am a robot</code></pre>
-<p>Then <code>:verify sample</code> will complain about the sample. It is saying hat if you are not ALREADY in the topic <code>~introductions</code>, then the input you give will get answered by some other topic (quibble) and not by this topic. The reason this would be true is that there are no keywords in the <code>~introduction</code> topic that could allow it to be found if you are not already in this topic.</p>
+<p>Then <code>:verify sample</code> will complain about the sample. It is saying that if you are not ALREADY in the topic <code>~introductions</code>, then the input you give will get answered by some other topic (quibble) and not by this topic. The reason this would be true is that there are no keywords in the <code>~introduction</code> topic that could allow it to be found if you are not already in this topic.</p>
 <p>Normally, a question like <em>what are you</em> is something I would put in the <code>~keywordless</code> topic, because there is no natural keyword in the question and you could be asked that question at any time from any topic. If, however, you actually want this rule in <code>~introductions</code>, you can tell CS NOT to do the sample input test on it via</p>
 <pre><code>#!!S What are you</code></pre>
 <h2 id="changing-tokenization">Changing tokenization</h2>

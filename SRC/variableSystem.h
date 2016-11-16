@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define MAX_WILDCARDS 20  // _0 ... _20 inclusive
 #define WILDCARD_START(x) (x & 0x0000ffff)
 #define WILDCARD_END(x) ( x >> 16)
+extern  unsigned int modifiedTraceVal;
+extern bool	modifiedTrace;
 
 extern  int wildcardIndex;
 extern char wildcardOriginalText[MAX_WILDCARDS+1][MAX_USERVAR_SIZE+1];  //   spot wild cards can be stored
@@ -32,8 +34,10 @@ extern int impliedSet;
 extern int impliedWild;
 extern char impliedOp;
 extern unsigned int userVariableIndex;
+extern unsigned int tracedFunctionsIndex;
 extern unsigned int botVariableIndex;
 extern WORDP userVariableList[MAX_USER_VARS];
+extern WORDP tracedFunctionsList[MAX_TRACED_FUNCTIONS];
 extern WORDP botVariableList[MAX_USER_VARS];
 extern char wildcardSeparator[2];
 
@@ -61,8 +65,8 @@ void PrepareVariableChange(WORDP D,char* word,bool init);
 // user variable accessors
 void ClearUserVariableSetFlags();
 void ClearUserVariables(char* above = 0);
-char* GetUserVariable(const char* word, bool nojson = false);
-void SetUserVariable(const char* var, char* word);
+char* GetUserVariable(const char* word, bool nojson = false,bool notracing = false);
+void SetUserVariable(const char* var, char* word, bool assignment = false);
 void Add2UserVariable(char* var, char* word,char* op);
 
 char* PerformAssignment(char* word,char* ptr,FunctionResult& result,bool nojson = false);

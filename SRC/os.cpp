@@ -25,7 +25,7 @@ static char encryptServer[200];
 static char decryptServer[200];
 
 // buffer information
-#define MAX_BUFFER_COUNT 22
+#define MAX_BUFFER_COUNT 30
 unsigned int maxInverseString = 0;
 unsigned int maxInverseStringGap = 0xffffffff;
 
@@ -40,8 +40,9 @@ static char* overflowBuffers[MAX_OVERFLOW_BUFFERS];	// malloced extra buffers if
 
 unsigned char memDepth[512];				// memory usage at depth
 char* inverseStringDepth[512];				// inverseString at start of depth
-static char* nameDepth[512];				// who are we?
-static char* ruleDepth[512];				// current rule
+static unsigned int stringDepth[512];				// string at start of depth
+char* nameDepth[512];				// who are we?
+char* ruleDepth[512];				// current rule
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
@@ -169,6 +170,7 @@ char* AllocateBuffer()
 			char word[MAX_WORD_SIZE];
 			sprintf(word,(char*)"Corrupt bufferIndex %d or overflowIndex %d\r\n",bufferIndex,overflowIndex);
 			Log(STDTRACELOG,(char*)"%s\r\n",word);
+			ReportBug(word);
 			myexit(word);
 		}
 		--bufferIndex;
@@ -179,11 +181,10 @@ char* AllocateBuffer()
 			overflowBuffers[overflowLimit] = (char*) malloc(maxBufferSize);
 			if (!overflowBuffers[overflowLimit]) 
 			{
-				Log(STDTRACELOG,(char*)"out of buffers\r\n");
-				myexit((char*)"out of buffers");
+				ReportBug((char*)"FATAL: out of buffers\r\n");
 			}
 			overflowLimit++;
-			if (overflowLimit >= MAX_OVERFLOW_BUFFERS) myexit((char*)"Out of overflow buffers\r\n");
+			if (overflowLimit >= MAX_OVERFLOW_BUFFERS) ReportBug((char*)"FATAL: Out of overflow buffers\r\n");
 			Log(STDTRACELOG,(char*)"Allocated extra buffer %d\r\n",overflowLimit);
 		}
 		buffer = overflowBuffers[overflowIndex++];
@@ -276,7 +277,7 @@ static int JsonOpenCryption(char* buffer, size_t size, char* server)
 	callArgumentList[callArgumentIndex++] =    header;
 
 	// do it
-	trace = -1;
+	trace = (unsigned int)-1;
 	echo = true;
 	FunctionResult result = JSONOpenCode((char*) buffer); 
 	callArgumentIndex = oldArgumentIndex;	 
@@ -1025,7 +1026,8 @@ void BugBacktrace(FILE* out)
 	{
 		strncpy(rule,ruleDepth[i],50);
 		rule[50] = 0;
-		fprintf(out,"BugDepth %d: %s - %s\r\n",i,nameDepth[i],rule);
+		fprintf(out,"BugDepth %d: stringused: %d buffers:%d inverseused: %d %s - %s\r\n",
+			i,stringDepth[i],memDepth[i],stringFree - inverseStringDepth[globalDepth], nameDepth[i],rule);
 	}
 }
 
@@ -1044,19 +1046,16 @@ void ChangeDepth(int value,char* where)
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d inverse:%d\r\n",globalDepth, where, bufferIndex,stringInverseFree - stringInverseStart);
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d stringused: %d inverseused:%d\r\n",globalDepth, where, bufferIndex,stringBase - stringFree,stringInverseFree - stringInverseStart);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 		nameDepth[globalDepth] = where;
 		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
 		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
+		stringDepth[globalDepth] =  stringBase - stringFree;		
 	}
 	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
-	if (globalDepth >= 511)
-	{
-		ReportBug((char*)"globaldepth too deep at %s\r\n",where);
-		myexit((char*)"global depth failure\r\n");
-	}
+	if (globalDepth >= 511) ReportBug((char*)"FATAL: globaldepth too deep at %s\r\n",where);
 }
 
 bool LogEndedCleanly()
@@ -1078,7 +1077,8 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	}
 	else if (channel == STDTRACETABLOG || channel == STDTRACEATTNLOG) tracing = true;
 
-	static unsigned int id = 1000;	if (quitting) return id;
+	static unsigned int id = 1000;	
+	if (quitting) return id;
 	logged = true;
 	bool localecho = false;
 	bool noecho = false;
@@ -1099,7 +1099,6 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	if (!userLog && (channel == STDUSERLOG || channel > 1000 || channel == id) && !testOutput && !trace) return id;
     if (!fmt)  return id; // no format or no buffer to use
 	if ((channel == SERVERLOG) && server && !serverLog)  return id; // not logging server data
-	if (channel == BUGLOG && server && !serverLog)  return id; // not logging server data
 
 	static int priordepth = 0;
 	char* logbase = logmainbuffer;
@@ -1127,7 +1126,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	else if (channel > 1000) channel = STDTRACELOG; //   force result code to indent new line
 
 	//   channels above 100 will indent when prior line not ended
-	if (channel >= STDTRACELOG && logLastCharacter != '\\') //   indented by call level and not merged
+	if (channel != BUGLOG && channel >= STDTRACELOG && logLastCharacter != '\\') //   indented by call level and not merged
 	{ //   STDTRACELOG 101 is std indending characters  201 = attention getting
 		if (logLastCharacter == 1 && globalDepth == priordepth) {} // we indented already
 		else if (logLastCharacter == 1 && globalDepth > priordepth) // we need to indent a bit more
@@ -1205,18 +1204,26 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 				if (s) sprintf(at,(char*)"%s",s);
             }
             else if (*ptr == 'x') sprintf(at,(char*)"%x",(unsigned int)va_arg(ap,unsigned int)); // hex 
- 			else if (IsDigit(*ptr)) // int %2d
+ 			else if (IsDigit(*ptr)) // int %2d or %08x
             {
 				i = va_arg(ap,int);
 				unsigned int precision = atoi(ptr);
-				while (*ptr && *ptr != 'd') ++ptr;
-				if (precision == 2) sprintf(at,(char*)"%2d",i);
-				else if (precision == 3) sprintf(at,(char*)"%3d",i);
-				else if (precision == 4) sprintf(at,(char*)"%4d",i);
-				else if (precision == 5) sprintf(at,(char*)"%5d",i);
-				else if (precision == 6) sprintf(at,(char*)"%6d",i);
-				else sprintf(at,(char*)" Bad int precision %d ",precision);
-            }
+				while (*ptr && *ptr != 'd' && *ptr != 'x') ++ptr;
+				if (*ptr == 'd')
+				{
+					if (precision == 2) sprintf(at,(char*)"%2d",i);
+					else if (precision == 3) sprintf(at,(char*)"%3d",i);
+					else if (precision == 4) sprintf(at,(char*)"%4d",i);
+					else if (precision == 5) sprintf(at,(char*)"%5d",i);
+					else if (precision == 6) sprintf(at,(char*)"%6d",i);
+					else sprintf(at,(char*)" Bad int precision %d ",precision);
+				}
+				else
+				{
+					if (precision == 8) sprintf(at,(char*)"%08x",i);
+					else sprintf(at,(char*)" Bad hex precision %d ",precision);
+				}
+			}
             else
             {
                 sprintf(at,(char*)"%s",(char*)"unknown format ");
@@ -1227,7 +1234,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
         at += strlen(at);
 		if (!ptr) break;
-		if ((at-logbase) >= (MAX_BUFFER_SIZE - 2000)) break; // prevent log overflow
+		if ((at-logbase) >= (MAX_BUFFER_SIZE - SAFE_BUFFER_MARGIN)) break; // prevent log overflow
     }
     *at = 0;
     va_end(ap); 
@@ -1239,7 +1246,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	size_t bufLen = at - logbase;
 	inLog = true;
 	bool bugLog = false;
-		
+	
 	if (pendingWarning)
 	{
 		AddWarning(logbase);
@@ -1264,6 +1271,9 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
 	if (channel == BADSCRIPTLOG || channel == BUGLOG) 
 	{
+		if (!strnicmp(logbase,"FATAL",5)){;} // log fatalities anyway
+		else if (channel == BUGLOG && server && !serverLog)  return id; // not logging server data
+	
 		bugLog = true;
 		char name[MAX_WORD_SIZE];
 		sprintf(name,(char*)"%s/bugs.txt",logs);
@@ -1277,15 +1287,17 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (!compiling && !loading && channel == BUGLOG && *currentInput)  
 			{
 				char* buffer = AllocateBuffer();
-				if (buffer)
-				{
-					fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located,currentInput);
-				}
-				else fprintf(bug,(char*)"BUG: %s: input:%d %s %s caller:%s callee:%s at %s\r\n",GetTimeInfo(true),volleyCount,GetTimeInfo(true),logbase,loginID,computerID,located);
+				if (buffer) fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located,currentInput);
+				else fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located);
 				FreeBuffer();
 			}
 			fwrite(logbase,1,bufLen,bug);
-			if (!compiling && !loading) BugBacktrace(bug);
+			if (!compiling && !loading) 
+			{
+				fprintf(bug,(char*)"MinInverseStringGap %dMB MinStringAvailable %dMB\r\n",maxInverseStringGap/1000000,minStringAvailable/1000000);
+				fprintf(bug,(char*)"MaxBuffers used %d of %d\r\n\r\n",maxBufferUsed,maxBufferLimit);
+				BugBacktrace(bug);
+			}
 			fclose(bug); // dont use FClose
 
 		}
@@ -1295,25 +1307,35 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
 		}
 		strcat(logbase,(char*)"\r\n");	//   end it
+
+		if (!strnicmp(logbase,"FATAL",5))
+		{
+			if (!compiling && !loading) 
+			{
+				char name[100];
+				sprintf(name,(char*)"%s/exitlog.txt",logs);
+				FILE* out = FopenUTF8WriteAppend(name);
+				if (out) 
+				{
+					fprintf(out,(char*)"\r\n%s: input:%s caller:%s callee:%s\r\n",GetTimeInfo(true),currentInput,loginID,computerID);
+					BugBacktrace(bug);
+					fclose(out);
+				}
+			}
+			myexit(logbase); // log fatalities anyway
+		}
 		channel = STDUSERLOG;	//   use normal logging as well
 	}
 
 	if (server){} // dont echo  onto server console 
-    else if ((!noecho && (echo||localecho) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) fwrite(logbase,1,bufLen,stdout);
+    else if ((!noecho && (echo || localecho || trace & TRACE_ECHO) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) 
+		fwrite(logbase,1,bufLen,stdout);
 	bool doserver = true;
 
     FILE* out = NULL;
 	
 	if (server && trace && !userLog) channel = SERVERLOG;	// force traced server to go to server log since no user log
 
-#ifndef DISCARDPOSTGRES 
-	if (postgresparams)
-	{
-		doserver = false;
-		pguserLog(logbase,bufLen);
-	}
-	else
-#endif
     if (logFilename[0] != 0 && channel != SERVERLOG)  
 	{
 		out =  FopenUTF8WriteAppend(logFilename); 
@@ -1355,7 +1377,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	if (testOutput && server) // command outputs
 	{
 		size_t len = strlen(testOutput);
-		if ((len + bufLen) < (maxBufferSize - 10)) strcat(testOutput,logbase);
+		if ((len + bufLen) < (maxBufferSize - SAFE_BUFFER_MARGIN)) strcat(testOutput,logbase);
 	}
 
 #ifndef EVSERVER
@@ -1367,8 +1389,3 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	return ++id;
 }
 
-void Bug()
-{
-	int i = 0; // just a place to debug catch errors
-	i = i - 1;
-}

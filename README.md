@@ -1,7 +1,7 @@
 # ChatScript
 Natural Language tool/dialog manager
 
-[ChatScript Wiki (user guides, tutorials, papers)](https://github.com/bwilcox-1234/ChatScript/blob/master/wiki/README.md)
+[ChatScript Wiki (user guides, tutorials, papers)](https://github.com/bwilcox-1234/ChatScript/blob/master/WIKI/README.md)
 
 ChatScript is the next generation chatbot engine that has won the Loebner's 4 times and is the basis for natural language company for a variety of tech startups.
 

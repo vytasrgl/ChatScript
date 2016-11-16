@@ -47,6 +47,14 @@ debugmongoserver: INCLUDEDIRS=-Iinclude -I/usr/local/include/libbson-1.0 -I/usr/
 debugmongoserver: EXECUTABLE=../BINARIES/ChatScriptMongoDebug
 debugmongoserver: CFLAGS=-c  -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
 
+foreignserver: DEFINES+= -DLOCKUSERFILE=1  -DEVSERVER=1 -DEVSERVER_FORK=1  -DDISCARDPOSTGRES=1 -DDISCARDMONGO=1 -DDISCARDMYSQL=1 -DTREETAGGER=1
+foreignserver: PGLOAD= -pthread -ltreetagger -L../treetagger
+foreignserver: INCLUDEDIRS=-Ievserver
+foreignserver: all
+foreignserver: EXECUTABLE=../BINARIES/ChatScriptForeign
+foreignserver: CFLAGS=-c   -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing 
+
+
 UNAME := $(shell uname)
 
 CC=g++

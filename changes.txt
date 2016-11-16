@@ -1,3 +1,22 @@
+Version 6.87
+1. Backtrace() to show calls to get to you
+2. :trace output ^function  --- you can control function tracing bits in detail
+3. ^pick(jsonarray or jsonboject) returns factid
+4. $xx.subject or $xx.verb or $xx.object if $xx has fact id
+5. %restart - can be set and then retrieved across a system restart (:restart)
+6. can use local vars in function definition: outputmacro: ^x($_arg1 $_myarg)
+
+version 6.86 10/23/2016
+1. ^delete now always succeeds. For undeletable things like text, it merely ignores it
+2. JSON_DIRECT_OOB tokencontrol for json that is too large for being a token
+3. optional 5th param to jsonopen, timeout in seconds for this call (applied 1st to connection, then to transfer)
+so total max is double
+4. ^environment(variablename) retrieves environment variable value
+5. like json object references $x.y.z you can now do array references like $x[$tmp].y[5]
+BUT you cannot do assignment into an array for a new index, only on an existing index.
+6. input tokenizer from user input NO LONGER auto converts "&" into "and"
+7. ^jsoncopy no longers fails if what you pass is not a json structure, it merely returns what you passed
+
 version 6.85 10-8-2016
 1. If (^function()) fails     if function returns false (as well as previously returning 0 or failing
 2. @4 = ^jsongather(jsonstructure) - now allowed in addition to ^jsongather(@4 jsonstructure)

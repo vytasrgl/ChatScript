@@ -725,24 +725,8 @@ static void PerformPosTag(int start, int end, bool externed)
 	}
 }
 
-void TagIt() // get the set of all possible tags. Parse if one can to reduce this set and determine word roles
+void TagInit()
 {
-#ifndef DISCARDPARSER
-	roleIndex = 0; 
-	prepBit = clauseBit = verbalBit = 1;
-	memset(tried,0,sizeof(char) * (wordCount + 2));
-	memset(phrases,0,sizeof(int) *(wordCount+4));
-	memset(verbals,0,sizeof(int) *(wordCount+4));
-	memset(clauses,0,sizeof(int) *(wordCount+4));
-	memset(roles,0,(wordCount+4) * sizeof(uint64));
-	memset(parseFlags,0,(wordCount+2) * sizeof(int));
-	memset(indirectObjectRef,0,sizeof(char) *(wordCount+4)); // verb to indirect object
-	memset(objectRef,0,sizeof(char) *(wordCount+4)); // verb to object
-	memset(complementRef,0,sizeof(char) *(wordCount+4)); // verb to object complement
-#endif
-
-	// AssignRoles manages:  posValues+bitCounts, roles+needRoles+rolelevel, crossreference  (can we remove coordinates or complementref or objectref or indorectobjecref?), phrasal_verb?
-
 	// dynamic data
 	memset(bitCounts,0,sizeof(unsigned char)*(wordCount+2));
 	memset(posValues,0,sizeof(uint64)*(wordCount+2));
@@ -763,7 +747,26 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 	memset(lcSysFlags,0,sizeof(uint64)*(wordCount+2));
 	memset(canSysFlags,0,sizeof(uint64)*(wordCount+2));
 	memset(parseFlags,0,sizeof(unsigned int)*(wordCount+2));
+}
 
+void TagIt() // get the set of all possible tags. Parse if one can to reduce this set and determine word roles
+{
+#ifndef DISCARDPARSER
+	roleIndex = 0; 
+	prepBit = clauseBit = verbalBit = 1;
+	memset(tried,0,sizeof(char) * (wordCount + 2));
+	memset(phrases,0,sizeof(int) *(wordCount+4));
+	memset(verbals,0,sizeof(int) *(wordCount+4));
+	memset(clauses,0,sizeof(int) *(wordCount+4));
+	memset(roles,0,(wordCount+4) * sizeof(uint64));
+	memset(parseFlags,0,(wordCount+2) * sizeof(int));
+	memset(indirectObjectRef,0,sizeof(char) *(wordCount+4)); // verb to indirect object
+	memset(objectRef,0,sizeof(char) *(wordCount+4)); // verb to object
+	memset(complementRef,0,sizeof(char) *(wordCount+4)); // verb to object complement
+#endif
+
+	// AssignRoles manages:  posValues+bitCounts, roles+needRoles+rolelevel, crossreference  (can we remove coordinates or complementref or objectref or indorectobjecref?), phrasal_verb?
+	TagInit();
 	memset(ignoreWord,0,sizeof(unsigned char) * (wordCount+4));
 
 	wordStarts[wordCount+1] = reuseAllocation(wordStarts[wordCount+1],(char*)"");
@@ -8859,7 +8862,7 @@ restart:
 			WORDP X =  canonicalLower[i];
 			if (!X) X = canonicalUpper[i];
 			if (!X) X = StoreWord("Missing canonical");
-			Log(STDTRACELOG,(char*)"%d) \"%s %s\"",i,word,X->word);
+			Log(STDTRACELOG,(char*)"%d) \"raw: %s canonical: %s\"",i,word,X->word);
 			if (phrasalVerb[i] && phrasalVerb[i] > i && posValues[i] & (VERB_BITS|NOUN_INFINITIVE|NOUN_GERUND|ADJECTIVE_PARTICIPLE))
 			{
 				WORDP verb = GetPhrasalVerb(i);
@@ -9909,5 +9912,151 @@ void ParseSentence(bool &resolved,bool &changed)
 	{
 		if (trace & TRACE_POS) Log(STDTRACELOG,(char*)"\r\nNot trying to parse\r\n");
 	}
+}
+#endif
+
+#ifdef TREETAGGER
+// TreeTagger is something you must license for postagging a collection of foreign languages
+// Buying a license will get the the library you need to load with this code
+// http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/
+
+#ifdef WIN32
+#pragma comment(lib, "c:/ChatScript/treetagger/treetagger.lib")
+#endif
+
+typedef struct {
+  int  number_of_words;  /* number of words to be tagged */
+  int  next_word;        /* needed internally */
+  char **word;           /* array of pointers to the words */
+  char **inputtag;       /* array of pointers to the pretagging information */
+  const char **resulttag;/* array of pointers to the resulting tags */
+  const char **lemma;    /* array of pointers to the lemmas */
+} TAGGER_STRUCT;
+
+void init_treetagger(char *param_file_name);
+double tag_sentence( TAGGER_STRUCT *ts );
+
+int Ignore_Prefix=0; /* should be 0 - used by library*/
+
+TAGGER_STRUCT ts;  /* tagger interface data structure */
+  
+static void TreeTagger()
+{	
+	int i;
+	for (i = 0; i < wordCount; ++i)
+	{
+		ts.word[i] = wordStarts[i+1];
+	}
+    ts.number_of_words = wordCount;
+	TagInit(); // prepare recipient
+	tag_sentence(&ts);
+    if (trace & TRACE_PREPARE) Log(STDTRACELOG,"External Tagging: ");
+
+    /* The tagger output is printed */
+    for( i=1; i <= ts.number_of_words; i++) 
+	{
+		originalUpper[i] = NULL;
+		canonicalUpper[i] = NULL;
+		originalLower[i] = NULL;
+		canonicalLower[i] = NULL;
+		char* lemma = (char*) ts.lemma[i-1];
+		if (!lemma) lemma= "unknown-word";
+		char* tag = (char*) ts.resulttag[i-1];
+		if (!tag) tag = (char*)"unknown-tag";
+		if (IsUpperCase(lemma[0]))
+		{
+			originalUpper[i] = FindWord(wordStarts[i]);
+			canonicalUpper[i] = StoreWord(lemma,0);
+		}
+		else
+		{
+			originalLower[i] = FindWord(wordStarts[i]);
+			canonicalLower[i] = StoreWord(lemma,0);
+		}
+		char newtag[MAX_WORD_SIZE];
+		*newtag = '~';	// private word label
+		strcpy(newtag+1,tag);
+		WORDP X = StoreWord(newtag);
+		posValues[i] |= X->properties;
+		wordTag[i] = X;
+		if (IsDigit(wordStarts[i][0])) posValues[i] |= NOUN_NUMBER; // regardless of language, recognize ~number
+		if (trace & TRACE_PREPARE) Log(STDTRACELOG,"%s/%s/%s ",wordStarts[i], tag, lemma);
+    }
+    if (trace & TRACE_PREPARE) Log(STDTRACELOG,"\r\n");
+}
+
+void InitTreeTagger(char* params)
+{
+	if (!params) return;
+    printf("External Tagging: %s\r\n",params);
+
+	char* language = strstr(params,"language=");
+	if (!language) return;
+	char* end = strchr(language,'"');
+	if (end) *end = 0;
+	language += 9;
+	init_treetagger(language);  /* Initialization of the tagger with a language parameter file */
+	if (end) *end = ' ';
+
+	// read pos tags and assign value
+	char* tags = strstr(params,"tags=");
+	if (tags)
+	{
+		end  = strchr(tags,'"');
+		if (end) *end = 0;
+		tags += 5;
+		if (end) *end = ' ';
+		uint64 tagflags = 0;
+		WORDP D = NULL;
+		FILE* in = fopen(tags,(char*)"rb");
+		if (!in) printf("Unable to read tags %s\r\n",tags);
+		else {
+			char word[MAX_WORD_SIZE];
+			char type[MAX_WORD_SIZE];
+			while (ReadALine(readBuffer,in))
+			{
+				uint64 flags = 0;
+				char* ptr = ReadCompiledWord(readBuffer,word);
+				if (!*word) break;
+				if (*word == '=') // a line of CS POS TYPES to be global
+				{
+					while (ptr && *ptr) // for each flag on this flag line
+					{
+						ptr = ReadCompiledWord(ptr,type);
+						if (!*type) break;
+						flags |= FindValueByName(type); // type known?
+					}
+					tagflags = flags;	
+				}
+				else // a foreign postag  using global flags and local flags on its line
+				{
+					char label[MAX_WORD_SIZE];
+					*label = '~';	// marker as a concept
+					strcpy(label+1,word);
+					while (ptr && *ptr) // for each flag
+					{
+						ptr = ReadCompiledWord(ptr,type);
+						if (!*type) break;
+						flags |= FindValueByName(type); // type known?
+						if (!flags) Log(STDUSERLOG,"Type not known %s for %s\r\n",word,type);
+					}
+					D = StoreWord(label,tagflags | flags);
+				}
+			}
+			fclose(in);
+		}
+	}
+
+	externalPostagger = TreeTagger;
+
+	/* Memory allocation (the maximal input sentence length is here 1000) */
+	ts.word = (char**)AllocateString(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
+	ts.inputtag = (char**)AllocateString(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
+	ts.resulttag = (const char**)AllocateString(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
+	ts.lemma = (const char**)AllocateString(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
+
+	memset(ts.inputtag,0,sizeof(char*) * MAX_SENTENCE_LENGTH); // we never force an input tag
+	memset(ts.lemma,0,sizeof(char*) * MAX_SENTENCE_LENGTH); // in case we never generate anything
+	memset(ts.resulttag,0,sizeof(char*) * MAX_SENTENCE_LENGTH); // in case we never generate anything
 }
 #endif

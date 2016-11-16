@@ -11,12 +11,12 @@ static void TestIf(char* ptr,FunctionResult& result)
 	//   if ($var) example of existence
 	//   if ('_3 == 5)  quoted matchvar
 	//   if (1) what an else does
-	ChangeDepth(1,"testif");
-	char* word1 = AllocateBuffer();
-	char* word2 = AllocateBuffer();
+	char* word1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* word2 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	char op[MAX_WORD_SIZE];
 	int id;
 	impliedIf = 1;
+	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"If ");
 resume:
 	ptr = ReadCompiledWord(ptr,word1);	//   the var or whatever
 	bool invert = false;
@@ -33,16 +33,14 @@ resume:
 	{
 		call = true;
 		ptr -= strlen(word1) + 3; //   back up so output can see the fn name and space
-		ChangeDepth(1,(char*)"TestIf");
 		ptr = FreshOutput(ptr,word2,result,OUTPUT_ONCE|OUTPUT_KEEPSET); // word2 hold output value // skip past closing paren
 		if (result & SUCCESSCODES) result = NOPROBLEM_BIT;	// legal way to terminate the piece with success at any  level
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 		{
-			if (result & ENDCODES) id = Log(STDTRACETABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
+			if (result & ENDCODES) id = Log(STDTRACETABLOG,(char*)"%c%s ",(invert) ? '!' : ' ',word1);
 			else if (*word1 == '1' && word1[1] == 0) id = Log(STDTRACETABLOG,(char*)"else ");
-			else id = Log(STDTRACETABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
+			else id = Log(STDTRACETABLOG,(char*)"%c%s ",(invert) ? '!' : ' ',word1);
 		}
-		ChangeDepth(-1,(char*)"TestIf");
 		ptr = ReadCompiledWord(ptr,op); // find out what happens next after function call
 		if (!result && IsComparison(*op)) // didnt fail and followed by a relationship op, move output as though it was the variable
 		{
@@ -94,13 +92,13 @@ resume:
 				if (*remap == '^') sprintf(label,"%s->%s",remap,word1);
 				if (!*found) 
 				{
-					if (invert) id = Log(STDTRACETABLOG,(char*)"If !%s (null) ",label);
-					else id = Log(STDTRACETABLOG,(char*)"If %s (null) ",label);
+					if (invert) id = Log(STDTRACELOG,(char*)"!%s (null) ",label);
+					else id = Log(STDTRACELOG,(char*)"%s (null) ",label);
 				}
 				else 
 				{
-					if (invert) id = Log(STDTRACETABLOG,(char*)"If !%s (%s) ",label,found);
-					else id = Log(STDTRACETABLOG,(char*)"If %s (%s) ",label,found);
+					if (invert) id = Log(STDTRACELOG,(char*)"!%s (%s) ",label,found);
+					else id = Log(STDTRACELOG,(char*)"%s (%s) ",label,found);
 				}
 			}
 			if (!*found) result = FAILRULE_BIT;
@@ -110,9 +108,9 @@ resume:
 		{
 			if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 			{
-				if (result & ENDCODES) id = Log(STDTRACETABLOG,(char*)"If %c%s ",(invert) ? '!' : ' ',word1);
-				else if (*word1 == '1' && word1[1] == 0) id = Log(STDTRACETABLOG,(char*)"else ");
-				else id = Log(STDTRACETABLOG,(char*)"if %c%s ",(invert) ? '!' : ' ',word1);
+				if (result & ENDCODES) id = Log(STDTRACELOG,(char*)"%c%s ",(invert) ? '!' : ' ',word1);
+				else if (*word1 == '1' && word1[1] == 0) id = Log(STDTRACELOG,(char*)"else ");
+				else id = Log(STDTRACELOG,(char*)"%c%s ",(invert) ? '!' : ' ',word1);
 			}
 			ptr -= strlen(word1) + 3; //   back up to process the word and space
 			ptr = FreshOutput(ptr,word2,result,OUTPUT_ONCE|OUTPUT_KEEPSET) + 2; //   returns on the closer and we skip to accel
@@ -148,10 +146,7 @@ resume:
 		}
 	}
 
-	FreeBuffer();
-	FreeBuffer();
-	ChangeDepth(-1,"testif");
-	if (trace & TRACE_OUTPUT &&  (result & ENDCODES) && CheckTopicTrace()) Log(id,(char*)"%s\r\n", "FAIL-if");
+	ReleaseInverseString(word1);
 	impliedIf = ALREADY_HANDLED;
 }
 
@@ -161,6 +156,8 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 	// a nested if would be ^^if ( _0 == null ) 00m{ ^^if ( _0 == null ) 00m{ this is it } 00G else ( 1 ) 00q { this is not it } 004 } 00G else ( 1 ) 00q { this is not it } 004
 	// after a test condition is code to jump to next test branch when condition fails
 	// after { }  chosen branch is offset to jump to end of if
+	ChangeDepth(1,"if");
+	bool executed = false;
 	while (ALWAYS) //   do test conditions until match
 	{
 		char* endptr;
@@ -213,18 +210,21 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			result = (failed) ? FAILRULE_BIT : NOPROBLEM_BIT;
 		}
 		else TestIf(ptr+2,result); 
+		if (trace & TRACE_OUTPUT  && CheckTopicTrace()) 
+		{
+			if (result & ENDCODES) Log(STDTRACELOG,(char*)"%s\r\n", "FAIL-if");
+			else Log(STDTRACELOG,(char*)"%s\r\n", "PASS-if");
+		}
+
 		ptr = endptr; // now after pattern, pointing to the skip data to go past body.
 						
 		//   perform SUCCESS branch and then end if
 		if (!(result & ENDCODES)) //   IF test success - we choose this branch
 		{
-			ChangeDepth(1,(char*)"HandleIf");
-			ChangeDepth(1,(char*)"HandleIf");
+			executed = true;
 			ptr = Output(ptr+5,buffer,result); //   skip accelerator-3 and space and { and space - returns on next useful token
-			ChangeDepth(-1,(char*)"HandleIf");
 			ptr += Decode(ptr);	//   offset to end of if entirely
 			if (*(ptr-1) == 0)  --ptr;// no space after?
-			ChangeDepth(-1,(char*)"HandleIf");
 			break;
 		}
 		else 
@@ -232,10 +232,18 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 	
 		//   On fail, move to next test
 		ptr +=  Decode(ptr);
-		if (*(ptr-1) == 0) return --ptr; // the if ended abruptly as a stream like in NOTRACE, and there is no space here
+		if (*(ptr-1) == 0) 
+		{
+			--ptr;
+			break; // the if ended abruptly as a stream like in NOTRACE, and there is no space here
+		}
 		if (strncmp(ptr,(char*)"else ",5))  break; //   not an ELSE, the IF is over. 
 		ptr += 5; //   skip over ELSE space, aiming at the ( of the next condition condition
 	}
+	if (executed && trace & TRACE_OUTPUT  && CheckTopicTrace()) Log(STDTRACETABLOG,"End If\r\n");
+
+	ChangeDepth(-1,"if");
+	
 	return ptr;
 } 
 
@@ -243,21 +251,23 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 {
 	unsigned int oldIterator = currentIterator;
 	currentIterator = 0;
-	char* buffer1 = AllocateBuffer();
+	char* buffer1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	ptr = ReadCommandArg(ptr+2,buffer1,result)+2; //   get the loop counter value and skip closing ) space 
 	char* endofloop = ptr + (size_t) Decode(ptr);
 	int counter;
 	if (*buffer1 == '@')
 	{
 		int set = GetSetID(buffer1);
-		if (set < 0) {
+		if (set < 0) 
+		{
 			result = FAILRULE_BIT; // illegal id
+			ReleaseInverseString(buffer1);
 			return ptr;
 		}
 		counter = FACTSET_COUNT(set);
 	}
 	else counter = atoi(buffer1);
-	FreeBuffer();
+	ReleaseInverseString(buffer1);
 	if (result & ENDCODES) return endofloop;
 
 	++withinLoop;
@@ -267,15 +277,19 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 	int limit = atoi(value);
 	if (limit == 0) limit = 1000;
 
-	if (counter > limit || counter < 0) counter = limit; //   LIMITED
+	bool infinite = false;
+	if (counter > limit || counter < 0) 
+	{
+		counter = limit; //   LIMITED
+		infinite = true; // loop is bounded by defaults
+	}
+	ChangeDepth(1,(char*)"HandleLoop");
 	while (counter-- > 0)
 	{
-		ChangeDepth(1,(char*)"HandleLoop");
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"loop (%d)\r\n",counter+1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"loop(%d)\r\n",counter+1);
 		FunctionResult result1;
 		Output(ptr,buffer,result1,OUTPUT_LOOP);
 		buffer += strlen(buffer);
-		ChangeDepth(-1,(char*)"HandleLoop");
 		if (result1 & ENDCODES) 
 		{
 			if (result1 == NEXTLOOP_BIT) continue;
@@ -286,6 +300,8 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 		}
 	}
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"end of loop\r\n");
+	if (counter < 0 && infinite) ReportBug("Loop ran to limit");
+	ChangeDepth(-1,(char*)"HandleLoop");
 	--withinLoop;
 
 	currentIterator = oldIterator;
@@ -296,8 +312,8 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 { //   word1 and word2 are RAW, ready to be evaluated.
 	*word1val = 0;
 	*word2val = 0;
-	char* val1 = AllocateBuffer();
-	char* val2 = AllocateBuffer();
+	char* val1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* val2 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	WORDP D;
 	WORDP D1;
 	WORDP D2;
@@ -482,21 +498,21 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 		}
 		if (!stricmp(word1,val1)) 
 		{
-			if (*word1) Log(STDTRACETABLOG,(char*)"if %s %s ",(*x) ? x : word1,op); // no need to show value
-			else Log(STDTRACETABLOG,(char*)"if null %s ",op);
+			if (*word1) Log(STDTRACELOG,(char*)"%s %s ",(*x) ? x : word1,op); // no need to show value
+			else Log(STDTRACELOG,(char*)"null %s ",op);
 		}
-		else if (!*val1) Log(STDTRACETABLOG,(char*)"if  %s (null) %s ",word1,op);
-		else if (*op == '&')  Log(STDTRACETABLOG,(char*)"if  %s (%s) %s ",word1,x,op);
-		else Log(STDTRACETABLOG,(char*)"if  %s (%s) %s ",word1,val1,op);
+		else if (!*val1) Log(STDTRACELOG,(char*)"%s(null) %s ",word1,op);
+		else if (*op == '&')  Log(STDTRACELOG,(char*)"%s(%s) %s ",word1,x,op);
+		else Log(STDTRACELOG,(char*)"%s(%s) %s ",word1,val1,op);
 
-		if (!strcmp(word2,val2)) 
+		if (word2  && !strcmp(word2,val2)) 
 		{
 			if (*val2) id = Log(STDTRACELOG,(char*)" %s ",(*y) ? y : word2); // no need to show value
 			else id = Log(STDTRACELOG,(char*)" null "); 
 		}
-		else if (!*val2)  id = Log(STDTRACELOG,(char*)" %s (null) ",word2);
-		else if (*op == '&') id = Log(STDTRACELOG,(char*)" %s (%s) ",word2,y);
-		else id = Log(STDTRACELOG,(char*)" %s (%s) ",word2,val2);
+		else if (!*val2)  id = Log(STDTRACELOG,(char*)" %s(null) ",word2);
+		else if (*op == '&') id = Log(STDTRACELOG,(char*)" %s(%s) ",word2,y);
+		else id = Log(STDTRACELOG,(char*)" %s(%s) ",word2,val2);
 	}
 	else if (trace & TRACE_PATTERN && !output && CheckTopicTrace()) 
 	{
@@ -506,7 +522,6 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 		strcpy(word2val,val2);
 	}
 
-	FreeBuffer();
-	FreeBuffer();
+	ReleaseInverseString(val1);
 	return result;
 }
