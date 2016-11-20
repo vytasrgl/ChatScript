@@ -77,6 +77,8 @@ So presumably almost one in every four WSJ sentences is wrongly tagged. Even if 
 you can wrongly parse it. When pos-tagging is wrong, what chance do you have? The stated accuracy
 of parsing of the Stanford parser is 56%. Almost half of what it reads is parsed incorrectly.
 
+Google recently released SyntaxNet, an even better parser. Yet if you give it `wind the clock`, it thinks `wind` is a noun. It doesn't even have a sentence there.
+
 ChatScript faces uncommon problems from most Natural Language tools. 
 
 The best taggers/parsers are trained on the Wall Street Journal, where everything is properly cased. 

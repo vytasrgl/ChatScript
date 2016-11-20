@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,27 +13,27 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 11/5/2016 cs6.87</p>
+<p>Revision 11/20/2016 cs6.9</p>
 </blockquote>
 <ul>
-<li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#advanced-concepts">Advanced Concepts</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#advanced-topics">Advanced Topics</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#advanced-patterns">Advanced Patterns</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#advanced-output">Advanced Output</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#advanced-variables">Advanced Variables</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#out-of-band-communication">Out of Band Communication</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#system-callback-functions">System callback functions</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#advanced-build">Advanced :build</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#editing-non-topic-files">Editing Non-topic Files</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#which-bot">Which Bot?</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#common-script-idioms">Common Script Idioms</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#esoterica-and-fine-detail">Esoterica and Fine Detail</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#self-reflection">Self-Reflection</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#a-fresh-build">A Fresh build</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#command-line-parameters">Command line Parameters</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#updating-cs-versions-easily">Updating CS versions Easily</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#the-dictionary">The Dictionary</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works">Review</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#advanced-concepts">Advanced Concepts</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#advanced-topics">Advanced Topics</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#advanced-patterns">Advanced Patterns</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#advanced-output">Advanced Output</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#advanced-variables">Advanced Variables</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#out-of-band-communication">Out of Band Communication</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#system-callback-functions">System callback functions</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#advanced-build">Advanced :build</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#editing-non-topic-files">Editing Non-topic Files</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#which-bot">Which Bot?</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#common-script-idioms">Common Script Idioms</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#esoterica-and-fine-detail">Esoterica and Fine Detail</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#self-reflection">Self-Reflection</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#a-fresh-build">A Fresh build</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#command-line-parameters">Command line Parameters</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#updating-cs-versions-easily">Updating CS versions Easily</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.md#the-dictionary">The Dictionary</a></li>
 </ul>
 <h1 id="review-overview-of-how-cs-works">Review: Overview of how CS works</h1>
 <p>CS is a scripting language for interactivity. Each time CS communicates with the user, this is called a volley. Volleys are always asynchronous. In CS, each volley actually consists of accepting an incoming input from an arbitrary user, loading data about the user and their state, computing a response, writing out a new state, and sending a response to the user.</p>
@@ -108,6 +108,12 @@ concept: ~active_verbs ONLY_NONE (sleep)</code></pre>
 has 6 members</code></pre>
 <p>Concepts can be built from other concepts that do not have specific words.</p>
 <pre><code>Concept: ~myconcept (!thisword ~otherconcept)</code></pre>
+<p>Note: the system has two kinds of concepts. Enumerated concepts are ones formed from an explicit list of members. Stuff in definitions of concept: ~xxx() are that. There are also internal concepts marked by the system. These include part of speech of a word (requires using the pos-tagger to decide from the input what part of speech it was of possibly several), grammatical roles, words from infinite sets like ~number and ~placenumber and ~weburl, and so forth.</p>
+<p>In a pattern of some kind, if you are referencing a sentence location using a match variable, you can match both kinds of concepts. But if you are not tied to a location in a sentence, you can't match internally computed ones. So something like</p>
+<pre><code>if (pattern 23?~number)</code></pre>
+<p>will fail. Even</p>
+<pre><code>if (pattern practical?~adjective)</code></pre>
+<p>will fail given that deciding practical is an adjective (it could also be a noun) hasn't been performed by pos-tagging.</p>
 <h1 id="advanced-topics">ADVANCED TOPICS</h1>
 <p>There are several things to know about advanced topics.</p>
 <h2 id="topic-execution">Topic Execution</h2>
@@ -420,6 +426,12 @@ s: ( @_1+ going ) # this completes the match of is mother going</code></pre>
 <p>You can request n words before the current position using <code>*-n</code>. For example</p>
 <pre><code>u: (I love * &gt; _*-1 ) capture last word of sentence</code></pre>
 <h2 id="gory-details-about-strings">Gory details about strings</h2>
+<p>'Strings in Output'</p>
+<p>A double quoted string in output retains its quotes.</p>
+<pre><code>u: () I love &quot;rabbits&quot;</code></pre>
+<p>will print that out literally, including the double quotes.</p>
+<p>And you cannot run the string across multiple lines.</p>
+<p>An active string interprets variable references inside. It does not show the containing quotes around the whole thing. And it can be extended across multiple lines (treating line breaks as a single space in the string created).</p>
 <pre><code>u: ( I &quot;take charge&quot; ) OK.</code></pre>
 <p>When you use &quot;take charge&quot; it can match taking charges, take charge, etc. When you use <em>&quot;taking charge&quot;</em> it can only match that, not <em>&quot;taking charges&quot;</em>. If all words in the string are canonical, it can cover all forms. If any are not, it can only literally match.</p>
 <p>The quote notation is typically used in several situations...</p>

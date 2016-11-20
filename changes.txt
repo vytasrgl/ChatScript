@@ -1,4 +1,11 @@
-Version 6.87
+version 6.9 11/20/2016
+1. ^nth now accepts json object or arrays, returns the factid of the nth member
+2. command line parameter root=xxxx to tell where CS root directory is
+3. for ^jsonpath, if you give a field name first without ., CS defaults the dot
+	^jsonpath(field $_obj)  ==  ^jsonpath(".field" $_obj)
+4. ^jsonkind($_obj) returns array or object if a json thingy, or fails if not
+
+Version 6.87 11/5/2016
 1. Backtrace() to show calls to get to you
 2. :trace output ^function  --- you can control function tracing bits in detail
 3. ^pick(jsonarray or jsonboject) returns factid
@@ -345,14 +352,14 @@ Version 5.8c 11/28/2015
 
 Version 5.8b 11/26/2015
 
-Version 5.8a
+Version 5.8a 11/22/2015
 1. :build option NOSUBSTITUTION will disable warning you about various substitutions.
 2. Sample comment can now include F to indicate the pattern is NOT supposed to match
 3. $cs_utcoffset is hours from utc, %time returns current time in that timezone
 4. ^timefromseconds takes optional second argument, timezone (hour) displacement (+ or -)
 
 
-Version 5.8
+Version 5.8 11/13/2015
 1. ^jsongather(set jsonid) takes the facts involved in the json structure named by jsonid and stores
 them in the factset set.
 2. ^jsonparse and ^jsonopen take optional 1st argument "UNIQUE" allowing array and object naming
@@ -370,16 +377,16 @@ fact is an array fact, will renumber all later array value facts down 1.
 9 ^jsoncreate({object array}) creates an empty json composite.
 10 New CS manual  ChatScript JSON
 
-Version 5.72d
+Version 5.72d 10/24/2015
 1 ^conceptlist fixed (bad edit destroyed the name)
 
-Version 5.72c
+Version 5.72c 10/23/2015
 1. :build will ignore files ending in .bak and ~
 
-Version 5.72b
+Version 5.72b 10/18/2015
 1. OUTPUT_NOSTORE renamed OUTPUT_RETURNVALUE_ONLY
 
-version 5.72
+version 5.72 10/11/2015
 1. new ^print flags:  OUTPUT_RAW - does not try to interpret " or [  or { or (
        OUTPUT_NOSTORE - does NOT save the answer, but instead just returns it.
 2. ^JSONWRITE(id)  given json facts referred to by the root "id", creates the corresponding JSON string sans
@@ -392,31 +399,31 @@ version 5.72
 6.  No longer providing 32bit LINUX version executables. You need to build them yourself. Or tell me you want it.
 	if there is enough demand, I will continue them.
 
-version 5.7
+version 5.7 9/27/2015
 1. ^define takes a second argument of "all" or a third argument of "all" to display all meanings or of a particular sort.
 2. user flags on facts extended to 8 from 4 and JSON_xxx fact flags named as well.  FACTS manual advanced section now documents a bunch of fact flags.
 3. :trace JSON added
 4. JSONOPEN & JSONPRINT & JSONPARSE & JSONPATH provide support for internet JSON access
 
 
-version 5.61B
+version 5.61B 9/16/2015
 1. added optional argument ("trace") to build to trace the rules it compiles so you can see where it last succeeded before dying...
    :build harry trace 
 2. ^cs_topic_enter(^topic ^mode) and ^cs_topic_exit(^topic ^result) allow you to intercept calls to do a topic.
    
 
-version 5.6
+version 5.6 8/28/2015
 1. changed LIVEDATA path to be the unchanged path for initsystem embedded CS users.
 
 
-version 5.54
+version 5.54 8/24/2015
 1. new tokencontrol value UNTOUCHED_INPUT. if set to exactly that, the system will tokenize based on spaces only.
 2 :tracedfunctions  List all user defined macros currently being traced
 3. :tracedtopics List all topics currently being traced
 	
 
 
-version 5.53a
+version 5.53a 8/6/2015
 1. ^respond now takes multiple arguments to try in order (similar to the new ^gambit)
 
 version 5.53

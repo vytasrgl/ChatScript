@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,20 +13,20 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 11/5/2016 cs6.87</p>
+<p>Revision 11/20/2016 cs6.9</p>
 </blockquote>
 <ul>
-<li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#marking-functions">Marking Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#input-functions">Input Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#number-functions">Number Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#output-functions">Output Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#control-flow-functions">Control Flow Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#external-access-functions">External Access Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#json-functions">JSON Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#word-manipulation-functions">Word Manipulation Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#multipurpose-functions">Multipurpose Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#fact-functions">Facts Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#topic-functions">Topic Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#marking-functions">Marking Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#input-functions">Input Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#number-functions">Number Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#output-functions">Output Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#control-flow-functions">Control Flow Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#external-access-functions">External Access Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#json-functions">JSON Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#word-manipulation-functions">Word Manipulation Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#multipurpose-functions">Multipurpose Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#fact-functions">Facts Functions</a></li>
 </ul>
 <p>System functions are predefined and can be intermixed with direct output. Generally they are used from the output side of a rule, but in many cases nothing prevents you from invoking them from inside a pattern. When used in a pattern, they do not write out any text output to the user. But their output will be tested the same as it would from an <code>if</code> statement, meaning 0 and false are failures.</p>
 <p>You can write them with or without a <code>^</code> in front of their name. With is clearer, but you don’t have to. The only time you must is if the first thing you want to do in a gambit is call a function (unlikely).</p>
@@ -719,6 +719,8 @@ else {$$tcpopen_error}</code></pre>
 <p><code>string</code> is a json text string (as might be returned from a website) and this parses into facts exactly as <code>^jsonopen</code> would do, just not retrieving the string from the web. It returns the name of the root node. One use for this is to pass JSON data as a quoted string within out-of-band data, and have the system parse that into facts you can use.</p>
 <p>You can add <code>NOFAIL</code> before the string argument, to tell it to return null but not fail if a dereference path fails cannot be found.</p>
 <pre><code>^jsonparse(transient NOFAIL &quot;{ a: $var, b: _0.e[2] }&quot;)</code></pre>
+<h3 id="jsonkind-something"><code>^jsonkind</code>( something )</h3>
+<p>If <code>something</code> is a JSON object, the function returns <code>object</code>. If it is a JSON array it returns <code>array</code>. Otherwise it fails.</p>
 <h3 id="jsonpath-string-id"><code>^jsonpath</code>( string id )</h3>
 <p><code>string</code> is a description of how to walk JSON. Id is the name of the node you want to start at (typically returned from <code>^jsonopen</code> or <code>^jsonparse</code>. Array values are accessed using typical array notation like <code>ja-1[3]</code> and object fields using dotted notation like <code>jo-7.id</code>.</p>
 <p>A simple path access might look like this: <code>[1].id</code> which means take the root object passed as id, e.g., <code>ja-1</code>, get the 2nd index value (arrays are 0-based in JSON). That value is expected to be an object, so return the value corresponding to the id field of that object. In more complex situations, the value of id might itself be an object or an array, which you could continue indexing like <code>[1].id.firstname</code>.</p>
@@ -727,6 +729,8 @@ else {$$tcpopen_error}</code></pre>
 ^jsonpath(.name[4]* $$obj)</code></pre>
 <p>If you need to handle the full range of legal keys in json, you can use text string notation like this</p>
 <pre><code>^jsonpath(.&quot;st. helen&quot;.data $tmp)</code></pre>
+<p>You may omit the leading . of a path and CS will by default assume it</p>
+<pre><code>^jsonpath(&quot;st. helen&quot;.data $tmp)</code></pre>
 <h1 id="word-manipulation-functions">Word Manipulation Functions</h1>
 <h3 id="burst-count-once-data-source-burst-character-string"><code>^burst</code>( {count once} data-source burst-character-string )</h3>
 <p>Takes the data source text and hunts within it for instances of the burst-character-string. If it is being dumped to the output stream then only the first piece is dumped. If it is being assigned to a fact set (like <code>@2</code>) then a series of transient facts are created for the pieces, with the piece as the subject and <code>^burst</code> <code>^burst</code> as the verb and object. If it is being assigned to a match variable, then pieces are assigned starting at that variable and moving on to successively higher ones.</p>
@@ -991,6 +995,8 @@ concept: ~canine (dog)</code></pre>
 <p>where the first argument is like <code>^first</code> because you also specify how to interpret the answer and the second is the index you want to retrieve, eg.,</p>
 <pre><code>^nth(@0object 5)</code></pre>
 <p>An index out of bounds will fail. Factsets are always numbered 1...n, so the first element is, in fact, <code>^nth(@0object 1)</code> would correspond to <code>@0object</code> or <code>^first(@0object)</code></p>
+<p>Similarly you can do <code>nth(~concept 2)</code> to retrieve the third member of a concept (numbering starts at 0).</p>
+<p>You can also do <code>nth</code> of a JSON object (returns the factid of the nth key/value pair) or JSON array (returns the factid of the nth index/value pair).</p>
 <h3 id="unpackfactref"><code>^unpackfactref</code></h3>
 <p>examines facts in a set and generates all fact references from it. That is, it lists all the fields that are themselves facts.</p>
 <pre><code>@1 = ^unpackfactref( @2)</code></pre>

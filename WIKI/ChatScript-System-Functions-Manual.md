@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 11/5/2016 cs6.87
+> Revision 11/20/2016 cs6.9
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -1181,6 +1181,10 @@ dereference path fails cannot be found.
 ^jsonparse(transient NOFAIL "{ a: $var, b: _0.e[2] }")
 ```
 
+### `^jsonkind`( something )
+If `something` is a JSON object, the function returns `object`. If it is a JSON array it returns
+`array`. Otherwise it fails.
+
 ### `^jsonpath`( string id )
 `string` is a description of how to walk JSON. Id is the name of the node you want to start at 
 (typically returned from `^jsonopen` or `^jsonparse`. 
@@ -1205,6 +1209,11 @@ Just add `*` after your final path, eg
 If you need to handle the full range of legal keys in json, you can use text string notation like this
 ```
 ^jsonpath(."st. helen".data $tmp)
+```
+
+You may omit the leading . of a path and CS will by default assume it
+```
+^jsonpath("st. helen".data $tmp)
 ```
 
 # Word Manipulation Functions
@@ -1746,6 +1755,11 @@ interpret the answer and the second is the index you want to retrieve, eg.,
 ```
 An index out of bounds will fail. Factsets are always numbered 1...n, so the first element
 is, in fact, `^nth(@0object 1)` would correspond to `@0object` or `^first(@0object)`
+
+Similarly you can do `nth(~concept 2)` to retrieve the third member of a concept (numbering starts at 0).
+
+You can also do `nth` of a JSON object (returns the factid of the nth key/value pair) or JSON array (returns the factid
+of the nth index/value pair).
 
 ### `^unpackfactref` 
 examines facts in a set and generates all fact references from it. That is,

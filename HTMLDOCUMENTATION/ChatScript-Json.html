@@ -50,7 +50,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 11/5/2016 cs6.87</p>
+<p>Revision 11/20/2016 cs6.9</p>
 </blockquote>
 <h1 id="real-world-json">Real World JSON</h1>
 <p>JSON (JavaScript Object Notation) is an open standard format using human-readable text to transmit data objects over the web. It is a common standard largely replacing XML which is too wordy and hard to read. JSON has two datatypes that represents collections of values, the array and the object. A JSON array is a list of JSON entities separated by commas and placed within [], e.g.,</p>
@@ -144,6 +144,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <pre><code>^jsonpath(.name* $$obj)
 ^jsonpath(.name[4]* $$obj)</code></pre>
 <p>If you need to handle the full range of legal keys in json, you can use text string notation like this <code>^jsonpath(.&quot;st. helen&quot;.data $tmp)</code>.</p>
+<p>You may omit the leading . of a path and CS will by default assume it</p>
+<pre><code>^jsonpath(&quot;st. helen&quot;.data $tmp)</code></pre>
 <h2 id="direct-access-via-json-variables-myvar.field">Direct access via JSON variables <code>$myvar.field</code></h2>
 <p>If a variable holds a JSON object value, you can directly set and get from fields of that object using dotted notation. This can be a fixed static fieldname you give or a variable value: <code>$myvar.$myfield</code> is legal. Dotted notation is cleaner and faster than <code>^jsonpath</code> and <code>jsonobjectinsert</code> and for get, has the advantage that it never fails, it only returns null if it can't find the field. On the other hand, assignment fails if the path does not contain a json object at some level.</p>
 <pre><code>$x = $$obj.name.value.data.side 

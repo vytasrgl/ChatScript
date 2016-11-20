@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 11/5/2016 cs6.87
+> Revision 11/20/2016 cs6.9
 
 
 # Real World JSON
@@ -233,6 +233,11 @@ your final path, eg
 
 If you need to handle the full range of legal keys in json, you can use text string notation like this
  `^jsonpath(."st. helen".data $tmp)`.
+
+You may omit the leading . of a path and CS will by default assume it
+```
+^jsonpath("st. helen".data $tmp)
+```
 
 ## Direct access via JSON variables `$myvar.field`
 
