@@ -630,7 +630,7 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 	// set bom
 	if (buffer && *buffer != 0) // readable data
 	{ 
-		currentFileLine = 0;
+		maxFileLine = currentFileLine = 0;
 		BOM = BOMSET;
 		char* at = strchr(buffer,'\r');
 		if (at) // newer format

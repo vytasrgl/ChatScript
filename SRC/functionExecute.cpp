@@ -692,22 +692,24 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			{
 				WORDP arg = FindWord(var);
 				if (!arg) continue;	// should never happen
-				arg->w.userValue = callArgumentList[i];
-				if (*arg->w.userValue == USERVAR_PREFIX) arg->w.userValue = GetUserVariable(arg->w.userValue);
-				else if (arg->w.userValue[0] == ENDUNIT && arg->w.userValue[1] == ENDUNIT) arg->w.userValue += 2; // skip over noeval marker
-				else if (arg->w.userValue[0] == '\'' && arg->w.userValue[1] == '_' &&
-					IsDigit(arg->w.userValue[2]))
+				char* val = callArgumentList[i]; // constants wont have `` in front of them
+				if (*val == USERVAR_PREFIX) val = GetUserVariable(val);
+				else if (val[0] == ENDUNIT && val[1] == ENDUNIT) val += 2; // skip over noeval marker
+				else if (val[0] == '\'' && val[1] == '_' && IsDigit(val[2]))
 				{
-					int id = GetWildcardID(arg->w.userValue+1);
-					if (id >= 0) arg->w.userValue = AllocateInverseString(wildcardCanonicalText[id]);
-					else arg->w.userValue = AllocateInverseString("");
+					int id = GetWildcardID(val+1);
+					if (id >= 0) val = AllocateInverseString(wildcardCanonicalText[id],0,true);
+					else val = AllocateInverseString("");
 				}
-				else if (arg->w.userValue[0] == '_' && IsDigit(arg->w.userValue[1]))
+				else if (val[0] == '_' && IsDigit(val[1]))
 				{
-					int id = GetWildcardID(arg->w.userValue);
-					if (id >= 0) arg->w.userValue = AllocateInverseString(wildcardOriginalText[id]);
-					else arg->w.userValue = AllocateInverseString("");
+					int id = GetWildcardID(val);
+					if (id >= 0) val = AllocateInverseString(wildcardOriginalText[id],0,true);
+					else val = AllocateInverseString("");
 				}
+				if (*val && *(val-2) != '`' && *(val-1) != '`') 
+					val = AllocateInverseString(val,0,true);
+				arg->w.userValue = val;
 			}
 		}
 
@@ -825,8 +827,8 @@ TERMINATE:
 			if (*word == '$') strncpy(word,GetUserVariable(word),40);
 			word[40] = 0;	
 		}
-		if (trace == TRACE_USERFN)  Log(STDTRACELOG,(char*)"%s %s(%s) => %s\r\n",ResultCode(result),name,word,buffer);
-		else if (info && info->properties & SAMELINE) Log(STDTRACELOG,(char*)"%s %s(%s) => %s\r\n",ResultCode(result),name,word,buffer);	// stay on same line to save visual space in log
+		if (trace == TRACE_USERFN)  Log(STDTRACETABLOG,(char*)"%s %s(%s) => %s\r\n",ResultCode(result),name,word,buffer);
+		else if (info && info->properties & SAMELINE) Log(STDTRACETABLOG,(char*)"%s %s(%s) => %s\r\n",ResultCode(result),name,word,buffer);	// stay on same line to save visual space in log
 		else Log(STDTRACETABLOG,(char*)"%s %s(%s) => %s\r\n",ResultCode(result),name,word,buffer);
 	}
 	// currently only user functions- NOTRACE printouts would be boring
@@ -6195,13 +6197,14 @@ static FunctionResult NthCode(char* buffer)
 
 	if (*arg1 == USERVAR_PREFIX) strcpy(arg1,GetUserVariable(arg1));
 	else if (*arg1 == '_') strcpy(arg1, GetwildcardText(GetWildcardID(arg1), true));
-	
+		
+	int count = 0;
+	int n = atoi(arg2); // which one
+
 	if (*arg1 == '~') // nth member of set, counting from 0
 	{
 		WORDP D = FindWord(arg1);
-		int n = atoi(arg2);
 		FACT* F = GetObjectNondeadHead(D);
-		int count = 0;
 		while (F) // back to front order, need to invert, count how many
 		{
 			++count;
@@ -6209,11 +6212,26 @@ static FunctionResult NthCode(char* buffer)
 		}
 		if (count <= n) return FAILRULE_BIT; // not enough or bad count
 		F = GetObjectNondeadHead(D);
-		while (F && --n >= 0) 
-			F = GetObjectNondeadNext(F); // back to front order, need to invert
+		while (F && --n >= 0) F = GetObjectNondeadNext(F); // back to front order, need to invert
 		strcpy(buffer,Meaning2Word(F->subject)->word);
 		return NOPROBLEM_BIT;
 	}
+	else if (!strnicmp(arg1,"jo-",3) || !strnicmp(arg1,"ja-",3))
+	{
+		WORDP D = FindWord(arg1);
+		FACT* F = GetSubjectNondeadHead(D);
+		while (F) // back to front order, need to invert, count how many
+		{
+			++count;
+			F = GetSubjectNondeadNext(F);
+		}
+		if (count <= n) return FAILRULE_BIT; // not enough or bad count
+		F = GetSubjectNondeadHead(D);
+		while (F && ++n < count) F = GetSubjectNondeadNext(F); // back to front order, need to invert
+		sprintf(buffer,"%d",Fact2Index(F));
+		return NOPROBLEM_BIT;
+	}
+
 	ARGUMENT(1) = AllocateInverseString(arg1); // put it back in case it changed
 	if (*arg1 == '@') return FLR(buffer,arg2);
 	else return FAILRULE_BIT;
@@ -7641,69 +7659,78 @@ static FunctionResult SortCode(char* buffer) // sorts low to high  sort(@factset
 {
 	char* arg = ARGUMENT(1); // stream
 	char word[MAX_WORD_SIZE];
+	char word1[MAX_WORD_SIZE];
 	int alpha = 0;
+	char* start = arg;
 	arg = SkipWhitespace(ReadCompiledWord(arg,word));
 	if (!stricmp(word,(char*)"alpha")) // optional alpha
 	{
 		alpha = 1;
+		start = arg;
 		arg = ReadCompiledWord(arg,word);
 	}
 	else if (!stricmp(word,(char*)"age")) // optional age
 	{
 		alpha = 2;
+		start = arg;
 		arg = ReadCompiledWord(arg,word);
 	}
 	if (*word != '@') return FAILRULE_BIT;	
     int n = GetSetID(word);
 	if (n == ILLEGAL_FACTSET) return FAILRULE_BIT;
 	unsigned int count = FACTSET_COUNT(n);
+	int startSet = n;
+	if (count > 0x0000ffff) return FAILRULE_BIT;	// too many facts to count
 	bool multiple = false;
 	// if chained sets, number the facts of the original
-	if (*arg == '@')
+	if (*arg == '@') // remaining sets
 	{
 		// verify they all have the same count
 		char* at = arg;
 		while (*at == '@') // sort the others to correspond
 		{
-			at = SkipWhitespace(ReadCompiledWord(at,word));
-			int a = GetSetID(word);
+			at = SkipWhitespace(ReadCompiledWord(at,word1));
+			int a = GetSetID(word1);
 			if (a == ILLEGAL_FACTSET) return FAILRULE_BIT;
 			if (FACTSET_COUNT(a) != count) return FAILRULE_BIT;
 		}
 
 		multiple = true;
-		if (count > 0x0000ffff) return FAILRULE_BIT;	// too many facts to count
-		for (unsigned int i = 1; i <= count; ++i)
+	}
+	SET_FACTSET_COUNT(20,count);	
+	for (unsigned int i = 1; i <= count; ++i) // mark original set we sort on
+	{
+		FACT* F = factSet[n][i];
+		if (F) 
 		{
-			FACT* F = factSet[n][i];
-			if (F) F->flags |= (i << 16);
+			factFlags[i] = F->flags; // protect flags
+			F->flags = i; // index of fact originally
+			factSet[20][i] = F;
 		}
+		else return FAILRULE_BIT; // null value fact
 	}
 
-	SortFacts(word,alpha); // sort the original
-
-	while (*arg == '@') // sort the others to correspond
+	SortFacts(word,alpha,20); // sort copy of the original
+	bool once = false;
+	while (*start == '@') // sort the others to correspond
 	{
-		arg = SkipWhitespace(ReadCompiledWord(arg,word));
+		start = SkipWhitespace(ReadCompiledWord(start,word));
 		int a = GetSetID(word);
-		memcpy(&factSet[20],&factSet[a],sizeof(FACT*) *  (FACTSET_COUNT(a) + 1)); // duplicate it
+		memcpy(&factSet[21],&factSet[a],sizeof(FACT*) *  (count + 1)); // duplicate it
 		for (unsigned int i = 1; i <= count; ++i)
 		{
-			if (!factSet[n][i]) continue;
-			unsigned int index = factSet[n][i]->flags >> 16;	// the new index at this position
-			factSet[a][i] = factSet[20][index];
+			// if (!factSet[n][i]) continue;
+			unsigned int index = factSet[20][i]->flags;	// the new index at this position
+			factSet[a][i] = factSet[21][index];
+			if (!once) factIndex[i] = index;
 		}
+		once = true;
 	}
-
-	// if chained sets, unmark the original facts
-	if (multiple)
+	for (unsigned int i = 1; i <= count; ++i)
 	{
-		for (unsigned int i = 1; i <= count; ++i)
-		{
-			FACT* F = factSet[n][i];
-			if (F) F->flags &= 0x0000ffff;
-		}
-		SET_FACTSET_COUNT(20,0); // remove junk data
+		unsigned int index = factIndex[i];	// the new index at this position
+		FACT* F = factSet[startSet][i];
+		F->flags = factFlags[factIndex[i]];
 	}
 
 	return NOPROBLEM_BIT;
@@ -8069,6 +8096,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ "^jsoncreate", JSONCreateCode, VARIABLE_ARG_COUNT, 0, "given array or object, creates a new one" },
 	{ "^jsondelete", JSONDeleteCode, 1, 0, "deprecated in favor of ^delete" },
 	{ "^jsongather", JSONGatherCode, VARIABLE_ARG_COUNT, 0, "stores the json facts referred to by the name into a fact set" },
+	{ "^jsonkind", JSONKindCode, 1, 0, "returns object, array, or fails depending on what is passed to it" },
 	{ "^jsonarraysize", JSONArraySizeCode, 1, 0, "deprecated in favor of ^length" },
 	{ "^jsonarrayinsert", JSONArrayInsertCode, VARIABLE_ARG_COUNT, 0, "given name of json array fact, adds given  value BEFORE or AFTER the given" },
 	{ "^jsonarraydelete", JSONArrayDeleteCode, VARIABLE_ARG_COUNT, 0, "given name of json array and index of fact to remove, removes it and renumbers all after it down" },

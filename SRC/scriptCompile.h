@@ -14,11 +14,11 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
-#define NO_SPELL 1		// test nothing
 #define PATTERN_SPELL 1	// test pattern words for validity
 #define OUTPUT_SPELL 2	// test output words for validity
 #define NOTE_KEYWORDS 4 // track keywords used
 #define NO_SUBSTITUTE_WARNING 8 // dont warn about substitutions
+#define NO_SPELL 16		// test nothing
 
 #define ARGSETLIMIT 40 // ^0...^39
 

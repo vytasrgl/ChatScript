@@ -1335,7 +1335,7 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 	{
 		BOM = BOMvalue;
 		holdc = oldc;
-		currentFileLine = oldCurrentLine;
+		maxFileLine = currentFileLine = oldCurrentLine;
 	}
 	else // get copy and reinit for new file
 	{
@@ -1344,7 +1344,7 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 		oldc = holdc;
 		holdc = 0;
 		oldCurrentLine = currentFileLine;
-		currentFileLine = 0;
+		maxFileLine = currentFileLine = 0;
 	}
 }
 
@@ -1355,7 +1355,7 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 
 int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines) 
 { //  reads text line stripping of cr/nl
-	
+	currentFileLine = maxFileLine; // revert to best seen
 	if (currentFileLine == 0) BOM = (BOM == BOMSET) ? BOMUTF8 : NOBOM; // start of file, set BOM to null
 	*buffer = 0;
 	buffer[1] = 0;
@@ -1371,6 +1371,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		return -1;	// neither file nor buffer being read
 	}
 	int formatString = NOT_IN_FORMAT_STRING;
+	char ender = 0;
 	char* start = buffer;
 	char c = 0;
 
@@ -1388,7 +1389,11 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		if (in) 
 		{
 			if (!fread(&c,1,1,in)) 
+			{
+				++currentFileLine;	// for debugging error messages
+				maxFileLine = currentFileLine;
 				break;	// EOF
+			}
 		}
 		else
 		{
@@ -1429,7 +1434,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 				formatString = IN_FORMAT_STRING;
 			}
 			//  format string
-			else if (formatString && c == '"'  && *(buffer-1) != '\\') 
+			else if (formatString && c == ender  && *(buffer-1) != '\\') 
 				formatString = NOT_IN_FORMAT_STRING; // end format string
 			else if (formatString && formatString != IN_FORMAT_COMMENT && *(buffer-1) == '#' && *(buffer-2) != '\\' && c == ' ' )  // comment start in format string
 			{
@@ -1438,7 +1443,11 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 				continue;
 			}
 		}
-		else if (compiling && c == '"' && (buffer-start) > 1 && *(buffer-1) == '^' ) formatString = IN_FORMAT_STRING; // begin format string
+		else if (compiling && (c == '"' || c == '\'') && (buffer-start) > 1 && *(buffer-1) == '^' ) 
+		{
+			formatString = IN_FORMAT_STRING; // begin format string
+			ender = c;
+		}
 
 		// buffer overflow  handling
 		if ((unsigned int)(buffer-start) >= (limit - 120)) 
@@ -1463,7 +1472,11 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 			if (in) 
 			{
 				if (fread(&c,1,1,in) == 0) 
+				{
+					++currentFileLine;	// for debugging error messages
+					maxFileLine = currentFileLine;
 					break;	// EOF
+				}
 			}
 			else
 			{
@@ -1472,8 +1485,11 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 					break;					// end of string - otherwise will be \n
 			}
 			if (c != '\n' && c != '\r') holdc = c; // failed to find lf... hold this character for later but ignoring 2 cr in a row
-			if (c == '\n') 	
+			if (c == '\n') 
+			{
 				++currentFileLine;	// for debugging error messages
+				maxFileLine = currentFileLine;
+			}
 			if (blockComment) 
 			{
 				if (endingBlockComment) 
@@ -1492,6 +1508,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		else if (c == '\n')  // came without cr?
 		{
 			++currentFileLine;	// for debugging error messages
+			maxFileLine = currentFileLine;
 			if (formatString)
 			{
 				formatString = IN_FORMAT_CONTINUATIONLINE;

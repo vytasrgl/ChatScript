@@ -242,7 +242,7 @@ extern char systemFolder[500];
 void ReleaseInverseString(char* word);
 char* expandAllocation(char* old, char* word,int size);
 char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
-char* AllocateInverseString(char* word, size_t len = 0);
+char* AllocateInverseString(char* word, size_t len = 0, bool localvar = false);
 bool PreallocateString(size_t len);
 bool AllocateInverseSlot(char* variable);
 char* RestoreInverseSlot(char* variable,char* slot);

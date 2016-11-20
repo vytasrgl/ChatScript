@@ -3969,6 +3969,7 @@ static void C_Restart(char* input)
 	arglist[4] = arg0;
 	char word[MAX_WORD_SIZE];
 	char* hold = ReadCompiledWord(input,word);
+	assignedLogin = true;
 	if (!stricmp(word,"erase"))
 	{
 		input = hold;
@@ -6977,7 +6978,7 @@ static void C_ExtraTopic(char* input) // topicdump will create a file in TMP/tmp
 	fseek (in, 0, SEEK_SET);
  	extraTopicData = (char*)malloc(size+2); // enough to hold the file
 	char* at = extraTopicData;
-	currentFileLine = 0; // prepare for BOM
+	maxFileLine = currentFileLine = 0; // prepare for BOM
 	while(ReadALine(at,in,size) >= 0) {at += strlen(at);} // join all lines
 	// clearly end the topic data
 	strcpy(at,(char*)"``");
@@ -7713,7 +7714,7 @@ static void C_ShowCoverage(char* input)
 		fclose(out);
 		return;
 	}
-	currentFileLine = 0;
+	maxFileLine = currentFileLine = 0;
 	ReadALine(readBuffer,in); // get a data
 	char topictag[MAX_WORD_SIZE];
 	char* ptr = ReadCompiledWord(readBuffer,topictag);

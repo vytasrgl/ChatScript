@@ -76,6 +76,7 @@ extern unsigned char responseOrder[MAX_RESPONSE_SENTENCES+1];
 extern RESPONSE responseData[MAX_RESPONSE_SENTENCES+1];
 extern int responseIndex;
 extern bool documentMode;
+extern bool assignedLogin;
 extern unsigned int volleyCount;
 extern FILE* sourceFile;
 extern bool oobExists;

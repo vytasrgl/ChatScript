@@ -52,6 +52,8 @@ static char staticPath[MAX_WORD_SIZE]; // files that never change
 static char readPath[MAX_WORD_SIZE];   // readonly files that might be overwritten from outside
 static char writePath[MAX_WORD_SIZE];  // files written by app
 unsigned int currentFileLine = 0;				// line number in file being read
+unsigned int maxFileLine = 0;				// line number in file being read
+unsigned int peekLine = 0;
 char currentFilename[MAX_WORD_SIZE];	// name of file being read
 
 // error recover 
@@ -112,6 +114,13 @@ void JumpBack()
 
 void myexit(char* msg, int code)
 {	
+#ifndef DISCARDPOSTGRES
+	if (postgresparams)  
+	{
+		PostgresShutDown(); // any script connection
+		PGUserFilesCloseCode();	// filesystem
+	}
+#endif
 	char name[MAX_WORD_SIZE];
 	sprintf(name,(char*)"%s/exitlog.txt",logs);
 	FILE* in = FopenUTF8WriteAppend(name);
@@ -433,13 +442,6 @@ void C_Directories(char* x)
 		Log(STDTRACELOG,(char*)"execution path: %s\r\n",word);
 	}
 
-#ifdef WIN32
-    #include <direct.h>
-    #define GetCurrentDir _getcwd
-#else
-    #include <unistd.h>
-    #define GetCurrentDir getcwd
-#endif
 	if (GetCurrentDir(word, MAX_WORD_SIZE)) Log(STDTRACELOG,(char*)"current directory path: %s\r\n",word);
 
 	Log(STDTRACELOG,(char*)"readPath: %s\r\n",readPath);
@@ -461,7 +463,7 @@ void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath)
 
 void StartFile(const char* name)
 {
-	if (strnicmp(name,"TMP",3)) currentFileLine = 0;
+	if (strnicmp(name,"TMP",3)) maxFileLine = currentFileLine = 0;
 	strcpy(currentFilename,name); // in case name is simple
 
 	char* at = strrchr((char*) name,'/');	// last end of path
@@ -1131,7 +1133,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (logLastCharacter == 1 && globalDepth == priordepth) {} // we indented already
 		else if (logLastCharacter == 1 && globalDepth > priordepth) // we need to indent a bit more
 		{
-			for (int i = priordepth+1; i < globalDepth; i++)
+			for (int i = priordepth; i < globalDepth; i++)
 			{
 				*at++ = (i == 4 || i == 9) ? ',' : '.';
 				//*at++ = ' ';

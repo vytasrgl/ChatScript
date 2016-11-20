@@ -46,7 +46,7 @@ extern MEANING Mis;
 
 extern size_t maxFacts;		// allocation limit of facts
 
-void SortFacts(char* set, int alpha);
+void SortFacts(char* set, int alpha, int setpass = -1);
 
 // fact index accessing
 FACTOID Fact2Index(FACT* F);

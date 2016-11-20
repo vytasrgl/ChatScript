@@ -124,7 +124,14 @@ struct Client_t
     {
         if (ev_is_active(&this->ev_r))  ev_io_stop(this->l, &this->ev_r);
         if (ev_is_active(&this->ev_w))  ev_io_stop(this->l, &this->ev_w);
-        close(this->fd);
+#ifndef DISCARDPOSTGRES
+		if (postgresparams)  
+		{
+			PostgresShutDown(); // any script connection
+			PGUserFilesCloseCode();	// filesystem
+		}
+#endif
+       close(this->fd);
     }
     
     void prepare_for_next_request()

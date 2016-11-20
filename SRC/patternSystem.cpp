@@ -118,7 +118,7 @@ static void DecodeFNRef(char* side)
 static void DecodeComparison(char* word, char* lhs, char* op, char* rhs)
 {
 	// get the operator
-	char* compare = word + Decode(word+1,true); // use accelerator to point to op in the middle
+	char* compare = word + Decode(word+1,1); // use accelerator to point to op in the middle
 	strncpy(lhs,word+2,compare-word-2);
 	lhs[compare-word-2] = 0;
 	*op = *compare++;
@@ -404,7 +404,11 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 				if (word[1] == '_') // set positional reference  @_20+ or @_0-   
 				{
 					if (firstMatched < 0) firstMatched = NORETRY; // cannot retry this match locally
-	
+					char* end = word+3;  // skip @_2
+					if (IsDigit(*end)) ++end; // point to proper + or - ending
+					unsigned int wild = wildcardPosition[GetWildcardID(word+1)];
+					int index = (wildcardSelector >> GAP_SHIFT) & 0x0000001f;
+
 					// memorize gap to end based on direction...
 					if ((wildcardSelector & WILDMEMORIZEGAP) && !reverse) // close to end of sentence 
 					{
@@ -419,14 +423,32 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 						}
 						if (wildcardSelector & WILDMEMORIZEGAP) 
 						{
-							SetWildCard(start,wordCount,true);  //   legal swallow of gap //   request memorize
+							if ((wordCount - start) == 0) SetWildCardGivenValue((char*)"",(char*)"",true,start,index); // empty gap
+							else SetWildCardGiven(start,wordCount,true,index );  //   wildcard legal swallow between elements
+ 							wildcardSelector &= -1 ^ (WILDMEMORIZEGAP | WILDGAP);
+						}
+					}
+					
+					// memorize gap to end based on direction...
+					if ((wildcardSelector & WILDMEMORIZEGAP) && reverse) // close to start of sentence 
+					{
+						positionEnd = 1; // pretend to match at end of sentence
+						int start = wildcardSelector & 0x000000ff;
+						int limit = (wildcardSelector >> GAPLIMITSHIFT) & 0x000000ff;
+  						if ((start - positionEnd) > limit) //   too long til end
+						{
+							matched = false;
+ 							wildcardSelector &= -1 ^ (WILDMEMORIZEGAP | WILDGAP);
+							break;
+						}
+						if (wildcardSelector & WILDMEMORIZEGAP) 
+						{
+							if ((start - positionEnd + 1) == 0) SetWildCardGivenValue((char*)"",(char*)"",true,start,index); // empty gap
+							else SetWildCardGiven(positionEnd,start,true,index );  //   wildcard legal swallow between elements
  							wildcardSelector &= -1 ^ (WILDMEMORIZEGAP | WILDGAP);
 						}
 					}
 
-					char* end = word+3;  // skip @_2
-					if (IsDigit(*end)) ++end; // point to proper + or - ending
-					unsigned int wild = wildcardPosition[GetWildcardID(word+1)];
 					if (*end == '+') 
 					{
 						positionStart = WILDCARD_START(wild);

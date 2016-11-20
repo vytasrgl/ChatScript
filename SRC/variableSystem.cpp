@@ -273,8 +273,8 @@ LOOPDEEPER:
 		}
 		else D = FindWord(item); // the basic item
 		if (!D) goto NULLVALUE;
-		if (*separator == '[' && strncmp(item,"ja-",3)) goto NULLVALUE; // cannot be indexed
 		if (*separator == '.' && strncmp(item,"jo-",3) && !factvalue) goto NULLVALUE; // cannot be dotted
+		if (*separator == '[' && strncmp(item,"ja-",3)) goto NULLVALUE; // cannot be indexed
 
 		// is there more later
 		char* separator1 =  (char*)strchr(separator+1,'.');	// more dot like $x.y.z?
@@ -305,7 +305,7 @@ LOOPDEEPER:
 				if (!key) goto NULLVALUE;	// cannot find
 			}
 		}
-		else // it is an index
+		else // it is an index - of either array OR object
 		{
 			if (IsDigit(*label)) 
 			{

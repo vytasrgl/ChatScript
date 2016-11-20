@@ -62,6 +62,7 @@ void EncryptInit(char* params);
 void DecryptInit(char* params);
 void EncryptRestart();
 extern unsigned int currentFileLine;
+extern unsigned int maxFileLine;
 extern char currentFilename[MAX_WORD_SIZE];
 extern struct tm* ptm;
 int FClose(FILE* file);

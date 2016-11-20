@@ -187,35 +187,39 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 		input[len] = c;
 		return;
 	}
+	bool str = false;
 	char* start = output;
 	*output = 0;
 	char mainValue[3];
 	mainValue[1] = 0;
 	char var[200]; // no variable should be this big
 	char* ans = AllocateBuffer();
+	char prior = 0;
 	while (input && *input)
 	{
-		if (*input == '^' && input[1] == USERVAR_PREFIX && (IsAlphaUTF8(input[2]) ||  input[2] == '$')) // ^ user variable
+		if (*input == '"' && prior != '\\') str = !str; // toggle string status
+		prior = *input;
+		if (prior == '^' && input[1] == USERVAR_PREFIX && (IsAlphaUTF8(input[2]) ||  input[2] == '$')) // ^ user variable
 		{
 			var[0] = '^';
 			input = ReadUserVariable(input+1,var+1); // end up after the var
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == '^' && input[1] == '_' && IsDigit(input[2])) // ^ canonical match variable
+		else if (prior == '^' && input[1] == '_' && IsDigit(input[2])) // ^ canonical match variable
 		{
 			var[0] = '^';
 			input = ReadMatchVariable(input+1,var+1); // end up after the var
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == USERVAR_PREFIX && (IsAlphaUTF8(input[1]) ||  input[1] == TRANSIENTVAR_PREFIX ||  input[1] == LOCALVAR_PREFIX)) // user variable
+		else if (prior == USERVAR_PREFIX && (IsAlphaUTF8(input[1]) ||  input[1] == TRANSIENTVAR_PREFIX ||  input[1] == LOCALVAR_PREFIX)) // user variable
 		{
 			input = ReadUserVariable(input,var); // end up after the var
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == SYSVAR_PREFIX && IsAlphaUTF8(input[1]))
+		else if (prior == SYSVAR_PREFIX && IsAlphaUTF8(input[1]))
 		{
 			input = ReadCompiledWord(input,var,false,true);
 			char* at = var;
@@ -226,20 +230,20 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 			if (*value) output = AddFormatOutput(value, output,controls); 
 			else if (!FindWord(var)) output = AddFormatOutput(var, output,controls); // not a system variable
 		}
-		else if (*input == '_' && IsDigit(input[1]) && *(input-1) != '@') // canonical match variable
+		else if (prior == '_' && IsDigit(input[1]) && *(input-1) != '@') // canonical match variable
 		{
 			input = ReadMatchVariable(input,var); // end up after the var
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == '\'' && input[1] == '_' && IsDigit(input[2])) // quoted match variable
+		else if (prior == '\'' && input[1] == '_' && IsDigit(input[2])) // quoted match variable
 		{
 			var[0] = '\'';
 			input = ReadMatchVariable(input+1,var+1); // end up after the var
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == '^' && input[1] == '\'' && input[2] == '_' && IsDigit(input[3])) // ^ quoted match variable
+		else if (prior == '^' && input[1] == '\'' && input[2] == '_' && IsDigit(input[3])) // ^ quoted match variable
 		{
 			var[0] = '^';
 			var[1] = '\'';
@@ -247,7 +251,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 			FreshOutput(var,ans,result,controls);
 			output = AddFormatOutput(ans, output,controls); 
 		}
-		else if (*input == '@' && IsDigit(input[1])) // factset
+		else if (prior == '@' && IsDigit(input[1])) // factset
 		{
 			input = ReadCompiledWord(input,var,false,true);
 			
@@ -262,7 +266,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 				break;
 			}
 		}
-		else if (*input == '^' && IsDigit(input[1])) // function variable
+		else if (prior == '^' && IsDigit(input[1])) // function variable
 		{
 			char* base = input; 
 			while (*++input && IsDigit(*input)){;} // find end of function variable name 
@@ -302,7 +306,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 			else if (!stricmp(tmp,(char*)"null")) {;} // value is to be ignored
 			else output = AddFormatOutput(tmp, output,controls); 
 		}
-		else if (*input == '^' && (IsAlphaUTF8(input[1]) ))
+		else if (prior == '^' && (IsAlphaUTF8(input[1]) ))
 		{
 			char* at = var;
 			*at++ = *input++;
@@ -317,7 +321,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 				return;
 			}
 		}
-		else if (*input == '\\') // protected special character
+		else if (prior == '\\') // protected special character
 		{
 			++input;
 			if (starter == '"' && *input == 'n') *output++ = '\n';
@@ -326,7 +330,7 @@ void ReformatString(char starter, char* input,char* output, FunctionResult& resu
 			else if (starter == '"') *output++ = *input; // just pass along the protected char in ^"xxx" strings
 			else // is ^'xxxx' string - other than our special ' we need, leave all other escapes alone as legal json
 			{
-				if (*input == '\'') *output++ = *input;  // cs required the \, not in final output
+				if (*input == '\'' || str) *output++ = *input;  // cs required the \, not in final output
 				else {*output++ = '\\'; *output++ = *input;}  // json can escape anything, particularly doublequote
 			}
 			++input; // skip over the specialed character

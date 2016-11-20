@@ -855,7 +855,7 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 	filebuffer[readit+1] = 0; // insure fully closed off
 
 	// set bom
-	currentFileLine = 0;
+	maxFileLine = currentFileLine = 0;
 	BOM = BOMSET; // will be utf8
 	userRecordSourceBuffer = filebuffer;
 
@@ -1349,9 +1349,9 @@ void ReadFacts(const char* name,const char* layer,unsigned int build,bool user) 
    FClose(in);
 }
 
-void SortFacts(char* set, int alpha) //   sort low to high ^sort(@1subject) which field we sort on (subject or verb or object)
+void SortFacts(char* set, int alpha, int setpass) //   sort low to high ^sort(@1subject) which field we sort on (subject or verb or object)
 {
-    int n = GetSetID(set);
+    int n = (setpass >= 0) ? setpass : GetSetID(set);
 	if (n == ILLEGAL_FACTSET) return;
 	char kind = GetLowercaseData(*GetSetType(set));
 	if (!kind) kind = 's';

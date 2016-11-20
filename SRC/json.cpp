@@ -682,6 +682,10 @@ FunctionResult JSONOpenCode(char* buffer)
 		else if (res == CURLE_GOT_NOTHING) { ReportBug((char*)"\r\nCurl got nothing %s",word); }
 		else if (res == CURLE_UNSUPPORTED_PROTOCOL) { ReportBug((char*)"\r\nCurl unsupported protocol %s",word); }
 		else if (res == CURLE_COULDNT_CONNECT || res == CURLE_COULDNT_RESOLVE_HOST || res ==  CURLE_COULDNT_RESOLVE_PROXY) Log(STDTRACELOG,(char*)"\r\nJson connect failed ");
+		else if (res == CURLE_OPERATION_TIMEDOUT)
+		{
+			ReportBug((char*)"\r\nCurl timeout ");
+		}
 		else
 		{ 
 			if (output.buffer && output.size)  
@@ -953,17 +957,30 @@ FunctionResult JSONTreeCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+FunctionResult JSONKindCode(char* buffer)
+{
+	char* arg = ARGUMENT(1);
+	if (!strnicmp(arg,"jo-",3)) strcpy(buffer,(char*)"object");
+	else if (!strnicmp(arg,"ja-",3)) strcpy(buffer,(char*)"array");
+	else return FAILRULE_BIT; // otherwise fails
+	return NOPROBLEM_BIT;	
+}
+
 static FunctionResult JSONpath(char* buffer, char* path, char* jsonstructure, bool raw,bool nofail)
 {
+	char mypath[MAX_WORD_SIZE];
+	if (*path != '.' && *path != '[')  // default a dot notation if not given
+	{
+		mypath[0] = '.';
+		strcpy(mypath+1,path);
+	}
+	else strcpy(mypath,path);
+	path = mypath;	
+	 
 	WORDP D = FindWord(jsonstructure); 
 	FACT* F;
 	if (!D) return FAILRULE_BIT;
 	path = SkipWhitespace(path);
-	if (*path != '.' && *path != '[')
-	{
-		ReportBug((char*)"Path must start with . or [ in %s of %s",path,D->word);
-		return FAILRULE_BIT;
-	}
 	MEANING M;
 	if (trace & TRACE_JSON) 
 	{

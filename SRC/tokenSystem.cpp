@@ -637,12 +637,16 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	char* start = ptr;
 	char token[MAX_WORD_SIZE];
 	ReadCompiledWord(start,token);
+	int lsize = strlen(token);
+	while (IsPunctuation(token[lsize-1])) token[--lsize] = 0; // remove trailing punctuation
+	char* after = start + lsize;
 	// see if we have 25,2015
 	size_t tokenlen = strlen(token);
 	if (tokenlen == 7 && IsDigit(token[0]) && IsDigit(token[1]) && token[2] == ',' && IsDigit(token[3]))
 		return ptr + 2;
 	if (tokenlen == 6 && IsDigit(token[0])  && token[1] == ',' && IsDigit(token[2])) // 2,2015
 		return ptr + 1;
+	if (!strnicmp(token,"https://",8) || !strnicmp(token,"http://",7)) return after;
 
 	// check for place number
 	char* place = ptr;

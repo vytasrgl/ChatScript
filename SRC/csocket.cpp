@@ -884,11 +884,11 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		return Done(sock,memory);
 	}
 
-	char userName[500];
+    char userName[500] = {0};
 	*userName = 0;
-	char* user;
-	char* bot;
-	char* msg;
+	char* user = NULL;
+	char* bot = NULL;
+	char* msg = NULL;
 	// A user name with a . in front of it means tie it with IP address so it remains unique 
 	try{
 		char* p = buffer; // current end of content

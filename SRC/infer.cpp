@@ -43,7 +43,9 @@ static MEANING queue[MAX_QUEUE+20];
 static unsigned int queueIndex;
 
 // answers from inferences go in these sets
-FACT* factSet[MAX_FIND_SETS+1][MAX_FIND+1]; 
+FACT* factSet[MAX_FIND_SETS+2][MAX_FIND+1]; 
+int	  factFlags[MAX_FIND+1];
+int	  factIndex[MAX_FIND+1];
 unsigned int factSetNext[MAX_FIND_SETS+1];		// when walking a set over time, which index to continue from
 
 static void AddSet2Scan(unsigned int flags,WORDP D,int depth);
@@ -627,6 +629,7 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 #endif
 
 	//   ZONE 1 - mark and queue setups
+	char myset[10];
 	int baseOffset = 0; //   facts come from this side, and go out the verb or other side
 	char* choice;
 	char* at;
@@ -729,6 +732,8 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 			case 'f':  //   we have incoming facts to use 
 				whichset = (control[1] == '@') ? GetSetID(++control) : from; // only allowed sets 1-9
 				if (whichset == ILLEGAL_FACTSET) return 0;
+				sprintf(myset,"@%d",whichset);
+				choice = myset;
 				break;
 			default: 
 				ReportBug((char*)"Bad control code for query init %s(%s) %s",C->word,C->w.userValue,control)

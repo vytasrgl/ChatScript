@@ -22,9 +22,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define FACTSET_COUNT(x) ( (unsigned int) ( (uintptr_t) factSet[x][0]  ))
 #define SET_FACTSET_COUNT(x,y) factSet[x][0] = (FACT*) ((uint64)y)
 
-extern FACT* factSet[MAX_FIND_SETS+1][MAX_FIND+1];
+extern FACT* factSet[MAX_FIND_SETS+2][MAX_FIND+1];
 extern unsigned int factSetNext[MAX_FIND_SETS+1];
-
+extern int	  factFlags[MAX_FIND+1];
+extern int	  factIndex[MAX_FIND+1];
 extern unsigned int inferMark;
 FACT* IsConceptMember(WORDP D);
 unsigned int NextInferMark();

@@ -678,8 +678,8 @@ void MarkAllImpliedWords()
 			}
 		}
 	
-		// mark general number property
-		if (finalPosValues[i] & ( NOUN_NUMBER | ADJECTIVE_NUMBER))   // a date can become an idiom, marking it as a proper noun and not a number
+		// mark general number property -- (datezone can be marked noun_proper_singular)
+		if (finalPosValues[i] & ( NOUN_NUMBER | ADJECTIVE_NUMBER | NOUN_PROPER_SINGULAR))   // a date can become an idiom, marking it as a proper noun and not a number
 		{
 			if (IsDigit(*wordStarts[i]) && IsDigit(wordStarts[i][1])  && IsDigit(wordStarts[i][2]) && IsDigit(wordStarts[i][3])  && !wordStarts[i][4]) MarkFacts(MakeMeaning(FindWord((char*)"~yearnumber")),i,i);
 			if (!wordCanonical[i][1] || !wordCanonical[i][2]) // 2 digit or 1 digit

@@ -17,6 +17,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #ifndef DISCARDJSON
 extern int jsonOpenSize; 
 FunctionResult JSONTreeCode(char* buffer);
+FunctionResult JSONKindCode(char* buffer);
 FunctionResult JSONPathCode(char* buffer);
 FunctionResult JSONFormatCode(char* buffer);
 FunctionResult JSONParseFileCode(char* buffer);

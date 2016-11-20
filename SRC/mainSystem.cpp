@@ -1,10 +1,10 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.87";
+char* version = "6.9";
 char sourceInput[200];
 bool pendingRestart = false;
 bool pendingUserReset = false;
-static bool assignedLogin = false;
+bool assignedLogin = false;
 int sentencePreparationIndex = 0;
 int lastRestoredIndex = 0;
 #define MAX_RETRIES 20
@@ -2421,6 +2421,18 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 #ifndef NOMAIN
 int main(int argc, char * argv[]) 
 {
+	for (int i = 1; i < argc; ++i)
+	{
+		if (!strnicmp(argv[i],"root=",5)) 
+		{
+#ifdef WIN32
+			SetCurrentDirectory((char*)argv[i]+5);
+#else
+			chdir((char*)argv[i]+5);
+#endif
+		}
+	}
+
 	FILE* in = FopenStaticReadOnly((char*)"SRC/dictionarySystem.h"); // SRC/dictionarySystem.h
 	if (!in) // if we are not at top level, try going up a level
 	{

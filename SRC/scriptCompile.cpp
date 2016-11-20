@@ -45,6 +45,7 @@ static char* topicFiles[] = //   files created by a topic refresh from scratch
 	(char*)"facts",			//   hold facts	
 	(char*)"keywords",		//   holds topic and concepts keywords
 	(char*)"macros",			//   holds macro definitions
+	(char*)"map",			//   where things are defined
 	(char*)"script",			//   hold topic definitions
 	(char*)"plans",			//   hold plan definitions
 	(char*)"patternWords",	//   things we want to detect in patterns that may not be normal words
@@ -54,11 +55,11 @@ static char* topicFiles[] = //   files created by a topic refresh from scratch
 
 	(char*)"TOPIC/missingLabel.txt",	//   reuse/unerase needing delayed testing for label
 	(char*)"TOPIC/missingSets.txt",	//   sets needing delayed testing
-
 	0
 };
 static void WritePatternWord(char* word);
 static void WriteKey(char* word);
+
 
 void InitScriptSystem()
 {
@@ -229,7 +230,8 @@ and from which buffer it was peeked.
 And, if someone wants to back up to allow the old token to be reread, they have to CANCEL any peek data, so the token
 comes from the old buffer. Meanwhile the newbuffer continues to have content for when the old buffer runs out.
 #endif
-	
+	int line = currentFileLine;
+
 	//   clear peek cache
 	if (!in && !ptr) // clear cache request, next get will be from main buffer (though secondary buffer may still have peek read data)
 	{
@@ -244,6 +246,7 @@ comes from the old buffer. Meanwhile the newbuffer continues to have content for
 		result = incomingPtrSys; // caller who is peeking will likely ignore this
 		if (!peek)
 		{
+			currentFileLine = maxFileLine;	 // revert to highest read
 			// he wants reality now...
 			if (*newBuffer && !overrriding) // prior peek was from this buffer, make it real data in real buffer
 			{
@@ -307,6 +310,7 @@ comes from the old buffer. Meanwhile the newbuffer continues to have content for
 		incomingPtrSys = result;  // next location in whatever buffer
 		strcpy(lookaheadSys,word); // save next token peeked
 		result = (char*)1;	// NO ONE SHOULD KEEP A PEEKed PTR
+		currentFileLine = line; // claim old value
 	}
 	else if (newline) // live token from new buffer, adjust pointers and buffers to be fully up to date
 	{
@@ -1090,6 +1094,8 @@ char* ReadDisplayOutput(char* ptr,char* buffer) // locate next output fragment t
 #define MAX_TOPIC_SIZE  500000
 #define MAX_TOPIC_RULES 32767
 #define MAX_TABLE_ARGS 20
+static unsigned int loopCounter;
+static unsigned int ifCounter;
 
 static unsigned int hasPlans;					// how many plans did we read
 
@@ -1103,6 +1109,7 @@ static char currentTopicName[MAX_WORD_SIZE];	// current topic being read
 static char lowercaseForm[MAX_WORD_SIZE];		// a place to put a lower case copy of a token
 static WORDP currentFunctionDefinition;			// current macro defining or executing
 static FILE* patternFile = NULL; // where to store pattern words
+static FILE* mapFile = NULL;					// for IDE
 static char nextToken[MAX_WORD_SIZE];			// current lookahead token
 
 static char verifyLines[100][MAX_WORD_SIZE];	// verification lines for a rule to dump after seeing a rule
@@ -1123,6 +1130,11 @@ In order to be able to read special characters (including prefix characters) lit
 You are not required to do \? because it is directly a legal token, but you can.  
 You CANNOT test for . because it is the default and is subsumed automatically.
 #endif
+
+static void AddMap(char* kind,char* msg)
+{
+	fprintf(mapFile,(char*)"%s: %s %d\r\n",kind,(msg) ? msg : ((char*)""),currentFileLine);
+}
 
 static void ClearBeenHere(WORDP D, uint64 junk)
 {
@@ -2380,7 +2392,7 @@ name of topic  or concept
 			*tmp = '=';		//   comparison header
 			if (len > 70) BADSCRIPT((char*)"PATTERN-65 Left side of comparison must not exceed 70 characters - %s",word)
 			char* x = tmp+1;
-			Encode(len,x,true);
+			Encode(len,x,1);
 			strcpy(tmp+2,word); //   copy left side over
 			strcpy(word,tmp);	//   replace original token
 		}
@@ -2493,7 +2505,7 @@ name of topic  or concept
 					ignore = 2;
 				}
 				strcpy(word,JoinWords(BurstWord(word,CONTRACTIONS))); // change to std token
-				if (!livecall && spellCheck) SpellCheckScriptWord(word,startSeen ? 1 : 0,false);
+				if (!livecall && spellCheck && !(spellCheck & NO_SPELL)) SpellCheckScriptWord(word,startSeen ? 1 : 0,false);
 				if (!livecall && strcmp(word,"PATTERN"))
 				{
 					WriteKey(word); 
@@ -2658,6 +2670,7 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 {
 	char word[MAX_WORD_SIZE];
 	int paren = 0;
+	
 	//   read the (
 	ptr = ReadNextSystemToken(in,ptr,word,false); //   the '('
 	MakeLowerCopy(lowercaseForm,word);
@@ -2827,7 +2840,7 @@ static char* ReadBody(char* word, char* ptr, FILE* in, char* &data,char* rejoind
 	*data++ = ' ';
 	bool oldContext = patternContext;
 	patternContext = false;
-	ptr = GatherChunk(ptr, in, body,'{'); 
+	ptr = GatherChunk(ptr, in, body,'{'); // get all the data across all lines
 	ReadOutput(body+2,NULL,data,rejoinders,NULL,NULL,false); 
 	patternContext = oldContext;
 	*data++ = '}'; //   body has no blank after it, done by higher level
@@ -2853,6 +2866,10 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 {
 	char* bodyends[1000];				//   places to patch for jumps
 	unsigned int bodyendIndex = 0;
+	int xcounter = ++ifCounter;
+	char label[20];
+	sprintf(label,"        if-%d",xcounter);
+	AddMap(label, NULL);
 	char* original = data;
 	strcpy(data,(char*)"^if ");
 	data += 4;
@@ -2895,6 +2912,7 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 		}
 		else ReadIfTest(ptr, in, data); // starts by reading the ( and ends having read )
 		Encode((unsigned int)(data-testbase),testbase);	// offset to after pattern    
+	//	Encode(xcounter,data,2);
 		//--- format:  branch to after pattern, pattern, branch around next pattern, pattern, branch around next pattern or to end of if code
 	
 		// now done reading test, go onto body.
@@ -2927,6 +2945,8 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 
 		//   there is either else if or else
 		ptr = ReadNextSystemToken(in,ptr,word,false,false); //   swallow the else
+		sprintf(label,"        else-%d",xcounter);
+		AddMap(label,NULL);
 		strcpy(data,(char*)"else ");
 		data += 5;
 		ReadNextSystemToken(in,ptr,word,false,true); //   see if or {
@@ -2969,6 +2989,10 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 static char* ReadLoop(char* word, char* ptr, FILE* in, char* &data,char* rejoinders)
 {
 	strcpy(data,(char*)"^loop ");
+	++loopCounter;
+	char label[20];
+	sprintf(label,"        loop-%d",loopCounter);
+	AddMap(label, NULL);
 	data += 6;
 	ptr = ReadNextSystemToken(in,ptr,word,false,false); //   (
 	*data++ = '(';
@@ -2991,6 +3015,7 @@ static char* ReadLoop(char* word, char* ptr, FILE* in, char* &data,char* rejoind
 	*data++ = ' ';
 	char* loopstart = data;
 	DummyEncode(data);  // reserve loop jump to end accelerator
+//	Encode(loopCounter,data,2);
 	*data++ = ' ';
 
 	//   now do body
@@ -3455,6 +3480,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	bool table = !stricmp(kind,(char*)"table:"); // create as a transient notwrittentofile 
 	displayIndex = 0;
 	uint64 typeFlags = 0;
+	loopCounter = ifCounter = 0;
 	if (!stricmp(kind,(char*)"tableMacro:") || table) typeFlags = IS_TABLE_MACRO;
 	else if (!stricmp(kind,(char*)"outputMacro:")) typeFlags = IS_OUTPUT_MACRO;
 	else if (!stricmp(kind,(char*)"patternMacro:")) typeFlags = IS_PATTERN_MACRO;
@@ -3492,6 +3518,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 				*macroName = '^';
 				strcpy(macroName+1,word);
 				Log(STDTRACELOG,(char*)"Reading %s %s\r\n",kind,macroName);
+				AddMap((char*)"    macro", macroName);
 			}
 			D = StoreWord(macroName);
 			if (D->internalBits & FUNCTION_NAME && !table) BADSCRIPT((char*)"MACRO-3 macro %s already defined",macroName)
@@ -3953,7 +3980,7 @@ static char* ReadKeyword(char* word,char* ptr,bool &notted, bool &quoted, MEANIN
 				else if ( ignoreSpell || !spellCheck || strchr(D->word,'_') || !D->word[1] || IsUpperCase(*D->word)) {;}	// ignore spelling issues, phrases, short words &&  proper names
 				else if (!(D->properties & PART_OF_SPEECH) && !(D->systemFlags & PATTERN_WORD))
 				{
-					SpellCheckScriptWord(D->word,-1,false);
+					if (!(spellCheck & NO_SPELL)) SpellCheckScriptWord(D->word,-1,false);
 					WriteKey(D->word);
 					WritePatternWord(D->word);
 				}
@@ -3984,6 +4011,7 @@ static char* ReadBot(char* ptr, FILE* in, unsigned int build)
 static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 {
 	patternContext = false;
+	loopCounter = ifCounter = 0;
 	displayIndex = 0;
 	char* data = (char*) malloc(MAX_TOPIC_SIZE); // use a big chunk of memory for the data
 	*data = 0;
@@ -4019,6 +4047,7 @@ static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 		{
 			if (*word != '~') BADSCRIPT((char*)"Topic name - %s must start with ~",word)
 			strcpy(currentTopicName,word);
+			AddMap((char*)"    topic", currentTopicName);
 			Log(STDTRACELOG,(char*)"Reading topic %s\r\n",currentTopicName);
 			topicName = FindWord(currentTopicName);
 			if (topicName && topicName->internalBits & CONCEPT && !(topicName->internalBits & TOPIC) && topicName->internalBits & (BUILD0|BUILD1|BUILD2)) 
@@ -4508,6 +4537,7 @@ static char* ReadConcept(char* ptr, FILE* in,unsigned int build)
 			sys = type = 0;
 			parenLevel = 0;
 			Log(STDTRACELOG,(char*)"Reading concept %s\r\n",conceptName);
+			AddMap((char*)"    concept", conceptName);
 			// read the control flags of the concept
 			ptr = SkipWhitespace(ptr);
 			while (*ptr && *ptr != '(' && *ptr != '[' && *ptr != '"') // not started and no concept comment given (concept comments come after all control flags
@@ -4620,6 +4650,13 @@ static void ReadTopicFile(char* name,uint64 buildid) //   read contents of a top
 	build &= -1 ^ FROM_FILE; // remove any flag indicating it came as a direct file, not from a directory listing
 
 	Log(STDTRACELOG,(char*)"\r\n----Reading file %s\r\n",currentFilename);
+	char map[MAX_WORD_SIZE];
+	char file[MAX_WORD_SIZE];
+	GetCurrentDir(file, MAX_WORD_SIZE);
+	sprintf(map,"%s/%s",file,name);
+	char* find = map;
+	while ((find = strchr(find,'\\'))) *find = '/';
+	AddMap((char*)"file", map);
 
 	//   if error occurs lower down, flush to here
 	int holdDepth = globalDepth;
@@ -5051,6 +5088,8 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		printf((char*)"Unable to create %s? Make sure this directory exists and is writable.\r\n",filename);
 		return 4;
 	}
+	sprintf(filename,(char*)"TOPIC/BUILD%s/map%s.txt",baseName,baseName);
+	mapFile = FopenUTF8Write(filename);
 
 	AllocateOutputBuffer();
 
@@ -5061,7 +5100,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	if (!strnicmp(name,(char*)"files",5)) name += 5; // dont need the prefix
 	char* at = strchr(name,'.');
 	*at = 0;
-	fprintf(out,(char*)"0     %s %s\r\n",GetMyTime(time(0)),name); //   reserve 5-digit count for number of topics + timestamp  (AFTER BOM)
+	fprintf(out,(char*)"0     %s %s %s\r\n",GetMyTime(time(0)),name,version); //   reserve 5-digit count for number of topics + timestamp  (AFTER BOM)
 	fclose(out); // dont use fclose
 	
 	uint64 oldtokenControl = tokenControl;
@@ -5085,8 +5124,9 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		else if (*word == ':' && word[1]) DoCommand(readBuffer,output); // testing command
 		else ReadTopicFile(word,build|FROM_FILE); // was explicitly named
 	}
-	if (in) fclose(in); // dont use fclose
-	fclose(patternFile); // dont use fclose
+	if (in) fclose(in); 
+	fclose(patternFile); 
+	fclose(mapFile); 
 
 	StartFile((char*)"Post compilation Verification");
 

@@ -52,6 +52,7 @@ int sampleRule = 0;
 int sampleTopic = 0;
 
 char timeStamp[NUMBER_OF_LAYERS][20];	// when build0 was compiled
+char compileVersion[NUMBER_OF_LAYERS][20];	// which CS compiled build0 
 char numberTimeStamp[NUMBER_OF_LAYERS][20];	// when build0 was compiled
 char buildStamp[NUMBER_OF_LAYERS][150];	// compile command name of build
 
@@ -150,11 +151,17 @@ void DummyEncode(char* &data) // script compiler users to reserve space for enco
 	*data++ = 'a';
 }
 
-void Encode(unsigned int val,char* &ptr,bool single)
+void Encode(unsigned int val,char* &ptr,int size)
 { // digits are base 75
-	if (single)
+	if (size == 1)
 	{
 		*ptr = code[val % USED_CODES];	
+		return;
+	}
+	else if (size == 2)
+	{
+		*ptr++ = code[val / USED_CODES];
+		*ptr++ = code[val % USED_CODES];
 		return;
 	}
 
@@ -166,9 +173,15 @@ void Encode(unsigned int val,char* &ptr,bool single)
     ptr[2] = code[val % USED_CODES];
 }
 
-unsigned int Decode(char* data,bool single)
+unsigned int Decode(char* data,int size)
 {
-	if (single) return uncode[*data];
+	if (size == 1) return uncode[*data];
+	else if (size == 2)
+	{
+		unsigned int val = uncode[*data++] * USED_CODES;
+		val += uncode[*data++];
+		return val;
+	}
 
     unsigned int val = uncode[*data++] * (USED_CODES*USED_CODES);
     val += uncode[*data++] * USED_CODES;
@@ -1247,14 +1260,14 @@ retry:
 		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	int whenmatched = 0;
+
+	ChangeDepth(1,(char*)"testRule"); // indent pattern and result
 	if (*ptr == '(') // pattern requirement
 	{
 		wildcardIndex = 0;
 		bool uppercasem = false;
 		whenmatched = 0;
-		++globalDepth; // indent pattern
  		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",1,0,start,end,uppercasem,whenmatched,0,0)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
-		--globalDepth;
 		if (clearUnmarks) // remove transient global disables.
 		{
 			clearUnmarks = false;
@@ -1262,6 +1275,8 @@ retry:
 		}
 	}
 	ShowMatchResult(result, rule,label);
+	ChangeDepth(-1,(char*)"testRule");
+
 	if (result == NOPROBLEM_BIT) // generate output
 	{
 		if (sampleTopic && sampleTopic == currentTopicID && sampleRule == ruleID) // sample testing wants to find this rule got hit
@@ -2036,6 +2051,7 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 	{
 		xptr = ReadCompiledWord(xptr,timeStamp[layer]); // Jan04'15
 		xptr = ReadCompiledWord(xptr,buildStamp[layer]);
+		xptr = ReadCompiledWord(xptr,compileVersion[layer]);
 	}
 
 	// plan takes 2 lines:
@@ -2150,7 +2166,7 @@ static void ReadPatternData(const char* name,const char* layer,unsigned int buil
 		in = FopenReadOnly(word);
 	}
 	if (!in) return;
-	currentFileLine = 0;
+	maxFileLine = currentFileLine = 0;
 	WORDP base = dictionaryFree;
 	WORDP D;
 	while (ReadALine(readBuffer,in) >= 0) 
@@ -2486,7 +2502,7 @@ static void InitMacros(const char* name,const char* layer,unsigned int build)
 		in = FopenReadOnly(word);
 	}
 	if (!in) return;
-	currentFileLine = 0;
+	maxFileLine = currentFileLine = 0;
 	while (ReadALine(readBuffer, in)>= 0) //   ^showfavorite O 2 _0 = ^0 _1 = ^1 ^reuse (~xfave FAVE ) 
 	{
 		if (!*readBuffer) continue;
@@ -2707,11 +2723,11 @@ FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 	if (layer != 2)
 	{
 		char data[MAX_WORD_SIZE];
-		sprintf(data,(char*)"Build%s:  dict=%ld  fact=%ld  stext=%ld %s %s\r\n",name,
+		sprintf(data,(char*)"Build%s:  dict=%ld  fact=%ld  stext=%ld Compiled:%s by version %s \"%s\"\r\n",name,
 			(long int)(dictionaryFree-dictionaryPreBuild[layer]),
 			(long int)(factFree-factsPreBuild[layer]),
 			(long int)(stringsPreBuild[layer]-stringFree),
-			timeStamp[layer],buildStamp[layer]);
+			timeStamp[layer],compileVersion[layer],buildStamp[layer]);
 		if (server)  Log(SERVERLOG, "%s",data);
 		else printf((char*)"%s",data);
 	}
