@@ -13,8 +13,8 @@ Now, in order to build a new chat-script from scratch:
 Create a folder called TEST inside the RAWDATA folder. Create an empty file named
 `tutorial.top`, and put it inside this TEST folder.
 
-Copy the file `ChatScript/filesharry.txt` that comes with the zip file into a new file
-`ChatScript/filesmine.txt`.
+Copy the file `RAWDATA/filesHarry.txt` that comes with the zip file into a new file
+`RAWDATA/filesmine.txt`.
 
 In `filesmine.txt`, insert a reference to your newly created file and revise the reference to
 HARRY. `filesmine.txt` looks like this:
@@ -59,11 +59,11 @@ Where:
 * The keyword `t:` defines a sentence to say within a topic (it's called a "gambit", as the bot
 says it without waiting for our input).
 
-Put this text in `tutorial.top`. Then, at the client's prompt, type `:build 2`. You should see
+Put this text in `tutorial.top`. Then, at the client's prompt, type `:build mine`. You should see
 something like this:
 
 ``` 
- >:build 2 
+ >:build mine
  
  ----Reading file simplecontrol.top
  Reading outputmacro: ^harry
@@ -102,7 +102,7 @@ Chatting with this bot results in a dialog such as this:
 
 The bot just says what we told it to say, and then stuck, as it does not have anything else to say.
 
-If you are tired of speaking with the bot, you can exit the client using the `:shutdown` command.
+If you are tired of speaking with the bot, you can exit the client using the `:quit` command.
 
 ## Saying more (`^keep`, random selection `[]`, `^repeat`) 
 Let's make our bot a bit more interesting:
