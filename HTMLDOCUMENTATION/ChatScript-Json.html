@@ -50,7 +50,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 11/20/2016 cs6.9</p>
+<p>Revision 12/7/2016 cs6.91</p>
 </blockquote>
 <h1 id="real-world-json">Real World JSON</h1>
 <p>JSON (JavaScript Object Notation) is an open standard format using human-readable text to transmit data objects over the web. It is a common standard largely replacing XML which is too wordy and hard to read. JSON has two datatypes that represents collections of values, the array and the object. A JSON array is a list of JSON entities separated by commas and placed within [], e.g.,</p>
@@ -95,6 +95,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Routines that will create facts for JSON will by default create them as transients (they die at end of volley unless you work to save them). You can override this default by saying permanent or transient. This applies to <code>^jsonopen</code>, <code>^jsonparse</code>, <code>^jsoncreate</code>, <code>^jsonobjectinsert</code>, <code>^jsonarrayinsert</code>, <code>^jsoncopy</code>.</p>
 <p>You can also add a flag safe to <code>^jsonparse</code>, <code>^jsonobjectinsert</code>, <code>^jsonarraydelete</code>. You can also add a flag unique to <code>^jsonarrayinsert</code>. You can also add <code>DUPLICATE</code> to ^jsonobjectinsert.</p>
 <p>When multiple flags are desired, put them into a simple string, <code>&quot;DUPLICATE PERMANENT&quot;</code>. Case doesn't matter.</p>
+<p>When you want to add a reference to a normal factid (as is returned by ^createfact) you can add the flag <code>AUTODELETE</code></p>
+<p>You can also assign user flags by listing USER_FLAG1, thru USER_FLAG4 as a flag as well. The JSON fact will have that flag on it, which you can use in conjunction with ^query to limit what matches can be found.</p>
 <h3 id="jsonparse-jsonflags-string"><code>^jsonparse</code>( {JSONFLAGS} string )</h3>
 <p><code>string</code> is a JSON text string (as might be returned from a website) and this parses into facts. It returns the name of the root node JSON composite. This name will look like this:</p>
 <p><code>ja-0</code> – a json array numbered <code>0</code>.</p>

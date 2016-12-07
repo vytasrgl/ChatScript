@@ -6,7 +6,7 @@
 
 #include "jsmn.h"
 static bool curl_done_init = false; 
-
+static int jsonCreateFlags = 0;
 #define MAX_JSON_LABEL 50
 static char jsonLabel[MAX_JSON_LABEL+1];
 bool safeJsonParse = false;
@@ -28,6 +28,7 @@ static int JSONArgs()
 	int index = 1;
 	directJsonText = false;
 	bool used = false;
+	jsonCreateFlags = 0;
 	jsonPermanent = FACTTRANSIENT; // default
 	jsonNoduplicate = false;
 	jsonDuplicate = true;
@@ -45,6 +46,31 @@ static int JSONArgs()
 		if (!stricmp(word,(char*)"permanent"))  
 		{
 			jsonPermanent = 0;
+			used = true;
+		}
+		else if (!stricmp(word,(char*)"USER_FLAG4"))  
+		{
+			jsonCreateFlags |= USER_FLAG4;
+			used = true;
+		}
+		else if (!stricmp(word,(char*)"USER_FLAG3"))  
+		{
+			jsonCreateFlags |= USER_FLAG3;
+			used = true;
+		}
+		else if (!stricmp(word,(char*)"USER_FLAG2"))  
+		{
+			jsonCreateFlags |= USER_FLAG2;
+			used = true;
+		}
+		else if (!stricmp(word,(char*)"USER_FLAG1"))  
+		{
+			jsonCreateFlags |= USER_FLAG1;
+			used = true;
+		}
+		else if (!stricmp(word,(char*)"autodelete"))  
+		{
+			jsonCreateFlags |= FACTAUTODELETE;
 			used = true;
 		}
 		else if (!stricmp(word,(char*)"unique"))  
@@ -207,7 +233,7 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken, MEANING *r
 			MEANING valueMeaning = 0;
 			retToken = factsJsonHelper(jsontext, tokens, retToken, &valueMeaning, &jflags,false,nofail);
 			if (retToken == 0) return 0;
-			CreateFact(objectName, keyMeaning, valueMeaning, jsonPermanent|jflags|JSON_OBJECT_FACT); // only the last value of flags matters. 5 means object fact in subject
+			CreateFact(objectName, keyMeaning, valueMeaning, jsonCreateFlags|jsonPermanent|jflags|JSON_OBJECT_FACT); // only the last value of flags matters. 5 means object fact in subject
 		}
 		*flags = JSON_OBJECT_VALUE;
 		break;
@@ -224,7 +250,7 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int currToken, MEANING *r
 			int jflags = 0;
 			retToken = factsJsonHelper(jsontext, tokens, retToken, &arrayMeaning, &jflags,false,nofail);
 			if (retToken == 0) return 0;
-			CreateFact(arrayName, index, arrayMeaning, jsonPermanent|jflags|JSON_ARRAY_FACT); // flag6 means subject is arrayfact
+			CreateFact(arrayName, index, arrayMeaning, jsonCreateFlags|jsonPermanent|jflags|JSON_ARRAY_FACT); // flag6 means subject is arrayfact
 		}
 		*flags = JSON_ARRAY_VALUE; 
 		break;
@@ -714,7 +740,6 @@ FunctionResult JSONOpenCode(char* buffer)
 	}
 	else
 	{
-		ChangeDepth(1,(char*)"ParseJson");
 		result = ParseJson(buffer, output.buffer,output.size,false);
 		char x[MAX_WORD_SIZE];
 		if (result == NOPROBLEM_BIT)
@@ -727,7 +752,6 @@ FunctionResult JSONOpenCode(char* buffer)
 					*buffer = 0; 
 			}
 		}
-		ChangeDepth(-1,(char*)"ParseJson");
 	}
 	if (trace & TRACE_JSON)
 	{
@@ -1128,11 +1152,11 @@ void jkillfact(WORDP D)
 {
 	if (!D) return;
 	FACT* F = GetSubjectNondeadHead(D);
-	while (F) // stack them
+	while (F) 
 	{
 		FACT* G = GetSubjectNondeadNext(F);
-		if (F->flags & (JSON_ARRAY_VALUE | JSON_OBJECT_VALUE)) jkillfact(Meaning2Word(F->object));
-		if (F->flags & (JSON_ARRAY_FACT | JSON_OBJECT_FACT)) KillFact(F);
+		if (F->flags & (JSON_ARRAY_FACT | JSON_OBJECT_FACT)) KillFact(F); // json object/array no longer has this fact
+		if (F->flags & FACTAUTODELETE) AutoKillFact(F->object); // kill the fact
 		F = G;
 	}
 }
@@ -1602,7 +1626,7 @@ MEANING jsonValue(char* value, unsigned int& flags)
 FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectkey objectvalue  
 {
 	int index = JSONArgs();
-	unsigned int flags = JSON_OBJECT_FACT | jsonPermanent;
+	unsigned int flags = JSON_OBJECT_FACT | jsonPermanent | jsonCreateFlags;
 	char* objectname = ARGUMENT(index++);
 	if (strnicmp(objectname,(char*)"jo-",3)) return FAILRULE_BIT;
 	WORDP D = FindWord(objectname);
@@ -1847,18 +1871,18 @@ DOALL:
 	if (safe) jsonkill = false;
 	else if (!G) jsonkill = true; // should never be true, since this fact counts
 	else if (!GetObjectNondeadNext(G)) jsonkill = true;
-	KillFact(F,jsonkill);		// delete it, not recursive json structure, just array element
+	KillFact(F,jsonkill,false);		// delete it, not recursive json structure, just array element
 	for (int i = index+1; i < indexsize; ++i) // renumber these downwards
 	{
 		F = stack[i];
-		ARGUMENT(2) = AllocateInverseString(arrayname);
 		char num[MAX_WORD_SIZE];
 		sprintf(num,"%d",Fact2Index(F));
-		ARGUMENT(1) = AllocateInverseString(num);
+		ARGUMENT(1) = AllocateInverseString(num); // which fact
+		ARGUMENT(2) = AllocateInverseString(arrayname); // subject
 		sprintf(num,"%d",i-1);
-		ARGUMENT(3) = AllocateInverseString(num);
-		ARGUMENT(4) = AllocateInverseString(Meaning2Word(F->object)->word);
-		FunctionResult result = ReviseFactCode(buffer);
+		ARGUMENT(3) = AllocateInverseString(num); // new verb
+		ARGUMENT(4) = AllocateInverseString(Meaning2Word(F->object)->word); // object
+		FunctionResult result = ReviseFact1Code(buffer,true);
 	}
 	if (all) goto DOALL; // keep trying
 	return NOPROBLEM_BIT;
@@ -1867,7 +1891,7 @@ DOALL:
 FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectvalue  BEFORE/AFTER 
 {	
 	int index = JSONArgs();
-	unsigned int flags = JSON_ARRAY_FACT | jsonPermanent;
+	unsigned int flags = JSON_ARRAY_FACT | jsonPermanent |  jsonCreateFlags;
 
 	char* arrayname = ARGUMENT(index++);
 	if (strnicmp(arrayname,(char*)"ja-",3)) return FAILRULE_BIT;

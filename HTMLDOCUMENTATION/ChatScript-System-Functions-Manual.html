@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,20 +13,20 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 11/20/2016 cs6.9</p>
+<p>Revision 12/7/2016 cs6.91</p>
 </blockquote>
 <ul>
-<li><a href="ChatScript-System-Functions-Manual.md#topic-functions">Topic Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#marking-functions">Marking Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#input-functions">Input Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#number-functions">Number Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#output-functions">Output Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#control-flow-functions">Control Flow Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#external-access-functions">External Access Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#json-functions">JSON Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#word-manipulation-functions">Word Manipulation Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#multipurpose-functions">Multipurpose Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.md#fact-functions">Facts Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#marking-functions">Marking Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#input-functions">Input Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#number-functions">Number Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#output-functions">Output Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#control-flow-functions">Control Flow Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#external-access-functions">External Access Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#json-functions">JSON Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#word-manipulation-functions">Word Manipulation Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#multipurpose-functions">Multipurpose Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.html#fact-functions">Facts Functions</a></li>
 </ul>
 <p>System functions are predefined and can be intermixed with direct output. Generally they are used from the output side of a rule, but in many cases nothing prevents you from invoking them from inside a pattern. When used in a pattern, they do not write out any text output to the user. But their output will be tested the same as it would from an <code>if</code> statement, meaning 0 and false are failures.</p>
 <p>You can write them with or without a <code>^</code> in front of their name. With is clearer, but you don’t have to. The only time you must is if the first thing you want to do in a gambit is call a function (unlikely).</p>
@@ -375,8 +375,8 @@ t: () name(xxx ) # explicitly add an empty pattern</code></pre>
 <p>Retrieves the nth argument of the calling outputmacro (1-based).</p>
 <h3 id="argument-n-fn"><code>^argument</code>( n <code>^fn</code> )</h3>
 <p>Looks backward in the callstack for the named outputmacro, and if found returns the nth argument passed to it. Failure will be reported for n out of range or <code>^fn</code> not in the call path. This is an alterative access to function variable arguments, useful in a loop instead of having to access by variable name. If <code>n</code> is <code>0</code>, the system merely tests whether the caller exists and fails if the caller is not in the path of this call.</p>
-<h3 id="backtrace"><code>^backtrace</code>( )</h3>
-<p>Lists the sequence of topics and calls that got you to this point, one per line.</p>
+<h3 id="callstack-n"><code>^callstack</code>( <span class="citation">@n</span> )</h3>
+<p>Generates a list of transient facts into the named factset. The facts represent the callstack and have as subject the critical value (the verb is <code>callstack</code> and the object is the rule tag responsible for this entry). Items include function calls (^xxxx) and topic calls (~xxxx) and internal calls (no prefix).</p>
 <h3 id="command-args"><code>^command</code>( args )</h3>
 <p>Execute this stream of arguments through the <code>:</code> command processor. You can execute debugging commands through here. E.g.,</p>
 <pre><code>^command(:execute ^print(&quot;Hello&quot;) )</code></pre>
@@ -489,6 +489,7 @@ if ($$newtype == $$type AND match($$newrule)) # we would match this rule</code><
 <pre><code>s: TEST (some fancy pattern)</code></pre>
 <p>and later</p>
 <pre><code>^match(~mytopic.test)</code></pre>
+<p>You can also just say <code>^match(~someconcept)</code> and it will test the current input for that concept.</p>
 <p>'<code>$$csmatch_start</code> and <code>$$csmatch_end</code> are assigned to provide the range of words that <code>^match</code> used.</p>
 <h3 id="matches"><code>^matches</code>()</h3>
 <p>Returns a string of indices of words that matched the most recent pattern match. The indices are in order, so you can know the range of the match or the specific word indices that were seen. Currently matches only include the words/concepts that were matched, not things like <code>(sag* )</code> where the word is not fully named.</p>

@@ -184,7 +184,7 @@ tell you after each document how much was used up and how much was still availab
 See also `^memorymark()`/`^memoryfree()` for controlling memory use. And be aware that
 setting user variables uses memory. 
 
-If you set a variable like `$$linecount` for every sentene you read, 
+If you set a variable like `$$linecount` for every sentence you read, 
 you are using up text memory on every assignment. You can reduce this
 burden by using the match variables like _19 whenever you can. Match variables above
 _10 are unlikely to ever be used in your patterns, so they can hold temporary data in a

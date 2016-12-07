@@ -1,6 +1,6 @@
 #include "common.h"
 #include "evserver.h"
-char* version = "6.9";
+char* version = "6.91";
 char sourceInput[200];
 bool pendingRestart = false;
 bool pendingUserReset = false;
@@ -1523,11 +1523,18 @@ FunctionResult Reply()
 		Log(STDTRACELOG,(char*)"\r\n  Pending topics: %s\r\n",ShowPendingTopics());
 	}
 	FunctionResult result = NOPROBLEM_BIT;
-	int pushed = PushTopic(FindTopicIDByName(GetUserVariable((char*)"$cs_control_main")));
-	if (pushed < 0) return FAILRULE_BIT;
+	char* topic = GetUserVariable((char*)"$cs_control_main");
+	ChangeDepth(1,topic);
+	int pushed = PushTopic(FindTopicIDByName(topic));
+	if (pushed < 0) 
+	{
+		ChangeDepth(-1,topic);
+		return FAILRULE_BIT;
+	}
 	AllocateOutputBuffer();
 	result = PerformTopic(0,currentOutputBase); //   allow control to vary
 	FreeOutputBuffer();
+	ChangeDepth(-1,topic);
 	if (pushed) PopTopic();
 	if (globalDepth) ReportBug((char*)"Main code global depth not 0");
 	return result;
@@ -1747,15 +1754,19 @@ bool PrepassSentence(char* prepassTopic)
 		int topic = FindTopicIDByName(prepassTopic);
 		if (topic && !(GetTopicFlags(topic) & TOPIC_BLOCKED))  
 		{
+			ChangeDepth(1,prepassTopic);
 			int pushed =  PushTopic(topic); 
-			if (pushed < 0) return false;
-			ChangeDepth(1,(char*)"PrepassSentence");
+			if (pushed < 0)
+			{
+				ChangeDepth(-1,prepassTopic);
+				return false;
+			}
 			AllocateOutputBuffer();
 			ResetReuseSafety();
 			uint64 oldflags = tokenFlags;
 			FunctionResult result = PerformTopic(0,currentOutputBase); 
 			FreeOutputBuffer();
-			ChangeDepth(-1,(char*)"PrepassSentence");
+			ChangeDepth(-1,prepassTopic);
 			if (pushed) PopTopic();
 			//   subtopic ending is not a failure.
 			if (result & (RESTART_BIT|ENDSENTENCE_BIT | FAILSENTENCE_BIT| ENDINPUT_BIT | FAILINPUT_BIT )) 
@@ -1897,10 +1908,14 @@ void OnceCode(const char* var,char* function) //   run before doing any of his i
 	int topic = FindTopicIDByName(name);
 	if (!topic) return;
 	ResetReuseSafety();
+	ChangeDepth(1,name);
 
 	int pushed = PushTopic(topic);
-	if (pushed < 0) return;
-	
+	if (pushed < 0) 
+	{
+		ChangeDepth(-1,name);
+		return;
+	}
 	if (trace & (TRACE_MATCH|TRACE_PREPARE) && CheckTopicTrace()) 
 	{
 		if (!stricmp(var,(char*)"$cs_control_pre")) 
@@ -1925,12 +1940,14 @@ void OnceCode(const char* var,char* function) //   run before doing any of his i
 		char word[MAX_WORD_SIZE];
 		sprintf(word,"There are no gambits in topic %s for %s.",GetTopicName(topic),var);
 		AddResponse(word,0);
+		ChangeDepth(-1,name);
 		return;
 	}
 	ruleErased = false;	
 	AllocateOutputBuffer();
 	PerformTopic(GAMBIT,currentOutputBase);
 	FreeOutputBuffer();
+	ChangeDepth(-1,name);
 
 	if (pushed) PopTopic();
 	if (topicIndex) ReportBug((char*)"topics still stacked")
@@ -2415,7 +2432,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
     #define GetCurrentDir _getcwd
 #else
     #include <unistd.h>
-    #define GetCurrentDir getcwd
+    #define GetCurrentDir getcwdeee
 #endif
 
 #ifndef NOMAIN

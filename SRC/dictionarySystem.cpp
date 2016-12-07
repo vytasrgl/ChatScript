@@ -114,6 +114,13 @@ bool fullDictionary = true;				// we have a big master dictionary, not a mini di
 void LoadRawDictionary(int mini);
 #endif
 
+bool TraceHierarchyTest(int x)
+{
+	if (!(x & TRACE_HIERARCHY)) return false;
+	x &= -1 ^ (TRACE_ON|TRACE_ALWAYS|TRACE_HIERARCHY|TRACE_ECHO);
+	return x == 0; // must exactly have been trace hierarchy
+}
+
 void RemoveConceptTopic(int list[256], WORDP D,int index)
 {
 	MEANING M = MakeMeaning(D);
@@ -2394,7 +2401,7 @@ MEANING FindSynsetParent(MEANING T,unsigned int which) //  presume we are at the
 			if (index && index != Meaning2Index(at->subject)) continue; // must match generic or specific precisely
 			if (count++ == which) 
 			{
-				if (trace == TRACE_HIERARCHY) TraceFact(at);
+				if (TraceHierarchyTest(trace)) TraceFact(at);
 				return at->object; //   next set/class in line
 			}
 		}
@@ -2422,7 +2429,7 @@ MEANING FindSetParent(MEANING T,int n) //   next set parent
 
         if (--n == 0) 
 		{
-   			if (trace == TRACE_HIERARCHY) TraceFact(F);
+   			if (TraceHierarchyTest(trace)) TraceFact(F);
 			return at->object; // next set/class in line
 		}
     }

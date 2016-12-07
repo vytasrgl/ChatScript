@@ -298,6 +298,25 @@ void CloseTextUtilities()
 {
 }
 
+bool IsFraction(char* token)
+{
+	if (IsDigit(token[0])) // fraction?
+	{
+		char* at = strchr(token,'/');
+		if (at)
+		{
+			at = token;
+			while (IsDigit(*++at)) {;}
+			if (*at == '/')
+			{
+				while (IsDigit(*++at)) {;}
+				if (!*at) return true;
+			}
+		}
+	}
+	return false;
+}
+
 char* RemoveEscapesWeAdded(char* at)
 {
 	if (!at || !*at) return at;
@@ -857,7 +876,7 @@ bool IsDigitWithNumberSuffix(char* number)
 	size_t len = strlen(number);
 	char d = number[len-1];
 	bool num = false;
-	if (d == 'k' || d == 'K' || d == 'm' || d == 'M' || d == 'B' || d == 'b' || d == 'G' || d == 'g')
+	if (d == 'k' || d == 'K' || d == 'm' || d == 'M' || d == 'B' || d == 'b' || d == 'G' || d == 'g' || d == '$')
 	{
 		number[len-1] = 0;
 		num = IsDigitWord(number);
@@ -1745,7 +1764,7 @@ char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)
 	return (ptr[1] == ' ') ? (ptr+2) : (ptr+1); // after the quote end and any space
 }
 
-char* ReadArgument(char* ptr, char* buffer) //   looking for a single token OR a list of tokens balanced - insure we start non-space
+char* ReadArgument(char* ptr, char* buffer,FunctionResult &result) //   looking for a single token OR a list of tokens balanced - insure we start non-space
 { //   ptr is some buffer before the arg 
 #ifdef INFORMATION
 Used for function calls, to read their callArgumentList. Arguments are not evaluated here. An argument is:
@@ -1772,7 +1791,6 @@ Used for function calls, to read their callArgumentList. Arguments are not evalu
     }
 	if (*ptr == '"' && ptr[1] == FUNCTIONSTRING && dictionaryLocked) // must execute it now...
 	{
-		FunctionResult result;
 		return ReadCommandArg(ptr, buffer,result,0);
 	}
 	else if (*ptr == '"' || (*ptr == '\\' && ptr[1] == '"'))   // a string
@@ -2113,7 +2131,7 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	size_t len = strlen(number);
 	uint64 valx;
 	if (IsRomanNumeral(number,valx)) return (int64) valx;
-	if (IsDigitWithNumberSuffix(number)) // 10K  10M 10B
+	if (IsDigitWithNumberSuffix(number)) // 10K  10M 10B or currency
 	{
 		char d = number[len-1];
 		number[len-1] = 0;

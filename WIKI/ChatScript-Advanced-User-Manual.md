@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 11/20/2016 cs6.9
+> Revision 12/7/2016 cs6.91
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -1369,7 +1369,7 @@ what you should use in case new ones are added in the system later.
 
 ## Output Macros
 
-Just as you can write your own common routines for handling pattern code with
+Just as you can write your own common routines (functions) for handling pattern code with
 patternmacro:, you can do the same for output code. 
 ```
 Outputmacro: name (^arg1 ^arg2 ...)
@@ -1402,6 +1402,13 @@ This both creates the result, and ends the function immediately even if other co
 Note- calls to macros use "pass by reference", so the actual value of the ^variable is the
 name of what was passed in, and it is generally (but not always) evaluated on use. 
 
+## `Sharing function definitions`
+
+ChatScript requires that a function be defined before use. When you use that function from multiple
+files, you may have trouble ordering the files for compilation if you merely name the folder in
+filesxxx.txt since you cannot guarantee compilation order unless you explicitly name the files.
+But you can also just put your functions in a top level file and then have your other files in folders,
+and name it and then them in your filesxxx.txt file.
 
 ## Save-Restore locals
 

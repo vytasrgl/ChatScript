@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 11/20/2016 cs6.9
+> Revision 12/7/2016 cs6.91
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -664,8 +664,8 @@ This is an alterative access to function variable arguments,
 useful in a loop instead of having to access by variable name. 
 If `n` is `0`, the system merely tests whether the caller exists and fails if the caller is not in the path of this call.
 
-### `^backtrace`(  )
-Lists the sequence of topics and calls that got you to this point, one per line.
+### `^callstack`( @n )
+Generates a list of transient facts into the named factset. The facts represent the callstack and have as subject the critical value (the verb is `callstack` and the object is the rule tag responsible for this entry). Items include function calls (^xxxx) and topic calls (~xxxx) and internal calls (no prefix).
 
 ### `^command`( args )
 Execute this stream of arguments through the `:` command processor.
@@ -780,6 +780,8 @@ and later
 ```
 ^match(~mytopic.test)
 ```
+
+You can also just say `^match(~someconcept)` and it will test the current input for that concept.
 
 '`$$csmatch_start` and `$$csmatch_end` are assigned to provide the range of words that `^match` used.
 

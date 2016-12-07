@@ -25,6 +25,8 @@ This is ReturnToDictionaryFreeze for unpeeling 3/4 and ReturnDictionaryToWordNet
 char traceSubject[100];
 char traceVerb[100];
 char traceObject[100];
+uint64 allowedBots = 0xffffffffffffffffULL; // default fact visibility restriction is all bots
+uint64 myBot = 0;							// default fact creation restriction
 
 size_t maxFacts = MAX_FACT_NODES;	// how many facts we can create at max
 
@@ -54,6 +56,14 @@ FACT* Index2Fact(FACTOID e)
 	return F;
 }
 
+bool UnacceptableFact(FACT* F)
+{
+	if (!F || F->flags & FACTDEAD) return true;
+	// if ownership flags exist (layer0 or layer1) and we have different ownership.
+	if (F->botBits && !(F->botBits & myBot)) return true;
+	return false;
+}
+
 FACT* GetSubjectNext(FACT* F) { return Index2Fact(F->subjectNext);}
 FACT* GetVerbNext(FACT* F) {return Index2Fact(F->verbNext);}
 FACT* GetObjectNext(FACT* F) {return Index2Fact(F->objectNext);}
@@ -63,7 +73,7 @@ FACT* GetSubjectNondeadNext(FACT* F)
 	while (F) 
 	{
 		F =  Index2Fact(F->subjectNext);
-		if (F && ! (F->flags & FACTDEAD)) break;
+		if (F && !UnacceptableFact(F)) break;
 	}
 	return F;
 }
@@ -73,7 +83,7 @@ FACT* GetVerbNondeadNext(FACT* F)
 	while (F) 
 	{
 		F =  Index2Fact(F->verbNext);
-		if (F && ! (F->flags & FACTDEAD)) break;
+		if (F && !UnacceptableFact(F)) break;
 	}
 	return F;
 }
@@ -83,7 +93,7 @@ FACT* GetObjectNondeadNext(FACT* F)
 	while (F) 
 	{
 		F =  Index2Fact(F->objectNext);
-		if (F && ! (F->flags & FACTDEAD)) break;
+		if (F && !UnacceptableFact(F)) break;
 	}
 	return F;
 }
@@ -91,7 +101,7 @@ FACT* GetObjectNondeadNext(FACT* F)
 FACT* GetSubjectNondeadHead(FACT* F) 
 {
 	F = Index2Fact(F->subjectHead);
-	while (F && F->flags & FACTDEAD) 
+	while (F && UnacceptableFact(F)) 
 	{
 		F =  Index2Fact(F->subjectNext);
 	}
@@ -101,7 +111,7 @@ FACT* GetSubjectNondeadHead(FACT* F)
 FACT* GetVerbNondeadHead(FACT* F) 
 {
 	F = Index2Fact(F->verbHead);
-	while (F && F->flags & FACTDEAD) 
+	while (F && UnacceptableFact(F)) 
 	{
 		F =  Index2Fact(F->verbNext);
 	}
@@ -111,7 +121,7 @@ FACT* GetVerbNondeadHead(FACT* F)
 FACT* GetObjectNondeadHead(FACT* F) 
 {
 	F = Index2Fact(F->objectHead);
-	while (F && F->flags & FACTDEAD) 
+	while (F && UnacceptableFact(F)) 
 	{
 		F =  Index2Fact(F->objectNext);
 	}
@@ -121,7 +131,7 @@ FACT* GetObjectNondeadHead(FACT* F)
 FACT* GetSubjectNondeadHead(WORDP D) 
 {
 	FACT* F = Index2Fact(D->subjectHead);
-	while (F && F->flags & FACTDEAD) 
+	while (F && UnacceptableFact(F)) 
 	{
 		F =  Index2Fact(F->subjectNext);
 	}
@@ -132,7 +142,7 @@ FACT* GetSubjectNondeadHead(WORDP D)
 FACT* GetVerbNondeadHead(WORDP D) 
 {
 	FACT* F = Index2Fact(D->verbHead);
-	while (F && F->flags & FACTDEAD) 
+	while (F && UnacceptableFact(F)) 
 	{
 		F =  Index2Fact(F->verbNext);
 	}
@@ -142,7 +152,7 @@ FACT* GetVerbNondeadHead(WORDP D)
 FACT* GetObjectNondeadHead(WORDP D)  
 {
 	FACT* F = Index2Fact(D->objectHead);
-	while (F && F->flags & FACTDEAD) 
+	while (F && UnacceptableFact(F)) 
 	{
 		F =  Index2Fact(F->objectNext);
 	}
@@ -318,13 +328,20 @@ FACT* SpecialFact(FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned in
 	return factFree;
 }
 
-void KillFact(FACT* F,bool jsonrecurse)
+void AutoKillFact(MEANING M)
+{
+	int id = atoi(Meaning2Word(M)->word);
+	KillFact(Index2Fact(id));
+}
+
+void KillFact(FACT* F,bool jsonrecurse, bool autoreviseArray)
 {
 	if (!F || F->flags & FACTDEAD) return; // already dead
 	
 	if (F <= factsPreBuild[2]) 
 		return;	 // may not kill off facts built into world
 
+	F->flags |= FACTDEAD;
 
 	WORDP x = Meaning2Word(F->object);
 	if (trace & TRACE_FACT && CheckTopicTrace()) 
@@ -332,21 +349,25 @@ void KillFact(FACT* F,bool jsonrecurse)
 		Log(STDTRACELOG,(char*)"Kill: ");
 		TraceFact(F);
 	}
+	if (F->flags & FACTAUTODELETE)
+	{
+		if (F->flags & FACTSUBJECT) AutoKillFact(F->subject);
+		if (F->flags & FACTVERB) AutoKillFact(F->verb);
+		if (F->flags & FACTOBJECT) AutoKillFact(F->object);
+	}
+
 #ifndef DISCARDJSON
 	// recurse on JSON datastructures below if they are being deleted on right side
-	if (F->flags & JSON_ARRAY_VALUE && jsonrecurse)
+	if (F->flags & (JSON_ARRAY_VALUE | JSON_OBJECT_VALUE) && jsonrecurse)
 	{
 		WORDP jsonarray = Meaning2Word(F->object);
-		jkillfact(jsonarray);
+		// should it recurse to kill guy refered to?
+		// if no other living fact refers to it, you can also kill the referred object/array
+		FACT* H = GetObjectNondeadHead(jsonarray);  // facts which link to this
+		if (!H) jkillfact(jsonarray);
 	}
-	if (F->flags & JSON_OBJECT_VALUE && jsonrecurse)
-	{
-		WORDP jsonobject = Meaning2Word(F->object);
-		jkillfact(jsonobject);
-	}
-	if (F->flags & JSON_ARRAY_FACT) JsonRenumber(F);// have to renumber this array
+	if (autoreviseArray && F->flags & JSON_ARRAY_FACT) JsonRenumber(F);// have to renumber this array
 #endif
-	F->flags |= FACTDEAD; 
 
 	if (planning) SpecialFact(Fact2Index(F),0,0); // save to restore
 
@@ -447,7 +468,8 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 	{
 		if (!subject) ReportBug((char*)"Missing subject field in fact create at line %d of %s",currentFileLine,currentFilename)
 		if (!verb) ReportBug((char*)"Missing verb field in fact create at line %d of %s",currentFileLine,currentFilename)
-		if (!object) ReportBug((char*)"Missing object field in fact create at line %d of %s",currentFileLine,currentFilename)
+		if (!object) 
+			ReportBug((char*)"Missing object field in fact create at line %d of %s",currentFileLine,currentFilename)
 		return NULL;
 	}
 
@@ -530,7 +552,11 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 	//   insure fact is unique if requested
 	currentFact =  (properties & FACTDUPLICATE) ? NULL : FindFact(subject,verb,object,properties); 
 	if (trace & TRACE_FACT && currentFact && CheckTopicTrace())  Log(STDTRACELOG,(char*)" Found %d ", Fact2Index(currentFact));
-	if (currentFact) return currentFact;
+	if (currentFact && currentFact->botBits) // if a private fact
+	{
+		currentFact->botBits |= myBot; // join any ownership of preexisting fact
+		return currentFact;
+	}
 	currentFact = CreateFastFact(subject,verb,object,properties);
 	if (trace & TRACE_FACT && currentFact && CheckTopicTrace())  
 	{
@@ -838,7 +864,6 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 	else in = in = FopenReadWritten(name);
 	if (!in) return false;
 
-	ChangeDepth(1, (char*)"ImportFacts");
 	char* filebuffer = GetFreeCache();
 	size_t readit;
 	if (strstr(name,"ltm"))
@@ -872,10 +897,8 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 		}
 		else if (*word == '(')
 		{
-			ChangeDepth(1, readBuffer);
 			char* ptr = readBuffer;
 			FACT* G = ReadFact(ptr,0);
-			ChangeDepth(-1, readBuffer);
 			if (!G) 
 			{
 				ReportBug("Import data: %s",readBuffer);
@@ -892,7 +915,6 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 	if (!stricmp(erase,(char*)"erase") || !stricmp(transient,(char*)"erase")) remove(name); // erase file after reading
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"[%d] => ",FACTSET_COUNT(store));
 	currentFact = NULL; // we have used up the facts
-	ChangeDepth(-1, (char*)"ImportFacts");
 	return true;
 }
 
@@ -972,6 +994,7 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 	currentFact->verb = verb; 
 	currentFact->object = object;
 	currentFact->flags = properties;
+	currentFact->botBits = myBot; // this fact is visible to these bot ids (0 or -1 means all)
 
 	//   crossreference
 	if (s) 
@@ -1157,7 +1180,14 @@ char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead,bool eol)
 	}
 
 	base = buffer;
-	buffer = WriteField(F->object,F->flags & FACTOBJECT,buffer,ignoreDead);
+	int autoflag = F->flags & FACTOBJECT;
+	MEANING X = F->object;
+	if (F->flags & FACTAUTODELETE && F->flags & (JSON_OBJECT_FACT| JSON_ARRAY_FACT)) 
+	{
+		autoflag = FACTOBJECT;
+		X = atoi(Meaning2Word(F->object)->word);
+	}
+	buffer = WriteField(X,autoflag,buffer,ignoreDead);
 	if (base == buffer ) 
 	{
 		*start = 0;
@@ -1165,9 +1195,20 @@ char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead,bool eol)
 	}
 
 	//   add properties
-    if (F->flags)  
+    if (F->flags || F->botBits)  
 	{
 		sprintf(buffer,(char*)"x%x ",F->flags & (-1 ^ (MARKED_FACT|MARKED_FACT2) ));  // dont show markers
+		buffer += strlen(buffer);
+	}
+
+	// add bot owner flags
+	if (F->botBits)
+	{
+#ifdef WIN32
+		sprintf(buffer,(char*)"%I64d",F->botBits); 
+#else
+		sprintf(buffer,(char*)"%lld",F->botBits); 
+#endif
 		buffer += strlen(buffer);
 	}
 
@@ -1265,11 +1306,24 @@ FACT* ReadFact(char* &ptr, unsigned int build)
     else  subject = ReadMeaning(subjectname,true,true);
 	if (flags & FACTVERB) verb = (MEANING) atoi(verbname);
 	else  verb = ReadMeaning(verbname,true,true);
-	if (flags & FACTOBJECT) object = (MEANING) atoi(objectname);
+	if (flags & FACTOBJECT) 
+	{
+		if (flags & FACTAUTODELETE && flags & (JSON_OBJECT_FACT| JSON_ARRAY_FACT)) 
+		{
+			object = ReadMeaning(objectname,true,true);
+			flags ^= FACTOBJECT;
+		}
+		else object = (MEANING) atoi(objectname);
+	}
 	else  object = ReadMeaning(objectname,true,true);
+	
+	uint64 oldfactbits = myBot;
+	myBot = 0; // no owner by default unless read in by fact
+	if (*ptr && *ptr != ')') ptr = ReadInt64(ptr,(int64&)myBot); // read bot bits
 
     FACT* F = FindFact(subject, verb,object,flags);
     if (!F)   F = CreateFact(subject,verb,object,flags); 
+	
 	if (*ptr == ')') ++ptr;	// skip over ending )
 	ptr = SkipWhitespace(ptr);
     return F;

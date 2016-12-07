@@ -1101,7 +1101,9 @@ RESTART_RETRY:
 			Restart();
 			Log(SERVERLOG,(char*)"Server ready - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
 			printf((char*)"Server restarted - logfile:%s serverLog:%d userLog:%d\r\n\r\n",serverLogfileName,oldserverlog,userLog);
-			goto RESTART_RETRY;
+			char* at = SkipWhitespace(ourMainInputBuffer);
+			if (*at != ':')	goto RESTART_RETRY;
+			strcpy(ourMainOutputBuffer,"Restarted");
 		}
 		*((int*)clientBuffer) = returnValue;
 	} // end try block on calling cs performchat

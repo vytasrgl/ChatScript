@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,27 +13,27 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 11/20/2016 cs6.9</p>
+<p>Revision 12/7/2016 cs6.91</p>
 </blockquote>
 <ul>
-<li><a href="ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works">Review</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#advanced-concepts">Advanced Concepts</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#advanced-topics">Advanced Topics</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#advanced-patterns">Advanced Patterns</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#advanced-output">Advanced Output</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#advanced-variables">Advanced Variables</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#out-of-band-communication">Out of Band Communication</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#system-callback-functions">System callback functions</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#advanced-build">Advanced :build</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#editing-non-topic-files">Editing Non-topic Files</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#which-bot">Which Bot?</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#common-script-idioms">Common Script Idioms</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#esoterica-and-fine-detail">Esoterica and Fine Detail</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#self-reflection">Self-Reflection</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#a-fresh-build">A Fresh build</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#command-line-parameters">Command line Parameters</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#updating-cs-versions-easily">Updating CS versions Easily</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.md#the-dictionary">The Dictionary</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#advanced-concepts">Advanced Concepts</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#advanced-topics">Advanced Topics</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#advanced-patterns">Advanced Patterns</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#advanced-output">Advanced Output</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#advanced-variables">Advanced Variables</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#out-of-band-communication">Out of Band Communication</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#system-callback-functions">System callback functions</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#advanced-build">Advanced :build</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#editing-non-topic-files">Editing Non-topic Files</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#which-bot">Which Bot?</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#common-script-idioms">Common Script Idioms</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#esoterica-and-fine-detail">Esoterica and Fine Detail</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#self-reflection">Self-Reflection</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#a-fresh-build">A Fresh build</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#command-line-parameters">Command line Parameters</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#updating-cs-versions-easily">Updating CS versions Easily</a></li>
+<li><a href="ChatScript-Advanced-User-Manual.html#the-dictionary">The Dictionary</a></li>
 </ul>
 <h1 id="review-overview-of-how-cs-works">Review: Overview of how CS works</h1>
 <p>CS is a scripting language for interactivity. Each time CS communicates with the user, this is called a volley. Volleys are always asynchronous. In CS, each volley actually consists of accepting an incoming input from an arbitrary user, loading data about the user and their state, computing a response, writing out a new state, and sending a response to the user.</p>
@@ -583,7 +583,7 @@ if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn&#39;t fail or retur
 <p>which controls automatically up-casing the first letter of output, removing spaces before commas, and converting underscores to spaces (and also removing <code>~</code> from concept names).</p>
 <p>Equivalently <code>$cs_response = #ALL_RESPONSES</code>, which if you want all is what you should use in case new ones are added in the system later.</p>
 <h2 id="output-macros">Output Macros</h2>
-<p>Just as you can write your own common routines for handling pattern code with patternmacro:, you can do the same for output code.</p>
+<p>Just as you can write your own common routines (functions) for handling pattern code with patternmacro:, you can do the same for output code.</p>
 <pre><code>Outputmacro: name (^arg1 ^arg2 ...)</code></pre>
 <p>and then your code. Only now you use output script instead of pattern stuff. Again, when calling the macro, arguments are separated with spaces and not commas.</p>
 <p>Whereas most programming language separate their arguments with commas because they are reserved tokens in their language, in ChatScript a comma is a normal word. So you separate arguments to functions just with spaces.</p>
@@ -598,6 +598,8 @@ u: ( &lt;&lt; what time &gt;&gt; ) $test = ^mymac() join(ok $test)</code></pre>
 <p>will print <em>oktested here</em>.</p>
 <p>However, it is clearer and cleaner if you are returning data to be stored somewhere else (not to be merely immediately sent to the user), to use <code>^return(&quot;tested here&quot;)</code>. This both creates the result, and ends the function immediately even if other code follows.</p>
 <p>Note- calls to macros use &quot;pass by reference&quot;, so the actual value of the ^variable is the name of what was passed in, and it is generally (but not always) evaluated on use.</p>
+<h2 id="sharing-function-definitions"><code>Sharing function definitions</code></h2>
+<p>ChatScript requires that a function be defined before use. When you use that function from multiple files, you may have trouble ordering the files for compilation if you merely name the folder in filesxxx.txt since you cannot guarantee compilation order unless you explicitly name the files. But you can also just put your functions in a top level file and then have your other files in folders, and name it and then them in your filesxxx.txt file.</p>
 <h2 id="save-restore-locals">Save-Restore locals</h2>
 <p><code>$$xxx</code> and <code>$xxx</code> variables are global, merely transient and permanent. Function variables like <code>^myval</code> are restricted in use to the function declaring them, so they are sort of local variables, but they are stand-ins for the arguments passed, which means if you write indirectly the function variable you are changing something above you as well.</p>
 <p>Fortunately there are local variables, <code>$_xxx</code>.</p>

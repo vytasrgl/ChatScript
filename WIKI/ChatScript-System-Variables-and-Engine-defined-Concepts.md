@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 11/5/2016 cs6.87
+> Revision 12/7/2016 cs6.91
 
 
 * [Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
@@ -476,4 +476,5 @@ contents.
 | `$cs_login`             |  login name of the user |
 | `$$csmatch_start`  |  start of found words from ^match |
 | `$$csmatch_end` | end of found words from ^match |
+| `$cs_factowner`    |  when non-zero creates facts restricted by this bitmask so facts created by other masks cannot be seen. allows you to separate facts per bot in a multi-bot environment| 
 

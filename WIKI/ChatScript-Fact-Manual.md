@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 11/5/2016 cs6.87
+> Revision 12/7/2016 cs6.91
 
 * [Simple Facts](ChatScript-Fact-Manual.md#simple-facts)
 * [Advanced Facts](ChatScript-Fact-Manual.md#advanced-facts)
@@ -47,7 +47,7 @@ $fact = ^createfact( Bob own dog)
 
 The above creates facts which are findable by querying for pets Bob has. You can have any number of flags at the end. Other flags include:
 
-`FACTVERB` and `FACTOBJECT`
+`FACTVERB` and `FACTOBJECT` apply to storing fact ids in the verb and object fields. 
 
 `FACTTRANSIENT` – the fact will disappear at the end of this volley
 
@@ -56,6 +56,10 @@ this is particularly important if you go around deleting facts that might be ref
 Those other facts will also get deleted. 
 So if you want complete isolation from facts that look the same in some subfact but shouldn't be shared, 
 you'll want that subfact declared `FACTDUPLICATE`.
+
+`AUTODELETE` on a normal fact means that when that fact is destroyed, if it refers to other facts (FACTSUBJECT, FACTVERB, FACTOBJECT) then those referred facts will also get destroyed. 
+
+`AUTODELETE` on a json fact tells the system that the value stored as the object field is actually a normal fact id value and that fact should be destroyed when the json fact is destroyed.
 
 
 ## Accessing Facts

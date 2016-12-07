@@ -647,6 +647,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	if (tokenlen == 6 && IsDigit(token[0])  && token[1] == ',' && IsDigit(token[2])) // 2,2015
 		return ptr + 1;
 	if (!strnicmp(token,"https://",8) || !strnicmp(token,"http://",7)) return after;
+	if (IsFraction(token)) return after; // fraction?
 
 	// check for place number
 	char* place = ptr;

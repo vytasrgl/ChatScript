@@ -44,7 +44,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 // decompose a currentRuleID into its pieces
 #define TOPLEVELID(x) ((unsigned int) (x & 0x0000ffff))
-#define REJOINDERID(x) ((unsigned int) (x >> 16))
+#define REJOINDERID(x) ( ((unsigned int)x) >> 16)
 #define MAKE_REJOINDERID(x) (x << 16)
 
 // decompose RULEMAX info into gambits and top level rules

@@ -305,7 +305,6 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 	char* orig = ptr;
 	int statusBits = (*kind == '<') ? FREEMODE_BIT : 0; //   turns off: not, quote, startedgap, freemode ,wildselectorpassback
     if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDTRACETABLOG, "%s ",kind); //   start on new indented line
-	ChangeDepth(1,(char*)"Match");
     bool matched;
 	unsigned int startNest = functionNest;
 	int wildcardBase = wildcardIndex;
@@ -711,14 +710,21 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 
 					if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"((char*)"); 
 					ptr += 2; // skip ( and space
+					result = NOPROBLEM_BIT;
 					// read arguments
 					while (*ptr && *ptr != ')' ) 
 					{
 						char* buf = AllocateBuffer(); // cannot use AllocateInverseString 
-						ptr = ReadArgument(ptr,buf);  // gets the unevealed arg
+						FunctionResult result;
+						ptr = ReadArgument(ptr,buf,result);  // gets the unevealed arg
 						callArgumentList[callArgumentIndex++] = AllocateInverseString(buf);
 						if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s, ",buf); 
 						FreeBuffer();
+						if (result != NOPROBLEM_BIT) 
+						{
+							matched = false;
+							break;
+						}
 					}
 					if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)")\r\n"); 
 					fnVarBase = callArgumentBase = argStack[functionNest];
@@ -731,7 +737,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 						if (oldtrace && !(oldtrace & TRACE_ECHO)) trace ^= TRACE_ECHO;
 					}
 					if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s=> ",word);
-					continue;
+					if (result == NOPROBLEM_BIT) continue;
 				}
 				break;
           case 0: // end of data (argument or function - never a real rule)
@@ -754,7 +760,6 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
                 }
                 else 
 				{
-					ChangeDepth(-1,(char*)"Match");
 					globalDepth = startdepth;
  					return false; // shouldn't happen
 				}
@@ -1305,7 +1310,6 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 
 	//   if we leave this level w/o seeing the close, show it by elipsis 
 	//   can only happen on [ and { via success and on ) by failure
-	ChangeDepth(-1,(char*)"Match");
 	globalDepth = startdepth; // insures even if we skip >> closes, we get correct depth
 	if (trace & TRACE_PATTERN && depth  && CheckTopicTrace())
 	{

@@ -1,3 +1,12 @@
+version 6.91
+1. autodelete and USER_flag1...4 for json
+2. :trace -userfact
+3. deleting a json fact will recurse and delete the object referred to UNLESS it has some other reference to it still on another json fact.
+4. Match(~concept)
+5. added ^callstack(@1)  --- removed ^backtrace()
+6. $cs_factowner can be assigned a bit value to control what facts you can see
+
+
 version 6.9 11/20/2016
 1. ^nth now accepts json object or arrays, returns the factid of the nth member
 2. command line parameter root=xxxx to tell where CS root directory is

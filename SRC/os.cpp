@@ -43,6 +43,7 @@ char* inverseStringDepth[512];				// inverseString at start of depth
 static unsigned int stringDepth[512];				// string at start of depth
 char* nameDepth[512];				// who are we?
 char* ruleDepth[512];				// current rule
+char* tagDepth[512][25];			// topicid.toplevelid.rejoinderid (5.5.5)
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
@@ -999,7 +1000,7 @@ uint64 Hashit(unsigned char * data, int len,bool & hasUpperCharacters, bool & ha
 		if (c & 0x80) hasUTF8Characters = true;
 		else if (IsUpperCase(c)) 
 		{
-			c = GetLowercaseData(c);
+			c += 32;
 			hasUpperCharacters = true;
 		}
 		if (c == ' ') c = '_';	// force common hash on space vs _
@@ -1053,6 +1054,7 @@ void ChangeDepth(int value,char* where)
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 		nameDepth[globalDepth] = where;
 		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
+		sprintf((char*)tagDepth[globalDepth],"%d.%d.%d",currentTopicID,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
 		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
 		stringDepth[globalDepth] =  stringBase - stringFree;		
 	}

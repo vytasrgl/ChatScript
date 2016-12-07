@@ -31,6 +31,8 @@ typedef struct FACT
 	MEANING subject;		
 	MEANING verb;			
     MEANING object;	
+
+	uint64 botBits;		// which bots can access this fact (up to 64)
 } FACT;
 
 extern FACT* factBase;		//   start of fact space
@@ -45,6 +47,7 @@ extern MEANING Mexclude;
 extern MEANING Mis;
 
 extern size_t maxFacts;		// allocation limit of facts
+extern uint64 myBot;
 
 void SortFacts(char* set, int alpha, int setpass = -1);
 
@@ -59,12 +62,13 @@ void InitFacts();
 void CloseFacts();
 void ResetFactSystem(FACT* locked);
 void InitFactWords();
+void AutoKillFact(MEANING M);
 
 // fact creation and destruction
 FACT* FindFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties = 0);
 FACT* CreateFact(FACTOID_OR_MEANING subject,FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned int properties = 0);
 FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object, unsigned int properties);
-void KillFact(FACT* F,bool jsonrecurse = true);
+void KillFact(FACT* F,bool jsonrecurse = true, bool autoreviseArray = true);
 FACT* SpecialFact(FACTOID_OR_MEANING verb, FACTOID_OR_MEANING object,unsigned int flags);
 void FreeFact(FACT* F);
 char* GetSetEnd(char* x);

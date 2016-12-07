@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,12 +13,12 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 11/5/2016 cs6.87</p>
+<p>Revision 12/7/2016 cs6.91</p>
 </blockquote>
 <ul>
-<li><a href="ChatScript-Fact-Manual.md#simple-facts">Simple Facts</a></li>
-<li><a href="ChatScript-Fact-Manual.md#advanced-facts">Advanced Facts</a></li>
-<li><a href="ChatScript-Fact-Manual.md#esoteric-facts">Esoteric Facts</a></li>
+<li><a href="ChatScript-Fact-Manual.html#simple-facts">Simple Facts</a></li>
+<li><a href="ChatScript-Fact-Manual.html#advanced-facts">Advanced Facts</a></li>
+<li><a href="ChatScript-Fact-Manual.html#esoteric-facts">Esoteric Facts</a></li>
 </ul>
 <h1 id="simple-facts">SIMPLE FACTS</h1>
 <p>Facts are triples of subject, verb, object – though those are just the names of the fields and may or may not be their content. Facts look like this:</p>
@@ -37,9 +37,11 @@
 $fact = ^createfact( Bob own dog)
 ^createfact ($fact Bob pet FACTSUBJECT)</code></pre>
 <p>The above creates facts which are findable by querying for pets Bob has. You can have any number of flags at the end. Other flags include:</p>
-<p><code>FACTVERB</code> and <code>FACTOBJECT</code></p>
+<p><code>FACTVERB</code> and <code>FACTOBJECT</code> apply to storing fact ids in the verb and object fields.</p>
 <p><code>FACTTRANSIENT</code> – the fact will disappear at the end of this volley</p>
 <p><code>FACTDUPLICATE</code> – allow this fact to be a duplicate of an existing fact – this is particularly important if you go around deleting facts that might be referred to by other facts. Those other facts will also get deleted. So if you want complete isolation from facts that look the same in some subfact but shouldn't be shared, you'll want that subfact declared <code>FACTDUPLICATE</code>.</p>
+<p><code>AUTODELETE</code> on a normal fact means that when that fact is destroyed, if it refers to other facts (FACTSUBJECT, FACTVERB, FACTOBJECT) then those referred facts will also get destroyed.</p>
+<p><code>AUTODELETE</code> on a json fact tells the system that the value stored as the object field is actually a normal fact id value and that fact should be destroyed when the json fact is destroyed.</p>
 <h2 id="accessing-facts">Accessing Facts</h2>
 <p>To find facts, you need to make a query. There can be many different kinds of queries.</p>
 <h3 id="findfact-subject-verb-object"><code>^findfact</code>( subject verb object )</h3>

@@ -69,6 +69,8 @@ int srv_socket_g = -1;
 struct ev_loop *l_g = 0;
 ev_io ev_accept_r_g;
 ev_timer tt_g;
+
+bool postgresInited = false;
 	   
 #ifdef EVSERVER_FORK
 // child monitors
@@ -114,9 +116,6 @@ struct Client_t
 
         this->ev_r.data = this;
         this->ev_w.data = this;
-#ifndef DISCARDPOSTGRES
-		if (postgresparams)  PGUserFilesCode(); //Forked must hook uniquely AFTER forking
-#endif
         ev_io_start(this->l, &this->ev_r);
     }
 
@@ -124,14 +123,7 @@ struct Client_t
     {
         if (ev_is_active(&this->ev_r))  ev_io_stop(this->l, &this->ev_r);
         if (ev_is_active(&this->ev_w))  ev_io_stop(this->l, &this->ev_w);
-#ifndef DISCARDPOSTGRES
-		if (postgresparams)  
-		{
-			PostgresShutDown(); // any script connection
-			PGUserFilesCloseCode();	// filesystem
-		}
-#endif
-       close(this->fd);
+        close(this->fd);
     }
     
     void prepare_for_next_request()
@@ -585,6 +577,14 @@ int evsrv_do_chat(Client_t *client)
 	if (len >= MAX_BUFFER_SIZE - 100) client->message[MAX_BUFFER_SIZE-1] = 0;
 	echo = false;
 	bool restarted = false;
+#ifndef DISCARDPOSTGRES
+	if (postgresparams && !postgresInited)  
+	{
+		PGUserFilesCode(); //Forked must hook uniquely AFTER forking
+		postgresInited = true;
+	}
+#endif
+
 RESTART_RETRY:
 	strcpy(ourMainInputBuffer,client->message);
     char* dateLog = GetTimeInfo(true)+SKIPWEEKDAY;
@@ -602,7 +602,9 @@ RESTART_RETRY:
 		Log(SERVERLOG,(char*)"Restart Request: pid: %d %s \r\n",getpid(),client->user);
 		Restart();
 		*client->data = 0;
-		goto RESTART_RETRY;
+		char* at = SkipWhitespace(ourMainInputBuffer);
+		if (*at != ':')	goto RESTART_RETRY;
+		strcpy(client->data,"Restarted");
 	}
 		
 	if (*client->data == 0) 
@@ -613,6 +615,15 @@ RESTART_RETRY:
 		client->data[3] = 0xff;
 		client->data[4] = 0;	// null terminate hidden why data after room for positive ctrlz
 	}
+	
+#ifndef DISCARDPOSTGRES
+		if (false && postgresparams && postgresInited)  // try to keep going per child
+		{
+			PostgresShutDown(); // any script connection
+			PGUserFilesCloseCode();	// filesystem
+			postgresInited = false;
+		}
+#endif
 	if (serverLog) LogChat(starttime,client->user,client->bot,(char*)client->ip.c_str(),turn,ourMainInputBuffer,client->data);
     return 1;
 }

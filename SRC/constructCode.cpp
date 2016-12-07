@@ -156,7 +156,6 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 	// a nested if would be ^^if ( _0 == null ) 00m{ ^^if ( _0 == null ) 00m{ this is it } 00G else ( 1 ) 00q { this is not it } 004 } 00G else ( 1 ) 00q { this is not it } 004
 	// after a test condition is code to jump to next test branch when condition fails
 	// after { }  chosen branch is offset to jump to end of if
-	ChangeDepth(1,"if");
 	bool executed = false;
 	while (ALWAYS) //   do test conditions until match
 	{
@@ -242,8 +241,6 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 	}
 	if (executed && trace & TRACE_OUTPUT  && CheckTopicTrace()) Log(STDTRACETABLOG,"End If\r\n");
 
-	ChangeDepth(-1,"if");
-	
 	return ptr;
 } 
 
@@ -283,7 +280,6 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 		counter = limit; //   LIMITED
 		infinite = true; // loop is bounded by defaults
 	}
-	ChangeDepth(1,(char*)"HandleLoop");
 	while (counter-- > 0)
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"loop(%d)\r\n",counter+1);
@@ -301,7 +297,6 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 	}
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"end of loop\r\n");
 	if (counter < 0 && infinite) ReportBug("Loop ran to limit");
-	ChangeDepth(-1,(char*)"HandleLoop");
 	--withinLoop;
 
 	currentIterator = oldIterator;

@@ -248,6 +248,7 @@ bool AllocateInverseSlot(char* variable);
 char* RestoreInverseSlot(char* variable,char* slot);
 WORDP StoreWord(int);
 void ClearWordMaps();
+bool TraceHierarchyTest(int x);
 void WriteDictDetailsBeforeLayer(int layer);
 WORDP StoreWord(char* word, uint64 properties = 0);
 WORDP StoreWord(char* word, uint64 properties, uint64 flags);

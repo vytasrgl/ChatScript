@@ -419,7 +419,6 @@ char* GetVerify(char* tag,int &topicid, int &id) //  ~topic.#.#=LABEL<~topic.#.#
 	return verify;
 }
 
-
 char* GetRule(int topic, int id)
 {
     if (!topic || topic > numberOfTopics || id < 0) return NULL;
@@ -701,6 +700,43 @@ char* GetPattern(char* ptr,char* label,char* pattern,int limit)
 		if (patternlen > limit) patternlen = limit-1;
 		strncpy(pattern,patternStart,patternlen);
 		pattern[patternlen] = 0;
+		char name[MAX_WORD_SIZE];
+
+		char word[MAX_WORD_SIZE];
+		strcpy(word,pattern);
+		char* from = word-1;
+		char* to = pattern;
+		bool blank = true;
+		while (*++from)
+		{
+			if (*from == '=' && blank) // this is a relational test
+			{
+				char* compare = from + Decode(from+1,1); // use accelerator to point to op in the middle
+				char c = *compare;
+				if (c == '=' || c == '<' || c == '>' || c == '!' || c == '?' || c == '&')
+				{
+					++from;
+					blank = false;
+					continue;
+				}
+			}
+			else if (*from == '*' && (IsAlphaUTF8(from[1]) || from[1] == '*')) // find partial word
+			{
+				ReadCompiledWord(from,name);
+				if (strchr(from+1,'*'))
+				{
+					blank = false;
+					continue;
+				}
+			}
+			else if (*from == '\\' && blank) *to++ = *from++; // literal next
+		
+			to[1] = 0;
+			*to++ = *from;
+			if (blank && *from == '!') {;} // !_0?~fruit comparison
+			else blank = (*from == ' ');
+		}
+		*to = 0;
 	}
 	return ptr; // start of output ptr
 }
@@ -1206,9 +1242,7 @@ FunctionResult DoOutput(char* buffer,char* rule, unsigned int id)
 	// do output of rule
 	PushOutputBuffers();
 	currentRuleOutputBase = buffer;
-	ChangeDepth(1,(char*)"testRule");
 	result = ProcessRuleOutput(rule,currentRuleID,buffer);
-	ChangeDepth(-1,(char*)"testRule");
 	PopOutputBuffers();
 	return result;
 }
@@ -1541,7 +1575,6 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	unsigned int oldtiming = EstablishTopicTiming();
 	char value[100];
 
-	ChangeDepth(1,topicName); // PerformTopic
 	unsigned int oldTopicDisplay = currentTopicDisplay;
 	currentTopicDisplay = currentTopicID;
 	char* locals = GetTopicLocals(currentTopicID);
@@ -1581,7 +1614,6 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 		int diff = ElapsedMilliseconds() - start_time;
 		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Topic %s time: %d ms\r\n", topicName,diff);
 	}
-	ChangeDepth(-1, topicName); // performtopic
 
 	WORDP E = FindWord((char*)"^cs_topic_exit");
 	if (E && !cstopicsystem) 

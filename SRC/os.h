@@ -34,6 +34,7 @@ extern bool logged;
 extern int filesystemOverride;
 extern char* ruleDepth[512];
 extern char* nameDepth[512];
+extern char* tagDepth[512][25];
 
 #define RECORD_SIZE 4000
 
