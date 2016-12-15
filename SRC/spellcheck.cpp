@@ -310,6 +310,12 @@ bool SpellCheckSentence()
 		// dont spell check names of json objects or arrays
 		if (!strnicmp(word,"ja-",3) || !strnicmp(word,"jo-",3)) continue;
 
+		// dont spell check web addresses
+		if (!strnicmp(word,"http",4) || !strnicmp(word,"www",3)) continue;
+
+		// nor fractions
+		if (IsFraction(word))  continue; // fraction?
+
 		char* known = ProbableKnownWord(word);
 		if (known && !strcmp(known,word)) continue;	 // we know it
 		if (known && strcmp(known,word)) 

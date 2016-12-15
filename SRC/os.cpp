@@ -43,6 +43,7 @@ char* inverseStringDepth[512];				// inverseString at start of depth
 static unsigned int stringDepth[512];				// string at start of depth
 char* nameDepth[512];				// who are we?
 char* ruleDepth[512];				// current rule
+char* tagDepth[512][25];			// topicid.toplevelid.rejoinderid (5.5.5)
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
@@ -52,6 +53,8 @@ static char staticPath[MAX_WORD_SIZE]; // files that never change
 static char readPath[MAX_WORD_SIZE];   // readonly files that might be overwritten from outside
 static char writePath[MAX_WORD_SIZE];  // files written by app
 unsigned int currentFileLine = 0;				// line number in file being read
+unsigned int maxFileLine = 0;				// line number in file being read
+unsigned int peekLine = 0;
 char currentFilename[MAX_WORD_SIZE];	// name of file being read
 
 // error recover 
@@ -112,6 +115,13 @@ void JumpBack()
 
 void myexit(char* msg, int code)
 {	
+#ifndef DISCARDPOSTGRES
+	if (postgresparams)  
+	{
+		PostgresShutDown(); // any script connection
+		PGUserFilesCloseCode();	// filesystem
+	}
+#endif
 	char name[MAX_WORD_SIZE];
 	sprintf(name,(char*)"%s/exitlog.txt",logs);
 	FILE* in = FopenUTF8WriteAppend(name);
@@ -433,13 +443,6 @@ void C_Directories(char* x)
 		Log(STDTRACELOG,(char*)"execution path: %s\r\n",word);
 	}
 
-#ifdef WIN32
-    #include <direct.h>
-    #define GetCurrentDir _getcwd
-#else
-    #include <unistd.h>
-    #define GetCurrentDir getcwd
-#endif
 	if (GetCurrentDir(word, MAX_WORD_SIZE)) Log(STDTRACELOG,(char*)"current directory path: %s\r\n",word);
 
 	Log(STDTRACELOG,(char*)"readPath: %s\r\n",readPath);
@@ -461,7 +464,7 @@ void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath)
 
 void StartFile(const char* name)
 {
-	if (strnicmp(name,"TMP",3)) currentFileLine = 0;
+	if (strnicmp(name,"TMP",3)) maxFileLine = currentFileLine = 0;
 	strcpy(currentFilename,name); // in case name is simple
 
 	char* at = strrchr((char*) name,'/');	// last end of path
@@ -997,7 +1000,7 @@ uint64 Hashit(unsigned char * data, int len,bool & hasUpperCharacters, bool & ha
 		if (c & 0x80) hasUTF8Characters = true;
 		else if (IsUpperCase(c)) 
 		{
-			c = GetLowercaseData(c);
+			c += 32;
 			hasUpperCharacters = true;
 		}
 		if (c == ' ') c = '_';	// force common hash on space vs _
@@ -1051,6 +1054,7 @@ void ChangeDepth(int value,char* where)
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 		nameDepth[globalDepth] = where;
 		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
+		sprintf((char*)tagDepth[globalDepth],"%d.%d.%d",currentTopicID,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
 		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
 		stringDepth[globalDepth] =  stringBase - stringFree;		
 	}
@@ -1131,7 +1135,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (logLastCharacter == 1 && globalDepth == priordepth) {} // we indented already
 		else if (logLastCharacter == 1 && globalDepth > priordepth) // we need to indent a bit more
 		{
-			for (int i = priordepth+1; i < globalDepth; i++)
+			for (int i = priordepth; i < globalDepth; i++)
 			{
 				*at++ = (i == 4 || i == 9) ? ',' : '.';
 				//*at++ = ' ';

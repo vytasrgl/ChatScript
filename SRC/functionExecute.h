@@ -94,7 +94,7 @@ char* InitDisplay(char* list);
 void RestoreDisplay(char* base, char* list);
 extern unsigned int fnVarBase;
 extern SystemFunctionInfo systemFunctionSet[];
-
+extern char* currentFunctionDisplay;
 extern bool planning;
 extern bool nobacktrack;
 FunctionResult MemoryMarkCode(char* buffer);
@@ -116,6 +116,7 @@ void ResetBaseMemory();
 FACT* AddToList(FACT* newlist,FACT* oldfact,GetNextFact getnext,SetNextFact setnext);
 FACT* DeleteFromList(FACT* oldlist,FACT* oldfact,GetNextFact getnext,SetNextFact setnext);
 FunctionResult ReviseFactCode(char* buffer);
+FunctionResult ReviseFact1Code(char* buffer, bool arrayallowed = false);
 FunctionResult LengthCode(char* buffer);
 char* ResultCode(FunctionResult result);
 FunctionResult FLR(char* buffer,char* which);

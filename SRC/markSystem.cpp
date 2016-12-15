@@ -219,7 +219,7 @@ static int MarkSetPath(MEANING M, int start, int end, unsigned int depth, bool c
 		{
 			char word[MAX_WORD_SIZE];
 			char* fact;
-			if (trace == TRACE_HIERARCHY)  
+			if (TraceHierarchyTest(trace))  
 			{
 				int factx = Fact2Index(F);
 				fact = WriteFact(F,false,word); // just so we can see it
@@ -590,7 +590,6 @@ void MarkAllImpliedWords()
 	{
 		return;
 	}
-	ChangeDepth(1,(char*)"MarkAllImpliedWords");
 	WORDP pos = FindWord((char*)"~pos");
 	WORDP sys = FindWord((char*)"~sys");
 	WORDP role = FindWord((char*)"~grammar_role");
@@ -678,8 +677,13 @@ void MarkAllImpliedWords()
 			}
 		}
 	
-		// mark general number property
-		if (finalPosValues[i] & ( NOUN_NUMBER | ADJECTIVE_NUMBER))   // a date can become an idiom, marking it as a proper noun and not a number
+		// mark general number property -- (datezone can be marked noun_proper_singular) // adjective noun January 18, 2017 9:00 am
+			
+		if (finalPosValues[i] & (ADJECTIVE_NOUN | NOUN_PROPER_SINGULAR))  // a date can become an idiom, marking it as a proper noun and not a number
+		{
+			if (IsDigit(*wordStarts[i]) && IsDigit(wordStarts[i][1])  && IsDigit(wordStarts[i][2]) && IsDigit(wordStarts[i][3])  && !wordStarts[i][4]) MarkFacts(MakeMeaning(FindWord((char*)"~yearnumber")),i,i);
+		}
+		if (finalPosValues[i] & ( NOUN_NUMBER | ADJECTIVE_NUMBER))   
 		{
 			if (IsDigit(*wordStarts[i]) && IsDigit(wordStarts[i][1])  && IsDigit(wordStarts[i][2]) && IsDigit(wordStarts[i][3])  && !wordStarts[i][4]) MarkFacts(MakeMeaning(FindWord((char*)"~yearnumber")),i,i);
 			if (!wordCanonical[i][1] || !wordCanonical[i][2]) // 2 digit or 1 digit
@@ -736,6 +740,7 @@ void MarkAllImpliedWords()
 		WORDP CL = canonicalLower[i];
  		WORDP OU = originalUpper[i]; 
         WORDP CU = canonicalUpper[i]; 
+		// if (!CL && !CU && wordCanonical[i]) CL = StoreWord(wordCanonical[i]);
 		
 		if (!CU && original[1]) // dont convert single letters to upper case "a" if it hasnt already decided its not a determiner
 		{
@@ -775,7 +780,7 @@ void MarkAllImpliedWords()
        	}
 		
 		if (CL) wordCanonical[i] = CL->word; //    original meanings lowercase
-		else wordCanonical[i] = (CU) ? CU->word : (char*)"";
+		else if (!wordCanonical[i]) wordCanonical[i] = (CU) ? CU->word : (char*)"";
 
 		if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
 		{
@@ -922,6 +927,4 @@ void MarkAllImpliedWords()
     //   handle phrases now
 	markLength = 0;
     SetSequenceStamp(); //   sequences of words
-
-	ChangeDepth(-1,(char*)"MarkAllImpliedWords");
 }

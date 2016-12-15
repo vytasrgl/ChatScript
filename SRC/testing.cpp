@@ -1323,12 +1323,18 @@ static void C_TestTopic(char* input)
 	}
 	int topic = FindTopicIDByName(word);
 	if (!topic)  return;
+	ChangeDepth(1,word);
 	int pushed =  PushTopic(topic); 
-	if (pushed < 0) return;
+	if (pushed < 0) 
+	{
+		ChangeDepth(-1,word);
+		return;
+	}
 	ClearUserVariableSetFlags();
 	AllocateOutputBuffer();
 	PerformTopic(0,currentOutputBase); //   ACTIVE handle - 0 is good result
 	FreeOutputBuffer();
+	ChangeDepth(-1,word);
 	for (int i = 0; i < responseIndex; ++i) Log(STDTRACELOG,(char*)"%s\r\n", responseData[responseOrder[i]].response);
 	ShowChangedVariables();
 }
@@ -3969,6 +3975,7 @@ static void C_Restart(char* input)
 	arglist[4] = arg0;
 	char word[MAX_WORD_SIZE];
 	char* hold = ReadCompiledWord(input,word);
+	assignedLogin = true;
 	if (!stricmp(word,"erase"))
 	{
 		input = hold;
@@ -4065,7 +4072,7 @@ static void DrawDownHierarchy(MEANING T,unsigned int depth,unsigned int limit,bo
 		{
 			if (F->verb == Mmember)
 			{
-				if (trace == TRACE_HIERARCHY) TraceFact(F);
+				if (TraceHierarchyTest(trace)) TraceFact(F);
 				MEANING M = F->subject;
 				WORDP S = Meaning2Word(M);
 				if (S->inferMark != inferMark)
@@ -5986,7 +5993,7 @@ static char* WriteFactFlags(FACT* F)
 	if (F->flags & MARKED_FACT2) strcat(buffer,"MARKED_FACT2 ");
 	if (F->flags & FACTDEAD) strcat(buffer,"FACTDEAD ");
 	if (F->flags & FACTTRANSIENT) strcat(buffer,"FACTTRANSIENT ");
-	if (F->flags & FACTSHARED) strcat(buffer,"FACTSHARED ");
+	if (F->flags & FACTAUTODELETE) strcat(buffer,"AUTODELETE ");
 	if (F->flags & ORIGINAL_ONLY) strcat(buffer,"ORIGINAL_ONLY ");
 	if (F->flags & FACTBUILD2) strcat(buffer,"FACTBUILD2 ");
 	if (F->flags & FACTBUILD1) strcat(buffer,"FACTBUILD1 ");
@@ -6059,7 +6066,7 @@ static void C_Do(char* input)
 	char* answer = AllocateBuffer();
 #ifndef DISCARDSCRIPTCOMPILER
 	hasErrors = 0;
-	ReadOutput(input, NULL,out,NULL,NULL,NULL,false);
+	ReadOutput(input, NULL,out,NULL,NULL,NULL);
 	FunctionResult result = NOPROBLEM_BIT;
 	if (hasErrors) Log(STDTRACELOG,(char*)"\r\nScript errors prevent execution.");
 	else 
@@ -6300,7 +6307,7 @@ static void ShowTrace(unsigned int bits, bool original)
 {
 	unsigned int general = (TRACE_VARIABLE|TRACE_MATCH|TRACE_FLOW|TRACE_ECHO);
 	unsigned int mild = (TRACE_OUTPUT|TRACE_PREPARE|TRACE_PATTERN);
-	unsigned int deep = (TRACE_ALWAYS|TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
+	unsigned int deep = (TRACE_ALWAYS|TRACE_JSON|TRACE_TOPIC|TRACE_FACT|TRACE_SAMPLE|TRACE_INFER|TRACE_HIERARCHY|TRACE_SUBSTITUTE|TRACE_VARIABLESET|TRACE_QUERY|TRACE_USER|TRACE_USERFACT|TRACE_POS| TRACE_TCP|TRACE_USERFN|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL);
 
 	// general
 	if (bits & general) 
@@ -6331,7 +6338,7 @@ static void ShowTrace(unsigned int bits, bool original)
 		Log(ECHOSTDTRACELOG,(char*)"Enabled deep detail: ");
 		if (bits & TRACE_ALWAYS) Log(ECHOSTDTRACELOG,(char*)"always ");
 		if (bits & TRACE_FACT) Log(ECHOSTDTRACELOG,(char*)"fact ");
-		if (bits == TRACE_HIERARCHY) Log(ECHOSTDTRACELOG,(char*)"hierarchy ");
+		if (TraceHierarchyTest(bits)) Log(ECHOSTDTRACELOG,(char*)"hierarchy ");
 		if (bits & TRACE_INFER) Log(ECHOSTDTRACELOG,(char*)"infer ");
 		if (bits & TRACE_JSON) Log(ECHOSTDTRACELOG,(char*)"json ");
 		if (bits & TRACE_LABEL) Log(ECHOSTDTRACELOG,(char*)"label ");
@@ -6344,6 +6351,7 @@ static void ShowTrace(unsigned int bits, bool original)
 		if (bits & TRACE_TCP) Log(ECHOSTDTRACELOG,(char*)"tcp ");
 		if (bits & TRACE_TOPIC) Log(ECHOSTDTRACELOG,(char*)"topic ");
 		if (bits & TRACE_USER) Log(ECHOSTDTRACELOG,(char*)"user ");
+		if (bits & TRACE_USERFACT) Log(ECHOSTDTRACELOG,(char*)"userfact ");
 		if (bits & TRACE_USERCACHE) Log(ECHOSTDTRACELOG,(char*)"usercache ");
 		if (bits & TRACE_VARIABLESET) Log(ECHOSTDTRACELOG,(char*)"varassign ");
 		Log(ECHOSTDTRACELOG,(char*)"\r\n");
@@ -6378,7 +6386,7 @@ static void ShowTrace(unsigned int bits, bool original)
 		Log(ECHOSTDTRACELOG,(char*)"Disabled deep detail: ");
 		if (!(bits & TRACE_ALWAYS)) Log(ECHOSTDTRACELOG,(char*)"always ");
 		if (!(bits & TRACE_FACT)) Log(ECHOSTDTRACELOG,(char*)"fact ");
-		if ((bits != TRACE_HIERARCHY)) Log(ECHOSTDTRACELOG,(char*)"hierarchy ");
+		if (!TraceHierarchyTest(bits)) Log(ECHOSTDTRACELOG,(char*)"hierarchy ");
 		if (!(bits & TRACE_INFER)) Log(ECHOSTDTRACELOG,(char*)"infer ");
 		if (!(bits & TRACE_JSON)) Log(ECHOSTDTRACELOG,(char*)"json ");
 		if (!(bits & TRACE_LABEL)) Log(ECHOSTDTRACELOG,(char*)"label ");
@@ -6391,6 +6399,7 @@ static void ShowTrace(unsigned int bits, bool original)
 		if (!(bits & TRACE_TCP)) Log(ECHOSTDTRACELOG,(char*)"tcp ");
 		if (!(bits & TRACE_TOPIC)) Log(ECHOSTDTRACELOG,(char*)"topic ");
 		if (!(bits & TRACE_USER)) Log(ECHOSTDTRACELOG,(char*)"user ");
+		if (!(bits & TRACE_USERFACT)) Log(ECHOSTDTRACELOG,(char*)"userfact ");
 		if (!(bits & TRACE_USERCACHE)) Log(ECHOSTDTRACELOG,(char*)"usercache ");
 		if (!(bits & TRACE_VARIABLESET)) Log(ECHOSTDTRACELOG,(char*)"varassign ");
 		Log(ECHOSTDTRACELOG,(char*)"\r\n");
@@ -6402,7 +6411,7 @@ static void ShowTiming(unsigned int bits, bool original)
 {
 	unsigned int general = TRACE_FLOW;
 	unsigned int mild = (TRACE_PREPARE | TRACE_PATTERN);
-	unsigned int deep = (TRACE_ALWAYS | TRACE_JSON | TRACE_TOPIC | TRACE_QUERY | TRACE_USER | TRACE_TCP | TRACE_USERFN | TRACE_USERCACHE | TRACE_SQL);
+	unsigned int deep = (TRACE_ALWAYS | TRACE_JSON | TRACE_TOPIC | TRACE_QUERY | TRACE_USER | TRACE_USERFACT| TRACE_TCP | TRACE_USERFN | TRACE_USERCACHE | TRACE_SQL);
 
 	// general
 	if (bits & general)
@@ -6435,6 +6444,7 @@ static void ShowTiming(unsigned int bits, bool original)
 		if (bits & TRACE_TCP) Log(ECHOSTDTRACELOG, (char*)"tcp ");
 		if (bits & TRACE_TOPIC) Log(ECHOSTDTRACELOG, (char*)"topic ");
 		if (bits & TRACE_USER) Log(ECHOSTDTRACELOG, (char*)"user ");
+		if (bits & TRACE_USERFACT) Log(ECHOSTDTRACELOG, (char*)"userfact ");
 		if (bits & TRACE_USERCACHE) Log(ECHOSTDTRACELOG, (char*)"usercache ");
 		Log(ECHOSTDTRACELOG, (char*)"\r\n");
 	}
@@ -6471,6 +6481,7 @@ static void ShowTiming(unsigned int bits, bool original)
 		if (!(bits & TRACE_TCP)) Log(ECHOSTDTRACELOG, (char*)"tcp ");
 		if (!(bits & TRACE_TOPIC)) Log(ECHOSTDTRACELOG, (char*)"topic ");
 		if (!(bits & TRACE_USER)) Log(ECHOSTDTRACELOG, (char*)"user ");
+		if (!(bits & TRACE_USERFACT)) Log(ECHOSTDTRACELOG, (char*)"userfact ");
 		if (!(bits & TRACE_USERCACHE)) Log(ECHOSTDTRACELOG, (char*)"usercache ");
 		Log(ECHOSTDTRACELOG, (char*)"\r\n");
 	}
@@ -6598,6 +6609,7 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"varassign")) flags &= -1 ^  TRACE_VARIABLESET;
 			else if (!stricmp(word,(char*)"query")) flags &= -1 ^  TRACE_QUERY;
 			else if (!stricmp(word,(char*)"user")) flags &= -1 ^  TRACE_USER;
+			else if (!stricmp(word,(char*)"userfact")) flags &= -1 ^  TRACE_USERFACT;
 			else if (!stricmp(word,(char*)"pos")) flags &= -1 ^  TRACE_POS;
 			else if (!stricmp(word,(char*)"tcp")) flags &= -1 ^  TRACE_TCP;
 			else if (!stricmp(word,(char*)"json")) flags &= -1 ^  TRACE_JSON;
@@ -6606,7 +6618,7 @@ static void C_Trace(char* input)
 			else if (!stricmp(word,(char*)"sql")) flags &= -1 ^  TRACE_SQL;
 			else if (!stricmp(word,(char*)"label")) flags &= -1 ^  TRACE_LABEL;
 			else if (!stricmp(word,(char*)"topic")) flags &= -1 ^  TRACE_TOPIC;
-			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
+			else if (!stricmp(word,(char*)"deep")) flags &= -1 ^ (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_USERFACT|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
 			else if (!stricmp(word,(char*)"always")) flags &= -1 ^  TRACE_ALWAYS;
 		}
 		else if (IsNumberStarter(*word) && !IsAlphaUTF8(word[1])) 
@@ -6635,6 +6647,7 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"varassign")) flags |= TRACE_VARIABLESET;
 		else if (!stricmp(word,(char*)"query")) flags |= TRACE_QUERY;
 		else if (!stricmp(word,(char*)"user")) flags |= TRACE_USER;
+		else if (!stricmp(word,(char*)"userfact")) flags |= TRACE_USERFACT;
 		else if (!stricmp(word,(char*)"pos")) flags |= TRACE_POS;
 		else if (!stricmp(word,(char*)"tcp")) flags |= TRACE_TCP;
 		else if (!stricmp(word,(char*)"json")) flags |= TRACE_JSON;
@@ -6643,7 +6656,7 @@ static void C_Trace(char* input)
 		else if (!stricmp(word,(char*)"sql")) flags |= TRACE_SQL;
 		else if (!stricmp(word,(char*)"label")) flags |= TRACE_LABEL;
 		else if (!stricmp(word,(char*)"topic")) flags |= TRACE_TOPIC;
-		else if (!stricmp(word,(char*)"deep")) flags |= (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
+		else if (!stricmp(word,(char*)"deep")) flags |= (TRACE_JSON|TRACE_TOPIC|TRACE_FLOW|TRACE_INPUT|TRACE_USERFN|TRACE_SAMPLE|TRACE_INFER|TRACE_SUBSTITUTE|TRACE_HIERARCHY| TRACE_FACT| TRACE_VARIABLESET| TRACE_QUERY| TRACE_USER|TRACE_USERFACT|TRACE_POS|TRACE_TCP|TRACE_USERCACHE|TRACE_SQL|TRACE_LABEL); 
 		else if (!stricmp(word,(char*)"notthis")) flags |=  TRACE_NOT_THIS_TOPIC;
 		else if (!stricmp(word,(char*)"always")) flags |= TRACE_ALWAYS;
 
@@ -6721,7 +6734,6 @@ static void C_Trace(char* input)
 		}
 	}
 	trace = flags;
-	if (trace == TRACE_HIERARCHY) {;}
 	if (!fromScript) // do not show things automatically is
 	{
 		WalkDictionary(TracedFunction,1);
@@ -6977,7 +6989,7 @@ static void C_ExtraTopic(char* input) // topicdump will create a file in TMP/tmp
 	fseek (in, 0, SEEK_SET);
  	extraTopicData = (char*)malloc(size+2); // enough to hold the file
 	char* at = extraTopicData;
-	currentFileLine = 0; // prepare for BOM
+	maxFileLine = currentFileLine = 0; // prepare for BOM
 	while(ReadALine(at,in,size) >= 0) {at += strlen(at);} // join all lines
 	// clearly end the topic data
 	strcpy(at,(char*)"``");
@@ -7713,7 +7725,7 @@ static void C_ShowCoverage(char* input)
 		fclose(out);
 		return;
 	}
-	currentFileLine = 0;
+	maxFileLine = currentFileLine = 0;
 	ReadALine(readBuffer,in); // get a data
 	char topictag[MAX_WORD_SIZE];
 	char* ptr = ReadCompiledWord(readBuffer,topictag);

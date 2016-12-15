@@ -273,8 +273,8 @@ LOOPDEEPER:
 		}
 		else D = FindWord(item); // the basic item
 		if (!D) goto NULLVALUE;
-		if (*separator == '[' && strncmp(item,"ja-",3)) goto NULLVALUE; // cannot be indexed
 		if (*separator == '.' && strncmp(item,"jo-",3) && !factvalue) goto NULLVALUE; // cannot be dotted
+		if (*separator == '[' && strncmp(item,"ja-",3)) goto NULLVALUE; // cannot be indexed
 
 		// is there more later
 		char* separator1 =  (char*)strchr(separator+1,'.');	// more dot like $x.y.z?
@@ -305,7 +305,7 @@ LOOPDEEPER:
 				if (!key) goto NULLVALUE;	// cannot find
 			}
 		}
-		else // it is an index
+		else // it is an index - of either array OR object
 		{
 			if (IsDigit(*label)) 
 			{
@@ -489,6 +489,13 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 		if (word && *word) ReadInt64(word,val);
 		else val = ALL_RESPONSES;
 		responseControl = (unsigned int)val;
+	}	
+	// factowner changes are noticed by the engine
+	else if (!stricmp(var,(char*)"$cs_factowner")) 
+	{
+		int64 val = 0;
+		if (word && *word) ReadInt64(word,val);
+		myBot = (uint64)val;
 	}	
 	// wildcardseparator changes are noticed by the engine
 	else if (!stricmp(var,(char*)"$cs_wildcardSeparator")) 
@@ -759,7 +766,6 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 			return ptr;
 		}
 	}
-	ChangeDepth(1,(char*)"PerformAssignment");
 	char* word1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	int setToImply = impliedSet; // what he originally requested
 	int setToWild = impliedWild; // what he originally requested
@@ -980,7 +986,6 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 exit:
 	currentFact = NULL; // any assignment uses up current fact by definition
 	ReleaseInverseString(word1);
-	ChangeDepth(-1,(char*)"PerformAssignment");
 	impliedSet = oldImpliedSet;
 	impliedWild = oldImpliedWild;
 	impliedOp = 0;

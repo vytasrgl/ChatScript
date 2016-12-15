@@ -118,7 +118,7 @@ static void DecodeFNRef(char* side)
 static void DecodeComparison(char* word, char* lhs, char* op, char* rhs)
 {
 	// get the operator
-	char* compare = word + Decode(word+1,true); // use accelerator to point to op in the middle
+	char* compare = word + Decode(word+1,1); // use accelerator to point to op in the middle
 	strncpy(lhs,word+2,compare-word-2);
 	lhs[compare-word-2] = 0;
 	*op = *compare++;
@@ -305,7 +305,6 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 	char* orig = ptr;
 	int statusBits = (*kind == '<') ? FREEMODE_BIT : 0; //   turns off: not, quote, startedgap, freemode ,wildselectorpassback
     if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDTRACETABLOG, "%s ",kind); //   start on new indented line
-	ChangeDepth(1,(char*)"Match");
     bool matched;
 	unsigned int startNest = functionNest;
 	int wildcardBase = wildcardIndex;
@@ -404,7 +403,11 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 				if (word[1] == '_') // set positional reference  @_20+ or @_0-   
 				{
 					if (firstMatched < 0) firstMatched = NORETRY; // cannot retry this match locally
-	
+					char* end = word+3;  // skip @_2
+					if (IsDigit(*end)) ++end; // point to proper + or - ending
+					unsigned int wild = wildcardPosition[GetWildcardID(word+1)];
+					int index = (wildcardSelector >> GAP_SHIFT) & 0x0000001f;
+
 					// memorize gap to end based on direction...
 					if ((wildcardSelector & WILDMEMORIZEGAP) && !reverse) // close to end of sentence 
 					{
@@ -419,14 +422,32 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 						}
 						if (wildcardSelector & WILDMEMORIZEGAP) 
 						{
-							SetWildCard(start,wordCount,true);  //   legal swallow of gap //   request memorize
+							if ((wordCount - start) == 0) SetWildCardGivenValue((char*)"",(char*)"",true,start,index); // empty gap
+							else SetWildCardGiven(start,wordCount,true,index );  //   wildcard legal swallow between elements
+ 							wildcardSelector &= -1 ^ (WILDMEMORIZEGAP | WILDGAP);
+						}
+					}
+					
+					// memorize gap to end based on direction...
+					if ((wildcardSelector & WILDMEMORIZEGAP) && reverse) // close to start of sentence 
+					{
+						positionEnd = 1; // pretend to match at end of sentence
+						int start = wildcardSelector & 0x000000ff;
+						int limit = (wildcardSelector >> GAPLIMITSHIFT) & 0x000000ff;
+  						if ((start - positionEnd) > limit) //   too long til end
+						{
+							matched = false;
+ 							wildcardSelector &= -1 ^ (WILDMEMORIZEGAP | WILDGAP);
+							break;
+						}
+						if (wildcardSelector & WILDMEMORIZEGAP) 
+						{
+							if ((start - positionEnd + 1) == 0) SetWildCardGivenValue((char*)"",(char*)"",true,start,index); // empty gap
+							else SetWildCardGiven(positionEnd,start,true,index );  //   wildcard legal swallow between elements
  							wildcardSelector &= -1 ^ (WILDMEMORIZEGAP | WILDGAP);
 						}
 					}
 
-					char* end = word+3;  // skip @_2
-					if (IsDigit(*end)) ++end; // point to proper + or - ending
-					unsigned int wild = wildcardPosition[GetWildcardID(word+1)];
 					if (*end == '+') 
 					{
 						positionStart = WILDCARD_START(wild);
@@ -689,14 +710,21 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 
 					if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"((char*)"); 
 					ptr += 2; // skip ( and space
+					result = NOPROBLEM_BIT;
 					// read arguments
 					while (*ptr && *ptr != ')' ) 
 					{
 						char* buf = AllocateBuffer(); // cannot use AllocateInverseString 
-						ptr = ReadArgument(ptr,buf);  // gets the unevealed arg
+						FunctionResult result;
+						ptr = ReadArgument(ptr,buf,result);  // gets the unevealed arg
 						callArgumentList[callArgumentIndex++] = AllocateInverseString(buf);
 						if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s, ",buf); 
 						FreeBuffer();
+						if (result != NOPROBLEM_BIT) 
+						{
+							matched = false;
+							break;
+						}
 					}
 					if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)")\r\n"); 
 					fnVarBase = callArgumentBase = argStack[functionNest];
@@ -709,7 +737,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 						if (oldtrace && !(oldtrace & TRACE_ECHO)) trace ^= TRACE_ECHO;
 					}
 					if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s=> ",word);
-					continue;
+					if (result == NOPROBLEM_BIT) continue;
 				}
 				break;
           case 0: // end of data (argument or function - never a real rule)
@@ -732,7 +760,6 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
                 }
                 else 
 				{
-					ChangeDepth(-1,(char*)"Match");
 					globalDepth = startdepth;
  					return false; // shouldn't happen
 				}
@@ -1283,7 +1310,6 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 
 	//   if we leave this level w/o seeing the close, show it by elipsis 
 	//   can only happen on [ and { via success and on ) by failure
-	ChangeDepth(-1,(char*)"Match");
 	globalDepth = startdepth; // insures even if we skip >> closes, we get correct depth
 	if (trace & TRACE_PATTERN && depth  && CheckTopicTrace())
 	{

@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 11/5/2016 cs6.87
+> Revision 12/7/2016 cs6.91
 
 
 # Real World JSON
@@ -86,6 +86,10 @@ You can also add a flag unique to `^jsonarrayinsert`.
 You can also add `DUPLICATE` to ^jsonobjectinsert.
 
 When multiple flags are desired, put them into a simple string, `"DUPLICATE PERMANENT"`. Case doesn't matter.
+
+When you want to add a reference to a normal factid (as is returned by ^createfact) you can add the flag `AUTODELETE`
+
+You can also assign user flags by listing USER_FLAG1, thru USER_FLAG4 as a flag as well. The JSON fact will have that flag on it, which you can use in conjunction with ^query to limit what matches can be found.
 
 ### `^jsonparse`( {JSONFLAGS} string )
 `string` is a JSON text string (as might be returned from a website) and this parses into facts. 
@@ -233,6 +237,11 @@ your final path, eg
 
 If you need to handle the full range of legal keys in json, you can use text string notation like this
  `^jsonpath(."st. helen".data $tmp)`.
+
+You may omit the leading . of a path and CS will by default assume it
+```
+^jsonpath("st. helen".data $tmp)
+```
 
 ## Direct access via JSON variables `$myvar.field`
 

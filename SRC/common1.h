@@ -26,7 +26,7 @@ typedef uint64 MEANING;							//   a flagged indexed dict ptr
 #define MULTIHEADERBITS 0xFF00000000000000ULL
 
 #define SYNSET_MARKER		0x0800000000000000ULL  // this meaning is a synset head - on keyword import, its quote flag for binary read
-#define INDEX_BITS          0x03F0000000000000ULL  //   7 bits of ontology meaning indexing ability  63 possible meanings allowed
+#define INDEX_BITS          0x03F0000000000000ULL  //   6 bits of ontology meaning indexing ability  63 possible meanings allowed
 #define INDEX_OFFSET        52          //   shift for ontoindex  (rang 0..63)  
 #define MAX_MEANING			63			// limit
 #define INDEX_MINUS			0x0010000000000000ULL  // what to decrement to decrement the meaning index
@@ -42,7 +42,7 @@ typedef unsigned int MEANING;					//   a flagged indexed dict ptr
 #define MULTIHEADERBITS 0xFF000000
 
 #define SYNSET_MARKER		0x08000000  // this meaning is a synset head - on keyword import, its quote flag for binary read
-#define INDEX_BITS          0x03F00000  //   7 bits of ontology meaning indexing ability  63 possible meanings allowed
+#define INDEX_BITS          0x03F00000  //   6 bits of ontology meaning indexing ability  63 possible meanings allowed
 #define INDEX_OFFSET        20          //   shift for ontoindex  (rang 0..63)  
 #define MAX_MEANING			63			// limit
 #define INDEX_MINUS			0x00100000  // what to decrement to decrement the meaning index

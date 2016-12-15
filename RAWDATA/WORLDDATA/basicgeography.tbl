@@ -619,7 +619,7 @@ part Georgia ~city [Atlanta Savannah]
 part Massachusetts ~city Boston
 part Louisiana ~city New_Orleans
 part Texas ~city [Dallas Houston San_Antonio Austin Fort_Worth El_Paso]
-part New_York ~city New_York_City
+part New_York ~city [ New_York_City New_York ]
 part Nevada ~city [Las_Vegas Reno]
 part Idaho ~city Boise
 part Michigan ~city Detroit
@@ -670,7 +670,7 @@ part Nevada ~city Carson_City
 part New_Hampshire ~city Concord
 part New_Jersey ~city Trenton
 part New_Mexico ~city [Santa_Fe Albuquerque]
-part New_York ~city Albany 
+part New_York ~city Albany
 part North_Dakota ~city Bismarck
 part North_Carolina ~city Raleigh
 part Ohio ~city Columbus

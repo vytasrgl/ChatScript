@@ -15,7 +15,7 @@ char* postgresparams = 0; // init string for pguser
 #pragma comment(lib, "../SRC/postgres/libpq.lib")
 #endif
 
-void PostgresShutDown()
+void PostgresShutDown() // script opened file
 {
 	if (conn)  PQfinish(conn);
 	conn = NULL;

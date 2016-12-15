@@ -15,14 +15,13 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #endif
 
 #define ID_SIZE 500
-#define OUTPUT_BUFFER_SIZE 20000
+#define OUTPUT_BUFFER_SIZE 40000
 
 typedef struct RESPONSE
 {
     unsigned int responseInputIndex;                        // which input sentence does this stem from?
 	int topic;										// topic of rule
 	char id[24];											// .100.30
- 	char relayid[24];										// 324.100.30 topic and rule doing relay
 	char response[OUTPUT_BUFFER_SIZE];						// answer sentences, 1 or more per input line
 } RESPONSE;
 
@@ -76,6 +75,7 @@ extern unsigned char responseOrder[MAX_RESPONSE_SENTENCES+1];
 extern RESPONSE responseData[MAX_RESPONSE_SENTENCES+1];
 extern int responseIndex;
 extern bool documentMode;
+extern bool assignedLogin;
 extern unsigned int volleyCount;
 extern FILE* sourceFile;
 extern bool oobExists;

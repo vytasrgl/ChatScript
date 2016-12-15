@@ -52,6 +52,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DISCARDMONGO 1
 //#undef  DISCARDDICTIONARYBUILD  // only a windows version can build a dictionary from scratch
 //#undef SEPARATE_STRING_SPACE
+//#define  TREETAGGER 1
 
 #elif IOS
 #define DISCARDCOUNTER 1
@@ -217,5 +218,13 @@ using namespace std;
 #ifdef PRIVATE_CODE
 #include "privatesrc.h"
 #endif 
+
+#ifdef WIN32
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#else
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+#endif
 
 #endif

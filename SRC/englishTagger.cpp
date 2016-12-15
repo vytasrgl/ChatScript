@@ -269,12 +269,20 @@ static void SetCanonicalValue(int start,int end)
 			}
 			if (canonicalLower[i] && canonicalLower[i]->properties & (DETERMINER|NUMBER_BITS));
 			else if (IsAlphaUTF8(*original) &&  canonicalLower[i] && !strcmp(canonicalLower[i]->word,(char*)"unknown-word"));	// keep unknown-ness
- 			else if (pos & NOUN_BITS && !canonicalUpper[i]) canonicalLower[i] = FindWord(GetSingularNoun(original,false,true));
+ 			else if (pos & NOUN_BITS && !canonicalUpper[i]) 
+			{
+				char* noun = GetSingularNoun(original,false,true);
+				if (noun) canonicalLower[i] = FindWord(noun);
+			}
 		}
 		else if (pos & (ADJECTIVE_BITS - ADJECTIVE_PARTICIPLE - ADJECTIVE_NOUN) || (canonicalLower[i] && !stricmp(canonicalLower[i]->word,original))) 
 		{
 			if (canonicalLower[i] && canonicalLower[i]->properties & NUMBER_BITS);
-			else canonicalLower[i] = FindWord(GetAdjectiveBase(original,false));
+			else 
+			{
+				char* adj = GetAdjectiveBase(original,false);
+				if (adj) canonicalLower[i] = FindWord(adj);
+			}
 
 			// for adjectives that are verbs, like married, go canonical to the verb if adjective is unchanged
 			if (canonicalLower[i] && !strcmp(canonicalLower[i]->word,original))
@@ -287,7 +295,11 @@ static void SetCanonicalValue(int start,int end)
 		{
 			if (canonicalLower[i] && canonicalLower[i]->properties & NUMBER_BITS);
 			else if (IsUpperCase(*wordStarts[i]) && caseSignificant) {;}  //  upper case is intentional
-			else canonicalLower[i] = FindWord(GetAdjectiveBase(original,false));
+			else
+			{
+				char* adj = GetAdjectiveBase(original,false);
+				if (adj) canonicalLower[i] = FindWord(adj);
+			}
 		}
 		else if (pos & ADVERB || (canonicalLower[i] && !stricmp(canonicalLower[i]->word,original))) 
 		{
@@ -2980,7 +2992,8 @@ char* DumpAnalysis(int start, int end,uint64 flags[MAX_SENTENCE_LENGTH],const ch
 void MarkTags(unsigned int i)
 {
 	uint64 bits = finalPosValues[i];
-	if (bits & NOUN) bits |= allOriginalWordBits[i] & (NOUN_HUMAN | NOUN_FIRSTNAME | NOUN_SHE | NOUN_HE | NOUN_THEY | NOUN_TITLE_OF_ADDRESS | NOUN_TITLE_OF_WORK| NOUN_ABSTRACT );
+	// Bruce Wilcox- bruce is adjective noun
+	if (bits & (NOUN | ADJECTIVE_NOUN)) bits |= allOriginalWordBits[i] & (NOUN_HUMAN | NOUN_FIRSTNAME | NOUN_SHE | NOUN_HE | NOUN_THEY | NOUN_TITLE_OF_ADDRESS | NOUN_TITLE_OF_WORK| NOUN_ABSTRACT );
 	if (allOriginalWordBits[i] & LOWERCASE_TITLE ) bits |= LOWERCASE_TITLE;
 
 	// special word mark split particle verbs handled by setsequencemark
@@ -9920,10 +9933,6 @@ void ParseSentence(bool &resolved,bool &changed)
 // Buying a license will get the the library you need to load with this code
 // http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/
 
-#ifdef WIN32
-#pragma comment(lib, "c:/ChatScript/treetagger/treetagger.lib")
-#endif
-
 typedef struct {
   int  number_of_words;  /* number of words to be tagged */
   int  next_word;        /* needed internally */
@@ -9933,8 +9942,8 @@ typedef struct {
   const char **lemma;    /* array of pointers to the lemmas */
 } TAGGER_STRUCT;
 
-void init_treetagger(char *param_file_name);
-double tag_sentence( TAGGER_STRUCT *ts );
+void __declspec( dllimport )  init_treetagger(char *param_file_name);
+double __declspec( dllimport )  tag_sentence( TAGGER_STRUCT *ts );
 
 int Ignore_Prefix=0; /* should be 0 - used by library*/
 

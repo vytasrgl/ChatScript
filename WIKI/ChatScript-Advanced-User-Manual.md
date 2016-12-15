@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 11/5/2016 cs6.87
+> Revision 12/7/2016 cs6.91
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -284,6 +284,18 @@ Concepts can be built from other concepts that do not have specific words.
 ```
 Concept: ~myconcept (!thisword ~otherconcept)
 ```
+
+Note: the system has two kinds of concepts. Enumerated concepts are ones formed from an explicit list of members. Stuff in definitions of concept: ~xxx()  are that. There are also internal concepts marked by the system. These include part of speech of a word (requires using the pos-tagger to decide from the input what part of speech it was of possibly several), grammatical roles, words from infinite sets like ~number and ~placenumber and ~weburl, and so forth.  
+
+In a pattern of some kind, if you are referencing a sentence location using a match variable, you can match both kinds of concepts. But if you are not tied to a location in  a sentence, you can't match internally computed ones. So something like
+```
+if (pattern 23?~number)
+```
+will fail. Even
+```
+if (pattern practical?~adjective)
+```
+will fail given that deciding practical is an adjective (it could also be a noun) hasn't been performed by pos-tagging.
 
 
 # ADVANCED TOPICS
@@ -877,6 +889,19 @@ u: (I love * > _*-1 ) capture last word of sentence
 
 ## Gory details about strings
 
+'Strings in Output'
+
+A double quoted string in output retains its quotes.
+```
+u: () I love "rabbits"
+```
+will print that out literally, including the double quotes.
+
+And you cannot run the string across multiple lines.
+
+An active string interprets variable references inside. It does not show the containing quotes around the whole thing. And it can be extended across multiple lines (treating line breaks as a single space in the string created).
+
+
 ```
 u: ( I "take charge" ) OK.
 ```
@@ -1344,7 +1369,7 @@ what you should use in case new ones are added in the system later.
 
 ## Output Macros
 
-Just as you can write your own common routines for handling pattern code with
+Just as you can write your own common routines (functions) for handling pattern code with
 patternmacro:, you can do the same for output code. 
 ```
 Outputmacro: name (^arg1 ^arg2 ...)
@@ -1377,6 +1402,13 @@ This both creates the result, and ends the function immediately even if other co
 Note- calls to macros use "pass by reference", so the actual value of the ^variable is the
 name of what was passed in, and it is generally (but not always) evaluated on use. 
 
+## `Sharing function definitions`
+
+ChatScript requires that a function be defined before use. When you use that function from multiple
+files, you may have trouble ordering the files for compilation if you merely name the folder in
+filesxxx.txt since you cannot guarantee compilation order unless you explicitly name the files.
+But you can also just put your functions in a top level file and then have your other files in folders,
+and name it and then them in your filesxxx.txt file.
 
 ## Save-Restore locals
 

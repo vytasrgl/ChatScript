@@ -125,7 +125,7 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine);
 size_t OutputLimit(unsigned char* data);
 extern int startSentence;
 extern int endSentence;
-
+bool IsFraction(char* token);
 // boolean style tests
 bool IsArithmeticOperator(char* word);
 unsigned IsNumber(char* word,bool placeAllowed = true); // returns kind of number
@@ -164,7 +164,7 @@ char* ReadInt(char* ptr, int & value);
 char* ReadInt64(char* ptr, int64 & w);
 int64 atoi64(char* ptr );
 char* ReadQuote(char* ptr, char* buffer,bool backslash = false, bool noblank = true);
-char* ReadArgument(char* ptr, char* buffer);
+char* ReadArgument(char* ptr, char* buffer, FunctionResult &result);
 
 int ReadALine(char* buf,FILE* file,unsigned int limit = maxBufferSize,bool returnEmptyLines = false);
 char* SkipWhitespace(char* ptr);

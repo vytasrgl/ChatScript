@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 11/5/2016 cs6.87
+> Revision 12/7/2016 cs6.91
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -664,8 +664,8 @@ This is an alterative access to function variable arguments,
 useful in a loop instead of having to access by variable name. 
 If `n` is `0`, the system merely tests whether the caller exists and fails if the caller is not in the path of this call.
 
-### `^backtrace`(  )
-Lists the sequence of topics and calls that got you to this point, one per line.
+### `^callstack`( @n )
+Generates a list of transient facts into the named factset. The facts represent the callstack and have as subject the critical value (the verb is `callstack` and the object is the rule tag responsible for this entry). Items include function calls (^xxxx) and topic calls (~xxxx) and internal calls (no prefix).
 
 ### `^command`( args )
 Execute this stream of arguments through the `:` command processor.
@@ -780,6 +780,8 @@ and later
 ```
 ^match(~mytopic.test)
 ```
+
+You can also just say `^match(~someconcept)` and it will test the current input for that concept.
 
 '`$$csmatch_start` and `$$csmatch_end` are assigned to provide the range of words that `^match` used.
 
@@ -1181,6 +1183,10 @@ dereference path fails cannot be found.
 ^jsonparse(transient NOFAIL "{ a: $var, b: _0.e[2] }")
 ```
 
+### `^jsonkind`( something )
+If `something` is a JSON object, the function returns `object`. If it is a JSON array it returns
+`array`. Otherwise it fails.
+
 ### `^jsonpath`( string id )
 `string` is a description of how to walk JSON. Id is the name of the node you want to start at 
 (typically returned from `^jsonopen` or `^jsonparse`. 
@@ -1205,6 +1211,11 @@ Just add `*` after your final path, eg
 If you need to handle the full range of legal keys in json, you can use text string notation like this
 ```
 ^jsonpath(."st. helen".data $tmp)
+```
+
+You may omit the leading . of a path and CS will by default assume it
+```
+^jsonpath("st. helen".data $tmp)
 ```
 
 # Word Manipulation Functions
@@ -1746,6 +1757,11 @@ interpret the answer and the second is the index you want to retrieve, eg.,
 ```
 An index out of bounds will fail. Factsets are always numbered 1...n, so the first element
 is, in fact, `^nth(@0object 1)` would correspond to `@0object` or `^first(@0object)`
+
+Similarly you can do `nth(~concept 2)` to retrieve the third member of a concept (numbering starts at 0).
+
+You can also do `nth` of a JSON object (returns the factid of the nth key/value pair) or JSON array (returns the factid
+of the nth index/value pair).
 
 ### `^unpackfactref` 
 examines facts in a set and generates all fact references from it. That is,

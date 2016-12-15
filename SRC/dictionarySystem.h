@@ -302,6 +302,9 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 // flags on facts  FACT FLAGS
 
 #define FACTATTRIBUTE	    0x10000000  // fact is an attribute fact, object can vary while subject/verb should be fixed 
+// unused 0x20000000 
+// unused 0x40000000 
+// unused 0x80000000 
 
 // transient flags
 #define MARKED_FACT         0x08000000  //   TRANSIENT : used during inferencing sometimes to see if fact is marked, also in user save to avoid repeated save
@@ -311,7 +314,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define FACTTRANSIENT		0x01000000   //   save only with a set, not with a user or base system
 
 // normal flags
-#define FACTSHARED	        0x00800000
+#define FACTAUTODELETE      0x00800000 // delete when json deletes
 #define ORIGINAL_ONLY       0x00400000  //  dont match on canonicals
 #define FACTBUILD2			0x00200000 
 #define FACTBUILD1	        0x00100000  // fact created during build 1 (for concepts)
@@ -323,8 +326,9 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define USER_FLAG1			0x00010000
 
 #define USER_FLAGS			0x000F0000 
-#define SYSTEM_FLAGS		0xFFF0FFFF // system used top 17 bits and bottom 12
-// unused 0x00004000 0x00008000
+#define SYSTEM_FLAGS		0xFFF0FFF0 // system used top 12 bits and bottom 12
+// unused 0x00004000 
+// unused 0x00008000
 #define JSON_OBJECT_FACT	0x00002000 // on subject side of triple
 #define JSON_ARRAY_FACT		0x00001000	// on subject side of triple
 
@@ -339,6 +343,12 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define FACTVERB			0x00000040	//   is 1st in its bucket (transient flag for read/WriteBinary) which MIRRORS DICT BUCKETHEADER flag: 
 #define FACTOBJECT		    0x00000020  //   does not apply to canonical forms of words, only the original form - for classes and sets, means dont chase the set
 #define FACTDUPLICATE		0x00000010	//   allow repeats of this fact
+//unused		0x00000001	
+//unused		0x00000002	
+//unused		0x00000004	
+//unused		0x00000005	
+
+// end of fact flags
 
 // pos tagger roles and states on roles[] && needRoles[] (32 bit limit)
 // needRoles values can be composed of multiple choices. roles are exactly one choice
@@ -346,9 +356,6 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define MAININDIRECTOBJECT	0x00000004 
 #define MAINVERB			0x00000002
 #define MAINSUBJECT			0x00000001			// noun roles like Mainsubject etc are ordered lowest first for pronoun IT priority
-
-// end of fact flags
-
 
 #define SUBJECT2			0x00000010
 #define VERB2				0x00000020
@@ -473,6 +480,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define TRACE_ALWAYS		0x10000000
 
 #define TRACE_ECHO			0x20000000	// echo trace
+#define TRACE_USERFACT		0x40000000
 
 // TIME FLAGS
 // simple

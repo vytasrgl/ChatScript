@@ -177,6 +177,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
 		{
 			++counter;
 			WriteFact(F,true,ptr,false,true); // facts are escaped safe for JSON
+			if (trace & TRACE_USERFACT) Log(STDTRACELOG,(char*)"Fact Saved %s",ptr);
 			ptr += strlen(ptr);
 			if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
 		}
@@ -214,7 +215,7 @@ static bool ReadUserFacts()
 			char* lclptr = readBuffer;
 			FACT* F = ReadFact(lclptr,0);
 			AddFact(setid,F);
-			if (trace & TRACE_USER) TraceFact(F);
+			if (trace & TRACE_USERFACT) TraceFact(F);
         }
 		if (*readBuffer == '#' && readBuffer[1] == ENDUNIT) break; // otherwise has #end set as the line
 	}
@@ -547,7 +548,6 @@ void WriteUserData(time_t curr)
 	clock_t start_time = ElapsedMilliseconds();
 
 	if (globalDepth == 0) currentRule = NULL;
-	ChangeDepth(1,(char*)"WriteUserData");
 
 	char name[MAX_WORD_SIZE];
 	char filename[SMALL_WORD_SIZE];
@@ -609,7 +609,7 @@ void WriteUserData(time_t curr)
 	}
 	userVariableIndex = 0; // flush all modified variables
 	tracedFunctionsIndex = 0;
-	ChangeDepth(-1,(char*)"WriteUserData");
+	myBot = 0;	// drop ownership of facts
 
 	if (timing & TIME_USER) {
 		int diff = ElapsedMilliseconds() - start_time;
@@ -630,7 +630,7 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 	// set bom
 	if (buffer && *buffer != 0) // readable data
 	{ 
-		currentFileLine = 0;
+		maxFileLine = currentFileLine = 0;
 		BOM = BOMSET;
 		char* at = strchr(buffer,'\r');
 		if (at) // newer format
@@ -699,7 +699,6 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 void ReadUserData() // passed  buffer with file content (where feasible)
 {	
 	if (globalDepth == 0) currentRule = NULL;
-	ChangeDepth(1,(char*)"ReadUserData");
 
 	clock_t start_time = ElapsedMilliseconds();
 
@@ -715,7 +714,6 @@ void ReadUserData() // passed  buffer with file content (where feasible)
 		ReportBug((char*)"User data file inconsistent\r\n");
 	}
 	if (shared) ReadFileData((char*)"share");  // read shared file, if any, or get it from cache
-	ChangeDepth(-1,(char*)"ReadUserData");
 
 	if (timing & TIME_USER) {
 		int diff = ElapsedMilliseconds() - start_time;
@@ -773,13 +771,11 @@ void ReadNewUser()
 	*buffer = 0;
 	PushOutputBuffers();
 	currentRuleOutputBase = currentOutputBase = buffer;
-	ChangeDepth(1,(char*)"ReadNewUser");
 	FunctionResult result;
 	char arg[15]; // dofunction call needs to be alterable if tracing
 	strcpy(arg,(char*)"()");
 	DoFunction(D->word,arg,buffer,result);
 	PopOutputBuffers();
-	ChangeDepth(-1,(char*)"ReadNewUser");
 	FreeBuffer();
 
 	inputRejoinderTopic = inputRejoinderRuleID = NO_REJOINDER; 

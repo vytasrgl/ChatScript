@@ -34,6 +34,7 @@ extern bool logged;
 extern int filesystemOverride;
 extern char* ruleDepth[512];
 extern char* nameDepth[512];
+extern char* tagDepth[512][25];
 
 #define RECORD_SIZE 4000
 
@@ -62,6 +63,7 @@ void EncryptInit(char* params);
 void DecryptInit(char* params);
 void EncryptRestart();
 extern unsigned int currentFileLine;
+extern unsigned int maxFileLine;
 extern char currentFilename[MAX_WORD_SIZE];
 extern struct tm* ptm;
 int FClose(FILE* file);

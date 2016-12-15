@@ -79,7 +79,7 @@ static unsigned int rawWords = 0;
 static unsigned char* writePtr;				// used for binary dictionary writes
 
 // memory data
-#define MAX_STRING_SPACE 70000000  // transient string space 70MB
+#define MAX_STRING_SPACE 100000000  // transient string space 100MB
 unsigned long maxHashBuckets = MAX_HASH_BUCKETS;
 bool setMaxHashBuckets = false;
 uint64 maxDictEntries = MAX_ENTRIES;
@@ -88,6 +88,7 @@ unsigned int userTopicStoreSize,userTableSize; // memory used which we will disp
 char livedata[500];		// where is the livedata folder
 char englishFolder[500];		// where is the livedata english folder
 char systemFolder[500];		// where is the livedata system folder
+char root[500];				// where is the chatscript folder
 
 MEANING posMeanings[64];				// concept associated with propertyFlags of WORDs
 MEANING sysMeanings[64];				// concept associated with systemFlags of WORDs
@@ -112,6 +113,13 @@ bool fullDictionary = true;				// we have a big master dictionary, not a mini di
 #ifndef DISCARDDICTIONARYBUILD
 void LoadRawDictionary(int mini);
 #endif
+
+bool TraceHierarchyTest(int x)
+{
+	if (!(x & TRACE_HIERARCHY)) return false;
+	x &= -1 ^ (TRACE_ON|TRACE_ALWAYS|TRACE_HIERARCHY|TRACE_ECHO);
+	return x == 0; // must exactly have been trace hierarchy
+}
 
 void RemoveConceptTopic(int list[256], WORDP D,int index)
 {
@@ -606,7 +614,7 @@ void InitDictionary()
 	
 	//   dictionary and meanings and strings share space, running from opposite ends of a common pool
 	size_t size = (size_t)(sizeof(WORDENTRY) * maxDictEntries);
-#ifdef WIN32
+#ifndef SEPARATE_STRING_SPACE
 	size += maxStringBytes;
 #endif
 	size /= sizeof(WORDENTRY);
@@ -625,7 +633,7 @@ void InitDictionary()
 
 #ifdef EXPLAIN
 	Conjoined String Space					Independent String space
-nnn											StringBase -- allocates downwards
+											StringBase -- allocates downwards
 	StringBase  - allocates downwards		StringFree
 	StringFree								StringEnd  -- stringInversefree - allocates upwards
 											-------------------------disjoint memory
@@ -706,7 +714,7 @@ char* expandAllocation(char* old, char* word,int size)
 	return old;
 }
 
-char* AllocateInverseString(char* word, size_t len) // call with (0,len) to get a buffer
+char* AllocateInverseString(char* word, size_t len,bool localvar) // call with (0,len) to get a buffer
 {
 	if (len == 0) len = strlen(word);
     if ((stringInverseFree + len + 1) >= (stringFree - 5000)) // dont get close
@@ -715,9 +723,16 @@ char* AllocateInverseString(char* word, size_t len) // call with (0,len) to get 
 		return NULL;
     }
 	char* answer = stringInverseFree;
+	if (localvar) // give hidden data
+	{
+		*answer = '`';
+		answer[1] = '`';
+		answer += 2;
+	}
 	if (word) strncpy(answer,word,len);
 	answer[len++] = 0;
 	answer[len++] = 0;
+	if (localvar) len += 2;
 	stringInverseFree += len;
 	len = stringFree - stringInverseFree;
 	if (len < maxInverseStringGap) maxInverseStringGap = len;
@@ -842,8 +857,6 @@ Allocations happen during volley processing as
 	}
 	
 	int nominalLeft = maxStringBytes - (stringBase - stringFree);
-	if (nominalLeft < 25000000) showDepth = 1;
-	else if (nominalLeft > 25000000) showDepth = 0;
 	if ((unsigned long) nominalLeft < minStringAvailable) minStringAvailable = nominalLeft;
 
 #ifndef SEPARATE_STRING_SPACE 
@@ -1377,6 +1390,7 @@ void LockLayer(int layer,bool boot)
 		factsPreBuild[i] = factFree; 
 		topicBlockPtrs[i] = NULL;
 		buildStamp[i][0] = 0;
+		compileVersion[i][0] = 0;
 	}    
 
 	#ifndef DISCARDSCRIPTCOMPILER
@@ -2387,7 +2401,7 @@ MEANING FindSynsetParent(MEANING T,unsigned int which) //  presume we are at the
 			if (index && index != Meaning2Index(at->subject)) continue; // must match generic or specific precisely
 			if (count++ == which) 
 			{
-				if (trace == TRACE_HIERARCHY) TraceFact(at);
+				if (TraceHierarchyTest(trace)) TraceFact(at);
 				return at->object; //   next set/class in line
 			}
 		}
@@ -2415,7 +2429,7 @@ MEANING FindSetParent(MEANING T,int n) //   next set parent
 
         if (--n == 0) 
 		{
-   			if (trace == TRACE_HIERARCHY) TraceFact(F);
+   			if (TraceHierarchyTest(trace)) TraceFact(F);
 			return at->object; // next set/class in line
 		}
     }

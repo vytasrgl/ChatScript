@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 11/5/2016 cs6.87</p>
+<p>Revision 12/7/2016 cs6.91</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
@@ -108,6 +108,12 @@ concept: ~active_verbs ONLY_NONE (sleep)</code></pre>
 has 6 members</code></pre>
 <p>Concepts can be built from other concepts that do not have specific words.</p>
 <pre><code>Concept: ~myconcept (!thisword ~otherconcept)</code></pre>
+<p>Note: the system has two kinds of concepts. Enumerated concepts are ones formed from an explicit list of members. Stuff in definitions of concept: ~xxx() are that. There are also internal concepts marked by the system. These include part of speech of a word (requires using the pos-tagger to decide from the input what part of speech it was of possibly several), grammatical roles, words from infinite sets like ~number and ~placenumber and ~weburl, and so forth.</p>
+<p>In a pattern of some kind, if you are referencing a sentence location using a match variable, you can match both kinds of concepts. But if you are not tied to a location in a sentence, you can't match internally computed ones. So something like</p>
+<pre><code>if (pattern 23?~number)</code></pre>
+<p>will fail. Even</p>
+<pre><code>if (pattern practical?~adjective)</code></pre>
+<p>will fail given that deciding practical is an adjective (it could also be a noun) hasn't been performed by pos-tagging.</p>
 <h1 id="advanced-topics">ADVANCED TOPICS</h1>
 <p>There are several things to know about advanced topics.</p>
 <h2 id="topic-execution">Topic Execution</h2>
@@ -420,6 +426,12 @@ s: ( @_1+ going ) # this completes the match of is mother going</code></pre>
 <p>You can request n words before the current position using <code>*-n</code>. For example</p>
 <pre><code>u: (I love * &gt; _*-1 ) capture last word of sentence</code></pre>
 <h2 id="gory-details-about-strings">Gory details about strings</h2>
+<p>'Strings in Output'</p>
+<p>A double quoted string in output retains its quotes.</p>
+<pre><code>u: () I love &quot;rabbits&quot;</code></pre>
+<p>will print that out literally, including the double quotes.</p>
+<p>And you cannot run the string across multiple lines.</p>
+<p>An active string interprets variable references inside. It does not show the containing quotes around the whole thing. And it can be extended across multiple lines (treating line breaks as a single space in the string created).</p>
 <pre><code>u: ( I &quot;take charge&quot; ) OK.</code></pre>
 <p>When you use &quot;take charge&quot; it can match taking charges, take charge, etc. When you use <em>&quot;taking charge&quot;</em> it can only match that, not <em>&quot;taking charges&quot;</em>. If all words in the string are canonical, it can cover all forms. If any are not, it can only literally match.</p>
 <p>The quote notation is typically used in several situations...</p>
@@ -571,7 +583,7 @@ if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn&#39;t fail or retur
 <p>which controls automatically up-casing the first letter of output, removing spaces before commas, and converting underscores to spaces (and also removing <code>~</code> from concept names).</p>
 <p>Equivalently <code>$cs_response = #ALL_RESPONSES</code>, which if you want all is what you should use in case new ones are added in the system later.</p>
 <h2 id="output-macros">Output Macros</h2>
-<p>Just as you can write your own common routines for handling pattern code with patternmacro:, you can do the same for output code.</p>
+<p>Just as you can write your own common routines (functions) for handling pattern code with patternmacro:, you can do the same for output code.</p>
 <pre><code>Outputmacro: name (^arg1 ^arg2 ...)</code></pre>
 <p>and then your code. Only now you use output script instead of pattern stuff. Again, when calling the macro, arguments are separated with spaces and not commas.</p>
 <p>Whereas most programming language separate their arguments with commas because they are reserved tokens in their language, in ChatScript a comma is a normal word. So you separate arguments to functions just with spaces.</p>
@@ -586,6 +598,8 @@ u: ( &lt;&lt; what time &gt;&gt; ) $test = ^mymac() join(ok $test)</code></pre>
 <p>will print <em>oktested here</em>.</p>
 <p>However, it is clearer and cleaner if you are returning data to be stored somewhere else (not to be merely immediately sent to the user), to use <code>^return(&quot;tested here&quot;)</code>. This both creates the result, and ends the function immediately even if other code follows.</p>
 <p>Note- calls to macros use &quot;pass by reference&quot;, so the actual value of the ^variable is the name of what was passed in, and it is generally (but not always) evaluated on use.</p>
+<h2 id="sharing-function-definitions"><code>Sharing function definitions</code></h2>
+<p>ChatScript requires that a function be defined before use. When you use that function from multiple files, you may have trouble ordering the files for compilation if you merely name the folder in filesxxx.txt since you cannot guarantee compilation order unless you explicitly name the files. But you can also just put your functions in a top level file and then have your other files in folders, and name it and then them in your filesxxx.txt file.</p>
 <h2 id="save-restore-locals">Save-Restore locals</h2>
 <p><code>$$xxx</code> and <code>$xxx</code> variables are global, merely transient and permanent. Function variables like <code>^myval</code> are restricted in use to the function declaring them, so they are sort of local variables, but they are stand-ins for the arguments passed, which means if you write indirectly the function variable you are changing something above you as well.</p>
 <p>Fortunately there are local variables, <code>$_xxx</code>.</p>

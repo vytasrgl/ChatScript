@@ -44,7 +44,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 // decompose a currentRuleID into its pieces
 #define TOPLEVELID(x) ((unsigned int) (x & 0x0000ffff))
-#define REJOINDERID(x) ((unsigned int) (x >> 16))
+#define REJOINDERID(x) ( ((unsigned int)x) >> 16)
 #define MAKE_REJOINDERID(x) (x << 16)
 
 // decompose RULEMAX info into gambits and top level rules
@@ -64,7 +64,7 @@ extern bool stats;
 extern unsigned int ruleCount;
 
 extern char timeStamp[NUMBER_OF_LAYERS][20];
-
+extern char compileVersion[NUMBER_OF_LAYERS][20];
 extern char buildStamp[NUMBER_OF_LAYERS][150];
 
 extern bool ruleErased;
@@ -157,8 +157,8 @@ bool AreTimingMarksSet();
 
 // encoding
 void DummyEncode(char* &data);
-void Encode(unsigned int val,char* &ptr,bool single = false);
-unsigned int Decode(char* data,bool single = false);
+void Encode(unsigned int val,char* &ptr,int size = false);
+unsigned int Decode(char* data,int single = 0);
 char* FullEncode(uint64 val,char* ptr);
 uint64 FullDecode(char* data);
 
