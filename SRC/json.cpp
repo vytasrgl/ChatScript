@@ -669,7 +669,13 @@ FunctionResult JSONOpenCode(char* buffer)
 	if (!*coding) strcpy(coding,(char*)"Accept-Encoding: identity");
 	size_t len1 = strlen(coding);
 	coding[len1-1] = 0; // remove terminal comma
+#if LIBCURL_VERSION_NUM >= 0x071506
+	// CURLOPT_ACCEPT_ENCODING renamed in curl 7.21.6
+	// cf https://curl.haxx.se/libcurl/c/CURLOPT_ACCEPT_ENCODING.html
 	curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, coding);
+#else
+	curl_easy_setopt(curl, CURLOPT_ENCODING, coding);
+#endif
 
 	// Set up the CURL request.
 	val = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
