@@ -2698,12 +2698,10 @@ is unlimited.
 |`userlog` | Store a user-bot log in USERS directory (default)
 |`nouserlog` | Don't store a user-bot log
 |`source=xxxx` | Analogous to the `:source` command. The file is executed
-|`login=xxxx` | The same as you would name when asked for a login, this avoids having to ask for it. Can be `login=george` or `login=george:harry` or whatever
-|`build0=filename` | runs `:build` on the filename as level0 and exits with 0 on success or 4 on
-failure
-|`build1=filename` | runs :build on the filename as level1 and exits with 0 on success or 4 on failure. Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0
-|`debug=:xxx` | xxx runs the given debug command and then exits 
-Useful for `:trim`, for example or more specific `:build` commands
+|`login=xxxx` | The same as you would name when asked for a login, this avoids having to ask for it. Can be `login=george` or `login=george:harry` or whatever |
+|`build0=filename` | runs `:build` on the filename as level0 and exits with 0 on success or 4 on failure |
+|`build1=filename` | runs `:build` on the filename as level1 and exits with 0 on success or 4 on failure.<br>Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0 |
+|`debug=:xxx` | xxx runs the given debug command and then exits. Useful for `:trim`, for example or more specific `:build` commands
 |`param=xxxxx` | data to be passed to your private code
 |`login=xxxxx` | initial user id (bypass asking you for user)
 |`encrypt=xxxxx` | data evailable to encrpytion code
