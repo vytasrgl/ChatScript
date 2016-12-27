@@ -1,10 +1,5 @@
 # ChatScript Basic User Manual
 
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
-
-
-> Revision 7/4/2016 cs6.6
-
 * [Overview](ChatScript-Basic-User-Manual.md#overview)
 * [Simple Topics](ChatScript-Basic-User-Manual.md#simple-topics)
 * [Simple Patterns](ChatScript-Basic-User-Manual.md#simple-patterns)
@@ -719,7 +714,7 @@ existing sets.
 
 In addition to fixed sets (over 1600 of them), the system automatically defines a bunch of
 dictionary-based sets. These include parts-of-speech like `~noun` as well as general open
-concepts like `~number`. For a full list, see the ChatScript System Variables manual.
+concepts like `~number`. For a full list, see the [ChatScript System Variables and Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md) manual.
 
 
 ## Capitalization
@@ -765,7 +760,7 @@ The interjections file will remap that to the sentence `~yes`, breaking off that
 sentence, followed by I will go as a new sentence. 
 
 These generic interjections (which are open to author control via `interjections.txt`) listed
-in the ChatScript System Variables and Engine-defined Concepts manual. 
+in the [ChatScript System Variables and Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md) manual. 
 
 Because all interjections at the start of a sentence are broken off into their own sentence,
 this kind of pattern does not work:
@@ -883,8 +878,7 @@ You can issue commands to the system (prefix is colon) to inquire about things, 
 things, debug things, etc. In this simple section, we look at commands to examine words
 and their relationship to themselves and concepts. All commands are invisible to normal
 chat in that they do no affect the user’s state of processing chat. A list of all commands
-can be gotten by typing `:commands`. Documention on most of them is in the debugging
-manual.
+can be gotten by typing `:commands`. Documention on most of them is in the [ChatScript Debugging Manual](ChatScript-Debugging-Manual.md).
 
 `:word word` – dumps the dictionary and fact and concept information about the word.
 It displays everything the system knows about the given word- its parts of speech,
@@ -972,7 +966,7 @@ doesn’t matter if your commas and periods have spaces before them, or how many
 or tabs there are between words. The system reformats it automatically. _I like you?_ and _I
 like you ?_ print the same on output
 If you actually need to control spacing, consult "formatted double quotes" in the
-advanced manual. 
+[ChatScript Advanced User Manual](ChatScript-Advanced-User-Manual.md). 
 
 
 ## Literal Output `\`
@@ -1000,7 +994,7 @@ you going to dance anytime soon?_ or _hey Are you going to eat anytime soon?_.
 
 A chatbot with no ability to remember, even in the brief moment of attending to user
 input, would be an impoverished being indeed. ChatScript supports several levels of
-memorization. The ultimate variable is the fact, but that has its own manual.
+memorization. The ultimate variable is the fact, but that has its own [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
 
 ## `_`Match Variables
 
@@ -1101,7 +1095,7 @@ to control operator precedence. E.g.,
 $myvalue = $foo + 20 * 5 / 59 This is normal output after the assignment.
 ```
 
-You can even assign sets of facts in various ways (see fact manual for understanding facts) like:
+You can even assign sets of facts in various ways (see [ChatScript Fact Manual](ChatScript-Fact-Manual.md) for understanding facts) like:
 ```
 @2 = @3 # put all facts in 3 into 2
 @2 += @3 # augment 2 with facts of 3 (allows duplicates)
@@ -1193,14 +1187,14 @@ _3 = null
 The system normally stores variables on a per-user basis. You can set bot-specific facts in
 the login function of a bot. If you have facts you want to be global across all bots and as
 part of the base system, you can put those assignments into a table and read it in under
-a `:build` command. Go read the facts manual for more about facts. 
+a `:build` command. Go read the [ChatScript Fact Manual](ChatScript-Fact-Manual.md) for more about facts. 
 
 
 ## `%`System Variables
 
 The system has some predefined variables which you can generally test and use but not
 normally assign to. These all begin with `%`. These include `%hour`, `%bot`, and others. See
-ChatScript System Variables manual.
+[ChatScript System Variables and Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md).
 
 
 # Summary
@@ -1210,3 +1204,11 @@ wanted to know at this stage, but it sets the scene so you know there is a lot o
 there (though truly we have barely scratched the surface here). Just remember, to start, all
 you need is to write a topic, with keywords, trivial gambits, responders and rejoinders
 with simple patterns, and output that is simply exactly what you want the bot to say. 
+
+---
+
+[[Wiki home](/WIKI/README.md)] - [[Advanced User Manual](ChatScript-Advanced-User-Manual.md)]
+
+---
+
+© Bruce Wilcox, mail: gowilcox@gmail.com web: www.brilligunderstanding.com revision: 7/4/2016 cs6.6

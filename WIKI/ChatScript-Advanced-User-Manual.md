@@ -1,9 +1,5 @@
 # ChatScript Advanced User's Manual
 
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
-
-> Revision 12/7/2016 cs6.91
-
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
 * [Advanced Topics](ChatScript-Advanced-User-Manual.md#advanced-topics)
@@ -87,9 +83,14 @@ User variables always hold text strings as values. Numbers are represented as di
 strings, which are converted into binary formats internally as needed. Text comes in
 three flavors. First are simple words (arbitrary contiguous characters with no spaces).
 
-Second are passive strings like "meat-loving plants". 
+Second are passive strings like _meat-loving plants_. 
 
-Third are active strings (which you haven't read about yet) like `^"I like $value"`. 
+Third are active strings (which you haven't read about yet) like:
+
+```
+^"I like $value"
+``` 
+
 Active strings involve references to functions or data inside them and execute when used to convert 
 their results into a passive string with appropriate value substitutions. 
 
@@ -99,11 +100,13 @@ CS just directly embeds the arguments in the string and any attempt to use
 the active string implicitly invokes the equivalent of sprintf.
 
 User variables also come in permanent and transient forms. 
-**Permanent variables** start with a single `$` and are preserved across user interactions 
+<br>**Permanent variables** start with a single `$` and are preserved across user interactions 
 (are saved and restored from disk). You can see and alter their value from anywhere.
-**Transient variables** start with `$$` and completely disappear when a user interaction
+
+<br>**Transient variables** start with `$$` and completely disappear when a user interaction
 happens (are not saved to disk). You can see and alter their value from anywhere.
-**Local variables** (described later) start with `$_` and completely disappear when a user interaction
+
+<br>**Local variables** (described later) start with `$_` and completely disappear when a user interaction
 happens (are not saved to disk). You can see and alter their value only within the topic or outputmacro they are used.
 
 
@@ -330,36 +333,27 @@ topic: ~rust keep random [rust iron oxide]
 ```
 The flags and their meanings are:
 
-  flag             description 
-  ------------     -----------  
-  `Random`         search rules randomly instead of linearly
-  `NoRandom`       (default) search rules linearly
-  `Keep`           do not erase responders ever. Gambits (and rejoinders) are not affected by this
-  `Erase`          (default) erase responders that successfully generate output. 
-                     (Gambits automatically erase unless you suppress them specifically.
-  `NoStay`         do not consider this a topic to remain in, leave it (except for rejoinders)
-  `Stay`           (default) make this a pending topic when it generates output
-  `Repeat`         allow rules to generate output which has been output recently
-  `NoRepeat`       (default) do not generate output if it matches output made recently
-  `Priority`       raise the priority of this topic when matching keywords
-  `Normal`         (default) give this topic normal priority when matching keywords
-  `Deprioritize`   lower the priority of this topic when matching keywords
-  `System`         this is a system topic. It is automatically `NoStay`, `Keep`. 
-                    `Keep` automatically applies to gambits as well. 
-                    The system never looks to these topics for gambits. 
-                    System topics can never be considered pending (defined shortly). 
-                    They can not have themselves or their rules be enabled or disabled. 
-                    Their status/data is never saved to user files.
-  `User`           (default) this is a normal topic
-  `NoBlocking`     should not perform any blocking tests on this topic in `:verify`
-  `NoPatterns`     should not perform any pattern tests on this topic in `:verify`
-  `NoSamples`      should not perform any sample tests on this topic in `:verify`
-  `NoKeys`         should not perform any keyword tests on this topic in `:verify`
-  `More`           normally if you try to redeclare a concept, you get an error. 
-                     MORE tells CS you intend to extend the concept and allows additional keywords.
-  `Bot=name`       if this is given, only named bots are allowed to use this topic. 
-                    You can name multiple bots separated by commas with no extra spaces. 
-                    E.g. `topic: ~mytopic bot=harry,,roman [mykeyword]`
+|flag         |  description                        |
+|-------------|-------------------------------------|  
+|`Random`     |    search rules randomly instead of linearly
+|`NoRandom`   |    (default) search rules linearly
+|`Keep`       |    do not erase responders ever. Gambits (and rejoinders) are not affected by this
+|`Erase`      |    (default) erase responders that successfully generate output.<br>Gambits automatically erase unless you suppress them specifically.
+|`NoStay`     |    do not consider this a topic to remain in, leave it (except for rejoinders)
+|`Stay`       |   (default) make this a pending topic when it generates output
+|`Repeat`     |    allow rules to generate output which has been output recently
+|`NoRepeat`   |    (default) do not generate output if it matches output made recently
+|`Priority`   |    raise the priority of this topic when matching keywords
+|`Normal`     |    (default) give this topic normal priority when matching keywords
+|`Deprioritize`|   lower the priority of this topic when matching keywords
+|`System`      |   this is a system topic. It is automatically `NoStay`, `Keep`.<br>`Keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files.
+|`User`        |   (default) this is a normal topic
+|`NoBlocking`  |   should not perform any blocking tests on this topic in `:verify`
+|`NoPatterns`  |   should not perform any pattern tests on this topic in `:verify`
+|`NoSamples`   |   should not perform any sample tests on this topic in `:verify`
+|`NoKeys`      |   should not perform any keyword tests on this topic in `:verify`
+|`More`        |   normally if you try to redeclare a concept, you get an error. `MORE` tells CS you intend to extend the concept and allows additional keywords.
+|`Bot=name`    |   if this is given, only named bots are allowed to use this topic. You can name multiple bots separated by commas with no extra spaces. E.g. `topic: ~mytopic bot=harry,,roman [mykeyword]`
 
 To support **multiple bots**, you may create multiple copies of a topic name, which vary in
 their bot restrictions and content. The set of keywords given for a topic is the union of the
@@ -637,7 +631,7 @@ behavior on the pattern side is unpredictable.
 ## Macros
 
 Just as you can use sets to "share" data across rules, you can also write macros to share
-code. A patternmacro is a top-level declaration that declares a name, arguments that can
+code. A `patternmacro` is a top-level declaration that declares a name, arguments that can
 be passed, and a set of script to be executed "as though the script code were in place of
 the original call". 
 
@@ -679,6 +673,7 @@ When a patternmacro takes a single argument and you want to pass in several, you
 wrap them in parens to make them a single argument. Or sometimes brackets. E.g.,
 ```
 ?: ( ^DoYouDoThis( (play * baseball) ) ) Yes I do
+
 ?: ( ^DoYouDoThis( [swim surf "scuba dive"] ) Yes I do
 ```
 
@@ -1116,28 +1111,36 @@ Things those functions may do are permanent, not undone if the rule later fails.
 
 ## Output cannot have rules in it
 Output script cannot emed another rule inside it. Output is executed during the current volley whereas rules 
-(like rejoinder rules) may be executed in a different volley.  Therefore this is illegal:
-`u: GREETING (~emohello)`
-`   if ($username)`
-  ` {`
-     `Hi  $username!`
-   `}`
-   `else`
-   `{`
-     `I don't believe we've met, what's your name?`
-      `a: (_*) So your name is '_0?`
-  `}`
+(like rejoinder rules) may be executed in a different volley. 
+Therefore this is illegal:
+```
+u: GREETING (~emohello)
+   if ($username)
+   {
+     Hi  $username!
+   }
+   else
+   {
+     I don't believe we've met, what's your name?
+     a: (_*) So your name is '_0?
+   }
+```
+
 and needs to be written like this:
-`u: GREETING (~emohello)`
-`   if ($username)`
-  ` {`
-     `Hi  $username!`
-   `}`
-   `else`
-   `{`
-     `I don't believe we've met, what's your name?`
-  `}`
-  `a: (_*) So your name is '_0?`
+
+```
+u: GREETING (~emohello)
+   if ($username)
+   {
+     Hi  $username!
+   }
+   else
+   {
+     I don't believe we've met, what's your name?
+   }
+  a: (_*) So your name is '_0?
+```
+
 Of course you don't want the rejoinder triggered if you can from the `if` side, so you'd also need to add
 a call to `^setnorejoinder` from inside it.
 
@@ -1203,9 +1206,14 @@ If you need to conjoin such things, you can use `^join()` instead.
 because you don't have to escape doublequotes unless json would need to. 
 
 It will converting `\n`,`\t`, `\r` into their control characters, convert `\\` into just `\`, 
-and leave all other characters alone. Eg `^'{ "test" : "my \"value\" \x" }` will become
-`^'{ "test" : "my \"value\" \x" }`
-
+and leave all other characters alone. Eg 
+```
+^'{ "test" : "my \"value\" \x" }
+```
+will become
+```
+^'{ "test" : "my \"value\" \x" }
+```
 
 
 ## Functional Strings
@@ -1234,13 +1242,11 @@ Loop allows you to repeat script. It takes an optional argument within parens, w
 how many times to loop. It executes the code within `{ }` until the loop count expires or
 until a `FAIL` or `END` code of some kind is issued. 
 
-`End(loop)` signals merely the end of the loop, not really the rule, 
-and will not cancel any pending output in the output stream.
+* `End(loop)` signals merely the end of the loop, not really the rule, and will not cancel any pending output in the output stream.
 
-`Fail(LOOP)` will terminate both loop and rule enclosing. 
-All other return codes have their usual effect. 
+* `Fail(LOOP)` will terminate both loop and rule enclosing. All other return codes have their usual effect. 
 
-> Deprecated is `fail(rule)` and `end(rule)` which merely terminated the loop.
+> **Deprecated is `fail(rule)` and `end(rule)` which merely terminated the loop.**
 
 ```
 t: Hello. ^loop (5) { me }
@@ -1268,23 +1274,29 @@ loop through each item of the factset via
 
 The if allows you to conditionally execute blocks of script. The full syntax is:
 ```
-If ( test1 ) 
-    { script1 } 
+if ( test1 ) 
+    { 
+      script1 
+    } 
 else if ( test2 ) 
-    { script2 } 
-… 
+    { 
+      script2 
+    } 
+# ...
 else 
-    { script3 }
+    { 
+      script3 
+    }
 ```
 
 You can omit the else if section, having just if and else, and you can omit the else section, 
 having just if or if and else if. You may have any number of else if sections.
 The test condition can be:
 
-1. A variable – if it is defined, the test passes
-2. `!` variable – if it is not defined, the test passes (same as relation variable `==` null)
-3. A function call – if it doesn't fail and doesn't return the values 0 or false, it passes
-4. A relation – one of `==` `!=` `<` `<=` `>` `>=` `?` `!?`
+* A variable – if it is defined, the test passes
+* `!` variable – if it is not defined, the test passes (same as relation variable `==` null)
+* A function call – if it doesn't fail and doesn't return the values 0 or false, it passes
+* A relation – one of `==` `!=` `<` `<=` `>` `>=` `?` `!?`
 
 For the purposes of numeric comparison `(< <= > >=)` a null value compared against a
 number will be considers as 0.
@@ -1294,6 +1306,7 @@ test condition can be any end or fail code. It does not affect outside the condi
 merely controls which branch of the if gets taken.
 ```
 if ($var) { } # if $var has a value
+
 if ($var == 5 and foo(3)) {} # if $var is 5 and foo(3) doesn't fail or return 0 or false
 ```
 
@@ -1314,7 +1327,7 @@ because that has access to knowing all the marked concepts of that particular wo
 An alternative If test condition is the pattern If. You write the test using the word pattern at the start, 
 and then you write exactly what you can write when you write a rule pattern. Eg.
 ```
-if (pattern bingo _*1 ~helo) { … }
+if (pattern bingo _*1 ~helo) { ... }
 ```
 This gives you the full power of the pattern matcher, including the ability to match and
 memorize from the current input.
@@ -1362,9 +1375,12 @@ $cs_response = #RESPONSE_UPPERSTART +
 which controls automatically up-casing the first letter of output, removing spaces before
 commas, and converting underscores to spaces (and also removing `~` from concept names). 
 
-Equivalently `$cs_response = #ALL_RESPONSES`, which if you want all is
-what you should use in case new ones are added in the system later.
+Equivalently 
+```
+$cs_response = #ALL_RESPONSES
+``` 
 
+which if you want all is what you should use in case new ones are added in the system later.
 
 
 ## Output Macros
@@ -1399,16 +1415,16 @@ However, it is clearer and cleaner if you are returning data to be stored somewh
 (not to be merely immediately sent to the user), to use `^return("tested here")`. 
 This both creates the result, and ends the function immediately even if other code follows.
 
-Note- calls to macros use "pass by reference", so the actual value of the ^variable is the
-name of what was passed in, and it is generally (but not always) evaluated on use. 
+> **Note - calls to macros use "pass by reference", so the actual value of the ^variable is the
+name of what was passed in, and it is generally (but not always) evaluated on use.** 
 
-## `Sharing function definitions`
+## Sharing function definitions
 
 ChatScript requires that a function be defined before use. When you use that function from multiple
 files, you may have trouble ordering the files for compilation if you merely name the folder in
-filesxxx.txt since you cannot guarantee compilation order unless you explicitly name the files.
+`filesxxx.txt` since you cannot guarantee compilation order unless you explicitly name the files.
 But you can also just put your functions in a top level file and then have your other files in folders,
-and name it and then them in your filesxxx.txt file.
+and name it and then them in your `filesxxx.txt` file.
 
 ## Save-Restore locals
 
@@ -1454,9 +1470,10 @@ And they are still global, in that they are visible to anyone your function call
 Of course if you intend to pass back data in a global variable, don't put it in your save-restore list.
 
 	Outputmacro: ^myfunc(^arg1)($$tmp  $global  $$tmp2) # $$bestscore exported
-	….. code
+	# code
+	
 	Topic: ~mytopic(keyword1 keyword2) ($$tmp $$global $$tmp2)
-	… rules
+	# rules
 
 You can protect both transient and permanent variables, but usually you would just protect all of the transient variables you assign values to inside your function or topic. The comment is what I would say if I intended a variable be returned outside in addition to a primary return value. That way anyone reading the code would know $$bestscore was not accidentally left off the save-restore list.
 
@@ -1471,16 +1488,15 @@ You can protect both transient and permanent variables, but usually you would ju
 protect all of the transient variables you assign values to inside your function. 
 
 The comment is what I would say if I intended a local variable be returned outside in addition
-to a primary return value. That way anyone reading the code would know $$bestscore
+to a primary return value. That way anyone reading the code would know `$$bestscore` 
 was not accidentally left off the save-restore list.
 
 ```
 dualmacro: name(...) 
 ```
-is exactly like outputmacro:, but the function can be called on then
-side or on the output side. 
-Typically this makes most sense for a function that performs a
-fixed `^query` which you can see if it fails in pattern side or as a test on the output side or inside an if condition.
+is exactly like outputmacro:, but the function can be called on then side or on the output side. 
+Typically this makes most sense for a function that performs a fixed `^query` which you can see 
+if it fails in pattern side or as a test on the output side or inside an if condition.
 
 Output macros can be passed system function names and output macro names, allowing
 you to indirectly call things. E.g.
@@ -1546,7 +1562,7 @@ early termination effects.
 # System Functions
 
 There are many system functions to perform specific tasks. These are enumerated in the
-ChatScript System Function manual and the ChatScript Facts manual.
+[ChatScript System Functions Manual](ChatScript-System-Functions-Manual.md) manual and the [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
 
 
 ## Randomized Output Revisited `[ ]`
@@ -1598,15 +1614,17 @@ you have successful control.
 ```
 
 
-
 # Advanced Variables
-
 
 ## Local Variables
 
-User variables `$xxx` and `$$xxx` are all global in scope. Anyone can access them to get or
-set them. But if you want to write safe code, you also want local variables that no one can
+User variables `$xxx` and `$$xxx` are all global in scope. 
+
+Anyone can access them to get or set them. 
+
+But if you want to write safe code, you also want local variables that no one can
 access and ruin on you. `$_xxx` are local variables. 
+
 When you use them inside an outputmacro or a topic, they only have meaning and access inside that code. 
 No other code can see them. They can use the same variable name, and get their own local instance.
 
@@ -1678,7 +1696,7 @@ $$tmp1 = ^$$tmp
 ```
 Equivalently `^gambit(^$$tmp1)` is legal.
 
-See also Indirect Pattern Elements in Advanced Patterns.
+See also Indirect Pattern Elements in [ChatScript Pattern Redux](ChatScript-Pattern-Redux.md) manual.
 
 
 ## Bot variables
@@ -1759,6 +1777,7 @@ shown, the protocol you use is entirely up to you within the `[]v area.
 Here is a sample pattern to catch oob data.
 ```
 u: (< \[ * speed _*1 * \]) The speed is _0
+
 u: (< \[ * rate _*1 * \]) The rate is _0
 ```
 
@@ -1767,6 +1786,7 @@ You need `*` in front of your data when you can have multiple forms of data and 
 On output you need to do one of these
 ```
 u: () \[ oob data \] Here is user message
+
 u: () ^"[oob data] Here is user message
 ```
 
@@ -1806,20 +1826,25 @@ e.g. `[loopback=0 callback=0 alarm=0]` cancels any pending callbacks into the fu
 
 # System callback functions
 
-`outputmacro: ^CSBOOT()`
-
+```
+outputmacro: ^CSBOOT()
+```
 This function, if defined by you, will be executed on startup of the ChatScript system. It
 is a way to dynamically add facts and user variables into the base system common to all
 users. And returned output will go to the console and if a server, into the server log
 Note that when a user alters a system `$variable`, it will be refreshed back to its original
 value for each user.
 
-`outputmacro: ^CSSHUTDOWN()`
+```
+outputmacro: ^CSSHUTDOWN()
+```
 
 This function, if defined by you, will be executed on shutdown or restart of the
 ChatScript system.
 
-`Outputmacro: ^cs_topic_enter(^topic ^mode)`
+```
+outputmacro: ^cs_topic_enter(^topic ^mode)
+```
 
 When the system begins a topic and this function is defined by you, it will be invoked
 before the topic is processed. You will be given the name of the topic and a character
@@ -1827,7 +1852,7 @@ representing the way it is being invoked.
 Values of `^mode` are: `s`, `?`, `u`, `t`, which represent statements, questions, both, or gambits. 
 While your function is executing, neither `^cs_topic_enter` or `^cs_topic_exit` will be invoked.
 ```
-OutputMacro: ^cs_topic_exit(^topic ^result)
+outputmacro: ^cs_topic_exit(^topic ^result)
 ```
 
 When the system exits a topic and this function is defined by you, it will be invoked after
@@ -1914,23 +1939,17 @@ If the name ends in 0, it builds level 0. If it doesn't, it builds level 1.
 This means you can create a bunch of files to build things any way you want. 
 You can imagine:
 
-`:build common0` – shared data-source (level 0)
-
-`:build george` – george bot-specific (level 1)
-
-`:build henry` – henry bot-specific (level 1)
-
-`:build all` – does george and henry and others (level 1)
-
-or
-
-`:build system0` - does ALL files, there is no level 1.
+* `:build common0` – shared data-source (level 0)
+* `:build george` – george bot-specific (level 1)
+* `:build henry` – henry bot-specific (level 1)
+* `:build all` – does george and henry and others (level 1)
+* `:build system0` - does ALL files, there is no level 1.
 
 You can build layers in either order, and omit either.
 
-Note- Avoid something likes `files2.txt` and doing a `:build 2`. 
-2 specifies a level and normal bots are at level 1 (which requires no numbering). 
-Name your file after your bot and it will default to level 1.
+> **Note - Avoid something likes `files2.txt` and doing a `:build 2`. 
+> 2 specifies a level and normal bots are at level 1 (which requires no numbering). 
+> Name your file after your bot and it will default to level 1.**
 
 
 ## Skipping a topic file
@@ -1974,7 +1993,9 @@ and both _xname and `_bettername` refer to `_12`.
 Renames can also rename concept sets:
 ```
 rename: @myset @1
+```
 so you can do:
+```
 @myset += createfact( 1 2 3)
 $$tmp = first(@mysetsubject)
 ```
@@ -1987,7 +2008,7 @@ $tmp = ##first
 
 ## Defining private Queries 
 
-see fact manual.
+see [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
 
 
 ## Documenting variables, functions, factsets, and match variables
@@ -2005,25 +2026,25 @@ variables).
 
 # Editing Non-topic Files
 
-Non-topic files include the contents of DICT and LIVEDATA.
+Non-topic files include the contents of `DICT` and `LIVEDATA`.
 
 
 ## DICT files
 
-You may choose to edit the dictionary files. There are 3 kinds of files. The facts0.txt file
-contains hierarchy relationships in wordnet. You are unlikely to edit these. The dict.bin
-file is a compressed dictionary which is faster to read. If you edit the actual dictionary
-word files, then erase this file. 
-It will regenerate anew when you run the system again,
+You may choose to edit the dictionary files. There are 3 kinds of files. 
+
+The `facts0.txt` file contains hierarchy relationships in wordnet. You are unlikely to edit these. 
+
+The `dict.bin` file is a compressed dictionary which is faster to read. If you edit the actual dictionary
+word files, then erase this file.  It will regenerate anew when you run the system again,
 revised per your changes. The actual dictionary files themselves… you might add a word
-or alter the type data of a word. The type information is all in dictionarySystem.h
+or alter the type data of a word. The type information is all in `dictionarySystem.h`
 
 
 ## LIVEDATA files
 
 The substitutions files consistof pairs of data per line. The first is what to match.
-Individual words are separated by underscores, and you can request sentence boundaries
-`<` and `>` . 
+Individual words are separated by underscores, and you can request sentence boundaries `<` and `>` . 
 
 The output can be missing (delete the found phrase) or words separated by plus
 signs (substitute these words) or a `%word` which names a system flag to be set (and the
@@ -2056,14 +2077,13 @@ Normally lower case words would break up a title.
 
 # WHICH BOT?
 
-
 The system can support multiple bots cohabiting the same engine. You can restrict topics
 to be available only to certain bots (see Advanced Topics). You can restrict rules to being
 available only to certain bots by using something like
 ```
-?: ($bot=harry …)
+?: ($bot=harry ...)
 
-?: (!$bot=harry …).
+?: (!$bot=harry ...).
 
 t: ($bot=harry) My name is harry.
 ```
@@ -2072,8 +2092,7 @@ The demo system has only one bot, Harry. If it had two bots in it, harry and Geo
 could get Georgia by logging in as `yourname:georgia`. And you can confirm who she is
 by asking what is your name.
 
-You specify which bot you want when you login, by appending `:botname` to your login
-name, e.g., `bruce:harry`. 
+You specify which bot you want when you login, by appending `:botname` to your login name, e.g., `bruce:harry`. 
 
 When you don't do that, you get the default bot. How does the system know what that is? 
 It looks for a fact in the database whose subject will be the default bot name and whose verb is defaultbot. 
@@ -2166,9 +2185,9 @@ u: (~country) ^respond(~subcountry)
 
 topic: ~subcountry system[]
 
-u: (Turkey) …
-u: (Sweden) …
-u: (*) …
+u: (Turkey) ...
+u: (Sweden) ...
+u: (*) ...
 ```
 
 The subtopic approach makes sense in the context of writing quibbling code. The outside
@@ -2202,8 +2221,9 @@ u: (where * you * live) ^reuse(HOUSE)
 
 The rule on disabling a rule after use is that the rule that actually generates the output gets disabled. 
 So the default behavior (if you don't set keep on the topic or the rule) is that if the question is asked first, 
-it reuses HOUSE. S
-ince we have given the answer, we don't want to repetitiously volunteer it, HOUSE gets disabled. But, if the user repetitiously asks the question (maybe he forgot the answer), we will answer it again because the responder
+it reuses HOUSE. 
+Since we have given the answer, we don't want to repetitiously volunteer it, HOUSE gets disabled. 
+But, if the user repetitiously asks the question (maybe he forgot the answer), we will answer it again because the responder
 didn't get disabled, just the gambit. And disabling applies to allowing a rule to try to
 match, not to what it does for output. So one can reuse that gambit's output any number of times. 
 
@@ -2212,12 +2232,14 @@ OR tell `^reuse` to skip used rules by giving it a second argument (anything).
 So one way is:
 ```
 t: HOUSE () I live in a small house
+
 u: SELF (where * you * live) ^disable(RULE SELF) ^reuse(HOUSE)
 ```
 
 and the other way is:
 ```
 t: HOUSE () I live in a small house
+
 u: (where * you * live) ^reuse(HOUSE skip)
 ```
 
@@ -2230,18 +2252,21 @@ How can you do that.
 One way to do that is to set a user variable from HOUSE and test it from the responder.
 ```
 t: HOUSE () I live in a small house $house = 1
+
 u: (where * you * live) [$house You forgot?] ^reuse(HOUSE)
 ```
 If you wanted to do that a lot, you might make an outputmacro of it:
 ```
 outputmacro: ^heforgot(^test) [^test You forgot?]
     t: HOUSE () I live in a small house $house = 1
+
     u: (where * you * live) heforgot($house ) ^reuse(HOUSE)
 ```
 Or you could do it on the gambit itself in one neat package.
 ```
 outputmacro: ^heforgot(^test) [^test You forgot?] ^test = 1
     t: HOUSE () heforgot($house ) I live in a small house.
+
     u: (where * you * live) ^reuse(HOUSE)
 ```
 
@@ -2271,7 +2296,7 @@ The user prompt wants to use the user's login name so it is a format string, whi
 processed and stored on the user prompt variable. The botprompt wants to force a space
 at the end, so it also uses a format string to store on the bot prompt variable.
 
-> In color.tbl is there a reason that the color grey includes both building and ~building?
+### In color.tbl is there a reason that the color grey includes both building and ~building?
 
 Yes. Rules often want to distinguish members of sets that have supplemental data from
 ones that don't. The set of ~musician has extra table data, like what they did and doesn't
@@ -2281,7 +2306,7 @@ has supplemental data available.
 This is made clearer when the set is named something list `~xxxlist`. 
 But the system evolved and is not consistent.
 
-> How are double-quoted strings handled?
+### How are double-quoted strings handled?
 
 First, note that you are not allowed strings that end in punctuation followed by a space.
 This string _"I love you. "_ is illegal. There is no function adding that space serves.
@@ -2322,7 +2347,7 @@ spacing and punctuation, and stripping off the double quotes.
 u: (test) ^"This $var is good." # if $var is kid the result is This kid is good.
 ```
 
-> What really happens on the output side of a rule?
+### What really happens on the output side of a rule?
 
 Well, really, the system "evaluates" every token. Simple English words and punctuation
 always evaluate to themselves, and the results go into the output stream. Similarly, the
@@ -2363,7 +2388,7 @@ value.
 Calling a function discards any output stream generated and aside from other side
 effects means did the function fail (return a fail code) or not.
 
-> How does the system tell a function call w/o ^ from English
+### How does the system tell a function call w/o ^ from English ?
 
 If like is defined as an output macro and if you write:
 ```
@@ -2379,7 +2404,7 @@ When it is a user function, it looks to see if the
 Contiguous is treated as a function call and apart is treated as English. 
 This is not done for built-ins because it's more likely you spaced it accidently than that you intended it to be English.
 
-> How should I go about creating a responder?
+### How should I go about creating a responder?
 
 First you have to decide the topic it is in and insure the topic has appropriate keywords if
 needed.
@@ -2390,7 +2415,7 @@ sentence. This will tell you how the system will tokenize it and what concepts i
 trigger. This will help you decide what the structure of the pattern should be and how
 general you can make important keywords.
 
-What really happens with rule erasure?
+### What really happens with rule erasure?
 
 The system's default behavior is to erase rules that put output into the output stream, so
 they won't repeat themselves later. You can explicitly make a rule erase with `^erase()` and
@@ -2408,7 +2433,7 @@ These can never erase themselves directly, so the erasure will again rebound to 
 Note that a topic declared system NEVER erases its rules, neither gambits nor responders,
 even if you put ^erase() on a rule.
 
-> How can I get the original input when I have a pattern like u: (~emogoodbye)
+### How can I get the original input when I have a pattern like `u: (~emogoodbye)` ?
 
 To get the original input, you need to do the following:
 ```
@@ -2429,21 +2454,21 @@ u: ($$tmptoken _* )
 
 ## Control Flow
 
-There is no GOTO in chatscript. There are only calls. Calls always return. They return
-with noproblem or end or fail. 
+There is no GOTO in chatscript. There are only calls. Calls always return. They return with noproblem or end or fail. 
+
 Respond/Gambit calls enter a new topic. Any end/fail TOPIC will terminate them and return to the caller. 
+
 `end(TOPIC)` has no consequence to the caller. 
 
-`fail(TOPIC)` degrades to a fail-rule and terminates the calling rule unless the call was wrapped in NOFAIL(). `Nofail(TOPIC)` and `Nofail(RULE)` are equivalent
-(because you can't get back a failed topic flag). a call to reuse does not enter a new topic
-context, so if the reuse calls `end(topic)`, that returns to the calling rule, which has received
-an end(topic). If not wrapped in a `nofail(TOPIC)`, then the calling rule terminates with
-end topic.
+`fail(TOPIC)` degrades to a fail-rule and terminates the calling rule unless the call was wrapped in NOFAIL(). 
+
+`Nofail(TOPIC)` and `Nofail(RULE)` are equivalent (because you can't get back a failed topic flag). 
+A call to reuse does not enter a new topic context, so if the reuse calls `end(topic)`, that returns to the calling rule, 
+which has received an end(topic). If not wrapped in a `nofail(TOPIC)`, then the calling rule terminates with end topic.
 
 Meanwhile, generic output done before gambit/reuse/retry/respond will be forced to
 output so that if any of those fail, the output is still emitted. Otherwise, normally output
-generic waits until end of rule to be put out completely or cancelled completely if a fail
-happens.
+generic waits until end of rule to be put out completely or cancelled completely if a fail happens.
 
 Fail does not cancel output from a print or output already emitted. Each rule knows what
 output count exists at its start, and so when it ends it can tell if it generated output
@@ -2549,8 +2574,7 @@ This is called reflection, being able to see into one's own workings.
 
 Because the control script that runs a bot is just script and invokes various engine
 functions, it is easy to store notes about what happened. If you called `^rejoinder` and it
-generated output (`%response` changed value) you know the bot made a reply from a
-rejoinder. Etc.
+generated output (`%response` changed value) you know the bot made a reply from a rejoinder. Etc.
 
 To manage things like automatic pronoun resolution, etc, you also want the chatbot to be
 able to read and process its own output with whatever scripts you want. 
@@ -2614,8 +2638,10 @@ Chatscript statically allocates its memory and so (barring unusual circumstance)
 allocate memory every during its interactions with users. These parameters can control
 those allocations. Done typically in a memory poor environment like a cellphone.
 
-`buffer=15` - how many buffers to allocate for general use (12 is default)
-<br>`buffer=15x80` – allocate 15 buffers of 80k bytes each (default buffer size is 80k)
+| option       | description
+|--------------|-----------------------------------------------------------------------
+|`buffer=15`   | how many buffers to allocate for general use (12 is default)
+|`buffer=15x80`| allocate 15 buffers of 80k bytes each (default buffer size is 80k)
 
 Most chat doesn't require huge output and buffers around 20k each will be more than
 enough. 12 buffers is generally enough too (depends on recursive issues in your scripts).
@@ -2624,12 +2650,13 @@ If the system runs out of buffers, it will perform emergency allocations to try 
 but in limited memory environments (like phones) it might fail. You are not allowed to
 allocate less than a 20K buffer size.
 
-`dict=n` - limit dictionary to this size entries
-<br>`text=n` - limit string space to this many bytes
-<br>`fact=n` - limit fact pool to this number of facts
-<br>`hash=n` – use this hash size for finding dictionary words (bigger = faster access)
-<br>`cache=1x50` – allocate a 50K buffer for handling 1 user file at a time. 
-A server might want to cache multiple users at a time.
+| option       | description
+|--------------|-----------------------------------------------------------------------
+| `dict=n`     | limit dictionary to this size entries
+| `text=n`     | limit string space to this many bytes
+| `fact=n`     | limit fact pool to this number of facts
+| `hash=n`     | use this hash size for finding dictionary words (bigger = faster access)
+| `cache=1x50` | allocate a 50K buffer for handling 1 user file at a time. A server might want to cache multiple users at a time.
 
 A default version of ChatScript will allocate much more than it needs, because it doesn't
 know what you might need. 
@@ -2660,55 +2687,43 @@ is unlimited.
 
 ## File options
 
-`livedata=xxx` – name relative or absolute path to your own private LIVEDATA folder. Do
-not add trailing / on this path. 
-Recommended is you use `RAWDATA/yourbotfolder/LIVEDATA` to keep all your data in one place. 
+| option | description
+|--------|-----------------------------------------------------------------------------
+|`livedata=xxx` | name relative or absolute path to your own private LIVEDATA folder. Do not add trailing / on this path<br>Recommended is you use `RAWDATA/yourbotfolder/LIVEDATA` to keep all your data in one place. You can have your own live data, yet use ChatScripts default `LIVEDATA/SYSTEM` and `LIVEDATA/ENGLISH` by providing paths to the `system=` and `english=` parameters as well as the `livedata=` parameter
+|`users=xxx` | name relative or absolute path to where you want the USERS folder to be. Do not add trailing `/`
+|`logs=xxx` | name relative or absolute path to where you want the LOGS folder to be. Do not add trailing `/`
+|`trace` | turn on all tracing.
+|`redo` | see documentation for :redo in [ChatScript Debugging Manual](ChatScript-Debugging-Manual.md) manual
+|`userfacts=n` | limit a user file to saving only the n most recently created facts of a user (this does not include facts stored in fact sets). Overridden if the user has `$cs_userfactlimit` set to some value
+|`userlog` | Store a user-bot log in USERS directory (default)
+|`nouserlog` | Don't store a user-bot log
+|`source=xxxx` | Analogous to the `:source` command. The file is executed
+|`login=xxxx` | The same as you would name when asked for a login, this avoids having to ask for it. Can be `login=george` or `login=george:harry` or whatever
+|`build0=filename` | runs `:build` on the filename as level0 and exits with 0 on success or 4 on
+failure
+|`build1=filename` | runs :build on the filename as level1 and exits with 0 on success or 4 on failure. Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0
+|`debug=:xxx` | xxx runs the given debug command and then exits 
+Useful for `:trim`, for example or more specific `:build` commands
+|`param=xxxxx` | data to be passed to your private code
+|`login=xxxxx` | initial user id (bypass asking you for user)
+|`encrypt=xxxxx` | data evailable to encrpytion code
+|`decrypt=xxxxx` | data evailable to decrpytion code
+|`bootcmd=xxx` | runs this command string before CSBOOT is run; use it to trace the boot process
 
-You can have your own live data, yet use ChatScripts default `LIVEDATA/SYSTEM` and 
-`LIVEDATA/ENGLISH` by providing paths to the `system=` and `english=` parameters as well as the 
-`livedata=` parameter.
-
-`users=xxx` – name relative or absolute path to where you want the USERS folder to be.
-Do not add trailing /.
-<br>`logs=xxx` – name relative or absolute path to where you want the LOGS folder to be. Do
-not add trailing /.
-
-Other options:
-`trace` – turn on all tracing.
-
-`redo` – see documentation for :redo in debugging manual
-
-`userfacts=n` limit a user file to saving only the n most recently created facts of a user
-(this does not include facts stored in fact sets). 
-Overridden if the user has `$cs_userfactlimit` set to some value.
-<br>`userlog` - Store a user-bot log in USERS directory (default).
-<br>`nouserlog` - Don't store a user-bot log.
-<br>`source=xxxx` - Analogous to the `:source` command. The file is executed.
-<br>`login=xxxx` - The same as you would name when asked for a login, this avoids having
-to ask for it. Can be `login=george` or `login=george:harry` or whatever.
-<br>``build0=filename` runs `:build` on the filename as level0 and exits with 0 on success or 4 on
-failure.
-<br>`build1=filename` runs :build on the filename as level1 and exits with 0 on success or 4 on
-failure. Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0.
-<br>``debug=:xxx` xxx runs the given debug command and then exits. 
-Useful for `:trim`, for example or more specific `:build` commands.
-<br>``param=xxxxx` data to be passed to your private code
-<br>``login=xxxxx` initial user id (bypass asking you for user)
-<br>``encrypt=xxxxx` data evailable to encrpytion code
-<br>``decrypt=xxxxx` data evailable to decrpytion code
-<br>``bootcmd=xxx` runs this command string before CSBOOT is run
-	use it to trace the boot process
 
 ## Bot variables
 
 You can create predefined bot variables by simply naming permanent variables on the
 command line, using V to replace $ (since Linux shell scripts don't like $). Eg.
-
- ChatScript Vmyvar=fatcat
-
- ChatScript Vmyvar="tony is here"
-
- ChatScript "Vmyvar=tony is here"
+```
+ChatScript Vmyvar=fatcat
+```
+```
+ChatScript Vmyvar="tony is here"
+```
+```
+ChatScript "Vmyvar=tony is here"
+```
 
 Quoted strings will be stored without the quotes. Bot variables are always reset to their
 original value at each volley, even if you overwrite them during a volley. This can be
@@ -2724,10 +2739,9 @@ to happen, you can enable this restart using `nosuchbotrestart=true`. Default is
 
 ## Time options
 
-Timer=15000 if a volley lasts more than 15 seconds, abort it and return a timeout
-message.
+`Timer=15000` if a volley lasts more than 15 seconds, abort it and return a timeout message.
 
-Timer=18000x10 same as above, but more roughly, higher number after the x reduces
+`Timer=18000x10` same as above, but more roughly, higher number after the x reduces
 how frequently it samples time, reducing the cost of sampling
 
 
@@ -2737,7 +2751,7 @@ ChatScript gets updated often on a regular basis. And you probably don't want to
 reintegrate your files and its every time. So here is what you can do.
 
 Create a folder for your stuff: e.g. MYSTUFF. Within it put your folder that you
-normally keep in RAWDATA and your filesxxx.txt files normally at the top level of
+normally keep in RAWDATA and your `filesxxx.txt` files normally at the top level of
 ChatScript. And if you have your own hacked version of files from LIVEDATA, put your
 folder there also.
 
@@ -2746,11 +2760,13 @@ contents within that. You can also create a batch file, probably within your fol
 does a "cd ChatScript" to be in the right directory, and then runs ChatScript with the
 following parameters:
 
+```
 ChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH
 system=LIVEDATA/SYSTEM
+```
 
 Normally while you might override various substitutes files, you would not override the
-ENGLISH and SYSTEM folders.
+`ENGLISH` and `SYSTEM` folders.
 
 So now, when you want to update to the latest version of ChatScript, merely unpack the
 zip into your ChatScript folder, overwriting files already there.
@@ -2770,3 +2786,11 @@ seem to be formatted, doing nothing crazy, and being careful with consistency of
 meaning values (if needed) and then just delete dict.bin. If you want to edit the wordnet
 ontology hierarchy, you need to edit facts.txt and delete facts.bin The system will rebuild
 them when you run CS.
+
+---
+
+[[Wiki home](/WIKI/README.md)] - [[Basic User Manual](ChatScript-Basic-User-Manual.md)]
+
+---
+
+© Bruce Wilcox, mail: gowilcox@gmail.com web: www.brilligunderstanding.com revision: 12/7/2016 cs6.91
