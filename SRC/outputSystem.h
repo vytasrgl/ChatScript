@@ -22,11 +22,13 @@ extern unsigned int currentOutputLimit;
 extern char* currentOutputBase;
 extern char* currentRuleOutputBase;
 extern unsigned int outputNest;
+extern int oldOutputIndex;
+extern unsigned int maxOutputUsed;
 
 // styles of output
 char* StdIntOutput(int n);
 char* StdFloatOutput(float n);
-void ReformatString(char starter,char* word,char* buffer,FunctionResult& result,unsigned int controls = 0, bool space = false);
+void ReformatString(char starter,char* word,char*& buffer,FunctionResult& result,unsigned int controls = 0,char* space = NULL);
 
 // output buffer management
 void AllocateOutputBuffer();
@@ -37,9 +39,9 @@ void ResetOutput();
 bool LegalVarChar(char at);
 
 // ways to generate output
-void StdNumber(char* word,char* output,int controls, bool space = false);
+void StdNumber(char* word,char*& output,int controls);
 bool SafeCopy(char* output, char* word, bool space = false);
-char* ReadCommandArg(char* ptr, char* answer,FunctionResult &result,unsigned int control = 0, unsigned int limit = maxBufferSize);
+char* GetCommandArg(char* ptr, char* buffer,FunctionResult& result,unsigned int control);
 char* ReadShortCommandArg(char* ptr, char* buffer,FunctionResult& result,unsigned int control = 0);
 char* Output(char* ptr,char* buffer,FunctionResult &result,int controls = 0);
 char* FreshOutput(char* ptr,char* buffer,FunctionResult &result,int controls = 0,unsigned limit = maxBufferSize);

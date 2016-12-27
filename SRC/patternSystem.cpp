@@ -296,7 +296,7 @@ static bool FindPhrase(char* word, int start,bool reverse, int & actualStart, in
 // Firstmatched is a real word (not wildcard) where we first bound a match (for rebinding restarts)
 // Startposition is where we start matching from
 // wildcardSelector is current wildcard hunting status
-bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int rebindable,unsigned int wildcardSelector,
+bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* kind, int rebindable,unsigned int wildcardSelector,
 	int &returnstart,int& returnend,bool &uppercasem,int& firstMatched,int positionStart,int positionEnd, bool reverse)
 {//   always STARTS past initial opening thing ( [ {  and ends with closing matching thing
 	int startdepth = globalDepth;
@@ -400,7 +400,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 				if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"_");
 				continue;
 			case '@': // factset ref
-				if (word[1] == '_') // set positional reference  @_20+ or @_0-   
+				if (word[1] == '_') // set positional reference  @_20+ or @_0-   or anchor @_20
 				{
 					if (firstMatched < 0) firstMatched = NORETRY; // cannot retry this match locally
 					char* end = word+3;  // skip @_2
@@ -409,7 +409,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 					int index = (wildcardSelector >> GAP_SHIFT) & 0x0000001f;
 
 					// memorize gap to end based on direction...
-					if ((wildcardSelector & WILDMEMORIZEGAP) && !reverse) // close to end of sentence 
+					if (*end && (wildcardSelector & WILDMEMORIZEGAP) && !reverse) // close to end of sentence 
 					{
 						positionStart = wordCount; // pretend to match at end of sentence
 						int start = wildcardSelector & 0x000000ff;
@@ -429,7 +429,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 					}
 					
 					// memorize gap to end based on direction...
-					if ((wildcardSelector & WILDMEMORIZEGAP) && reverse) // close to start of sentence 
+					if (*end && (wildcardSelector & WILDMEMORIZEGAP) && reverse) // close to start of sentence 
 					{
 						positionEnd = 1; // pretend to match at end of sentence
 						int start = wildcardSelector & 0x000000ff;
@@ -448,20 +448,29 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 						}
 					}
 
-					if (*end == '+') 
-					{
-						positionStart = WILDCARD_START(wild);
-						positionEnd = WILDCARD_END(wild);
-						reverse = false;
-					}
-					else if (*end == '-') 
+					if (*end == '-') 
 					{
 						reverse = true;
 						positionEnd = positionStart = WILDCARD_START(wild);
 					}
+					else // + and nothing both move forward. 
+					{
+						int oldend = positionEnd; // will be 0 if we are starting out with no required match
+						positionStart = WILDCARD_START(wild);
+						positionEnd = WILDCARD_END(wild);
+						reverse = false;
+						if (!wildcardSelector && oldend && *end != '+' && positionStart != (oldend + 1)) // this is an anchor that does not match
+						{
+							matched = false;
+							break;
+						}
+					}
 					if (!positionEnd) break;
-					oldEnd = positionEnd; // forced match ok
-					oldStart = positionStart;
+					if (*end)
+					{
+						oldEnd = positionEnd; // forced match ok
+						oldStart = positionStart;
+					}
 					if (trace & TRACE_PATTERN  && CheckTopicTrace()) 
 					{
 						if (positionStart <= 0 || positionStart > wordCount || positionEnd <= 0 || positionEnd > wordCount) Log(STDTRACELOG, "(index:%d)",positionEnd);
@@ -516,12 +525,12 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 				else if ((wildcardSelector & WILDGAP) || positionEnd == at)// you can go to end from anywhere if you have a gap OR you are there
 				{
 					matched =  true;
-					positionStart = positionEnd = at + 1; //   pretend to match a word off end of sentence
+					positionStart = positionEnd = at; //   pretend to match a word at end of sentence
 				}
 				else if (*kind == '[' || *kind == '{') // nested unit will figure out if legal 
 				{
 					matched =  true;
-					positionStart = positionEnd = at + 1; //   pretend to match a word off end of sentence
+					positionStart = positionEnd = at; //   pretend to match a word at end of sentence
 				}
 				else matched = false;
 				break;
@@ -633,9 +642,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 				if (!D || !(D->internalBits & FUNCTION_NAME)) matched = false; // shouldnt fail
 				else if (D->x.codeIndex) // system function - execute it
                 {
-					char* old = currentOutputBase;
-					char* oldrule = currentRuleOutputBase;
-					currentRuleOutputBase = currentOutputBase = AllocateBuffer(); // start an independent buffer
+					AllocateOutputBuffer();
 					FunctionResult result;
 					matching = true;
 					ptr = DoFunction(word,ptr,currentOutputBase,result);
@@ -691,9 +698,7 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 							matched = (result & ENDCODES) ? 0 : 1;
 						}
 					}
-					FreeBuffer();
-					currentOutputBase = old;
-					currentRuleOutputBase = oldrule;
+					FreeOutputBuffer();
                 }
 				else // user function - execute it in pattern context as continuation of current code
 				{ 
@@ -714,12 +719,11 @@ bool Match(char* ptr, unsigned int depth, int startposition, char* kind, int reb
 					// read arguments
 					while (*ptr && *ptr != ')' ) 
 					{
-						char* buf = AllocateBuffer(); // cannot use AllocateInverseString 
 						FunctionResult result;
-						ptr = ReadArgument(ptr,buf,result);  // gets the unevealed arg
-						callArgumentList[callArgumentIndex++] = AllocateInverseString(buf);
-						if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s, ",buf); 
-						FreeBuffer();
+						ptr = ReadArgument(ptr,buffer,result);  // gets the unevealed arg
+						callArgumentList[callArgumentIndex++] = AllocateStack(buffer);
+						if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s, ",buffer); 
+						*buffer = 0;
 						if (result != NOPROBLEM_BIT) 
 						{
 							matched = false;
@@ -790,7 +794,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					int localRebindable = 0; // not allowed to try rebinding start again
 					if (positionStart == INFINITE_MATCH) localRebindable = 1;
 					if (oldselect & WILDGAP) localRebindable = 2; // allowed to gap in
-					matched = Match(ptr,depth+1,positionEnd,type, localRebindable,0,returnStart,
+					matched = Match(buffer,ptr,depth+1,positionEnd,type, localRebindable,0,returnStart,
 						returnEnd,uppercasemat,whenmatched,positionStart,positionEnd,reverse); //   subsection ok - it is allowed to set position vars, if ! get used, they dont matter because we fail
 					wildcardSelector = oldselect; // restore outer environment
 					if (matched) 

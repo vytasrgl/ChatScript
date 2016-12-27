@@ -66,7 +66,7 @@ extern unsigned int ruleCount;
 extern char timeStamp[NUMBER_OF_LAYERS][20];
 extern char compileVersion[NUMBER_OF_LAYERS][20];
 extern char buildStamp[NUMBER_OF_LAYERS][150];
-
+extern char* howTopic;
 extern bool ruleErased;
 	
 extern unsigned int duplicateCount;

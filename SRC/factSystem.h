@@ -75,7 +75,7 @@ char* GetSetEnd(char* x);
 
 // fact reading and writing
 char* ReadField(char* ptr,char* field,char fieldkind,unsigned int& flags);
-char* EatFact(char* ptr,unsigned int flags = 0,bool attribute = false);
+char* EatFact(char* ptr,char* buffer,unsigned int flags = 0,bool attribute = false);
 FACT* ReadFact(char* &ptr,unsigned int build);
 void ReadFacts(const char* name,const char* layer,unsigned int build,bool user = false);
 char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead = false,bool eol = false);
@@ -118,7 +118,7 @@ inline void SetObjectHead(FACT* F, FACT* value){ F->objectHead = Fact2Index(valu
 typedef FACT* (*GetNextFact)(FACT* F);
 typedef void (*SetNextFact)(FACT* F,FACT* value);
 
-FACT* GetSubjectNondeadNext(FACT* F);
+FACT* GetSubjectNondeadNext(FACT* F,bool jsonaccept = true);
 FACT* GetVerbNondeadNext(FACT* F);
 FACT* GetObjectNondeadNext(FACT* F) ;
 FACT* GetSubjectNext(FACT* F);
@@ -132,7 +132,7 @@ inline FACT* GetSubjectHead(WORDP D) {return Index2Fact(D->subjectHead);}
 inline FACT* GetVerbHead(WORDP D) {return Index2Fact(D->verbHead);}
 inline FACT* GetObjectHead(WORDP D)  {return Index2Fact(D->objectHead);}
 
-FACT* GetSubjectNondeadHead(WORDP D);
+FACT* GetSubjectNondeadHead(WORDP D,bool jsonaccept = true);
 FACT* GetVerbNondeadHead(WORDP D);
 FACT* GetObjectNondeadHead(WORDP D);
 inline FACT* GetSubjectNondeadHead(MEANING M) {return GetSubjectNondeadHead(Meaning2Word(M));}

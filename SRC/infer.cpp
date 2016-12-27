@@ -296,7 +296,8 @@ static bool AddWord2Scan(int flags,MEANING M,MEANING from,int depth,unsigned int
 			{
 				Log(STDTRACELOG,(char*)"\r\n");
 				Log(STDTRACETABLOG,(char*)"(%s=>) ",mean);
-				strcpy(last,mean);
+				if (strlen(mean) > 999) ReportBug("Scan insert > 1000")
+				else strcpy(last,mean);
 			}
 		}
 		Log(STDTRACELOG,(flags & QUEUE) ? (char*)" %s+" : " %s. ",WriteMeaning(M));

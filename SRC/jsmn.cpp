@@ -55,7 +55,7 @@ static jsmnerr_t jsmn_parse_primitive(jsmn_parser *parser, const char *js, size_
 				if (nest < 0) goto found; // was actual close of an array
 				continue;
 			case ':':
-			case '\t' : case '\r' : case '\n' : case ' ' :
+			case '\t' : case '\r' : case '\n' : case ' ' : // marks end of thingys
 			case ','  :  case '}' :
 				goto found;
 		}
@@ -217,7 +217,7 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len, jsmntok_t 
 				}
 #endif
 				break;
-			case '\t' : case '\r' : case '\n' : case ':' : case ',': case ' ': 
+			case '\t' : case '\r' : case '\n' : case ':' : case ',': case ' ':  // ignore all these
 				break;
 			case '"':
 				r = jsmn_parse_string(parser, js, len, tokens, num_tokens);

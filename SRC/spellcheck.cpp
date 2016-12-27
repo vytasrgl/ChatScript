@@ -282,7 +282,7 @@ bool SpellCheckSentence()
 			if (IsLowerCase(word[j])) 
 			{
 				lowercase = true;
-				i = j = 1000;
+				i = j = len+1000; // len might be BIG (oob data) so make sure beyond it)
 			}
 		}
 	}
@@ -485,7 +485,7 @@ bool SpellCheckSentence()
 			WORDP D = FindWord(first,0,LOWERCASE_LOOKUP);
 			if (*first == 0) 
 			{
-				wordStarts[i] = AllocateString(wordStarts[i] + 1); // -pieces  want to lose the leading hypen  (2-pieces)
+				wordStarts[i] = AllocateHeap(wordStarts[i] + 1); // -pieces  want to lose the leading hypen  (2-pieces)
 				fixedSpell = true;
 			}
 			else if (D && E) //   1st word gets replaced, we added another word after

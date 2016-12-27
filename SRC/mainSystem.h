@@ -22,7 +22,7 @@ typedef struct RESPONSE
     unsigned int responseInputIndex;                        // which input sentence does this stem from?
 	int topic;										// topic of rule
 	char id[24];											// .100.30
-	char response[OUTPUT_BUFFER_SIZE];						// answer sentences, 1 or more per input line
+	char* response;						// answer sentences, 1 or more per input line
 } RESPONSE;
 
 #define SENTENCE_LIMIT 50 // how many sentence from user do we accept
@@ -32,6 +32,10 @@ typedef struct RESPONSE
 #define TIMEOUT_INSTANCE 1000000
 
 #define PENDING_RESTART -1	// perform chat returns this flag on turn
+
+typedef void (*DEBUGAPI)(char* buffer);
+extern DEBUGAPI debugInput;
+extern DEBUGAPI debugOutput;
 
 #define START_BIT 0x8000000000000000ULL	// used looping thru bit masks
 #define INPUTMARKER '`'	// used to start and end ^input data
@@ -70,7 +74,7 @@ extern clock_t startTimeInfo;
 extern unsigned int outputLength;
 extern bool readingDocument;
 extern bool callback;
-extern char inputCopy[MAX_BUFFER_SIZE]; 
+extern char inputCopy[INPUT_BUFFER_SIZE]; 
 extern unsigned char responseOrder[MAX_RESPONSE_SENTENCES+1];
 extern RESPONSE responseData[MAX_RESPONSE_SENTENCES+1];
 extern int responseIndex;
@@ -92,14 +96,16 @@ extern int sentencePreparationIndex;
 extern int lastRestoredIndex;
 extern unsigned int tokenCount;
 extern unsigned int choiceCount;
+extern int externalTagger;
 extern bool redo;
 extern bool commandLineCompile;
 extern int inputCounter,totalCounter;
 extern int inputSentenceCount;  
 extern char* extraTopicData;
 extern char postProcessing;
-extern char rawSentenceCopy[MAX_BUFFER_SIZE];
+extern char rawSentenceCopy[INPUT_BUFFER_SIZE];
 extern char* authorizations;
+extern FILE* userInitFile;
 extern uint64 tokenControl;
 extern unsigned int responseControl;
 extern bool moreToCome,moreToComeQuestion;
@@ -141,12 +147,12 @@ extern std::string interfaceKind;
 #endif
 
 // buffers
-extern char ourMainInputBuffer[MAX_BUFFER_SIZE];
+extern char ourMainInputBuffer[INPUT_BUFFER_SIZE];
 extern char* mainInputBuffer;
-extern char ourMainOutputBuffer[MAX_BUFFER_SIZE];
+extern char* ourMainOutputBuffer;
 extern char* mainOutputBuffer;
-extern char currentInput[MAX_BUFFER_SIZE];
-extern char revertBuffer[MAX_BUFFER_SIZE];
+extern char currentInput[INPUT_BUFFER_SIZE];
+extern char revertBuffer[INPUT_BUFFER_SIZE];
 extern char* readBuffer;
 extern char* nextInput;
 
@@ -166,9 +172,9 @@ char* SkipOOB(char* buffer);
 
 // startup
 #ifdef DLL
-extern "C" __declspec(dllexport) unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL);
+extern "C" __declspec(dllexport) unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL,DEBUGAPI in = NULL, DEBUGAPI out = NULL);
 #else
-unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL);
+unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL,DEBUGAPI in = NULL, DEBUGAPI out = NULL);
 #endif
 int FindOOBEnd(int start);
 void InitStandalone();
@@ -182,7 +188,7 @@ void ComputeWhy(char* buffer, int n);
 
 // Input processing
 void MainLoop();
-void FinishVolley(char* input,char* output,char* summary);
+void FinishVolley(char* input,char* output,char* summary,int limit = outputsize);
 int ProcessInput(char* input);
 FunctionResult DoSentence(char* prepassTopic,bool atlimit);
 

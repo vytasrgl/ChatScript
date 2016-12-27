@@ -514,7 +514,7 @@ static char* SfreeText(char* value)
 {
 	static char hold[50] = ".";
 	if (value) return strcpy(hold,value); // may not legall set on one's own
-	int nominalUsed = maxStringBytes - (stringBase - stringFree);
+	int nominalUsed = maxHeapBytes - (heapBase - heapFree);
 	sprintf(hold,(char*)"%d",nominalUsed / 1000);
 	return hold;
 }

@@ -169,6 +169,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
 	}
 	// ends on factlocked, which is not to be written out
 	int counter = 0;
+	char* start = ptr;
  	while (++F <= factFree)  // factfree is a valid fact
 	{
 		WORDP D = Meaning2Word(F->subject);
@@ -179,7 +180,11 @@ static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
 			WriteFact(F,true,ptr,false,true); // facts are escaped safe for JSON
 			if (trace & TRACE_USERFACT) Log(STDTRACELOG,(char*)"Fact Saved %s",ptr);
 			ptr += strlen(ptr);
-			if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) return NULL;
+			if ((unsigned int)(ptr - userDataBase) >= (userCacheSize - OVERFLOW_SAFETY_MARGIN)) 
+			{
+				ReportBug("WriteFacts overflow");
+				return NULL;
+			}
 		}
 	}
 	//ClearUserFacts();
@@ -250,13 +255,14 @@ static bool ReadUserFacts()
 	return true;
 }
 
+#define INFINITE_BUFFER 10000000
 static char* SafeLine(char* line) // be JSON text safe
 {
 	if (!line) return line; // null variable (traced)
-	char* word = AllocateBuffer();
-	AddEscapes(word,line,false);
-	FreeBuffer();
-	return word; // buffer will be used immediately
+	char* limit;
+	char* word = InfiniteStack(limit); // transient safe
+	AddEscapes(word,line,false,INFINITE_BUFFER);
+	return word; // buffer will be used immediately so is safe
 }
 
 static char* WriteRecentMessages(char* ptr,bool sharefile,int messageCount)
@@ -297,10 +303,10 @@ static char* WriteRecentMessages(char* ptr,bool sharefile,int messageCount)
 	return ptr;
 }
 
-static bool ReadRecentMessages()
+static bool ReadRecentMessages() 
 {
-	char* buffer = AllocateBuffer();
-	char* recover = AllocateBuffer();
+	char* buffer = AllocateStack(NULL,MAX_BUFFER_SIZE); // messages are limited in size so are safe
+	char* recover = AllocateStack(NULL,MAX_BUFFER_SIZE); // messages are limited in size so are safe
 	char* original = buffer;
 	*buffer = 0;
 	buffer[1] = 0;
@@ -333,14 +339,14 @@ static bool ReadRecentMessages()
 	if (chatbotSaidIndex > MAX_USED || strcmp(chatbotSaid[chatbotSaidIndex],(char*)"#`end chatbot")) // failure to end right
 	{
 		chatbotSaidIndex = 0;
+		ReleaseStack(buffer);
 		ReportBug((char*)"Bad message alignment\r\n")
 		return false;
 	}
 	else *chatbotSaid[chatbotSaidIndex] = 0;
 	*buffer++ = 0;
-	backupMessages = AllocateString(original,buffer-original); // create a backup copy
-	FreeBuffer();
-	FreeBuffer();
+	backupMessages = AllocateHeap(original,buffer-original); // create a backup copy
+	ReleaseStack(buffer);
 	return true;
 }
 
@@ -766,17 +772,15 @@ void ReadNewUser()
 		*computerID = 0;
 		return;
 	}
-
-	char* buffer = AllocateBuffer();
-	*buffer = 0;
-	PushOutputBuffers();
-	currentRuleOutputBase = currentOutputBase = buffer;
+	AllocateOutputBuffer();
 	FunctionResult result;
 	char arg[15]; // dofunction call needs to be alterable if tracing
 	strcpy(arg,(char*)"()");
-	DoFunction(D->word,arg,buffer,result);
-	PopOutputBuffers();
-	FreeBuffer();
-
+	DoFunction(D->word,arg,	currentOutputBase,result);
+	FreeOutputBuffer();
 	inputRejoinderTopic = inputRejoinderRuleID = NO_REJOINDER; 
+
+	char file[SMALL_WORD_SIZE];
+	sprintf(file,"%s-init.txt",loginName);
+	userInitFile = fopen(file,(char*)"rb"); 
 }

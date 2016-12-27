@@ -211,7 +211,7 @@ void SetWildCard(char* value, char* canonicalValue,const char* index,unsigned in
      if (strlen(canonicalValue) > MAX_USERVAR_SIZE) 
 	{
 		canonicalValue[MAX_USERVAR_SIZE] = 0;
-		ReportBug((char*)"Too long matchvariable ng canonnical value %s",value)
+		ReportBug((char*)"Too long matchvariable canonical value %s",value)
 	}
 	while (value[0] == ' ') ++value; 
     while (canonicalValue && canonicalValue[0] == ' ') ++canonicalValue;
@@ -371,12 +371,11 @@ LOOPDEEPER:
 ANSWER:
 	if (localvar) 
 	{
-		char* buffer = AllocateBuffer(); // cannot use  AllocateInverseString
-		strcpy(buffer,"``");
-		strcpy(buffer+2,answer);
-		char* ans = AllocateInverseString(buffer);
-		FreeBuffer();
-		if (!ans) return "``";	// if exhausted, return nothing
+		char* limit;
+		char* ans = InfiniteStack(limit); // has complete
+		strcpy(ans,"``");
+		strcpy(ans+2,answer);
+		CompleteBindStack();
 		if (trace & TRACE_VARIABLE && !fortrace) Log(STDTRACELOG,"(%s->%s)",path,ans);
 		return ans + 2;
 	}
@@ -436,20 +435,20 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 	MakeLowerCopy(varname,(char*)var);
     WORDP D = StoreWord(varname);				// find or create the var.
 	if (!D) return; // ran out of memory
+
+#ifndef DISCARDTESTING
+	CheckAssignment(varname,word);
+#endif
+
 	// adjust value
 	if (word) // has a nonnull value?
 	{
 		if (!*word || !stricmp(word,(char*)"null") ) word = NULL; // really is null
 		else //   some value 
 		{
-			size_t len = strlen(word);
-			if (len > MAX_USERVAR_SIZE) 
-			{
-				word[MAX_USERVAR_SIZE] = 0; // limit on user vars same as match vars
-				ReportBug((char*)"Too long user variable %s size %d assigning %s\r\n",var,len,word);
-			}
 			bool purelocal = (D->word[1] == LOCALVAR_PREFIX);
-			word = AllocateString(word,len,1,false,purelocal); // we may be restoring old value which doesnt need allocation
+			if (purelocal) word = AllocateStack(word,0,true); // trying to save on permanent space
+			else word = AllocateHeap(word,0,1,false,purelocal); // we may be restoring old value which doesnt need allocation
 			if (!word) return;
 		}
 	}
@@ -458,7 +457,7 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 	if (planning && !documentMode) // handle undoable assignment (cannot use text sharing as done in document mode)
 	{
 		if (D->w.userValue == NULL) SpecialFact(MakeMeaning(D),(MEANING)1,0);
-		else SpecialFact(MakeMeaning(D),(MEANING) (D->w.userValue - stringBase ),0);
+		else SpecialFact(MakeMeaning(D),(MEANING) (D->w.userValue - heapBase ),0);
 	}
 	D->w.userValue = word; 
 
@@ -646,7 +645,7 @@ void ClearUserVariables(char* above)
 	while (count)
 	{
 		WORDP D = userVariableList[--count]; // 0 based
-		if (!above || D->w.userValue < above) // string spaces runs DOWN, so this passes more recent entries into here
+		if (!above || D->w.userValue < above) // heap spaces runs DOWN, so this passes more recent entries into here
 		{	
 			D->w.userValue = NULL;
 			RemoveInternalFlag(D,VAR_CHANGED);
@@ -673,7 +672,7 @@ void DumpUserVariables()
 
 	
 	// Show the user variables in alphabetically sorted order.
-	WORDP *arySortVariablesHelper = (WORDP*) AllocateInverseString(NULL,((userVariableIndex) ? userVariableIndex : 1) * sizeof(WORDP));
+	WORDP *arySortVariablesHelper = (WORDP*) AllocateStack(NULL,((userVariableIndex) ? userVariableIndex : 1) * sizeof(WORDP));
 
 	// Load the array.
 	for (unsigned int i = 0; i < userVariableIndex; i++) arySortVariablesHelper[i] = userVariableList[i];
@@ -700,10 +699,10 @@ void DumpUserVariables()
 			else Log(STDTRACELOG, "  variable: %s = %s\r\n", D->word, value);
 		}
 	}
-	ReleaseInverseString((char*) arySortVariablesHelper);
+	ReleaseStack((char*) arySortVariablesHelper); // short term
 }
 
-char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
+char* PerformAssignment(char* word,char* ptr,char* buffer,FunctionResult &result,bool nojson)
 {// assign to and from  $var, _var, ^var, @set, and %sysvar
     char op[MAX_WORD_SIZE];
 	currentFact = NULL;					// No assignment can start with a fact lying around
@@ -766,7 +765,6 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 			return ptr;
 		}
 	}
-	char* word1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
 	int setToImply = impliedSet; // what he originally requested
 	int setToWild = impliedWild; // what he originally requested
 	bool otherassign = (*word != '@') && (*word != '_');
@@ -780,20 +778,20 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 
 	// get the from value
 	assignFromWild =  (*ptr == '_' && IsDigit(ptr[1])) ? GetWildcardID(ptr)  : -1;
-	if (assignFromWild >= 0 && *word == '_') ptr = ReadCompiledWord(ptr,word1); // assigning from wild to wild. Just copy across
+	if (assignFromWild >= 0 && *word == '_') ptr = ReadCompiledWord(ptr,buffer); // assigning from wild to wild. Just copy across
 	else
 	{
-		ptr = ReadCommandArg(ptr,word1,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT,MAX_BUFFER_SIZE); // need to see null assigned -- store raw numbers, not with commas, lest relations break
-		if (*word1 == '#') // substitute a constant? user type-in :set command for example
+		ptr = GetCommandArg(ptr,buffer,result,OUTPUT_NOCOMMANUMBER|ASSIGNMENT); // need to see null assigned -- store raw numbers, not with commas, lest relations break
+		if (*buffer == '#') // substitute a constant? user type-in :set command for example
 		{
-			uint64 n = FindValueByName(word1+1);
-			if (!n) n = FindSystemValueByName(word1+1);
+			uint64 n = FindValueByName(buffer+1);
+			if (!n) n = FindSystemValueByName(buffer+1);
 			if (n) 
 			{
 #ifdef WIN32
-				sprintf(word1,(char*)"%I64d",(long long int) n); 
+				sprintf(buffer,(char*)"%I64d",(long long int) n); 
 #else
-				sprintf(word1,(char*)"%lld",(long long int) n); 
+				sprintf(buffer,(char*)"%lld",(long long int) n); 
 #endif	
 			}
 		}
@@ -807,17 +805,17 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 		// if he original requested to assign to and the assignment has been done, then we dont need to do anything
 		if ((setToImply != impliedSet && setToImply != ALREADY_HANDLED) || (setToWild != impliedWild  && setToWild != ALREADY_HANDLED) ) currentFact = NULL; // used up
 		// A fact was created but not used up by retrieving some field of it. Convert to a reference to fact. -- eg $$f = createfact()
-		else if (currentFact && setToImply == impliedSet && setToWild == impliedWild && (setToWild != ALREADY_HANDLED || setToImply != ALREADY_HANDLED || otherassign)) sprintf(word1,(char*)"%d",currentFactIndex());
+		else if (currentFact && setToImply == impliedSet && setToWild == impliedWild && (setToWild != ALREADY_HANDLED || setToImply != ALREADY_HANDLED || otherassign)) sprintf(buffer,(char*)"%d",currentFactIndex());
 	}
 	// normally null is empty string, but for assignment allow the word, which means null as in removal
-   	if (!stricmp(word1,(char*)"null") && (*word != USERVAR_PREFIX || !strchr(word,'.'))) *word1 = 0; 
+   	if (!stricmp(buffer,(char*)"null") && (*word != USERVAR_PREFIX || !strchr(word,'.'))) *buffer = 0; 
 
 	//   now sort out who we are assigning into and if its arithmetic or simple assign
 	if (*word == '@')
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s(%s) %s %s => ",word,GetUserVariable(word),op,originalWord1);
 		if (impliedSet == ALREADY_HANDLED){;}
-		else if (!*word1 && *op == '=') // null assign to set as a whole
+		else if (!*buffer && *op == '=') // null assign to set as a whole
 		{
 			if (*originalWord1 == '^') {;} // presume its a factset function and it has done its job - @0 = next(fact @1fact)
 			else
@@ -826,10 +824,10 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 				factSetNext[impliedSet] = 0;
 			}
 		}
-		else if (*word1 == '@') // set to set operator
+		else if (*buffer == '@') // set to set operator
 		{
 			FACT* F;
-			int rightSet = GetSetID(word1);
+			int rightSet = GetSetID(buffer);
 			if (rightSet == ILLEGAL_FACTSET) 
 			{
 				result = FAILRULE_BIT;
@@ -859,10 +857,10 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 			else if (*op == '=') memmove(&factSet[impliedSet][0],&factSet[rightSet][0], (rightCount+1) * sizeof(FACT*)); // assigned from set
 			else result = FAILRULE_BIT;
 		}
-		else if (IsDigit(*word1) || !*word1) // fact index (or null fact) to set operators 
+		else if (IsDigit(*buffer) || !*buffer) // fact index (or null fact) to set operators 
 		{
 			int index;
-			ReadInt(word1,index);
+			ReadInt(buffer,index);
 			FACT* F = Index2Fact(index);
 			unsigned int impliedCount =  FACTSET_COUNT(impliedSet); 
 			if (*op == '+' && op[1] == '=' && !stricmp(originalWord1,(char*)"^query") ) {;} // add to set done directly @2 += ^query()
@@ -904,7 +902,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 			else Log(STDTRACETABLOG,(char*)"%s(%s) %s %s(%s) => ",word,GetUserVariable(word),op,originalWord1,GetUserVariable(originalWord1));
 		}
 		if (*word == '^') result = FAILRULE_BIT;	// not allowed to increment locally at present OR json array ref...
-		else Add2UserVariable(word,word1,op,originalWord1);
+		else Add2UserVariable(word,buffer,op,originalWord1);
 	}
 	else if (*word == '_') //   assign to wild card
 	{
@@ -915,33 +913,33 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 				SetWildCard(wildcardOriginalText[assignFromWild],wildcardCanonicalText[assignFromWild],word,0); 
 				wildcardPosition[GetWildcardID(word)] =  wildcardPosition[assignFromWild];
 			}
-			else SetWildCard(word1,word1,word,0); 
+			else SetWildCard(buffer,buffer,word,0); 
 		}
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,buffer);
 	}
 	else if (*word == USERVAR_PREFIX) 
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,buffer);
 		char* dot = strchr(word,'.');
-		if (!dot || nojson) SetUserVariable(word,word1,true);
+		if (!dot || nojson) SetUserVariable(word,buffer,true);
 #ifndef DISCARDJSON
-		else result = JSONVariableAssign(word,word1);// json object insert
+		else result = JSONVariableAssign(word,buffer);// json object insert
 #endif
 	}
 	else if (*word == '\'' && word[1] == USERVAR_PREFIX) 
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,word1);
-		SetUserVariable(word+1,word1,true); // '$xx = value  -- like passed thru as argument
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,buffer);
+		SetUserVariable(word+1,buffer,true); // '$xx = value  -- like passed thru as argument
 	}
 	else if (*word == SYSVAR_PREFIX) 
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,word1);
-		SystemVariable(word,word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,buffer);
+		SystemVariable(word,buffer);
 	}
 	else if (*word == '^') // overwrite function arg
 	{
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s\r\n",word,word1);
-		callArgumentList[atoi(word+1)+fnVarBase] = AllocateInverseString(word1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s\r\n",word,buffer);
+		callArgumentList[atoi(word+1)+fnVarBase] = AllocateStack(buffer);
 	}
 	else // cannot touch a  word, or number
 	{
@@ -955,15 +953,15 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 	{
 		ptr = ReadCompiledWord(ptr,op);
 		ReadCompiledWord(ptr,originalWord1);
-		ptr = ReadCommandArg(ptr,word1,result,ASSIGNMENT); 
-		if (!stricmp(word1,word)) 
+		ptr = GetCommandArg(ptr,buffer,result,ASSIGNMENT); 
+		if (!stricmp(buffer,word)) 
 		{
 			result = FAILRULE_BIT;
 			Log(STDTRACELOG,(char*)"variable assign %s has itself as a term\r\n",word);
 		}
 		if (result & ENDCODES) goto exit; // failed next value
-		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"    %s(%s) %s %s(%s) =>",word,GetUserVariable(word),op,originalWord1,word1);
-		Add2UserVariable(word,word1,op,originalWord1);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"    %s(%s) %s %s(%s) =>",word,GetUserVariable(word),op,originalWord1,buffer);
+		Add2UserVariable(word,buffer,op,originalWord1);
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)"\r\n");
 	}
 
@@ -985,7 +983,7 @@ char* PerformAssignment(char* word,char* ptr,FunctionResult &result,bool nojson)
 	
 exit:
 	currentFact = NULL; // any assignment uses up current fact by definition
-	ReleaseInverseString(word1);
+	*buffer = 0;
 	impliedSet = oldImpliedSet;
 	impliedWild = oldImpliedWild;
 	impliedOp = 0;

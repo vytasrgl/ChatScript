@@ -287,7 +287,7 @@ void PGUserFilesCode()
 	}
 	
 	// these are dynamically stored, so CS can be a DLL.
-	pgfilesbuffer = AllocateBuffer();  // stays globally locked down
+	pgfilesbuffer = AllocateBuffer();  // stays globally locked down - may not be big enough
 	userFileSystem.userCreate = pguserCreate;
 	userFileSystem.userOpen = pguserOpen;
 	userFileSystem.userClose = pguserClose;
@@ -323,9 +323,11 @@ FunctionResult DBExecuteCode(char* buffer)
 
 	char query[MAX_WORD_SIZE * 2];
 	char fn[MAX_WORD_SIZE];
-	char* ptr = ReadCommandArg(arg1,query,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER, MAX_WORD_SIZE * 2); 
+	char* ptr = GetCommandArg(arg1,buffer,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
 	if (result != NOPROBLEM_BIT) return result;
-	ReadShortCommandArg(ptr,fn,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); 
+	if (strlen(buffer) >= (MAX_WORD_SIZE * 2)) return FAILRULE_BIT;
+	strcpy(query,buffer);
+	ReadShortCommandArg(ptr,fn,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
 	if (result != NOPROBLEM_BIT) return result;
 
 	// convert \" to " within params
@@ -357,7 +359,7 @@ FunctionResult DBExecuteCode(char* buffer)
         PQclear(res);
 		return FAILRULE_BIT;
      }
-	char* psBuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* psBuffer = AllocateStack(NULL,MAX_BUFFER_SIZE);
 	if (*function && status == PGRES_TUPLES_OK) // do something with the answers
 	{
 		psBuffer[0] = '(';
@@ -383,7 +385,7 @@ FunctionResult DBExecuteCode(char* buffer)
 				if (len > (maxBufferSize - 100))  // overflow
 				{
 					PQclear(res);
-					ReleaseInverseString(psBuffer);
+					ReleaseStack(psBuffer); // short term
 					return FAILRULE_BIT;
 				}
 				if (keepQuotes)
@@ -430,7 +432,7 @@ FunctionResult DBExecuteCode(char* buffer)
 			}
 		}
 	}
-	ReleaseInverseString(psBuffer);
+	ReleaseStack(psBuffer); // short term
 	PQclear(res);
 	return result;
 } 

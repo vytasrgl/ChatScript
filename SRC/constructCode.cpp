@@ -3,7 +3,7 @@
 int impliedIf = ALREADY_HANDLED;	// testing context of an if
 unsigned int withinLoop = 0;
 
-static void TestIf(char* ptr,FunctionResult& result)
+static void TestIf(char* ptr,FunctionResult& result,char* buffer)
 { //   word is a stream terminated by )
 	//   if (%rand == 5 ) example of a comparison
 	// if (@14) {} nonempty factset
@@ -11,8 +11,7 @@ static void TestIf(char* ptr,FunctionResult& result)
 	//   if ($var) example of existence
 	//   if ('_3 == 5)  quoted matchvar
 	//   if (1) what an else does
-	char* word1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
-	char* word2 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* word1 = AllocateStack(NULL,MAX_BUFFER_SIZE); // not expecting big value in test condition. 
 	char op[MAX_WORD_SIZE];
 	int id;
 	impliedIf = 1;
@@ -33,7 +32,7 @@ resume:
 	{
 		call = true;
 		ptr -= strlen(word1) + 3; //   back up so output can see the fn name and space
-		ptr = FreshOutput(ptr,word2,result,OUTPUT_ONCE|OUTPUT_KEEPSET); // word2 hold output value // skip past closing paren
+		ptr = Output(ptr,buffer,result,OUTPUT_ONCE|OUTPUT_KEEPSET); // buffer hold output value // skip past closing paren
 		if (result & SUCCESSCODES) result = NOPROBLEM_BIT;	// legal way to terminate the piece with success at any  level
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) 
 		{
@@ -44,20 +43,21 @@ resume:
 		ptr = ReadCompiledWord(ptr,op); // find out what happens next after function call
 		if (!result && IsComparison(*op)) // didnt fail and followed by a relationship op, move output as though it was the variable
 		{
-			 strcpy(word1,word2); 
+			 strcpy(word1,buffer); 
 			 call = false;	// proceed normally
 		}
 		else if (result != NOPROBLEM_BIT) {;} // failed
-		else if (!stricmp(word2,(char*)"0") || !stricmp(word2,(char*)"false")) result = FAILRULE_BIT;	// treat 0 and false as failure along with actual failures
+		else if (!stricmp(buffer,(char*)"0") || !stricmp(buffer,(char*)"false")) result = FAILRULE_BIT;	// treat 0 and false as failure along with actual failures
 	}
-		
+	*buffer = 0;
+
 	if (call){;} // call happened
 	else if (IsComparison(*op)) //   a comparison test
 	{
 		char word1val[MAX_WORD_SIZE];
 		char word2val[MAX_WORD_SIZE];
-		ptr = ReadCompiledWord(ptr,word2);	
-		result = HandleRelation(word1,op,word2,true,id,word1val,word2val);
+		ptr = ReadCompiledWord(ptr,buffer);	
+		result = HandleRelation(word1,op,buffer,true,id,word1val,word2val);
 		ptr = ReadCompiledWord(ptr,op);	//   AND, OR, or ) 
 	}
 	else //   existence of non-failure or any content
@@ -113,7 +113,7 @@ resume:
 				else id = Log(STDTRACELOG,(char*)"%c%s ",(invert) ? '!' : ' ',word1);
 			}
 			ptr -= strlen(word1) + 3; //   back up to process the word and space
-			ptr = FreshOutput(ptr,word2,result,OUTPUT_ONCE|OUTPUT_KEEPSET) + 2; //   returns on the closer and we skip to accel
+			ptr = Output(ptr,buffer,result,OUTPUT_ONCE|OUTPUT_KEEPSET) + 2; //   returns on the closer and we skip to accel
 		}
 	}
 	if (invert) result = (result & ENDCODES) ? NOPROBLEM_BIT : FAILRULE_BIT; 
@@ -146,7 +146,8 @@ resume:
 		}
 	}
 
-	ReleaseInverseString(word1);
+	ReleaseStack(word1);
+	*buffer = 0;
 	impliedIf = ALREADY_HANDLED;
 }
 
@@ -157,6 +158,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 	// after a test condition is code to jump to next test branch when condition fails
 	// after { }  chosen branch is offset to jump to end of if
 	bool executed = false;
+	*buffer = 0;
 	while (ALWAYS) //   do test conditions until match
 	{
 		char* endptr;
@@ -181,7 +183,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			bool uppercasem = false;
 			int whenmatched = 0;
 			bool failed = false;
-			if (!Match(ptr+10,0,start,(char*)"(",1,0,start,end,uppercasem,whenmatched,0,0)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
+			if (!Match(buffer,ptr+10,0,start,(char*)"(",1,0,start,end,uppercasem,whenmatched,0,0)) failed = true;  // skip paren and blank, returns start as the location for retry if appropriate
 			if (clearUnmarks) // remove transient global disables.
 			{
 				clearUnmarks = false;
@@ -208,7 +210,15 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			}
 			result = (failed) ? FAILRULE_BIT : NOPROBLEM_BIT;
 		}
-		else TestIf(ptr+2,result); 
+		else 
+		{
+			ChangeDepth(1,"^if",false,ptr+2);
+			TestIf(ptr+2,result,buffer); 
+			if (!(result & ENDCODES)) strcpy(buffer,"true");
+			else strcpy(buffer,"false");
+			ChangeDepth(-1,"^if");
+			*buffer = 0;
+		}
 		if (trace & TRACE_OUTPUT  && CheckTopicTrace()) 
 		{
 			if (result & ENDCODES) Log(STDTRACELOG,(char*)"%s\r\n", "FAIL-if");
@@ -216,7 +226,8 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 		}
 
 		ptr = endptr; // now after pattern, pointing to the skip data to go past body.
-						
+		*buffer = 0;
+
 		//   perform SUCCESS branch and then end if
 		if (!(result & ENDCODES)) //   IF test success - we choose this branch
 		{
@@ -239,8 +250,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 		if (strncmp(ptr,(char*)"else ",5))  break; //   not an ELSE, the IF is over. 
 		ptr += 5; //   skip over ELSE space, aiming at the ( of the next condition condition
 	}
-	if (executed && trace & TRACE_OUTPUT  && CheckTopicTrace()) Log(STDTRACETABLOG,"End If\r\n");
-
+	if (executed && trace & TRACE_OUTPUT  && CheckTopicTrace())  Log(STDTRACETABLOG,"End If\r\n");
 	return ptr;
 } 
 
@@ -248,25 +258,28 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 {
 	unsigned int oldIterator = currentIterator;
 	currentIterator = 0;
-	char* buffer1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
-	ptr = ReadCommandArg(ptr+2,buffer1,result)+2; //   get the loop counter value and skip closing ) space 
+	ChangeDepth(1,"^Loop",false,ptr+2);
+	char* priorPtr = ptr+2;
+	ptr = GetCommandArg(ptr+2,buffer,result,0)+2; //   get the loop counter value and skip closing ) space 
+
 	char* endofloop = ptr + (size_t) Decode(ptr);
 	int counter;
-	if (*buffer1 == '@')
+	if (*buffer == '@')
 	{
-		int set = GetSetID(buffer1);
+		int set = GetSetID(buffer);
 		if (set < 0) 
 		{
 			result = FAILRULE_BIT; // illegal id
-			ReleaseInverseString(buffer1);
 			return ptr;
 		}
 		counter = FACTSET_COUNT(set);
 	}
-	else counter = atoi(buffer1);
-	ReleaseInverseString(buffer1);
-	if (result & ENDCODES) return endofloop;
-
+	else counter = atoi(buffer);
+	*buffer = 0;
+	if (result & ENDCODES) 
+	{
+		return endofloop;
+	}
 	++withinLoop;
 
 	ptr += 5;	//   skip jump + space + { + space
@@ -295,10 +308,10 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 			break;//   potential failure if didnt add anything to buffer
 		}
 	}
+	ChangeDepth(-1,"^Loop",true); // allows step out to cover a loop 
 	if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"end of loop\r\n");
-	if (counter < 0 && infinite) ReportBug("Loop ran to limit");
+	if (counter < 0 && infinite) ReportBug("Loop ran to limit %d",limit);
 	--withinLoop;
-
 	currentIterator = oldIterator;
 	return endofloop;
 }  
@@ -307,8 +320,8 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 { //   word1 and word2 are RAW, ready to be evaluated.
 	*word1val = 0;
 	*word2val = 0;
-	char* val1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
-	char* val2 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* val1 = AllocateStack(NULL,MAX_BUFFER_SIZE); 
+	char* val2 = AllocateStack(NULL,MAX_BUFFER_SIZE); 
 	WORDP D;
 	WORDP D1;
 	WORDP D2;
@@ -517,6 +530,6 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 		strcpy(word2val,val2);
 	}
 
-	ReleaseInverseString(val1);
+	ReleaseStack(val1);
 	return result;
 }

@@ -248,8 +248,8 @@ void Client(char* login)// test client for a server
 {
 	char word[MAX_WORD_SIZE];
 	printf((char*)"%s",(char*)"\r\n\r\n** Client launched\r\n");
-	char* data = AllocateBuffer();
-	char* input = AllocateBuffer();
+	char* data = AllocateBuffer(); // limited size
+	char* input = AllocateBuffer(); // limited size
 	FILE* source = stdin;
 
 	char* from = login;
@@ -363,8 +363,7 @@ SOURCE:
 #ifndef DISCARDSERVER
 
 
-
-#define SERVERTRANSERSIZE 10000 // no more than 10K coming in
+#define SERVERTRANSERSIZE (4 + 100 + INPUT_BUFFER_SIZE)  // offset to output buffer
 #ifdef WIN32
   #pragma warning(push,1)
   #pragma warning(disable: 4290) 
@@ -865,7 +864,7 @@ static void* Done(TCPSocket * sock,char* memory)
 static void* HandleTCPClient(void *sock1)  // individual client, data on STACK... might overflow... // WINDOWS + LINUX
 {
 	clock_t starttime = ElapsedMilliseconds(); 
-	char* memory = (char*) malloc((2 * MAX_BUFFER_SIZE)+2); // our data in 1st chunk, his reply info in 2nd - 80k limit
+	char* memory = (char*) malloc(4 + 100 + INPUT_BUFFER_SIZE + outputsize + 8); // our data in 1st chunk, his reply info in 2nd - 80k limit
 	if (!memory) return NULL; // ignore him if we run out of memory
 	char* output = memory+SERVERTRANSERSIZE;
 	*output = 0;
@@ -1077,7 +1076,7 @@ RESTART_RETRY:
 		// We will send back his answer in clientBuffer, overwriting it.
 		char user[MAX_WORD_SIZE];
 		char bot[MAX_WORD_SIZE];
-		char* ip = clientBuffer + sizeof(unsigned int); // skip fileread data buffer id(not used)
+		char* ip = clientBuffer + 4; // skip fileread data buffer id(not used)
 		char* returnData = clientBuffer+SERVERTRANSERSIZE;
 		char* ptr = ip;
 		// incoming is 4 strings together:  ip, username, botname, message
@@ -1087,7 +1086,11 @@ RESTART_RETRY:
 		strcpy(bot,ptr);
 		ptr += strlen(ptr) + 1; // ptr to message
 		size_t test = strlen(ptr);
-		if (test >= (MAX_BUFFER_SIZE - 100)) strcpy(ourMainInputBuffer,(char*)"too much data");
+		if (test >= (INPUT_BUFFER_SIZE - 100)) 
+		{
+			ReportBug("Too much input to server %d",test);
+			strcpy(ourMainInputBuffer,(char*)"too much data");
+		}
 		else strcpy(ourMainInputBuffer,ptr); // xfer user message to our incoming feed
 		echo = false;
         char* dateLog = GetTimeInfo(true)+SKIPWEEKDAY;

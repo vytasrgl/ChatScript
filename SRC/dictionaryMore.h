@@ -169,17 +169,18 @@ uint64 GetTriedMeaning(WORDP D);
 void SetTriedMeaning(WORDP D,uint64 bits);
 void ReadSubstitutes(const char* name,const char* layer,unsigned int fileFlag,bool filegiven = false);
 void Add2ConceptTopicList(int list[256], WORDP D,int start,int end,bool unique);
+void SuffixMeaning(MEANING T,char* at, bool withPos);
 
 extern unsigned int savedSentences;
 // memory data
 extern WORDP dictionaryBase;
-extern char* stringBase;
-extern char* stringFree;
-extern char* stringInverseFree;
-extern char* stringInverseStart;
-extern char* stringEnd;
+extern char* heapBase;
+extern char* heapFree;
+extern char* stackFree;
+extern char* stackStart;
+extern char* heapEnd;
 extern uint64 maxDictEntries;
-extern unsigned long maxStringBytes;
+extern unsigned long maxHeapBytes;
 extern unsigned long minStringAvailable;
 extern unsigned int userTopicStoreSize;
 extern unsigned int userTableSize;
@@ -239,13 +240,14 @@ extern bool dictionaryBitsChanged;
 extern char livedata[500];
 extern char englishFolder[500];
 extern char systemFolder[500];
-void ReleaseInverseString(char* word);
+void ReleaseStack(char* word);
 char* expandAllocation(char* old, char* word,int size);
-char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
-char* AllocateInverseString(char* word, size_t len = 0, bool localvar = false);
+char* AllocateHeap(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
+char* AllocateStack(char* word, size_t len = 0, bool localvar = false);
+char* InfiniteStack(char*& limit);
 bool PreallocateString(size_t len);
-bool AllocateInverseSlot(char* variable);
-char* RestoreInverseSlot(char* variable,char* slot);
+bool AllocateStackSlot(char* variable);
+char* RestoreStackSlot(char* variable,char* slot);
 WORDP StoreWord(int);
 void ClearWordMaps();
 bool TraceHierarchyTest(int x);
@@ -269,7 +271,7 @@ char* reuseAllocation(char* old, char* word,int len);
 char* UseDictionaryFile(char* name);
 char* Index2String(unsigned int offset);
 void ClearWhereInSentence();
-inline unsigned int String2Index(char* str) {return (!str) ? 0 : (unsigned int)(stringBase - str);}
+inline unsigned int String2Index(char* str) {return (!str) ? 0 : (unsigned int)(heapBase - str);}
 inline unsigned int GlossIndex(MEANING M) { return M >> 24;}
 void ReadAbbreviations(char* file);
 void ReadLiveData();
@@ -278,6 +280,7 @@ WORDP GetSubstitute(WORDP D);
 void ShowStats(bool reset);
 MEANING FindChild(MEANING who,int n);
 void ReadCanonicals(const char* file,const char* layer);
+void CompleteBindStack();
 
 // adjust data on a dictionary entry
 void AddProperty(WORDP D, uint64 flag);
@@ -350,7 +353,7 @@ MEANING AddTypedMeaning(WORDP D,unsigned int type);
 void AddGloss(WORDP D,char* gloss,unsigned int index);
 void RemoveMeaning(MEANING M, MEANING M1);
 MEANING ReadMeaning(char* word,bool create=true,bool precreated = false);
-char* WriteMeaning(MEANING T,bool withPOS = false);
+char* WriteMeaning(MEANING T,bool withPOS = false,char* buffer = NULL);
 MEANING GetMaster(MEANING T);
 unsigned int GetMeaningType(MEANING T);
 MEANING FindSynsetParent(MEANING T,unsigned int which = 0);

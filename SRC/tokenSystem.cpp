@@ -16,7 +16,6 @@ int inputNest = 0;
 #define MAX_BURST 400
 static char burstWords[MAX_BURST][MAX_WORD_SIZE];	// each token burst from a text string
 static unsigned int burstLimit = 0;					// index of burst  words
-char* joinBuffer;									// buffer for joinwords function		
 
 uint64 tokenFlags;										// what tokenization saw
 char* wordStarts[MAX_SENTENCE_LENGTH];				// current sentence tokenization (always points to D->word values or allocated values)
@@ -186,8 +185,7 @@ int BurstWord(char* word, int contractionStyle)
 	}
 
 	//   make it safe to write on the data while separating things
-	char* copy = AllocateBuffer();
-	strcpy(copy,word);
+	char* copy = AllocateStack(word,0);
 	word = copy;
 	unsigned int base = 0;
 
@@ -286,8 +284,7 @@ int BurstWord(char* word, int contractionStyle)
     if (start && *start && *start != ' ' && *start != '_') strcpy(burstWords[base++],start); // a trailing 's or '  won't have any followup word left
 	if (!base && underscoreSeen) strcpy(burstWords[base++],(char*)"_");
 	else if (!base) strcpy(burstWords[base++],start);
-
-	FreeBuffer();
+	ReleaseStack(copy);
 	burstLimit = base;	// note legality of burst word accessor GetBurstWord
     return base;
 }
@@ -304,6 +301,8 @@ char* GetBurstWord(unsigned int n) //   0-based
 
 char* JoinWords(unsigned int n,bool output)
 {
+	char* limit;
+	char* joinBuffer = InfiniteStack(limit); // transient
     *joinBuffer = 0;
 	char* at = joinBuffer;
     for (unsigned int i = 0; i < n; ++i)
@@ -320,6 +319,11 @@ char* JoinWords(unsigned int n,bool output)
 		at += len;
         if (i != (n-1)) strcpy(at++,(char*)"_");
     }
+	if (strlen(joinBuffer) >= (MAX_WORD_SIZE-1)) 
+	{
+		ReportBug("Joinwords was too big %d %s",strlen(joinBuffer),joinBuffer);
+		joinBuffer[MAX_WORD_SIZE-1] = 0; // safety truncation
+	}
     return joinBuffer;
 }
 
@@ -361,14 +365,14 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 			if (at == (end-1) && IsPunctuation(*at) & ENDERS);
 			else // store string as properly tokenized, NOT as a string.
 			{
-				char* buf = AllocateBuffer();
+				char* limit;
+				char* buf = InfiniteStack(limit); // transient
 				++end; // subsume the closing marker
 				strncpy(buf,ptr,end-ptr);
 				buf[end-ptr] = 0;
 				++count;
 				words[count] = reuseAllocation(words[count],buf); 
 				if (!words[count]) words[count] = reuseAllocation(words[count],(char*)"a"); // safe replacement
-				FreeBuffer();
 				return end;
 			}
 		}
@@ -485,6 +489,17 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	if (*ptr == '-' && ptr[1] == '-' && (ptr[2] == ' ' || IsAlphaUTF8(ptr[2]) )) return ptr + 2; // the -- break
 	if (*ptr == ';' && ptr[1] != ')' && ptr[1] != '(') return ptr + 1; // semicolon not emoticon
 	if (*ptr == ',' && ptr[1] != ':') return ptr + 1; // comma not emoticon
+	
+	char token[MAX_WORD_SIZE];
+	ReadCompiledWord(ptr,token);
+	
+	// check for negative number
+	if (*token == '-' && IsDigit(token[1]))
+	{
+		char* at = token;
+		while (*++at && (IsDigit(*at) || *at == '.')){;}
+		if (!*at) return ptr+strlen(token);
+	}
 
 	// Things that are normally separated as single character tokens
 	char next = ptr[1];
@@ -497,7 +512,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	else if (c == '\'' && next == '\'' && ptr[2] == '\'') return ptr + 3;	// ''' marker
 	else if (c == '\'' && next == '\'') return ptr + 2;	// '' marker
 	//   arithmetic operator between numbers -  . won't be seen because would have been swallowed already if part of a float, 
-	else if ((kind & ARITHMETICS || c == 'x' || c == 'X') && IsDigit(*priorToken) && IsDigit(next)) 
+	else if ((kind & ARITHMETICS || c == 'x' || c == 'X' || c == '/') && IsDigit(*priorToken) && IsDigit(next)) 
 	{
 		return ptr+1;  // separate operators from number
 	}
@@ -635,8 +650,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		if (W && (W->properties & PART_OF_SPEECH || W->systemFlags & PATTERN_WORD))  return stopper; // recognize word at more splits
 	}
 	char* start = ptr;
-	char token[MAX_WORD_SIZE];
-	ReadCompiledWord(start,token);
 	int lsize = strlen(token);
 	while (IsPunctuation(token[lsize-1])) token[--lsize] = 0; // remove trailing punctuation
 	char* after = start + lsize;
@@ -647,7 +660,19 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	if (tokenlen == 6 && IsDigit(token[0])  && token[1] == ',' && IsDigit(token[2])) // 2,2015
 		return ptr + 1;
 	if (!strnicmp(token,"https://",8) || !strnicmp(token,"http://",7)) return after;
-	if (IsFraction(token)) return after; // fraction?
+	if (*priorToken != '/' && IsFraction(token)) return after; // fraction?
+
+	// check for date (4 digit after hyphen or before hypen)
+	if (IsDigit(token[0]) &&  IsDigit(token[1]) && IsDigit(token[2]) && IsDigit(token[3]) &&
+		(token[4] == '-' || token[4] == '/')) return ptr + 4; // year separate at front
+	int pre = lsize - 5; // year separate at back
+	if ((token[pre] == '-' || token[pre] == '/') && IsDigit(token[pre+1]) &&  IsDigit(token[pre+2]) && IsDigit(token[pre+3]) && IsDigit(token[pre+4]))
+	{
+		char* hyphen = strchr(token,'-');
+		if (!hyphen) hyphen = strchr(token,'/');
+		if (hyphen == token) return ptr+1;
+		if (hyphen)	return ptr + (hyphen - token);	// break off regardless
+	}
 
 	// check for place number
 	char* place = ptr;
@@ -656,6 +681,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	int len = end - ptr;
 	char next2;
 	if (*ptr == '/') return ptr+1; // split of things separated
+
 	while (++ptr && !IsWordTerminator(*ptr)) // now scan to find end of token one by one, stopping where appropriate
     {
 		c = *ptr;

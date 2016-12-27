@@ -417,9 +417,9 @@ static void HuntMatch(char* word,bool strict,int start, int end, unsigned int& u
 static void SetSequenceStamp() //   mark words in sequence, original and canonical (but not mixed) - detects proper name potential up to 5 words  - and does discontiguous phrasal verbs
 {
 	// these use underscores
-	char* rawbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
-	char* originalbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE); // includes typos
-	char* canonbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* rawbuffer = AllocateStack(NULL,INPUT_BUFFER_SIZE);
+	char* originalbuffer = AllocateStack(NULL,INPUT_BUFFER_SIZE); // includes typos
+	char* canonbuffer = AllocateStack(NULL,INPUT_BUFFER_SIZE);
 	unsigned int oldtrace = trace;
 	unsigned int usetrace = trace;
 	if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
@@ -428,7 +428,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 		usetrace = (unsigned int) -1;
 		if (oldtrace && !(oldtrace & TRACE_ECHO)) usetrace ^= TRACE_ECHO;
 	}
-	uint64 logbase = logCount; // see if we logged anything
+	uint64 logbasecount = logCount; // see if we logged anything
 
 	//   consider all sets of up to 5-in-a-row 
 	for (int i = startSentence; i <= (int)endSentence; ++i)
@@ -502,9 +502,9 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 			HuntMatch(rawbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
 			HuntMatch(canonbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
 			HuntMatch(originalbuffer,(tokenControl & STRICT_CASING) ? true : false,i,i+k,usetrace);
-			if (logCount != logbase && usetrace)  Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
+			if (logCount != logbasecount && usetrace)  Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
 			if (++index >= SEQUENCE_LIMIT) break; //   up thru 5 words in a phrase
-			logbase = logCount;
+			logbasecount = logCount;
 		}
 	}
 	
@@ -562,7 +562,7 @@ static void SetSequenceStamp() //   mark words in sequence, original and canonic
 	if (trace & TRACE_PATTERN) Log(STDTRACELOG,(char*)"\r\n"); // if we logged something, separate
 
 	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
-	ReleaseInverseString(rawbuffer);
+	ReleaseStack(rawbuffer); // short term
 }
 
 static void StdMark(MEANING M, unsigned int start, unsigned int end, bool canonical) 
@@ -605,6 +605,7 @@ void MarkAllImpliedWords()
 		if (!*original)
 			continue;	// ignore this
 		if (!wordCanonical[i] || !*wordCanonical[i]) wordCanonical[i] = original; // in case failure below
+		bool placeNumber = false;
 
 		if (showMark) Log(ECHOSTDTRACELOG,(char*)"\r\n");
 		NextInferMark(); // blocks circular fact marking.
@@ -693,14 +694,17 @@ void MarkAllImpliedWords()
 			}
 
 			MarkFacts(Mnumber,i,i); 
+
 			//   handle finding fractions as 3 token sequence  mark as placenumber 
 			if (i < wordCount && *wordStarts[i+1] == '/' && wordStarts[i+1][1] == 0 && finalPosValues[i+2] & (NOUN_NUMBER | ADJECTIVE_NUMBER))
 			{
+				placeNumber = true;
 				MarkFacts(MakeMeaning(Dplacenumber),i,i);  
 				if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"=%s/%s \r\n",wordStarts[i],wordStarts[i+2]);
 			}
 			else if (IsDigit(*wordStarts[i]) && IsPlaceNumber(wordStarts[i])) // finalPosValues[i] & (NOUN_NUMBER | ADJECTIVE_NUMBER) 
 			{
+				placeNumber = true;
 				MarkFacts(MakeMeaning(Dplacenumber),i,i);  
 			}
 			// special temperature property
@@ -710,7 +714,6 @@ void MarkAllImpliedWords()
 				if (c == 'F') MarkFacts(MakeMeaning(StoreWord((char*)"~fahrenheit")),i,i);
 				else if (c == 'C') MarkFacts(MakeMeaning(StoreWord((char*)"~celsius")),i,i);
 				else if (c == 'K')  MarkFacts(MakeMeaning(StoreWord((char*)"~kelvin")),i,i);
-				MarkFacts(Mnumber,i,i);
 				char number[MAX_WORD_SIZE];
 				sprintf(number,(char*)"%d",atoi(original));
 				WORDP canon =  StoreWord(number,(NOUN_NUMBER | ADJECTIVE_NUMBER));
@@ -811,7 +814,18 @@ void MarkAllImpliedWords()
 		StdMark(MakeTypedMeaning(CU,0, NOUN), i, i,true);
 
 		// canonical word is a number (maybe we didn't register original right) eg. "how much is 24 and *seven"
-		if (IsDigit(*wordCanonical[i]) && IsNumber(wordCanonical[i])) MarkFacts(Mnumber,i,i,true);  
+		if ((IsDigit(*wordCanonical[i]) || *wordCanonical[i] == '-') && IsNumber(wordCanonical[i])) 
+		{
+			MarkFacts(Mnumber,i,i,true);  
+			// let's mark kind of number also
+			if (strchr(wordStarts[i],'.')) MarkFacts(MakeMeaning(StoreWord("~float")),i,i,true); 
+			else if (!placeNumber) 
+			{
+				MarkFacts(MakeMeaning(StoreWord("~integer")),i,i,true);
+				if (*wordStarts[i] != '-') MarkFacts(MakeMeaning(StoreWord("~positiveInteger")),i,i,true);
+				else MarkFacts(MakeMeaning(StoreWord("~negativeinteger")),i,i,true);
+			}
+		}
 
 		if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)" "); //   close canonical form uppercase
 		markLength = 0;
@@ -858,7 +872,7 @@ void MarkAllImpliedWords()
 
 		// now look on either side of a hypenated word
 		char* hypen = strchr(wordStarts[i],'-');
-		if (hypen) 
+		if (hypen && hypen != wordStarts[i] && hypen[1]) 
 		{
 			MarkFacts(MakeMeaning(StoreWord(hypen)),i,i); // post form -colored
 			char word[MAX_WORD_SIZE];

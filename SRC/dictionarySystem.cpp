@@ -52,11 +52,11 @@ may have shouted a lowercase noun, and a noun at the start of the sentence could
 Dictionary words are hashed as lower case, but if the word has an upper case letter it will be stored
 in the adjacent higher bucket. Words of the basic system are stored in their appropriate hash bucket.
 After the basic system is read in, the dictionary is frozen. This means it remembers the spots the allocation
-pointers are at for the dictionary and string space and is using mark-release memory management.
+pointers are at for the dictionary and heap space and is using mark-release memory management.
 
 Words created on the fly (after a freeze) by interacting with a user are always stored in bucket 0. 
 This allows the system to instantly discard them when the interaction has been processed merey by 
-zeroing bucket 0. The string space and dictionary space allocated to those on-the-fly words are merely 
+zeroing bucket 0. The heap space and dictionary space allocated to those on-the-fly words are merely 
 "released" back to the values at the time of dictionary freeze.
 
 We mark sysnet entries with the word & meaning number & POS of word in the dictionary entry. The POS not used explicitly by lots of the system
@@ -79,11 +79,11 @@ static unsigned int rawWords = 0;
 static unsigned char* writePtr;				// used for binary dictionary writes
 
 // memory data
-#define MAX_STRING_SPACE 100000000  // transient string space 100MB
+#define MAX_STRING_SPACE 100000000  // transient heap space 100MB
 unsigned long maxHashBuckets = MAX_HASH_BUCKETS;
 bool setMaxHashBuckets = false;
 uint64 maxDictEntries = MAX_ENTRIES;
-unsigned long maxStringBytes = MAX_STRING_SPACE;
+unsigned long maxHeapBytes = MAX_STRING_SPACE;
 unsigned int userTopicStoreSize,userTableSize; // memory used which we will display
 char livedata[500];		// where is the livedata folder
 char englishFolder[500];		// where is the livedata english folder
@@ -101,7 +101,7 @@ std::map <WORDP, WORDP> irregularAdjectives;
 std::map <WORDP, WORDP> canonicalWords;
 std::map <WORDP, int> wordValues; // per volley
 std::map <WORDP, MEANING> backtracks; // per volley
-std::map <WORDP, int> triedData; // per volley index into string space
+std::map <WORDP, int> triedData; // per volley index into heap space
 
 unsigned int savedSentences = 0;
 
@@ -154,7 +154,7 @@ void Add2ConceptTopicList(int list[256], WORDP D,int start,int end,bool unique)
 		}
 	}
 
-	unsigned int* entry = (unsigned int*) AllocateString(NULL,2, sizeof(MEANING),false); // ref and link
+	unsigned int* entry = (unsigned int*) AllocateHeap(NULL,2, sizeof(MEANING),false); // ref and link
 	entry[1] = list[start];
 	list[start] = String2Index((char*) entry);
 	entry[0] = M;
@@ -251,7 +251,7 @@ unsigned int* AllocateWhereInSentence(WORDP D)
 		MEANING* data = (MEANING*) Index2String(freeTriedList);
 		freeTriedList = *data;
 	}
-	if (!data) data = (unsigned int*) AllocateString(NULL, ((sizeof(uint64) + maxRefSentence)+3)/4,4,false); // 64 bits (2 words) + 64 bytes (16 words) = 18 words  BUG?
+	if (!data) data = (unsigned int*) AllocateHeap(NULL, ((sizeof(uint64) + maxRefSentence)+3)/4,4,false); // 64 bits (2 words) + 64 bytes (16 words) = 18 words  BUG?
 	if (!data) return NULL;
 	*data = 0; // clears the tried meanings list
 	data[1] = 0;
@@ -289,15 +289,15 @@ uint64 GetTriedMeaning(WORDP D) // which meanings have been used (up to 64)
 char* Index2String(unsigned int offset) 
 { 
 	if (!offset) return NULL;
-	char* ptr = stringBase - offset;
-	if (ptr < stringFree)  
+	char* ptr = heapBase - offset;
+	if (ptr < heapFree)  
 	{
 		ReportBug((char*)"String offset into free space\r\n");
 		return NULL;
 	}
-	if (ptr > stringBase)  
+	if (ptr > heapBase)  
 	{
-		ReportBug((char*)"String offset before string space\r\n");
+		ReportBug((char*)"String offset before heap space\r\n");
 		return NULL;
 	}
 	return ptr;
@@ -364,13 +364,13 @@ int GetWordValue(WORDP D)
 }
 
 // start and ends of space allocations
-WORDP dictionaryBase = 0;			// base of allocated space that encompasses dictionary, string space, and meanings
+WORDP dictionaryBase = 0;			// base of allocated space that encompasses dictionary, heap space, and meanings
 WORDP dictionaryFree;				// current next dict space available going forward (not a valid entry)
-char* stringBase;					// start of string space (runs backward)
-char* stringFree;					// current free string ptr
-char* stringInverseFree;
-char* stringInverseStart;
-char* stringEnd;
+char* heapBase;					// start of heap space (runs backward)
+char* heapFree;					// current free string ptr
+char* stackFree;
+char* stackStart;
+char* heapEnd;
 unsigned long minStringAvailable;
 
 // return-to values for layers
@@ -456,7 +456,7 @@ void DictionaryRelease(WORDP until,char* stringUsed)
 		D->systemFlags = *((uint64*) (at+2));
 	}
 	while (dictionaryFree > until) DeleteDictionaryEntry(--dictionaryFree); //   remove entry from buckets
-    stringFree = stringUsed; 
+    heapFree = stringUsed; 
 }
 
 char* UseDictionaryFile(char* name)
@@ -516,7 +516,7 @@ static void EraseFile(char* file)
 
 static void ClearDictionaryFiles()
 {
-	char buffer[MAX_BUFFER_SIZE];
+	char buffer[MAX_WORD_SIZE];
 	EraseFile((char*)"other.txt"); //   create but empty file
     unsigned int i;
 	for (i = 'a'; i <= 'z'; ++i)
@@ -615,7 +615,7 @@ void InitDictionary()
 	//   dictionary and meanings and strings share space, running from opposite ends of a common pool
 	size_t size = (size_t)(sizeof(WORDENTRY) * maxDictEntries);
 #ifndef SEPARATE_STRING_SPACE
-	size += maxStringBytes;
+	size += maxHeapBytes;
 #endif
 	size /= sizeof(WORDENTRY);
 	size = (size * sizeof(WORDENTRY)) + sizeof(WORDENTRY);
@@ -632,10 +632,10 @@ void InitDictionary()
 	}
 
 #ifdef EXPLAIN
-	Conjoined String Space					Independent String space
-											StringBase -- allocates downwards
-	StringBase  - allocates downwards		StringFree
-	StringFree								StringEnd  -- stringInversefree - allocates upwards
+	Conjoined heap space					Independent heap space
+											heapBase -- allocates downwards
+	heapBase  - allocates downwards		heapFree
+	heapFree								heapEnd  -- stackFree - allocates upwards
 											-------------------------disjoint memory
 	dictionaryFree
 	dictionaryBase - allocates upwards
@@ -647,22 +647,22 @@ void InitDictionary()
 	memset(dictionaryBase,0,size);
 	dictionaryFree =  dictionaryBase + maxHashBuckets + HASH_EXTRA ;		//   prededicate hash space within the dictionary itself
 #ifndef SEPARATE_STRING_SPACE 	
-	stringBase = stringFree = ((char*)dictionaryBase) + size;				//   the end of the allocated space
-	stringInverseFree = ((char*)dictionaryBase) + size - maxStringBytes;
+	heapBase = heapFree = ((char*)dictionaryBase) + size;				//   the end of the allocated space
+	stackFree = ((char*)dictionaryBase) + size - maxHeapBytes;
 #else
-	size = maxStringBytes / 64;
+	size = maxHeapBytes / 64;
 	size = (size * 64) + 64; // 64 bit align both ends
-	stringEnd = ((char*) malloc(size));	// point to end
-	if (!stringEnd)
+	heapEnd = ((char*) malloc(size));	// point to end
+	if (!heapEnd)
 	{
 		printf((char*)"Out of  memory space for text space %d\r\n",(int)size);
 		ReportBug((char*)"FATAL: Cannot allocate memory space for text %d\r\n",(int)size)
 	}
-	stringFree = stringBase = stringEnd + size; // allocate backwards
-	stringInverseFree = stringEnd;
+	heapFree = heapBase = heapEnd + size; // allocate backwards
+	stackFree = heapEnd;
 #endif
-	minStringAvailable = maxStringBytes;
-	stringInverseStart = stringInverseFree;
+	minStringAvailable = maxHeapBytes;
+	stackStart = stackFree;
 	//   The bucket list is threaded thru WORDP nodes, and consists of indexes, not addresses.
 
 	dictionaryPreBuild[0] = dictionaryPreBuild[1] = dictionaryPreBuild[2] = 0;	// in initial dictionary
@@ -678,7 +678,7 @@ char* reuseAllocation(char* old, char* word)
 char* reuseAllocation(char* old, char* word,int size)
 {
 	if (size == 0  && word) size = strlen(word);
-	return AllocateString(word,size,1); 
+	return AllocateHeap(word,size,1); 
 }
 
 char* expandAllocation(char* old, char* word,int size)
@@ -706,7 +706,7 @@ char* expandAllocation(char* old, char* word,int size)
 	}
 	if (size >= (int)len)
 	{
-		word = AllocateString(NULL,size,1,false);
+		word = AllocateHeap(NULL,size,1,false);
 		*word = 0;
 		if (old) strcpy(word,old);
 		old = word; // otherwise leave buffer with original content alone
@@ -714,15 +714,29 @@ char* expandAllocation(char* old, char* word,int size)
 	return old;
 }
 
-char* AllocateInverseString(char* word, size_t len,bool localvar) // call with (0,len) to get a buffer
+char* InfiniteStack(char*& limit)
+{
+	limit = heapFree - 5000; // leave safe margin of error
+	*stackFree = 0;
+	return stackFree;
+}
+
+void CompleteBindStack()
+{
+	stackFree += strlen(stackFree) + 1; // convert infinite allocation to fixed one
+	size_t len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+}
+
+char* AllocateStack(char* word, size_t len,bool localvar) // call with (0,len) to get a buffer
 {
 	if (len == 0) len = strlen(word);
-    if ((stringInverseFree + len + 1) >= (stringFree - 5000)) // dont get close
+    if ((stackFree + len + 1) >= heapFree - 5000) // dont get close
     {
-		ReportBug((char*)"Out of transient inverse string space stringSpace:%d inverseStringspace:%d \r\n",stringBase-stringFree,stringInverseFree - stringInverseStart);
+		ReportBug((char*)"Out of stack space stringSpace:%d ReleaseStackspace:%d \r\n",heapBase-heapFree,stackFree - stackStart);
 		return NULL;
     }
-	char* answer = stringInverseFree;
+	char* answer = stackFree;
 	if (localvar) // give hidden data
 	{
 		*answer = '`';
@@ -730,40 +744,41 @@ char* AllocateInverseString(char* word, size_t len,bool localvar) // call with (
 		answer += 2;
 	}
 	if (word) strncpy(answer,word,len);
+	else *answer = 0;
 	answer[len++] = 0;
 	answer[len++] = 0;
 	if (localvar) len += 2;
-	stringInverseFree += len;
-	len = stringFree - stringInverseFree;
-	if (len < maxInverseStringGap) maxInverseStringGap = len;
+	stackFree += len;
+	len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
 	return answer;
 }
 
-void ReleaseInverseString(char* word)
+void ReleaseStack(char* word)
 {
-	stringInverseFree = word;
+	stackFree = word;
 }
 
-bool AllocateInverseSlot(char* variable)
+bool AllocateStackSlot(char* variable)
 {
 	WORDP D = StoreWord(variable);
 
 	unsigned int len = sizeof(char*);
-    if ((stringInverseFree + len + 1) >= (stringFree - 5000)) // dont get close
+    if ((stackFree + len + 1) >= (heapFree - 5000)) // dont get close
     {
-		ReportBug((char*)"Out of transient inverse string space\r\n")
+		ReportBug((char*)"Out of stack space\r\n")
 		return false;
     }
-	char* answer = stringInverseFree;
+	char* answer = stackFree;
 	memcpy(answer,&D->w.userValue,sizeof(char*));
 	if (D->word[1] == LOCALVAR_PREFIX) D->w.userValue = NULL; // autoclear local var
-	stringInverseFree += sizeof(char*);
-	len = stringFree - stringInverseFree;
-	if (len < maxInverseStringGap) maxInverseStringGap = len;
+	stackFree += sizeof(char*);
+	len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
 	return true;
 }
 
-char* RestoreInverseSlot(char* variable,char* slot)
+char* RestoreStackSlot(char* variable,char* slot)
 {
 	WORDP D = FindWord(variable);
 	if (!D) return slot; // should never happen, we allocate dict entry on save
@@ -773,18 +788,18 @@ char* RestoreInverseSlot(char* variable,char* slot)
 
 bool PreallocateString(size_t len) // do we have the space
 {
-	char* used = stringFree - len;
+	char* used = heapFree - len;
 #ifndef SEPARATE_STRING_SPACE
 	bool ok =  (used > ((char*)dictionaryFree + 2000));
 #else
-	bool ok =  (used > ((char*)stringEnd + 2000));
+	bool ok =  (used > ((char*)heapEnd + 2000));
 #endif
 	if (!ok) 
 		ReportBug("Preallocation fails");
 	return ok;
 }
- 	
-char* AllocateString(char* word,size_t len,int bytes,bool clear, bool purelocal) // BYTES means size of unit
+
+char* AllocateHeap(char* word,size_t len,int bytes,bool clear, bool purelocal) // BYTES means size of unit
 { //   string allocation moves BACKWARDS from end of dictionary space (as do meanings)
 /* Allocations during setup as :
 2 when setting up cs using current dictionary and livedata for extensions (plurals, comparatives, tenses, canonicals) 
@@ -817,24 +832,24 @@ Allocations happen during volley processing as
 
 	//   always allocate in word units
 	unsigned int allocate = ((allocationSize + 3) / 4) * 4;
-	stringFree -= allocate;
+	heapFree -= allocate;
  	if (bytes > 4) // force 64bit alignment alignment
 	{
-		uint64 base = (uint64) stringFree;
+		uint64 base = (uint64) heapFree;
 		base &= 0xFFFFFFFFFFFFFFC0ULL;
-		stringFree = (char*) base;
+		heapFree = (char*) base;
 	}
  	else if (bytes == 4) // force 32bit alignment alignment
 	{
-		uint64 base = (uint64) stringFree;
+		uint64 base = (uint64) heapFree;
 		base &= 0xFFFFFFFFFFFFFFF0ULL;
-		stringFree = (char*) base;
+		heapFree = (char*) base;
 	}
  	else if (bytes == 2) // force 16bit alignment alignment
 	{
-		uint64 base = (uint64) stringFree;
+		uint64 base = (uint64) heapFree;
 		base &= 0xFFFFFFFFFFFFFFF8ULL;
-		stringFree = (char*) base;
+		heapFree = (char*) base;
 	}
 	else if (bytes != 1) 
 		ReportBug((char*)"Allocation of bytes is not std unit %d", bytes);
@@ -842,11 +857,11 @@ Allocations happen during volley processing as
 	// create marker
 	if (bytes == 1  && dictionaryLocked && !compiling && !loading) 
 	{
-		stringFree[0] = ALLOCATESTRING_MARKER; // we put ff ff  just before the sizing data
-		stringFree[1] = ALLOCATESTRING_MARKER;
+		heapFree[0] = ALLOCATESTRING_MARKER; // we put ff ff  just before the sizing data
+		heapFree[1] = ALLOCATESTRING_MARKER;
 	}
 
-	char* newword =  stringFree;
+	char* newword =  heapFree;
 	if (bytes == 1 && dictionaryLocked && !compiling && !loading) // store size of allocation to enable potential reuse by $var assign and by wordStarts tokenize
 	{
 		newword += ALLOCATESTRING_SIZE_SAFEMARKER;
@@ -856,16 +871,16 @@ Allocations happen during volley processing as
 		*newword++ = (unsigned char) (allocationSize & 0x000000ff);
 	}
 	
-	int nominalLeft = maxStringBytes - (stringBase - stringFree);
+	int nominalLeft = maxHeapBytes - (heapBase - heapFree);
 	if ((unsigned long) nominalLeft < minStringAvailable) minStringAvailable = nominalLeft;
 
 #ifndef SEPARATE_STRING_SPACE 
-    if (stringFree <= (char*) dictionaryFree) 
+    if (heapFree <= (char*) dictionaryFree) 
 #else
-	 if (stringFree < (char*) stringEnd) 
+	 if (heapFree < (char*) heapEnd) 
 #endif
     {
-		ReportBug((char*)"FATAL: Out of transient string space\r\n")
+		ReportBug((char*)"FATAL: Out of transient heap space\r\n")
     }
     if (word) 
 	{
@@ -899,7 +914,7 @@ void RemoveInternalFlag(WORDP D,unsigned int flag)
 
 static void PreserveFlags(WORDP D)
 {			
-	unsigned int* at = (unsigned int*) AllocateString (NULL,2, sizeof(uint64),false); // PreserveFlags
+	unsigned int* at = (unsigned int*) AllocateHeap (NULL,2, sizeof(uint64),false); // PreserveFlags
 	*at = flagsRedefines;
 	at[1] = Word2Index(D);
 	flagsRedefines = String2Index((char*)at);
@@ -937,7 +952,7 @@ void RemoveSystemFlag(WORDP D, uint64 flags)
 
 static void PreserveProperty(WORDP D)
 {
-	unsigned int* at = (unsigned int*) AllocateString (NULL,2, sizeof(uint64),false); //  PreserveProperty
+	unsigned int* at = (unsigned int*) AllocateHeap (NULL,2, sizeof(uint64),false); //  PreserveProperty
 	*at = propertyRedefines;
 	at[1] = Word2Index(D);
 	propertyRedefines = String2Index((char*)at);
@@ -1090,7 +1105,7 @@ static WORDP AllocateEntry()
 {
 	WORDP  D = dictionaryFree++;
 #ifdef WIN32
-	if (Word2Index(D) >= maxDictEntries || ((char*)D + sizeof(WORDENTRY)) >= stringFree)// we allow string space to use up dict space if it needs it
+	if (Word2Index(D) >= maxDictEntries || ((char*)D + sizeof(WORDENTRY)) >= heapFree)// we allow heap space to use up dict space if it needs it
 #else
 	if (Word2Index(D) >= maxDictEntries)
 #endif
@@ -1120,8 +1135,14 @@ WORDP StoreWord(char* word, uint64 properties)
 	if (!*word) // servers dont want long lists of bugs from strange inputs //   we require something 
 	{
 		if (!server) ReportBug((char*)"entering null word to dictionary in sentence")
-		// return StoreWord((char*)"badword"); //   we require something
 		return StoreWord((char*)"emptystring"); //   we require something
+	}
+	if (strchr(word,'\n') || strchr(word,'\r') || strchr(word,'\t')) // force backslash format on these characters
+	{
+		char* buf = AllocateBuffer();
+		AddEscapes(buf,word,true,MAX_BUFFER_SIZE);
+		FreeBuffer();
+		word = buf;
 	}
 	unsigned int n = 0;
 	bool lowercase = false;
@@ -1159,7 +1180,7 @@ WORDP StoreWord(char* word, uint64 properties)
     }  
 
     //   not found, add entry 
-	char* wordx = AllocateString(word,len); // storeword
+	char* wordx = AllocateHeap(word,len); // storeword
     if (!wordx) return StoreWord((char*)"x.x",properties|AS_IS); // fake it
 	if (base->word == 0 && !dictionaryPreBuild[0]) D = base; // add into hash zone initial dictionary entries (nothing allocated here yet) if and only if loading the base system
 	else  
@@ -1272,7 +1293,7 @@ void ShowStats(bool reset)
 		if (dictUsed > maxDict) maxDict = dictUsed;
 		unsigned int factUsed = factFree - factLocked;
 		if (factUsed > maxFact) maxFact = factUsed;
-		unsigned int textUsed = stringLocked - stringFree;
+		unsigned int textUsed = stringLocked - heapFree;
 		if (textUsed > maxText) maxText = textUsed;
 		if (ruleCount > maxRules) maxRules = ruleCount;
 
@@ -1368,7 +1389,7 @@ void ReturnDictionaryToWordNet() // drop all memory allocated after the wordnet 
 void LockLevel()
 {
 	dictionaryLocked = dictionaryFree;		
-	stringLocked = stringFree;		
+	stringLocked = heapFree;		
 	factLocked = factFree; // factFree is a fact in use (increment before use) so factlocked is a fact in use
 }
 
@@ -1386,7 +1407,7 @@ void LockLayer(int layer,bool boot)
 	{
 		numberOfTopicsInLayer[i] = (layer == -1) ? 0 : numberOfTopicsInLayer[layer];
 		dictionaryPreBuild[i] = dictionaryFree;		
-		stringsPreBuild[i] = stringFree;	
+		stringsPreBuild[i] = heapFree;	
 		factsPreBuild[i] = factFree; 
 		topicBlockPtrs[i] = NULL;
 		buildStamp[i][0] = 0;
@@ -1770,14 +1791,14 @@ static char* ReadString(FILE* in)
 	char* str;
 	if (in)
 	{
-		char* buffer = AllocateBuffer();
+		char* limit;
+		char* buffer = InfiniteStack(limit);
 		if (fread(buffer,1,len+1,in) != len+1) return NULL;
-		str = AllocateString(buffer,len); // readstring
-		FreeBuffer();
+		str = AllocateHeap(buffer,len); // readstring
 	}
 	else 
 	{
-		str = AllocateString((char*)writePtr,len); // readstring
+		str = AllocateHeap((char*)writePtr,len); // readstring
 		writePtr += len + 1;
 	}
 	return str;
@@ -1827,7 +1848,7 @@ static WORDP ReadBinaryEntry(FILE* in)
 	if (bits & (1 << 4)) 
 	{
 		unsigned char c = Read8(0);
-		MEANING* meanings = (MEANING*) AllocateString(NULL,(c+1),sizeof(MEANING)); 
+		MEANING* meanings = (MEANING*) AllocateHeap(NULL,(c+1),sizeof(MEANING)); 
 		memset(meanings,0,(c+1) * sizeof(MEANING)); 
 		D->meanings =  String2Index((char*)meanings);
 		GetMeaning(D,0) = c;
@@ -1843,7 +1864,7 @@ static WORDP ReadBinaryEntry(FILE* in)
 	if (bits & (1 << 5)) // glosses
 	{
 		unsigned char c = Read8(0);
-		MEANING* glosses = (MEANING*) AllocateString(NULL,(c+1), sizeof(MEANING)); 
+		MEANING* glosses = (MEANING*) AllocateHeap(NULL,(c+1), sizeof(MEANING)); 
 		memset(glosses,0,(c+1) * sizeof(MEANING)); 
 		glosses[0] = c;
 		D->w.glosses =  glosses;
@@ -2026,7 +2047,7 @@ void WriteDictionary(WORDP D,uint64 data)
 	for (int i = 1; i <= count; ++i)
 	{
 		MEANING M = GetMeaning(D,i);
-		fprintf(out,(char*)"    %s ", WriteMeaning(M,true)); 
+		fprintf(out,(char*)"    %s ", WriteMeaning(M,true)); // words are small
 		if (M & SYNSET_MARKER) //   facts for this will be OUR facts
 		{
 			M = MakeMeaning(D,i); // our meaning id
@@ -2035,7 +2056,7 @@ void WriteDictionary(WORDP D,uint64 data)
 			{
 				if ( M == F->subject && F->verb == Mis) // show up path as information only
 				{
-					fprintf(out,(char*)"(^%s) ",WriteMeaning(F->object));  // shows an object that we link to up (parent)
+					fprintf(out,(char*)"(^%s) ",WriteMeaning(F->object));  // small word. shows an object that we link to up (parent)
 					break;
 				}
 				F = GetSubjectNondeadNext(F);
@@ -2069,7 +2090,7 @@ char* ReadDictionaryFlags(WORDP D, char* ptr,unsigned int* meaningcount, unsigne
 		else if (!strncmp(junk,(char*)"poscondition=",13)) 
 		{
 			ptr = ReadCompiledWord(junk+13,junk);
-			D->w.conditionalIdiom = AllocateString(junk);
+			D->w.conditionalIdiom = AllocateHeap(junk);
 		}
 		else if (!strncmp(junk,(char*)"#=",2));
 		else if (!strcmp(junk,(char*)"posdefault:NOUN")) flags |= NOUN;
@@ -2123,7 +2144,7 @@ void AddGloss(WORDP D,char* glossy,unsigned int index) // only a synset head can
 	unsigned int count = oldCount + 1;  
 	if (!(count & oldCount)) //   new count has no bits in common with old count, is a new power of 2
 	{
-		glosses = (MEANING*) AllocateString(NULL,(count<<1),sizeof(MEANING)); 
+		glosses = (MEANING*) AllocateHeap(NULL,(count<<1),sizeof(MEANING)); 
 		memset(glosses,0,(count<<1) * sizeof(MEANING)); //   just to be purist
 		memcpy(glosses+1,D->w.glosses+1,oldCount * sizeof(MEANING));
 		D->w.glosses =  glosses;
@@ -2168,7 +2189,7 @@ MEANING AddMeaning(WORDP D,MEANING M)
 	unsigned int count = oldCount + 1;  
 	if (!(count & oldCount)) //   new count has no bits in common with old count, is a new power of 2
 	{
-		meanings = (MEANING*) AllocateString(NULL,(count<<1),sizeof(MEANING)); 
+		meanings = (MEANING*) AllocateHeap(NULL,(count<<1),sizeof(MEANING)); 
 		memset(meanings,0,(count<<1) * sizeof(MEANING)); //   just to be purist
 		memcpy(meanings+1,&GetMeaning(D,1),oldCount * sizeof(MEANING));
 		D->meanings =  String2Index((char*)meanings);
@@ -2236,6 +2257,7 @@ MEANING ReadMeaning(char* word,bool create,bool precreated)
 	if (*word == '\\' && word[1] && !word[2])  strcpy(hold,word+1);	//   special single made safe, like \[  or \*
 	else strcpy(hold,word);
 	word = hold;
+	if (!*word) return 0;
 
 	unsigned int flags = 0;
 	unsigned int index = 0;
@@ -2243,7 +2265,9 @@ MEANING ReadMeaning(char* word,bool create,bool precreated)
 	char* at = (*word != '~') ? strchr(word,'~') : NULL; 
 	if (at && *word != '"' ) // beware of topics or other things, dont lose them. we want xxx~n (one character) or  xxx~digits  or xxx~23n
 	{
-		if (IsDigit(at[1]))  // number starter  at~3  or   at~3n
+		char* space = strchr(word,' ');
+		if (space && space < at) {;} // not a normal word
+		else if (IsDigit(at[1]))  // number starter  at~3  or   at~3n
 		{
 			index = atoi(at+1);
 			char* p = at;
@@ -2252,7 +2276,21 @@ MEANING ReadMeaning(char* word,bool create,bool precreated)
 			else if (*p == 'v') flags = VERB;
 			else if (*p == 'a') flags = ADJECTIVE;
 			else if (*p == 'b') flags = ADVERB;
-			if (*p == 'z' ||  (*p && p[1] == 'z')) flags |= SYNSET_MARKER; 
+			else if (*p == 'z') flags |= SYNSET_MARKER;
+			if (flags) 
+			{
+				++p;
+				if (*p == 'z')
+				{
+					flags |= SYNSET_MARKER; 
+					++p;
+				}
+			}
+			if (*p) // this is NOT a normal word but some pattern or whatever
+			{
+				WORDP D = (create) ? StoreWord(word,AS_IS) : FindWord(word,0,PRIMARY_CASE_ALLOWED);
+				return (!D)  ? (MEANING)0 :  (MakeMeaning(D,index) | flags);
+			}
 			*at = 0; // drop the tail
 		}
 		if (index == 0) //   at~nz
@@ -2283,7 +2321,6 @@ MEANING ReadMeaning(char* word,bool create,bool precreated)
 		//	word = hold; // hereinafter, this fact will be written out as `xxxx` instead
 		//}
 	}
-	if (!*word) return 0;
 	WORDP D = (create) ? StoreWord(word,AS_IS) : FindWord(word,0,PRIMARY_CASE_ALLOWED);
     return (!D)  ? (MEANING)0 :  (MakeMeaning(D,index) | flags);
 }
@@ -2327,7 +2364,7 @@ bool ReadDictionary(char* file)
 		//   directly create meanings, since we know the size-- no meanings may be added after this
 		if (meaningCount)
 		{
-			MEANING* meanings = (MEANING*) AllocateString(NULL,(meaningCount+1),sizeof(MEANING),true); 
+			MEANING* meanings = (MEANING*) AllocateHeap(NULL,(meaningCount+1),sizeof(MEANING),true); 
 			meanings[0]= meaningCount;
 			D->meanings =  String2Index((char*)meanings);
 
@@ -2335,7 +2372,7 @@ bool ReadDictionary(char* file)
 			//   directly create gloss space, since we know the size-- no glosses may be added after this
 			if (glossCount) // reserve space for this many glosses
 			{
-				MEANING* glosses = (MEANING*) AllocateString(NULL,(glossCount+1), sizeof(MEANING),true); 
+				MEANING* glosses = (MEANING*) AllocateHeap(NULL,(glossCount+1), sizeof(MEANING),true); 
 				glosses[0] = glossCount;
 				D->w.glosses =  glosses;
 			}
@@ -2346,7 +2383,7 @@ bool ReadDictionary(char* file)
 				GetMeaning(D,i) = ReadMeaning(junk,true,true);
 				if (*ptr == '(') ptr = strchr(ptr,')') + 2; // point after the )
 				if (glossCount && *ptr && GetMeaning(D,i) & SYNSET_MARKER) 
-					D->w.glosses[++glossIndex] =  String2Index(AllocateString(ptr)) + (i << 24);
+					D->w.glosses[++glossIndex] =  String2Index(AllocateHeap(ptr)) + (i << 24);
 			}
 			if (glossIndex != glossCount)
 			{
@@ -2436,22 +2473,10 @@ MEANING FindSetParent(MEANING T,int n) //   next set parent
     return 0;
 }
 
-char* WriteMeaning(MEANING T,bool withPos)
+void SuffixMeaning(MEANING T,char* at, bool withPos)
 {
-	if (!T) return "deadcow";
-    WORDP D = Meaning2Word(T);
-	if (!D->word)
-	{
-		ReportBug("Missing word on D (T=%d)\r\n",T);
-		return "deadcow";
-	}
-	if ((T & MEANING_BASE) == T)  return D->word; 
+	if ((T & MEANING_BASE) == T) return;	// no annotation needed
 
-	//   need to annotate the value
-    static char mybuffer[150];
-	strcpy(mybuffer,D->word); 
-	char* at = mybuffer + strlen(mybuffer);
-   
 	//   index 
 	unsigned int index = Meaning2Index(T);
 	if (index > 9) 
@@ -2476,7 +2501,34 @@ char* WriteMeaning(MEANING T,bool withPos)
 	}
 	if (T & SYNSET_MARKER) *at++ = 'z';
 	*at = 0;
-    return mybuffer;
+}
+
+char* WriteMeaning(MEANING T,bool withPos,char* buf)
+{
+	char* answer = NULL;
+    WORDP D = Meaning2Word(T);
+	if (!D->word)
+	{
+		ReportBug("Missing word on D (T=%d)\r\n",T);
+		answer =  "deadcow";
+	}
+	else if ((T & MEANING_BASE) == T)  answer = D->word; 
+	if (answer) 
+	{
+		if (buf) strcpy(buf,answer);
+		return answer;
+	}
+
+	//   need to annotate the value
+	char* buffer = buf;
+	if (buf) strcpy(buffer,D->word);
+	else buffer = AllocateStack(D->word,strlen(D->word)+20); // leave room and let it truncate somehow later
+	char* at = buffer + strlen(buffer);
+   
+	SuffixMeaning(T,at,withPos);
+	
+	if (!buf) ReleaseStack(buffer);
+    return buffer; // transiently available for a moment
 }
 
 void NoteLanguage()
@@ -2676,7 +2728,7 @@ void ReadQueryLabels(char* name)
 			char* at = strchr(ptr,' '); // in case has blanks after control string
 			if (at) *at = 0;
 		}
- 	    D->w.userValue = AllocateString(ptr);    // read query labels
+ 	    D->w.userValue = AllocateHeap(ptr);    // read query labels
     }
     FClose(in);
 }
@@ -2692,7 +2744,7 @@ void ReadLivePosData()
 	char word[MAX_WORD_SIZE];
 	sprintf(word,(char*)"%s",englishFolder);
 	WalkDirectory(word,ReadPosPatterns,0);
-	tags = (uint64*)AllocateString((char*) xdata,tagRuleCount * MAX_TAG_FIELDS, sizeof(uint64),false);
+	tags = (uint64*)AllocateHeap((char*) xdata,tagRuleCount * MAX_TAG_FIELDS, sizeof(uint64),false);
 	comments = 0;
 	bool haveComments = true;
 #ifdef IOS // applications dont want comments
@@ -2701,7 +2753,7 @@ void ReadLivePosData()
 #ifdef NOMAIN
 	haveComments = false;
 #endif
-	if (haveComments) comments = (char**)AllocateString((char*) xcommentsData,tagRuleCount,sizeof(char*),true);
+	if (haveComments) comments = (char**)AllocateHeap((char*) xcommentsData,tagRuleCount,sizeof(char*),true);
 }
 
 void ReadLiveData()
@@ -2984,6 +3036,9 @@ void ExtendDictionary()
 	Minr = MakeMeaning(BUILDCONCEPT((char*)"~inr"));
 	Mgbp = MakeMeaning(BUILDCONCEPT((char*)"~gbp"));
 	Mnumber = MakeMeaning(BUILDCONCEPT((char*)"~number"));
+	MakeMeaning(BUILDCONCEPT((char*)"~float"));
+	MakeMeaning(BUILDCONCEPT((char*)"~positiveinteger"));
+	MakeMeaning(BUILDCONCEPT((char*)"~negativeinteger"));
 	MadjectiveNoun  = MakeMeaning(BUILDCONCEPT((char*)"~adjective_noun"));
 	Mpending = MakeMeaning(StoreWord((char*)"^pending"));
 	DunknownWord  = StoreWord((char*)"unknown-word");
@@ -3368,7 +3423,8 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	}
 	Log(STDTRACELOG,(char*)"\r\n");
 
-	char* buffer = AllocateBuffer();
+	char* limited;
+	char* buffer = InfiniteStack(limited); 
 	Log(STDTRACELOG,(char*)"  Facts:\r\n");
 
 	count = 0;
@@ -3398,7 +3454,6 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		F = GetObjectNondeadNext(F);
 	}
 	Log(STDTRACELOG,(char*)"\r\n");
-	FreeBuffer();
 }
 
 #ifndef DISCARDDICTIONARYBUILD

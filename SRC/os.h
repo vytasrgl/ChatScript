@@ -32,16 +32,17 @@ void mystart(char* msg);
 #define POSTGRESFILES 2
 extern bool logged;
 extern int filesystemOverride;
-extern char* ruleDepth[512];
-extern char* nameDepth[512];
-extern char* tagDepth[512][25];
+#define MAX_GLOBAL 600
+extern char* ruleDepth[MAX_GLOBAL];
+extern char* nameDepth[MAX_GLOBAL];
+extern char* tagDepth[MAX_GLOBAL][25];
 
 #define RECORD_SIZE 4000
 
 // MEMORY SYSTEM
-extern char* inverseStringDepth[512];
+extern char* ReleaseStackDepth[MAX_GLOBAL];
 extern unsigned int maxBufferLimit;
-extern unsigned int maxInverseStringGap;
+extern unsigned int maxReleaseStackGap;
 extern unsigned int maxBufferSize;
 extern unsigned int maxBufferUsed;	
 extern unsigned int bufferIndex;
@@ -51,7 +52,6 @@ extern char* buffers;
 extern bool showmem;
 
 void ResetBuffers();
-char* AllocateAlignedBuffer();
 char* AllocateBuffer();
 void FreeBuffer();
 void CloseBuffers();
@@ -162,10 +162,12 @@ extern uint64 logCount;
 extern char* testOutput;
 
 #define ReportBug(...) {Log(BUGLOG, __VA_ARGS__);}
-
+#define DebugPrint(...) Log(STDDEBUGLOG, __VA_ARGS__)
 extern char logFilename[MAX_WORD_SIZE];
 extern bool logUpdated;
-extern char logmainbuffer[MAX_BUFFER_SIZE]; // no dynamic allocate. Know its there
+extern char* logmainbuffer; 
+extern int logsize;
+extern int outputsize;
 extern char serverLogfileName[200];
 extern int userLog;
 extern int serverLog;
@@ -173,7 +175,7 @@ extern bool serverPreLog;
 extern bool serverctrlz;
 
 unsigned int Log(unsigned int spot,const char * fmt, ...);
-void ChangeDepth(int value,char* where);
+void ChangeDepth(int value,char* where,bool nostackCutboack = false,char* code = NULL,FunctionResult result = NOPROBLEM_BIT);
 void BugBacktrace(FILE* out);
 
 // RANDOM NUMBERS

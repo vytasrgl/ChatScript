@@ -91,7 +91,6 @@ extern int docVolleyStartTime;
 #define GetUppercaseData(c) (toUppercaseData[(unsigned char)c])
 #define GetNestingData(c) (nestingData[(unsigned char)c])
 
-
 #define IsWhiteSpace(c) (punctuation[(unsigned char)c] == SPACES)
 #define IsWordTerminator(c) (punctuation[(unsigned char)c] == SPACES || c == 0)
 #define IsVowel(c) (isVowelData[(unsigned char)c] != 0)
@@ -108,8 +107,10 @@ extern int docVolleyStartTime;
 WORDP BUILDCONCEPT(char* word) ;
 void RemoveTilde(char* output);
 char* RemoveEscapesWeAdded(char* at);
+void ConvertNL(char* ptr);
+
 char* CopyRemoveEscapes(char* to, char* at,int limit,bool all = false);
-char* AddEscapes(char* to, char* from,bool normal);
+char* AddEscapes(char* to, char* from,bool normal,int limit);
 void AcquireDefines(char* fileName);
 void AcquirePosMeanings();
 char* FindNameByValue(uint64 val); // properties
@@ -147,11 +148,13 @@ void MakeUpperCase(char* ptr);
 char* MakeLowerCopy(char* to,char* from);
 char* MakeUpperCopy(char* to,char* from);
 void UpcaseStarters(char* ptr);
-void Convert2Underscores(char* buffer,bool upcase,bool removeBlanks=false);
+void Convert2Underscores(char* buffer);
 void Convert2Blanks(char* output);
 void ForceUnderscores(char* ptr);
 char* TrimSpaces(char* msg,bool start = true);
 char* UTF2ExtendedAscii(char* bufferfrom);
+void RemoveImpure(char* buffer);
+void ChangeSpecial(char* buffer);
 
 // startup
 void InitTextUtilities();

@@ -325,9 +325,9 @@ char* RemoveEscapesWeAdded(char* at)
 	{
 		if (*(at-1) == ESCAPE_FLAG) // alter the escape in some way
 		{
-			if (at[1] == 't')  at[1] = '\t';
-			else if (at[1] == 'n') at[1] = '\n';
-			else if (at[1] == 'r')  at[1] = '\r';
+			if (at[1] == 't')  at[1] = '\t'; // legal 
+			else if (at[1] == 'n') at[1] = '\n';  // legal 
+			else if (at[1] == 'r')  at[1] = '\r';  // legal 
 			// other choices dont translate, eg double quote
 			memmove(at-1,at+1,strlen(at)); // remove the escape flag and the escape
 		}
@@ -350,21 +350,21 @@ char* CopyRemoveEscapes(char* to, char* at,int limit,bool all) // all includes o
 			at += 2; // move to escaped item
 			if (*(at-1) == ESCAPE_FLAG) // dual escape is special marker, there is no escaped item
 			{
-				*to++ = '\r';
-				*to++ = '\n';
+				*to++ = '\r';  // legal 
+				*to++ = '\n';  // legal 
 				--at; // rescan the item
 			}
-			else if (*at == 't') *to++ = '\t';
-			else if (*at == 'n') *to++ = '\n';
-			else if (*at == 'r') *to++ = '\r';
+			else if (*at == 't') *to++ = '\t';  // legal 
+			else if (*at == 'n') *to++ = '\n';  // legal 
+			else if (*at == 'r') *to++ = '\r';  // legal 
 			else *to++ = *at; // remove our escape pair and pass the item
 		}
 		else if (*at == '\\' && all) // remove ALL other escapes in addition to ones we put there
 		{
 			++at; // move to escaped item
 			if (*at  == 't') *to++ = '\t';
-			else if (*at  == 'n') *to++ = '\n';
-			else if (*at  == 'r') *to++ = '\r';
+			else if (*at  == 'n') *to++ = '\n';  // legal 
+			else if (*at  == 'r') *to++ = '\r';  // legal 
 			else {*to++ = *at; } // just pass along untranslated
 		}
 		else *to++ = *at;
@@ -378,18 +378,34 @@ char* CopyRemoveEscapes(char* to, char* at,int limit,bool all) // all includes o
 	return start;
 }
 
-
-char* AddEscapes(char* to, char* from, bool normal) // normal true means dont flag with extra markers
+void RemoveImpure(char* buffer)
 {
+	char* p;
+	while ((p = strchr(buffer,'\r'))) *p = ' '; // legal
+	while ((p = strchr(buffer,'\n'))) *p = ' '; // legal
+	while ((p = strchr(buffer,'\t'))) *p = ' '; // legal
+}
+
+void ChangeSpecial(char* buffer)
+{
+	char* buf = AllocateBuffer();
+	AddEscapes(buf,buffer,true,MAX_BUFFER_SIZE);
+	FreeBuffer();
+	strcpy(buffer,buf);
+}
+
+char* AddEscapes(char* to, char* from, bool normal,int limit) // normal true means dont flag with extra markers
+{
+	limit -= 200; // dont get close to limit
 	char* start = to;
 	char* at = from - 1;
 	// if we NEED to add an escape, we have to mark it as such so  we know to remove them later.
 	while (*++at)
 	{
 		// convert these
-		if (*at == '\n') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'n';}
-		else if (*at == '\r') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'r';}
-		else if (*at == '\t') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 't';}
+		if (*at == '\n') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'n';} // legal
+		else if (*at == '\r') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'r';} // legal
+		else if (*at == '\t') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 't';} // legal
 		else if (*at == '"') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = '"';}
 		// detect it is already escaped
 		else if (*at == '\\')
@@ -404,6 +420,11 @@ char* AddEscapes(char* to, char* from, bool normal) // normal true means dont fl
 		}
 		// no escape needed
 		else *to++ = *at;
+		if ((to-start) > limit && false) 	// dont overflow just abort silently
+		{
+			ReportBug((char*)"AddEscapes overflowing buffer");
+			break;
+		}
 	}
 	*to = 0;
 	return to; // return where we ended
@@ -411,7 +432,6 @@ char* AddEscapes(char* to, char* from, bool normal) // normal true means dont fl
 
 void AcquireDefines(char* fileName)
 { // dictionary entries:  `xxxx (property names)  ``xxxx  (systemflag names)  ``` (parse flags values)  -- and flipped:  `nxxxx and ``nnxxxx and ```nnnxxx with infermrak being ptr to original name
-
 	FILE* in = FopenStaticReadOnly(fileName); // SRC/dictionarySystem.h
 	if (!in) 
 	{
@@ -1462,7 +1482,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 				continue;
 			}
 		}
-		else if (compiling && (c == '"' || c == '\'') && (buffer-start) > 1 && *(buffer-1) == '^' ) 
+		else if (compiling && !blockComment && (c == '"' || c == '\'') && (buffer-start) > 1 && *(buffer-1) == '^' ) 
 		{
 			formatString = IN_FORMAT_STRING; // begin format string
 			ender = c;
@@ -1504,7 +1524,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 					break;					// end of string - otherwise will be \n
 			}
 			if (c != '\n' && c != '\r') holdc = c; // failed to find lf... hold this character for later but ignoring 2 cr in a row
-			if (c == '\n') 
+			if (c == '\n') // legal
 			{
 				++currentFileLine;	// for debugging error messages
 				maxFileLine = currentFileLine;
@@ -1554,8 +1574,8 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 				continue; // ignore
 			}
 			//   add missing \r
-			*buffer++ = '\r';
-			*buffer++ = '\n';
+			*buffer++ = '\r';  // legal 
+			*buffer++ = '\n';  // legal 
 			break;	
 		}
 		*buffer++ = c; 
@@ -1588,8 +1608,9 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		}
 		if (blockComment && (buffer-start) >= 5) 
 		{
-			memmove(buffer-5,buffer-4,5);// erase as we go
+			memmove(buffer-5,buffer-4,5);// erase as we go, keeping last four to detect block end ##>>
 			--buffer;
+			*buffer = 0;
 		}
 
 	} // end of read loop
@@ -1791,7 +1812,7 @@ Used for function calls, to read their callArgumentList. Arguments are not evalu
     }
 	if (*ptr == '"' && ptr[1] == FUNCTIONSTRING && dictionaryLocked) // must execute it now...
 	{
-		return ReadCommandArg(ptr, buffer,result,0);
+		return GetCommandArg(ptr, buffer,result,0); 
 	}
 	else if (*ptr == '"' || (*ptr == '\\' && ptr[1] == '"'))   // a string
 	{
@@ -1967,25 +1988,24 @@ char* Purify(char* msg) // used for logging to remove real newline characters so
 {
 	if (newline) return msg; // allow newlines to remain
 
-	char* nl = strchr(msg,'\n');
+	char* nl = strchr(msg,'\n');  // legal 
 	if (!nl) return msg; // no problem
-
-	char* buffer = AllocateBuffer();
+	char* limit;
+	char* buffer = InfiniteStack(limit); // transient
 	strcpy(buffer,msg);
 	nl = (nl - msg) + buffer;
 	while (nl)
 	{
 		*nl = ' ';
-		nl = strchr(nl,'\n');
+		nl = strchr(nl,'\n');  // legal 
 	}
-	char* cr = strchr(buffer,'\r');
+	char* cr = strchr(buffer,'\r');  // legal 
 	while (cr)
 	{
 		*cr = ' ';
-		cr = strchr(cr,'\r');
+		cr = strchr(cr,'\r');  // legal 
 	}
-	FreeBuffer(); // buffer can still be referred to by log.
-	return buffer;
+	return buffer; // nothing else should use ReleaseStackspace 
 }
 
 size_t OutputLimit(unsigned char* data) // insert eols where limitations exist
@@ -2002,8 +2022,8 @@ size_t OutputLimit(unsigned char* data) // insert eols where limitations exist
 		if (data > lastAt && (unsigned int)(data - lastAt) > outputLength)
 		{
 			memmove(lastBlank+2,lastBlank+1,strlen((char*)lastBlank));
-			*lastBlank++ = '\r';
-			*lastBlank++ = '\n';
+			*lastBlank++ = '\r'; // legal
+			*lastBlank++ = '\n'; // legal
 			lastAt = lastBlank;
 			++data;
 		}
@@ -2016,7 +2036,8 @@ size_t OutputLimit(unsigned char* data) // insert eols where limitations exist
 
 char* UTF2ExtendedAscii(char* bufferfrom) 
 {
-	unsigned char* buffer = (unsigned char*) AllocateBuffer();
+	char* limit;
+	unsigned char* buffer = (unsigned char*) InfiniteStack(limit); // transient
 	unsigned char* bufferto = buffer;
 	while( *bufferfrom && (size_t)(bufferto-buffer) < (size_t)(maxBufferSize-10)) // avoid overflow on local buffer
 	{
@@ -2035,7 +2056,6 @@ char* UTF2ExtendedAscii(char* bufferfrom)
 		}
 	}
 	*bufferto = 0;
-	FreeBuffer();
 	if (outputLength) OutputLimit(buffer);
 	return (char*) buffer; // it is ONLY good for printf immediate, not for anything long term
 }
@@ -2059,7 +2079,43 @@ void Convert2Blanks(char* ptr)
 	}
 }
 
-void Convert2Underscores(char* output,bool alternewline, bool removeBlanks)
+void ConvertNL(char* ptr)
+{
+	char* start = ptr;
+	--ptr;
+	char c;
+	while ((c = *++ptr)) 
+    {
+		if (c == '\\')
+		{
+			if (ptr[1] == 'n') 
+			{
+				if (*(ptr-1) != '\r') // auto add \r before it
+				{
+					*ptr = '\r'; // legal
+					*++ptr = '\n'; // legal
+				}
+				else
+				{
+					*ptr = '\n'; // legal
+					memmove(ptr+1,ptr+2,strlen(ptr+2)+1);
+				}
+			}
+			else if (ptr[1] == 'r')
+			{
+				*ptr = '\r'; // legal
+				memmove(ptr+1,ptr+2,strlen(ptr+2)+1);
+			}
+			else if (ptr[1] == 't')
+			{
+				*ptr = '\t'; // legal
+				memmove(ptr+1,ptr+2,strlen(ptr+2)+1);
+			}
+		}
+	}
+}
+
+void Convert2Underscores(char* output)
 { 
     char* ptr = output - 1;
 	char c;
@@ -2071,7 +2127,7 @@ void Convert2Underscores(char* output,bool alternewline, bool removeBlanks)
 	bool backslash = false;
     while ((c = *++ptr)) 
     {
-		if (!removeBlanks &&  c == '_' && ptr[1] != '_') // remove underscores from apostrophe of possession
+		if (c == '_' && ptr[1] != '_') // remove underscores from apostrophe of possession
         {
 			// remove space on possessives
 			if (ptr[1] == '\'' && ( (ptr[2] == 's' && !IsAlphaUTF8OrDigit(ptr[3]))  || !IsAlphaUTF8OrDigit(ptr[2]) ) )// bob_'s  bobs_'  
@@ -2080,8 +2136,6 @@ void Convert2Underscores(char* output,bool alternewline, bool removeBlanks)
 				--ptr;
 			}
 		}
-		else if (removeBlanks && c == ' ') *ptr = '_';
-		else if (alternewline && (c == '\n' || c == '\r')) *ptr = ' ';
     }
 }
 

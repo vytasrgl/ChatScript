@@ -67,9 +67,9 @@ void ClearUserVariableSetFlags();
 void ClearUserVariables(char* above = 0);
 char* GetUserVariable(const char* word, bool nojson = false,bool notracing = false);
 void SetUserVariable(const char* var, char* word, bool assignment = false);
-void Add2UserVariable(char* var, char* word,char* op);
+void Add2UserVariable(char* var, char* word,char* op,char* originalArg);
 
-char* PerformAssignment(char* word,char* ptr,FunctionResult& result,bool nojson = false);
+char* PerformAssignment(char* word,char* ptr,char* buffer,FunctionResult& result,bool nojson = false);
 
 
 #endif

@@ -1,6 +1,6 @@
 #ifdef INFORMATION
 Copyright (C) 2011-2012 by Outfit7
-Further modifed by Bruce Wilcox 2014
+Further modifed by Bruce Wilcox 2014-2106
 
 Released under Bruce Wilcox License as follows:
 
@@ -106,21 +106,22 @@ struct Client_t
     char* bot;
     char* message;
     char* user;
-    char data[MAX_BUFFER_SIZE];
+    char* data;
 
     Client_t(int fd, struct ev_loop *l_p) : fd(fd), l(l_p), requestValid(false)
     {
         strcpy(this->magic, "deadbeef");
         ev_io_init(&this->ev_r, client_read, this->fd, EV_READ);
         ev_io_init(&this->ev_w, client_write, this->fd, EV_WRITE);
-
-        this->ev_r.data = this;
+		this->data = NULL;
+       this->ev_r.data = this;
         this->ev_w.data = this;
         ev_io_start(this->l, &this->ev_r);
     }
 
     ~Client_t()
     {
+		if (this->data) free(this->data);
         if (ev_is_active(&this->ev_r))  ev_io_stop(this->l, &this->ev_r);
         if (ev_is_active(&this->ev_w))  ev_io_stop(this->l, &this->ev_w);
         close(this->fd);
@@ -133,7 +134,7 @@ struct Client_t
         this->bot = 0;
         this->message = 0;
         this->user = 0;
-        *this->data = 0;
+        if (this->data) *this->data = 0;
         if (!ev_is_active(&this->ev_r))  ev_io_start(this->l, &this->ev_r);
         if (ev_is_active(&this->ev_w))   ev_io_stop(this->l, &this->ev_w);
     }
@@ -203,7 +204,7 @@ struct Client_t
 
     int prepare_for_chat()
     {
-        *this->data = 0;
+        if (this->data) *this->data = 0;
         this->ip = this->get_foreign_address();
         if (this->ip.length() == 0) 
 		{
@@ -574,7 +575,7 @@ int evsrv_do_chat(Client_t *client)
  	clock_t starttime = ElapsedMilliseconds(); 
     client->prepare_for_chat();
 	size_t len = strlen(client->message);
-	if (len >= MAX_BUFFER_SIZE - 100) client->message[MAX_BUFFER_SIZE-1] = 0;
+	if (len >= INPUT_BUFFER_SIZE - 100) client->message[INPUT_BUFFER_SIZE-1] = 0; // limit user input
 	echo = false;
 	bool restarted = false;
 #ifndef DISCARDPOSTGRES
@@ -584,7 +585,8 @@ int evsrv_do_chat(Client_t *client)
 		postgresInited = true;
 	}
 #endif
-
+	if (!client->data) 	client->data = (char*) malloc(outputsize);
+ 
 RESTART_RETRY:
 	strcpy(ourMainInputBuffer,client->message);
     char* dateLog = GetTimeInfo(true)+SKIPWEEKDAY;

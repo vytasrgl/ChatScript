@@ -68,15 +68,18 @@ extern TestMode wasCommand;
 
 #define MAX_ARG_LIST 200
 #define MAX_CALL_DEPTH 400
+extern char* codeStart;
 extern unsigned int callIndex;
 extern WORDP callStack[MAX_CALL_DEPTH];
 extern unsigned int callArgumentBases[MAX_CALL_DEPTH];    // arguments to functions
 extern unsigned int callArgumentIndex;
-
+extern int maxGlobalSeen;
 extern long http_response;
+extern char* currentFunctionName;
 
 #define MAX_ARG_LIMIT 15 // max args to a call -- limit using 2 bit (COMPILE/KEEP_QUOTES) per arg for table mapping behavior
 extern unsigned int currentIterator;
+extern char* fnOutput;
 
 extern char lastInputSubstitution[INPUT_BUFFER_SIZE];
 extern int globalDepth;
@@ -103,7 +106,7 @@ void ResetReuseSafety();
 void InitFunctionSystem(); 
 char* DoFunction(char* name, char* ptr, char* buffer,FunctionResult &result);
 void DumpFunctions();
-unsigned int Callback(WORDP D,char* arguments,bool boot);
+unsigned int Callback(WORDP D,char* arguments,bool boot,bool mainoutput = false);
 void ResetFunctionSystem();
 void SaveMark(char* buffer,unsigned int iterator);
 FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg3,bool crosstopic);

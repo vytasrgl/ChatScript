@@ -175,6 +175,10 @@ static bool idiomed = false;
 
 unsigned char quotationInProgress = 0;
 
+#ifdef TREETAGGER
+static void TreeTagger();
+#endif
+
 static void DumpCrossReference(int start, int end)
 {
 	Log(STDTRACELOG,(char*)"Xref: ");
@@ -458,7 +462,7 @@ static bool LimitValues(int i, uint64 bits,char* msg,bool& changed)
 }
 
 static void ParseFlags0(char* buffer,  int i);
-static void PerformPosTag(int start, int end, bool externed)
+static void PerformPosTag(int start, int end)
 {
 	if (start > end) 
 	{
@@ -560,7 +564,7 @@ static void PerformPosTag(int start, int end, bool externed)
 			continue;
 		}
 */
-		if (externed) continue; // remote pos tagging
+		if (externalTagger) continue; // remote pos tagging
 
 		WORDP entry = NULL;
 		WORDP canonical = NULL;
@@ -817,12 +821,12 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 	// default in case we dont find anything
 	startSentence = 1;
 	endSentence = wordCount;
-	bool externed = false;
-	if (!(tokenControl & DO_PARSE)) 
-	{
-		if (*GetUserVariable((char*)"$cs_externaltag")) externed = true;
-		OnceCode((char*)"$cs_externaltag");
-	}
+
+	if (*GetUserVariable((char*)"$cs_externaltag")) externalTagger = 1;
+	if (externalTagger == 1) OnceCode((char*)"$cs_externaltag");
+#ifdef TREETAGGER
+	else if (externalTagger == 2) TreeTagger();
+#endif
 
 	// handle regular area
 	for (i = 1; i <= wordCount; ++i)
@@ -840,7 +844,7 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 		{
 			end = j - 1;
 			tokenFlags &= -1 ^ SENTENCE_TOKENFLAGS; // reset results bits
-			PerformPosTag(i,end, externed); // do this zone
+			PerformPosTag(i,end); // do this zone
 			i = end + 1;
 			originalLower[j] = FindWord(wordStarts[j]);
 			continue;
@@ -857,7 +861,7 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 
 		// bug - make a noun out of 1st quote if part of sentence...
 		tokenFlags &= -1 ^ SENTENCE_TOKENFLAGS; // reset results bits
-		PerformPosTag(i,end,externed); // do this zone
+		PerformPosTag(i,end); // do this zone
 		i = end;
 	}
 }
@@ -871,7 +875,7 @@ void ReadPosPatterns(char* file,uint64 junk)
 	
 	dataptr = dataBuf + (tagRuleCount * MAX_TAG_FIELDS);
 	memset(dataptr,0,sizeof(uint64) * MAX_TAG_FIELDS);
-	commentsData[tagRuleCount] = AllocateString(file); // put in null change of file marker for debugging
+	commentsData[tagRuleCount] = AllocateHeap(file); // put in null change of file marker for debugging
 	++tagRuleCount;
 
 	uint64 val;
@@ -1226,7 +1230,7 @@ resume:
 		*base |= ((uint64)resultIndex) << RESULT_SHIFT;
 		if (backwards && !skipped) printf((char*)"Running backwards w/o a skip? Use forwards with minus start. %d %s.   at line %d in %s \r\n",tagRuleCount,comment,currentFileLine,currentFilename);
 		
-		commentsData[tagRuleCount] = AllocateString(comment);
+		commentsData[tagRuleCount] = AllocateHeap(comment);
 		++tagRuleCount;
 		if (big) 
 		{
@@ -9929,9 +9933,11 @@ void ParseSentence(bool &resolved,bool &changed)
 #endif
 
 #ifdef TREETAGGER
-// TreeTagger is something you must license for postagging a collection of foreign languages
+// TreeTagger is something you must license for pos-tagging a collection of foreign languages
 // Buying a license will get the the library you need to load with this code
 // http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/
+
+#pragma comment(lib, "c:/ChatScript/treetagger/treetagger.lib") // where windows library is
 
 typedef struct {
   int  number_of_words;  /* number of words to be tagged */
@@ -9941,10 +9947,8 @@ typedef struct {
   const char **resulttag;/* array of pointers to the resulting tags */
   const char **lemma;    /* array of pointers to the lemmas */
 } TAGGER_STRUCT;
-
 void __declspec( dllimport )  init_treetagger(char *param_file_name);
 double __declspec( dllimport )  tag_sentence( TAGGER_STRUCT *ts );
-
 int Ignore_Prefix=0; /* should be 0 - used by library*/
 
 TAGGER_STRUCT ts;  /* tagger interface data structure */
@@ -9994,14 +9998,15 @@ static void TreeTagger()
     if (trace & TRACE_PREPARE) Log(STDTRACELOG,"\r\n");
 }
 
-void InitTreeTagger(char* params)
+void InitTreeTagger(char* params) // language=xxxx tags=xxxx
 {
 	if (!params) return;
     printf("External Tagging: %s\r\n",params);
+	externalTagger = 2;	// using external tagging
 
 	char* language = strstr(params,"language=");
 	if (!language) return;
-	char* end = strchr(language,'"');
+	char* end = strchr(language,' ');
 	if (end) *end = 0;
 	language += 9;
 	init_treetagger(language);  /* Initialization of the tagger with a language parameter file */
@@ -10011,13 +10016,13 @@ void InitTreeTagger(char* params)
 	char* tags = strstr(params,"tags=");
 	if (tags)
 	{
-		end  = strchr(tags,'"');
+		end  = strchr(tags,' ');
 		if (end) *end = 0;
 		tags += 5;
-		if (end) *end = ' ';
 		uint64 tagflags = 0;
 		WORDP D = NULL;
 		FILE* in = fopen(tags,(char*)"rb");
+		if (end) *end = ' ';
 		if (!in) printf("Unable to read tags %s\r\n",tags);
 		else {
 			char word[MAX_WORD_SIZE];
@@ -10059,10 +10064,10 @@ void InitTreeTagger(char* params)
 	externalPostagger = TreeTagger;
 
 	/* Memory allocation (the maximal input sentence length is here 1000) */
-	ts.word = (char**)AllocateString(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
-	ts.inputtag = (char**)AllocateString(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
-	ts.resulttag = (const char**)AllocateString(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
-	ts.lemma = (const char**)AllocateString(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
+	ts.word = (char**)AllocateHeap(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
+	ts.inputtag = (char**)AllocateHeap(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
+	ts.resulttag = (const char**)AllocateHeap(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
+	ts.lemma = (const char**)AllocateHeap(NULL,sizeof(char*) * MAX_SENTENCE_LENGTH);
 
 	memset(ts.inputtag,0,sizeof(char*) * MAX_SENTENCE_LENGTH); // we never force an input tag
 	memset(ts.lemma,0,sizeof(char*) * MAX_SENTENCE_LENGTH); // in case we never generate anything

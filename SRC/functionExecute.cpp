@@ -40,8 +40,9 @@ them into a stream, encasing them with ().  The parens will be stripped and the
 entire mess passed unevaluated. This makes it analogous to STREAM_ARG, but the latter
 requires no excess parens to delimit it.
 
-In general, the system does not test result codes on argument evaluations. So
-issuing a FAILRULE or such has no effect there.
+Memory management:
+
+Regular heap space is used to hold permanent data (e.g. variable assignment for non-local variables.
 
 #endif
 
@@ -52,11 +53,10 @@ issuing a FAILRULE or such has no effect there.
 
 #define MAX_LOG_NAMES 4
 char* currentFunctionDisplay;
-static char* functionAnswerBase = NULL;
-static char* functionAnswerName = NULL;
-
+char* fnOutput = NULL;
 char lognames[MAX_LOG_NAMES][200];	
 FILE* logfiles[4];
+char* codeStart = NULL;
 
 bool planning = false;
 
@@ -64,11 +64,12 @@ bool planning = false;
 static int reuseIndex = 0;
 static char* reuseSafety[MAX_REUSE_SAFETY+1];
 static int reuseSafetyCount[MAX_REUSE_SAFETY+1];
-
+char* currentFunctionName = "";
 static char* months[] = { (char*)"January",(char*)"February",(char*)"March",(char*)"April",(char*)"May",(char*)"June",(char*)"July",(char*)"August",(char*)"September",(char*)"October",(char*)"November",(char*)"December"};
 static char* days[] = { (char*)"Sunday",(char*)"Monday",(char*)"Tuesday",(char*)"Wednesday",(char*)"Thursday",(char*)"Friday",(char*)"Saturday"};
 long http_response = 0;
 int globalDepth = 0;
+int maxGlobalSeen = 0;
 char* stringPlanBase = 0;
 char* backtrackPoint = 0;		// plan code backtrace data
 unsigned int currentIterator = 0;		// next value of iterator
@@ -126,7 +127,7 @@ char* InitDisplay(char* list)
 	{
 		list = ReadCompiledWord((char*)list,word); 
 		if (*word == ')') break;  // end of display is signaled by )
-		if (*word == USERVAR_PREFIX && !AllocateInverseSlot(word)) return 0; // leaves display hanging badly BUG
+		if (*word == USERVAR_PREFIX && !AllocateStackSlot(word)) return 0; // leaves display hanging badly BUG
 	}
 	return list;
 }
@@ -140,7 +141,7 @@ void RestoreDisplay(char* base, char* list)
 	{
 		list = ReadCompiledWord(list,word); 
 		if (*word == ')') break;
-		if (*word == USERVAR_PREFIX) slot = RestoreInverseSlot(word,slot);
+		if (*word == USERVAR_PREFIX) slot = RestoreStackSlot(word,slot);
 	}
 }
 
@@ -188,14 +189,14 @@ FunctionResult JavascriptArgEval(unsigned int index, char* buffer)
 {
 	FunctionResult result;
 	char* arg = ARGUMENT(index);
-	ReadCommandArg(arg,buffer,result,OUTPUT_NOTREALBUFFER|OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING,maxBufferSize);
+	GetCommandArg(arg,buffer,result,OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING);
 	return result;
 }
 
 char* SaveBacktrack(int id)
 {
 	// save: id, oldbacktrack point, currentfact, current dict,   
-	char* mark = AllocateString(NULL,4,sizeof(int),false); 
+	char* mark = AllocateHeap(NULL,4,sizeof(int),false); 
 	if (!mark) return NULL;
 	int* i = (int*) mark;
 	i[0] = id;										// 1st int is a backtrack label - plan (-1) or rule (other)
@@ -205,11 +206,11 @@ char* SaveBacktrack(int id)
 	return backtrackPoint = mark;
 }
 
-static char* FlushMark() // throw away this backtrack point, maybe reclaim its string space
+static char* FlushMark() // throw away this backtrack point, maybe reclaim its heap space
 {
 	if (!backtrackPoint) return NULL;
 	// we are keeping facts and variable changes, so we cannot reassign the string free space back because it may be in use.
-	if (backtrackPoint == stringFree) stringFree = backtrackPoint + (4 * sizeof(int));
+	if (backtrackPoint == heapFree) heapFree = backtrackPoint + (4 * sizeof(int));
 	int* i = (int*) backtrackPoint;
 	return backtrackPoint = stringPlanBase - i[1];
 }
@@ -311,8 +312,8 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 	bool oldbacktrackable = backtrackable;
 	char* oldbacktrackPoint = backtrackPoint;
 	char* oldStringPlanBase = stringPlanBase;
-	stringPlanBase = stringFree;
-	backtrackPoint = stringFree;
+	stringPlanBase = heapFree;
+	backtrackPoint = heapFree;
 	backtrackable = false;
 	unsigned int oldWithinLoop = withinLoop;
 	withinLoop = 0;
@@ -395,7 +396,7 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 			base = FindNextRule(NEXTTOPLEVEL,base,ruleID);
 		}
 
-		if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(inverseStringDepth[globalDepth],locals);
+		if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(ReleaseStackDepth[globalDepth],locals);
 		currentTopicDisplay = oldTopicDisplay;
 		ChangeDepth(-1,GetTopicName(currentTopicDisplay)); // plan
 
@@ -442,11 +443,14 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // DoCall(
 {
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
+
+	char* start = buffer;
 	 if (!D || !(D->internalBits & FUNCTION_NAME))
     {
 		result = UNDEFINED_FUNCTION;
 		return ptr; 
 	}
+	char* oldcurrent = currentFunctionName;
 	int oldimpliedIf = impliedIf;
 	*buffer = 0;
 	if (stricmp(name,"^substitute")) impliedIf = ALREADY_HANDLED;	// we all allow immediate if context to pass thru here safely
@@ -475,6 +479,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			}
 		}
 	}
+
+	char* oldcode = codeStart;
 	char* paren = ptr;
 	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
 	SystemFunctionInfo* info = NULL;
@@ -482,12 +488,14 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	unsigned int oldArgumentIndex = callArgumentIndex;
 	unsigned char* definition = NULL;
 	unsigned int j = 0;
-	char* oldFunctionAnswerBase = functionAnswerBase;
-	char* oldFunctionAnswerName = functionAnswerName;
 	unsigned int oldFnVarBase = fnVarBase;
 	clock_t start_time = ElapsedMilliseconds();
 	unsigned int firstArgument = callArgumentIndex;
-	ChangeDepth(1,D->word); // HandleSystemCall
+	ChangeDepth(1,""); 
+	bool streamArg = false;
+	int oldtrace = trace;
+	currentFunctionName = D->word;
+	codeStart = NULL;
 	if (D->x.codeIndex && !(D->internalBits & (IS_PLAN_MACRO|IS_TABLE_MACRO))) // system function --  macroFlags are also on codeindex, but IS_TABLE_MACRO distinguishes  but PLAN also has a topicindex which is a codeindex
 	{
 		callArgumentBase = callArgumentIndex - 1;
@@ -498,22 +506,20 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		{ 
 			if (info->argumentCount != STREAM_ARG) // break them up
 			{
-				char* buffer = AllocateBuffer();
 				if (info->argumentCount == UNEVALED) ptr = ReadCompiledWordOrCall(ptr,buffer);
 				// unevaled counted arg
 				else if (info->argumentCount != VARIABLE_ARG_COUNT && info->argumentCount & (flags << j)) 
 					ptr = ReadCompiledWord(ptr,buffer);
 				else // VARIABLE ARG OR COUNTED ARG
 				{
-					ptr = ReadCommandArg(ptr,buffer,result,OUTPUT_NOTREALBUFFER|OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING,maxBufferSize);
+					ptr = GetCommandArg(ptr,buffer,result,OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING);
 				}
-				callArgumentList[callArgumentIndex] = AllocateInverseString(buffer);
+				callArgumentList[callArgumentIndex] = AllocateStack(buffer);
 				ptr = SkipWhitespace(ptr);
-				FreeBuffer();
 				if (callArgumentList[callArgumentIndex] && callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX &&
 					strstr(callArgumentList[callArgumentIndex],"$_")) // NOT by reference but by value somewhere in the chain
 				{
-					callArgumentList[callArgumentIndex] = AllocateInverseString(GetUserVariable(callArgumentList[callArgumentIndex])); // pass by unmarked value - no one will try to store thru it
+					callArgumentList[callArgumentIndex] = AllocateStack(GetUserVariable(callArgumentList[callArgumentIndex])); // pass by unmarked value - no one will try to store thru it
 				}
 				++j;
 				if (result != NOPROBLEM_BIT) goto TERMINATE;  // arg failed
@@ -524,11 +530,12 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				while (*--ptr != ')'){;} // back up to closing
 				size_t len = ptr++ - start; // length of argument bytes not including paren, and end up after paren
 				while (start[len-1] == ' ') --len; // dont want trailing blanks
-				callArgumentList[callArgumentIndex] = AllocateInverseString(start,len);
+				callArgumentList[callArgumentIndex] = AllocateStack(start,len);
+				streamArg = true;
 			}
 			if (!callArgumentList[callArgumentIndex])
 			{
-				ReportBug("Inverse String space exhausted %s",D->word);
+				ReportBug("Stack space exhausted %s",D->word);
 				result = FAILRULE_BIT;
 				goto TERMINATE;
 			}
@@ -556,21 +563,27 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			{	
 				char c = callArgumentList[i][120];
 				callArgumentList[i][120] = 0;
-				Log(STDTRACELOG, (char*) "%s",callArgumentList[i]);
+				Log(STDTRACELOG, (char*) "`%s`",callArgumentList[i]);
 				if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)",");
 				callArgumentList[i][120] = c;
 			}
 			Log(STDTRACELOG, ")\r\n");
 			++globalDepth;
 		}
-
+		*buffer = 0; // remove any leftover argument data
 		if (result & ENDCODES); // failed during argument processing
-		else result = (*info->fn)(buffer);
+		else 
+		{
+			ChangeDepth(1,D->word); 
+			if (streamArg) ChangeDepth(1,"");  // argument processing by streamer is invisible to step
+			result = (*info->fn)(buffer);
+			fnOutput = start;
+			if (streamArg) ChangeDepth(-1,"",true); 
+			ChangeDepth(-1,D->word,streamArg); 
+		}
 	} 
 	else //   user function (plan macro, inputmacro, outputmacro, tablemacro)) , eg  ^call (_10 ^2 it ^call2 (3 ) )  spot each token has 1 space separator 
 	{
-		functionAnswerBase = buffer; // let ^return be transparent by only tracking user routines for this data
-		functionAnswerName = D->word;
 		callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
 		callStack[callIndex++] = D;
 
@@ -596,11 +609,9 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		char* startRawArg = ptr;
         while (definition && ptr && *ptr && *ptr != ')') //   ptr is after opening (and before an arg but may have white space
         {
-			char* arg = AllocateBuffer();
-				
 			if (currentRule == NULL) //   this is a table function- DONT EVAL ITS ARGUMENTS AND... keep quoted item intact
 			{
-				ptr = ReadCompiledWord(ptr,arg); // return dq args as is
+				ptr = ReadCompiledWord(ptr,buffer); // return dq args as is
 #ifndef DISCARDSCRIPTCOMPILER
 				if (compiling && ptr == NULL) BADSCRIPT((char*)"TABLE-11 Arguments to %s ran out",name)
 #endif
@@ -610,55 +621,60 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				bool stripQuotes =  (argflags & ( 1 << j)) ? 1 : 0; // want to use quotes 
 				// arguments to user functions are not evaluated, they will be used, in place, in the function.
 				// EXCEPT evaluation of ^arguments must be immediate to maintain current context- both ^arg and ^"xxx" stuff
-				ptr = ReadArgument(ptr,arg,result); //   ptr returns on next significant char
-				if (*arg == '"' && stripQuotes)
+				ptr = ReadArgument(ptr,buffer,result); //   ptr returns on next significant char
+				if (*buffer == '"' && stripQuotes)
 				{
-					size_t len = strlen(arg);
-					if (arg[len-1] == '"') 
+					size_t len = strlen(buffer);
+					if (buffer[len-1] == '"') 
 					{
-						arg[len-1] = 0;
-						memmove(arg,arg+1,strlen(arg));
+						buffer[len-1] = 0;
+						memmove(buffer,buffer+1,strlen(buffer));
 					}
 					// and purify internal \" to simple quote
-					char* x = arg;
+					char* x = buffer;
 					while ((x = strchr(x,'\\')))
 					{
 						if (x[1] == '"') memmove(x,x+1,strlen(x)); // remove 
 					}
 				}
 			}
-			if (*arg == 0) strcpy(arg,(char*)"null");// no argument found - caller had null data in argument
+			if (*buffer == 0) strcpy(buffer,(char*)"null");// no argument found - caller had null data in argument
 
 			//   within a function, seeing function argument as an argument 
 			//   switch to incoming arg now, later callArgumentBase will be wrong
-			if (*arg == '^' && IsDigit(arg[1]) ) strcpy(arg,callArgumentList[atoi(arg+1) + fnVarBase]); 
-			if (*arg == '"' && arg[1] == ENDUNIT) // internal special quoted item, remove markers.
+			if (*buffer == '^' && IsDigit(buffer[1]) ) strcpy(buffer,callArgumentList[atoi(buffer+1) + fnVarBase]); 
+			if (*buffer == '"' && buffer[1] == ENDUNIT) // internal special quoted item, remove markers.
 			{
-				size_t len = strlen(arg);
-				if (arg[len-2] == ENDUNIT)
+				size_t len = strlen(buffer);
+				if (buffer[len-2] == ENDUNIT)
 				{
-					arg[len-2] = 0;
-					memmove(arg,arg+2,len-1);
+					buffer[len-2] = 0;
+					memmove(buffer,buffer+2,len-1);
 				}
 			}
-			if (*arg == FUNCTIONSTRING && (arg[1] == '"' || arg[1] == '\''))
+			if (*buffer == FUNCTIONSTRING && (buffer[1] == '"' || buffer[1] == '\''))
 			{
-				AllocateOutputBuffer();
-				ReformatString(arg[1],arg+2,currentOutputBase,result,0);
-				strcpy(arg,currentOutputBase);
-				FreeOutputBuffer();
+				char* buf = AllocateStack(NULL,MAX_BUFFER_SIZE,false); // initial form expected small
+				size_t len = strlen(buffer);
+				if (len >= (MAX_BUFFER_SIZE-2)) // overflow our intent
+				{
+					ReportBug("FormatString > MAX BUFFER SIZE");
+					result = FAILRULE_BIT;
+					goto TERMINATE; // ReleaseStack(buf) also happens when ChangeDepth finishes
+				}
+				strcpy(buf,buffer);
+				ReformatString(buf[1],buf+2,buffer,result,0);
+				ReleaseStack(buf);
 			}
-			if (arg[0] == USERVAR_PREFIX && strstr(arg,"$_"))  strcpy(arg,GetUserVariable(arg)-2); // NOT by reference but by marked value
+			if (buffer[0] == USERVAR_PREFIX && strstr(buffer,"$_"))  strcpy(buffer,GetUserVariable(buffer)-2); // NOT by reference but by marked value
 				
-			if (!stricmp(arg,(char*)"null")) *arg = 0;	 // pass NOTHING as the value
+			if (!stricmp(buffer,(char*)"null")) *buffer = 0;	 // pass NOTHING as the value
 
-			callArgumentList[callArgumentIndex++] = AllocateInverseString(arg);
-			FreeBuffer();
+			callArgumentList[callArgumentIndex++] = AllocateStack(buffer);
 			if (!callArgumentList[callArgumentIndex-1])
 			{
 				if (callIndex) --callIndex;
 				result = FAILRULE_BIT;
-				FreeBuffer();
 				goto TERMINATE;
 			}
 			if (callArgumentIndex >= MAX_ARGUMENT_COUNT) --callArgumentIndex; // force lock to fail but swallow all args to update ptr
@@ -673,15 +689,15 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		if ((D->internalBits & FUNCTION_BITS) != IS_PLAN_MACRO && definition && definition[0] == '(')
 		{
 			currentFunctionDisplay = (char*)(definition);
-			basevalues = stringInverseFree; // here is where we allocate values
-			definition = (unsigned char*) InitDisplay((char*)definition); // will return 0 if runs out of string space
+			basevalues = stackFree; // here is where we allocate values
+			definition = (unsigned char*) InitDisplay((char*)definition); // will return 0 if runs out of heap space
 			if (!definition) result = FAILRULE_BIT;
 		}
 	
 		// now do defaulted null arguments
 		while (definition && (callArgumentIndex - oldArgumentIndex) < args) // fill in defaulted args to null
 		{
-			callArgumentList[callArgumentIndex++] = AllocateInverseString("",0);
+			callArgumentList[callArgumentIndex++] = AllocateStack("",0);
 		}
 
 		// now if args are local vars instead of ^, set them up (we have protected them by now)
@@ -700,20 +716,22 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				else if (val[0] == '\'' && val[1] == '_' && IsDigit(val[2]))
 				{
 					int id = GetWildcardID(val+1);
-					if (id >= 0) val = AllocateInverseString(wildcardCanonicalText[id],0,true);
-					else val = AllocateInverseString("");
+					if (id >= 0) val = AllocateStack(wildcardCanonicalText[id],0,true);
+					else val = AllocateStack("");
 				}
 				else if (val[0] == '_' && IsDigit(val[1]))
 				{
 					int id = GetWildcardID(val);
-					if (id >= 0) val = AllocateInverseString(wildcardOriginalText[id],0,true);
-					else val = AllocateInverseString("");
+					if (id >= 0) val = AllocateStack(wildcardOriginalText[id],0,true);
+					else val = AllocateStack("");
 				}
 				if (*val && *(val-2) != '`' && *(val-1) != '`') 
-					val = AllocateInverseString(val,0,true);
+					val = AllocateStack(val,0,true);
 				arg->w.userValue = val;
 			}
 		}
+
+		if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) trace = (unsigned int) D->inferMark;
 
 		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
 		{
@@ -721,22 +739,21 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			char a = *ptr;
 			*ptr = 0;
 			Log(STDTRACETABLOG,(char*) "User call %s(%s):(",D->word,startRawArg);
-			char* buf = AllocateBuffer();
 			for (unsigned int i = firstArgument; i < callArgumentIndex; ++i)
 			{	
 				char* x = callArgumentList[i];
 				if (*x == USERVAR_PREFIX) 
 				{
-					strncpy(buf,GetUserVariable(x,false,true),40);
-					x = buf;
+					strncpy(buffer,GetUserVariable(x,false,true),40);
+					x = buffer;
 				}
 				else if (*x == '_' && IsDigit(x[1])) 
 				{
 					int id = GetWildcardID(x);
 					if (id >= 0) 
 					{
-						strncpy(buf,wildcardOriginalText[id],40);
-						x = buf;
+						strncpy(buffer,wildcardOriginalText[id],40);
+						x = buffer;
 					}
 				}
 				else if (*x == '\'' && x[1] == '_' && IsDigit(x[2])) 
@@ -744,8 +761,8 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 					int id = GetWildcardID(x+1);
 					if (id >= 0) 
 					{
-						strncpy(buf,wildcardCanonicalText[id],40);
-						x = buf;
+						strncpy(buffer,wildcardCanonicalText[id],40);
+						x = buffer;
 					}
 				}
 				else if (*x == LCLVARDATA_PREFIX) x += 2; // skip ``
@@ -757,14 +774,13 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				d[2] = x[42];
 				d[3] = x[43];
 				strcpy(x+40,"...");
-				Log(STDTRACELOG, (char*) "%s",x);
+				Log(STDTRACELOG, (char*) "`%s`",x);
 				x[40] = d[0];
 				x[41] = d[1];
 				x[42] = d[2];
 				x[43] = d[3];
 				if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)", ");
 			}
-			FreeBuffer();
 			Log(STDTRACELOG, ")\r\n");
 			Log(STDTRACETABLOG,(char*)"");
 			*ptr = a;
@@ -772,18 +788,14 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		}
 
 		fnVarBase = callArgumentBase = oldArgumentIndex; 
-	
+		*buffer = 0; // remove any leftover argument data
+
 		//   run the definition
-		unsigned int oldtrace = trace;
-		if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) 
-		{
-			trace = (unsigned int) D->inferMark;
-			if (oldtrace && !(oldtrace & TRACE_ECHO)) trace ^= TRACE_ECHO;
-		}
-		else if (D->internalBits & NOTRACE_FN) trace = 0;
-		if (result & ENDCODES){;}
+		if (D->internalBits & NOTRACE_FN) trace = 0;
+		if (result & ENDCODES)	ChangeDepth(1,D->word); 
 		else if (callArgumentIndex >= (MAX_ARGUMENT_COUNT-1)) 	// pinned max (though we could legally arrive by accident on this last one)
 		{
+			ChangeDepth(1,D->word);
 			// undo any display variables
 			if (definition && currentFunctionDisplay) RestoreDisplay(basevalues,currentFunctionDisplay);
 			currentFunctionDisplay = oldFunctionDisplay;
@@ -791,34 +803,40 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 			result = FAILRULE_BIT;
 		}
 		else if (definition && (D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
+		{
+			ChangeDepth(1,D->word);
 			result = PlanCode(D,buffer); // run a plan
+		}
 #ifndef DISCARDJAVASCRIPT
 		else if (definition && *definition == '*' && !strncmp((char*)definition,"*JavaScript",11))
 		{
+			ChangeDepth(1,D->word);
 			result = RunJavaScript((char*)definition+11,buffer,args); // point at space after label
 		}
 #endif
 		else if (definition)
 		{
+			ChangeDepth(1,D->word,false,(char*)definition);
 			unsigned int flags = OUTPUT_FNDEFINITION;
-			if (!(D->internalBits & IS_OUTPUT_MACRO)) flags|= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
+			if (!(D->internalBits & IS_OUTPUT_MACRO)) flags |= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
+			codeStart = (char*) definition;
 			Output((char*)definition,buffer,result,flags);
 		}
+		fnOutput = start;
+		ChangeDepth(-1,D->word,streamArg,NULL,result); 
 
 		// undo any display variables
 		if (definition && currentFunctionDisplay) RestoreDisplay(basevalues,currentFunctionDisplay);
 		currentFunctionDisplay = oldFunctionDisplay;
 
-		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 		if (callIndex) --callIndex; // safe decrement
 		if (result & ENDCALL_BIT) result = (FunctionResult) (result ^ ENDCALL_BIT); // terminated user call 
 	} // end user function
 
 TERMINATE:
 	fnVarBase = oldFnVarBase;
-	functionAnswerBase = oldFunctionAnswerBase;
-	functionAnswerName = oldFunctionAnswerName;
-	ChangeDepth(-1,D->word);
+	ChangeDepth(-1,"",streamArg); // dont cut back ReleaseStacks of a stream
+	// things like ^notrace(_$x = 5) should not endanger the variable in outer scope
 
 	if ((trace & TRACE_OUTPUT || D->internalBits & MACRO_TRACE || (trace & TRACE_USERFN && definition)) && CheckTopicTrace()) 
 	{
@@ -831,22 +849,23 @@ TERMINATE:
 			if (*word == '$') strncpy(word,GetUserVariable(word),40);
 			word[40] = 0;	
 		}
-		if (trace == TRACE_USERFN)  Log(STDTRACETABLOG,(char*)"%s %s(%s) => %s",ResultCode(result),name,word,buffer);
-		else if (info && info->properties & SAMELINE) Log(STDTRACETABLOG,(char*)"%s %s(%s) => %s",ResultCode(result),name,word,buffer);	// stay on same line to save visual space in log
-		else Log(STDTRACETABLOG,(char*)"%s %s(%s) => %s",ResultCode(result),name,word,buffer);
+		if (trace == TRACE_USERFN)  Log(STDTRACETABLOG,(char*)"%s %s(%s) => `%s`",ResultCode(result),name,word,buffer);
+		else if (info && info->properties & SAMELINE) Log(STDTRACETABLOG,(char*)"%s %s(%s) => `%s`",ResultCode(result),name,word,buffer);	// stay on same line to save visual space in log
+		else Log(STDTRACETABLOG,(char*)"%s %s(%s) => `%s`",ResultCode(result),name,word,buffer);
 		ReadCompiledWord(buffer,word);
 		if (!strnicmp(word,"jo-",3) || !strnicmp(word,"ja-",3)) 
 		{
 			int count = 0;
-			char* buf = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+			char* limit;
+			char* buf = InfiniteStack(limit);
 			FACT* F = GetSubjectNondeadHead(FindWord(word));
 			while (F)
 			{
 				if (++count <= 2) Log(STDTRACELOG,(char*)" e.g. %s,", WriteFact(F,false,buf,true,false));
+				else break;
 				F = GetSubjectNondeadNext(F);
 			}
 			Log(STDTRACELOG,(char*)" - size %d facts", count);
-			ReleaseInverseString(buf);
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
 	}
@@ -871,6 +890,10 @@ TERMINATE:
 	//   pop argument list
 	callArgumentIndex = oldArgumentIndex;	 
 	callArgumentBase = oldArgumentBase;
+	currentFunctionName = oldcurrent;
+	codeStart = oldcode;
+
+	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 
 	impliedIf = oldimpliedIf;
 	if (ptr && *ptr == ')') // skip ) and space if there is one...
@@ -926,8 +949,7 @@ char* ResultCode(FunctionResult result)
 
  static void AddInput(char* buffer)
 {
-	char* copy = AllocateBuffer();
-	strcpy(copy,nextInput);
+	char* copy = AllocateStack(nextInput,0);
 	strcpy(nextInput,(char*)" `` "); // system separator marks start of internal input
 	char* ptr = nextInput + 4;
 	unsigned int n = BurstWord(buffer);
@@ -940,7 +962,7 @@ char* ResultCode(FunctionResult result)
 	strcpy(ptr,(char*)" ` "); // mark end of internal input
 	ptr += 3;
 	strcpy(ptr,copy);
-	FreeBuffer();
+	ReleaseStack(copy);
 	if (strlen(nextInput) > 1000) nextInput[1000] = 0;	// overflow
 }
 
@@ -1038,7 +1060,8 @@ FunctionResult FLR(char* buffer,char* which)
 {  
 	int store;
 	*buffer = 0;
-	char word[MAX_BUFFER_SIZE];
+	char* limit;
+	char* word = InfiniteStack(limit);
 	bool keep = false;
 	char* ptr = GetPossibleFunctionArgument(ARGUMENT(1),word);
 	if (!strnicmp(ptr,(char*)"KEEP",4)) keep = true;
@@ -1225,7 +1248,9 @@ bool RuleTest(char* data) // see if pattern matches
 	int junk;
 	bool uppercasem = false;
 	int matched = 0;
-	bool answer =  Match(pattern+2,0,0,(char*)"(",1,0,junk,junk,uppercasem,matched,0,0); // start past the opening paren
+	char* buffer = AllocateStack(NULL,MAX_BUFFER_SIZE); // not expecting big data from function call in match
+	bool answer =  Match(buffer,pattern+2,0,0,(char*)"(",1,0,junk,junk,uppercasem,matched,0,0); // start past the opening paren
+	ReleaseStack(buffer);
 	if (clearUnmarks) // remove transient global disables.
 	{
 		clearUnmarks = false;
@@ -1235,7 +1260,7 @@ bool RuleTest(char* data) // see if pattern matches
 	return answer;
 }
 
-unsigned int Callback(WORDP D,char* arguments, bool boot) 
+unsigned int Callback(WORDP D,char* arguments, bool boot,bool mainoutput) 
 {
 	if (! D || !(D->internalBits & FUNCTION_NAME)) return FAILRULE_BIT;
 	unsigned int oldtrace = trace;
@@ -1243,14 +1268,14 @@ unsigned int Callback(WORDP D,char* arguments, bool boot)
 	char args[MAX_WORD_SIZE];
 	strcpy(args,arguments);
 	FunctionResult result;
-	AllocateOutputBuffer();
+	if (!mainoutput) AllocateOutputBuffer();
 	DoFunction(D->word,args,currentOutputBase,result);
 	if (*currentOutputBase && boot)
 	{
 		printf("Boot response: %s\r\n",currentOutputBase);
 		if (server) Log(SERVERLOG, "Boot response: %s\r\n",currentOutputBase);
 	}
-	FreeOutputBuffer();
+	if (!mainoutput) FreeOutputBuffer();
 	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 	return result;
 }
@@ -1352,6 +1377,8 @@ static FunctionResult GambitCode(char* buffer)
 		}
 	}
 	*arguments[i] = 0;
+	char* oldhow = howTopic;
+	howTopic = "gambit";
 	
 	int oldIndex = responseIndex;
 	FunctionResult result = NOPROBLEM_BIT;
@@ -1466,6 +1493,7 @@ static FunctionResult GambitCode(char* buffer)
 	if (fail  && responseIndex <= oldIndex)  result = FAILRULE_BIT; // report failure
 	currentReuseID = oldreuseid;
 	currentReuseTopic = oldreusetopic;
+	howTopic = oldhow;
 	return result;
 }
 
@@ -1652,12 +1680,12 @@ static FunctionResult DoRefine(char* buffer,char* arg1, bool fail, bool all)
 	{
 		if (originalTopic != currentTopicID) // it was not us, so need to gambit or rejoinder on this topic that we are in now
 		{
-			ARGUMENT(1) = AllocateInverseString(GetTopicName(currentTopicID));
-			ARGUMENT(2) = AllocateInverseString((char*)"");
+			ARGUMENT(1) = AllocateStack(GetTopicName(currentTopicID));
+			ARGUMENT(2) = AllocateStack((char*)"");
 			GambitCode(buffer+strlen(buffer));
 		}
 	}
-	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(inverseStringDepth[globalDepth],locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(ReleaseStackDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 
 	RESTOREOLDCONTEXT()
@@ -1784,8 +1812,8 @@ static FunctionResult RejoinderCode(char* buffer)
 	{
 		if (pushed) // it was not us, so need to gambit or rejoinder on this topic that we are in now
 		{
-			ARGUMENT(1) = AllocateInverseString(GetTopicName(currentTopicID));
-			ARGUMENT(2) = AllocateInverseString((char*)"");
+			ARGUMENT(1) = AllocateStack(GetTopicName(currentTopicID));
+			ARGUMENT(2) = AllocateStack((char*)"");
 			GambitCode(buffer+strlen(buffer));
 		}
 	}
@@ -1834,13 +1862,15 @@ static FunctionResult RespondCode(char* buffer)
 	currentReuseID = currentRuleID; // LOCAL reuse
 	currentReuseTopic = currentRuleTopic;
 	int oldCurrentTopic = currentTopicID;
+	char* oldhow = howTopic;
+	howTopic = 	 (tokenFlags & QUESTIONMARK) ? (char*) "question" : (char*)  "statement";
 
 	for (i = 1; i < MAX_ARG_LIMIT; ++i)
 	{
-		// gambit(PENDING) means from interesting stack  
-		// gambit(~name) means use named topic 
-		// gambit(~) means current topic we are within now
-		// gambit (word) means topic with that keyword
+		// respond(PENDING) means from interesting stack  
+		// respond(~name) means use named topic 
+		// respond(~) means current topic we are within now
+		// respond (word) means topic with that keyword
 		char* name = arguments[i];
 		if ((oldIndex < responseIndex && result == NOPROBLEM_BIT) || result != NOPROBLEM_BIT || *name == 0) break; // generated an answer or failed or ran out
 		oldIndex = responseIndex; // in case answer generated but topic claims failure
@@ -1963,6 +1993,7 @@ static FunctionResult RespondCode(char* buffer)
 	}
 	currentReuseID = oldreuseid;
 	currentReuseTopic = oldreusetopic;
+	howTopic = oldhow; 
 	if (fail && responseIndex <= oldIndex && result == NOPROBLEM_BIT)  result = FAILRULE_BIT; // report failure
 	return result;
 }
@@ -2030,7 +2061,7 @@ FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg
 
 	if (!failed) result = ProcessRuleOutput(currentRule,currentRuleID,buffer); 
 	
-	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(inverseStringDepth[globalDepth],locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(ReleaseStackDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 
 	if (crosstopic && responseIndex > holdindex) AddPendingTopic(topic); // restore caller topic as interesting
@@ -2379,35 +2410,34 @@ static FunctionResult MarkCode(char* buffer)
 		return NOPROBLEM_BIT;
 	}
 	
-	char word1[MAX_BUFFER_SIZE];
 	if (*ptr == '^')
 	{
-		ptr = GetPossibleFunctionArgument(ptr,word1); // get the request
+		ptr = GetPossibleFunctionArgument(ptr,buffer); // get the request
 		char word2[MAX_WORD_SIZE];
-		if (!IsDigit(*word1) &&  *word1 != '_') 
+		if (!IsDigit(*buffer) &&  *buffer != '_') 
 		{
-			strcpy(word2,word1);
-			ReadCommandArg(word2,word1,result,0,MAX_WORD_SIZE);
+			strcpy(word2,buffer);
+			GetCommandArg(word2,buffer,result,0); // should be small
 		}
 	}
-	if (IsDigit(*ptr) || *ptr == '_') ptr = ReadCompiledWord(ptr,word1);  // the locator, leave it unevaled as number or match var
-	else ptr = ReadShortCommandArg(ptr,word1,result); // evaluate the locator as a number presumably
-	if (*word1 == USERVAR_PREFIX) strcpy(word1,GetUserVariable(word1));
+	if (IsDigit(*ptr) || *ptr == '_') ptr = ReadCompiledWord(ptr,buffer);  // the locator, leave it unevaled as number or match var
+	else ptr = GetCommandArg(ptr,buffer,result,0); // evaluate the locator as a number presumably
+	if (*buffer == USERVAR_PREFIX) strcpy(buffer,GetUserVariable(buffer));
 
 	int startPosition;
 	int endPosition;
-	if (!*word1 || *word1 == ')') startPosition = endPosition = 1; // default mark  (ran out or hit end paren of call
-	else if (IsDigit(*word1)) 
+	if (!*buffer || *buffer == ')') startPosition = endPosition = 1; // default mark  (ran out or hit end paren of call
+	else if (IsDigit(*buffer)) 
 	{
-		int val = atoi(word1);
+		int val = atoi(buffer);
 		startPosition = val & 0x0000ffff;
 		endPosition = val >> 16;
 		if (endPosition == 0) endPosition = startPosition; // SHARED
 	}
-	else if (*word1 == '_') //  wildcard position designator
+	else if (*buffer == '_') //  wildcard position designator
 	{
-		startPosition = wildcardPosition[GetWildcardID(word1)] & 0x0000ffff; // the match location
-		endPosition = wildcardPosition[GetWildcardID(word1)] >> 16; 
+		startPosition = wildcardPosition[GetWildcardID(buffer)] & 0x0000ffff; // the match location
+		endPosition = wildcardPosition[GetWildcardID(buffer)] >> 16; 
 	}
 	else return FAILRULE_BIT;
 
@@ -2424,6 +2454,7 @@ static FunctionResult MarkCode(char* buffer)
 			if (trace & TRACE_FLOW) Log(STDTRACELOG,(char*)"%s ",wordStarts[i]);
 			unmarked[i] = 0;
 		}
+		*buffer = 0;
 		if (trace & TRACE_FLOW) Log(STDTRACELOG,(char*)"\r\n");
 		return NOPROBLEM_BIT;
 	}
@@ -2437,7 +2468,7 @@ static FunctionResult MarkCode(char* buffer)
 	if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"mark all @word %d ",D->word);
 	MarkFacts(M,startPosition,endPosition);
 	if (showMark) Log(ECHOSTDTRACELOG,(char*)"------\r\n");
-
+	*buffer = 0;
 	return NOPROBLEM_BIT;
 }
 
@@ -2465,14 +2496,14 @@ static FunctionResult PositionCode(char* buffer)
 	char word[MAX_WORD_SIZE];
 	ptr = ReadShortCommandArg(ptr,word,result); // start or end
 	if (result & ENDCODES) return result;
-	char word1[MAX_BUFFER_SIZE];
-	ptr = GetPossibleFunctionArgument(ptr,word1);  // the _ var
-	if (*word1 == '\'') memmove(word1,word1+1,strlen(word1));
-	if (*word1 == '_') //  wildcard position designator
+
+	ptr = GetPossibleFunctionArgument(ptr,buffer);  // the _ var
+	if (*buffer == '\'') memmove(buffer,buffer+1,strlen(buffer));
+	if (*buffer == '_') //  wildcard position designator
 	{
-		if (!stricmp(word,(char*)"start")) sprintf(buffer,(char*)"%d",WILDCARD_START(wildcardPosition[GetWildcardID(word1)]));  // the match location
-		else if (!stricmp(word,(char*)"end")) sprintf(buffer,(char*)"%d", WILDCARD_END(wildcardPosition[GetWildcardID(word1)]));
-		else if (!stricmp(word,(char*)"both")) sprintf(buffer,(char*)"%d", wildcardPosition[GetWildcardID(word1)]);
+		if (!stricmp(word,(char*)"start")) sprintf(buffer,(char*)"%d",WILDCARD_START(wildcardPosition[GetWildcardID(buffer)]));  // the match location
+		else if (!stricmp(word,(char*)"end")) sprintf(buffer,(char*)"%d", WILDCARD_END(wildcardPosition[GetWildcardID(buffer)]));
+		else if (!stricmp(word,(char*)"both")) sprintf(buffer,(char*)"%d", wildcardPosition[GetWildcardID(buffer)]);
 		else return FAILRULE_BIT;
 	}
 	else return FAILRULE_BIT;
@@ -2495,7 +2526,8 @@ static FunctionResult SetPositionCode(char* buffer)
 		ptr = ReadShortCommandArg(ptr,startw,result); // what is being marked
 		if (result != NOPROBLEM_BIT) return result;
 		int start = atoi(startw);
-		if (start <= 0 || start >= (wordCount+1)) return FAILRULE_BIT;
+		if (start >= (wordCount+1)) start = wordCount + 1;
+		if (start <= 0) start = 0;
 		char endw[MAX_WORD_SIZE];
 		ptr = ReadShortCommandArg(ptr,endw,result); // what is being marked
 		if (result != NOPROBLEM_BIT) return result;
@@ -2503,7 +2535,8 @@ static FunctionResult SetPositionCode(char* buffer)
 
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG, "_%d = %d...%d ",n,start,end);
 
-		if (end <= 0 || end >= (wordCount+1)) return FAILRULE_BIT;
+		if (end <= 0) end = 0;
+		if (end >= (wordCount+1)) end = wordCount + 1;
 		wildcardPosition[n] = start | (end << 16);
 	}
 	else return FAILRULE_BIT;// set GLOBAL position -- unused at present
@@ -2538,9 +2571,8 @@ static FunctionResult RoleCode(char* buffer)
 	else if (*arg == USERVAR_PREFIX) n = atoi(GetUserVariable(arg));
 	else if (*arg == '^') 
 	{
-		char word[MAX_WORD_SIZE];
-		ReadArgument(arg,word,result);
-		n = atoi(word);
+		ReadArgument(arg,buffer,result);
+		n = atoi(buffer);
 	}
 	else return FAILRULE_BIT;
 	sprintf(buffer,(char*)"%u", (unsigned int)roles[n]);
@@ -2603,9 +2635,8 @@ static FunctionResult PartOfSpeechCode(char* buffer)
 	else if (*arg == '_')  n = WildStartPosition(arg);
 	else if (*arg == '^') 
 	{
-		char word[MAX_WORD_SIZE];
-		ReadArgument(arg,word,result);
-		n = atoi(word);
+		ReadArgument(arg,buffer,result);
+		n = atoi(buffer);
 	}
 	else if (*arg == USERVAR_PREFIX) n = atoi(GetUserVariable(arg));
 	else return FAILRULE_BIT;
@@ -3153,7 +3184,7 @@ static FunctionResult LogCode(char* buffer)
 	if (!strnicmp(stream,(char*)"CLOSE",5))
 	{
 		stream = ReadCompiledWord(stream,name); // close
-		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); // name of file
+		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); // name of file
 		if (*name == '"') 
 		{
 			size_t len = strlen(name);
@@ -3177,7 +3208,7 @@ static FunctionResult LogCode(char* buffer)
 	if (!strnicmp(stream,(char*)"FILE ",5) || !strnicmp(stream,(char*)"OPEN ",5)) // write data to this file
 	{
 		stream = ReadCompiledWord(stream,name); // FILE or OPEN
-		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); // name of file
+		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); // name of file
 		if (*name == '"') 
 		{
 			size_t len = strlen(name);
@@ -3197,9 +3228,11 @@ static FunctionResult LogCode(char* buffer)
 	++outputNest;
 	WORDP lock = dictionaryLocked;
 	dictionaryLocked = (WORDP)22; // allow format string to work even while compiling a table
-	Output(stream,buffer,result,OUTPUT_EVALCODE | (unsigned int) flags | OUTPUT_NOTREALBUFFER);
+	Output(stream,buffer,result,OUTPUT_EVALCODE | (unsigned int) flags);
 	--outputNest;
 	dictionaryLocked = lock;
+
+	if (!(flags & RESPONSE_NOCONVERTSPECIAL)) ConvertNL(buffer); // convert \n \r \t to ascii chars
 
 	if (fname)
 	{
@@ -3236,11 +3269,7 @@ static FunctionResult LogCode(char* buffer)
 			fwrite(buffer,1,strlen(buffer),out);
 			if (!cached) FClose(out);
 		}
-		else 
-		{
-			*buffer = 0;
-			return FAILRULE_BIT;
-		}
+		else return FAILRULE_BIT;
 	}
 	else Log(STDTRACELOG,(char*)"%s",buffer);
 	if (flags & OUTPUT_ECHO && !echo) printf((char*)"%s",buffer);
@@ -3256,7 +3285,7 @@ static FunctionResult LogCode(char* buffer)
 static FunctionResult FlushOutputCode(char* buffer)
 {
 	if (planning) return FAILRULE_BIT;
-	if (!AddResponse(currentOutputBase,responseControl)) return FAILRULE_BIT;
+	if (!AddResponse(currentRuleOutputBase,responseControl)) return FAILRULE_BIT;
 	return NOPROBLEM_BIT;
 }
 
@@ -3401,26 +3430,7 @@ static FunctionResult SetPronounCode(char* buffer)
 
 static FunctionResult LastSaidCode(char* buffer)
 {
-	if (chatbotSaidIndex) 
-	{
-		sprintf(buffer,(char*)"%s",chatbotSaid[chatbotSaidIndex-1]);
-		char* special;
-		char* at = buffer;
-		while ((special = strchr(at,'\\')))
-		{
-			if (special[1] == 'r')
-			{
-				memmove(special+1,special+2,strlen(special+1));
-				*special = '\r';
-			}
-			else if (special[1] == 'n')
-			{
-				memmove(special+1,special+2,strlen(special+1));
-				*special = '\n';
-			}
-			at = special+1;
-		}
-	}
+	if (chatbotSaidIndex) sprintf(buffer,(char*)"%s",chatbotSaid[chatbotSaidIndex-1]);
 	return NOPROBLEM_BIT;
 }
 
@@ -3428,7 +3438,7 @@ static FunctionResult ResponseCode(char* buffer)
 {
 	int index = atoi(ARGUMENT(1)) -1 ;
 	if (index >= responseIndex || index < 0) return FAILRULE_BIT;
-	sprintf(buffer,(char*)"%s",responseData[responseOrder[index]].response);
+	strcpy(buffer,responseData[responseOrder[index]].response);
 	return NOPROBLEM_BIT;
 }
 
@@ -3556,7 +3566,7 @@ static FunctionResult ReviseOutputCode(char* buffer)
 	if (index >= responseIndex || index < 0) return FAILRULE_BIT;
 	char* arg2 = ARGUMENT(2);
 	if (!stricmp(arg2,"null") || !stricmp(arg2,"\"\"")) *arg2 = 0;
-	strcpy(responseData[index].response,arg2);
+	responseData[index].response = AllocateHeap(arg2,0);
 	return NOPROBLEM_BIT;
 }
 
@@ -3596,21 +3606,10 @@ FunctionResult DebugCode(char* buffer)
 
 static FunctionResult ReturnCode(char* buffer)
 {
-	char* arg = ARGUMENT(1);
-	char* output = AllocateBuffer();
 	FunctionResult result;
-	FreshOutput(arg,output,result,OUTPUT_NOCOMMANUMBER, MAX_BUFFER_SIZE);
-	FreeBuffer(); // usable still
+	Output(ARGUMENT(1),buffer,result,OUTPUT_NOCOMMANUMBER);
 	if (result != NOPROBLEM_BIT) return result;
-	if (*output) memmove(buffer,output,strlen(output)+1);
-	char* x = functionAnswerName;
-	if (functionAnswerBase != buffer && *output) 
-	{
-		int xx = 0;
-	}
-	//	memmove(functionAnswerBase,output,strlen(output)+1);
-	if (!stricmp(buffer,"null")) 
-		*buffer = 0;	// treat null as null
+	if (!stricmp(buffer,"null")) *buffer = 0;	// treat null as null
 	return ENDCALL_BIT;
 }
 
@@ -3673,7 +3672,7 @@ FunctionResult MatchCode(char* buffer)
 	else if (*word1 == '@' && !*at) 
 	{
 		FunctionResult result;
-		ReadShortCommandArg(word1,word,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); 
+		ReadShortCommandArg(word1,word,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
 		if (result != NOPROBLEM_BIT) return result;
 	}
 	else 
@@ -3739,8 +3738,10 @@ FunctionResult MatchCode(char* buffer)
 			return FAILRULE_BIT;
 		}
 		char junk[MAX_WORD_SIZE];
+		StartScriptCompiler();
 		ReadNextSystemToken(NULL,NULL,junk,false,false); // flush cache
 		ReadPattern(ptr, NULL, at,false,false,true); // compile the pattern
+		EndScriptCompiler();
 		strcat(at,(char*)" )");
 		at = pack; // for debug retry
 		base = pack; // the compiled pattern
@@ -3755,7 +3756,7 @@ FunctionResult MatchCode(char* buffer)
 	int last = 0;
 	if (*base == '(') ++base;		// skip opening paren of a pattern
  	if (*base == ' ') ++base;		// skip opening space of a pattern
-    bool match = Match(base,0,0,(char*)"(",1,0,first,last,uppercasem,matched,0,0) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
+    bool match = Match(buffer,base,0,0,(char*)"(",1,0,first,last,uppercasem,matched,0,0) != 0;  //   skip paren and treat as NOT at start depth, dont reset wildcards- if it does match, wildcards are bound
 	
 	if (clearUnmarks) // remove transient global disables.
 	{
@@ -3792,7 +3793,7 @@ static FunctionResult NoTraceCode(char* buffer)
 
 #include <map>
 using namespace std;
-extern std::map <WORDP, int> triedData; // per volley index into string space
+extern std::map <WORDP, int> triedData; // per volley index into heap space
 static int saveCount = 0;
 
 static FunctionResult SaveSentenceCode(char* buffer)
@@ -3818,7 +3819,7 @@ static FunctionResult SaveSentenceCode(char* buffer)
 	if (total & 1) ++total; // round to even set of words, for int64 align
 	total += 1; // save bits for moretocome and moretocomequestion
 
-	unsigned int* memory = (unsigned int*) AllocateString(NULL,total/2,8,false); // int64 aligned
+	unsigned int* memory = (unsigned int*) AllocateHeap(NULL,total/2,8,false); // int64 aligned
 	memory[0] = savedSentences;
 	savedSentences = String2Index((char*) memory); // threaded list
 	memory[1] = M; // key 
@@ -3842,7 +3843,7 @@ static FunctionResult SaveSentenceCode(char* buffer)
 		memory[n++] = finalPosValues[i] >> 32;
 		memory[n++] = finalPosValues[i] & 0x00000000ffffffff;
 
-		// concepts and topics lists are threaded links in string space. [0] is the concept/topic, [1] is next link
+		// concepts and topics lists are threaded links in heap space. [0] is the concept/topic, [1] is next link
 		// that list will be valid later on restore
 		memory[n++] = concepts[i];
 		memory[n++] = topics[i];
@@ -3930,7 +3931,7 @@ static FunctionResult RestoreSentenceCode(char* buffer)
 		finalPosValues[i] = memory[n++];
 		finalPosValues[i] <<= 32;
 		finalPosValues[i] |= memory[n++];
-		concepts[i] = memory[n++]; // contain string space indices that are still valid
+		concepts[i] = memory[n++]; // contain heap space indices that are still valid
 		topics[i] = memory[n++];
 	}
 	
@@ -4027,7 +4028,7 @@ static FACT* memoryFactBase = 0;
 
 FunctionResult MemoryMarkCode(char* buffer)
 {
-	memoryText = stringFree;
+	memoryText = heapFree;
 	memoryDict = dictionaryFree;
 	memoryFact = factFree;
 	return NOPROBLEM_BIT;
@@ -4035,7 +4036,7 @@ FunctionResult MemoryMarkCode(char* buffer)
 
 void SetBaseMemory()
 {
-	memoryTextBase = stringFree;
+	memoryTextBase = heapFree;
 	memoryDictBase = dictionaryFree;
 	memoryFactBase = factFree;
 }
@@ -4221,25 +4222,6 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 	{
 		scan = " "; // default is space AND OR _
 		scan1 = "_";
-	}
-	else // clear any special characters
-	{
-		char* find;
-		while ((find = strstr(scan,(char*)"\\r"))) // convert cr
-		{
-			*find = '\r';
-			memmove(find+1,find+2,strlen(find)+1);
-		}
-		while ((find = strstr(scan,(char*)"\\n"))) // convert cr
-		{
-			*find = '\n';
-			memmove(find+1,find+2,strlen(find)+1);
-		}
-		while ((find = strstr(scan,(char*)"\\t"))) // convert cr
-		{
-			*find = '\t';
-			memmove(find+1,find+2,strlen(find)+1);
-		}
 	}
 	
 	if (*ptr == '"' ) // if a quoted string, remove the quotes
@@ -4536,7 +4518,7 @@ static FunctionResult JoinCode(char* buffer)
     while (ptr)
 	{
 		char word[MAX_WORD_SIZE];
-		char* at = ReadCompiledWord(ptr,word); 
+		char* at = ReadCompiledWord(ptr,word); // individual items will not be big in text
         if (*word == ')' || !*word) break; //   done
 		size_t len = strlen(word);
 		if (*word == '"' && word[1] == ' ' && word[2] == '"') // pure simple space
@@ -4560,25 +4542,9 @@ static FunctionResult JoinCode(char* buffer)
  		else 
 		{
 			FunctionResult result;
-			char* bigword = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
-			ptr = ReadCommandArg(ptr,bigword,result,0,MAX_BUFFER_SIZE);
-			if (!(result & ENDCODES))
-			{
-				size_t olen = strlen(bigword);
-				if (olen >= currentOutputLimit) 
-				{
-					strncpy(buffer,bigword,currentOutputLimit-1);
-					buffer[currentOutputLimit-1] = 0;
-					ReportBug((char*)"join of %d exceeded caller limit of %d. Truncated: %s\r\n",olen,currentOutputLimit,buffer);
-				}
-				else strcpy(buffer,bigword);
-				ReleaseInverseString(bigword);
-			}
-			else 
-			{
-				ReleaseInverseString(bigword);
-				return result;
-			}
+			ptr = GetCommandArg(ptr,buffer,result,0); 
+			if (!(result & ENDCODES)){}
+			else return result; 
 		}
 		bool did = *buffer != 0;
 		buffer += strlen(buffer);
@@ -4608,9 +4574,8 @@ static FunctionResult PhraseCode(char* buffer)
 	else if (*posn == '_')  n = WildStartPosition(posn);
 	else if (*posn == '^') 
 	{
-		char word[MAX_WORD_SIZE];
-		ReadArgument(posn,word,result);
-		n = atoi(word);
+		ReadArgument(posn,buffer,result);
+		n = atoi(buffer);
 	}
 	else if (*posn == USERVAR_PREFIX) n = atoi(GetUserVariable(posn));
 	else return FAILRULE_BIT;
@@ -4693,14 +4658,14 @@ static FunctionResult POSCode(char* buffer)
 		ReadInt64(arg3,pos);
 		if (pos & (VERB_PRESENT_PARTICIPLE | NOUN_GERUND))
 		{
-			ARGUMENT(1) = AllocateInverseString((char*)"verb");
-			ARGUMENT(3) = AllocateInverseString((char*)"present_participle");
+			ARGUMENT(1) = AllocateStack((char*)"verb");
+			ARGUMENT(3) = AllocateStack((char*)"present_participle");
 			POSCode(buffer);
 		}
 		else if (pos & VERB_PAST_PARTICIPLE) 
 		{
-			ARGUMENT(1) = AllocateInverseString((char*)"verb");
-			ARGUMENT(3) = AllocateInverseString((char*)"past_participle");
+			ARGUMENT(1) = AllocateStack((char*)"verb");
+			ARGUMENT(3) = AllocateStack((char*)"past_participle");
 			POSCode(buffer);
 		}
 		else if (pos & VERB_PAST) 
@@ -4708,8 +4673,8 @@ static FunctionResult POSCode(char* buffer)
 			if (!stricmp(arg2,(char*)"be") && pos & SINGULAR_PERSON) strcpy(buffer,(char*)"was"); // for 1st and 3rd person singular,  default is were
 			else
 			{
-				ARGUMENT(1) = AllocateInverseString((char*)"verb");
-				ARGUMENT(3) = AllocateInverseString((char*)"past");
+				ARGUMENT(1) = AllocateStack((char*)"verb");
+				ARGUMENT(3) = AllocateStack((char*)"past");
 				POSCode(buffer);
 			}
 		}
@@ -4718,21 +4683,21 @@ static FunctionResult POSCode(char* buffer)
 			if (!stricmp(arg2,(char*)"be") && pos & SINGULAR_PERSON) strcpy(buffer,(char*)"am"); // default is is. good for are
 			else
 			{
-				ARGUMENT(1) = AllocateInverseString((char*)"verb");
-				ARGUMENT(3) = AllocateInverseString((char*)"present");
+				ARGUMENT(1) = AllocateStack((char*)"verb");
+				ARGUMENT(3) = AllocateStack((char*)"present");
 				POSCode(buffer);
 			}
 		}
 		else if (pos & VERB_PRESENT_3PS) 
 		{ 
-			ARGUMENT(1) = AllocateInverseString((char*)"verb");
-			ARGUMENT(3) = AllocateInverseString((char*)"present3ps");
+			ARGUMENT(1) = AllocateStack((char*)"verb");
+			ARGUMENT(3) = AllocateStack((char*)"present3ps");
 			POSCode(buffer);
 		}
 		else if (pos & NOUN_PLURAL || pos & NOUN_PROPER_PLURAL)
 		{
-			ARGUMENT(1) = AllocateInverseString((char*)"noun");
-			ARGUMENT(3) = AllocateInverseString((char*)"plural");
+			ARGUMENT(1) = AllocateStack((char*)"noun");
+			ARGUMENT(3) = AllocateStack((char*)"plural");
 			POSCode(buffer);
 		}
 		else if (pos & PLACE_NUMBER)
@@ -4749,26 +4714,26 @@ static FunctionResult POSCode(char* buffer)
 		}
 		else if (pos & MORE_FORM && pos & ADJECTIVE) 
 		{ 
-			ARGUMENT(1) = AllocateInverseString((char*)"adjective");
-			ARGUMENT(3) = AllocateInverseString((char*)"more");
+			ARGUMENT(1) = AllocateStack((char*)"adjective");
+			ARGUMENT(3) = AllocateStack((char*)"more");
 			POSCode(buffer);
 		}
 		else if (pos & MOST_FORM && pos & ADJECTIVE) 
 		{ 
-			ARGUMENT(1) = AllocateInverseString((char*)"adjective");
-			ARGUMENT(3) = AllocateInverseString((char*)"most");
+			ARGUMENT(1) = AllocateStack((char*)"adjective");
+			ARGUMENT(3) = AllocateStack((char*)"most");
 			POSCode(buffer);
 		}
 		else if (pos & MORE_FORM && pos & ADVERB) 
 		{ 
-			ARGUMENT(1) = AllocateInverseString((char*)"adverb");
-			ARGUMENT(3) = AllocateInverseString((char*)"more");
+			ARGUMENT(1) = AllocateStack((char*)"adverb");
+			ARGUMENT(3) = AllocateStack((char*)"more");
 			POSCode(buffer);
 		}
 		else if (pos & MOST_FORM && pos & ADVERB) 
 		{ 
-			ARGUMENT(1) = AllocateInverseString((char*)"adverb");
-			ARGUMENT(3) = AllocateInverseString((char*)"most");
+			ARGUMENT(1) = AllocateStack((char*)"adverb");
+			ARGUMENT(3) = AllocateStack((char*)"most");
 			POSCode(buffer);
 		}
 		else if (pos & PRONOUN_POSSESSIVE) 
@@ -5240,8 +5205,7 @@ static FunctionResult FindTextCode(char* buffer)
 	unsigned int start = atoi(ARGUMENT(3));
 	if (start >= strlen(target)) return FAILRULE_BIT;
 
-	char* buf = AllocateBuffer();
-	strcpy(buf,target); // so we dont lose real blanks status
+	char* buf = AllocateStack(target,0); // so we dont lose real blanks status
 	if (*target != '_') Convert2Blanks(target); // if we explicitly request _, use it
 	if (*find != '_') Convert2Blanks(find); // if we explicitly request _, use it
 
@@ -5282,7 +5246,7 @@ static FunctionResult FindTextCode(char* buffer)
 		sprintf(word,(char*)"%d",count);
 		SetUserVariable((char*)"$$findtext_word",word); // where it started as words
 	}
-	FreeBuffer();
+	ReleaseStack(buf);
 	if (!found)  return FAILRULE_BIT;
 	return NOPROBLEM_BIT;
 }
@@ -5588,7 +5552,7 @@ static FunctionResult WalkDictionaryCode(char* buffer)
 	FunctionResult result;
 	xbuffer = buffer;
 	char fn[MAX_WORD_SIZE];
-	char* function = ReadShortCommandArg(ARGUMENT(1),fn,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); 
+	char* function = ReadShortCommandArg(ARGUMENT(1),fn,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
 	if (result != NOPROBLEM_BIT) return result;
 	function = fn;
 	if (*function == '\'') ++function; // skip over the ' 
@@ -5646,7 +5610,7 @@ static FunctionResult RemoveInternalFlagCode(char* buffer)
 	char* ptr = ARGUMENT(1);
 	char arg1[MAX_WORD_SIZE];
 	FunctionResult result = NOPROBLEM_BIT;
-	ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER);
+	ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE);
 	if (result != NOPROBLEM_BIT) return result;
 	if (!*arg1) return FAILRULE_BIT;
 	WORDP D = FindWord(arg1,0,PRIMARY_CASE_ALLOWED); // add property to dictionary word
@@ -5666,7 +5630,7 @@ static FunctionResult AddPropertyCode(char* buffer)
 	char arg1[MAX_WORD_SIZE];
 	FunctionResult result = NOPROBLEM_BIT;
 	if (*ptr == '@') ptr = ReadCompiledWord(ptr,arg1); // dont eval a set
-	else ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER);
+	else ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE);
 	if (result != NOPROBLEM_BIT) return result;
 	if (!*arg1) return FAILRULE_BIT;
 	WORDP D = NULL;
@@ -5871,7 +5835,7 @@ static FunctionResult RemovePropertyCode(char* buffer)
 	char arg1[MAX_WORD_SIZE];
 	FunctionResult result = NOPROBLEM_BIT;
 	if (*ptr == '@') ptr = ReadCompiledWord(ptr,arg1); // dont eval a set
-	else ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER);
+	else ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE);
 	if (result != NOPROBLEM_BIT) return result;
 	char arg3 = *GetSetType(arg1);
 	if (!*arg1) return FAILRULE_BIT;
@@ -6085,7 +6049,6 @@ FunctionResult LengthCode(char* buffer)
 				F = GetSubjectNondeadNext(F); 
 			}
 		}
-		else return FAILRULE_BIT;	// it doesnt exist
 		sprintf(buffer,(char*)"%d",count);
 	}
 	else if (!*word) strcpy(buffer,(char*)"0"); // NULL has 0 length (like a null value array)
@@ -6103,13 +6066,16 @@ static FunctionResult NextCode(char* buffer)
 	if (stricmp(arg1,(char*)"FACT") || *arg2 != '@') // eval all but FACT @1subjecct
 	{
 		FunctionResult result;
-		ReadCommandArg(ptr,arg2,result,OUTPUT_NOTREALBUFFER|OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING,MAX_WORD_SIZE);
+		GetCommandArg(ptr,buffer,result,OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING);
+		size_t len = strlen(buffer);
+		if (len >= MAX_WORD_SIZE) return FAILRULE_BIT;
+		strcpy(arg2,buffer);
 	}
 	if (!stricmp(arg1,(char*)"LOOP"))  
 		return NEXTLOOP_BIT;
 	if (!stricmp(arg1,(char*)"FACT")) 
 	{
-		ARGUMENT(1) = AllocateInverseString(arg2);
+		ARGUMENT(1) = AllocateStack(arg2);
 		return FLR(buffer,(char*)"n");
 	}
 	if (!stricmp(arg1,(char*)"INPUT") || !stricmp(arg1,(char*)"SENTENCE")) // same meaning
@@ -6168,10 +6134,9 @@ static FunctionResult NextCode(char* buffer)
 static FunctionResult FLRCodeR(char* buffer)
 {
 	char* arg  = ARGUMENT(1);
-	char word[MAX_BUFFER_SIZE];
-	GetPossibleFunctionArgument(arg,word); // pass thru or convert
-	arg = word;
-	ARGUMENT(1) = AllocateInverseString(arg); // put it back in case it changed
+	GetPossibleFunctionArgument(arg,buffer); // pass thru or convert
+	arg = ARGUMENT(1) = AllocateStack(buffer); // put it back in case it changed
+	*buffer = 0;
 
 	if (*arg == USERVAR_PREFIX) arg = GetUserVariable(arg);
 	else if (*arg == '_') arg =  GetwildcardText(GetWildcardID(arg), true);
@@ -6206,17 +6171,16 @@ static FunctionResult NthCode(char* buffer)
 {
 	char* arg = ARGUMENT(1);
 	char arg1[MAX_WORD_SIZE];
-	char arg2[MAX_WORD_SIZE];
 	arg = GetPossibleFunctionArgument(arg,arg1); // pass thru or convert
 	FunctionResult result;
-	ReadCommandArg(arg,arg2,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT); 
+	GetCommandArg(arg,buffer,result,OUTPUT_NOCOMMANUMBER|ASSIGNMENT); 
 	if (result != NOPROBLEM_BIT) return result;
 
 	if (*arg1 == USERVAR_PREFIX) strcpy(arg1,GetUserVariable(arg1));
 	else if (*arg1 == '_') strcpy(arg1, GetwildcardText(GetWildcardID(arg1), true));
 		
 	int count = 0;
-	int n = atoi(arg2); // which one
+	int n = atoi(buffer); // which one
 
 	if (*arg1 == '~') // nth member of set, counting from 0
 	{
@@ -6249,7 +6213,9 @@ static FunctionResult NthCode(char* buffer)
 		return NOPROBLEM_BIT;
 	}
 
-	ARGUMENT(1) = AllocateInverseString(arg1); // put it back in case it changed
+	ARGUMENT(1) = AllocateStack(arg1); // put it back in case it changed
+	char arg2[MAX_WORD_SIZE];
+	strcpy(arg2,buffer); // should not be big
 	if (*arg1 == '@') return FLR(buffer,arg2);
 	else return FAILRULE_BIT;
 }
@@ -6404,9 +6370,7 @@ static FunctionResult PopenCode(char* buffer)
 		if( fgets( psBuffer+4, MAX_WORD_SIZE - 5, pPipe ) != NULL )
 		 {
 			FunctionResult result;
-			char* p;
-			while ((p = strchr(psBuffer,'\r'))) *p = ' ';
-			while ((p = strchr(psBuffer,'\n'))) *p = ' ';
+			RemoveImpure(psBuffer);
 			strcat(psBuffer,(char*)"`\" )"); // trailing quote and ending paren
 			if (*function == '^') DoFunction(function,psBuffer,buffer,result); 
 			buffer += strlen(buffer);
@@ -6532,7 +6496,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 	}
 	clock_t start_time = ElapsedMilliseconds();
 	int size = 0;
-	char* tcpbuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* tcpbuffer = AllocateStack(NULL,INPUT_BUFFER_SIZE);
 	char* startContent = tcpbuffer;
 	try 
 	{
@@ -6603,7 +6567,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 		SetUserVariable((char*)"$$tcpopen_error",msg);	// pass along the error
 		Log(STDTRACELOG,msg);
 		Log(STDTRACELOG,(char*)"failed to connect to server %s %d\r\n",url,port); 
-		ReleaseInverseString(tcpbuffer); 
+		ReleaseStack(tcpbuffer); // short term
 		return FAILRULE_BIT;
 	}
 
@@ -6615,7 +6579,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 			char* msg = "tcpopen- no HTTP ack code\r\n";
 			SetUserVariable((char*)"$$tcpopen_error",msg);	
 			Log(STDTRACELOG,msg);
-			ReleaseInverseString(tcpbuffer);
+			ReleaseStack(tcpbuffer); // short term
 			return FAILRULE_BIT;
 		}
 		char* space = strchr(tcpbuffer,' ');
@@ -6628,13 +6592,13 @@ static FunctionResult TCPOpenCode(char* buffer)
 			sprintf(msg,(char*)"tcpopen- HTTP ack code bad %s\r\n",space);
 			SetUserVariable((char*)"$$tcpopen_error",msg);	
 			Log(STDTRACELOG,msg);
-			ReleaseInverseString(tcpbuffer);
+			ReleaseStack(tcpbuffer); // short term
 			return FAILRULE_BIT;	// failure code of some kind
 		}
 	}
 	
 	userRecordSourceBuffer = startContent;
-	char* buf1 = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* buf1 = AllocateStack(NULL,INPUT_BUFFER_SIZE);
 	buf1[0] = '(';
 	buf1[1] = ' ';
 	buf1[2] = '"'; // strippable string marker
@@ -6663,7 +6627,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 		}
 	}
 	userRecordSourceBuffer = NULL;
-	ReleaseInverseString(tcpbuffer);
+	ReleaseStack(tcpbuffer); // short term
 	return result;
 #endif
 }
@@ -6677,7 +6641,7 @@ static FunctionResult SystemCode(char* buffer)
 	{
 		FunctionResult result;
 		char name[MAX_WORD_SIZE];
-		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); // name of file
+		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); // name of file
 		if (*name)
 		{
 			strcat(word,name);
@@ -6700,17 +6664,20 @@ static FunctionResult CreateFactCode(char* buffer)
 	char* arg = SkipWhitespace(ARGUMENT(1));
 	char word[MAX_WORD_SIZE];
 	char* at = ReadCompiledWord(arg,word);
+	char* argcopy;
 	if (!*at) // single arg, eval it to get real one....
 	{
 		FunctionResult result;
-		ReadCommandArg(arg,buffer,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); 
+		GetCommandArg(arg,buffer,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
 		if (result != NOPROBLEM_BIT) return result;
 		at = buffer;
 		if (*at == '(') at += 2; // skip paren start as would be done by WriteFact
-		EatFact(at);
-		*buffer = 0;
+		argcopy = AllocateStack(at,0);
 	}
-	else EatFact(arg); // PUTS NOTHING IN THE OUTPUT BUFFER but can be assigned from.
+	else argcopy = AllocateStack(arg,0);
+	EatFact(argcopy,buffer); // PUTS NOTHING IN THE OUTPUT BUFFER but can be assigned from.
+	ReleaseStack(argcopy);
+	*buffer = 0;
 	return (currentFact) ? NOPROBLEM_BIT : FAILRULE_BIT;
 }
 
@@ -7009,7 +6976,7 @@ static FunctionResult ConceptListCode(char* buffer)
 	SET_FACTSET_COUNT(set,0);
 	unsigned int how = 0;
 	char* arg = ARGUMENT(1);
-	char word[MAX_BUFFER_SIZE];
+	char word[MAX_WORD_SIZE];
 	arg = ReadCompiledWord(arg,word);
 	if (!stricmp(word,(char*)"CONCEPT"))
 	{
@@ -7028,10 +6995,8 @@ static FunctionResult ConceptListCode(char* buffer)
 	}
 	else return FAILRULE_BIT;
 
-	char filter[MAX_WORD_SIZE];
 	FunctionResult result;
-	ReadCommandArg(arg,filter,result,OUTPUT_NOTREALBUFFER|OUTPUT_NOCOMMANUMBER|ASSIGNMENT); // possible filter
-	if (*word == '_' || *word == USERVAR_PREFIX || IsDigit(*word) || !*word) {;} // normal expected
+	GetCommandArg(arg,buffer,result,OUTPUT_NOCOMMANUMBER|ASSIGNMENT); // possible filter
 
 	int start = 1;
 	int end = 1;
@@ -7056,23 +7021,25 @@ static FunctionResult ConceptListCode(char* buffer)
 		if (D->internalBits & MACRO_TRACE || trace & TRACE_FACT) tracing = true;
 	}
 
-	size_t len = strlen(filter);
+	size_t len = strlen(buffer);
 	for (int i = start; i <= end; ++i)
 	{
 		if (tracing) Log(STDTRACELOG,"@%d %s ",i,wordStarts[i]);
-		if (how & 1) GenerateConceptList(tracing,concepts[i], set,filter,len,i);
-		if (how & 2) GenerateConceptList(tracing,topics[i], set,filter,len,i);
+		if (how & 1) GenerateConceptList(tracing,concepts[i], set,buffer,len,i);
+		if (how & 2) GenerateConceptList(tracing,topics[i], set,buffer,len,i);
 	}
 	if (impliedSet == ALREADY_HANDLED && FACTSET_COUNT(set) == 0) return FAILRULE_BIT;
 	impliedSet = ALREADY_HANDLED;
 	currentFact = NULL;
+	*buffer = 0;
 	return NOPROBLEM_BIT;
 }
 
 static FunctionResult CreateAttributeCode(char* buffer)
 { 
 	currentFact = NULL;
-	EatFact(ARGUMENT(1),0,true);
+	EatFact(ARGUMENT(1),buffer,0,true);
+	*buffer = 0;
 	if (currentFact && !(currentFact->flags & FACTATTRIBUTE)) return FAILINPUT_BIT;	// kill the whole line.
 	return (currentFact) ? NOPROBLEM_BIT : FAILRULE_BIT; // fails if pre-existing fact cant be killed because used in fact
 }
@@ -7122,11 +7089,13 @@ static FunctionResult FieldCode(char* buffer)
 {	
 	FACT* F;
 	char* word = ARGUMENT(1);
-	char word1[MAX_WORD_SIZE];
 	if (*word == '@') return FAILRULE_BIT;
 	F = FactTextIndex2Fact(word); 
 	if (!F || F > factFree) return FAILRULE_BIT;
-
+	
+	char* limit;
+	word = InfiniteStack(limit);
+	FunctionResult result = NOPROBLEM_BIT;
 	WORDP xxs = Meaning2Word(F->subject); // for debugging
 	WORDP xxv = Meaning2Word(F->verb);  // for debugging
 	WORDP xxo = Meaning2Word(F->object);  // for debugging
@@ -7136,36 +7105,35 @@ static FunctionResult FieldCode(char* buffer)
 		if (F->flags & FACTSUBJECT) 
 		{
 			if (*arg2 == 's') sprintf(buffer,(char*)"%d",F->subject);
-			else strcpy(buffer,WriteFact(Index2Fact(F->subject),false,word1,false,false));
+			else WriteFact(Index2Fact(F->subject),false,buffer,false,false);
 		}
-		else strcpy(buffer,WriteMeaning(F->subject));
+		else WriteMeaning(F->subject,false,buffer);
 	}
 	else if (*arg2 == 'v' || *arg2 == 'V') 
 	{
 		if (F->flags & FACTVERB) 
 		{
 			if (*arg2 == 'v') sprintf(buffer,(char*)"%d",F->verb);
-			else strcpy(buffer,WriteFact(Index2Fact(F->verb),false,word1,false,false));
+			else WriteFact(Index2Fact(F->verb),false,buffer,false,false);
 		}
-		else strcpy(buffer,WriteMeaning(F->verb));
+		else WriteMeaning(F->verb,false,buffer);
 	}
 	else if (*arg2 == 'o' || *arg2 == 'O') 
 	{
 		if (F->flags & FACTOBJECT) 
 		{
 			if (*arg2 == 'o') sprintf(buffer,(char*)"%d",F->object);
-			else strcpy(buffer,WriteFact(Index2Fact(F->object),false,word1,false,false));
+			else WriteFact(Index2Fact(F->object),false,buffer,false,false);
 		}
-		else strcpy(buffer,WriteMeaning(F->object));
+		else WriteMeaning(F->object,false,buffer);
 	}
 	else if (*arg2 == 'f' || *arg2 == 'F') 
 	{
 		sprintf(buffer,(char*)"%d",F->flags);
 	}
+	else if (impliedWild == ALREADY_HANDLED)  result = FAILRULE_BIT;	// must spread them
 	else if (*arg2 == 'a' || *arg2 == 'A') // all
 	{
-		char word[MAX_WORD_SIZE];
-		if (impliedWild == ALREADY_HANDLED)  return FAILRULE_BIT;	// must spread them
 		SetWildCardIndexStart(impliedWild); //   start of wildcards to spawn
 		if (F->flags & FACTSUBJECT)  sprintf(word,(char*)"%d",F->subject);
 		else  strcpy(word,Meaning2Word(F->subject)->word);
@@ -7183,25 +7151,23 @@ static FunctionResult FieldCode(char* buffer)
 	}
 	else if (*arg2 == 'r' || *arg2 == 'R') // all raw
 	{
-		char word[MAX_WORD_SIZE];
-		if (impliedWild == ALREADY_HANDLED)  return FAILRULE_BIT;	// must spread them
 		SetWildCardIndexStart(impliedWild); //   start of wildcards to spawn
 		if (F->flags & FACTSUBJECT)  sprintf(word,(char*)"%d",F->subject);
-		else  strcpy(word,WriteMeaning(F->subject));
+		else  WriteMeaning(F->subject,false,word);
 		if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" _%d = %s ",impliedWild,word);
 		SetWildCard(word,word,0,0);
 		if (F->flags & FACTVERB)  sprintf(word,(char*)"%d",F->verb);
-		else  strcpy(word,WriteMeaning(F->verb));
+		else WriteMeaning(F->verb,false,word);
 		if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" _%d = %s ",impliedWild+1,word);
 		SetWildCard(word,word,0,0);
 		if (F->flags & FACTOBJECT)  sprintf(word,(char*)"%d",F->object);
-		else  strcpy(word,WriteMeaning(F->object));
+		else  WriteMeaning(F->object,false,word);
 		if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" _%d = %s ",impliedWild+2,word);
 		SetWildCard(word,word,0,0);
 		impliedWild = ALREADY_HANDLED;	//   we did the assignment
 	}
-	else return FAILRULE_BIT;
-	return NOPROBLEM_BIT;
+	else result = FAILRULE_BIT;
+	return result;
 }
 
 static FunctionResult FindCode(char* buffer) // given a set, find the ordered position of the 2nd argument in it 
@@ -7323,8 +7289,8 @@ static FunctionResult IntersectFactsCode(char* buffer)
 	char from[MAX_WORD_SIZE];
 	char to[MAX_WORD_SIZE];
 	FunctionResult result;
-	word = ReadShortCommandArg(word,from,result,OUTPUT_KEEPQUERYSET|OUTPUT_NOTREALBUFFER);
-	word = ReadShortCommandArg(word,to,result,OUTPUT_KEEPQUERYSET|OUTPUT_NOTREALBUFFER);
+	word = ReadShortCommandArg(word,from,result,OUTPUT_KEEPQUERYSET);
+	word = ReadShortCommandArg(word,to,result,OUTPUT_KEEPQUERYSET);
 	int store = (impliedSet == ALREADY_HANDLED) ? 0 : impliedSet;
     SET_FACTSET_COUNT(store,0);
 
@@ -7415,8 +7381,8 @@ static FunctionResult UniqueFactsCode(char* buffer)
 	char from[MAX_WORD_SIZE];
 	char to[MAX_WORD_SIZE];
 	FunctionResult result;
-	word = ReadShortCommandArg(word,from,result,OUTPUT_KEEPQUERYSET|OUTPUT_NOTREALBUFFER);
-	word = ReadShortCommandArg(word,to,result,OUTPUT_KEEPQUERYSET|OUTPUT_NOTREALBUFFER);
+	word = ReadShortCommandArg(word,from,result,OUTPUT_KEEPQUERYSET);
+	word = ReadShortCommandArg(word,to,result,OUTPUT_KEEPQUERYSET);
 	int store = (impliedSet == ALREADY_HANDLED) ? 0 : impliedSet;
     SET_FACTSET_COUNT(store,0);
 
@@ -7562,7 +7528,7 @@ static FunctionResult IteratorCode(char* buffer)
 		return FAILRULE_BIT;
 	}
 	MEANING M = (*arg1 == '?') ? F->subject : F->object;
-	sprintf(buffer,(char*)"%s",WriteMeaning(M));
+	WriteMeaning(M,false,buffer);
 	if (!withinLoop && planning && !backtrackable) backtrackable = true;
 
 	if (holdIterator)
@@ -7604,18 +7570,17 @@ static FunctionResult QueryCode(char* buffer)
 		if (*word != '\'' || word[1] == '_') // quoted var or such but not quoted matchvar
 		{
 			FunctionResult result = NOPROBLEM_BIT;
-			if (*word == '@') ARGUMENT(argcount) = AllocateInverseString(word); // no eval of such
+			if (*word == '@') ARGUMENT(argcount) = AllocateStack(word); // no eval of such
 			else 
 			{
-				char* buf = AllocateBuffer(); // cannot use AllocateInverseString here
-				ReadShortCommandArg(word,buf,result);
-				ARGUMENT(argcount) = AllocateInverseString(buf);
-				FreeBuffer();
+				GetCommandArg(word,buffer,result,0);
+				ARGUMENT(argcount) = AllocateStack(buffer);
 			}
 			if (result != NOPROBLEM_BIT) return result;
 		}
-		else ARGUMENT(argcount) = AllocateInverseString(word);
+		else ARGUMENT(argcount) = AllocateStack(word);
 	}
+	*buffer = 0; // clear off old arg data
 
 	for (int i = argcount+1; i <= 9; ++i) ARGUMENT(i) = (char*)""; // default rest of args to ""
 	if (IsDigit(ARGUMENT(5)[0])) ReadInt(ARGUMENT(5),count); // defaults to ? if not given
@@ -7893,9 +7858,10 @@ static FunctionResult DeserializeCode(char* buffer)
 	{
 		arg = SkipWhitespace(arg);
 		if (*arg++ != '(') return FAILRULE_BIT;
-		arg = EatFact(arg);
+		arg = EatFact(arg,buffer);
 		factSet[store][++n] = currentFact;
 	}
+	*buffer = 0;
 	SET_FACTSET_COUNT(store,n);
 	impliedSet = ALREADY_HANDLED;
 	return NOPROBLEM_BIT;

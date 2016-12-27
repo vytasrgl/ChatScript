@@ -353,7 +353,7 @@ void DumpSentence(int start,int end)
 			break;
 		}
 	}
-	char* buffer = AllocateBuffer();
+	char* buffer = AllocateStack(NULL,MAX_BUFFER_SIZE); // local display
 	strcat(buffer,(char*)"  MainSentence: ");
 
 	for (i = start; i <= to; ++i)
@@ -520,7 +520,7 @@ void DumpSentence(int start,int end)
 
 	Log(STDTRACELOG,(char*)"%s\r\n",buffer);
 
-	FreeBuffer();
+	ReleaseStack(buffer);
 	if (to < end) DumpSentence(to+1,end); // show next piece
 #endif
  }

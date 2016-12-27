@@ -37,6 +37,13 @@ void Sortit(char* name,int oneline);
 void SortTopic(WORDP D,uint64 junk);
 void SortTopic0(WORDP D,uint64 junk);
 void C_MemStats(char* input);
+int Debugger(char* x);
+void CheckBreak(char* name,bool in,char* code = NULL,FunctionResult result = NOPROBLEM_BIT);
+void CheckAssignment(char* name, char* value);
+void CheckAbort(char* msg);
+void InitDebugger();
+void CheckRuleOutput(int topic, char* label, char* code);
+int ProcessAction(char* before, char* after, char* output, FunctionResult result);
 #endif
 
 TestMode DoCommand(char* input,char* output,bool authorize=true);

@@ -37,8 +37,8 @@ void CloseCache()
 	free(cacheBase);
 	cacheBase = NULL;
 #ifdef SEPARATE_STRING_SPACE 	
-	free(stringEnd);
-	stringEnd = NULL;
+	free(heapEnd);
+	heapEnd = NULL;
 #endif
 }
 
@@ -55,7 +55,7 @@ static void WriteCache(unsigned int which,size_t size)
 	*at = 0;
 	char filename[SMALL_WORD_SIZE];
 	strcpy(filename,ptr); // safe separation
-	*at = '\r';
+	*at = '\r'; // legal
 	clock_t start_time = ElapsedMilliseconds();
 
 	FILE* out = userFileSystem.userCreate(filename); // wb binary file (if external as db write should not fail)

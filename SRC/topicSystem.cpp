@@ -61,6 +61,7 @@ int outputRejoinderRuleID  = NO_REJOINDER;
 int outputRejoinderTopic = NO_REJOINDER;
 int inputRejoinderTopic = NO_REJOINDER;					// what topic were we in, that we should check for update
 int inputRejoinderRuleID = NO_REJOINDER;
+char* howTopic = "";
 
 // block erasing with this
 static char* keepSet[MAX_NO_ERASE];					// rules not authorized to erase themselves
@@ -376,7 +377,7 @@ char* GetVerify(char* tag,int &topicid, int &id) //  ~topic.#.#=LABEL<~topic.#.#
 	topicid = 0;
 	id = -1;
 	if (!*tag)  return "";
-	char* verify = AllocateBuffer();
+	char* verify = AllocateStack(NULL,MAX_WORD_SIZE); // verify input is small, this is safe
 	char topicname[MAX_WORD_SIZE];
 	strcpy(topicname,tag);
 	char* dot;
@@ -415,7 +416,6 @@ char* GetVerify(char* tag,int &topicid, int &id) //  ~topic.#.#=LABEL<~topic.#.#
 		FClose(in);
 	}
 	*rest = c;
-	FreeBuffer();
 	return verify;
 }
 
@@ -1113,6 +1113,7 @@ void SetRejoinder(char* rule)
 FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 {
 	bool oldnorejoinder = norejoinder;
+	char* start = buffer;
 	norejoinder = false;
 	unsigned int oldtrace = trace;
 	unsigned int oldtiming = timing;
@@ -1142,7 +1143,8 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 
 	if (trace & TRACE_FLOW)
 	{
-		char* output = AllocateBuffer();
+		char* limit;
+		char* output = InfiniteStack(limit); // transient
 		char* output1 = SkipWhitespace(ptr);
 		size_t len = strlen(output1);
 		if (len < 50) strcpy(output,output1);
@@ -1151,7 +1153,6 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 		pattern[30] = 0;
 		if (*label) Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(id),REJOINDERID(id),label,pattern,output); //  \\  blocks linefeed on next Log call
 		else  Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(id),REJOINDERID(id),pattern,output); //  \\  blocks linefeed on next Log call
-		FreeBuffer();
 	}
 
    //   now process response
@@ -1164,7 +1165,17 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	int startingIndex = responseIndex;
 	bool oldErase = ruleErased; // allow underling gambits to erase themselves. If they do, we dont have to.
 	ruleErased = false;
+#ifndef DISCARDTESTING
+	ChangeDepth(1,"^ruleoutput",false,ptr);
+#endif
+	char* oldcode = codeStart;
+	codeStart = ptr;
 	Output(ptr,buffer,result);
+#ifndef DISCARDTESTING
+	ChangeDepth(-1,"^ruleoutput",true);
+#endif
+	codeStart = oldcode;
+	if (*buffer == '`') buffer = strrchr(buffer,'`') + 1; // skip any output already put out
 
 	if (!ruleErased) ruleErased = oldErase;
 
@@ -1175,14 +1186,14 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	{
 		result = (FunctionResult) (result & (-1 ^ ENDRULE_BIT));
 		//   we will fail to add a response if:  we repeat  OR  we are doing a gambit or topic passthru
-		 madeResponse = (*buffer != 0);
-		if (*currentOutputBase) // dont look at "buffer" because it might have been reset
+		madeResponse = (*buffer != 0);
+		if (madeResponse) 
 		{
 			//   the topic may have changed but OUR topic matched and generated the buffer, so we get credit. change topics to us for a moment.
 			//   How might this happen? We generate output and then call poptopic to remove us as current topic.
 			//   since we added to the buffer and are a completed pattern, we push the entire message built so far.
 			//   OTHERWISE we'd leave the earlier buffer content (if any) for higher level to push
-			if (!AddResponse(currentOutputBase,responseControl))
+			if (!AddResponse(buffer,responseControl))
 			{
 				result = (FunctionResult) (result | FAILRULE_BIT);
  				madeResponse = false;
@@ -1195,6 +1206,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 			}
 	   }
 	}
+	*start = 0;
 
 	// now at pattern if there is one
 	if ((madeResponse && *label) || (*label == 'C' && label[1] == 'X' && label[2] == '_')) AddContext(currentTopicID,label);
@@ -1255,7 +1267,6 @@ FunctionResult TestRule(int ruleID,char* rule,char* buffer,bool refine)
 	currentRule = rule;
 	currentRuleID = ruleID;
 	currentRuleTopic = currentTopicID;
-
 	unsigned int oldtrace = trace;
 	bool traceChanged = false;
 	if (GetDebugRuleMark(currentTopicID,currentRuleID)) 
@@ -1268,16 +1279,16 @@ FunctionResult TestRule(int ruleID,char* rule,char* buffer,bool refine)
 	int oldstart = 0;
 	int end = 0;
 	int limit = 100; 
+	char label[MAX_LABEL_SIZE];
+    char* ptr = GetLabel(rule,label); // now at pattern if there is one
+	char id[SMALL_WORD_SIZE];
+	if (*label) sprintf(id,"%s.%s",GetTopicName(currentTopicID),label);
+	else sprintf(id,"%s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(ruleID),REJOINDERID(ruleID));
+	ChangeDepth(1,id,false,rule);
 
 retry:
 	FunctionResult result = NOPROBLEM_BIT;
 
-	char label[MAX_LABEL_SIZE];
-    char* ptr = GetLabel(rule,label); // now at pattern if there is one
-	if (*label)
-	{
-		int xx = 0; // debug hook
-	}
 	if (trace & (TRACE_PATTERN | TRACE_SAMPLE )  && CheckTopicTrace())
 	{
 		if (*label) Log(STDTRACETABLOG, "try %c:%d.%d %s @%d: \\",*rule,TOPLEVELID(ruleID),REJOINDERID(ruleID),label,start); //  \\  blocks linefeed on next Log call
@@ -1285,23 +1296,21 @@ retry:
 		if (trace & TRACE_SAMPLE && *ptr == '(') TraceSample(currentTopicID,ruleID);// show the sample as well as the pattern
 		if (*ptr == '(')
 		{
-			char* pattern = AllocateBuffer();
+			char* limit;
+			char* pattern = InfiniteStack(limit); // transient
 			GetPattern(rule,NULL,pattern);
 			CleanOutput(pattern);
 			Log(STDTRACELOG,(char*)"       pattern: %s",pattern);
-			FreeBuffer();
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
 	}
 	int whenmatched = 0;
-
-	ChangeDepth(1,(char*)"testRule"); // indent pattern and result
 	if (*ptr == '(') // pattern requirement
 	{
 		wildcardIndex = 0;
 		bool uppercasem = false;
 		whenmatched = 0;
- 		if (start > wordCount || !Match(ptr+2,0,start,(char*)"(",1,0,start,end,uppercasem,whenmatched,0,0)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
+ 		if (start > wordCount || !Match(buffer,ptr+2,0,start,(char*)"(",1,0,start,end,uppercasem,whenmatched,0,0)) result = FAILMATCH_BIT;  // skip paren and blank, returns start as the location for retry if appropriate
 		if (clearUnmarks) // remove transient global disables.
 		{
 			clearUnmarks = false;
@@ -1309,7 +1318,6 @@ retry:
 		}
 	}
 	ShowMatchResult(result, rule,label);
-	ChangeDepth(-1,(char*)"testRule");
 
 	if (result == NOPROBLEM_BIT) // generate output
 	{
@@ -1363,6 +1371,7 @@ retry:
 		}
 	}
 exit:
+	ChangeDepth(-1,id);
 	RESTOREOLDCONTEXT()
 	currentIterator = oldIterator;
 	
@@ -1567,6 +1576,12 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	topicBlock* block = TI(currentTopicID);
 	if (currentTopicID == 0 || !block->topicScript) return FAILTOPIC_BIT;
 	if (!active) active = (tokenFlags & QUESTIONMARK)  ? QUESTION : STATEMENT;
+
+	char* oldhow = howTopic;
+	if (active == QUESTION) howTopic = "question";
+	else if (active == STATEMENT) howTopic = "statement";
+	else howTopic = "gambit";
+
     FunctionResult result = RETRYTOPIC_BIT;
 	unsigned oldTopic = currentTopicID;
 	char* topicName = GetTopicName(currentTopicID);
@@ -1608,7 +1623,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE|TRACE_TOPIC) && CheckTopicTrace()) 
 		id = Log(STDTRACETABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
 
-	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(inverseStringDepth[globalDepth],locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(ReleaseStackDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 	if (timing & TIME_TOPIC && CheckTopicTime()) {
 		int diff = ElapsedMilliseconds() - start_time;
@@ -1625,6 +1640,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	}
 	timing = oldtiming;
 	currentTopicID = oldTopic;
+	howTopic = oldhow;
 	return (result & (RESTART_BIT|ENDSENTENCE_BIT|FAILSENTENCE_BIT|RETRYINPUT_BIT|RETRYSENTENCE_BIT|ENDINPUT_BIT|FAILINPUT_BIT|FAILRULE_BIT)) ? result : NOPROBLEM_BIT;
 }
 
@@ -1891,17 +1907,17 @@ void ResetTopics()
 static WORDP AllocateTopicMemory( int topic, char* name, uint64 flags, unsigned int topLevelRules, unsigned int gambitCount)
 {
 	topicBlock* block = TI(topic);
-	block->ruleOffset =  (unsigned int*)AllocateString(NULL,(1+topLevelRules), sizeof(int));		// how to find rule n
-	block->gambitTag =  (unsigned int*)AllocateString(NULL,( 1 + gambitCount),sizeof(int));     // how to find each gambit
-	block->responderTag =  (unsigned int*)AllocateString(NULL,(topLevelRules - gambitCount + 1),sizeof(int)); // how to find each responder
+	block->ruleOffset =  (unsigned int*)AllocateHeap(NULL,(1+topLevelRules), sizeof(int));		// how to find rule n
+	block->gambitTag =  (unsigned int*)AllocateHeap(NULL,( 1 + gambitCount),sizeof(int));     // how to find each gambit
+	block->responderTag =  (unsigned int*)AllocateHeap(NULL,(topLevelRules - gambitCount + 1),sizeof(int)); // how to find each responder
 	block->topicMaxRule = topLevelRules | MAKE_GAMBIT_MAX(gambitCount); // count of rules and gambits (and implicitly responders)
 	
 	unsigned int bytes = (topLevelRules + 7) / 8;	// bytes needed to bit mask the responders and gambits
 	if (!bytes) bytes = 1;
 
-	block->topicUsed =  (unsigned char*)AllocateString(NULL,bytes,1,true); // bits representing used up rules
-	block->topicDebugRule = (unsigned char*)AllocateString(NULL,bytes,1,true); // bits representing debug this rule
-	block->topicTimingRule = (unsigned char*)AllocateString(NULL, bytes, 1, true); // bits representing timing this rule
+	block->topicUsed =  (unsigned char*)AllocateHeap(NULL,bytes,1,true); // bits representing used up rules
+	block->topicDebugRule = (unsigned char*)AllocateHeap(NULL,bytes,1,true); // bits representing debug this rule
+	block->topicTimingRule = (unsigned char*)AllocateHeap(NULL, bytes, 1, true); // bits representing timing this rule
 	block->topicBytesRules = (unsigned short)bytes; // size of topic
 		
 	WORDP D = StoreWord(name); 
@@ -2152,7 +2168,7 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 		}
 		int datalen;
 		ptr = ReadInt(ptr,datalen);
-		char* space = AllocateString(0,datalen); // no closing null, just \r\n
+		char* space = AllocateHeap(0,datalen); // no closing null, just \r\n
 		char* copy = space;
 		int didread = (int)fread(copy,1,datalen-2,in); // not yet read \r\n 
 		copy[datalen-2] = 0;
@@ -2165,8 +2181,8 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 		// read \r\n or \n carefully, since windows and linux do things differently
 		char c = 0;
 		didread = fread(&c,1,1,in); // \n or \r\n
-		if (c != '\r' && c != '\n')  ReportBug((char*)"FATAL: failed to end topic/plan %s properly\r\n",name)
-		block->topicSourceFileName = AllocateString(ptr); // name of file topic came from
+		if (c != '\r' && c != '\n')  ReportBug((char*)"FATAL: failed to end topic/plan %s properly\r\n",name) // legal in topic files
+		block->topicSourceFileName = AllocateHeap(ptr); // name of file topic came from
 
 		//   bot restriction if any
 		char* start = copy;
@@ -2216,7 +2232,7 @@ static void ReadPatternData(const char* name,const char* layer,unsigned int buil
 		// if old was not previously pattern word and it is now, we will have to unwind on unload. If new word, word gets unwound automatically
 		if (old)
 		{
-			int* protect = (int*) AllocateString(NULL,3,4); // link + entry to refresh back to NOT pattern word
+			int* protect = (int*) AllocateHeap(NULL,3,4); // link + entry to refresh back to NOT pattern word
 			protect[0] = String2Index(unwindLayer2);
 			protect[1] = Word2Index(old);
 			protect[2] = PATTERN_UNWIND;
@@ -2552,7 +2568,7 @@ static void InitMacros(const char* name,const char* layer,unsigned int build)
 		ptr = ReadInt(ptr,val); 
 		D->x.macroFlags = (unsigned short) val; // controls on text string as KEEP_QUOTE or not 
 		ptr = ReadCompiledWord(ptr,tmpWord); // skip over readable arg count, has arg count embedded also
-		D->w.fndefinition = (unsigned char*) AllocateString(ptr);
+		D->w.fndefinition = (unsigned char*) AllocateHeap(ptr);
 	}
 	FClose(in);
 }
@@ -2671,7 +2687,7 @@ static void InitLayerMemory(const char* name, int layer)
 	}
 	int priorTopicCount = (layer) ? numberOfTopicsInLayer[layer - 1] : 0;
 	numberOfTopics = numberOfTopicsInLayer[layer] = priorTopicCount + counter;
-	topicBlockPtrs[layer] = (topicBlock*) AllocateString(NULL,counter+1,sizeof(topicBlock),true); // reserved space for each topic to have its data
+	topicBlockPtrs[layer] = (topicBlock*) AllocateHeap(NULL,counter+1,sizeof(topicBlock),true); // reserved space for each topic to have its data
 	for (int i = priorTopicCount + 1; i <= numberOfTopics; ++i) TI(i)->topicName = "";
 	if (layer == 0)  TI(0)->topicName = "";
 }
@@ -2755,13 +2771,13 @@ FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 	if (layer != 2)
 	{
 		char data[MAX_WORD_SIZE];
-		sprintf(data,(char*)"Build%s:  dict=%ld  fact=%ld  stext=%ld Compiled:%s by version %s \"%s\"\r\n",name,
+		sprintf(data,(char*)"Build%s:  dict=%ld  fact=%ld  heap=%ld Compiled:%s by version %s \"%s\"\r\n",name,
 			(long int)(dictionaryFree-dictionaryPreBuild[layer]),
 			(long int)(factFree-factsPreBuild[layer]),
-			(long int)(stringsPreBuild[layer]-stringFree),
+			(long int)(stringsPreBuild[layer]-heapFree),
 			timeStamp[layer],compileVersion[layer],buildStamp[layer]);
 		if (server)  Log(SERVERLOG, "%s",data);
-		else printf((char*)"%s",data);
+		printf((char*)"%s",data);
 	}
 	
 	LockLayer(layer,false);
@@ -2777,14 +2793,14 @@ void ResetContext()
 void LoadTopicSystem() // reload all topic data
 {
 	//   purge any prior topic system - except any patternword marks made on basic dictionary will remain (doesnt matter if we have too many marked)
-	ReturnDictionaryToWordNet(); // return dictionary and string space to pretopic conditions
+	ReturnDictionaryToWordNet(); // return dictionary and heap space to pretopic conditions
 	*timeStamp[0] = *timeStamp[1] = *timeStamp[2] =0;
 	ResetContext(); // the history
 	topicStack[0] = 0;
 	currentTopicID = 0;
 	ClearBotVariables();
 	
-	printf((char*)"WordNet: dict=%ld  fact=%ld  stext=%ld %s\r\n",(long int)(dictionaryFree-dictionaryBase),(long int)(factFree-factBase),(long int)(stringBase-stringFree),dictionaryTimeStamp);
+	printf((char*)"WordNet: dict=%ld  fact=%ld  heap=%ld %s\r\n",(long int)(dictionaryFree-dictionaryBase),(long int)(factFree-factBase),(long int)(heapBase-heapFree),dictionaryTimeStamp);
 
 	LoadLayer(0,(char*)"0",BUILD0);
 	UnlockLevel();

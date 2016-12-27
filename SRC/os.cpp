@@ -5,7 +5,9 @@ bool showDepth = false;
 char serverLogfileName[200];				// file to log server to
 char logFilename[MAX_WORD_SIZE];			// file to user log to
 bool logUpdated = false;					// has logging happened
-char logmainbuffer[MAX_BUFFER_SIZE];					// where we build a log line
+int logsize = MAX_BUFFER_SIZE;
+int outputsize = MAX_BUFFER_SIZE;
+char* logmainbuffer = NULL;					// where we build a log line
 static bool pendingWarning = false;			// log entry we are building is a warning message
 static bool pendingError = false;			// log entry we are building is an error message
 struct tm* ptm;
@@ -25,9 +27,9 @@ static char encryptServer[200];
 static char decryptServer[200];
 
 // buffer information
-#define MAX_BUFFER_COUNT 30
-unsigned int maxInverseString = 0;
-unsigned int maxInverseStringGap = 0xffffffff;
+#define MAX_BUFFER_COUNT 80
+unsigned int maxReleaseStack = 0;
+unsigned int maxReleaseStackGap = 0xffffffff;
 
 unsigned int maxBufferLimit = MAX_BUFFER_COUNT;		// default number of system buffers for AllocateBuffer
 unsigned int maxBufferSize = MAX_BUFFER_SIZE;		// how big std system buffers from AllocateBuffer should be
@@ -38,12 +40,12 @@ char* buffers = 0;							//   collection of output buffers
 #define MAX_OVERFLOW_BUFFERS 20
 static char* overflowBuffers[MAX_OVERFLOW_BUFFERS];	// malloced extra buffers if base allotment is gone
 
-unsigned char memDepth[512];				// memory usage at depth
-char* inverseStringDepth[512];				// inverseString at start of depth
-static unsigned int stringDepth[512];				// string at start of depth
-char* nameDepth[512];				// who are we?
-char* ruleDepth[512];				// current rule
-char* tagDepth[512][25];			// topicid.toplevelid.rejoinderid (5.5.5)
+unsigned char memDepth[MAX_GLOBAL];				// memory usage at depth
+char* ReleaseStackDepth[MAX_GLOBAL];				// ReleaseStack at start of depth
+static unsigned int stringDepth[MAX_GLOBAL];				// string at start of depth
+char* nameDepth[MAX_GLOBAL];				// who are we?
+char* ruleDepth[MAX_GLOBAL];				// current rule
+char* tagDepth[MAX_GLOBAL][25];			// topicid.toplevelid.rejoinderid (5.5.5)
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
@@ -115,6 +117,11 @@ void JumpBack()
 
 void myexit(char* msg, int code)
 {	
+
+#ifndef DISCARDTESTING
+	CheckAbort(msg);
+#endif
+
 #ifndef DISCARDPOSTGRES
 	if (postgresparams)  
 	{
@@ -155,7 +162,10 @@ void ResetBuffers()
 	globalDepth = 0;
 	bufferIndex = baseBufferIndex;
 	memset(memDepth,0,sizeof(memDepth)); 
-	memset(inverseStringDepth,0,sizeof(inverseStringDepth)); 
+	memset(ReleaseStackDepth,0,sizeof(ReleaseStackDepth)); 
+	outputNest = oldOutputIndex = 0;
+	currentRuleOutputBase = currentOutputBase = ourMainOutputBuffer;
+	currentOutputLimit = outputsize;
 }
 
 void CloseBuffers()
@@ -203,11 +213,6 @@ char* AllocateBuffer()
 	*buffer++ = 0;	//   prior value
 	*buffer = 0;	//   empty string
 	return buffer;
-}
-
-char* AllocateAlignedBuffer()
-{
-	return AllocateBuffer() - 1;
 }
 
 void FreeBuffer()
@@ -1029,42 +1034,51 @@ void BugBacktrace(FILE* out)
 	{
 		strncpy(rule,ruleDepth[i],50);
 		rule[50] = 0;
-		fprintf(out,"BugDepth %d: stringused: %d buffers:%d inverseused: %d %s - %s\r\n",
-			i,stringDepth[i],memDepth[i],stringFree - inverseStringDepth[globalDepth], nameDepth[i],rule);
+		fprintf(out,"BugDepth %d: stringused: %d buffers:%d stackused: %d %s - %s\r\n",
+			i,stringDepth[i],memDepth[i],heapFree - ReleaseStackDepth[globalDepth], nameDepth[i],rule);
 	}
 }
 
-void ChangeDepth(int value,char* where)
+void ChangeDepth(int value,char* where,bool nostackCutback,char* code,FunctionResult result)
 {
 	if (value < 0)
 	{
+#ifndef DISCARDTESTING
+		CheckBreak(where,false,NULL,result); // debugger hook
+#endif
 		if (memDepth[globalDepth] != bufferIndex)
 		{
 			ReportBug((char*)"depth %d not closing bufferindex correctly at %s bufferindex now %d was %d\r\n",globalDepth,where,bufferIndex,memDepth[globalDepth]);
 			memDepth[globalDepth] = 0;
 		}
-		stringInverseFree = inverseStringDepth[globalDepth]; // deallocoate ARGUMENT space
+		// engine functions that are streams should not destroy potential local adjustments
+		if (!nostackCutback) stackFree = ReleaseStackDepth[globalDepth]; // deallocoate ARGUMENT space
 		globalDepth += value;
 		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d\r\n", globalDepth,where, bufferIndex);
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d stringused: %d inverseused:%d\r\n",globalDepth, where, bufferIndex,stringBase - stringFree,stringInverseFree - stringInverseStart);
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d stringused: %d stackused:%d\r\n",globalDepth, where, bufferIndex,heapBase - heapFree,stackFree - stackStart);
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 		nameDepth[globalDepth] = where;
 		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
 		sprintf((char*)tagDepth[globalDepth],"%d.%d.%d",currentTopicID,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
-		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
-		stringDepth[globalDepth] =  stringBase - stringFree;		
+		ReleaseStackDepth[globalDepth] = stackFree; // define argument start space
+		stringDepth[globalDepth] =  heapBase - heapFree;	
+
+#ifndef DISCARDTESTING
+		CheckBreak(where,true,code); // debugger hook
+#endif
 	}
 	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
-	if (globalDepth >= 511) ReportBug((char*)"FATAL: globaldepth too deep at %s\r\n",where);
+	if (globalDepth >= (MAX_GLOBAL-1)) ReportBug((char*)"FATAL: globaldepth too deep at %s\r\n",where);
+	if (globalDepth > maxGlobalSeen) maxGlobalSeen = globalDepth;
 }
 
 bool LogEndedCleanly()
 {
-	return (logLastCharacter == '\n' || !logLastCharacter);
+	return (logLastCharacter == '\n' || !logLastCharacter); // legal
 }
 
 unsigned int Log(unsigned int channel,const char * fmt, ...)
@@ -1106,6 +1120,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
 	static int priordepth = 0;
 	char* logbase = logmainbuffer;
+	if (!logbase) logmainbuffer = logbase = (char*) malloc(logsize);
 
 	// start writing normal data here
     char* at = logbase;
@@ -1144,10 +1159,10 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		}
 		else 
 		{
-			if (logLastCharacter != '\n') 
+			if (logLastCharacter != '\n') // log legal
 			{
 				*at++ = '\r'; //   close out this prior thing
-				*at++ = '\n';
+				*at++ = '\n'; // log legal
 			}
 			while (ptr[1] == '\n' || ptr[1] == '\r') // we point BEFORE the format
 			{
@@ -1238,10 +1253,19 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
         at += strlen(at);
 		if (!ptr) break;
-		if ((at-logbase) >= (MAX_BUFFER_SIZE - SAFE_BUFFER_MARGIN)) break; // prevent log overflow
+		if ((at-logbase) >= (logsize - SAFE_BUFFER_MARGIN)) break; // prevent log overflow
     }
     *at = 0;
     va_end(ap); 
+
+
+	if (channel == STDDEBUGLOG) // debugger output
+	{
+		if (debugOutput) (*debugOutput)(logbase);
+		else printf("%s",logbase);
+		inLog = false;
+		return ++id;
+	}
 
 	logLastCharacter = (at > logbase) ? *(at-1) : 0; //   ends on NL?
 	if (fmt && !*fmt) logLastCharacter = 1; // special marker 
@@ -1290,15 +1314,15 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (*currentFilename) fprintf(bug,(char*)"BUG in %s at %d: %s ",currentFilename,currentFileLine,readBuffer);
 			if (!compiling && !loading && channel == BUGLOG && *currentInput)  
 			{
-				char* buffer = AllocateBuffer();
+				char* limit;
+				char* buffer = InfiniteStack(limit); // transient
 				if (buffer) fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located,currentInput);
 				else fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located);
-				FreeBuffer();
 			}
 			fwrite(logbase,1,bufLen,bug);
 			if (!compiling && !loading) 
 			{
-				fprintf(bug,(char*)"MinInverseStringGap %dMB MinStringAvailable %dMB\r\n",maxInverseStringGap/1000000,minStringAvailable/1000000);
+				fprintf(bug,(char*)"MinReleaseStackGap %dMB MinHeapAvailable %dMB\r\n",maxReleaseStackGap/1000000,minStringAvailable/1000000);
 				fprintf(bug,(char*)"MaxBuffers used %d of %d\r\n\r\n",maxBufferUsed,maxBufferLimit);
 				BugBacktrace(bug);
 			}
@@ -1332,7 +1356,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	}
 
 	if (server){} // dont echo  onto server console 
-    else if ((!noecho && (echo || localecho || trace & TRACE_ECHO) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) 
+    else if ((!noecho && (echo || localecho || trace & TRACE_ECHO) && channel == STDUSERLOG) ) 
 		fwrite(logbase,1,bufLen,stdout);
 	bool doserver = true;
 
