@@ -854,7 +854,7 @@ because you won't have the script compiler protecting you and properly formattin
 See also Advanced Variables.
 
 
-## Setting Match Position - `@_3+` `@_3-`
+## Setting Match Position - `@_3+` `@_3-`  `@_3`
 
 You can "back up" and continue matching from a prior match position using `@` followed
 by a match variable previously set. E.g.
@@ -877,6 +877,14 @@ Forward matching is `@_n+` and backward matching is `@_n-`.
 
 Note when using backwards matching, `<` and `>` flip meanings. `>` means start at the end
 (since you are moving backwards) and `<` means confirm we are at start.
+
+`@_3` is a special positional matching called an anchor. It not only makes the position that given and matching forward
+thereafter, but it also acts as an item that must itself be matched. E.g., for this pattern
+`( @_3 is my @_4 life)`
+The position pointer moves to @_3 because as the opening element it can match anywhere in a sentence, just
+like a word would. But after it matches (example at word 2) then `is` must be word 3 and `my` must be word 4
+and `@_4` must start at word 5 and after it completes then `life` must be the next word. Whereas
+`(< @_3 is)` implies that `@_3` is at position 1, since `<` says this is sentence start.
 
 
 ## Backward Wildcards
@@ -1164,6 +1172,8 @@ u: () $tmp = [ hi ^"there \"john\"" ]
 ```
 the quote inside the format string need protecting using `\"`. 
 You can write `\n`, `\r`, `\t` and those will be translated into newline, carriage return, and tab.
+However, you should avoid `\r` because on LINUX it is not needed and in Windows the system will change
+`\n` to carriage-return and newline.
 
 Format strings evaluate themselves as soon as they can. If you write:
 ```
@@ -1804,7 +1814,7 @@ CS can cancel any of these by sending an oob message with a milliseconds of 0.
 e.g. `[loopback=0 callback=0 alarm=0]` cancels any pending callbacks into the future.
 
 
-# System callback functions
+# System callback functions 
 
 `outputmacro: ^CSBOOT()`
 
@@ -1835,6 +1845,11 @@ the topic is processed. You will be given the name of the topic and the text val
 representing what it returned. E.g., NOPROBLEM. The range of names of these are
 defined in mainsystem.h (minus _BIT) but are your basic FAILTOPIC, etc.
 
+```AutoInitFile``` 
+
+When a user is initialized for the first time, the system will attempt to read a top-level file named for 
+the user as `bruce-init.txt` (if user is bruce). If found, commands will be executed from there (analogous
+to the `:source` command. This will be read after any `source=` command line parameter.
 
 
 # Advanced `:build`
@@ -2408,19 +2423,23 @@ These can never erase themselves directly, so the erasure will again rebound to 
 Note that a topic declared system NEVER erases its rules, neither gambits nor responders,
 even if you put ^erase() on a rule.
 
-> How can I get the original input when I have a pattern like u: (~emogoodbye)
+> How can I get the original input when I have a pattern like 
+```
+u: (~emogoodbye)
+```
 
 To get the original input, you need to do the following:
 ```
 u: (~emogoodbye)
-    $$tmptoken = $cs_token
+    $tmptoken = $cs_token
     $cs_token = 0
     ^retry(SENTENCE)
 ```
 and at the beginning of your main program you need a rule like this:
 ```
-u: ($$tmptoken _* )
-    $cs_token = $$tmptoken
+u: ($tmptoken _* )
+    $cs_token = $tmptoken
+    $tmptoken = null
 ```
 
 ... now that you have the original sentence, you decide what to do
@@ -2656,6 +2675,15 @@ to have enough normal working room.
 
 `output=nnn` limits output line length for a bot to that amount (forcing crnl as needed). 0
 is unlimited.
+
+`outputsize=80000` is the maximum output that can be shipped by a volley from the bot without getting truncated.
+Actually the value is somewhat less, because routines generating partial data for later incorporation into
+the output also use the buffer and need some usually small amount of clearance. You can find out how close
+you have approached the max in a session by typing `:memstats`. If you need to ship a lot of data around,
+you can raise this into the megabyte range and expect CS will continue to function. 80K is the default.
+
+For normal operation, when you change `outputsize` you should also change `logsize` to be at least as much, so that 
+the system can do complete logs. You are welcome to set log size lots smaller if you don't care about the log.
 
 
 ## File options

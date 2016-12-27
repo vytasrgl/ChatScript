@@ -129,7 +129,7 @@ part-of-speech (i.e., it would match `swim~v` as well as `swim~n`).
 
 `~number` is not a part of speech, but is comprise of `~noun_number` (a normal number
 value like _17_ or _seventeen_) and `~adjective_number` (also a normal numeral value and also
-`~placenumber`) like first.
+`~placenumber`) like first. Additionally, there is `~integer`, `~float`, `~positiveinteger`, and `~negativeinteger`.
 
 To can be a preposition or it can be special. When used in the infinitive phrase To go, it is
 marked `~to_infinitive` and is followed by `~noun_infinitive`.
@@ -444,7 +444,7 @@ contents.
 | interchange variable | description |
 | -------------------  | ------- |
 | `$cs_token`          |  described extensively above| 
-| `$cs_response`       |  controls automatic handling of outputs to user. By default it consists of `$cs_response = #Response_upperstart | #response_removespacebeforecomma | #response_alterunderscores | #response_removetilde` If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. <br>`#response_upperstart` – makes the first letter of an output sentence capitalized, <br>`#Response_removespacebeforecomma` – does the obvious, <br>`#Response_alterunderscores` - converts single underscores to spaces and double underscores to singles (eg for a web url) |
+| `$cs_response`       |  controls automatic handling of outputs to user. By default it consists of `$cs_response = #Response_upperstart | #response_removespacebeforecomma | #response_alterunderscores | #response_removetilde` If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. <br>`#response_noconvertspecial` – leave escaped n r and t alone in output and ^log, <br>`#response_upperstart` – makes the first letter of an output sentence capitalized, <br>`#Response_removespacebeforecomma` – does the obvious, <br>`#Response_alterunderscores` - converts single underscores to spaces and double underscores to singles (eg for a web url) |
 | `$cs_jsontimeout`    |  seconds before JsonOpen declares a time out failure. If unspecified the default is 300 | 
 | `$cs_crashmsg`       |  in server mode, what to say if the server crashes and we return a message to the user. By default the message is _Hey, sorry. I forgot what I was thinking about._ | 
 | `$cs_abstract`       |  used with :abstract | 

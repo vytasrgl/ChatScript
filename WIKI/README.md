@@ -66,7 +66,10 @@ NLTK means nothing to you.
 <br>ChatScript support for Json
 
 * [ChatScript Debugging Manual](ChatScript-Debugging-Manual.md)
-<br>The features of CS that support debugging, including tracing.
+<br>The features of CS that support debugging, including tracing. See next manual below for Debugger.
+
+ * [ChatScript Debugger](ChatScript-Debugger.md)
+<br>Built-in text oriented debugger.
 
 * [ChatScript Finalizing a Bot](ChatScript-Finalizing-A-Bot.md)
 <br>Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely

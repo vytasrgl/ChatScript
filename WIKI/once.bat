@@ -1,1 +1,2 @@
- pandoc ChatScript-Advanced-User-Manual.md -s -o ../PDFDOCUMENTATION/ChatScript-Advanced-User-Manual.pdf
+ pandoc ChatScript-Debugger.md -s -o ../PDFDOCUMENTATION/ChatScript-Debugger.pdf
+ pandoc ../README.md -s -o ../README.pdf

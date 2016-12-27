@@ -537,7 +537,7 @@ it will start at `_3`.
 The items you get are: seconds, minutes, hours, date in month, month name, year, day name of
 week.
 
-### `^timetoeconds`( seconds minutes hours date-of-month month year )
+### `^timetoseconds`( seconds minutes hours date-of-month month year )
 This converts time data since 1970 (Unix epoch time). Analogous to `%fulltime`, which returns the
 current time in seconds. Month can be number 1-12 or name of month or abbreviation of
 month.
@@ -595,6 +595,7 @@ These flags apply to output as it is sent to the user:
 | `RESPONSE_REMOVESPACEBEFORECOMMA` | as the name says                              |
 | `RESPONSE_ALTERUNDERSCORES`       | convert underscores to spaces                 |
 | `RESPONSE_REMOVETILDE`            | remove leading ~ on class names               |
+| `RESPONSE_NOCONVERTSPECIAL`    | don't convert ecaped n, r, and t into ascii direct characters  |
 
 ### `^preprint`( stream )
 The stream will be put into output, but it will be placed before all
@@ -1106,6 +1107,8 @@ close the file use
 ^log(CLOSE TMP/mylog.txt)
 ```
 
+By default, ^log acts like output to user, converting escaped nr, and t into their actual ascii characters.
+The flag RESPONSE_NOCONVERTSPECIAL passed in will block this.
 
 # JSON Functions 
 

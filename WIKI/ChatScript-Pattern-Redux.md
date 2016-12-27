@@ -402,7 +402,7 @@ When using an `*` word, you can use `.` to indicate exactly one character of any
 `u: ( sit*u.tion)` matches _situation_
 
 
-### Altering Position - `<` `>` `@_0+`
+### Altering Position - `<` `>` `@_0+`  `@_0-`  `@_0`
 
 When you put `<` in your pattern, it doesn't actually match anything. It means "reset position" to the start
 of the sentence.
@@ -425,9 +425,9 @@ will continue normally increasing thereafter.
 You can suffix the match variable with `–` instead, to tell
 CS to begin matching in reverse order in the sentence, i.e., matching backwards to the start of the
 sentence. 
-When you use `+`, the position starts at the end of the match. When you use `-`, the position
-starts at the start of the match.
 
+When you use `+`, the position starts at the end of the match. When you use `-`, the position
+starts at the start of the match. 
 ```
 u: ( _home is @_0- pretty)
 ```
@@ -435,6 +435,13 @@ matches _my pretty home is near here_.
 
 Note when you use `–` for reverse matching, the behavior of `<` and `>` changes. 
 `>` sets a position and `<` confirms it instead of the way it is for `+`.
+
+When you omit either + or -, you create a matchable anchor like `@_0`. It represents
+what was found at that position, and during the pattern must also match at that location now.
+```
+u: ( _@0 is @_1)
+```
+The above pattern says that the word `is` must be precisely found between the locations referenced by @0 and @1.
 
 ## Debugging
 

@@ -5,13 +5,14 @@ pandoc ChatScript-Debugging-Manual.md -s -o ../PDFDOCUMENTATION/ChatScript-Debug
 pandoc ChatScript-Fact-Manual.md -s -o ../PDFDOCUMENTATION/ChatScript-Fact-Manual.pdf
 pandoc ChatScript-Finalizing-A-Bot.md -s -o ../PDFDOCUMENTATION/ChatScript-Finalizing-A-Bot.pdf
 pandoc ChatScript-Json.md -s -o ../PDFDOCUMENTATION/ChatScript-Json.pdf
+pandoc ChatScript-Debugger.md -s -o ../PDFDOCUMENTATION/ChatScript-Debugger.pdf
 pandoc ChatScript-Memorization.md -s -o ../PDFDOCUMENTATION/ChatScript-Memorization.pdf
 pandoc ChatScript-Overview-of-Input-to-Output.md -s -o ../PDFDOCUMENTATION/ChatScript-Overview-of-Input-to-Output.pdf
 pandoc ChatScript-Pattern-Redux.md -s -o ../PDFDOCUMENTATION/ChatScript-Pattern-Redux.pdf
 pandoc ChatScript-System-Functions-Manual.md -s -o ../PDFDOCUMENTATION/ChatScript-System-Functions-Manual.pdf
 pandoc ChatScript-System-Variables-and-Engine-defined-Concepts.md -s -o ../PDFDOCUMENTATION/ChatScript-System-Variables-and-Engine-defined-Concepts.pdf
 pandoc Installing-and-Updating-ChatScript.md -s -o ../PDFDOCUMENTATION/Installing-and-Updating-ChatScript.pdf
-pandoc Documentation-Guide.md -s -o ../PDFDOCUMENTATION/README.pdf
+pandoc README.md -s -o ../PDFDOCUMENTATION/README.pdf
 
 pandoc CLIENTS-AND-SERVERS/ChatScript-Amazon-Server.md -s -o ../PDFDOCUMENTATION/CLIENTS-AND-SERVERS/ChatScript-Amazon-Server.pdf
 pandoc CLIENTS-AND-SERVERS/ChatScript-ClientServer-Manual.md -s -o ../PDFDOCUMENTATION/CLIENTS-AND-SERVERS/ChatScript-ClientServer-Manual.pdf
