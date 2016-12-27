@@ -1,9 +1,5 @@
 # ChatScript Advanced User's Manual
 
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
-
-> Revision 12/7/2016 cs6.91
-
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
 * [Advanced Topics](ChatScript-Advanced-User-Manual.md#advanced-topics)
@@ -1546,7 +1542,7 @@ early termination effects.
 # System Functions
 
 There are many system functions to perform specific tasks. These are enumerated in the
-ChatScript System Function manual and the ChatScript Facts manual.
+[ChatScript System Functions Manual](ChatScript-System-Functions-Manual.md) manual and the [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
 
 
 ## Randomized Output Revisited `[ ]`
@@ -1987,7 +1983,7 @@ $tmp = ##first
 
 ## Defining private Queries 
 
-see fact manual.
+see [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
 
 
 ## Documenting variables, functions, factsets, and match variables
@@ -2271,7 +2267,7 @@ The user prompt wants to use the user's login name so it is a format string, whi
 processed and stored on the user prompt variable. The botprompt wants to force a space
 at the end, so it also uses a format string to store on the bot prompt variable.
 
-> In color.tbl is there a reason that the color grey includes both building and ~building?
+### In color.tbl is there a reason that the color grey includes both building and ~building?
 
 Yes. Rules often want to distinguish members of sets that have supplemental data from
 ones that don't. The set of ~musician has extra table data, like what they did and doesn't
@@ -2281,7 +2277,7 @@ has supplemental data available.
 This is made clearer when the set is named something list `~xxxlist`. 
 But the system evolved and is not consistent.
 
-> How are double-quoted strings handled?
+### How are double-quoted strings handled?
 
 First, note that you are not allowed strings that end in punctuation followed by a space.
 This string _"I love you. "_ is illegal. There is no function adding that space serves.
@@ -2322,7 +2318,7 @@ spacing and punctuation, and stripping off the double quotes.
 u: (test) ^"This $var is good." # if $var is kid the result is This kid is good.
 ```
 
-> What really happens on the output side of a rule?
+### What really happens on the output side of a rule?
 
 Well, really, the system "evaluates" every token. Simple English words and punctuation
 always evaluate to themselves, and the results go into the output stream. Similarly, the
@@ -2363,7 +2359,7 @@ value.
 Calling a function discards any output stream generated and aside from other side
 effects means did the function fail (return a fail code) or not.
 
-> How does the system tell a function call w/o ^ from English
+### How does the system tell a function call w/o ^ from English ?
 
 If like is defined as an output macro and if you write:
 ```
@@ -2379,7 +2375,7 @@ When it is a user function, it looks to see if the
 Contiguous is treated as a function call and apart is treated as English. 
 This is not done for built-ins because it's more likely you spaced it accidently than that you intended it to be English.
 
-> How should I go about creating a responder?
+### How should I go about creating a responder?
 
 First you have to decide the topic it is in and insure the topic has appropriate keywords if
 needed.
@@ -2390,7 +2386,7 @@ sentence. This will tell you how the system will tokenize it and what concepts i
 trigger. This will help you decide what the structure of the pattern should be and how
 general you can make important keywords.
 
-What really happens with rule erasure?
+### What really happens with rule erasure?
 
 The system's default behavior is to erase rules that put output into the output stream, so
 they won't repeat themselves later. You can explicitly make a rule erase with `^erase()` and
@@ -2408,7 +2404,7 @@ These can never erase themselves directly, so the erasure will again rebound to 
 Note that a topic declared system NEVER erases its rules, neither gambits nor responders,
 even if you put ^erase() on a rule.
 
-> How can I get the original input when I have a pattern like u: (~emogoodbye)
+### How can I get the original input when I have a pattern like `u: (~emogoodbye)` ?
 
 To get the original input, you need to do the following:
 ```
@@ -2614,8 +2610,10 @@ Chatscript statically allocates its memory and so (barring unusual circumstance)
 allocate memory every during its interactions with users. These parameters can control
 those allocations. Done typically in a memory poor environment like a cellphone.
 
-`buffer=15` - how many buffers to allocate for general use (12 is default)
-<br>`buffer=15x80` – allocate 15 buffers of 80k bytes each (default buffer size is 80k)
+| option       | description
+|--------------|-----------------------------------------------------------------------
+|`buffer=15`   | how many buffers to allocate for general use (12 is default)
+|`buffer=15x80`| allocate 15 buffers of 80k bytes each (default buffer size is 80k)
 
 Most chat doesn't require huge output and buffers around 20k each will be more than
 enough. 12 buffers is generally enough too (depends on recursive issues in your scripts).
@@ -2624,12 +2622,13 @@ If the system runs out of buffers, it will perform emergency allocations to try 
 but in limited memory environments (like phones) it might fail. You are not allowed to
 allocate less than a 20K buffer size.
 
-`dict=n` - limit dictionary to this size entries
-<br>`text=n` - limit string space to this many bytes
-<br>`fact=n` - limit fact pool to this number of facts
-<br>`hash=n` – use this hash size for finding dictionary words (bigger = faster access)
-<br>`cache=1x50` – allocate a 50K buffer for handling 1 user file at a time. 
-A server might want to cache multiple users at a time.
+| option       | description
+|--------------|-----------------------------------------------------------------------
+| `dict=n`     | limit dictionary to this size entries
+| `text=n`     | limit string space to this many bytes
+| `fact=n`     | limit fact pool to this number of facts
+| `hash=n`     | use this hash size for finding dictionary words (bigger = faster access)
+| `cache=1x50` | allocate a 50K buffer for handling 1 user file at a time. A server might want to cache multiple users at a time.
 
 A default version of ChatScript will allocate much more than it needs, because it doesn't
 know what you might need. 
@@ -2660,44 +2659,29 @@ is unlimited.
 
 ## File options
 
-`livedata=xxx` – name relative or absolute path to your own private LIVEDATA folder. Do
-not add trailing / on this path. 
-Recommended is you use `RAWDATA/yourbotfolder/LIVEDATA` to keep all your data in one place. 
+| option | description
+|--------|-----------------------------------------------------------------------------
+|`livedata=xxx` | name relative or absolute path to your own private LIVEDATA folder. Do not add trailing / on this path<br>Recommended is you use `RAWDATA/yourbotfolder/LIVEDATA` to keep all your data in one place. You can have your own live data, yet use ChatScripts default `LIVEDATA/SYSTEM` and `LIVEDATA/ENGLISH` by providing paths to the `system=` and `english=` parameters as well as the `livedata=` parameter
+|`users=xxx` | name relative or absolute path to where you want the USERS folder to be. Do not add trailing `/`
+|`logs=xxx` | name relative or absolute path to where you want the LOGS folder to be. Do not add trailing `/`
+|`trace` | turn on all tracing.
+|`redo` | see documentation for :redo in [ChatScript Debugging Manual](ChatScript-Debugging-Manual.md) manual
+|`userfacts=n` | limit a user file to saving only the n most recently created facts of a user (this does not include facts stored in fact sets). Overridden if the user has `$cs_userfactlimit` set to some value
+|`userlog` | Store a user-bot log in USERS directory (default)
+|`nouserlog` | Don't store a user-bot log
+|`source=xxxx` | Analogous to the `:source` command. The file is executed
+|`login=xxxx` | The same as you would name when asked for a login, this avoids having to ask for it. Can be `login=george` or `login=george:harry` or whatever
+|`build0=filename` | runs `:build` on the filename as level0 and exits with 0 on success or 4 on
+failure
+|`build1=filename` | runs :build on the filename as level1 and exits with 0 on success or 4 on failure. Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0
+|`debug=:xxx` | xxx runs the given debug command and then exits 
+Useful for `:trim`, for example or more specific `:build` commands
+|`param=xxxxx` | data to be passed to your private code
+|`login=xxxxx` | initial user id (bypass asking you for user)
+|`encrypt=xxxxx` | data evailable to encrpytion code
+|`decrypt=xxxxx` | data evailable to decrpytion code
+|`bootcmd=xxx` | runs this command string before CSBOOT is run; use it to trace the boot process
 
-You can have your own live data, yet use ChatScripts default `LIVEDATA/SYSTEM` and 
-`LIVEDATA/ENGLISH` by providing paths to the `system=` and `english=` parameters as well as the 
-`livedata=` parameter.
-
-`users=xxx` – name relative or absolute path to where you want the USERS folder to be.
-Do not add trailing /.
-<br>`logs=xxx` – name relative or absolute path to where you want the LOGS folder to be. Do
-not add trailing /.
-
-Other options:
-`trace` – turn on all tracing.
-
-`redo` – see documentation for :redo in debugging manual
-
-`userfacts=n` limit a user file to saving only the n most recently created facts of a user
-(this does not include facts stored in fact sets). 
-Overridden if the user has `$cs_userfactlimit` set to some value.
-<br>`userlog` - Store a user-bot log in USERS directory (default).
-<br>`nouserlog` - Don't store a user-bot log.
-<br>`source=xxxx` - Analogous to the `:source` command. The file is executed.
-<br>`login=xxxx` - The same as you would name when asked for a login, this avoids having
-to ask for it. Can be `login=george` or `login=george:harry` or whatever.
-<br>``build0=filename` runs `:build` on the filename as level0 and exits with 0 on success or 4 on
-failure.
-<br>`build1=filename` runs :build on the filename as level1 and exits with 0 on success or 4 on
-failure. Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0.
-<br>``debug=:xxx` xxx runs the given debug command and then exits. 
-Useful for `:trim`, for example or more specific `:build` commands.
-<br>``param=xxxxx` data to be passed to your private code
-<br>``login=xxxxx` initial user id (bypass asking you for user)
-<br>``encrypt=xxxxx` data evailable to encrpytion code
-<br>``decrypt=xxxxx` data evailable to decrpytion code
-<br>``bootcmd=xxx` runs this command string before CSBOOT is run
-	use it to trace the boot process
 
 ## Bot variables
 
@@ -2770,3 +2754,11 @@ seem to be formatted, doing nothing crazy, and being careful with consistency of
 meaning values (if needed) and then just delete dict.bin. If you want to edit the wordnet
 ontology hierarchy, you need to edit facts.txt and delete facts.bin The system will rebuild
 them when you run CS.
+
+---
+
+[[Wiki home](/WIKI/README.md)] - [[Basic User Manual](ChatScript-Basic-User-Manual.md)]
+
+---
+
+© Bruce Wilcox, mail: gowilcox@gmail.com web: www.brilligunderstanding.com revision: 12/7/2016 cs6.91
