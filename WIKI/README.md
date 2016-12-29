@@ -150,7 +150,7 @@ really advanced users wanting the appropriate mental model.
 * [Paper - Writing a Chatbot](../PAPERS/Paper-%20Writing%20a%20Chatbot.pdf)
 <br>Useful discussion on how to think about writing a chatbot
 
-* [Paper - ARBOR_ MakingItReal](../PAPERS/Paper-%20ARBOR-MakingItReal.pdf)
+* [Paper - ARBOR_ MakingItReal](PAPERS/Paper-%20ARBOR-MakingItReal.md)
 <br>Useful discussion on how to think about writing a chatbot
 
 * [Paper - Winning 15 Minute Conversation](../PAPERS/Paper-%20Winning%2015%20Minute%20Conversation.pdf)
