@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com
 
 
-> Revision 7/16/2016 cs6.6.1
+> Revision 1/1/2017 cs7.0
 
 Pattern matching information was introduced in the Beginner manual and expanded in the Advanced
 Manual. Since pattern matching is of such importance, this concise manual lists everything about

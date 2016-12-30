@@ -11,41 +11,39 @@ Here what a ChatScript script file looks like:
 #
 topic: ~food []
 
-#! I like spinachs
-s: ( I like spinach ) 
-   Are you a fan of the Popeye cartoons?
-
-a: ( yes ) 
-       I used to watch him as a child. Did you lust after Olive Oyl?
-     b: ( no ) Me neither. She was too skinny.
-     b: ( yes ) You probably like skinny models.
-
-a: ( no ) What cartoons do you watch?
-     b: ( none ) You lead a deprived life.
-     b: ( Mickey Mouse ) The Disney icon.
+#! I like spinach
+s: ( I like spinach ) Are you a fan of the Popeye cartoons?
+	a: ( yes )  I used to watch him as a child. Did you lust after Olive Oyl?
+    	    b: ( no ) Me neither. She was too skinny.
+    		b: ( yes ) You probably like skinny models.
+	a: ( no ) What cartoons do you watch?
+     		b: ( none ) You lead a deprived life.
+     		b: ( Mickey Mouse ) The Disney icon.
 
 #! I often eat chicken
-u: ( ![ not never rarely ] I * ~ingest * ~meat ) 
-   You eat meat.
+u: ( ![ not never rarely ] I * ~ingest * ~meat ) You eat meat.
 
+#! I really love chicken
 u: ( !~negativeWords I * ~like * ~meat ) You like meat.
 
-?: (do you eat _ [ ham eggs bacon]) 
-   I eat '_0
+#! do you eat bacon?
+?: (do you eat _ [ ham eggs bacon]) I eat '_0
 
-?: (do you like _* or _*) 
-   I don't like '_0 so I guess that means I prefer '_1.
+#! do you like eggs or sushi?
+?: (do you like _* or _*) I don't like '_0 so I guess that means I prefer '_1.
 
-s: ( ~like ~fruit ![~animal _bear] ) 
-   Vegan, you too...
+#! I adore kiwi.
+s: ( ~like ~fruit ![~animal _bear] )  Vegan, you too...
 
-?: (do you eat _~meat) 
-   No, I hate _0.
+#! do you eat steak?
+?: (do you eat _~meat) No, I hate _0.
 
+#! I eat fish.
 s: ( I eat _*1 >) 
   $food = '_0 
   I eat oysters.
 ```
+
 Above example mentioned in article [How to build your first chatbot using ChatScript](https://medium.freecodecamp.com/chatscript-for-beginners-chatbots-developers-c58bb591da8#.2qdxjuyvs).
 
 
@@ -55,7 +53,7 @@ Above example mentioned in article [How to build your first chatbot using ChatSc
 * Simple rule layout combined with C-style general scripting.
 * Built-in WordNet dictionary for ontology and spell-checking.
 * Extensive extensible ontology of nouns, verbs, adjectives, adverbs.
-* Data as fact triples enables inferencing.
+* Data as fact triples enables inferencing and supports JSON representation.
 * Rules can examine and alter engine and script behavior.
 * Planner capabilities allow a bot to act in real/virtual worlds.
 * Remembers user interactions across conversations.

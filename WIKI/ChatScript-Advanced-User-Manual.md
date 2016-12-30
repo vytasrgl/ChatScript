@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 12/7/2016 cs6.91
+> Revision 1/1/2017 cs7.0
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -2017,6 +2017,17 @@ describe: $myvar "used to store data"
 permanent variables (handy for finalizing a bot to show you have no spelling errors on
 variables).
 
+## Conditional compilation
+You can have the system include or exclude lines on a line by line basis. To make a line conditional, put a comment left justified where a word is contiguous to the #, like this:
+```
+#german u: (test) this is conditionally compiled
+```
+This line is normally ignored because it is a comment line and not a named numeric constant. But if you put the `#german` as a tail parameter of the `:build` command, you enable it:
+```
+:build Harry #german
+```
+You may name up to 9 conditions on your build line. In fact,
+for language-related conditional lines, you don't have to declare anything on the `:build` command. The system will automatically accept lines that name the current language= command line parameter (English being the default).
 
 # Editing Non-topic Files
 

@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 12/7/2016 cs6.91
+> Revision 1/1/2017 cs7.0
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -1125,6 +1125,9 @@ then value is a number which is the array index (0 … n-1).
 If the first argument is `VALUE`, then value is the value to find and remove as the object of the json fact.
 
 You can delete every matching `VALUE` entry by adding the optional 4th argument `ALL`.
+
+If there are numbered elements after this one, then those elements immediately renumber downwards
+so that the array indexing range is contiguous.
 
 ### `^jsoncreate`( type )
 Type is either array or object and a json composite with no content is created and its name returned.

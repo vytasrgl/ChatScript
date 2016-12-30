@@ -6,7 +6,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com
 
 
-> Revision 7/31/16 cs6.7a
+> Revision 1/1/16 cs7.0
 
 ChatScript has a lot of documentation in various manuals, so knowing what to read may seem daunting.
 Here is an overview.

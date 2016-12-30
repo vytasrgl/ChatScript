@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 12/7/2016 cs6.91
+> Revision 1/1/2017 cs7.0
 
 
 # Real World JSON
@@ -335,6 +335,9 @@ If the first argument is VALUE, then value is the value to find and remove as th
 
 You can delete every matching `VALUE` entry by adding the optional argument `ALL`. Like:
 `^jsonarraydelete("INDEX ALL" $array 4)`
+
+If there are numbered elements after this one, then those elements immediately renumber downwards
+so that the array indexing range is contiguous.
 
 If the key has an existing value then if the value is a json object it will be
 recursively deleted provided its data is not referenced by some other fact (not by any variables). You can

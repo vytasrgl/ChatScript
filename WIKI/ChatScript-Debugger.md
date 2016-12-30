@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 12/7/2016 cs6.91
+> Revision 1/1/2017 cs7.0
 
 
 # Debugging in and out
