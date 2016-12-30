@@ -22,7 +22,7 @@ extern bool capState[MAX_SENTENCE_LENGTH];
 extern bool originalCapState[MAX_SENTENCE_LENGTH];	
 extern int wordCount;	
 extern int inputNest;
-void ReplaceWords(int i, int oldlength,int newlength,char** tokens);
+void ReplaceWords(char* why,int i, int oldlength,int newlength,char** tokens);
 int BurstWord(char* word, int contractionStyle = 0);
 char* GetBurstWord(unsigned int n);
 char* JoinWords(unsigned int n,bool output = false);

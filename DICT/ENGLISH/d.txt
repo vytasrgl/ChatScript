@@ -1290,7 +1290,6 @@
  diesis ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) plural=dieses 
     double_dagger~1n 
  Daviot ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Deford ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  deflexion ( meanings=4 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     diversion~1n 
     deflection~2n 
@@ -3409,6 +3408,7 @@
  Dearborn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Deen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Deese ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Deford ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Deherrera ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Deloach ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Deloatch ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -14577,7 +14577,7 @@
     Columbus_Day~1nz (^national_holiday~1) a legal holiday commemorating the discovery of America by Christopher Columbus
  Dormition ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Feast_of_Dormition~1n 
- Dec ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Dec ( meanings=1 NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 ) 
     December~1n 
  Dominion_Day ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Dominion_Day~1nz (^national_holiday~1) a legal holiday in Canada commemorating receiving Dominion status in 1867

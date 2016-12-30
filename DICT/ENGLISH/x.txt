@@ -19,8 +19,6 @@
     Xenopodidae~1nz (^amphibian_family~1) in some classifications the family of the genus Xenopus which is otherwise included in the family Pipidae
  Xiphosurus_polyphemus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Limulus_polyphemus~1nz (^arthropod~1) large marine arthropod of the Atlantic coast of North America having a domed carapace that is shaped like a horseshoe and a stiff pointed tail
- Xylocopa ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    genus_Xylocopa~1n 
  Xavierre ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  xenotransplant ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     xenotransplantation~1n 
@@ -80,6 +78,8 @@
     order_Xiphosura~1n 
  Xenorhyncus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Xenorhyncus~1n 
+ Xylocopa ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    genus_Xylocopa~1n 
  Xiphias_gladius ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     swordfish~1nz (^scombroid_fish~1) large toothless marine food fish with a long swordlike upper jaw
  XTC ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 

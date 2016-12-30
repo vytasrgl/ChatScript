@@ -1152,7 +1152,6 @@ static void DoAssigns(char* ptr)  // find variable assignments
 				ReadCompiledWord(at,var);
 				if (!first) first = at; // end with this test
 				char set[MAX_WORD_SIZE];
-				int posn = atoi(at+1); // the position of the word
 				ReadCompiledWord(mem+1,set); // the mark to make
 				*mem = '+';
 			}
@@ -2301,14 +2300,13 @@ reloop:
 			Log(STDTRACELOG,(char*)"MisCount: %d %s \r\n",currentFileLine,buffer);
 		}
 		strcpy(prior,buffer);
-		int oldright = right;
 		logged = false;
 		if (!reveal) for (int i = 1; i <= wordCount; ++i) // match off the pos values we understand. all others are wrong by definition
 		{
 retry:
 			int ok = right;
 			char* sep = strchr(tags[i],'|');
-			char* originalWord = wordStarts[i];
+			char* xxoriginalWord = wordStarts[i];
 			if (sep) *sep = 0;
 			
 			if (bitCounts[i] != 1 && (tokenControl & DO_PARSE) == DO_PARSE  ) // did not solve even when parsed
@@ -3909,6 +3907,7 @@ static void C_Bot(char* name)
 
 static void C_Build(char* input)
 {
+	conditionalCompiledIndex = 0;
 #ifndef DISCARDSCRIPTCOMPILER
 	echo = true;
 	mystart(input);
@@ -3945,6 +3944,12 @@ static void C_Build(char* input)
 			remove((char*)"TMP/keys.txt");
 			spell = NOTE_KEYWORDS;
 		}
+		else if (*control == '#')  // allowed conditional elements
+		{
+			strcpy(conditionalCompile[conditionalCompiledIndex++],control);
+			if (conditionalCompiledIndex == MAX_CONDITIONALS)  conditionalCompiledIndex--;
+		}
+
 	}
 	size_t len = strlen(file);
 	if (!*file) Log(STDTRACELOG,(char*)"missing build label");
@@ -4228,7 +4233,7 @@ static char* FindDebug(char* caller,char* name, int &atloc)
 				if (!stricmp(word,caller)) 
 				{
 					found = true;
-					if (atloc == 0) // want the definition line
+					if (atloc == -1) // want the definition line
 					{
 						at = ReadCompiledWord(at,word);
 						lastline = atoi(word);
@@ -4243,10 +4248,10 @@ static char* FindDebug(char* caller,char* name, int &atloc)
 			}
 			else if (found && !stricmp(word,"line:")) // executable code
 			{
-				at = ReadCompiledWord(at,word);
-				int loc = atoi(word);
-				if (loc > atloc) break; // was found on prior line
-				at = ReadCompiledWord(at,word);
+				char word1[MAX_WORD_SIZE];
+				at = ReadCompiledWord(at,word); // line number
+				at = ReadCompiledWord(at,word1); // code offset
+				if (atoi(word1) > atloc) break; // was found on prior line
 				lastline = atoi(word);
 			}
 			else if (!stricmp(word,"file:")) 
@@ -4265,12 +4270,12 @@ static char* FindDebug(char* caller,char* name, int &atloc)
 
 static char* FindDebugLine(char* caller,char* start, char* at) // returns released buffer
 {
-	int atloc = (at) ? (at - start) : 0;
+	int atloc = (at) ? (at - start) : -1;
 	char* name = FindDebug(caller,"TOPIC/BUILD1/map1.txt",atloc);
 	if (!name) name = FindDebug(caller,"TOPIC/BUILD0/map0.txt",atloc);
 	if (!name) return "";
 	char* buffer = AllocateBuffer();
-	sprintf(buffer,"at %s line %d",name,atloc);
+	sprintf(buffer," at %s line %d",name,atloc);
 	FreeBuffer();
 	return buffer;
 }
@@ -4333,7 +4338,7 @@ void CheckBreak(char* name,bool in,char* code,FunctionResult result) // ChangeDe
 	{
 		if (*name == '^')
 		{
-			DebugPrint("Step to %s(%d)\r\n",name,globalDepth);
+			DebugPrint("Step to %s depth %d\r\n",name,globalDepth);
 			ShowArgs(name,in); // show arguments
 			if (code) DebugPrint("    Next: %s\r\n",GetCode(code,name));
 		}
@@ -4390,8 +4395,8 @@ void CheckBreak(char* name,bool in,char* code,FunctionResult result) // ChangeDe
 		strcpy(copy,name);
 		char* dot = strchr(copy,'.');
 		if (dot) *dot = 0;	// for out when at top level of rules, leaving topic
-		if (result) DebugPrint("Step out of %s(%d) with %s\r\n",copy,globalDepth,ResultCode(result));
-		else DebugPrint("Step out of %s(%d)\r\n",copy,globalDepth);
+		if (result) DebugPrint("Step out of %s depth %d with %s\r\n",copy,globalDepth,ResultCode(result));
+		else DebugPrint("Step out of %s depth %d\r\n",copy,globalDepth);
 		if (*name == '^') stepOut[globalDepth-2] = 1; // set for break at code above, clearing the "" dummy layer
 		return;
 	}
@@ -4404,13 +4409,13 @@ void CheckBreak(char* name,bool in,char* code,FunctionResult result) // ChangeDe
 		{
 			if (in && strnicmp(breakAt[i]+len,"@o",2))
 			{
-				if (*name == '~') DebugPrint("Entering %s(%d) in %s mode\r\n",name,globalDepth,howTopic);
+				if (*name == '~') DebugPrint("Entering %s depth %d in %s mode\r\n",name,globalDepth,howTopic);
 				else DebugPrint("Break entering %s(%d)\r\n",name,globalDepth);
 			}
 			else if (strnicmp(breakAt[i]+len,"@i",2))
 			{
-				if (result) DebugPrint("Break exiting %s(%d) with %s\r\n",name,globalDepth,ResultCode(result));
-				else DebugPrint("Break exiting %s(%d)\r\n",name,globalDepth);
+				if (result) DebugPrint("Break exiting %s depth %d with %s\r\n",name,globalDepth,ResultCode(result));
+				else DebugPrint("Break exiting %s depth %d\r\n",name,globalDepth);
 			}
 			if (*name == '^') ShowArgs(name,in); // show arguments
 			if (code) DebugPrint("    Next: %s\r\n",GetCode(code,name));
@@ -4509,8 +4514,8 @@ int ProcessAction(char* before, char* after, char* output, FunctionResult result
 		
 		strncpy(out,output,100);
 		strcpy(out+100,"...");
-		if (result != NOPROBLEM_BIT) DebugPrint("%s(%d): %s result `%s`\r\n",DebugCaller(),globalDepth,buffer,ResultCode(result));
-		else if (*buffer) DebugPrint("%s(%d): %s  => `%s`\r\n",DebugCaller(),globalDepth,buffer,out);
+		if (result != NOPROBLEM_BIT) DebugPrint("%s depth %d: %s result `%s`\r\n",DebugCaller(),globalDepth,buffer,ResultCode(result));
+		else if (*buffer) DebugPrint("%s depth %d: %s  => `%s`\r\n",DebugCaller(),globalDepth,buffer,out);
 		if (!inLevel && result == NOPROBLEM_BIT) // if walking til we go in, just show what we did
 		{
 			strncpy(buffer,SkipWhitespace(after),50);
@@ -5833,7 +5838,7 @@ void C_MemStats(char* input)
 	unsigned int textFreeMemKB = ( heapFree- heapEnd) / 1000;
 #endif
 	Log(STDTRACELOG,(char*)"Free:  fact %dKb stack/heap %dKB\r\n",factFreeMemKB,textFreeMemKB);
-	Log(STDTRACELOG,(char*)"MinReleaseStackGap %dMB minStringAvailable %dMB maxBuffers used %d of %d  maxglobaldepth %d\r\n\r\n",maxReleaseStackGap/1000000,minStringAvailable/1000000,maxBufferUsed,maxBufferLimit,maxGlobalSeen);
+	Log(STDTRACELOG,(char*)"MinReleaseStackGap %dMB minHeapAvailable %dMB maxBuffers used %d of %d  maxglobaldepth %d\r\n\r\n",maxReleaseStackGap/1000000,minStringAvailable/1000000,maxBufferUsed,maxBufferLimit,maxGlobalSeen);
 }
 
 static void C_Who(char*input)
@@ -8771,6 +8776,43 @@ static void IndentDisplay(char* one, char* two,char* display)
 	strcat(display,(char*)"\r\n\r\n");
 }
 
+static void BuildForeign(char* input)
+{
+	char word[MAX_WORD_SIZE];
+	char language[MAX_WORD_SIZE];
+	input = ReadCompiledWord(input,language);
+	MakeUpperCase(language);
+	char name[MAX_WORD_SIZE];
+	sprintf(name,"treetagger/treetagger%s.txt",language);
+	FILE* in = fopen(name,"rb");
+	if (!in)
+	{
+		printf("file not found");
+		return;
+	}
+	sprintf(name,"DICT/%s",language);
+	MakeDirectory(name);
+	while (ReadALine(readBuffer,in) >= 0)
+	{
+		ReadCompiledWord(readBuffer,word);
+		if (!*word) continue;
+		if ((unsigned char) word[0] ==  0xEF && (unsigned char) word[1] == 0xBB && (unsigned char) word[2] == 0xBF) continue; // UTF8 BOM
+		
+		// choose appropriate subfile
+		char c = GetLowercaseData(*word); 
+		char subname[40];
+		if (IsDigit(c)) sprintf(subname,(char*)"%c.txt",c); //   main real dictionary
+		else if (!IsLowerCase(c)) sprintf(subname,(char*)"%s",(char*)"other.txt"); //   main real dictionary
+		else sprintf(subname,(char*)"%c.txt",c);//   main real dictionary
+		sprintf(name,"DICT/%s/%s",language,subname);
+		
+		FILE* out = FopenUTF8WriteAppend(name);
+		if (!out)  myexit((char*)"Dict write failed");
+		fprintf(out,(char*)" %s\r\n",word);
+		fclose(out);
+	}
+	fclose(in);
+}
 static void TrimIt(char* name,uint64 flag) 
 {
 	//  0 = user->bot
@@ -9212,6 +9254,7 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)"\r\n---- internal support",0,(char*)""}, 
 	{ (char*)":topicdump",C_TopicDump,(char*)"Dump topic data suitable for inclusion as extra topics into TMP/tmp.txt (:extratopic or PerformChatGivenTopic)"},
 	{ (char*)":builddict",BuildDictionary,(char*)" basic, layer0, layer1, or wordnet are options instead of default full"}, 
+	{ (char*)":buildforeign",BuildForeign,(char*)""}, 
 	{ (char*)":clean",C_Clean,(char*)"Convert source files to NL instead of CR/LF for unix"},
 #ifndef DISCARDPOSTGRES
 	{ (char*)":endpguser",C_EndPGUser,(char*)"Switch from postgres user topic to file system"},

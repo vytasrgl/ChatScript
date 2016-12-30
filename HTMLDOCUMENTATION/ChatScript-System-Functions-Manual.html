@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,20 +13,20 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 12/7/2016 cs6.91</p>
+<p>Revision 1/1/2017 cs7.0</p>
 </blockquote>
 <ul>
-<li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#marking-functions">Marking Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#input-functions">Input Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#number-functions">Number Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#output-functions">Output Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#control-flow-functions">Control Flow Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#external-access-functions">External Access Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#json-functions">JSON Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#word-manipulation-functions">Word Manipulation Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#multipurpose-functions">Multipurpose Functions</a></li>
-<li><a href="ChatScript-System-Functions-Manual.html#fact-functions">Facts Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#topic-functions">Topic Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#marking-functions">Marking Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#input-functions">Input Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#number-functions">Number Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#output-functions">Output Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#control-flow-functions">Control Flow Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#external-access-functions">External Access Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#json-functions">JSON Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#word-manipulation-functions">Word Manipulation Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#multipurpose-functions">Multipurpose Functions</a></li>
+<li><a href="ChatScript-System-Functions-Manual.md#fact-functions">Facts Functions</a></li>
 </ul>
 <p>System functions are predefined and can be intermixed with direct output. Generally they are used from the output side of a rule, but in many cases nothing prevents you from invoking them from inside a pattern. When used in a pattern, they do not write out any text output to the user. But their output will be tested the same as it would from an <code>if</code> statement, meaning 0 and false are failures.</p>
 <p>You can write them with or without a <code>^</code> in front of their name. With is clearer, but you don’t have to. The only time you must is if the first thing you want to do in a gambit is call a function (unlikely).</p>
@@ -266,7 +266,7 @@ t: () name(xxx ) # explicitly add an empty pattern</code></pre>
 <p>This converts time in seconds (Unix epoch time) into its component bits, spread across 7 match variables. Starting by default at <code>_0</code>, if you assign it like this:</p>
 <pre><code>_3 = ^timeinfofromseconds(%fulltime)</code></pre>
 <p>it will start at <code>_3</code>. The items you get are: seconds, minutes, hours, date in month, month name, year, day name of week.</p>
-<h3 id="timetoeconds-seconds-minutes-hours-date-of-month-month-year"><code>^timetoeconds</code>( seconds minutes hours date-of-month month year )</h3>
+<h3 id="timetoseconds-seconds-minutes-hours-date-of-month-month-year"><code>^timetoseconds</code>( seconds minutes hours date-of-month month year )</h3>
 <p>This converts time data since 1970 (Unix epoch time). Analogous to <code>%fulltime</code>, which returns the current time in seconds. Month can be number 1-12 or name of month or abbreviation of month.</p>
 <h1 id="output-functions">Output Functions</h1>
 <p>The following functions cannot be used during postprocessing since output has been finished in theory and you can now analyze it.</p>
@@ -321,6 +321,10 @@ t: () name(xxx ) # explicitly add an empty pattern</code></pre>
 </table>
 <p>These flags apply to output as it is sent to the user:</p>
 <table>
+<colgroup>
+<col width="41%" />
+<col width="58%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Flag</th>
@@ -347,6 +351,10 @@ t: () name(xxx ) # explicitly add an empty pattern</code></pre>
 <tr class="odd">
 <td><code>RESPONSE_REMOVETILDE</code></td>
 <td>remove leading ~ on class names</td>
+</tr>
+<tr class="even">
+<td><code>RESPONSE_NOCONVERTSPECIAL</code></td>
+<td>don't convert ecaped n, r, and t into ascii direct characters</td>
 </tr>
 </tbody>
 </table>
@@ -689,6 +697,7 @@ else {$$tcpopen_error}</code></pre>
 <pre><code>^log(OPEN TMP/mylog.txt This is my log output.)</code></pre>
 <p>which caches the file ptr. After which you can write with OPEN or FILE equivalently. To close the file use</p>
 <pre><code>^log(CLOSE TMP/mylog.txt)</code></pre>
+<p>By default, ^log acts like output to user, converting escaped nr, and t into their actual ascii characters. The flag RESPONSE_NOCONVERTSPECIAL passed in will block this.</p>
 <h1 id="json-functions">JSON Functions</h1>
 <p>JSON functions and JSON are described more fully in the ChatScript JSON manual.</p>
 <h3 id="jsonarrayinsert-arrayname-value"><code>^jsonarrayinsert</code>( arrayname value )</h3>
@@ -696,6 +705,7 @@ else {$$tcpopen_error}</code></pre>
 <h3 id="jsonarraydelete-index-value-arrayname-value-all"><code>^jsonarraydelete</code>( [INDEX, VALUE] arrayname value {ALL} )</h3>
 <p>This deletes a single entry from a JSON array. It does not damage the thing deleted, just its member in the array. If the first argument is <code>INDEX</code>, then value is a number which is the array index (0 … n-1). If the first argument is <code>VALUE</code>, then value is the value to find and remove as the object of the json fact.</p>
 <p>You can delete every matching <code>VALUE</code> entry by adding the optional 4th argument <code>ALL</code>.</p>
+<p>If there are numbered elements after this one, then those elements immediately renumber downwards so that the array indexing range is contiguous.</p>
 <h3 id="jsoncreate-type"><code>^jsoncreate</code>( type )</h3>
 <p>Type is either array or object and a json composite with no content is created and its name returned.</p>
 <h3 id="jsondelete-factid"><code>^jsondelete</code>( factid )</h3>

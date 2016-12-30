@@ -956,6 +956,7 @@ concept: ~insurance (auto_insurance automobile_insurance car_insurance disabilit
           property_insurance renter_'s_insurance term_life )
 concept: ~insurance_agent (~insurance insurance_agent )
 concept: ~intelligent_being PROBABLE_NOUN (~americanindian ~mythical_intelligent_being human human_being man woman )
+concept: ~yesno ( ~yes ~no )
 concept: ~interjections (~emoapology ~emobeg ~emobored ~emocurse ~emodisgust ~emogoodbye ~emohappy ~emohello ~emohowzit ~emoignorance ~emolaugh ~emomaybe ~emomisunderstand ~emomutual 
           ~emopain ~emoprotest ~emosad ~emoskeptic ~emosurprise ~emothanks ~no ~yes )
 concept: ~internet_cafe (game Internet Internet_cafe search )
@@ -1906,7 +1907,7 @@ concept: ~time_reference (a.d. a.m. ad afternoon age annual April August autumn 
           Sunday sunset supper term this_month this_week this_year Thursday today tomorrow triennial triennium trimester trimonthly triweekly Tuesday twilight twinight Wednesday week 
           weekend winter wintertime year year_end years yesterday )
 concept: ~time_unit (century day decade hour millennium minute month quarter season second semester term week year )
-concept: ~timebasedreference (~actual_time ~dayname ~month_names ~number day hour midnight midweek minute month noon second today tomorrow week year yesterday )
+concept: ~timebasedreference (~actual_time ~dayname ~month_names ~positiveinteger day hour midnight midweek minute month noon second today tomorrow week year yesterday )
 concept: ~timeearlier (ago anon back back_when before beforehand earlier last previous previously prior )
 concept: ~timelater (after afterward ere follow from hence later next post since subsequent subsequently )
 concept: ~timenopreposition (all any every last next this )

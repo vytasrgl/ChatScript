@@ -148,7 +148,7 @@
 #define GetMeanings(D) ((MEANING*) Index2String(D->meanings))
 #define GetMeaning(D,k) GetMeanings(D)[k]
 #define GetMeaningsFromMeaning(T) (GetMeanings(Meaning2Word(T)))
-#define Meaning2Index(x) ((int)((x & INDEX_BITS) >> INDEX_OFFSET)) //   which dict entry meaning
+#define Meaning2Index(x) ((int)((x & INDEX_BITS) >> (int)INDEX_OFFSET)) //   which dict entry meaning
 
 unsigned char* GetWhereInSentence(WORDP D); // always skips the linking field at front
 
@@ -238,14 +238,13 @@ extern MEANING MadjectiveNoun;
 extern MEANING Mnumber;
 extern bool dictionaryBitsChanged;
 extern char livedata[500];
-extern char englishFolder[500];
+extern char languageFolder[500];
 extern char systemFolder[500];
 void ReleaseStack(char* word);
-char* expandAllocation(char* old, char* word,int size);
 char* AllocateHeap(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
 char* AllocateStack(char* word, size_t len = 0, bool localvar = false);
 char* InfiniteStack(char*& limit);
-bool PreallocateString(size_t len);
+bool PreallocateHeap(size_t len);
 bool AllocateStackSlot(char* variable);
 char* RestoreStackSlot(char* variable,char* slot);
 WORDP StoreWord(int);

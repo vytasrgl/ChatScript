@@ -203,7 +203,7 @@ static char* FindComparison(char* word)
 static void AddMapOutput()
 {
 	// if we are mapping (:build) and have started output and some data storage change has happened
-	if (mapFile && outputStart && lineStart != dataChunk) fprintf(mapFile,(char*)"          line: %d %d\r\n",currentFileLine,lineStart - outputStart); // readBuffer
+	if (mapFile && outputStart && lineStart != dataChunk) fprintf(mapFile,(char*)"          line: %d %d\r\n",currentFileLine,(int)(lineStart - outputStart)); // readBuffer
 	lineStart = dataChunk;
 }
 
@@ -618,7 +618,7 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 
 	// the normal composite token
 	bool quote = false;
-	char* orig = ptr;
+	char* xxorig = ptr;
 	bool var = (*ptr == '$');
 	int brackets = 0;
 	while (*ptr) 
@@ -1091,8 +1091,6 @@ char* ReadDisplayOutput(char* ptr,char* buffer) // locate next output fragment t
 #define MAX_TOPIC_SIZE  500000
 #define MAX_TOPIC_RULES 32767
 #define MAX_TABLE_ARGS 20
-static unsigned int loopCounter;
-static unsigned int ifCounter;
 
 static unsigned int hasPlans;					// how many plans did we read
 
@@ -1285,12 +1283,7 @@ static void DownHierarchy(MEANING T, FILE* out, int depth)
 		FACT* F = GetObjectNondeadHead(D);
 		while (F)
 		{
-			if (F->verb == Mmember)
-			{
-				MEANING M = F->subject;
-				WORDP S = Meaning2Word(M);
-				DownHierarchy(M,out,depth+1);
-			}
+			if (F->verb == Mmember) DownHierarchy(F->subject,out,depth+1);
 			F = GetObjectNondeadNext(F);
 		}
 		fprintf(out,(char*)". depth=%d\r\n",depth); 
@@ -1574,7 +1567,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	//   ptr is just after the ^name -- user can make a call w/o ^ in name but its been patched. Or this is function argument
 	char reuseTarget1[SMALL_WORD_SIZE];
 	char reuseTarget2[SMALL_WORD_SIZE];
-	char* startit = data;
+	char* xxstartit = data;
 	int oldcallingsystem = callingSystem;
 	*reuseTarget2 = *reuseTarget1  = 0;	//   in case this turns out to be a ^reuse call, we want to test for its target
 	char* argset[ARGSETLIMIT+1];
@@ -2770,7 +2763,6 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 {
 	char* bodyends[1000];				//   places to patch for jumps
 	unsigned int bodyendIndex = 0;
-	int xcounter = ++ifCounter;
 	char* original = data;
 	strcpy(data,(char*)"^if ");
 	data += 4;
@@ -2876,7 +2868,6 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 static char* ReadLoop(char* word, char* ptr, FILE* in, char* &data,char* rejoinders)
 {
 	strcpy(data,(char*)"^loop ");
-	++loopCounter;
 	data += 6;
 	ptr = ReadNextSystemToken(in,ptr,word,false,false); //   (
 	*data++ = '(';
@@ -3473,7 +3464,6 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	bool table = !stricmp(kind,(char*)"table:"); // create as a transient notwrittentofile 
 	displayIndex = 0;
 	uint64 typeFlags = 0;
-	loopCounter = ifCounter = 0;
 	if (!stricmp(kind,(char*)"tableMacro:") || table) typeFlags = IS_TABLE_MACRO;
 	else if (!stricmp(kind,(char*)"outputMacro:")) typeFlags = IS_OUTPUT_MACRO;
 	else if (!stricmp(kind,(char*)"patternMacro:")) typeFlags = IS_PATTERN_MACRO;
@@ -4004,7 +3994,6 @@ static char* ReadBot(char* ptr, FILE* in, unsigned int build)
 static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 {
 	patternContext = false;
-	loopCounter = ifCounter = 0;
 	displayIndex = 0;
 	char* data = (char*) malloc(MAX_TOPIC_SIZE); // use a big chunk of memory for the data
 	*data = 0;
@@ -4854,7 +4843,6 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 		bool notPrior = false;
 		if (D < dictionaryPreBuild[layer]) // word preexisted this level, so see if it changed
 		{
-			int count = dictionaryPreBuild[layer] - (dictionaryBase+1);
 			unsigned int offset = D - dictionaryBase;
 			unsigned int xoffset;
 			int result = fread(&xoffset,1,4,in);

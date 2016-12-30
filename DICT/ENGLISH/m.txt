@@ -1777,8 +1777,6 @@
     liza~1nz (^grey_mullet~1) similar to the striped mullet and takes its place in the Caribbean region
  magnetic_core ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     core~3nz (^toroid~1) a tiny ferrite toroid formerly used in a random access memory to store one bit of data
- muscle_building ( meanings=1 NOUN NOUN_SINGULAR ) 
-    bodybuilding~1n 
  marketplace ( meanings=2 NOUN NOUN_SINGULAR COMMON4 posdefault:NOUN ) 
     market_place~1n 
     market_place~2n 
@@ -5098,6 +5096,8 @@
     MPEG~1nz (^compression~2) a set of standards adopted by the moving pictures experts group for the compression of digital video and audio data or a file of data compressed according to those standards
  manual_labor ( meanings=1 NOUN NOUN_SINGULAR ) 
     manual_labour~1n 
+ muscle_building ( meanings=1 NOUN NOUN_SINGULAR ) 
+    bodybuilding~1n 
  musclebuilding ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     muscle_building~1n 
  medical_practice ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -18424,7 +18424,7 @@
     mid-January~1nz (^period~3) the middle part of January
  mid-February ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     mid-February~1nz (^period~3) the middle part of February
- Mar ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN TIMEWORD ) 
+ Mar ( meanings=1 NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 KINDERGARTEN TIMEWORD ) 
     March~2n 
  mid-March ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     mid-March~1nz (^period~3) the middle part of March

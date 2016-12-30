@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 7/16/2016 cs6.6.1</p>
+<p>Revision 1/1/2017 cs7.0</p>
 </blockquote>
 <p>Pattern matching information was introduced in the Beginner manual and expanded in the Advanced Manual. Since pattern matching is of such importance, this concise manual lists everything about patterns in one place. Note, despite the extraordinary range of weird matching abilities, almost all of my normal code is based on one of three patterns:</p>
 <pre><code># rule 1 
@@ -159,17 +159,21 @@ u: ( ~noun ^testuse(apple)) matches “I like pear and apple”</code></pre>
 <p>If you put a number in front, it means the word must be exactly that many characters long, matching your pattern. <code>u: ( 6sit*)</code> matches <em>sitter</em></p>
 <p>When using an <code>*</code> word, you can use <code>.</code> to indicate exactly one character of any value.</p>
 <p><code>u: ( sit*u.tion)</code> matches <em>situation</em></p>
-<h3 id="altering-position---_0">Altering Position - <code>&lt;</code> <code>&gt;</code> <code>@_0+</code></h3>
+<h3 id="altering-position---_0-_0--_0">Altering Position - <code>&lt;</code> <code>&gt;</code> <code>@_0+</code> <code>@_0-</code> <code>@_0</code></h3>
 <p>When you put <code>&lt;</code> in your pattern, it doesn't actually match anything. It means &quot;reset position&quot; to the start of the sentence.</p>
 <pre><code>u: ( &lt; I love )</code></pre>
 <p>matches <em>I love</em> but not <em>do I love</em></p>
 <p>When you put <code>&gt;</code> in your pattern, it does not alter your position, but it tries to match to confirm you are on the last word of the sentence.</p>
 <pre><code>u: (I * &gt; )</code></pre>
 <p>in this pattern <code>&gt;</code> is redundant, since <code>*</code> would match to the end of the sentence anyway. You may also use <code>!&gt;</code> to ask that we NOT be at the end of the sentence.</p>
-<p><code>@_1+</code> says to set the position to where the given match variable (<code>_1</code>) matched. Positional sequencing will continue normally increasing thereafter. You can suffix the match variable with <code>–</code> instead, to tell CS to begin matching in reverse order in the sentence, i.e., matching backwards to the start of the sentence. When you use <code>+</code>, the position starts at the end of the match. When you use <code>-</code>, the position starts at the start of the match.</p>
+<p><code>@_1+</code> says to set the position to where the given match variable (<code>_1</code>) matched. Positional sequencing will continue normally increasing thereafter. You can suffix the match variable with <code>–</code> instead, to tell CS to begin matching in reverse order in the sentence, i.e., matching backwards to the start of the sentence.</p>
+<p>When you use <code>+</code>, the position starts at the end of the match. When you use <code>-</code>, the position starts at the start of the match.</p>
 <pre><code>u: ( _home is @_0- pretty)</code></pre>
 <p>matches <em>my pretty home is near here</em>.</p>
 <p>Note when you use <code>–</code> for reverse matching, the behavior of <code>&lt;</code> and <code>&gt;</code> changes. <code>&gt;</code> sets a position and <code>&lt;</code> confirms it instead of the way it is for <code>+</code>.</p>
+<p>When you omit either + or -, you create a matchable anchor like <code>@_0</code>. It represents what was found at that position, and during the pattern must also match at that location now.</p>
+<pre><code>u: ( _@0 is @_1)</code></pre>
+<p>The above pattern says that the word <code>is</code> must be precisely found between the locations referenced by <span class="citation">@0</span> and <span class="citation">@1</span>.</p>
 <h2 id="debugging">Debugging</h2>
 <h3 id="testpattern"><code>:testpattern</code></h3>
 <p>The system inputs the sentence and tests the pattern you provide against it. It tells you whether it matched or failed.</p>

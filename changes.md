@@ -1,3 +1,15 @@
+# version 7.0
+1. logsize - bytes for the log buffer to use (see advanced manual)
+2. outputsize - bytes for main output buffer to use (see advanced manual)
+3. autoinitfile:  username-init.txt at top level (see advanced manual)
+4. new manual- ChatScript Debugger and corresponding :debug command described within
+5. @_10 anchor pattern element (see advanced manual)
+6. ~integer, ~float, ~positiveinteger, ~negativeinteger refine ~number
+7.  RESPONSE_NOCONVERTSPECIAL on $cs_ response or as flag to ^log will block conversion of escaped n,r,t into their ascii counterparts
+8. conditional compilation per line supported- see advanced manual conditional build
+9. language= command line param (defaults english) revised DICT/LIVEDATA data access per language-  
+	WARNING: data organization within LIVEDATA has changed. If you are running your own copy, mimic the new structure.
+
 # version 6.91
 1. autodelete and USER_flag1...4 for json
 2. :trace -userfact

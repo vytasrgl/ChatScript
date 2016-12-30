@@ -178,7 +178,6 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 		{
 			int start = 0;
 			int end = 0;
-			unsigned int gap = 0;
 			wildcardIndex = 0;
 			bool uppercasem = false;
 			int whenmatched = 0;
@@ -259,7 +258,6 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult &result)
 	unsigned int oldIterator = currentIterator;
 	currentIterator = 0;
 	ChangeDepth(1,"^Loop",false,ptr+2);
-	char* priorPtr = ptr+2;
 	ptr = GetCommandArg(ptr+2,buffer,result,0)+2; //   get the loop counter value and skip closing ) space 
 
 	char* endofloop = ptr + (size_t) Decode(ptr);

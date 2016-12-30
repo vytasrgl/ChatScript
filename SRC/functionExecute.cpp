@@ -396,7 +396,7 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 			base = FindNextRule(NEXTTOPLEVEL,base,ruleID);
 		}
 
-		if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(ReleaseStackDepth[globalDepth],locals);
+		if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(releaseStackDepth[globalDepth],locals);
 		currentTopicDisplay = oldTopicDisplay;
 		ChangeDepth(-1,GetTopicName(currentTopicDisplay)); // plan
 
@@ -712,6 +712,12 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				if (!arg) continue;	// should never happen
 				char* val = callArgumentList[i]; // constants wont have `` in front of them
 				if (*val == USERVAR_PREFIX) val = GetUserVariable(val);
+				else if (*val == SYSVAR_PREFIX) 
+				{
+					Output(val,buffer,result,0);
+					val = AllocateStack(buffer,0,true);
+					*buffer = 0;
+				}
 				else if (val[0] == ENDUNIT && val[1] == ENDUNIT) val += 2; // skip over noeval marker
 				else if (val[0] == '\'' && val[1] == '_' && IsDigit(val[2]))
 				{
@@ -816,10 +822,10 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 #endif
 		else if (definition)
 		{
+			codeStart = (char*) definition;
 			ChangeDepth(1,D->word,false,(char*)definition);
 			unsigned int flags = OUTPUT_FNDEFINITION;
 			if (!(D->internalBits & IS_OUTPUT_MACRO)) flags |= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
-			codeStart = (char*) definition;
 			Output((char*)definition,buffer,result,flags);
 		}
 		fnOutput = start;
@@ -1685,7 +1691,7 @@ static FunctionResult DoRefine(char* buffer,char* arg1, bool fail, bool all)
 			GambitCode(buffer+strlen(buffer));
 		}
 	}
-	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(ReleaseStackDepth[globalDepth],locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(releaseStackDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 
 	RESTOREOLDCONTEXT()
@@ -1788,8 +1794,6 @@ static FunctionResult RejoinderCode(char* buffer)
     level = *ptr; //   what marks this level
 	unsigned int oldTopicDisplay = currentTopicDisplay;
 	currentTopicDisplay = currentTopicID;
-	char* locals = GetTopicLocals(currentTopicID);
-
     while (ptr && *ptr) //   loop will search for a level answer it can use
     {
         if (TopLevelRule(ptr)) break; // failed to find rejoinder
@@ -2061,7 +2065,7 @@ FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg
 
 	if (!failed) result = ProcessRuleOutput(currentRule,currentRuleID,buffer); 
 	
-	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(ReleaseStackDepth[globalDepth],locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(releaseStackDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 
 	if (crosstopic && responseIndex > holdindex) AddPendingTopic(topic); // restore caller topic as interesting
@@ -2865,8 +2869,6 @@ static FunctionResult OriginalInputRangeCode(char* buffer)
 	if (end < 0 || end > wordCount || end < start) return FAILRULE_BIT;
 
 	// set derivation data on original words of user before we do substitution
-	int first = 0;
-	int last = 0;
 	// actual word is from this range in original
 	int a = derivationIndex[start] >> 8; // from here
 	int b  = (derivationIndex[end] & 0x00ff);  // to here including here  The end may be beyond wordCount if words have been deducted by now
@@ -3681,7 +3683,7 @@ FunctionResult MatchCode(char* buffer)
 		else strcpy(word,word1); // otherwise it is what to say (like from idiom table)
 	}
 	WORDP X = FindWord(word);
-	if (*word == '~' && (!X || !(X->internalBits & (CONCEPT|TOPIC)))) // named an existing rule 
+	if (*word == '~' && (!X || !(X->internalBits & (CONCEPT|TOPIC))) && strchr(word,'.')) // named an existing rule 
 	{
 		char* rule;
 		bool fulllabel = false;
@@ -4705,7 +4707,7 @@ static FunctionResult POSCode(char* buffer)
 			size_t len = strlen(arg2);
 			char c = arg2[len-1];
 			int val = atoi(arg2);
-			if (val == 11 || val == 12 || val == 13) sprintf(buffer,(char*)"%dth",val);
+			if ((val % 100) == 11 || (val % 100) == 12 || (val % 100) == 13) sprintf(buffer,(char*)"%dth",val);
 			else if (c == '1') sprintf(buffer,(char*)"%sst",arg2);
 			else if (c == '2') sprintf(buffer,(char*)"%snd",arg2); 
 			else if (c == '3') sprintf(buffer,(char*)"%srd",arg2);
@@ -5085,7 +5087,8 @@ static FunctionResult POSCode(char* buffer)
 	else if (!stricmp(arg1,(char*)"place"))
 	{
 		int value = (int)Convert2Integer(arg2);
-		if ((value%10) == 1) sprintf(buffer,(char*)"%dst",value); 
+		if ((value%100 == 11) || (value%100) == 12 || (value%100) == 13) sprintf(buffer, (char*)"%dth", value);
+		else if ((value%10) == 1) sprintf(buffer,(char*)"%dst",value); 
 		else if ((value%10) == 2) sprintf(buffer,(char*)"%dnd",value);
 		else if ((value%10) == 3) sprintf(buffer,(char*)"%drd",value);
 		else sprintf(buffer,(char*)"%dth",value);
@@ -5192,8 +5195,6 @@ static FunctionResult RhymeCode(char* buffer)
 
 static FunctionResult FindTextCode(char* buffer) 
 { 
-	bool insensitive = false;
-
 	// what to search in
 	char* target = ARGUMENT(1);
 	if (!*target) return FAILRULE_BIT; 
@@ -5301,7 +5302,7 @@ static FunctionResult SubstituteCode(char* buffer)
 		if (*word == 'w' || *word == 'W') wordMode = true;
 		if (*word == 'i' || *word == 'I') insensitive = true;
 	}
-	char* original = buffer;	// for debug
+	char* xxoriginal = buffer;	// for debug
 	// adjust substitution value
 	char* substituteValue = ARGUMENT(4);
 	size_t substituteLen = strlen(substituteValue);
@@ -6288,8 +6289,8 @@ static FunctionResult GetRemoteFileCode(char* buffer)
     FunctionResult result = FAILRULE_BIT;
 	char name[MAX_WORD_SIZE];
 	strcpy(name,ARGUMENT(1));
-	char* arg2 = ARGUMENT(2);	// optional specifier - mongo x y z
 #ifndef DISCARDMONGO
+	char* arg2 = ARGUMENT(2);	// optional specifier - mongo x y z
 	if (!stricmp(arg2,"mongo")) // transfer mongo to local
 	{
 		// get the mongo data.
@@ -6925,13 +6926,10 @@ FunctionResult ReviseFactCode(char* buffer)
 
 static void GenerateConceptList(bool tracing,int list, int set,char* filter,size_t len,int wordindex)
 {
-	int x = concepts[wordindex];
-	x = 0;
+	int x = 0;
 	while (x)
 	{
 		MEANING* data = (MEANING*) Index2String(x);
-		MEANING M = *data;
-		WORDP D = Meaning2Word(M);
 		x = data[1];
 	}
 
@@ -7669,7 +7667,6 @@ static FunctionResult SortCode(char* buffer) // sorts low to high  sort(@factset
 	unsigned int count = FACTSET_COUNT(n);
 	int startSet = n;
 	if (count > 0x0000ffff) return FAILRULE_BIT;	// too many facts to count
-	bool multiple = false;
 	// if chained sets, number the facts of the original
 	if (*arg == '@') // remaining sets
 	{
@@ -7682,8 +7679,6 @@ static FunctionResult SortCode(char* buffer) // sorts low to high  sort(@factset
 			if (a == ILLEGAL_FACTSET) return FAILRULE_BIT;
 			if (FACTSET_COUNT(a) != count) return FAILRULE_BIT;
 		}
-
-		multiple = true;
 	}
 	SET_FACTSET_COUNT(20,count);	
 	for (unsigned int i = 1; i <= count; ++i) // mark original set we sort on
@@ -7716,7 +7711,6 @@ static FunctionResult SortCode(char* buffer) // sorts low to high  sort(@factset
 	}
 	for (unsigned int i = 1; i <= count; ++i)
 	{
-		unsigned int index = factIndex[i];	// the new index at this position
 		FACT* F = factSet[startSet][i];
 		F->flags = factFlags[factIndex[i]];
 	}

@@ -1335,7 +1335,6 @@
     shower_down~1vz rain abundantly
  sauteing ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     frying~1nz (^preparation~1) cooking in fat or oil in a pan or griddle
- Schenck ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Scaffeld ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  spot_check ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     spot_check~1nz (^check~1) a check on work performance or product quality made at random times without warning
@@ -3228,7 +3227,6 @@
  sinusoid ( meanings=2 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     sinusoid~1nz (^passage~7) tiny endothelium-lined passages for blood in the tissue of an organ
     sine_curve~1n 
- Stinson ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Sain ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  supervising ( meanings=1 NOUN NOUN_SINGULAR COMMON4 posdefault:VERB ) 
     superintendence~1n 
@@ -4530,8 +4528,6 @@
     strawman~2nz (^specious_argument~1) a weak or sham argument set up to be easily refuted
     figurehead~2n 
  Salma ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Salmonella_typhosa ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Salmonella_typhi~1nz (^salmonella~1) a form of salmonella that causes typhoid fever
  Scolopax_rusticola ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Eurasian_woodcock~1nz (^woodcock~1) short-legged long-billed migratory Old World woodcock
  Stroman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -4821,7 +4817,6 @@
  Steger ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  subjunction ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     supplementation~1n 
- Senta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  synchronous ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     synchronal~1az occurring or existing at the same time or having the same period or phase
     synchronous~2az pertaining to a transmission technique that requires a common clock signal (a timing reference) between the communicating devices in order to coordinate their transmissions
@@ -4901,7 +4896,6 @@
  schmaltz ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     schmalz~1nz (^sentimentality~1) excessive sentimentality in art or music
  Searles ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Stearns ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  spraying ( meanings=3 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 posdefault:VERB ) 
     crop-dusting~1n 
     spraying~2nz (^application~3) the application of a liquid in the form of small particles ejected from a sprayer
@@ -6822,6 +6816,7 @@
  Schaeffer ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Schafer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Schell ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Schenck ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Schenk ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Schexnayder ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Schillinger ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -6948,6 +6943,7 @@
  Staples ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 COMMON1 ) 
  Stcyr ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Steadman ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Stearns ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Stedman ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Steffen ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Steffey ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -6962,6 +6958,7 @@
  Stiffler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Stimpson ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Stines ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Stinson ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Stivers ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Stoddard ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Stoltz ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -7105,6 +7102,7 @@
  Sener ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Senet ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Senona ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Senta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Seosaph ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Serafina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Sergio ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -10135,6 +10133,8 @@
     salmonella~1nz (^enteric_bacteria~1) rod-shaped Gram-negative enterobacteria
  Salmonella_enteritidis ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Gartner_'s_bacillus~1nz (^salmonella~1) a form of salmonella that causes gastroenteritis in humans
+ Salmonella_typhosa ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Salmonella_typhi~1nz (^salmonella~1) a form of salmonella that causes typhoid fever
  Salmonella_typhi ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     typhoid_bacillus~1n 
  Serratia_marcescens ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -34526,9 +34526,9 @@
     sidereal_month~1nz (^month~1) period between successive conjunctions with a star, 27.322 days
  solar_month ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     solar_month~1nz (^month~1) one-twelfth of a solar or tropical year
- Sep ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Sep ( meanings=1 NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 ) 
     September~1n 
- Sept ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+ Sept ( meanings=1 NOUN NOUN_PROPER_SINGULAR MONTH ) 
     Sep~1n 
  Shebat ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Shevat~1nz (^Jewish_calendar_month~1) the fifth month of the civil year: the eleventh month of the ecclesiastical year in the Jewish calendar
@@ -37127,7 +37127,7 @@
     historied~1a 
     storeyed~1a 
  slap-up ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
-    not_bad~1a 
+    nifty~1a 
  satisfactory ( meanings=3 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     acceptable~3a 
     satisfactory~2az giving satisfaction

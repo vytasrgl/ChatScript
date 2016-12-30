@@ -134,7 +134,6 @@ bool LegalVarChar(char at)
 static char* ReadUserVariable(char* input, char* var)
 {		
 	char* at = input++; // skip $ and below either $ or _ if one exists or first legal char
-	bool once = false;
 	while (LegalVarChar(*++input) || *input == '.' || *input == '[' || *input == ']' || (*input == '$' && *(input-1) == '.'))
 	{
 		if (*input == '.'  || *input == '[' || *input == ']')
@@ -323,7 +322,7 @@ void ReformatString(char starter, char* input,char*& output, FunctionResult& res
 			while (IsAlphaUTF8(*input) ) *at++ = *input++;
 			*at = 0;
 			if (output != start && *(output-1) == ' ') --output; // no space before
-			input = Output_Function(var, input, false, output, controls,result,false);
+			input = Output_Function(var, input, NULL, output, controls,result,false);
 			output += strlen(output);
 			if (result & ENDCODES)  return;
 		}
@@ -710,12 +709,6 @@ static char* Output_Function(char* word, char* ptr,  char* space,char*& buffer, 
 
 static char* Output_AttachedPunctuation(char* word, char* ptr, char* space,char*& buffer, unsigned int controls,FunctionResult& result)
 {
-	// Handles spacing after a number:  2 .  
-	// Handles not spacing before common punctuation:   . ? !  ,  :  ; 
-	if (*word == '.' && controls & OUTPUT_ISOLATED_PERIOD) // if period after a number, always space after it (to be clear its not part of the number)
-	{
-		if (IsDigit(*(buffer-1))) *buffer++ = ' ';
-	}
 	strcpy(buffer,word); 
 	return ptr;
 }
@@ -1015,6 +1008,7 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			// dont space after $  or # or [ or ( or " or / e   USERVAR_PREFIX
 			if (c == '(' || c == '[' || c == '{'  || c == '$' || c == '#' || c == '"' || c == '/') allow = false;
 			else if (*word == '"' && word[1] == '^') allow = false; // format string handles its own spacing so
+			else if (*word == '\\' && word[1] == ')') allow = false; // dont space before )
 			if (allow) // add space separator
 			{
 				space = buffer;
@@ -1120,6 +1114,12 @@ retry:
 			}
 #endif
 			// ordinary :
+			// Handles spacing after a number:  2 .  
+			// Handles not spacing before common punctuation:   . ? !  ,  :  ; 
+			if (*word == '.' && controls & OUTPUT_ISOLATED_PERIOD) // if period after a number, always space after it (to be clear its not part of the number)
+			{
+				if (start != buffer && IsDigit(*(buffer-1))) *buffer++ = ' ';
+			}
 			ptr = Output_AttachedPunctuation(word,ptr,  space, buffer, (buffer >= start) ? (controls | OUTPUT_ISOLATED_PERIOD)  : controls,result);
 			break;
 		}

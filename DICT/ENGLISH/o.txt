@@ -152,8 +152,6 @@
     offering~4nz (^contribution~5) money contributed to a religious organization
  Ostraciidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Ostraciidae~1nz (^fish_family~1) boxfishes
- open_letter ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    open_letter~1nz (^letter~1) a letter of protest
  Ordonez ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Olimpia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Osric ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
@@ -4263,6 +4261,8 @@
     object-oriented_database_management_system~1nz (^database_management_system~1) a database management system designed to manage an object-oriented database
  outtake ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 ) 
     outtake~1nz (^scene~4) a scene that is filmed but is not used in the final editing of the film
+ open_letter ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    open_letter~1nz (^letter~1) a letter of protest
  object-oriented_database ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     object-oriented_database~1nz (^electronic_information_service~1) a database in which the operations carried out on information items are considered part of their definition
  open-door_policy ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
@@ -7197,7 +7197,7 @@
     away~12b 
     off~9z 
     hit~24v 
- Oct ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Oct ( meanings=1 NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 ) 
     October~1n 
  overtime_period ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     overtime_period~1nz (^overtime~2) a period of overtime play to resolve a tie

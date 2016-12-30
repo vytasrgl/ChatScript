@@ -668,10 +668,15 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	int pre = lsize - 5; // year separate at back
 	if ((token[pre] == '-' || token[pre] == '/') && IsDigit(token[pre+1]) &&  IsDigit(token[pre+2]) && IsDigit(token[pre+3]) && IsDigit(token[pre+4]))
 	{
-		char* hyphen = strchr(token,'-');
-		if (!hyphen) hyphen = strchr(token,'/');
-		if (hyphen == token) return ptr+1;
-		if (hyphen)	return ptr + (hyphen - token);	// break off regardless
+		char* at = token-1;
+		while (*++at && (IsDigit(*at) || *at == '-' || *at == '/')) {;}
+		if (!*at) // is pure number of some kind so can be date
+		{
+			char* hyphen = strchr(token,'-');
+			if (!hyphen) hyphen = strchr(token,'/');
+			if (hyphen == token) return ptr+1;
+			if (hyphen)	return ptr + (hyphen - token);	// break off regardless
+		}
 	}
 
 	// check for place number
@@ -687,7 +692,12 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		c = *ptr;
 		kind = IsPunctuation(c);
 		next = ptr[1];
-		if (c == ',' && (!IsDigit(ptr[1]) || !IsDigit(*(ptr-1)))) break; // comma in number may remain
+		if (c == ',') 
+		{
+			if (!IsDigit(ptr[1]) || !IsDigit(*(ptr-1))) break; // comma obviously not in a number
+			// must have 3 digits after comma
+			if (!IsDigit(ptr[2]) || !IsDigit(ptr[3])) break;
+		}
 		if (c == '\'' && next == '\'') break;	// '' marker or ''' or ''''
 		else if (c == '=' && next == '=') break; // swallow headers == ==== ===== etc
 		next2 = (next) ? *SkipWhitespace(ptr+2) : 0; // start of next token
@@ -916,9 +926,6 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 			return ptr;
 		}
 
-		// after number
-		bool afterNumber = false;
-		
 		//   handle symbols for feet and inches by expanding them
 		if (!(tokenControl & TOKEN_AS_IS) && IsDigit(startc) &&  (lastc == '\'' || lastc == '"'))
 		{
@@ -1168,7 +1175,7 @@ static int FinishName(int& start, int& end, bool& upperStart,uint64 kind,WORDP n
 			AddSystemFlag(E,kind); // if timeword 
 			char* tokens[2];
 			tokens[1] = E->word;
-			ReplaceWords(start,end-start + 1,1,tokens);  //   replace multiple words with single word
+			ReplaceWords("Merge name",start,end-start + 1,1,tokens);  //   replace multiple words with single word
 			tokenFlags |= DO_PROPERNAME_MERGE;
 		}
 	}
@@ -1224,7 +1231,7 @@ static void HandleFirstWord() // Handle capitalization of starting word of sente
 			{
 				char* tokens[2];
 				tokens[1] = word;
-				ReplaceWords(1,1,1,tokens);
+				ReplaceWords("lowercase",1,1,1,tokens);
 			}
 		}
 	}
@@ -1232,7 +1239,7 @@ static void HandleFirstWord() // Handle capitalization of starting word of sente
 	{
 		char* tokens[2];
 		tokens[1] = word;
-		ReplaceWords(1,1,1,tokens);
+		ReplaceWords("multiword",1,1,1,tokens);
 		WORDP D = FindWord(wordStarts[1]);
 		if (D) AddProperty(D,NOUN_PROPER_SINGULAR);
 	}
@@ -1289,7 +1296,7 @@ void ProcessCompositeDate()
 			AddSystemFlag(D,TIMEWORD|MONTH);
 			char* tokens[2];
 			tokens[1] = D->word;
-			ReplaceWords(start,end-start+1,1,tokens);
+			ReplaceWords("Date",start,end-start+1,1,tokens);
 			tokenFlags |= DO_DATE_MERGE;
 		}
 	}
@@ -1574,7 +1581,7 @@ static void MergeNumbers(int& start,int& end) //   four score and twenty = four-
     WORDP D = StoreWord(word,ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER); 
 	char* tokens[2];
 	tokens[1] = D->word;
-	ReplaceWords(start,end-start,1,tokens);
+	ReplaceWords("Merge number",start,end-start,1,tokens);
 	tokenFlags |= DO_NUMBER_MERGE;
     end = start = (unsigned int)UNINIT;
 }
@@ -1601,7 +1608,7 @@ void ProcessSplitUnderscores()
 			if (index > 9) return;	// give up, bad data
 		}
 		tokens[index] = StoreWord(at)->word;
-		ReplaceWords(i,1,index,tokens);
+		ReplaceWords("Split underscore",i,1,index,tokens);
 		i += index - 1; // skip over what we did
 	}
 }
@@ -1710,7 +1717,7 @@ void ProcessCompositeNumber()
     }
 }
 
-void ReplaceWords(int i, int oldlength,int newlength,char** tokens) 
+void ReplaceWords(char* why,int i, int oldlength,int newlength,char** tokens) 
 {
 	// protect old values after our patch area
 	int afterCount = wordCount - i - oldlength + 1;
@@ -1735,6 +1742,21 @@ void ReplaceWords(int i, int oldlength,int newlength,char** tokens)
 
 	wordCount += newlength - oldlength;
 	wordStarts[wordCount+1] = NULL;
+	if (trace & TRACE_PREPARE)
+	{
+		char* buffer = AllocateBuffer();
+		char* original = buffer;
+		for (int i = 1; i <= wordCount; ++i)
+		{
+			strcpy(buffer,wordStarts[i]);
+			buffer += strlen(buffer);
+			*buffer++ = ' ';
+		}
+		*buffer = 0;
+		Log(STDUSERLOG,"%s revised input: %s\r\n",why,original);
+
+		FreeBuffer();
+	}
 }
 
 static bool Substitute(WORDP found,char* sub, int i,int erasing)
@@ -1818,8 +1840,8 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 		int newWordCount =  wordCount - (erasing+1);
 		if (newWordCount == 0) return false;	// dont erase sentence completely
 
-		if (i != wordCount)	ReplaceWords(i,erasing+1 + extra,extra,tokens); // remove the removals + the one after if there is one. replace with just the one
-		else 	ReplaceWords(i,erasing+1,erasing,tokens); // remove 1, add 0
+		if (i != wordCount)	ReplaceWords("Deleting",i,erasing+1 + extra,extra,tokens); // remove the removals + the one after if there is one. replace with just the one
+		else 	ReplaceWords("Deleting",i,erasing+1,erasing,tokens); // remove 1, add 0
 		return true;
 	}
 
@@ -1846,7 +1868,7 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 	if (count == 1 && !erasing) //   simple replacement
 	{
 		if (trace & TRACE_SUBSTITUTE && CheckTopicTrace()) Log(STDTRACELOG,(char*)"  substitute simple replace: \"%s\" with %s\r\n",wordStarts[i],tokens[1]);
-		wordStarts[i] = tokens[1];
+		ReplaceWords("Replacement",i,1,1,tokens);	
 	}
 	else // multi replacement
 	{
@@ -1857,7 +1879,7 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 		if ((wordCount + (count - erase)) >= REAL_SENTENCE_LIMIT) return false;	// cant fit
 
 		if (trace & TRACE_SUBSTITUTE && CheckTopicTrace()) Log(STDTRACELOG,(char*)"  substitute replace: \"%s\" with \"%s\"\r\n",found->word,wordlist);
-		ReplaceWords(i, erase, count,tokens);
+		ReplaceWords("Multireplace",i, erase, count,tokens);
 	}
 	return true;
 }
@@ -2082,7 +2104,7 @@ static bool ProcessMyIdiom(int i,unsigned int max,char* buffer,char* ptr)
 		}
 		char* tokens[2];
 		tokens[1] = found->word;
-		ReplaceWords(i,idiomMatch + 1,1,tokens);
+		ReplaceWords("Idiom",i,idiomMatch + 1,1,tokens);
 		result =  true;
 	}
 

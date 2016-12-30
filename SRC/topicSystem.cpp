@@ -1586,7 +1586,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	unsigned oldTopic = currentTopicID;
 	char* topicName = GetTopicName(currentTopicID);
 	int limit = 30;
-	unsigned int oldtrace = EstablishTopicTrace();
+	EstablishTopicTrace();
 	unsigned int oldtiming = EstablishTopicTiming();
 	char value[100];
 
@@ -1623,7 +1623,7 @@ FunctionResult PerformTopic(int active,char* buffer,char* rule, unsigned int id)
 	if (trace & (TRACE_MATCH|TRACE_PATTERN|TRACE_SAMPLE|TRACE_TOPIC) && CheckTopicTrace()) 
 		id = Log(STDTRACETABLOG,(char*)"Result: %s Topic: %s \r\n",ResultCode(result),topicName);
 
-	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(ReleaseStackDepth[globalDepth],locals);
+	if (locals && currentTopicDisplay != oldTopicDisplay) RestoreDisplay(releaseStackDepth[globalDepth],locals);
 	currentTopicDisplay = oldTopicDisplay;
 	if (timing & TIME_TOPIC && CheckTopicTime()) {
 		int diff = ElapsedMilliseconds() - start_time;
@@ -2215,8 +2215,6 @@ static void ReadPatternData(const char* name,const char* layer,unsigned int buil
 	}
 	if (!in) return;
 	maxFileLine = currentFileLine = 0;
-	WORDP base = dictionaryFree;
-	WORDP D;
 	while (ReadALine(readBuffer,in) >= 0) 
 	{
 		ReadCompiledWord(readBuffer,word); //   skip over double quote or QUOTE
@@ -2228,7 +2226,7 @@ static void ReadPatternData(const char* name,const char* layer,unsigned int buil
 		WORDP old = FindWord(name);
 		if (old && (old->systemFlags & PATTERN_WORD)) old = NULL;	// old is not changing value at all
 		else if (build != BUILD2) old = NULL; // only protect from a layer 2 load
-		D = StoreWord(name,0,PATTERN_WORD);
+		StoreWord(name,0,PATTERN_WORD);
 		// if old was not previously pattern word and it is now, we will have to unwind on unload. If new word, word gets unwound automatically
 		if (old)
 		{
@@ -2745,7 +2743,6 @@ FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 	int originalTopicCount = numberOfTopics;
 	char filename[SMALL_WORD_SIZE];
 	InitLayerMemory(name,layer);
-	int expectedTopicCount = numberOfTopics;
 	numberOfTopics = originalTopicCount;
 	sprintf(filename,(char*)"patternWords%s.txt",name );
 	ReadPatternData(filename,name,build); // sets the PATTERN_WORD flag on a dictionary entry

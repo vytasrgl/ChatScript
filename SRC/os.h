@@ -40,7 +40,7 @@ extern char* tagDepth[MAX_GLOBAL][25];
 #define RECORD_SIZE 4000
 
 // MEMORY SYSTEM
-extern char* ReleaseStackDepth[MAX_GLOBAL];
+extern char* releaseStackDepth[MAX_GLOBAL];
 extern unsigned int maxBufferLimit;
 extern unsigned int maxReleaseStackGap;
 extern unsigned int maxBufferSize;
@@ -161,7 +161,7 @@ extern bool silent;
 extern uint64 logCount;
 extern char* testOutput;
 
-#define ReportBug(...) {Log(BUGLOG, __VA_ARGS__);}
+#define ReportBug(...) { Bug(); Log(BUGLOG, __VA_ARGS__);}
 #define DebugPrint(...) Log(STDDEBUGLOG, __VA_ARGS__)
 extern char logFilename[MAX_WORD_SIZE];
 extern bool logUpdated;
@@ -177,6 +177,7 @@ extern bool serverctrlz;
 unsigned int Log(unsigned int spot,const char * fmt, ...);
 void ChangeDepth(int value,char* where,bool nostackCutboack = false,char* code = NULL,FunctionResult result = NOPROBLEM_BIT);
 void BugBacktrace(FILE* out);
+void Bug();
 
 // RANDOM NUMBERS
 

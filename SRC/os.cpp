@@ -41,8 +41,8 @@ char* buffers = 0;							//   collection of output buffers
 static char* overflowBuffers[MAX_OVERFLOW_BUFFERS];	// malloced extra buffers if base allotment is gone
 
 unsigned char memDepth[MAX_GLOBAL];				// memory usage at depth
-char* ReleaseStackDepth[MAX_GLOBAL];				// ReleaseStack at start of depth
-static unsigned int stringDepth[MAX_GLOBAL];				// string at start of depth
+char* releaseStackDepth[MAX_GLOBAL];				// ReleaseStack at start of depth
+static unsigned int heapDepth[MAX_GLOBAL];				// string at start of depth
 char* nameDepth[MAX_GLOBAL];				// who are we?
 char* ruleDepth[MAX_GLOBAL];				// current rule
 char* tagDepth[MAX_GLOBAL][25];			// topicid.toplevelid.rejoinderid (5.5.5)
@@ -74,6 +74,11 @@ unsigned int oldRandIndex = 0;
 #include <sys/stat.h>
 
 #endif
+
+void Bug()
+{
+	int xx = 0; // a hook to debug bug reports
+}
 
 /////////////////////////////////////////////////////////
 /// KEYBOARD
@@ -162,7 +167,7 @@ void ResetBuffers()
 	globalDepth = 0;
 	bufferIndex = baseBufferIndex;
 	memset(memDepth,0,sizeof(memDepth)); 
-	memset(ReleaseStackDepth,0,sizeof(ReleaseStackDepth)); 
+	memset(releaseStackDepth,0,sizeof(releaseStackDepth)); 
 	outputNest = oldOutputIndex = 0;
 	currentRuleOutputBase = currentOutputBase = ourMainOutputBuffer;
 	currentOutputLimit = outputsize;
@@ -616,7 +621,7 @@ void WalkDirectory(char* directory,FILEWALK function, uint64 flags)
 
 	if (hFind == INVALID_HANDLE_VALUE) 
 	{
-		ReportBug((char*)"No such directory %s: %s\n",DirSpec);
+		ReportBug((char*)"No such directory %s\n",DirSpec);
 		return;
 	} 
 	else 
@@ -1030,12 +1035,19 @@ void BugBacktrace(FILE* out)
 {
 	int i = globalDepth +1;
 	char rule[MAX_WORD_SIZE];
+	if (nameDepth[i]) 
+	{
+		strncpy(rule,ruleDepth[i],50);
+		rule[50] = 0;
+		fprintf(out,"Finished %d: heapusedOnEntry: %d heapUsedNow: %d buffers:%d stackused: %d stackusedNow:%d %s - %s\r\n",
+			i,heapDepth[i],(int)(heapBase-heapFree),memDepth[i],(int)(heapFree - releaseStackDepth[i]), (int)(stackFree-stackStart),nameDepth[i],rule);
+	}
 	while (--i > 0) 
 	{
 		strncpy(rule,ruleDepth[i],50);
 		rule[50] = 0;
-		fprintf(out,"BugDepth %d: stringused: %d buffers:%d stackused: %d %s - %s\r\n",
-			i,stringDepth[i],memDepth[i],heapFree - ReleaseStackDepth[globalDepth], nameDepth[i],rule);
+		fprintf(out,"BugDepth %d: heapusedOnEntry: %d buffers:%d stackused: %d %s - %s\r\n",
+			i,heapDepth[i],memDepth[i],(int)(heapFree - releaseStackDepth[i]), nameDepth[i],rule);
 	}
 }
 
@@ -1052,20 +1064,20 @@ void ChangeDepth(int value,char* where,bool nostackCutback,char* code,FunctionRe
 			memDepth[globalDepth] = 0;
 		}
 		// engine functions that are streams should not destroy potential local adjustments
-		if (!nostackCutback) stackFree = ReleaseStackDepth[globalDepth]; // deallocoate ARGUMENT space
+		if (!nostackCutback) stackFree = releaseStackDepth[globalDepth]; // deallocoate ARGUMENT space
 		globalDepth += value;
-		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d\r\n", globalDepth,where, bufferIndex);
+		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d heapused:%d\r\n", globalDepth,where, bufferIndex,(int)(heapBase-heapFree));
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d stringused: %d stackused:%d\r\n",globalDepth, where, bufferIndex,heapBase - heapFree,stackFree - stackStart);
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d heapused: %d stackused:%d gap:%d\r\n",globalDepth, where, bufferIndex,(int)(heapBase - heapFree),(int)(stackFree - stackStart),(int)(heapFree-stackFree));
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
 		nameDepth[globalDepth] = where;
 		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
 		sprintf((char*)tagDepth[globalDepth],"%d.%d.%d",currentTopicID,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
-		ReleaseStackDepth[globalDepth] = stackFree; // define argument start space
-		stringDepth[globalDepth] =  heapBase - heapFree;	
+		releaseStackDepth[globalDepth] = stackFree; // define argument start space - release back to here on exit
+		heapDepth[globalDepth] =  heapBase - heapFree;	 // used on entry
 
 #ifndef DISCARDTESTING
 		CheckBreak(where,true,code); // debugger hook
@@ -1083,17 +1095,7 @@ bool LogEndedCleanly()
 
 unsigned int Log(unsigned int channel,const char * fmt, ...)
 {
-	int channelID;
-	if (channel == SERVERLOG) channelID = 2;
-	else channelID = 1;
-
-	bool tracing = false;
-	if (channel == STDTRACELOG)
-	{
-		tracing = true;
-		channel = STDUSERLOG;
-	}
-	else if (channel == STDTRACETABLOG || channel == STDTRACEATTNLOG) tracing = true;
+	if (channel == STDTRACELOG) channel = STDUSERLOG;
 
 	static unsigned int id = 1000;	
 	if (quitting) return id;
@@ -1322,7 +1324,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			fwrite(logbase,1,bufLen,bug);
 			if (!compiling && !loading) 
 			{
-				fprintf(bug,(char*)"MinReleaseStackGap %dMB MinHeapAvailable %dMB\r\n",maxReleaseStackGap/1000000,minStringAvailable/1000000);
+				fprintf(bug,(char*)"MinReleaseStackGap %dMB MinHeapAvailable %dMB\r\n",maxReleaseStackGap/1000000,(int)(minStringAvailable/1000000));
 				fprintf(bug,(char*)"MaxBuffers used %d of %d\r\n\r\n",maxBufferUsed,maxBufferLimit);
 				BugBacktrace(bug);
 			}

@@ -12486,7 +12486,7 @@
     Floreal~1nz (^Revolutionary_calendar_month~1) eighth month of the Revolutionary calendar 
  Fructidor ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Fructidor~1nz (^Revolutionary_calendar_month~1) twelfth month of the Revolutionary calendar 
- Feb ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Feb ( meanings=1 NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 ) 
     February~1n 
  First_of_May ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     May_Day~1nz (^day~5) observed in many countries to celebrate the coming of spring

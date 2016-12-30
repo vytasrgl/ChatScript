@@ -371,8 +371,6 @@
     undraped~1az lacking drapery or draperies
     undraped~2az stripped of drapery
  Ulrich ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- using ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON2 GRADE1_2 posdefault:VERB ) 
-    victimisation~1nz (^mistreatment~1) an act that exploits or victimizes someone 
  underfelt ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     underfelt~1nz (^underlayment~1) a carpet pad of thick felt
  Uri ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -524,6 +522,8 @@
     sustainment~1n 
  u-turn ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR posdefault:NOUN ) 
     u-turn~1nz (^turnaround~1) complete reversal of direction of travel
+ using ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON2 GRADE1_2 posdefault:VERB ) 
+    victimisation~1nz (^mistreatment~1) an act that exploits or victimizes someone 
  uniting ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     jointure~1n 
     amalgamation~1n 

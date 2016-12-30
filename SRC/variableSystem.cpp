@@ -263,7 +263,6 @@ char* GetUserVariable(const char* word,bool nojson,bool fortrace)
 		if (fortrace) localvar = false;	// dont allocate memory
 		strcpy(path,item);
 LOOPDEEPER:
-		bool fact = false;
 		FACT* factvalue = NULL;
 		if (IsDigitWord(item) && (!strnicmp(separator,".subject",8) || !strnicmp(separator,".verb",5) ||!strnicmp(separator,".object",7)) ) // fact id?
 		{
@@ -285,7 +284,12 @@ LOOPDEEPER:
 
 		// get the label for this current separator
 		char* label = (char*)separator + 1;
-		len = (separator1) ? (separator1 - label) : 0;
+		if (separator1)
+		{
+			len = (separator1 - label);
+			if (*(separator1-1) == ']') --len;	// prior close of array ref
+		}
+		else len = 0;
 		WORDP key;
 		if (factvalue) 
 		{
@@ -316,10 +320,11 @@ LOOPDEEPER:
 			}
 			else if (*label == '$') // indirect
 			{
-				*separator1 = 0;
-				label = GetUserVariable(label); // key is a variable name or index, go get it to use real key
+				char val[MAX_WORD_SIZE];
+				strncpy(val,label,len);
+				val[len]  = 0;
+				label = GetUserVariable(val); // key is a variable name or index, go get it to use real key
 				if (IsDigit(*label)) key = FindWord(label);
-				*separator1 = ']';
 				if (!IsDigit(*label))  goto NULLVALUE;
 			}
 			else  goto NULLVALUE; // not a number or indirect
@@ -335,7 +340,7 @@ LOOPDEEPER:
 			else answer = Meaning2Word(factvalue->object)->word;
 			separator = separator1;
 			if (!separator) goto ANSWER;
-			item = item;
+			item = answer;
 			goto LOOPDEEPER;
 		}
 
@@ -505,7 +510,7 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 	{
 		char pattern[100];
 		char label[MAX_LABEL_SIZE];
-		char* ptr = GetPattern(currentRule,label,pattern,100);  // go to output
+		GetPattern(currentRule,label,pattern,100);  // go to output
 		Log(ECHOSTDTRACELOG,"%s -> %s at %s.%d.%d %s %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),label,pattern);
 	}
 }

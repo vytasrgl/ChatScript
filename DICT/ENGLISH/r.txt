@@ -1279,7 +1279,6 @@
     recission~1nz (^cancellation~1) the act of rescinding
  random_access_memory ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     random-access_memory~1nz (^volatile_storage~1) the most common computer memory which can be used by programs to perform necessary tasks while the computer is on
- Rother ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Raedclyf ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Romantic_Movement ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Romanticism~1nz (^artistic_style~1) a movement in literature and art during the late 18th and early 19th centuries that celebrated nature rather than civilization
@@ -3065,6 +3064,7 @@
  Rosenbaum ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Rosier ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Rossiter ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Rother ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Rothschild ( meanings=1 glosses=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Rothschild~1nz (^banker~2) any of family of powerful Jewish bankers in Europe
  Roussel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 

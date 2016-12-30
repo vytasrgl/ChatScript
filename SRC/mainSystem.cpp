@@ -393,6 +393,9 @@ void CreateSystem()
 #ifdef DISCARDJSON
 	printf((char*)"%s",(char*)"    JSON access disabled.\r\n");
 #endif
+#ifdef TREETAGGER
+	printf((char*)"    TreeTagger access enabled: %s\r\n",language);
+#endif
 	char route[MAX_WORD_SIZE];
 #ifndef DISCARDPOSTGRES
 	if (postgresparams) sprintf(route,"    Postgres enabled. FileSystem routed to %s\r\n",postgresparams);
@@ -432,7 +435,7 @@ void ReloadSystem()
 		WriteBinaryFacts(FopenBinaryWrite(UseDictionaryFile((char*)"facts.bin")),factBase);
 	}
 	char name[MAX_WORD_SIZE];
-	sprintf(name,(char*)"%s/systemfacts.txt",systemFolder);
+	sprintf(name,(char*)"%s/%s/systemfacts.txt",livedata,language);
 	ReadFacts(name,NULL,0); // part of wordnet, not level 0 build 
 	ReadLiveData();  // considered part of basic system before a build
 	WordnetLockDictionary();
@@ -483,7 +486,7 @@ void ProcessArguments(int argc, char* argv[])
 		}
 		else if (!strnicmp(argv[i],(char*)"dict=",5)) maxDictEntries = atoi(argv[i]+5); // how many dict words allowed
 		else if (!strnicmp(argv[i],(char*)"fact=",5)) maxFacts = atoi(argv[i]+5);  // fact entries
-		else if (!strnicmp(argv[i],(char*)"text=",5)) maxHeapBytes = atoi(argv[i]+5) * 1000; // string bytes in pages
+		else if (!strnicmp(argv[i],(char*)"text=",5)) maxHeapBytes = atoi(argv[i]+5) * 1000; // stack and heap bytes in pages
 		else if (!strnicmp(argv[i],(char*)"cache=",6)) // value of 10x0 means never save user data
 		{
 			userCacheSize = atoi(argv[i]+6) * 1000;
@@ -504,7 +507,7 @@ void ProcessArguments(int argc, char* argv[])
 		{
 			strcpy(livedata,argv[i]+9);
 			sprintf(systemFolder,(char*)"%s/SYSTEM",argv[i]+9);
-			sprintf(englishFolder,(char*)"%s/ENGLISH",argv[i]+9);
+			sprintf(languageFolder,(char*)"%s/%s",argv[i]+9,language);
 		}
 		else if (!strnicmp(argv[i],(char*)"nosuchbotrestart=",17) ) 
 		{
@@ -512,7 +515,7 @@ void ProcessArguments(int argc, char* argv[])
 			else nosuchbotrestart = false;
 		}
 		else if (!strnicmp(argv[i],(char*)"system=",7) )  strcpy(systemFolder,argv[i]+7);
-		else if (!strnicmp(argv[i],(char*)"english=",8) )  strcpy(englishFolder,argv[i]+8);
+		else if (!strnicmp(argv[i],(char*)"english=",8) )  strcpy(languageFolder,argv[i]+8);
 #ifndef DISCARDPOSTGRES
 		else if (!strnicmp(argv[i],(char*)"pguser=",7) )  postgresparams = argv[i]+7;
 #endif
@@ -594,9 +597,6 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 	strcpy(language,(char*)"ENGLISH");
 
-	strcpy(livedata,(char*)"LIVEDATA"); // default directory for dynamic stuff
-	strcpy(systemFolder,(char*)"LIVEDATA/SYSTEM"); // default directory for dynamic stuff
-	strcpy(englishFolder,(char*)"LIVEDATA/ENGLISH"); // default directory for dynamic stuff
 	*loginID = 0;
 
 	if (argc > 1) printf("CommandLine:\r\n");
@@ -614,6 +614,11 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 				myexit((char*)"buffer size less than output buffer size");
 			}
 		}
+		if (!strnicmp(argv[i],(char*)"language=",9)) 
+		{
+			strcpy(language,argv[i]+9);
+			MakeUpperCase(language);
+		}
 		if (!strnicmp(argv[i],(char*)"logsize=",8)) logsize = atoi(argv[i]+8); // bytes avail for log buffer
 		if (!strnicmp(argv[i],(char*)"outputsize=",11)) outputsize = atoi(argv[i]+11); // bytes avail for log buffer
 	}
@@ -621,6 +626,9 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 	currentRuleOutputBase = currentOutputBase = ourMainOutputBuffer = (char*)malloc(outputsize);
 	currentOutputLimit = outputsize; 
+	strcpy(livedata,(char*)"LIVEDATA"); // default directory for dynamic stuff
+	strcpy(systemFolder,(char*)"LIVEDATA/SYSTEM"); // default directory for dynamic stuff
+	sprintf(languageFolder,"LIVEDATA/%s",language); // default directory for dynamic stuff
 
 	// need buffers for things that run ahead like servers and such.
 	maxBufferSize = (maxBufferSize + 63);
@@ -1149,7 +1157,6 @@ void ComputeWhy(char* buffer,int n)
 
 static void FactizeResult() // takes the initial given result
 {
-	unsigned int size = 0;
 	uint64 control = tokenControl;
 	tokenControl |= LEAVE_QUOTE;
 	char* limit;
@@ -1585,8 +1592,7 @@ void Restart()
 		echo = false;
 		char initialInput[MAX_WORD_SIZE];
 		*initialInput = 0;
-		int turn = PerformChat(us,computerID,initialInput,callerIP,mainOutputBuffer);
-		// ignore any PENDING_RESTART == turn response here.
+		PerformChat(us,computerID,initialInput,callerIP,mainOutputBuffer);
 	}
 	else 
 	{
@@ -2233,12 +2239,12 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	{
 		// test for punctuation not done by substitutes (eg "?\")
 	char c = (wordCount) ? *wordStarts[wordCount] : 0;
-		if ((c == '?' || c == '!') && wordStarts[wordCount])  
-		{
-			char* tokens[3];
-			tokens[1] = AllocateHeap(wordStarts[wordCount],1,1);
-			ReplaceWords(wordCount,1,1,tokens);
-		}  
+	if ((c == '?' || c == '!') && wordStarts[wordCount])  
+	{
+		char* tokens[3];
+		tokens[1] = AllocateHeap(wordStarts[wordCount],1,1);
+		ReplaceWords("Remove ?!",wordCount,1,1,tokens);
+	}  
 
 		// test for punctuation badly done at end (eg "?\")
 		ProcessSubstitutes();

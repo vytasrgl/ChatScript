@@ -297,7 +297,7 @@ SOURCE:
 			size_t len = (ptr-data) + 1 + strlen(ptr);
 			TCPSocket *sock = new TCPSocket(serverIP, (unsigned short)port);
 			sock->send(data, len );
-			printf((char*)"Sent %d bytes of data to port %d\r\n",len, port);
+			printf((char*)"Sent %d bytes of data to port %d\r\n",(int)len, port);
 
 			int bytesReceived = 1;              // Bytes read on each recv()
 			int totalBytesReceived = 0;         // Total bytes read

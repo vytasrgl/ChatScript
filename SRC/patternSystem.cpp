@@ -99,7 +99,7 @@ static char* BitIndex(uint64 bits, char* buffer, int offset)
 
 void GetPatternData(char* buffer)
 {
-	char* original = buffer;
+	char* xxoriginal = buffer;
 	buffer = BitIndex(matchedBits[0][0],buffer,0);
 	buffer = BitIndex(matchedBits[0][1],buffer,64);
 	buffer = BitIndex(matchedBits[0][2],buffer,128);
@@ -459,13 +459,17 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 						positionStart = WILDCARD_START(wild);
 						positionEnd = WILDCARD_END(wild);
 						reverse = false;
-						if (!wildcardSelector && oldend && *end != '+' && positionStart != (oldend + 1)) // this is an anchor that does not match
+						if (!wildcardSelector && oldend && *end != '+' && positionStart != (oldend + 1) && positionStart != INFINITE_MATCH) // this is an anchor that does not match
 						{
 							matched = false;
 							break;
 						}
 					}
-					if (!positionEnd) break;
+					if (!positionEnd && positionStart) 
+					{
+						matched = false;
+						break;
+					}
 					if (*end)
 					{
 						oldEnd = positionEnd; // forced match ok
@@ -477,6 +481,7 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 						else if (positionStart == positionEnd) Log(STDTRACELOG,(char*)"(word:%s index:%d)",wordStarts[positionEnd],positionEnd);
 						else Log(STDTRACELOG,(char*)"(word:%s-%s index:%d-%d)",wordStarts[positionStart],wordStarts[positionEnd],positionStart,positionEnd);
 					}
+					if (beginmatch == -1) beginmatch = positionStart; // treat this as a real match
 					matched = true;
 				}
 				else
@@ -525,12 +530,12 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 				else if ((wildcardSelector & WILDGAP) || positionEnd == at)// you can go to end from anywhere if you have a gap OR you are there
 				{
 					matched =  true;
-					positionStart = positionEnd = at; //   pretend to match a word at end of sentence
+					positionStart = positionEnd = at + 1; //   pretend to match a word off end of sentence
 				}
 				else if (*kind == '[' || *kind == '{') // nested unit will figure out if legal 
 				{
 					matched =  true;
-					positionStart = positionEnd = at; //   pretend to match a word at end of sentence
+					positionStart = positionEnd = at + 1; //   pretend to match a word at end of sentence
 				}
 				else matched = false;
 				break;
@@ -865,7 +870,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				}
 				if (matched && depth > 0 && *word == ')') // matched all at this level? wont be true if it uses < inside it
 				{
-					if (slidingStart != INFINITE_MATCH) positionStart = (reverse) ? (startposition  - 1) : (startposition  + 1);
+					if (slidingStart && slidingStart != INFINITE_MATCH) positionStart = (reverse) ? (startposition  - 1) : (startposition  + 1);
 					else
 					{
 						// if ( ) started wild like (* xxx) we need to start from beginning

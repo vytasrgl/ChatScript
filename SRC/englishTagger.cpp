@@ -496,7 +496,6 @@ static void PerformPosTag(int start, int end)
 	uint64 oldTokenControl = tokenControl;
 	unsigned int maxContigLower = 0;
 	unsigned int contigLower = 0;
-	bool majorLower = false;
 	for ( int j = start; j <= end; ++j)
     {
 		if (ignoreWord[j]) continue;	
@@ -510,8 +509,6 @@ static void PerformPosTag(int start, int end)
 		else 
 		{
 			++contigLower;
-			WORDP X = FindWord(wordStarts[j]);
-			if (X && X->properties & (NORMAL_NOUN_BITS|VERB_BITS|AUX_VERB) && !(X->properties & (DETERMINER|PREPOSITION|CONJUNCTION))) majorLower = true;
 		}
 	}
 	if (contigLower > maxContigLower) maxContigLower = contigLower;
@@ -9998,68 +9995,65 @@ static void TreeTagger()
     if (trace & TRACE_PREPARE) Log(STDTRACELOG,"\r\n");
 }
 
-void InitTreeTagger(char* params) // language=xxxx tags=xxxx
+void InitTreeTagger(char* params) // tags=xxxx
 {
 	if (!params) return;
     printf("External Tagging: %s\r\n",params);
-	externalTagger = 2;	// using external tagging
-
-	char* language = strstr(params,"language=");
-	if (!language) return;
-	char* end = strchr(language,' ');
-	if (end) *end = 0;
-	language += 9;
-	init_treetagger(language);  /* Initialization of the tagger with a language parameter file */
-	if (end) *end = ' ';
 
 	// read pos tags and assign value
 	char* tags = strstr(params,"tags=");
-	if (tags)
+	if (!tags) return;
+	char* end  = strchr(tags,' ');
+	if (end) *end = 0;
+	tags += 5;
+	uint64 tagflags = 0;
+	WORDP D = NULL;
+	FILE* in = fopen(tags,(char*)"rb");
+	if (end) *end = ' ';
+	if (!in) 
 	{
-		end  = strchr(tags,' ');
-		if (end) *end = 0;
-		tags += 5;
-		uint64 tagflags = 0;
-		WORDP D = NULL;
-		FILE* in = fopen(tags,(char*)"rb");
-		if (end) *end = ' ';
-		if (!in) printf("Unable to read tags %s\r\n",tags);
-		else {
-			char word[MAX_WORD_SIZE];
-			char type[MAX_WORD_SIZE];
-			while (ReadALine(readBuffer,in))
+		printf("Unable to read tags %s\r\n",tags);
+		return;
+	}
+	externalTagger = 2;	// using external tagging
+
+	char langfile[MAX_WORD_SIZE];
+	sprintf(langfile, "treetagger/%s.par",language);
+	MakeLowerCase(langfile);
+	init_treetagger(langfile);  /* Initialization of the tagger with the language parameter file */
+	char word[MAX_WORD_SIZE];
+	char type[MAX_WORD_SIZE];
+	while (ReadALine(readBuffer,in))
+	{
+		uint64 flags = 0;
+		char* ptr = ReadCompiledWord(readBuffer,word);
+		if (!*word) break;
+		if (*word == '=') // a line of CS POS TYPES to be global
+		{
+			while (ptr && *ptr) // for each flag on this flag line
 			{
-				uint64 flags = 0;
-				char* ptr = ReadCompiledWord(readBuffer,word);
-				if (!*word) break;
-				if (*word == '=') // a line of CS POS TYPES to be global
-				{
-					while (ptr && *ptr) // for each flag on this flag line
-					{
-						ptr = ReadCompiledWord(ptr,type);
-						if (!*type) break;
-						flags |= FindValueByName(type); // type known?
-					}
-					tagflags = flags;	
-				}
-				else // a foreign postag  using global flags and local flags on its line
-				{
-					char label[MAX_WORD_SIZE];
-					*label = '~';	// marker as a concept
-					strcpy(label+1,word);
-					while (ptr && *ptr) // for each flag
-					{
-						ptr = ReadCompiledWord(ptr,type);
-						if (!*type) break;
-						flags |= FindValueByName(type); // type known?
-						if (!flags) Log(STDUSERLOG,"Type not known %s for %s\r\n",word,type);
-					}
-					D = StoreWord(label,tagflags | flags);
-				}
+				ptr = ReadCompiledWord(ptr,type);
+				if (!*type) break;
+				flags |= FindValueByName(type); // type known?
 			}
-			fclose(in);
+			tagflags = flags;	
+		}
+		else // a foreign postag  using global flags and local flags on its line
+		{
+			char label[MAX_WORD_SIZE];
+			*label = '~';	// marker as a concept
+			strcpy(label+1,word);
+			while (ptr && *ptr) // for each flag
+			{
+				ptr = ReadCompiledWord(ptr,type);
+				if (!*type) break;
+				flags |= FindValueByName(type); // type known?
+				if (!flags) Log(STDUSERLOG,"Type not known %s for %s\r\n",word,type);
+			}
+			D = StoreWord(label,tagflags | flags);
 		}
 	}
+	fclose(in);
 
 	externalPostagger = TreeTagger;
 

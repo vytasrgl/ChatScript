@@ -11,6 +11,8 @@ bool newline = false;
 int docSampleRate = 0;
 int docSample = 0;
 int docVolleyStartTime = 0;
+char conditionalCompile[MAX_CONDITIONALS+1][50];
+int conditionalCompiledIndex = 0;
 
 char tmpWord[MAX_WORD_SIZE];					// globally visible scratch word
 char* userRecordSourceBuffer = 0;				// input source for reading is this text stream of user file
@@ -584,72 +586,72 @@ void AcquirePosMeanings()
 	}
 	MEANING M = MakeMeaning(BUILDCONCEPT((char*)"~aux_verb"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_future")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_past")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_present")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_be")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_have")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_do")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_verb_future")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_verb_past")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_verb_present")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_be")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_have")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_do")),Mmember,M);
 
 	M = MakeMeaning(BUILDCONCEPT((char*)"~aux_verb_tenses"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_future")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_past")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~aux_verb_present")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_verb_future")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_verb_past")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~aux_verb_present")),Mmember,M);
 	
 	M = MakeMeaning(BUILDCONCEPT((char*)"~conjunction"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~conjunction_subordinate")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~conjunction_coordinate")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~conjunction_subordinate")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~conjunction_coordinate")),Mmember,M);
 
 	M = MakeMeaning(BUILDCONCEPT((char*)"~determiner_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~determiner")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~predeterminer")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~determiner")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~predeterminer")),Mmember,M);
 		
 	M = MakeMeaning(BUILDCONCEPT((char*)"~possessive_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~possessive")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~pronoun_possessive")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~possessive")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~pronoun_possessive")),Mmember,M);
 
 	M = MakeMeaning(BUILDCONCEPT((char*)"~noun_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_singular")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_plural")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_proper_singular")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_proper_plural")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_number")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_adjective")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_gerund")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_singular")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_plural")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_proper_singular")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_proper_plural")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_number")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_adjective")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_gerund")),Mmember,M);
 	// CreateFact(MakeMeaning(FindWord((char*)"~noun_infinitive")),Mmember,M);
 	
 	M = MakeMeaning(BUILDCONCEPT((char*)"~normal_noun_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_singular")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_plural")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_proper_singular")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~noun_proper_plural")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_singular")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_plural")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_proper_singular")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~noun_proper_plural")),Mmember,M);
 
 	M = MakeMeaning(BUILDCONCEPT((char*)"~pronoun_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~pronoun_subject")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~pronoun_object")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~pronoun_subject")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~pronoun_object")),Mmember,M);
 
 	M = MakeMeaning(BUILDCONCEPT((char*)"~verb_bits"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~verb_infinitive")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~verb_present")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~verb_present_3ps")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~verb_past")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~verb_past_participle")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~verb_present_participle")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~verb_infinitive")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~verb_present")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~verb_present_3ps")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~verb_past")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~verb_past_participle")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~verb_present_participle")),Mmember,M);
 
 	M = MakeMeaning(BUILDCONCEPT((char*)"~punctuation"));
 	CreateFact(M,Mmember,pos);
-	CreateFact(MakeMeaning(FindWord((char*)"~paren")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~comma")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~quote")),Mmember,M);
-	CreateFact(MakeMeaning(FindWord((char*)"~currency")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~paren")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~comma")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~quote")),Mmember,M);
+	CreateFact(MakeMeaning(StoreWord((char*)"~currency")),Mmember,M);
 
 	MEANING role = MakeMeaning(BUILDCONCEPT((char*)"~grammar_role"));
 	unsigned int i = 0;
@@ -1392,6 +1394,41 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 #define IN_FORMAT_CONTINUATIONLINE 2
 #define IN_FORMAT_COMMENT 3
 
+static bool ConditionalReadRejected(char* start,char*& buffer)
+{
+	char word[MAX_WORD_SIZE];
+	if (!compiling) return false;
+	char* at = ReadCompiledWord(start,word);
+	if (!stricmp(word,"#ifdef") || !stricmp(word,"#ifndef") || !stricmp(word,"#define")) return false;
+	if (!strncmp(word,"#endif",6) || !stricmp(word,"#include") ) return false;
+
+	// a matching language declaration?
+	size_t len = strlen(language);
+	if (!strnicmp(language,word+1,len) && (word[len+1] == 0 || word[len+1] == ' ')) 
+	{
+		memmove(start,at, strlen(at)+1); // erase comment marker
+		buffer = start + strlen(start);
+		return false; // allowed
+	}
+
+	// could it be a constant?
+	uint64 n = FindValueByName(word+1);
+	if (!n) n = FindSystemValueByName(word+1);
+	if (!n) n = FindParseValueByName(word+1);
+	if (!n) n = FindMiscValueByName(word+1);
+	if (n) return false;	 // valid constant
+	for (int i = 0; i < conditionalCompiledIndex; ++i)
+	{
+		if (!stricmp(conditionalCompile[i],word)) 
+		{
+			memmove(start,at, strlen(at)+1); // erase comment marker
+			buffer = start + strlen(start);
+			return false; // allowed
+		}
+	}
+	return true; // reject this line 
+}
+
 int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines) 
 { //  reads text line stripping of cr/nl
 	currentFileLine = maxFileLine; // revert to best seen
@@ -1423,6 +1460,7 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 	bool hasbadutf = false;
 	bool runningOut = false;
 	bool endingBlockComment = false;
+RESUME:
 	while (ALWAYS)
 	{
 		if (in) 
@@ -1467,14 +1505,14 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		if (formatString)
 		{
 			if (formatString == IN_FORMAT_COMMENT && c != '\r' && c != '\n') continue; // flush comment
+			//  format string
+			else if (formatString && c == ender  && *(buffer-1) != '\\') 
+				formatString = NOT_IN_FORMAT_STRING; // end format string
 			else if (formatString == IN_FORMAT_CONTINUATIONLINE)
 			{
 				if (c == ' ' || c == '\t') continue;	// ignore white space leading the line
 				formatString = IN_FORMAT_STRING;
 			}
-			//  format string
-			else if (formatString && c == ender  && *(buffer-1) != '\\') 
-				formatString = NOT_IN_FORMAT_STRING; // end format string
 			else if (formatString && formatString != IN_FORMAT_COMMENT && *(buffer-1) == '#' && *(buffer-2) != '\\' && c == ' ' )  // comment start in format string
 			{
 				formatString = IN_FORMAT_COMMENT; // begin format comment
@@ -1576,11 +1614,12 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 			//   add missing \r
 			*buffer++ = '\r';  // legal 
 			*buffer++ = '\n';  // legal 
+
 			break;	
 		}
 		*buffer++ = c; 
 		*buffer = 0;
-		
+	
 		// strip UTF8 BOM marker if any and just keep reading
 		if (hasutf && currentFileLine == 0 && (buffer-start) == 3) // only from file system 
 		{
@@ -1614,6 +1653,18 @@ int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines)
 		}
 
 	} // end of read loop
+	*buffer = 0;
+	
+	// see if conditional compile line...
+	if (*start == '#' && IsAlphaUTF8(start[1]))
+	{
+		if (ConditionalReadRejected(start,buffer))
+		{
+			buffer = start;
+			*start = 0;
+			goto RESUME;
+		}
+	}
 
 	if (endingBlockComment) c = 0; // force next line to be active to clean up
 	if (blockComment && !c) 
@@ -2124,7 +2175,6 @@ void Convert2Underscores(char* output)
 		ptr += 2;
 		while (*++ptr && *ptr != '"');
 	}
-	bool backslash = false;
     while ((c = *++ptr)) 
     {
 		if (c == '_' && ptr[1] != '_') // remove underscores from apostrophe of possession
@@ -2278,13 +2328,12 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	bool hasDigit = IsDigit(*word);
 	char* hyp = strchr(word,'-');
 	if (hyp) *hyp = 0;
-	bool separator = false;
 	if (hasDigit) // see if all digits now.
 	{
 		char* ptr = word-1;
 		while (*++ptr)
 		{
-			if (ptr != word && *ptr == '-') separator = true;
+			if (ptr != word && *ptr == '-') {;}
 			else if (*ptr == '-' || *ptr == '+') return NOT_A_NUMBER;
 			else if (!IsDigit(*ptr)) return NOT_A_NUMBER;	// not good
 		}

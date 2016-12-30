@@ -163,16 +163,14 @@ static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
 	FACT* F = factFree+1; // point to 1st unused fact
 	while (--F > factLocked && limit) // backwards down to base system facts
 	{
-		WORDP D = Meaning2Word(F->subject);
 		if (shared && !sharefile)  continue;
 		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT|FACTBUILD2))) --limit; // we will write this
 	}
 	// ends on factlocked, which is not to be written out
 	int counter = 0;
-	char* start = ptr;
+	char* xxstart = ptr;
  	while (++F <= factFree)  // factfree is a valid fact
 	{
-		WORDP D = Meaning2Word(F->subject);
 		if (shared && !sharefile)  continue;
 		if (!(F->flags & (FACTDEAD|FACTTRANSIENT|MARKED_FACT|FACTBUILD2))) 
 		{
@@ -505,7 +503,7 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 	if (*value) messageCount = atoi(value);
 
 	// each line MUST end with cr/lf  so it can be made potentially safe for Mongo w/o adjusting size of data (inefficient)
-	char* start = ptr;
+	char* xxstart = ptr;
 	if (!timeturn15[1] && volleyCount >= 15 && responseIndex) sprintf(timeturn15,(char*)"%lu-%d%s",(unsigned long)curr,responseData[0].topic,responseData[0].id); // delimit time of turn 15 and location...
 	sprintf(ptr,(char*)"%s %s %s %s |\r\n",saveVersion,timeturn0,timePrior,timeturn15); 
 	ptr += strlen(ptr);
@@ -626,7 +624,6 @@ void WriteUserData(time_t curr)
 static  bool ReadFileData(char* bot) // passed  buffer with file content (where feasible)
 {	
 	char* buffer = GetFileRead(loginID,bot);
-	size_t len = 0;
 	char junk[MAX_WORD_SIZE];
 	*junk = 0;
 	strcpy(timePrior,(char*)"0");

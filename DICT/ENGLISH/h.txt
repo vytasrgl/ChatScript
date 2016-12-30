@@ -1430,6 +1430,8 @@
  horseshit ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     bull~4n 
  Hocking ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
+ honor_killing ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    honor_killing~1nz (^homicide~1) an ancient tradition still sometimes observed
  Haesel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Haberman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  high_jinx ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -3088,8 +3090,6 @@
     hibernation~1nz (^retirement~2) the act of retiring into inactivity
     hibernation~2nz (^quiescence~2) cessation from or slowing of activity during the winter
     hibernation~3nz (^torpidity~2) the torpid or resting state in which some animals pass the winter
- honor_killing ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    honor_killing~1nz (^homicide~1) an ancient tradition still sometimes observed
  habitual ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     accustomed~2a 
     habitual~2az 

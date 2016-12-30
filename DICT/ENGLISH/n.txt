@@ -7142,7 +7142,7 @@
     new_phase_of_the_moon~1n 
  new_phase_of_the_moon ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     new_moon~1nz (^phase_of_the_moon~1) the time at which the Moon appears as a narrow waxing crescent
- Nov ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Nov ( meanings=1 NOUN NOUN_PROPER_SINGULAR MONTH COMMON1 ) 
     November~1n 
  Nisan ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Nissan~1n 
@@ -7828,8 +7828,7 @@
  nifty ( meanings=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) comparative=niftiest 
     corking~1a 
     nifty~2az 
- not_bad ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL CONDITIONAL_IDIOM ADJECTIVE_ONLY_PREDICATE  poscondition=?=A ) 
-    nifty~1a 
+ not_bad ( CONDITIONAL_IDIOM ADJECTIVE_ONLY_PREDICATE  poscondition=(null) ) 
  naughty ( meanings=3 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 GRADE1_2 posdefault:ADJECTIVE ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) comparative=naughtiest 
     naughty~1az badly behaved
     spicy~1az suggestive of sexual impropriety

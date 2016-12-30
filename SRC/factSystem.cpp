@@ -348,7 +348,6 @@ void KillFact(FACT* F,bool jsonrecurse, bool autoreviseArray)
 
 	F->flags |= FACTDEAD;
 
-	WORDP x = Meaning2Word(F->object);
 	if (trace & TRACE_FACT && CheckTopicTrace()) 
 	{
 		Log(STDTRACELOG,(char*)"Kill: ");
@@ -471,7 +470,8 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 	currentFact = NULL; 
 	if (!subject || !object || !verb)
 	{
-		if (!subject) ReportBug((char*)"Missing subject field in fact create at line %d of %s",currentFileLine,currentFilename)
+		if (!subject) 
+			ReportBug((char*)"Missing subject field in fact create at line %d of %s",currentFileLine,currentFilename)
 		if (!verb) ReportBug((char*)"Missing verb field in fact create at line %d of %s",currentFileLine,currentFilename)
 		if (!object) 
 			ReportBug((char*)"Missing object field in fact create at line %d of %s",currentFileLine,currentFilename)
@@ -868,7 +868,7 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 	}
 	FILE* in;
 	if (strstr(name,"ltm")) in = userFileSystem.userOpen(name);
-	else in = in = FopenReadWritten(name);
+	else in = FopenReadWritten(name);
 	if (!in) return false;
 
 	char* filebuffer = GetFreeCache();
@@ -1094,7 +1094,7 @@ bool ReadBinaryFacts(FILE* in) //   read binary facts
 
 static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead) // uses no additional memory
 {
-	char* start = buffer;
+	char* xxstart = buffer;
 	// a field is either a contiguous mass of non-blank tokens, or a user string "xxx" or an internal string `xxx`  (internal removes its ends, user doesnt)
     if (flags ) //   fact reference
     {
@@ -1120,7 +1120,6 @@ static char* WriteField(MEANING T, uint64 flags,char* buffer,bool ignoreDead) //
 			return buffer; //   cancels print
 		}
 		char* answer = D->word;
-		size_t len = strlen(answer);
 
 		// characteristics of the data
 		bool quoted = false;
@@ -1168,7 +1167,6 @@ char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead,bool eol) // 
 	char* start = buffer;
 	*buffer = 0;
 	if (!F || !F->subject) return start; // never write special facts out
-	int index = Fact2Index(F); // for debugging
 	if (F->flags & FACTDEAD) // except for user display THIS shouldnt happen to real fact writes
 	{
 		if (ignoreDead)
@@ -1338,7 +1336,6 @@ FACT* ReadFact(char* &ptr, unsigned int build)
 	}
 	else  object = ReadMeaning(objectname,true,true);
 	
-	uint64 oldfactbits = myBot;
 	myBot = 0; // no owner by default unless read in by fact
 	if (*ptr && *ptr != ')') ptr = ReadInt64(ptr,(int64&)myBot); // read bot bits
 

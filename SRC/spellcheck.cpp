@@ -129,7 +129,7 @@ static char* SpellCheck( int i, int language)
 		WORDP D = FindWord(word,breakAt,PRIMARY_CASE_ALLOWED);
 		tokens[1] = D->word;
 		tokens[2] = word+breakAt;
-		ReplaceWords(i,1,2,tokens);
+		ReplaceWords("Splitword",i,1,2,tokens);
 		fixedSpell = true;
 		return NULL;
     }
@@ -147,7 +147,7 @@ static char* SpellCheck( int i, int language)
 			WORDP D = FindWord(tmp,breakAt,PRIMARY_CASE_ALLOWED);
 			tokens[1] = D->word;
 			tokens[2] = tmp+breakAt;
-			ReplaceWords(i,2,2,tokens);
+			ReplaceWords("SplitWords",i,2,2,tokens);
 			fixedSpell = true;
 			return NULL;
 		}
@@ -327,7 +327,7 @@ bool SpellCheckSentence()
 				if (D) 
 				{
 					tokens[1] = D->word;
-					ReplaceWords(i,1,1,tokens);
+					ReplaceWords("KnownWord",i,1,1,tokens);
 					fixedSpell = true;
 					continue;
 				}
@@ -338,7 +338,7 @@ bool SpellCheckSentence()
 				if (IsConceptMember(D))
 				{
 					tokens[1] = D->word;
-					ReplaceWords(i,1,1,tokens);
+					ReplaceWords("KnownUpper",i,1,1,tokens);
 					fixedSpell = true;		
 					continue;
 				}
@@ -407,7 +407,7 @@ bool SpellCheckSentence()
 			{
 				char* tokens[2];
 				tokens[1] = E->word;
-				ReplaceWords(i,1,1,tokens);
+				ReplaceWords("Alternatecase",i,1,1,tokens);
 				fixedSpell = true;
 				continue;	
 			}
@@ -438,7 +438,7 @@ bool SpellCheckSentence()
 				{
 					char* tokens[2];
 					tokens[1] = D->word;
-					ReplaceWords(i,2,1,tokens);
+					ReplaceWords("merge",i,2,1,tokens);
 					fixedSpell = true;
 					continue;
 				}
@@ -458,7 +458,7 @@ bool SpellCheckSentence()
 			tokens[1] = D->word;
 			tokens[2] = "/";
 			tokens[3] = E->word;
-			ReplaceWords(i,1,3,tokens);
+			ReplaceWords("Split",i,1,3,tokens);
 			fixedSpell = true;
 			--i;
 			continue;
@@ -494,7 +494,7 @@ bool SpellCheckSentence()
 				char* tokens[3];
 				tokens[1] = D->word;
 				tokens[2] = E->word;
-				ReplaceWords(i,1,2,tokens);
+				ReplaceWords("Pair",i,1,2,tokens);
 				fixedSpell = true;
 				--i;
 			}
@@ -506,7 +506,7 @@ bool SpellCheckSentence()
 				char* tokens[3];
 				tokens[1] = D->word;
 				tokens[2] = E->word;
-				ReplaceWords(i,1,2,tokens);
+				ReplaceWords("Break old",i,1,2,tokens);
 				fixedSpell = true;
 				--i;
 			}
@@ -539,7 +539,7 @@ bool SpellCheckSentence()
 					char* tokens[2];
 					WORDP E = StoreWord(okword);
 					tokens[1] = E->word;
-					ReplaceWords(i,1,1,tokens);
+					ReplaceWords("Spell",i,1,1,tokens);
 					fixedSpell = true;
 				}
 			}
@@ -567,7 +567,7 @@ bool SpellCheckSentence()
 			{
 				char* tokens[2];
 				tokens[1] = word;
-				ReplaceWords(i,1,1,tokens);
+				ReplaceWords("Spell",i,1,1,tokens);
 				fixedSpell = true;
 				continue;
 			}

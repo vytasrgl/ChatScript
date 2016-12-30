@@ -76,6 +76,11 @@ extern unsigned char realPunctuation[256];
 extern signed char nestingData[];
 extern FILE* docOut;
 extern bool newline;
+#define MAX_CONDITIONALS 10
+
+extern char conditionalCompile[MAX_CONDITIONALS+1][50];
+extern int conditionalCompiledIndex;
+
 extern bool showBadUTF;
 extern char* userRecordSourceBuffer;
 extern char tmpWord[MAX_WORD_SIZE];

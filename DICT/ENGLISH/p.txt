@@ -3315,8 +3315,6 @@
  Palen ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  parasail ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 ) 
     parasail~1nz (^parachute~1) parachute that will lift a person up into the air when it is towed by a motorboat or a car
- pea_flour ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    pea_flour~1nz (^meal~1) meal made from dried peas
  piked_reverse_hang ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     piked_reverse_hang~1nz (^reverse_hang~1) a reverse hang performed on the rings
  prairie_wolf ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -4016,8 +4014,6 @@
     pisiform_bone~1n 
     pisiform~2az 
  Piland ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Pollack ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
-    Sydney_Pollack~1n 
  prisonbreak ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     gaolbreak~1n 
  pilomotor_reflex ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -4154,6 +4150,8 @@
  Poche ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Pohlman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Poirier ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Pollack ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+    Sydney_Pollack~1n 
  Pollak ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Pooler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Porterfield ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
@@ -14526,6 +14524,8 @@
     peeve~2vz cause to be annoyed, irritated, or resentful
  petulance ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
     fretfulness~1n 
+ pea_flour ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    pea_flour~1nz (^meal~1) meal made from dried peas
  pinole ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
     pinole~1nz (^meal~1) meal made of finely ground corn mixed with sugar and spices
  plain_flour ( meanings=1 glosses=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
