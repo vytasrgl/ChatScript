@@ -144,7 +144,7 @@ really advanced users wanting the appropriate mental model.
 * [Paper - Speaker for the Dead](../PAPERS/Paper-%20Speaker%20for%20theDead.pdf)
 <br>Applying chatbots to manage people's accumulations of papers, photos, etc.
 
-* [Paper - Google Talk](../PAPERS/Paper%20-%20Google%20Talk.pdf)
+* [Paper - Google Talk](PAPERS/Paper%20-%20Google%20Talk.md)
 <br>A talk I gave at Google about my history, CS, and writing code to act out stories
 
 * [Paper - Writing a Chatbot](../PAPERS/Paper-%20Writing%20a%20Chatbot.pdf)
