@@ -36,10 +36,8 @@ void CloseCache()
 {
 	free(cacheBase);
 	cacheBase = NULL;
-#ifdef SEPARATE_STRING_SPACE 	
 	free(heapEnd);
 	heapEnd = NULL;
-#endif
 }
 
 static void WriteCache(unsigned int which,size_t size)

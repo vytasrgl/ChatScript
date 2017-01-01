@@ -1,6 +1,6 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.0";
+char* version = "7.01";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
@@ -299,12 +299,7 @@ void CreateSystem()
 	unsigned int dictUsedMemKB = ( dictionaryFree-dictionaryBase) * sizeof(WORDENTRY) / 1000;
 	// dictfree shares text space
 	unsigned int textUsedMemKB = ( heapBase-heapFree)  / 1000;
-#ifndef SEPARATE_STRING_SPACE 
-	char* endDict = (char*)(dictionaryBase + maxDictEntries);
-	unsigned int textFreeMemKB = ( heapFree- endDict) / 1000;
-#else
 	unsigned int textFreeMemKB = ( heapFree- heapEnd) / 1000;
-#endif
 
 	unsigned int bufferMemKB = (maxBufferLimit * maxBufferSize) / 1000;
 	

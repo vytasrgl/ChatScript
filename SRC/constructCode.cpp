@@ -57,7 +57,9 @@ resume:
 		char word1val[MAX_WORD_SIZE];
 		char word2val[MAX_WORD_SIZE];
 		ptr = ReadCompiledWord(ptr,buffer);	
+		realCode = ptr;
 		result = HandleRelation(word1,op,buffer,true,id,word1val,word2val);
+		realCode = 0;
 		ptr = ReadCompiledWord(ptr,op);	//   AND, OR, or ) 
 	}
 	else //   existence of non-failure or any content
@@ -215,7 +217,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 			TestIf(ptr+2,result,buffer); 
 			if (!(result & ENDCODES)) strcpy(buffer,"true");
 			else strcpy(buffer,"false");
-			ChangeDepth(-1,"^if");
+			ChangeDepth(-1,"^if",true);
 			*buffer = 0;
 		}
 		if (trace & TRACE_OUTPUT  && CheckTopicTrace()) 

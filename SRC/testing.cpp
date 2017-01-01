@@ -51,6 +51,7 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 
 
 #ifndef DISCARDTESTING
+static int nextLine = 0;
 static int outLevel = 0;
 static int inLevel = 0;
 static FILE* debugSource = NULL;
@@ -61,6 +62,8 @@ static bool nooob = false;
 static int lineLimit = 0; // in abstract report lines that are longer than this...
 static WORDP topLevel = 0;
 static unsigned int err = 0;
+static int inLine = 0;
+static int inDepth = 0;
 static unsigned int filesSeen; 
 static 	char directory[MAX_WORD_SIZE];
 static int itemcount = 0;
@@ -4053,6 +4056,7 @@ void InitDebugger()
 	memset(breakAt,0,sizeof(breakAt));
 	memset(varAt,0,sizeof(varAt));
 	ruleIndex = 0;
+	inDepth = 0;
 	breakIndex = 0;
 	varIndex = 0;
 }
@@ -4161,6 +4165,16 @@ static char* DebugCaller() // decide who we are currently within
 	return "";
 }
 
+static int RealDepth() // decide what depth we are currently within, ignoring ^if
+{
+	for (int i = globalDepth; i > 0; --i)
+	{
+		if (*nameDepth[i] == '~') return i; //  rule, or topic 
+		if (*nameDepth[i] == '^' && stricmp(nameDepth[i],"^if") && stricmp(nameDepth[i],"^loop")
+			&& stricmp(nameDepth[i],"^ruleoutput")) return i; // a real level
+	}
+	return globalDepth;
+}
 static void Rephrase(char* buffer,char* out) // rewrite script to human understandable
 {
 	char* at = strchr(buffer,'`');
@@ -4213,6 +4227,7 @@ static char* FindDebug(char* caller,char* name, int &atloc)
 	char* buffer = AllocateBuffer();
 	char word[MAX_WORD_SIZE];
 	bool found = false;
+	nextLine = -1;
 	int lastline = 0;
 	if (in)
 	{
@@ -4251,7 +4266,12 @@ static char* FindDebug(char* caller,char* name, int &atloc)
 				char word1[MAX_WORD_SIZE];
 				at = ReadCompiledWord(at,word); // line number
 				at = ReadCompiledWord(at,word1); // code offset
-				if (atoi(word1) > atloc) break; // was found on prior line
+				int code = atoi(word1);
+				if (code > atloc) 
+				{
+					nextLine = code;	 // this is the line after code offset
+					break; // was found on prior line
+				}
 				lastline = atoi(word);
 			}
 			else if (!stricmp(word,"file:")) 
@@ -4291,7 +4311,7 @@ static char* GetCode(char* code,char* name) // display script (either upcoming o
 		char* end = strchr(buffer,'`');
 		if (end) *end = 0; // end of rule
 		Rephrase(buffer,out);
-		strcat(buffer,FindDebugLine(name,codeStart,code));
+		strcat(buffer,FindDebugLine(name,codeStart,code)); // also sets nextLine
 		FreeBuffer();
 		FreeBuffer();
 		return buffer;
@@ -4503,7 +4523,12 @@ static void RemoveVar(char* name)
 int ProcessAction(char* before, char* after, char* output, FunctionResult result)
 {
 	int retry = 0;
-	if (stepOver[globalDepth] != 0 || stepOut[globalDepth] || inLevel)
+	bool enter = false;
+	if (stepOver[globalDepth] != 0 || stepOut[globalDepth] || inLevel ) enter = true;
+	// realcode is for when we use freshoutput to analyze a piece like from testif
+	else if (inDepth == RealDepth() && realCode && inLine == (int)(realCode - codeStart) )  enter = true;
+	else if (inDepth == RealDepth() && !realCode && inLine == (int)(before - codeStart) )  enter = true;
+	if (enter)
 	{
 		char* out = AllocateBuffer();
 		char* buffer = AllocateBuffer();
@@ -4659,6 +4684,12 @@ int Debugger(char* x) // process debugger commands until go
 			DebugPrint("    where - show backtrace\r\n");
 			DebugPrint("    break {^fn,~topic,~topic.label,abort}  - set breakpoints\r\n");
 			DebugPrint("    = $var  sets breakpoints when var is assigned to\r\n");
+		}
+		if ((*word == 'l' && !word[1]) || !stricmp(word,"line")) // to next line
+		{
+			inLine = nextLine;
+			inDepth = globalDepth;
+			break;
 		}
 		if ((*word == 's' && !word[1]) || !stricmp(word,"step")) // step or step match
 		{
@@ -5831,12 +5862,7 @@ void C_MemStats(char* input)
 		bufferIndex,overflowIndex,maxOutputUsed);
 
 	unsigned int factFreeMemKB = ( factEnd-factFree) * sizeof(FACT) / 1000;
-#ifndef SEPARATE_STRING_SPACE 
-	char* endDict = (char*)(dictionaryBase + maxDictEntries);
-	unsigned int textFreeMemKB = ( heapFree- endDict) / 1000;
-#else
 	unsigned int textFreeMemKB = ( heapFree- heapEnd) / 1000;
-#endif
 	Log(STDTRACELOG,(char*)"Free:  fact %dKb stack/heap %dKB\r\n",factFreeMemKB,textFreeMemKB);
 	Log(STDTRACELOG,(char*)"MinReleaseStackGap %dMB minHeapAvailable %dMB maxBuffers used %d of %d  maxglobaldepth %d\r\n\r\n",maxReleaseStackGap/1000000,minStringAvailable/1000000,maxBufferUsed,maxBufferLimit,maxGlobalSeen);
 }
@@ -7816,6 +7842,195 @@ static void SortConcept(WORDP D,uint64 junk)
 		Sortit(D->word,(int)junk); // will be 0 for no input, some char value otherwise
 }
 
+char* UrlEncode(char* input);
+
+static void Translate(char* msg,char* to, char* apikey)
+{
+	apikey = "XolrAIzaSyA5ptICoXLCIe07MXBbQanBNnxJCHXSl2wBatd";
+	char url[MAX_WORD_SIZE];
+#ifndef DISCARDJSON
+	sprintf(url,"https://translation.googleapis.com/language/translate/v2?q=%s&target=%s&format=text&source=en&key=%s",
+		UrlEncode(msg),to,apikey);
+	char* header = "";
+	ARGUMENT(1) = "transient direct";
+	ARGUMENT(2) = "getu";
+	ARGUMENT(3) = url;
+	ARGUMENT(4) = "";
+	ARGUMENT(5) = header;
+	ARGUMENT(6) = "";
+	*msg = 0;
+	JSONOpenCode(msg);
+#endif
+	char* at = strstr(msg,"translatedText");
+	if (http_response != 200 || !at) 
+	{
+		Log(STDUSERLOG,"%s\r\n",msg);
+		myexit("translate failure");
+	}
+	at += 4 + 14; // start of answer past the quote
+	while (1)
+	{
+		if (*at == '\\') // escaped character
+		{
+			++at; // dont show the escape
+			*msg++ = *at++;
+		}
+		else
+		{
+			if (*at == '"') break;	// end of data
+			*msg++ = *at++;
+		}
+	}
+	*msg = 0;
+	int xx = 0;
+}
+
+static void C_TranslateConcept(char* input) // give the language
+{
+	char language[100];
+	strcpy(language,input);
+	char word[MAX_WORD_SIZE];
+	sprintf(word,"\"big elf\" dog");
+	Translate(word,"de",NULL); // de fr it es
+	printf("%s",word);
+	return;
+	FILE* in = fopen("concepts.top","rb");
+	if (!in)
+	{
+		printf("No such file\r\n");
+		return;
+	}
+	char* output = AllocateBuffer();
+	char* outputforeign = AllocateBuffer();
+	char* translation = AllocateBuffer();
+	char name[100];
+	sprintf(name,"%s_concepts.top",input); 
+	FILE* out = fopen(name, "wb");
+	while (ReadALine(readBuffer,in) >= 0)
+	{
+		*output = 0;
+		*outputforeign = 0;
+		char* ptr = readBuffer;
+		ptr = ReadCompiledWord(ptr,name);	// concept:
+		while ((ptr = ReadCompiledWord(ptr,name))) // get header
+		{
+			if (*name == '(' && name[1]) 
+			{
+				ptr -= strlen(name);
+				name[1] = 0;
+			}
+	
+			MakeUpperCase(name);
+			strcat(output,name);
+			strcat(output," ");
+			if (*name == '(') break;	
+		}
+		while ((ptr = ReadCompiledWord(ptr,name))) // get content
+		{
+			if (strchr(name,'~') || IsUpperCase(*name)) // concepts and proper names need no translation
+			{
+				if (*name == '~') 
+				{
+					MakeUpperCase(name);
+					strcat(output,name);
+					strcat(output," ");
+					continue;
+				}
+				// proper name?
+				char* at = name;
+				bool mixedCase = false;
+				while ((at = strchr(at,'_')))
+				{
+					if (IsLowerCase(at[1])) 
+					{
+						mixedCase = true;
+						break;
+					}
+					++at;
+				}
+				at = name;
+				if (!mixedCase) while ((at = strchr(at,' ')))
+				{
+					if (IsLowerCase(at[1])) 
+					{
+						mixedCase = true;
+						break;
+					}
+					++at;
+				}
+				if (!mixedCase || strchr(name,'~')) // normal all upper unlike "Broadway production" and dict refs
+				{
+					strcat(output,name);
+					strcat(output," ");
+					continue;
+				}
+			}
+			if (*name == ')') break;	
+
+			// add for translation
+			char* at;
+			if (strchr(name,'_'))
+			{
+				while ((at = strchr(name,'_'))) {*at = ' ';} // use space instead of underscore
+				strcat(name,"\"");
+				memmove(name+1,name,strlen(name)+1);
+				*name = '"';
+			}
+			strcat(outputforeign,name);
+			strcat(outputforeign," ");
+			
+		}
+
+		// translate and dump the result
+		if (strlen(outputforeign) >= MAX_BUFFER_SIZE) ReportBug("translate too big");
+		strcat(output," ==> "); // to be clear
+
+		// google takes only 5000 char at a time.
+		char* end = outputforeign;
+		while (*end)
+		{
+			size_t len = strlen(end);
+			if (len > 4900)
+			{
+				char* at = end-1;
+				bool quote = false;
+				char* lasthole = NULL;
+				while (++at)
+				{
+					if ((at-end) > 4900) break; // accept last hole
+					if (*at == '"') quote = !quote;
+					else if (*at == ' ' && !quote) lasthole = at;
+				}
+			
+				strncpy(translation,end,lasthole-end);
+				translation[lasthole-end] = 0;
+				end = lasthole + 1;
+				Translate(translation,"de",NULL); // de fr it es
+				strcat(output,translation);
+				strcat(output," ");
+			}
+			else // direct use or final chunk
+			{
+				if (end[len-1] == ' ') end[len-1] = 0;	// remove trailing blank
+				Translate(translation,"de",NULL); // de fr it es
+				strcpy(translation,end);
+				strcat(output,translation);
+				break;
+			}
+		}
+
+
+		if (strlen(output) >= MAX_BUFFER_SIZE) ReportBug("translate too big");
+		fprintf(out,"#%s %s)\r\n",language,output);
+	}
+	fclose(out);
+	fclose(in);
+	FreeBuffer();
+	FreeBuffer();
+	FreeBuffer();
+	printf("translation complete\r\n");
+}
+
 static void C_SortConcept(char* input)
 {
 #ifdef INFORMATION
@@ -7823,7 +8038,7 @@ To get concepts in a file sorted alphabetically (both by concept and within) , d
     0. empty TOPICS
 	0. :build concept0 
 	1. :sortconcept x		-- builds one concept per line and sorts the file by concept name  outputs to concepts.top
-	2. take the contents of concept.top and replace the original file in ONTOLOGY, erase TOPICS
+	2. take the contents of concepts.top that was written at top level and replace the original file in ONTOLOGY, erase TOPICS
 	3. :build concept0
 	4. :sortconcept			-- maps concepts neatly onto multiple lines
 	5. take the contents of cset.txt and replace the original file
@@ -9265,6 +9480,7 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":pennnoun",C_PennNoun,(char*)"locate mass nouns in pennbank"}, 
 	{ (char*)":pos",C_POS,(char*)"Show results of tokenization and tagging"},  
 	{ (char*)":sortconcept",C_SortConcept,(char*)"Prepare concept file alphabetically"}, 
+	{ (char*)":translateconcept",C_TranslateConcept,(char*)"take"}, 
 	{ (char*)":timepos",C_TimePos,(char*)"compute wps average to prepare inputs"},
 	{ (char*)":verifypos",C_VerifyPos,(char*)"Regress pos-tagging using default REGRESS/postest.txt file or named file"},
 	{ (char*)":verifyspell",C_VerifySpell,(char*)"Regress spell checker against file"}, 
@@ -9392,7 +9608,7 @@ void Sortit(char* name,int oneline)
 					bit >>= 1;
 				}
 			}
-			strcat(buffer,(char*)"((char*)");
+			strcat(buffer,(char*)"(");
 		}
 		char* b = buffer + strlen(buffer);
 		WORDP G = FindWord(*it);

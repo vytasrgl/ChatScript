@@ -1371,7 +1371,7 @@ retry:
 		}
 	}
 exit:
-	ChangeDepth(-1,id);
+	ChangeDepth(-1,id,true);
 	RESTOREOLDCONTEXT()
 	currentIterator = oldIterator;
 	

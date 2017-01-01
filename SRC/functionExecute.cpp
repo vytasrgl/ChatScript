@@ -57,6 +57,7 @@ char* fnOutput = NULL;
 char lognames[MAX_LOG_NAMES][200];	
 FILE* logfiles[4];
 char* codeStart = NULL;
+char* realCode = NULL;
 
 bool planning = false;
 
@@ -481,6 +482,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	}
 
 	char* oldcode = codeStart;
+	char* oldRealCode = realCode;
 	char* paren = ptr;
 	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
 	SystemFunctionInfo* info = NULL;
@@ -495,7 +497,6 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	bool streamArg = false;
 	int oldtrace = trace;
 	currentFunctionName = D->word;
-	codeStart = NULL;
 	if (D->x.codeIndex && !(D->internalBits & (IS_PLAN_MACRO|IS_TABLE_MACRO))) // system function --  macroFlags are also on codeindex, but IS_TABLE_MACRO distinguishes  but PLAN also has a topicindex which is a codeindex
 	{
 		callArgumentBase = callArgumentIndex - 1;
@@ -797,6 +798,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		*buffer = 0; // remove any leftover argument data
 
 		//   run the definition
+		codeStart = NULL;
 		if (D->internalBits & NOTRACE_FN) trace = 0;
 		if (result & ENDCODES)	ChangeDepth(1,D->word); 
 		else if (callArgumentIndex >= (MAX_ARGUMENT_COUNT-1)) 	// pinned max (though we could legally arrive by accident on this last one)
@@ -898,6 +900,7 @@ TERMINATE:
 	callArgumentBase = oldArgumentBase;
 	currentFunctionName = oldcurrent;
 	codeStart = oldcode;
+	realCode = oldRealCode;
 
 	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 

@@ -1064,7 +1064,8 @@ void ChangeDepth(int value,char* where,bool nostackCutback,char* code,FunctionRe
 			memDepth[globalDepth] = 0;
 		}
 		// engine functions that are streams should not destroy potential local adjustments
-		if (!nostackCutback) stackFree = releaseStackDepth[globalDepth]; // deallocoate ARGUMENT space
+		if (!nostackCutback) 
+			stackFree = releaseStackDepth[globalDepth]; // deallocoate ARGUMENT space
 		globalDepth += value;
 		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d heapused:%d\r\n", globalDepth,where, bufferIndex,(int)(heapBase-heapFree));
 	}

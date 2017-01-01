@@ -614,9 +614,6 @@ void InitDictionary()
 	
 	//   dictionary and meanings and strings share space, running from opposite ends of a common pool
 	size_t size = (size_t)(sizeof(WORDENTRY) * maxDictEntries);
-#ifndef SEPARATE_STRING_SPACE
-	size += maxHeapBytes;
-#endif
 	size /= sizeof(WORDENTRY);
 	size = (size * sizeof(WORDENTRY)) + sizeof(WORDENTRY);
 	size /= 64;
@@ -646,10 +643,6 @@ void InitDictionary()
 #endif
 	memset(dictionaryBase,0,size);
 	dictionaryFree =  dictionaryBase + maxHashBuckets + HASH_EXTRA ;		//   prededicate hash space within the dictionary itself
-#ifndef SEPARATE_STRING_SPACE 	
-	heapBase = heapFree = ((char*)dictionaryBase) + size;				//   the end of the allocated space
-	stackFree = ((char*)dictionaryBase) + size - maxHeapBytes;
-#else
 	size = maxHeapBytes / 64;
 	size = (size * 64) + 64; // 64 bit align both ends
 	heapEnd = ((char*) malloc(size));	// point to end
@@ -660,7 +653,6 @@ void InitDictionary()
 	}
 	heapFree = heapBase = heapEnd + size; // allocate backwards
 	stackFree = heapEnd;
-#endif
 	minStringAvailable = maxHeapBytes;
 	stackStart = stackFree;
 	//   The bucket list is threaded thru WORDP nodes, and consists of indexes, not addresses.

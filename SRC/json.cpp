@@ -465,6 +465,39 @@ void CurlShutdown()
 	if (curl_done_init) curl_global_cleanup ();
 }
 
+static FunctionResult InitCurl()
+{
+	// Get curl ready -- do this ONCE only during run of CS
+	if (!curl_done_init) {
+#ifdef WIN32
+		if (InitWinsock() == FAILRULE_BIT) // only init winsock one per any use- we might have done this from TCPOPEN or PGCode
+		{
+			ReportBug((char*)"Winsock init failed");
+			return FAILRULE_BIT;
+		}
+#endif
+		curl_global_init(CURL_GLOBAL_SSL);
+		curl_done_init = true;
+	}
+	return NOPROBLEM_BIT;
+}
+
+char* UrlEncode(char* input)
+{
+	InitCurl();
+	CURL * curl = curl_easy_init();
+	if (!curl)
+	{
+		if (trace & TRACE_JSON) Log(STDTRACELOG,(char*)"Curl easy init failed");
+		return NULL;
+	}
+	char* fixed = curl_easy_escape(curl,input,0);
+	char* buffer = AllocateBuffer();
+	strcpy(buffer,fixed);
+	curl_free(fixed);
+	curl_easy_cleanup(curl);
+	return buffer;
+}
 
 // Open a URL using the given arguments and return the JSON object's returned by querying the given URL as a set of ChatScript facts.
 FunctionResult JSONOpenCode(char* buffer)
@@ -482,11 +515,10 @@ FunctionResult JSONOpenCode(char* buffer)
 	char headerLine[1000];
 
 	char *raw_kind = ARGUMENT(index++);
-
 	if (!stricmp(raw_kind, "POST"))  kind = 'P';
 	else if (!stricmp(raw_kind, "GET")) kind = 'G';
-	else if (!stricmp(raw_kind, "POSTU"))  kind = 'P';
-	else if (!stricmp(raw_kind, "GETU")) kind = 'G';
+	else if (!stricmp(raw_kind, "POSTU")) kind = 'P';
+	else if (!stricmp(raw_kind, "GETU")) kind = 'G'; 
 	else if (!stricmp(raw_kind, "PUT"))  kind = 'U';
 	else if (!stricmp(raw_kind, "DELETE"))  kind = 'D';
 	else {
@@ -559,20 +591,9 @@ FunctionResult JSONOpenCode(char* buffer)
 	struct CurlBufferStruct output;
 	output.buffer = NULL;
 	output.size = 0;
-
 	// Get curl ready -- do this ONCE only during run of CS
-	if (!curl_done_init) {
-#ifdef WIN32
-		if (InitWinsock() == FAILRULE_BIT) // only init winsock one per any use- we might have done this from TCPOPEN or PGCode
-		{
-			ReportBug((char*)"Winsock init failed");
-			return FAILRULE_BIT;
-		}
-#endif
-		curl_global_init(CURL_GLOBAL_SSL);
-		curl_done_init = true;
-	}
-	CURL * curl  = curl_easy_init();
+	if (InitCurl() != NOPROBLEM_BIT) return FAILRULE_BIT;
+	CURL * curl = curl_easy_init();
 	if (!curl)
 	{
 		if (trace & TRACE_JSON) Log(STDTRACELOG,(char*)"Curl easy init failed");
@@ -695,6 +716,7 @@ FunctionResult JSONOpenCode(char* buffer)
 
 	// Set up the CURL request.
 	CURLcode val;
+
 	val = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
 	val = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CurlWriteMemoryCallback); // callback for memory
 	val = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&output); // store output here
@@ -707,7 +729,7 @@ FunctionResult JSONOpenCode(char* buffer)
 	/* the DEBUGFUNCTION has no effect until we enable VERBOSE */
 	if (trace & TRACE_JSON && deeptrace) curl_easy_setopt(curl, CURLOPT_VERBOSE, (long)1);
 	res = curl_easy_perform(curl);
-
+	
 	curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &http_response);
 	char code[MAX_WORD_SIZE];
 	sprintf(code,(char*)"%ld",http_response);
@@ -757,7 +779,7 @@ FunctionResult JSONOpenCode(char* buffer)
 	FunctionResult result = NOPROBLEM_BIT;
 	if (directJsonText)
 	{
-		strncpy(buffer,output.buffer,output.size); // be wary because this may be too much for caller
+		strncpy(buffer,output.buffer,output.size);
 		buffer[output.size] = 0;
 		jsonOpenSize = output.size;
 	}

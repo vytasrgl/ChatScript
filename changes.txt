@@ -1,4 +1,7 @@
-version 7.0
+version 7.01 1/1/2017
+1. fixing $_variables in topics where changing rules destroys the value assigned
+
+version 7.0 12/30/2016
 1. logsize - bytes for the log buffer to use (see advanced manual)
 2. outputsize - bytes for main output buffer to use (see advanced manual)
 3. autoinitfile:  username-init.txt at top level (see advanced manual)
@@ -10,7 +13,7 @@ version 7.0
 9. language= command line param (defaults english) revised DICT/LIVEDATA data access per language-  
 	WARNING: data organization within LIVEDATA has changed. If you are running your own copy, mimic the new structure.
 
-version 6.91
+version 6.91 12/3/2016
 1. autodelete and USER_flag1...4 for json
 2. :trace -userfact
 3. deleting a json fact will recurse and delete the object referred to UNLESS it has some other reference to it still on another json fact.

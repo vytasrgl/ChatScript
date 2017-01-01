@@ -1,3 +1,6 @@
+# version 7.01 1/1/2017
+1. fixing $_variables in topics where changing rules destroys the value assigned
+
 # version 7.0
 1. logsize - bytes for the log buffer to use (see advanced manual)
 2. outputsize - bytes for main output buffer to use (see advanced manual)

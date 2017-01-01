@@ -10020,9 +10020,9 @@ void InitTreeTagger(char* params) // tags=xxxx
 	char langfile[MAX_WORD_SIZE];
 	sprintf(langfile, "treetagger/%s.par",language);
 	MakeLowerCase(langfile);
-	init_treetagger(langfile);  /* Initialization of the tagger with the language parameter file */
 	char word[MAX_WORD_SIZE];
 	char type[MAX_WORD_SIZE];
+	bool found = false;
 	while (ReadALine(readBuffer,in))
 	{
 		uint64 flags = 0;
@@ -10051,10 +10051,13 @@ void InitTreeTagger(char* params) // tags=xxxx
 				if (!flags) Log(STDUSERLOG,"Type not known %s for %s\r\n",word,type);
 			}
 			D = StoreWord(label,tagflags | flags);
+			found = true;
 		}
 	}
 	fclose(in);
+	if (!found) return; // could not read tagset
 
+	init_treetagger(langfile);  /* Initialization of the tagger with the language parameter file */
 	externalPostagger = TreeTagger;
 
 	/* Memory allocation (the maximal input sentence length is here 1000) */

@@ -1311,7 +1311,7 @@ concept: ~mythical_creatures   PROBABLE_NOUN (abominable_snowman Achilles Aegist
           Grim_Reaper gryphon halcyon Halcyon Harpy harpy Hector Helen Helen_of_Troy hellhound Heracles Herakles Hercules Hero hero hippogriff hobbit hobgoblin houri Humpty_Dumpty Hydra 
           hydra Hyperborean hypothetical_creature Icarus imaginary_creature~1 Iphigenia Jack_Frost jackalope Jason Jocasta Jotun Jotunn King_Oedipus Kraken kraken Kriss_Kringle Laertes 
           Laius Laocoon Leander Leda legendary_creature Leviathan leviathan Lich Lizard_Man Loch_Ness_monster Loch_Nness_monster loup-garou lycanthrope Mammon mandrake mantichora manticora 
-          manticore mantiger Martian Maxwell_'s_demon Medea medusa Medusa Menelaus mermaid merman Midas Mimir Minotaur monster Myrmidon mythical_being mythical_creature mythical_creature~1 
+          manticore mantiger Martian Maxwell_'s_demon Medea  Medusa Menelaus mermaid merman Midas Mimir Minotaur monster Myrmidon mythical_being mythical_creature mythical_creature~1 
           mythical_monster Narcissus Nemean_lion Nessie Nibelung Niobe Odysseus Oedipus Oedipus_Rex ogre ogress Orestes Orion Orpheus Pandora Paris Patroclus Pegasus Peleus Penelope 
           Perseus phoenix Priam Procrustes Psyche psychopomp Pygmalion pythoness Reaper Remus robot roc Romulus Saint_Nicholas Saint_Nick salamander sand_worm Santa Santa_Claus Sarpedon 
           Sasquatch Scylla sea_serpent shambler shoggoth Siegfried Sigurd Siren Sisyphus Sita snowman Sphinx St_._Nick Stentor Stheno sylph Tantalus Theseus Tiresias troll Ulysses unicorn 
@@ -2016,7 +2016,7 @@ concept: ~weapon_ammo (ammo ammunition arrow ball banderilla BB BB_shot bird_sho
           grapeshot musket_ball pellet projectile quarrel rifle_ball round_shot rubber_bullet shot slug spitball )
 concept: ~weapon_biological (aflatoxin anthrax_bacillus Bacillus_anthracis bioarm biological_weapon bioweapon botulin botulinus_toxin botulismotoxin clostridium_perfringens staphylococcal_enterotoxin_B )
 concept: ~weapon_future   (blaster disruptor freeze_ray laser_sword phaser ray_gun raygun shrink_ray )
-concept: ~weapon_magical   (Medusa_'s_head wand wizard_staff )
+concept: ~weapon_magical   ("Medusa's head" wand wizard_staff )
 concept: ~weapon_massdestruction (~weapon_biological ~weapon_nuclear W.M.D. weapon_of_mass_destruction~1 WMD )
 concept: ~weapon_medieval (arrow axe ballista battering_ram blade blowgun bludgeon bokken boomerang bow bow_and_arrow broadsword catapult club crossbow cudgel Cupid_'s_bow cupid_bow 
           dagger Excalibur flameberge flintlock grappling_hook halberd handbow harpoon javelin katana katar knife lance longbow longsword mace medieval_weapon medieval_weaponry morning_star 
