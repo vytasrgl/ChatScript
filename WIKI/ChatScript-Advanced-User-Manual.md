@@ -2463,7 +2463,6 @@ These can never erase themselves directly, so the erasure will again rebound to 
 Note that a topic declared system NEVER erases its rules, neither gambits nor responders,
 even if you put ^erase() on a rule.
 
-<<<<<<< HEAD
 > How can I get the original input when I have a pattern like 
 ```
 u: (~emogoodbye)
