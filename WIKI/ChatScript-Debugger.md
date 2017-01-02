@@ -16,7 +16,8 @@ which begins a local command loop. Resume normal execution via
 ```go``` or ```g```.
 
 The debug command can also have one of the debug commands after it, e.g.
-```:debug break ^fn1 ~topic1 ^fn2
+```
+:debug break ^fn1 ~topic1 ^fn2
 ```
 
 # Variable and JSON displays

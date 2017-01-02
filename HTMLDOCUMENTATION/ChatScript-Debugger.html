@@ -18,7 +18,8 @@
 <h1 id="debugging-in-and-out">Debugging in and out</h1>
 <p>While it is possible to connect ChatScript to a GUI IDE for debugging (if you create one because CS does not come with one natively), CS also has a text command debugger analogous to GDB in LINUX.</p>
 <p>You enter the debugger via <code>:debug</code> which begins a local command loop. Resume normal execution via <code>go</code> or <code>g</code>.</p>
-<p>The debug command can also have one of the debug commands after it, e.g. <code>:debug break ^fn1 ~topic1 ^fn2</code></p>
+<p>The debug command can also have one of the debug commands after it, e.g.</p>
+<pre><code>:debug break ^fn1 ~topic1 ^fn2</code></pre>
 <h1 id="variable-and-json-displays">Variable and JSON displays</h1>
 <p>While in the debugger, you can display $variables just by typing in their name(s).</p>
 <pre><code>$myvar $_yourvar</code></pre>

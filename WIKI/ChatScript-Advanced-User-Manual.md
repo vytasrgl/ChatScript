@@ -1874,7 +1874,7 @@ the topic is processed. You will be given the name of the topic and the text val
 representing what it returned. E.g., NOPROBLEM. The range of names of these are
 defined in mainsystem.h (minus _BIT) but are your basic FAILTOPIC, etc.
 
-```AutoInitFile``` 
+##AutoInitFile 
 
 When a user is initialized for the first time, the system will attempt to read a top-level file named for 
 the user as `bruce-init.txt` (if user is bruce). If found, commands will be executed from there (analogous
