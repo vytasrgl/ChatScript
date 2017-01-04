@@ -159,7 +159,7 @@ really advanced users wanting the appropriate mental model.
 * [Paper - Winning 15 Minute Conversation](../PAPERS/Paper-%20Winning%2015%20Minute%20Conversation.pdf)
 <br>The conversation (1 of 2) that had our chatbot easily win best 15 minute conversation at ChatBot Battles 2012.
 
-* [Paper - Winning the Loebner's](../PAPERS/Paper-%20WinningTheLoebners.pdf)
+* [Paper - Winning the Loebner's](PAPERS/Paper%20-%20WinningTheLoebners.md)
 <br>Realities of the Loebner competition and additional ideas of english applied to chatbots
 
 * [ChatScript Training](../PDFDOCUMENTATION/OVERVIEWS-AND-TUTORIALS/ChatScript%20Training.pdf)
