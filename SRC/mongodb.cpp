@@ -39,18 +39,6 @@ mongoc_database_t*		g_filesysDatabase = NULL;
 mongoc_collection_t*	g_filesysCollectionTopic = NULL; // user topic
 mongoc_collection_t*	g_filesysCollectionLtm = NULL; // user ltm
 
-void ProtectNL(char* buffer) // save ascii \r\n in json - only comes from userdata write using them
-{
-	char* at = buffer;
-	while ((at = strchr(at,'\r'))) // legal convert
-	{
-		if (at[1] == '\n' ) // legal convert
-		{
-			*at++ = 0x7f;
-			*at++ = 0x7f;
-		}
-	}
-}
 
 char* MongoCleanEscapes(char* to, char* at,int limit) 
 { // any sequence of \\\ means mongo added \\  and any freestanding \ means mongo added that
@@ -419,7 +407,7 @@ size_t mongouserRead(void* buffer,size_t size, size_t count, FILE* file)
 	FunctionResult result = mongoGetDocument(filename,mongoBuffer,(userCacheSize - MAX_USERNAME),false);
 	if (dot) *dot ='.';	 
 	size_t len = strlen(mongoBuffer);
-	return (result == NOPROBLEM_BIT) ? len : -1; // -1 is cannot find
+	return  len;
 }
 
 size_t mongouserWrite(const void* buffer,size_t size, size_t count, FILE* file)

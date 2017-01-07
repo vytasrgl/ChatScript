@@ -266,7 +266,7 @@ static void SetCanonicalValue(int start,int end)
 				if (!(pos & (VERB_BITS|NOUN_SINGULAR|NOUN_PLURAL|ADJECTIVE_NOUN)) && !canonicalLower[i]) 
 				{
 					char* word = (originalUpper[i]) ? originalUpper[i]->word : canonicalUpper[i]->word;
-					word = reuseAllocation(wordStarts[i],word); // dont share because we might edit the word in place (eg ONLY_LOWER)
+					word = AllocateHeap(word); // dont share because we might edit the word in place (eg ONLY_LOWER)
 					original = wordStarts[i] = word; // make it upper case
 					originalLower[i] = canonicalLower[i] = 0;	// blow away any lower meaning
 				}
@@ -561,7 +561,7 @@ static void PerformPosTag(int start, int end)
 			continue;
 		}
 */
-		if (externalTagger) continue; // remote pos tagging
+		if (externalTagger || stricmp(language,"english")) continue; // remote pos tagging or none
 
 		WORDP entry = NULL;
 		WORDP canonical = NULL;
@@ -627,7 +627,7 @@ static void PerformPosTag(int start, int end)
 				{
 					char word[MAX_WORD_SIZE];
 					MakeLowerCopy(word,wordStarts[start]);
-					wordStarts[start] = reuseAllocation(wordStarts[start],StoreWord(word)->word);
+					wordStarts[start] = StoreWord(word)->word;
 					WORDP entry;
 					WORDP canonical;
 					uint64 sysflags = 0;
@@ -661,7 +661,7 @@ static void PerformPosTag(int start, int end)
 		// generator's going down... rewrite here
 		if (posValues[i] & POSSESSIVE && wordStarts[i][1] && posValues[i-1] & NOUN_SINGULAR && posValues[i+1] & VERB_PRESENT_PARTICIPLE && bitCounts[i+1] == 1)
 		{
-			wordStarts[i] = reuseAllocation(wordStarts[i],(char*)"is");
+			wordStarts[i] = AllocateHeap((char*)"is");
 			originalLower[i] = FindWord(wordStarts[i]);
 			posValues[i] = AUX_VERB_PRESENT;
 			canonicalLower[i] = FindWord((char*)"be");
@@ -782,7 +782,7 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 	TagInit();
 	memset(ignoreWord,0,sizeof(unsigned char) * (wordCount+4));
 
-	wordStarts[wordCount+1] = reuseAllocation(wordStarts[wordCount+1],(char*)"");
+	wordStarts[wordCount+1] = AllocateHeap((char*)"");
 	knownWords = 0;
 	int i;
 
@@ -2338,7 +2338,7 @@ unsigned int ProcessIdiom(char* word, int i, unsigned int words,bool &changed)
 						canonicalLower[i] = NULL;
 						originalUpper[i] = D;
 						originalLower[i] = NULL;
-						wordStarts[i] = reuseAllocation(wordStarts[i],D->word);
+						wordStarts[i] = D->word;
 						if (IsUpperCase(*D->word)) 
 						{
 							allOriginalWordBits[i] = posValues[i] = NOUN_PROPER_SINGULAR;

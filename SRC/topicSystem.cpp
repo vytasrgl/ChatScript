@@ -1166,6 +1166,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	bool oldErase = ruleErased; // allow underling gambits to erase themselves. If they do, we dont have to.
 	ruleErased = false;
 #ifndef DISCARDTESTING
+	char name[MAX_WORD_SIZE];
 	ChangeDepth(1,"^ruleoutput",false,ptr);
 #endif
 	char* oldcode = codeStart;
@@ -1282,10 +1283,9 @@ FunctionResult TestRule(int ruleID,char* rule,char* buffer,bool refine)
 	char label[MAX_LABEL_SIZE];
     char* ptr = GetLabel(rule,label); // now at pattern if there is one
 	char id[SMALL_WORD_SIZE];
-	if (*label) sprintf(id,"%s.%s",GetTopicName(currentTopicID),label);
+	if (*label) sprintf(id,"%s.%d.%d-%s",GetTopicName(currentTopicID),TOPLEVELID(ruleID),REJOINDERID(ruleID),label);
 	else sprintf(id,"%s.%d.%d",GetTopicName(currentTopicID),TOPLEVELID(ruleID),REJOINDERID(ruleID));
 	ChangeDepth(1,id,false,rule);
-
 retry:
 	FunctionResult result = NOPROBLEM_BIT;
 
@@ -2231,7 +2231,7 @@ static void ReadPatternData(const char* name,const char* layer,unsigned int buil
 		if (old)
 		{
 			int* protect = (int*) AllocateHeap(NULL,3,4); // link + entry to refresh back to NOT pattern word
-			protect[0] = String2Index(unwindLayer2);
+			protect[0] = Heap2Index(unwindLayer2);
 			protect[1] = Word2Index(old);
 			protect[2] = PATTERN_UNWIND;
 			unwindLayer2 = (char*) protect;
@@ -2249,7 +2249,7 @@ void UnwindLayer2Protect()
 		{
 			WORDP D = Index2Word(protect[2]);			// old dict entry from earlier layer
 			D->systemFlags &= -1L ^ PATTERN_WORD;		// layer2 added this flag, take it away
-			protect = (int*) Index2String(protect[0]);
+			protect = (int*) Index2Heap(protect[0]);
 		}
 	}
 	unwindLayer2 = NULL;

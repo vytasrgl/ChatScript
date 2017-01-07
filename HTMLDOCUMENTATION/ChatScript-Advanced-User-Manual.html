@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/1/2017 cs7.0</p>
+<p>Revision 1/7/2017 cs7.1</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
@@ -31,7 +31,6 @@
 <li><a href="ChatScript-Advanced-User-Manual.html#esoterica-and-fine-detail">Esoterica and Fine Detail</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#self-reflection">Self-Reflection</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#a-fresh-build">A Fresh build</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#command-line-parameters">Command line Parameters</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#updating-cs-versions-easily">Updating CS versions Easily</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#the-dictionary">The Dictionary</a></li>
 </ul>
@@ -86,6 +85,11 @@
 <p>For outputmacros,</p>
 <pre><code>outputmacro: ^myfunction( ^argument1 ^argument2)
     ^argument1 += 1</code></pre>
+<p>An alternate format allows you to put the output code within {}, which is more nicely visualized by some editors.</p>
+<pre><code>outputmacro: ^myfunction( ^argument1 ^argument2)
+{
+    ^argument1 += 1
+}</code></pre>
 <p>Whenever you see a function variable, you can imagine it is as though the script had its argument immediately substituted in. This is a call by reference. So if the script call was this</p>
 <pre><code>    ^myfunction( $myvar 1)</code></pre>
 <p>then the effect of <code>^argument1 += 1</code> is as though <code>$myvar += 1</code> were done and <code>$myvar</code> would now be one higher. Of course, had you tried to do <code>^argument2 += 1</code> then that would be the illegal <code>1 += 1</code> and the assignment would fail.</p>
@@ -848,8 +852,12 @@ $tmp = ##first</code></pre>
 <p>You can have the system include or exclude lines on a line by line basis. To make a line conditional, put a comment left justified where a word is contiguous to the #, like this:</p>
 <pre><code>#german u: (test) this is conditionally compiled</code></pre>
 <p>This line is normally ignored because it is a comment line and not a named numeric constant. But if you put the <code>#german</code> as a tail parameter of the <code>:build</code> command, you enable it:</p>
+<p>You can also handle blocks of code analogous to the block comment convention by appending a label to the &lt;&lt;## :</p>
+<pre><code>&lt;&lt;##SPECIAL ...
+... &gt;&gt;##</code></pre>
 <pre><code>:build Harry #german</code></pre>
 <p>You may name up to 9 conditions on your build line. In fact, for language-related conditional lines, you don't have to declare anything on the <code>:build</code> command. The system will automatically accept lines that name the current language= command line parameter (English being the default).</p>
+<p>Conditional compilation applies to script files and the filesxxx.txt files and LIVEDATA files.</p>
 <h1 id="editing-non-topic-files">Editing Non-topic Files</h1>
 <p>Non-topic files include the contents of <code>DICT</code> and <code>LIVEDATA</code>.</p>
 <h2 id="dict-files">DICT files</h2>
@@ -1020,7 +1028,9 @@ I like $var1</code></pre>
 <p>So, if a rule generates output, it will try to erase itself. If a rule uses <code>^reuse()</code>, then the rule that actually generated the output will be the called rule. If for some reason it cannot erase itself, then the erasure will rebound to the caller, who will try to erase himself.</p>
 <p>Similarly, if a rule uses <code>^refine()</code>, the actual output will come from a <code>rejoinder()</code>. These can never erase themselves directly, so the erasure will again rebound to the caller.</p>
 <p>Note that a topic declared system NEVER erases its rules, neither gambits nor responders, even if you put ^erase() on a rule.</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD &gt; How can I get the original input when I have a pattern like</p>
+<blockquote>
+<p>How can I get the original input when I have a pattern like</p>
+</blockquote>
 <pre><code>u: (~emogoodbye)</code></pre>
 <h3 id="how-can-i-get-the-original-input-when-i-have-a-pattern-like-u-emogoodbye">How can I get the original input when I have a pattern like <code>u: (~emogoodbye)</code> ?</h3>
 <p>To get the original input, you need to do the following:</p>
@@ -1094,175 +1104,6 @@ loop()
 </ul>
 <p><code>:build 0</code> - rebuild the common layer <br><code>:build xxx</code> – whatever file you use for your personality layer</p>
 <p>Probably all is good now. If not quit chatscript. Start up and try it now.</p>
-<h1 id="command-line-parameters">Command Line Parameters</h1>
-<p>Most of the command line options are documented with the server documentation, because they affect that. Here are general ones.</p>
-<h2 id="memory-options">Memory options</h2>
-<p>Chatscript statically allocates its memory and so (barring unusual circumstance) will not allocate memory every during its interactions with users. These parameters can control those allocations. Done typically in a memory poor environment like a cellphone.</p>
-<table>
-<colgroup>
-<col width="17%" />
-<col width="82%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>option</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>buffer=15</code></td>
-<td>how many buffers to allocate for general use (12 is default)</td>
-</tr>
-<tr class="even">
-<td><code>buffer=15x80</code></td>
-<td>allocate 15 buffers of 80k bytes each (default buffer size is 80k)</td>
-</tr>
-</tbody>
-</table>
-<p>Most chat doesn't require huge output and buffers around 20k each will be more than enough. 12 buffers is generally enough too (depends on recursive issues in your scripts).</p>
-<p>If the system runs out of buffers, it will perform emergency allocations to try to get more, but in limited memory environments (like phones) it might fail. You are not allowed to allocate less than a 20K buffer size.</p>
-<table>
-<colgroup>
-<col width="17%" />
-<col width="82%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>option</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>dict=n</code></td>
-<td>limit dictionary to this size entries</td>
-</tr>
-<tr class="even">
-<td><code>text=n</code></td>
-<td>limit string space to this many bytes</td>
-</tr>
-<tr class="odd">
-<td><code>fact=n</code></td>
-<td>limit fact pool to this number of facts</td>
-</tr>
-<tr class="even">
-<td><code>hash=n</code></td>
-<td>use this hash size for finding dictionary words (bigger = faster access)</td>
-</tr>
-<tr class="odd">
-<td><code>cache=1x50</code></td>
-<td>allocate a 50K buffer for handling 1 user file at a time. A server might want to cache multiple users at a time.</td>
-</tr>
-</tbody>
-</table>
-<p>A default version of ChatScript will allocate much more than it needs, because it doesn't know what you might need.</p>
-<p>If you want to use the least amount of memory (multiple servers on a machine or running on a mobile device), you should look at the USED line on startup and add small amounts to the entries (unless your application does unusual things with facts).</p>
-<p>If you want to know how much, try doing <code>:show stats</code> and then <code>:source REGRESS/bigregress.txt</code>. This will run your bot against a wide range of input and the stats at the end will include the maximum values needed during a volley. To be paranoid, add beyond those valuse. Take your max dict value and double it. Same with max fact. Add 10000 to max text.</p>
-<p>Just for reference, for our most advanced bot, the actual max values used were: max dict: 346 max fact: 689 max text: 38052.</p>
-<p>And the maximum rules executed to find an answer to an input sentence was 8426 (not that you control or care). Typical rules executed for an input sentence was 500-2000 rules. For example, add 1000 to the dict and fact used amounts and 10 (kb) to the string space to have enough normal working room.</p>
-<h2 id="output-options">Output options</h2>
-<p><code>output=nnn</code> limits output line length for a bot to that amount (forcing crnl as needed). 0 is unlimited.</p>
-<p><code>outputsize=80000</code> is the maximum output that can be shipped by a volley from the bot without getting truncated. Actually the value is somewhat less, because routines generating partial data for later incorporation into the output also use the buffer and need some usually small amount of clearance. You can find out how close you have approached the max in a session by typing <code>:memstats</code>. If you need to ship a lot of data around, you can raise this into the megabyte range and expect CS will continue to function. 80K is the default.</p>
-<p>For normal operation, when you change <code>outputsize</code> you should also change <code>logsize</code> to be at least as much, so that the system can do complete logs. You are welcome to set log size lots smaller if you don't care about the log.</p>
-<h2 id="file-options">File options</h2>
-<table>
-<colgroup>
-<col width="10%" />
-<col width="89%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>option</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>livedata=xxx</code></td>
-<td>name relative or absolute path to your own private LIVEDATA folder. Do not add trailing / on this path<br>Recommended is you use <code>RAWDATA/yourbotfolder/LIVEDATA</code> to keep all your data in one place. You can have your own live data, yet use ChatScripts default <code>LIVEDATA/SYSTEM</code> and <code>LIVEDATA/ENGLISH</code> by providing paths to the <code>system=</code> and <code>english=</code> parameters as well as the <code>livedata=</code> parameter</td>
-</tr>
-<tr class="even">
-<td><code>users=xxx</code></td>
-<td>name relative or absolute path to where you want the USERS folder to be. Do not add trailing <code>/</code></td>
-</tr>
-<tr class="odd">
-<td><code>logs=xxx</code></td>
-<td>name relative or absolute path to where you want the LOGS folder to be. Do not add trailing <code>/</code></td>
-</tr>
-<tr class="even">
-<td><code>trace</code></td>
-<td>turn on all tracing.</td>
-</tr>
-<tr class="odd">
-<td><code>redo</code></td>
-<td>see documentation for :redo in <a href="ChatScript-Debugging-Manual.html">ChatScript Debugging Manual</a> manual</td>
-</tr>
-<tr class="even">
-<td><code>userfacts=n</code></td>
-<td>limit a user file to saving only the n most recently created facts of a user (this does not include facts stored in fact sets). Overridden if the user has <code>$cs_userfactlimit</code> set to some value</td>
-</tr>
-<tr class="odd">
-<td><code>userlog</code></td>
-<td>Store a user-bot log in USERS directory (default)</td>
-</tr>
-<tr class="even">
-<td><code>nouserlog</code></td>
-<td>Don't store a user-bot log</td>
-</tr>
-<tr class="odd">
-<td><code>source=xxxx</code></td>
-<td>Analogous to the <code>:source</code> command. The file is executed</td>
-</tr>
-<tr class="even">
-<td><code>login=xxxx</code></td>
-<td>The same as you would name when asked for a login, this avoids having to ask for it. Can be <code>login=george</code> or <code>login=george:harry</code> or whatever</td>
-</tr>
-<tr class="odd">
-<td><code>build0=filename</code></td>
-<td>runs <code>:build</code> on the filename as level0 and exits with 0 on success or 4 on failure</td>
-</tr>
-<tr class="even">
-<td><code>build1=filename</code></td>
-<td>runs <code>:build</code> on the filename as level1 and exits with 0 on success or 4 on failure.<br>Eg. ChatScript <code>build0=files0.txt</code> will rebuild the usual level 0</td>
-</tr>
-<tr class="odd">
-<td><code>debug=:xxx</code></td>
-<td>xxx runs the given debug command and then exits. Useful for <code>:trim</code>, for example or more specific <code>:build</code> commands</td>
-</tr>
-<tr class="even">
-<td><code>param=xxxxx</code></td>
-<td>data to be passed to your private code</td>
-</tr>
-<tr class="odd">
-<td><code>login=xxxxx</code></td>
-<td>initial user id (bypass asking you for user)</td>
-</tr>
-<tr class="even">
-<td><code>encrypt=xxxxx</code></td>
-<td>data evailable to encrpytion code</td>
-</tr>
-<tr class="odd">
-<td><code>decrypt=xxxxx</code></td>
-<td>data evailable to decrpytion code</td>
-</tr>
-<tr class="even">
-<td><code>bootcmd=xxx</code></td>
-<td>runs this command string before CSBOOT is run; use it to trace the boot process</td>
-</tr>
-</tbody>
-</table>
-<h2 id="bot-variables-1">Bot variables</h2>
-<p>You can create predefined bot variables by simply naming permanent variables on the command line, using V to replace $ (since Linux shell scripts don't like $). Eg.</p>
-<pre><code>ChatScript Vmyvar=fatcat</code></pre>
-<pre><code>ChatScript Vmyvar=&quot;tony is here&quot;</code></pre>
-<pre><code>ChatScript &quot;Vmyvar=tony is here&quot;</code></pre>
-<p>Quoted strings will be stored without the quotes. Bot variables are always reset to their original value at each volley, even if you overwrite them during a volley. This can be used to provide server-host specific values into a script.</p>
-<h2 id="no-such-bot-specific---nosuchbotrestarttrue">No such bot-specific - nosuchbotrestart=true</h2>
-<p>If the system does not recognize the bot name requested, it can automatically restart a server (on the presumption that something got damaged). If you don't expect no such bot to happen, you can enable this restart using <code>nosuchbotrestart=true</code>. Default is false.</p>
-<h2 id="time-options">Time options</h2>
-<p><code>Timer=15000</code> if a volley lasts more than 15 seconds, abort it and return a timeout message.</p>
-<p><code>Timer=18000x10</code> same as above, but more roughly, higher number after the x reduces how frequently it samples time, reducing the cost of sampling</p>
 <h1 id="updating-cs-versions-easily">Updating CS Versions Easily</h1>
 <p>ChatScript gets updated often on a regular basis. And you probably don't want to have to reintegrate your files and its every time. So here is what you can do.</p>
 <p>Create a folder for your stuff: e.g. MYSTUFF. Within it put your folder that you normally keep in RAWDATA and your <code>filesxxx.txt</code> files normally at the top level of ChatScript. And if you have your own hacked version of files from LIVEDATA, put your folder there also.</p>

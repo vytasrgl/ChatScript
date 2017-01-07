@@ -27,7 +27,7 @@ char* tokenPool[MAX_SENTENCE_LENGTH];				// reuse token allocation space when po
 void ResetTokenSystem()
 {
 	tokenFlags = 0;
-	wordStarts[0] = reuseAllocation(0,(char*)"");    
+	wordStarts[0] = AllocateHeap((char*)"");    
     wordCount = 0;
 	memset(wordStarts,0,sizeof(char*)*MAX_SENTENCE_LENGTH); // reinit for new volley - sharing of word space can occur throughout this volley
 }
@@ -371,15 +371,15 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 				strncpy(buf,ptr,end-ptr);
 				buf[end-ptr] = 0;
 				++count;
-				words[count] = reuseAllocation(words[count],buf); 
-				if (!words[count]) words[count] = reuseAllocation(words[count],(char*)"a"); // safe replacement
+				words[count] = AllocateHeap(buf); 
+				if (!words[count]) words[count] = AllocateHeap((char*)"a"); // safe replacement
 				return end;
 			}
 		}
 	}
 	++count;
-	words[count] = reuseAllocation(words[count],ptr+1,end-ptr-1); // stripped quotes off simple word
-	if (!words[count]) words[count] = reuseAllocation(words[count],(char*)"a"); // safe replacement
+	words[count] = AllocateHeap(ptr+1,end-ptr-1); // stripped quotes off simple word
+	if (!words[count]) words[count] = AllocateHeap((char*)"a"); // safe replacement
 	return  end + 1;
 }
 
@@ -419,8 +419,8 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 						char word[MAX_WORD_SIZE];
 						FunctionResult result = JSONParseCode(word);
 						++count;
-						if (result == NOPROBLEM_BIT) words[count] = reuseAllocation(words[count],word); // insert json object
-						else words[count] = reuseAllocation(words[count],(char*)"bad json");
+						if (result == NOPROBLEM_BIT) words[count] = AllocateHeap(word); // insert json object
+						else words[count] = AllocateHeap((char*)"bad json");
 					}
 #endif
 					return ptr + 1;
@@ -590,7 +590,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			if (IsDigit(*priorToken))
 			{
 				++count;
-				words[count] = reuseAllocation(words[count],(char*)"foot"); 
+				words[count] = AllocateHeap((char*)"foot"); 
 				return end;
 			}
 		}
@@ -810,12 +810,12 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 			char* space = strchr(input,' '); // find separator
 			if (space) {
 				++count;
-				words[count] = reuseAllocation(words[count],input,space-input); // the token
+				words[count] = AllocateHeap(input,space-input); // the token
 				input = space;
 			}
 			else if (*input) {
 				++count;
-				words[count] = reuseAllocation(words[count],input,strlen(input)); // the token
+				words[count] = AllocateHeap(input); // the token
 				input += strlen(input);
 				break;
 			}
@@ -929,9 +929,9 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		//   handle symbols for feet and inches by expanding them
 		if (!(tokenControl & TOKEN_AS_IS) && IsDigit(startc) &&  (lastc == '\'' || lastc == '"'))
 		{
-			char* word = reuseAllocation(0,ptr,len-1);  // number w/o the '
+			char* word = AllocateHeap(ptr,len-1);  // number w/o the '
 			if (word) words[count++] = word;
-			words[count] = reuseAllocation(0,(lastc == '\'') ? (char*) "feet": (char*)"inches",0); // spell out the notation
+			words[count] = words[count],((lastc == '\'') ? (char*) "feet": (char*)"inches",0); // spell out the notation
 			ptr = SkipWhitespace(end);
 			strcpy(priorToken,words[count]);
 			continue;
@@ -939,7 +939,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		//   handle symbols for feet and inches by expanding them
 		if (!(tokenControl & TOKEN_AS_IS) &&  startc == '"' && len == 1 && count > 1 && IsDigit(words[count-1][0]))
 		{
-			words[count] = reuseAllocation(0,(char*)"inches",0); // spell out the notation
+			words[count] = words[count],((char*)"inches",0); // spell out the notation
 			ptr = SkipWhitespace(end);
 			strcpy(priorToken,words[count]);
 			continue;
@@ -956,8 +956,8 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		}
 
 		// assign token
- 		char* token = words[count] = reuseAllocation(words[count],priorToken,len);   
-		if (!token) token = words[count] = reuseAllocation(words[count],(char*)"a"); 
+ 		char* token = words[count] = AllocateHeap(priorToken,len);   
+		if (!token) token = words[count] = AllocateHeap((char*)"a"); 
 		else if (len == 1 && startc == 'i') *token = 'I'; // force upper case on I
 		if (count == 1 && *token == '[' && !token[1]) oobStart = true; // special tokenizing rules
 
@@ -1020,7 +1020,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 			else break;	// []  ? and !  and  .  are mandatory unless NO_SENTENCE_END used
 		}
 	}
-	words[count+1] = reuseAllocation(words[count+1],(char*)"");	// mark as empty
+	words[count+1] = AllocateHeap((char*)"");	// mark as empty
 
 	// if all is a quote, remove quotes if it is just around a single word
 	if (count == 3 && *words[1] == '"' && *words[count] == '"')
@@ -1200,11 +1200,11 @@ static void HandleFirstWord() // Handle capitalization of starting word of sente
 	MakeLowerCopy(word,wordStarts[1]);
 	char* noun = GetSingularNoun(word,true,true);
 	
-	if (D && !E && !IsUpperCase(*wordStarts[1]) && D->properties & NOUN_PROPER_SINGULAR)  wordStarts[1] = reuseAllocation(wordStarts[1],D->word); // have upper but not lower, use upper if not plural
+	if (D && !E && !IsUpperCase(*wordStarts[1]) && D->properties & NOUN_PROPER_SINGULAR)  wordStarts[1] = D->word; // have upper but not lower, use upper if not plural
 	else if (!IsUpperCase(*wordStarts[1])) return; // dont change what is already ok, dont want unnecessary trace output
-	else if (noun && !stricmp(word,noun)) wordStarts[1] = reuseAllocation(wordStarts[1],StoreWord(noun)->word); // lower case form is the singular form already - use that whether he gave us upper or lower
-	else if (E && E->properties & (CONJUNCTION|PRONOUN_BITS|PREPOSITION)) wordStarts[1] = reuseAllocation(wordStarts[1],E->word); // simple word lower case, use it
-	else if (E && E->properties & AUX_VERB && (N = FindWord(wordStarts[2])) && (N->properties & (PRONOUN_BITS | NOUN_BITS) || GetSingularNoun(wordStarts[2],true,false))) wordStarts[1] = reuseAllocation(wordStarts[1],E->word); // potential aux before obvious noun/pronoun, use lower case of it
+	else if (noun && !stricmp(word,noun)) wordStarts[1] = StoreWord(noun)->word; // lower case form is the singular form already - use that whether he gave us upper or lower
+	else if (E && E->properties & (CONJUNCTION|PRONOUN_BITS|PREPOSITION)) wordStarts[1] = AllocateHeap(E->word); // simple word lower case, use it
+	else if (E && E->properties & AUX_VERB && (N = FindWord(wordStarts[2])) && (N->properties & (PRONOUN_BITS | NOUN_BITS) || GetSingularNoun(wordStarts[2],true,false))) wordStarts[1] = AllocateHeap(E->word); // potential aux before obvious noun/pronoun, use lower case of it
 
 	// see if multiple word (like composite name)
 	char* multi = strchr(wordStarts[1],'_');
@@ -1434,7 +1434,7 @@ void ProperNameMerge()
 					upperStart = true;	//   must be valid
 					if (IsLowerCase(*wordStarts[i])) //   make current word upper case, do not overwrite its shared ptr
 					{
-						if (!wordStarts[i]) wordStarts[i] = reuseAllocation(wordStarts[i],(char*)"a");
+						if (!wordStarts[i]) wordStarts[i] = AllocateHeap((char*)"a");
 						else *wordStarts[i] = GetUppercaseData(*wordStarts[i]);  // safe to overwrite, since it was a fresh allocation
 					}
                     ++i; 
@@ -1860,8 +1860,8 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 	{
 		count = 1;
 		size_t len = strlen(wordlist);
-		tokens[1] = reuseAllocation(tokens[1],wordlist+1,len-2); // remove quotes from it now
-		if (!tokens[1]) tokens[1] = reuseAllocation(tokens[1],(char*)"a"); 
+		tokens[1] = AllocateHeap(wordlist+1,len-2); // remove quotes from it now
+		if (!tokens[1]) tokens[1] = AllocateHeap((char*)"a"); 
 	}
     else Tokenize(wordlist,count,tokens); // get the tokenization of the substitution
 

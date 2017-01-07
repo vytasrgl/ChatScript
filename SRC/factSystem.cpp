@@ -608,7 +608,7 @@ bool ExportFacts(char* name, int set,char* append)
 	{
 		if (strstr(name,"ltm")) 
 		{
-			EncryptableFileWrite(base,1,(buffer-base),out); // can change content of buffer
+			EncryptableFileWrite(base,1,(buffer-base),out,ltmEncrypt); 
 			userFileSystem.userClose(out);
 		}
 		else
@@ -673,7 +673,7 @@ FunctionResult ExportJson(char* name, char* jsonitem, char* append)
 	ExportJson1(jsonitem, buffer);
 	if (strstr(name,"ltm"))
 	{
-		EncryptableFileWrite(buffer,1,strlen(buffer),out);
+		EncryptableFileWrite(buffer,1,strlen(buffer),out,ltmEncrypt); 
 		userFileSystem.userClose(out);
 	}
 	else
@@ -875,7 +875,7 @@ bool ImportFacts(char* buffer,char* name, char* set, char* erase, char* transien
 	size_t readit;
 	if (strstr(name,"ltm"))
 	{
-		readit = DecryptableFileRead(filebuffer,1,userCacheSize,in);	// LTM file read, read it all in, including BOM
+		readit = DecryptableFileRead(filebuffer,1,userCacheSize,in,ltmEncrypt);	// LTM file read, read it all in, including BOM
 		userFileSystem.userClose(in);
 	}
 	else

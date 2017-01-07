@@ -2,6 +2,7 @@
 //------------------------
 // ALWAYS AVAILABLE
 //------------------------
+static int complexity = 0;
 static char* dataChunk = NULL;
 static char* outputStart = NULL;
 static char* lineStart = NULL;
@@ -1131,9 +1132,13 @@ You CANNOT test for . because it is the default and is subsumed automatically.
 static void AddMap(char* kind,char* msg)
 {
 	if (!mapFile) return;
-	size_t len = strlen(kind);
-	if (kind[len-1] == ':') kind[len-1] = 0;
-	fprintf(mapFile,(char*)"%s: %s %d\r\n",kind,(msg) ? msg : ((char*)""),currentFileLine);
+	if (kind)
+	{
+		size_t len = strlen(kind);
+		if (kind[len-1] == ':') kind[len-1] = 0;
+		fprintf(mapFile,(char*)"%s: %s %d\r\n",kind,(msg) ? msg : ((char*)""),currentFileLine);
+	}
+	else fprintf(mapFile,(char*)"%s\r\n",msg); // for complexity metric
 }
 
 static void ClearBeenHere(WORDP D, uint64 junk)
@@ -2767,6 +2772,7 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 	strcpy(data,(char*)"^if ");
 	data += 4;
 	patternContext = false;
+	++complexity;
 	while (ALWAYS)
 	{
 		char* testbase = data;
@@ -2849,6 +2855,7 @@ static char* ReadIf(char* word, char* ptr, FILE* in, char* &data,char* rejoinder
 			Encode((unsigned int)(data-ifbase),ifbase);	// offset to ELSE or ELSE IF from body start (accelerator)
 			break;
 		}
+		else ++complexity;
 		ptr = ReadNextSystemToken(in,ptr,word,false,false); //   eat the IF
 	}
 	if (*(data-1) == ' ') --data;	//   remove excess blank
@@ -3033,7 +3040,7 @@ char* ReadOutput(bool nested,char* ptr, FILE* in,char* &mydata,char* rejoinders,
 		if (*word == 'a' && word[2] == 0 && (word[1] == ';' || word[1] == '"' || word[1] == '\'' ) ) 
 			WARNSCRIPT((char*)"Is %s supposed to be a rejoinder marker?\r\n",word,currentFilename);
 
-		if (TopLevelUnit(word) || TopLevelRule(lowercaseForm) || Rejoinder(lowercaseForm) || !stricmp(word,(char*)"datum:")) //   responder definition ends when another major unit or top level responder starts
+		if ((*word == '}' && level == 0) || TopLevelUnit(word) || TopLevelRule(lowercaseForm) || Rejoinder(lowercaseForm) || !stricmp(word,(char*)"datum:")) //   responder definition ends when another major unit or top level responder starts
 		{
 			if (*word != ':') // allow commands here 
 			{
@@ -3279,6 +3286,7 @@ char* ReadOutput(bool nested,char* ptr, FILE* in,char* &mydata,char* rejoinders,
 static void ReadTopLevelRule(char* typeval,char* &ptr, FILE* in,char* data,char* basedata)
 {//   handles 1 responder/gambit + all rejoinders attached to it
 	char type[10];
+	complexity = 1;
 	strcpy(type,typeval);
 	char info[400];
 	char kind[MAX_WORD_SIZE];
@@ -3297,6 +3305,7 @@ static void ReadTopLevelRule(char* typeval,char* &ptr, FILE* in,char* data,char*
 		//   validate rejoinder is acceptable
 		if (Rejoinder(kind))
 		{
+			complexity = 1;
 			int count = level = *kind - 'a' + 1;	//   1 ...
 			if (rejoinders[level] >= 2) rejoinders[level] = 3; //   authorized by [b:] and now used
 			else if (!rejoinders[level-1]) BADSCRIPT((char*)"RULE-1 Illegal rejoinder level %s",kind)
@@ -3326,7 +3335,9 @@ Then one of 3 kinds of character:
 
 #endif
 		char label[MAX_WORD_SIZE];
+		char labelName[MAX_WORD_SIZE];
 		*label = 0;
+		*labelName = 0;
 		while (ALWAYS) //   read as many tokens as needed to complete the responder definition
 		{
 			ptr = ReadNextSystemToken(in,ptr,word,false); 
@@ -3362,12 +3373,14 @@ Then one of 3 kinds of character:
 					WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
 					if (D && D->internalBits & FUNCTION_NAME) WARNSCRIPT((char*)"label: %s is a potential macro in %s. Add ^ if you want it treated as such.\r\n",word,currentFilename)
 					else if (!stricmp(word,(char*)"if") || !stricmp(word,(char*)"loop")) WARNSCRIPT((char*)"label: %s is a potential flow control (if/loop) in %s. Add ^ if you want it treated as a control word.\r\n",word,currentFilename)
-					sprintf(info,"        rule: %s.%d.%d(%s) %s",currentTopicName,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),name+1, kind);
+					sprintf(info,"        rule: %s.%d.%d-%s %s",currentTopicName,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),name+1, kind);
 					AddMap(info,NULL);
 					//  potential ^reuse label
 					strcpy(label,currentTopicName); 
 					strcat(label,(char*)".");
-					strcat(label,word); 
+					MakeUpperCase(word); // full label to test if exists.
+					strcat(label,word);
+					strcpy(labelName,word);
 					MakeUpperCase(label); // full label to test if exists.
 					WORDP E = StoreWord(label,0);
 					AddInternalFlag(E,LABEL);
@@ -3392,7 +3405,7 @@ Then one of 3 kinds of character:
 				}
 				else //   we were seeing start of output (no label and no pattern) for gambit, proceed to output
 				{
-					sprintf(info,"        rule: %s.%d.%d %s",currentTopicName,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),kind);
+					sprintf(info,"        rule: %s.%d.%d-%s %s",currentTopicName,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),labelName,kind);
 					AddMap(info,NULL);
 					if (*type != GAMBIT && *type != RANDOM_GAMBIT) BADSCRIPT((char*)"RULE-3 Missing pattern for responder")
 					*data++ = ' ';
@@ -3405,7 +3418,10 @@ Then one of 3 kinds of character:
 		if (patternDone) 
 		{
 			ptr = ReadOutput(false,ptr,in,data,rejoinders,word,NULL);
-	
+			char complex[MAX_WORD_SIZE];
+			sprintf(complex,"          Complexity of rule %s.%d.%d-%s %s %d", currentTopicName,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),labelName,kind,complexity);
+			if (complexity != 1) AddMap(NULL, complex);
+
 			//   data points AFTER last char added. Back up to last char, if blank, leave it to be removed. else restore it.
 			while (*--data == ' '); 
 			*++data = ' ';
@@ -3463,6 +3479,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 {
 	bool table = !stricmp(kind,(char*)"table:"); // create as a transient notwrittentofile 
 	displayIndex = 0;
+	complexity = 1;
 	uint64 typeFlags = 0;
 	if (!stricmp(kind,(char*)"tableMacro:") || table) typeFlags = IS_TABLE_MACRO;
 	else if (!stricmp(kind,(char*)"outputMacro:")) typeFlags = IS_OUTPUT_MACRO;
@@ -3573,6 +3590,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	AddInternalFlag(D,(unsigned int)(FUNCTION_NAME|build|typeFlags));
 	*pack++ = (unsigned char)(functionArgumentCount + 'A'); // some 10 can be had ^0..^9
 	
+	bool optionalBrace = false;
 	currentFunctionDefinition = D;
 	char d[MAX_BUFFER_SIZE];
 	if ( (typeFlags & FUNCTION_BITS) == IS_PATTERN_MACRO)  
@@ -3585,11 +3603,23 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 		ReadNextSystemToken(in,ptr,word,false,true);
 
 		// check for optional display variables
-		if (*word == '(') ptr = ReadDisplay(in,ptr);
+		if (*word == '(') 
+		{
+			ptr = ReadDisplay(in,ptr);
+			ReadNextSystemToken(in,ptr,word,false,true);
+		}
+		if (*word == '{') // see if he used optional {  syntax
+		{
+			ReadNextSystemToken(in,ptr,word,false);
+			optionalBrace = true;
+		}
 
 		// now read body of macro
 		char* at = d;
 		ptr = ReadOutput(false,ptr,in,at,NULL,NULL,NULL);
+		ReadNextSystemToken(in,ptr,word,true);
+		if (optionalBrace && *word == '}') ptr = ReadNextSystemToken(in,ptr,word,false);
+
 		*at = 0;
 		// insert display and add body back
 		pack = WriteDisplay(pack);
@@ -3611,6 +3641,9 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 		else fprintf(out,(char*)"%s %c %d %d %s\r\n",macroName,((D->internalBits & FUNCTION_BITS) == IS_OUTPUT_MACRO) ? 'O' : 'P',D->x.macroFlags,functionArgumentCount,data);
 		fclose(out); // dont use Fclose
 	}
+	char complex[MAX_WORD_SIZE];
+	sprintf(complex,"          Complexity of %s: %d", macroName,complexity);
+	if (complexity != 1) AddMap(NULL, complex);
 
 	return ptr;
 }

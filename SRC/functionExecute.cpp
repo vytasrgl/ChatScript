@@ -74,6 +74,7 @@ int maxGlobalSeen = 0;
 char* stringPlanBase = 0;
 char* backtrackPoint = 0;		// plan code backtrace data
 unsigned int currentIterator = 0;		// next value of iterator
+unsigned int savedSentences = 0;
 
 //   spot callArgumentList are stored for  function calls
 char* callArgumentList[MAX_ARGUMENT_COUNT+1];    // arguments to functions
@@ -190,7 +191,7 @@ FunctionResult JavascriptArgEval(unsigned int index, char* buffer)
 {
 	FunctionResult result;
 	char* arg = ARGUMENT(index);
-	GetCommandArg(arg,buffer,result,OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING);
+	GetCommandArg(arg,buffer,result,OUTPUT_UNTOUCHEDSTRING);
 	return result;
 }
 
@@ -444,7 +445,6 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // DoCall(
 {
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
-
 	char* start = buffer;
 	 if (!D || !(D->internalBits & FUNCTION_NAME))
     {
@@ -513,7 +513,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 					ptr = ReadCompiledWord(ptr,buffer);
 				else // VARIABLE ARG OR COUNTED ARG
 				{
-					ptr = GetCommandArg(ptr,buffer,result,OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING);
+					ptr = GetCommandArg(ptr,buffer,result,OUTPUT_UNTOUCHEDSTRING);
 				}
 				callArgumentList[callArgumentIndex] = AllocateStack(buffer);
 				ptr = SkipWhitespace(ptr);
@@ -3189,7 +3189,7 @@ static FunctionResult LogCode(char* buffer)
 	if (!strnicmp(stream,(char*)"CLOSE",5))
 	{
 		stream = ReadCompiledWord(stream,name); // close
-		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); // name of file
+		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES); // name of file
 		if (*name == '"') 
 		{
 			size_t len = strlen(name);
@@ -3213,7 +3213,7 @@ static FunctionResult LogCode(char* buffer)
 	if (!strnicmp(stream,(char*)"FILE ",5) || !strnicmp(stream,(char*)"OPEN ",5)) // write data to this file
 	{
 		stream = ReadCompiledWord(stream,name); // FILE or OPEN
-		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); // name of file
+		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES); // name of file
 		if (*name == '"') 
 		{
 			size_t len = strlen(name);
@@ -3233,7 +3233,7 @@ static FunctionResult LogCode(char* buffer)
 	++outputNest;
 	WORDP lock = dictionaryLocked;
 	dictionaryLocked = (WORDP)22; // allow format string to work even while compiling a table
-	Output(stream,buffer,result,OUTPUT_EVALCODE | (unsigned int) flags);
+	Output(stream,buffer,result, (unsigned int) flags);
 	--outputNest;
 	dictionaryLocked = lock;
 
@@ -3298,7 +3298,7 @@ static FunctionResult InsertOutput(char* stream, char* buffer, int index)
 {
 	// add at end, then alter order
 	FunctionResult result;
-	Output(stream,buffer,result,OUTPUT_EVALCODE);
+	Output(stream,buffer,result,0);
 	if (AddResponse(buffer,responseControl))
 	{
 		memmove(&responseOrder[index+1],&responseOrder[index],responseIndex - index); // shift order out 1
@@ -3350,7 +3350,7 @@ static FunctionResult PrintCode(char* buffer)
 	if ((flags || response) && *stream == ')') ++stream; // skip end of flags
 
 	FunctionResult result;
-	Output(stream,buffer,result,OUTPUT_EVALCODE | (unsigned int) flags);
+	Output(stream,buffer,result, (unsigned int) flags);
 	if (!(flags & OUTPUT_RETURNVALUE_ONLY) && !AddResponse(buffer,response ? (unsigned int)flags : responseControl)) result = FAILRULE_BIT;
 	return result;
 }
@@ -3417,7 +3417,7 @@ static FunctionResult SetPronounCode(char* buffer)
 	uint64 cansysflags = 0;
 	WORDP revise;
 	GetPosData(-1,word,revise,entry,canonical,sysflags,cansysflags,false); // NOT first try
-	wordStarts[startPosition] = reuseAllocation(wordStarts[startPosition],D->word); 
+	wordStarts[startPosition] = D->word; 
 	wordCanonical[startPosition] = (canonical) ? canonical->word : D->word;	
 	if (!wordCanonical[startPosition]) wordCanonical[startPosition] = D->word;
 
@@ -3506,7 +3506,7 @@ static FunctionResult PostPrintBeforeCode(char* buffer) // only works if post pr
 	if (flags) ++stream; // skip end of flags
 
 	FunctionResult result;
-	Output(stream,buffer,result,OUTPUT_EVALCODE| (unsigned int)flags);
+	Output(stream,buffer,result, (unsigned int)flags);
 
 	// prepend output 
 	if (AddResponse(buffer,responseControl))
@@ -3535,7 +3535,7 @@ static FunctionResult PostPrintAfterCode(char* buffer) // only works if post pro
 	if (flags) ++stream; // skip end of flags
 
 	FunctionResult result;
-	Output(stream,buffer,result,OUTPUT_EVALCODE| (unsigned int)flags);
+	Output(stream,buffer,result, (unsigned int)flags);
 
 	// postpend output 
 	AddResponse(buffer,responseControl);
@@ -3639,7 +3639,7 @@ static FunctionResult EvalCode(char* buffer) //  ??? needed with output eval ins
 	bool response = false;
 	stream = ReadFlags(stream,flags,bad,response); // try for flags
 	if (flags && *stream == ')') ++stream; // skip end of flags
-	Output(stream,buffer,result,OUTPUT_EVALCODE|(unsigned int)flags); 
+	Output(stream,buffer,result,(unsigned int)flags); 
 	return result;
 }
 
@@ -3677,7 +3677,7 @@ FunctionResult MatchCode(char* buffer)
 	else if (*word1 == '@' && !*at) 
 	{
 		FunctionResult result;
-		ReadShortCommandArg(word1,word,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
+		ReadShortCommandArg(word1,word,result,OUTPUT_NOQUOTES); 
 		if (result != NOPROBLEM_BIT) return result;
 	}
 	else 
@@ -3826,7 +3826,7 @@ static FunctionResult SaveSentenceCode(char* buffer)
 
 	unsigned int* memory = (unsigned int*) AllocateHeap(NULL,total/2,8,false); // int64 aligned
 	memory[0] = savedSentences;
-	savedSentences = String2Index((char*) memory); // threaded list
+	savedSentences = Heap2Index((char*) memory); // threaded list
 	memory[1] = M; // key 
 	memory[2] = sentencePreparationIndex;
 	((uint64*)memory)[3] = tokenFlags; // 3,4
@@ -3908,7 +3908,7 @@ static FunctionResult RestoreSentenceCode(char* buffer)
 	unsigned int* memory = NULL;
 	while (list) // find the sentence referred to
 	{
-		memory = (unsigned int*) Index2String(list);
+		memory = (unsigned int*) Index2Heap(list);
 		if (memory[1] == M) break; // found it
 		list = memory[0];
 	}
@@ -5556,7 +5556,7 @@ static FunctionResult WalkDictionaryCode(char* buffer)
 	FunctionResult result;
 	xbuffer = buffer;
 	char fn[MAX_WORD_SIZE];
-	char* function = ReadShortCommandArg(ARGUMENT(1),fn,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
+	char* function = ReadShortCommandArg(ARGUMENT(1),fn,result,OUTPUT_NOQUOTES); 
 	if (result != NOPROBLEM_BIT) return result;
 	function = fn;
 	if (*function == '\'') ++function; // skip over the ' 
@@ -5614,7 +5614,7 @@ static FunctionResult RemoveInternalFlagCode(char* buffer)
 	char* ptr = ARGUMENT(1);
 	char arg1[MAX_WORD_SIZE];
 	FunctionResult result = NOPROBLEM_BIT;
-	ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE);
+	ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES);
 	if (result != NOPROBLEM_BIT) return result;
 	if (!*arg1) return FAILRULE_BIT;
 	WORDP D = FindWord(arg1,0,PRIMARY_CASE_ALLOWED); // add property to dictionary word
@@ -5634,7 +5634,7 @@ static FunctionResult AddPropertyCode(char* buffer)
 	char arg1[MAX_WORD_SIZE];
 	FunctionResult result = NOPROBLEM_BIT;
 	if (*ptr == '@') ptr = ReadCompiledWord(ptr,arg1); // dont eval a set
-	else ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE);
+	else ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES);
 	if (result != NOPROBLEM_BIT) return result;
 	if (!*arg1) return FAILRULE_BIT;
 	WORDP D = NULL;
@@ -5839,7 +5839,7 @@ static FunctionResult RemovePropertyCode(char* buffer)
 	char arg1[MAX_WORD_SIZE];
 	FunctionResult result = NOPROBLEM_BIT;
 	if (*ptr == '@') ptr = ReadCompiledWord(ptr,arg1); // dont eval a set
-	else ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE);
+	else ptr = ReadShortCommandArg(ptr,arg1,result,OUTPUT_NOQUOTES);
 	if (result != NOPROBLEM_BIT) return result;
 	char arg3 = *GetSetType(arg1);
 	if (!*arg1) return FAILRULE_BIT;
@@ -6070,7 +6070,7 @@ static FunctionResult NextCode(char* buffer)
 	if (stricmp(arg1,(char*)"FACT") || *arg2 != '@') // eval all but FACT @1subjecct
 	{
 		FunctionResult result;
-		GetCommandArg(ptr,buffer,result,OUTPUT_EVALCODE|OUTPUT_UNTOUCHEDSTRING);
+		GetCommandArg(ptr,buffer,result,OUTPUT_UNTOUCHEDSTRING);
 		size_t len = strlen(buffer);
 		if (len >= MAX_WORD_SIZE) return FAILRULE_BIT;
 		strcpy(arg2,buffer);
@@ -6645,7 +6645,7 @@ static FunctionResult SystemCode(char* buffer)
 	{
 		FunctionResult result;
 		char name[MAX_WORD_SIZE];
-		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); // name of file
+		stream = ReadShortCommandArg(stream,name,result,OUTPUT_NOQUOTES); // name of file
 		if (*name)
 		{
 			strcat(word,name);
@@ -6672,7 +6672,7 @@ static FunctionResult CreateFactCode(char* buffer)
 	if (!*at) // single arg, eval it to get real one....
 	{
 		FunctionResult result;
-		GetCommandArg(arg,buffer,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
+		GetCommandArg(arg,buffer,result,OUTPUT_NOQUOTES); 
 		if (result != NOPROBLEM_BIT) return result;
 		at = buffer;
 		if (*at == '(') at += 2; // skip paren start as would be done by WriteFact
@@ -6932,13 +6932,13 @@ static void GenerateConceptList(bool tracing,int list, int set,char* filter,size
 	int x = 0;
 	while (x)
 	{
-		MEANING* data = (MEANING*) Index2String(x);
+		MEANING* data = (MEANING*) Index2Heap(x);
 		x = data[1];
 	}
 
 	while (list)
 	{
-		MEANING* at = (MEANING*)Index2String(list);
+		MEANING* at = (MEANING*)Index2Heap(list);
 		list = (unsigned int) at[1];
 		MEANING M = *at;
 		WORDP X = Meaning2Word(M);

@@ -333,7 +333,7 @@ char* RemoveEscapesWeAdded(char* at)
 			// other choices dont translate, eg double quote
 			memmove(at-1,at+1,strlen(at)); // remove the escape flag and the escape
 		}
-		else ++at;
+		else ++at; // we dont mark " with ESCAPE_FLAG, we are not protecting it.
 	}
 	return startScan;
 }
@@ -405,10 +405,26 @@ char* AddEscapes(char* to, char* from, bool normal,int limit) // normal true mea
 	while (*++at)
 	{
 		// convert these
-		if (*at == '\n') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'n';} // legal
-		else if (*at == '\r') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 'r';} // legal
-		else if (*at == '\t') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = 't';} // legal
-		else if (*at == '"') {if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = '"';}
+		if (*at == '\n') { // not expected to see
+			if (!normal) *to++ = ESCAPE_FLAG; 
+			*to++ = '\\'; 
+			*to++ = 'n'; // legal
+		}
+		else if (*at == '\r') {// not expected to see
+			if (!normal) *to++ = ESCAPE_FLAG; 
+			*to++ = '\\'; 
+			*to++ = 'r';// legal
+		} 
+		else if (*at == '\t') {// not expected to see
+			if (!normal) *to++ = ESCAPE_FLAG; 
+			*to++ = '\\'; 
+			*to++ = 't'; // legal
+		}
+		else if (*at == '"') { // we dont need to preserve that it was escaped, we always escape it in json anyway
+			// if (!normal) *to++ = ESCAPE_FLAG; 
+			*to++ = '\\'; 
+			*to++ = '"';
+		}
 		// detect it is already escaped
 		else if (*at == '\\')
 		{
@@ -418,7 +434,11 @@ char* AddEscapes(char* to, char* from, bool normal,int limit) // normal true mea
 				*to++ = *at;
 				*to++ = *++at;
 			}
-			else { if (!normal) *to++ = ESCAPE_FLAG; *to++ = '\\'; *to++ = '\\'; }
+			else { 
+				if (!normal) *to++ = ESCAPE_FLAG; 
+				*to++ = '\\'; 
+				*to++ = '\\'; 
+			}
 		}
 		// no escape needed
 		else *to++ = *at;
@@ -1394,35 +1414,40 @@ void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine) // used to get/se
 #define IN_FORMAT_CONTINUATIONLINE 2
 #define IN_FORMAT_COMMENT 3
 
-static bool ConditionalReadRejected(char* start,char*& buffer)
+static bool ConditionalReadRejected(char* start,char*& buffer,bool revise)
 {
 	char word[MAX_WORD_SIZE];
 	if (!compiling) return false;
 	char* at = ReadCompiledWord(start,word);
-	if (!stricmp(word,"#ifdef") || !stricmp(word,"#ifndef") || !stricmp(word,"#define")) return false;
-	if (!strncmp(word,"#endif",6) || !stricmp(word,"#include") ) return false;
+	if (!stricmp(word,"ifdef") || !stricmp(word,"ifndef") || !stricmp(word,"define")) return false;
+	if (!stricmp(word,"endif") || !stricmp(word,"include") ) return false;
 
 	// a matching language declaration?
-	size_t len = strlen(language);
-	if (!strnicmp(language,word+1,len) && (word[len+1] == 0 || word[len+1] == ' ')) 
+	if (!stricmp(language,word)) 
 	{
-		memmove(start,at, strlen(at)+1); // erase comment marker
-		buffer = start + strlen(start);
+		if (revise)
+		{
+			memmove(start-1,at, strlen(at)+1); // erase comment marker
+			buffer = start + strlen(start);
+		}
 		return false; // allowed
 	}
 
 	// could it be a constant?
-	uint64 n = FindValueByName(word+1);
-	if (!n) n = FindSystemValueByName(word+1);
-	if (!n) n = FindParseValueByName(word+1);
-	if (!n) n = FindMiscValueByName(word+1);
+	uint64 n = FindValueByName(word);
+	if (!n) n = FindSystemValueByName(word);
+	if (!n) n = FindParseValueByName(word);
+	if (!n) n = FindMiscValueByName(word);
 	if (n) return false;	 // valid constant
 	for (int i = 0; i < conditionalCompiledIndex; ++i)
 	{
-		if (!stricmp(conditionalCompile[i],word)) 
+		if (!stricmp(conditionalCompile[i]+1,word)) 
 		{
-			memmove(start,at, strlen(at)+1); // erase comment marker
-			buffer = start + strlen(start);
+			if (revise)
+			{
+				memmove(start-1,at, strlen(at)+1); // erase comment marker
+				buffer = start + strlen(start);
+			}
 			return false; // allowed
 		}
 	}
@@ -1636,9 +1661,35 @@ RESUME:
 		if ((buffer-start) >= 4 && *(buffer-3) == '#' && *(buffer-4) == '#' && *(buffer-2) == c) //  block comment mode ## 
 		{
 			if ( c == '<') 
-				blockComment = true;
+			{
+				blockComment = true; 
+				if (!fread(&c,1,1,in)) // see if attached language
+				{
+					++currentFileLine;	// for debugging error messages
+					maxFileLine = currentFileLine;
+					break;	// EOF
+				}
+				if (IsAlphaUTF8(c)) // read the language
+				{
+					char lang[100];
+					char* current = buffer;
+					char* at = lang;
+					*at++ = c;
+					while (fread(&c,1,1,in))
+					{
+						if (IsAlphaUTF8(c) && c != ' ') *at++ = c;
+						else break;
+					}
+					*at = 0;
+					// this is either junk or a language marker...
+					if (!ConditionalReadRejected(lang,buffer,false)) blockComment = false; // this is legal
+				}
+			}
 			else if (c == '>') 
-				endingBlockComment = true;
+			{
+				if (!blockComment) {;}// superfluous end
+				else endingBlockComment = true;
+			}
 			else continue;
 			buffer -= 4;
 			*buffer = 0;
@@ -1658,7 +1709,7 @@ RESUME:
 	// see if conditional compile line...
 	if (*start == '#' && IsAlphaUTF8(start[1]))
 	{
-		if (ConditionalReadRejected(start,buffer))
+		if (ConditionalReadRejected(start+1,buffer,true))
 		{
 			buffer = start;
 			*start = 0;

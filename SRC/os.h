@@ -50,15 +50,36 @@ extern unsigned int baseBufferIndex;
 extern unsigned int overflowIndex;
 extern char* buffers;
 extern bool showmem;
+extern unsigned long maxHeapBytes;
+extern char* heapBase;
+extern char* heapFree;
+extern char* stackFree;
+extern char* stackStart;
+extern char* heapEnd;
+extern unsigned long minHeapAvailable;
 
+char* Index2Heap(unsigned int offset);
+inline unsigned int Heap2Index(char* str) {return (!str) ? 0 : (unsigned int)(heapBase - str);}
+
+// MEMORY SYSTEM
 void ResetBuffers();
-char* AllocateBuffer();
-void FreeBuffer();
+char* AllocateBuffer(char*name = "");
+void FreeBuffer(char*name = "");
 void CloseBuffers();
+char* AllocateStack(char* word, size_t len = 0, bool localvar = false);
+void ReleaseStack(char* word);
+char* InfiniteStack(char*& limit);
+void CompleteBindStack();
+bool AllocateStackSlot(char* variable);
+char* RestoreStackSlot(char* variable,char* slot);
+char* AllocateHeap(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
+bool PreallocateHeap(size_t len);
+void ProtectNL(char* buffer);
+void InitStackHeap();
 bool KeyReady();
-int MakeDirectory(char* directory);
 
 // FILE SYSTEM
+int MakeDirectory(char* directory);
 void EncryptInit(char* params);
 void DecryptInit(char* params);
 void EncryptRestart();
@@ -118,8 +139,8 @@ typedef struct USERFILESYSTEM //  how to access user topic data
 extern USERFILESYSTEM userFileSystem;
 void InitUserFiles();
 void WalkDirectory(char* directory,FILEWALK function, uint64 flags);
-size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file);
-size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file);
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt);
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,bool encrypt);
 char* GetUserPath(char* name);
 
 // TIME
@@ -154,6 +175,8 @@ unsigned int GetFutureSeconds(unsigned int seconds);
 #define STDTRACEATTNLOG 201
 #define STDTIMETABLOG 301
 
+extern bool userEncrypt;
+extern bool ltmEncrypt;
 extern bool echo;
 extern bool showDepth;
 extern bool oob;

@@ -3,8 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 1/1/2017 cs7.0
-
+> Revision 1/7/2017 cs7.1
 
 # Debugging in and out
 
@@ -136,3 +135,10 @@ has a breakpoint on entry, it will execute its commands.
 The debugger can swap out its stdin and stdout interactions with the user with functions supplied on the
 `InitSystem` interface. The functions take a single argument char* and either get a line of input or write
 out a line of outout.
+
+# MAP file
+
+The compiler builds a map file used by the debugger to know what files have what and what lines have what.
+
+In addition, for every rule and function at the end of their data, the system prints out
+the `cyclomatic complexity` of the output code.

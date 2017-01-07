@@ -1,6 +1,15 @@
 #include "common.h"
 static char logLastCharacter = 0;
-
+#define MAX_STRING_SPACE 100000000  // transient+heap space 100MB
+unsigned long maxHeapBytes = MAX_STRING_SPACE;
+char* heapBase;					// start of heap space (runs backward)
+char* heapFree;					// current free string ptr
+char* stackFree;
+char* stackStart;
+char* heapEnd;
+bool userEncrypt = false;
+bool ltmEncrypt = false;
+unsigned long minHeapAvailable;
 bool showDepth = false;
 char serverLogfileName[200];				// file to log server to
 char logFilename[MAX_WORD_SIZE];			// file to user log to
@@ -184,10 +193,9 @@ void CloseBuffers()
 	buffers = 0;
 }
 
-char* AllocateBuffer()
+char* AllocateBuffer(char* name)
 {// CANNOT USE LOG INSIDE HERE, AS LOG ALLOCATES A BUFFER
 	char* buffer = buffers + (maxBufferSize * bufferIndex); 
-	if (showmem) Log(STDTRACELOG,(char*)"New BUff alloc %d\r\n",bufferIndex+1);
 	if (++bufferIndex >= maxBufferLimit ) // want more than nominally allowed
 	{
 		if (bufferIndex > (maxBufferLimit+2) || overflowIndex > 20) 
@@ -215,19 +223,233 @@ char* AllocateBuffer()
 		buffer = overflowBuffers[overflowIndex++];
 	}
 	else if (bufferIndex > maxBufferUsed) maxBufferUsed = bufferIndex;
+	if (showmem) Log(STDTRACELOG,(char*)"Buffer alloc %d %s\r\n",bufferIndex,name);
 	*buffer++ = 0;	//   prior value
 	*buffer = 0;	//   empty string
 	return buffer;
 }
 
-void FreeBuffer()
+void FreeBuffer(char* name)
 {
+	if (showmem) Log(STDTRACELOG,(char*)"Buffer free %d %s\r\n",bufferIndex,name);
 	if (overflowIndex) --overflowIndex; // keep the dynamically allocated memory for now.
 	else if (bufferIndex)  --bufferIndex; 
 	else ReportBug((char*)"Buffer allocation underflow")
-	if (showmem) Log(STDTRACELOG,(char*)"Buffer free %d\r\n",bufferIndex);
 }
 
+void InitStackHeap()
+{
+	int size = maxHeapBytes / 64;
+	size = (size * 64) + 64; // 64 bit align both ends
+	heapEnd = ((char*) malloc(size));	// point to end
+	if (!heapEnd)
+	{
+		printf((char*)"Out of  memory space for text space %d\r\n",(int)size);
+		ReportBug((char*)"FATAL: Cannot allocate memory space for text %d\r\n",(int)size)
+	}
+	heapFree = heapBase = heapEnd + size; // allocate backwards
+	stackFree = heapEnd;
+	minHeapAvailable = maxHeapBytes;
+	stackStart = stackFree;
+}
+
+char* AllocateStack(char* word, size_t len,bool localvar) // call with (0,len) to get a buffer
+{
+	if (len == 0) len = strlen(word);
+    if ((stackFree + len + 1) >= heapFree - 5000) // dont get close
+    {
+		ReportBug((char*)"Out of stack space stringSpace:%d ReleaseStackspace:%d \r\n",heapBase-heapFree,stackFree - stackStart);
+		return NULL;
+    }
+	char* answer = stackFree;
+	if (localvar) // give hidden data
+	{
+		*answer = '`';
+		answer[1] = '`';
+		answer += 2;
+	}
+	if (word) strncpy(answer,word,len);
+	else *answer = 0;
+	answer[len++] = 0;
+	answer[len++] = 0;
+	if (localvar) len += 2;
+	stackFree += len;
+	len = stackFree - stackStart;	// how much stack used are we?
+	len = heapBase - heapFree;		// how much heap used are we?
+	len = heapFree - stackFree;		// size of gap between
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+	return answer;
+}
+
+void ReleaseStack(char* word)
+{
+	stackFree = word;
+}
+
+bool AllocateStackSlot(char* variable)
+{
+	WORDP D = StoreWord(variable);
+
+	unsigned int len = sizeof(char*);
+    if ((stackFree + len + 1) >= (heapFree - 5000)) // dont get close
+    {
+		ReportBug((char*)"Out of stack space\r\n")
+		return false;
+    }
+	char* answer = stackFree;
+	memcpy(answer,&D->w.userValue,sizeof(char*));
+	if (D->word[1] == LOCALVAR_PREFIX) D->w.userValue = NULL; // autoclear local var
+	stackFree += sizeof(char*);
+	len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+	return true;
+}
+
+char* RestoreStackSlot(char* variable,char* slot)
+{
+	WORDP D = FindWord(variable);
+	if (!D) return slot; // should never happen, we allocate dict entry on save
+	memcpy(&D->w.userValue,slot,sizeof(char*));
+	return slot + sizeof(char*);
+}
+
+char* InfiniteStack(char*& limit)
+{
+	limit = heapFree - 5000; // leave safe margin of error
+	*stackFree = 0;
+	return stackFree;
+}
+
+void CompleteBindStack()
+{
+	stackFree += strlen(stackFree) + 1; // convert infinite allocation to fixed one
+	size_t len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+}
+
+char* Index2Heap(unsigned int offset) 
+{ 
+	if (!offset) return NULL;
+	char* ptr = heapBase - offset;
+	if (ptr < heapFree)  
+	{
+		ReportBug((char*)"String offset into free space\r\n");
+		return NULL;
+	}
+	if (ptr > heapBase)  
+	{
+		ReportBug((char*)"String offset before heap space\r\n");
+		return NULL;
+	}
+	return ptr;
+}
+
+bool PreallocateHeap(size_t len) // do we have the space
+{
+	char* used = heapFree - len;
+	if (used <= ((char*)stackFree + 2000)) 
+	{
+		ReportBug("Heap preallocation fails");
+		return false;
+	}
+	return true;
+}
+
+char* AllocateHeap(char* word,size_t len,int bytes,bool clear, bool purelocal) // BYTES means size of unit
+{ //   string allocation moves BACKWARDS from end of dictionary space (as do meanings)
+/* Allocations during setup as :
+2 when setting up cs using current dictionary and livedata for extensions (plurals, comparatives, tenses, canonicals) 
+3 preserving flags or properties when removing them or adding them while  the dictionary is unlocked - only during builds 
+4 reading strings during dictionary setup
+5 assigning meanings or glosses or posconditionsfor the dictionary
+6 reading in postag information
+---
+Allocations happen during volley processing as
+1 adding a new dictionary word - all the time on user input
+2. saving plan backtrack data
+3 altering concepts[] and topics[] lists as a result of a mark operation or normal behavior
+4. temps information
+5 spellcheck adjusted word in sentence list
+6 tokenizing words and quoted stuff adjustments
+7. assignment onto user variables
+8. JSON reading
+*/
+	len *= bytes; // this many units of this size
+	if (len == 0 && word) len = strlen(word);
+	if (word) ++len;	// null terminate string
+	if (purelocal) len += 2;	// for `` prefix
+	size_t allocationSize = len;
+	if (bytes == 1 && dictionaryLocked && !compiling && !loading) 
+	{
+		allocationSize += ALLOCATESTRING_SIZE_PREFIX + ALLOCATESTRING_SIZE_SAFEMARKER; 
+		// reserve space at front for allocation sizing not in dict items though (variables not in plannning mode can reuse space if prior is big enough)
+		// initial 2 test area
+	}
+
+	//   always allocate in word units
+	unsigned int allocate = ((allocationSize + 3) / 4) * 4;
+	heapFree -= allocate;
+ 	if (bytes > 4) // force 64bit alignment alignment
+	{
+		uint64 base = (uint64) heapFree;
+		base &= 0xFFFFFFFFFFFFFFC0ULL;
+		heapFree = (char*) base;
+	}
+ 	else if (bytes == 4) // force 32bit alignment alignment
+	{
+		uint64 base = (uint64) heapFree;
+		base &= 0xFFFFFFFFFFFFFFF0ULL;
+		heapFree = (char*) base;
+	}
+ 	else if (bytes == 2) // force 16bit alignment alignment
+	{
+		uint64 base = (uint64) heapFree;
+		base &= 0xFFFFFFFFFFFFFFF8ULL;
+		heapFree = (char*) base;
+	}
+	else if (bytes != 1) 
+		ReportBug((char*)"Allocation of bytes is not std unit %d", bytes);
+
+	// create marker
+	if (bytes == 1  && dictionaryLocked && !compiling && !loading) 
+	{
+		heapFree[0] = ALLOCATESTRING_MARKER; // we put ff ff  just before the sizing data
+		heapFree[1] = ALLOCATESTRING_MARKER;
+	}
+
+	char* newword =  heapFree;
+	if (bytes == 1 && dictionaryLocked && !compiling && !loading) // store size of allocation to enable potential reuse by $var assign and by wordStarts tokenize
+	{
+		newword += ALLOCATESTRING_SIZE_SAFEMARKER;
+		allocationSize -= ALLOCATESTRING_SIZE_PREFIX + ALLOCATESTRING_SIZE_SAFEMARKER; // includes the end of string marker
+		if (ALLOCATESTRING_SIZE_PREFIX == 3)		*newword++ = (unsigned char)(allocationSize >> 16); 
+		*newword++ = (unsigned char)(allocationSize >> 8) & 0x000000ff;  
+		*newword++ = (unsigned char) (allocationSize & 0x000000ff);
+	}
+	
+	int nominalLeft = maxHeapBytes - (heapBase - heapFree);
+	if ((unsigned long) nominalLeft < minHeapAvailable) minHeapAvailable = nominalLeft;
+	if ((heapBase-heapFree) > 50000000)
+	{
+		int xx = 0;
+	}
+	char* used = heapFree - len;
+	if (used <= ((char*)stackFree + 2000)) 
+		ReportBug((char*)"FATAL: Out of transient heap space\r\n")
+    if (word) 
+	{
+		if (purelocal) // never use clear true with this
+		{
+			*newword++ = LCLVARDATA_PREFIX;
+			*newword++ = LCLVARDATA_PREFIX;
+			len -= 2;
+		}
+		memcpy(newword,word,--len);
+		newword[len] = 0;
+	}
+	else if (clear) memset(newword,0,len);
+    return newword;
+}
 /////////////////////////////////////////////////////////
 /// FILE SYSTEM
 /////////////////////////////////////////////////////////
@@ -256,7 +478,7 @@ void InitUserFiles()
 #ifndef DISCARDJSON 
 FunctionResult JSONOpenCode(char* buffer);
 
-static size_t CleanupCryption(char* buffer)
+static size_t CleanupCryption(char* buffer,bool decrypt)
 {
 	// clean up answer data
 	char* answer = strchr(buffer,'x');
@@ -265,22 +487,72 @@ static size_t CleanupCryption(char* buffer)
 		*buffer = 0;
 		return 0;
 	}
-	int realsize = jsonOpenSize - 4 - (answer-buffer);
+	int realsize = jsonOpenSize - 4 - (answer-buffer); // {"datavalues":{" + x:{" 
 	memmove(buffer,answer+4,realsize); // drop head data {"datavalues":{"x":"hello world"}}
-	realsize -= 3;
+	realsize -= 3; // for "}} close
 	buffer[realsize] = 0;	// remove trailing data
+
+	// legal json doesnt allow control characters, but we cannot change our file system ones to \r\n because
+	// we cant tell which are ours and which are users. So we changed to 7f7f coding.
+	if (decrypt)
+	{
+		char* at = buffer-1;
+		while (*++at) 
+		{
+			if (*at == 0x7f && at[1] == 0x7f)
+			{
+				*at = '\r';
+				at[1] = '\n';
+			}
+		}
+	}
 	return realsize;
 }
 
-static int JsonOpenCryption(char* buffer, size_t size, char* server)
+void ProtectNL(char* buffer) // save ascii \r\n in json - only comes from userdata write using them
 {
+	char* at = buffer;
+	while ((at = strchr(at,'\r'))) // legal convert
+	{
+		if (at[1] == '\n' ) // legal convert
+		{
+			*at++ = 0x7f;
+			*at++ = 0x7f;
+		}
+	}
+}
+
+bool notcrypting = false;
+static int JsonOpenCryption(char* buffer, size_t size, char* server, bool decrypt)
+{
+	if (size == 0) return 0;
+	if (notcrypting) return size;
+	
+#ifdef INFORMATION
+	// legal json requires these characters be escaped, but we cannot change our file system ones to \r\n because
+	// we cant tell which are ours and which are users. So we change to 7f7f coding for /r/n.
+	// and we change to 0x31 for double quote.
+	\b  Backspace (ascii code 08) -- never seeable
+	\f  Form feed (ascii code 0C) -- never seable
+	\n  New line -- only from our user topic write
+	\r  Carriage return -- only from our user topic write
+	\t  Tab -- never seeable
+	\"  Double quote -- seeable in user data
+	\\  Backslash character -- ??? not expected but possible
+	UserFile encoding responsible for normal JSON safe data.
+
+	Note MongoDB code also encrypts \r\n the same way. but we dont know HERE that mongo is used
+	and we don't know THERE that encryption was used. That is redundant but minor.
+#endif
+	if (!decrypt) ProtectNL(buffer);
+
 	// prepare body for transfer to server to look like this:
 	// {"datavalues": {"x": "..."}} 
 	sprintf(buffer+size,"\"}}"); // add suffix to data
-	char url[50];
-	sprintf(url,"{\"datavalues\": {\"");
+	char url[500];
+	sprintf(url,"{\"datavalues\":{\"x\":\"");
 	int headerlen = strlen(url);
-	memmove(buffer+headerlen,buffer,size+3);
+	memmove(buffer+headerlen,buffer,size+4);
 	strncpy(buffer,url,headerlen);
 
 	// set up call to json open
@@ -289,31 +561,39 @@ static int JsonOpenCryption(char* buffer, size_t size, char* server)
 	int oldArgumentIndex = callArgumentIndex;
 	int oldArgumentBase = callArgumentBase;
 	callArgumentBase = callArgumentIndex - 1;
-	callArgumentList[callArgumentIndex++] =   "direct";
+	callArgumentList[callArgumentIndex++] =   "direct"; // get the text of it gives us, dont make facts out of it
 	callArgumentList[callArgumentIndex++] =    "POST";
 	sprintf(url,server,loginID);
 	callArgumentList[callArgumentIndex++] =    url;
 	callArgumentList[callArgumentIndex++] =    (char*) buffer;
 	callArgumentList[callArgumentIndex++] =    header;
+	callArgumentList[callArgumentIndex++] =    ""; // timer override
 
 	// do it
-	trace = (unsigned int)-1;
-	echo = true;
+	//trace = (unsigned int)-1;
+	//echo = true;
 	FunctionResult result = JSONOpenCode((char*) buffer); 
+	//trace = (unsigned int)0;
+	//echo = false;
+
 	callArgumentIndex = oldArgumentIndex;	 
 	callArgumentBase = oldArgumentBase;
-	if (result != NOPROBLEM_BIT) return 0;
-	return CleanupCryption((char*) buffer);
+	if (http_response != 200 || result != NOPROBLEM_BIT) 
+	{
+		ReportBug("Encrpytion/decryption server failed %s doing %s\r\n",buffer,decrypt ? (char*) "decrypt" : (char*) "encrypt");
+		return 0;
+	}
+	return CleanupCryption((char*) buffer,decrypt);
 }
 
 static size_t Decrypt(void* buffer,size_t size, size_t count, FILE* file)
 {
-	return JsonOpenCryption((char*) buffer, size * count,decryptServer);
+	return JsonOpenCryption((char*) buffer, size * count,decryptServer,true);
 }
 
 static size_t Encrypt(const void* buffer, size_t size, size_t count, FILE* file)
 {
-	return JsonOpenCryption((char*) buffer, size * count,encryptServer);
+	return JsonOpenCryption((char*) buffer, size * count,encryptServer,false);
 }
 #endif
 
@@ -343,16 +623,16 @@ void EncryptRestart() // required
 #endif
 }
 
-size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file)
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt)
 {
 	size_t len = userFileSystem.userRead(buffer,size,count,file);
-	if (userFileSystem.userDecrypt) return userFileSystem.userDecrypt(buffer,1,len,file); // can revise buffer
+	if (userFileSystem.userDecrypt && decrypt) return userFileSystem.userDecrypt(buffer,1,len,file); // can revise buffer
 	return len;
 }
 
-size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file)
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,bool encrypt)
 {
-	if (userFileSystem.userEncrypt) 
+	if (userFileSystem.userEncrypt && encrypt) 
 	{
 		size_t msgsize = userFileSystem.userEncrypt(buffer,size,count,file); // can revise buffer
 		return userFileSystem.userWrite(buffer,1,msgsize,file);
@@ -1051,41 +1331,41 @@ void BugBacktrace(FILE* out)
 	}
 }
 
-void ChangeDepth(int value,char* where,bool nostackCutback,char* code,FunctionResult result)
+void ChangeDepth(int value,char* name,bool nostackCutback,char* code,FunctionResult result)
 {
 	if (value < 0)
 	{
 #ifndef DISCARDTESTING
-		CheckBreak(where,false,NULL,result); // debugger hook
+		CheckBreak(name,false,NULL,result); // debugger hook
 #endif
 		if (memDepth[globalDepth] != bufferIndex)
 		{
-			ReportBug((char*)"depth %d not closing bufferindex correctly at %s bufferindex now %d was %d\r\n",globalDepth,where,bufferIndex,memDepth[globalDepth]);
+			ReportBug((char*)"depth %d not closing bufferindex correctly at %s bufferindex now %d was %d\r\n",globalDepth,name,bufferIndex,memDepth[globalDepth]);
 			memDepth[globalDepth] = 0;
 		}
 		// engine functions that are streams should not destroy potential local adjustments
 		if (!nostackCutback) 
 			stackFree = releaseStackDepth[globalDepth]; // deallocoate ARGUMENT space
 		globalDepth += value;
-		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d heapused:%d\r\n", globalDepth,where, bufferIndex,(int)(heapBase-heapFree));
+		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d heapused:%d\r\n", globalDepth,name, bufferIndex,(int)(heapBase-heapFree));
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d heapused: %d stackused:%d gap:%d\r\n",globalDepth, where, bufferIndex,(int)(heapBase - heapFree),(int)(stackFree - stackStart),(int)(heapFree-stackFree));
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d heapused: %d stackused:%d gap:%d\r\n",globalDepth, name, bufferIndex,(int)(heapBase - heapFree),(int)(stackFree - stackStart),(int)(heapFree-stackFree));
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
-		nameDepth[globalDepth] = where;
+		nameDepth[globalDepth] = name;
 		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
 		sprintf((char*)tagDepth[globalDepth],"%d.%d.%d",currentTopicID,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
 		releaseStackDepth[globalDepth] = stackFree; // define argument start space - release back to here on exit
 		heapDepth[globalDepth] =  heapBase - heapFree;	 // used on entry
 
 #ifndef DISCARDTESTING
-		CheckBreak(where,true,code); // debugger hook
+		CheckBreak(name,true,code); // debugger hook
 #endif
 	}
-	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
-	if (globalDepth >= (MAX_GLOBAL-1)) ReportBug((char*)"FATAL: globaldepth too deep at %s\r\n",where);
+	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",name); globalDepth = 0;}
+	if (globalDepth >= (MAX_GLOBAL-1)) ReportBug((char*)"FATAL: globaldepth too deep at %s\r\n",name);
 	if (globalDepth > maxGlobalSeen) maxGlobalSeen = globalDepth;
 }
 
@@ -1325,7 +1605,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			fwrite(logbase,1,bufLen,bug);
 			if (!compiling && !loading) 
 			{
-				fprintf(bug,(char*)"MinReleaseStackGap %dMB MinHeapAvailable %dMB\r\n",maxReleaseStackGap/1000000,(int)(minStringAvailable/1000000));
+				fprintf(bug,(char*)"MinReleaseStackGap %dMB MinHeapAvailable %dMB\r\n",maxReleaseStackGap/1000000,(int)(minHeapAvailable/1000000));
 				fprintf(bug,(char*)"MaxBuffers used %d of %d\r\n\r\n",maxBufferUsed,maxBufferLimit);
 				BugBacktrace(bug);
 			}

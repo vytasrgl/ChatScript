@@ -170,7 +170,7 @@ void ReformatString(char starter, char* input,char*& output, FunctionResult& res
 	if (*input == ':') // has been compiled by script compiler. safe to execute fully. actual string is "^:xxxxx" 
 	{
 		++input;
- 		Output(input,output,result,controls|OUTPUT_EVALCODE); // directly execute the content but no leading space
+ 		Output(input,output,result,controls); // directly execute the content but no leading space
 		input[len] = c;
 		return;
 	}
@@ -600,11 +600,7 @@ static char* Output_Backslash(char* word, char* ptr, char* space,char*& buffer, 
 		if (*ptr == 't') --ptr;
 		ptr += 2;
 	}
-    else
-	{
-		if (word[1] == '"' && (controls & OUTPUT_DQUOTE_FLIP) && space) --buffer;	// remove leading space
-		strcpy(buffer,word+1);  //   some other random backslashed content, including \" 
-	}
+    else strcpy(buffer,word+1);  //   some other random backslashed content, including \" 
 	return ptr;
 }
 
@@ -949,9 +945,10 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 		result = FAILRULE_BIT;
 		return ptr;
 	}
-	char* word = AllocateBuffer(); // allocation from stack doesnt work for unknown reason
+	char* word = AllocateBuffer("output"); // allocation from stack doesnt work for unknown reason
 
     bool quoted = false;
+	char* startQuoted = NULL;
 	// nested depth assignments from our heap space
 	int paren = 0;
     while (ptr)
@@ -1005,10 +1002,18 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 		{
 			bool allow = true;
 			char c = *(buffer-1);
+			if (quoted && buffer == startQuoted) // first thingy after \"
+			{
+				allow = false;
+				startQuoted = NULL;
+			}
+			else if (quoted && *word == '\\' && word[1] == '"') allow = false; // ending quoted
 			// dont space after $  or # or [ or ( or " or / e   USERVAR_PREFIX
-			if (c == '(' || c == '[' || c == '{'  || c == '$' || c == '#' || c == '"' || c == '/') allow = false;
+			else if (c == '(' || c == '[' || c == '{'  || c == '$' || c == '#' || c == '/') allow = false;
 			else if (*word == '"' && word[1] == '^') allow = false; // format string handles its own spacing so
 			else if (*word == '\\' && word[1] == ')') allow = false; // dont space before )
+			else if (*word == '\\' && word[1] == '"' && (controls & OUTPUT_DQUOTE_FLIP) ) allow = false;	// closing dq
+
 			if (allow) // add space separator
 			{
 				space = buffer;
@@ -1076,7 +1081,7 @@ retry:
 		// prefixes:  quote, backslash
 		case '\\':  //   backslash needed for new line  () [ ]   
   			ptr = Output_Backslash(word, ptr, space, buffer, (quoted) ? (controls | OUTPUT_DQUOTE_FLIP)  : controls,result);
-			if (word[1] == '"') quoted = !quoted;
+			if (word[1] == '"') quoted = !quoted; // no space on 1st thing following quoted
             break;
 		case '\'': //   quoted item
 			ptr = Output_Quote(word, ptr,  space, buffer, controls,result);
@@ -1104,7 +1109,7 @@ retry:
 			if (quitting == true) 
 			{
 				result = FAILINPUT_BIT;
-				FreeBuffer();
+				FreeBuffer("output1");
 				return NULL;
 			}
 			if (FAILCOMMAND != answer) 
@@ -1158,6 +1163,7 @@ retry:
 
 		//   update location and check for overflow
 		buffer += strlen(buffer);
+		if (quoted && !startQuoted) startQuoted = buffer;
 		unsigned int size = (buffer - currentOutputBase);
 		if (currentOutputBase == ourMainOutputBuffer && size > maxOutputUsed) maxOutputUsed = size;
 		if (size >= currentOutputLimit) 
@@ -1183,6 +1189,6 @@ retry:
 		}
 		if (once) break;    
 	}
-	FreeBuffer();
+	FreeBuffer("output2");
     return ptr;
 }

@@ -323,11 +323,11 @@ FunctionResult DBExecuteCode(char* buffer)
 
 	char query[MAX_WORD_SIZE * 2];
 	char fn[MAX_WORD_SIZE];
-	char* ptr = GetCommandArg(arg1,buffer,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
+	char* ptr = GetCommandArg(arg1,buffer,result,OUTPUT_NOQUOTES); 
 	if (result != NOPROBLEM_BIT) return result;
 	if (strlen(buffer) >= (MAX_WORD_SIZE * 2)) return FAILRULE_BIT;
 	strcpy(query,buffer);
-	ReadShortCommandArg(ptr,fn,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE); 
+	ReadShortCommandArg(ptr,fn,result,OUTPUT_NOQUOTES); 
 	if (result != NOPROBLEM_BIT) return result;
 
 	// convert \" to " within params

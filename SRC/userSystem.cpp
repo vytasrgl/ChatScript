@@ -491,6 +491,8 @@ static bool ReadUserVariables()
 	return true;
 }
 
+// user data never contains control characters (except what we add as line separators here).
+
 static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 {
 	// need to get fact limit variable for WriteUserFacts BEFORE writing user variables, which clears them
@@ -502,7 +504,7 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 	value = GetUserVariable("$cs_userhistorylimit");
 	if (*value) messageCount = atoi(value);
 
-	// each line MUST end with cr/lf  so it can be made potentially safe for Mongo w/o adjusting size of data (inefficient)
+	// each line MUST end with cr/lf  so it can be made potentially safe for Mongo or encryption w/o adjusting size of data (which would be inefficient)
 	char* xxstart = ptr;
 	if (!timeturn15[1] && volleyCount >= 15 && responseIndex) sprintf(timeturn15,(char*)"%lu-%d%s",(unsigned long)curr,responseData[0].topic,responseData[0].id); // delimit time of turn 15 and location...
 	sprintf(ptr,(char*)"%s %s %s %s |\r\n",saveVersion,timeturn0,timePrior,timeturn15); 
@@ -636,27 +638,14 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 		maxFileLine = currentFileLine = 0;
 		BOM = BOMSET;
 		char* at = strchr(buffer,'\r');
-		if (at) // newer format
-		{
-			userRecordSourceBuffer = at + 2; // skip \r\n
-			ReadALine(readBuffer,0);
+		userRecordSourceBuffer = at + 2; // skip \r\n
+		ReadALine(readBuffer,0);
 
-			char* x = ReadCompiledWord(readBuffer,junk);
-			x = ReadCompiledWord(x,timeturn0); // the start stamp id if there
-			x = ReadCompiledWord(x,timePrior); // the prior stamp id if there
-			ReadCompiledWord(x,timeturn15); // the timeturn id if there
-			if (stricmp(junk,saveVersion)) *buffer = 0;// obsolete format
-		}
-		else // older format
-		{
-			userRecordSourceBuffer = buffer + strlen(buffer) + 1; // filename
-			ReadALine(readBuffer,0);
-
-			char* x = ReadCompiledWord(readBuffer,junk);
-			x = ReadCompiledWord(x,timeturn0); // the start stamp id if there
-			x = ReadCompiledWord(x,timePrior); // the prior stamp id if there
-			ReadCompiledWord(x,timeturn15); // the timeturn id if there
-		}
+		char* x = ReadCompiledWord(readBuffer,junk);
+		x = ReadCompiledWord(x,timeturn0); // the start stamp id if there
+		x = ReadCompiledWord(x,timePrior); // the prior stamp id if there
+		ReadCompiledWord(x,timeturn15); // the timeturn id if there
+		if (stricmp(junk,saveVersion)) *buffer = 0;// obsolete format
 	}
     if (!buffer || !*buffer) 
 	{

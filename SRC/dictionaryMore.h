@@ -145,7 +145,7 @@
 
 #define Index2Word(n) (dictionaryBase+n)
 #define Word2Index(D) ((uint64) (D-dictionaryBase))
-#define GetMeanings(D) ((MEANING*) Index2String(D->meanings))
+#define GetMeanings(D) ((MEANING*) Index2Heap(D->meanings))
 #define GetMeaning(D,k) GetMeanings(D)[k]
 #define GetMeaningsFromMeaning(T) (GetMeanings(Meaning2Word(T)))
 #define Meaning2Index(x) ((int)((x & INDEX_BITS) >> (int)INDEX_OFFSET)) //   which dict entry meaning
@@ -171,17 +171,9 @@ void ReadSubstitutes(const char* name,const char* layer,unsigned int fileFlag,bo
 void Add2ConceptTopicList(int list[256], WORDP D,int start,int end,bool unique);
 void SuffixMeaning(MEANING T,char* at, bool withPos);
 
-extern unsigned int savedSentences;
 // memory data
 extern WORDP dictionaryBase;
-extern char* heapBase;
-extern char* heapFree;
-extern char* stackFree;
-extern char* stackStart;
-extern char* heapEnd;
 extern uint64 maxDictEntries;
-extern unsigned long maxHeapBytes;
-extern unsigned long minStringAvailable;
 extern unsigned int userTopicStoreSize;
 extern unsigned int userTableSize;
 extern unsigned long maxHashBuckets;
@@ -195,7 +187,6 @@ extern uint64 adverbFormat;
 extern MEANING posMeanings[64];
 extern MEANING sysMeanings[64];
 extern bool buildDictionary;
-extern char language[40];
 extern FACT* factLocked;
 extern char* stringLocked;
 
@@ -237,16 +228,6 @@ extern MEANING MgambitTopics;
 extern MEANING MadjectiveNoun;
 extern MEANING Mnumber;
 extern bool dictionaryBitsChanged;
-extern char livedata[500];
-extern char languageFolder[500];
-extern char systemFolder[500];
-void ReleaseStack(char* word);
-char* AllocateHeap(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
-char* AllocateStack(char* word, size_t len = 0, bool localvar = false);
-char* InfiniteStack(char*& limit);
-bool PreallocateHeap(size_t len);
-bool AllocateStackSlot(char* variable);
-char* RestoreStackSlot(char* variable,char* slot);
 WORDP StoreWord(int);
 void ClearWordMaps();
 bool TraceHierarchyTest(int x);
@@ -265,12 +246,8 @@ int GetWords(char* word, WORDP* set,bool strict);
 void ReadQueryLabels(char* file);
 void ClearWordWhere(WORDP D,int at);
 void RemoveConceptTopic(int list[256],WORDP D, int at);
-char* reuseAllocation(char* old, char* word);
-char* reuseAllocation(char* old, char* word,int len);
 char* UseDictionaryFile(char* name);
-char* Index2String(unsigned int offset);
 void ClearWhereInSentence();
-inline unsigned int String2Index(char* str) {return (!str) ? 0 : (unsigned int)(heapBase - str);}
 inline unsigned int GlossIndex(MEANING M) { return M >> 24;}
 void ReadAbbreviations(char* file);
 void ReadLiveData();
@@ -279,7 +256,6 @@ WORDP GetSubstitute(WORDP D);
 void ShowStats(bool reset);
 MEANING FindChild(MEANING who,int n);
 void ReadCanonicals(const char* file,const char* layer);
-void CompleteBindStack();
 
 // adjust data on a dictionary entry
 void AddProperty(WORDP D, uint64 flag);

@@ -1,12 +1,20 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.01";
+char* version = "7.1";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
+static bool argumentsSeen = false;
+char* configFile = "cs_init.txt";	// can set config params
+char language[40];							// indicate current language used
+char livedata[500];		// where is the livedata folder
+char languageFolder[500];		// where is the livedata language folder
+char systemFolder[500];		// where is the livedata system folder
+bool noboot = false;
 bool pendingRestart = false;
 bool pendingUserReset = false;
 bool assignedLogin = false;
+char* apikey = NULL;
 int sentencePreparationIndex = 0;
 DEBUGAPI debugInput = NULL;
 DEBUGAPI debugOutput = NULL;
@@ -263,8 +271,9 @@ void CreateSystem()
 #ifndef DISCARDTESTING
 	if (debugEntry) Debugger("");
 #endif
+
 	WORDP boot = FindWord((char*)"^csboot");
-	if (boot) // run script on startup of system. data it generates will also be layer 1 data
+	if (boot && !noboot) // run script on startup of system. data it generates will also be layer 1 data
 	{
 		int oldtrace = trace;
 		if (bootcmd) 	
@@ -412,6 +421,8 @@ void ReloadSystem()
 {//   reset the basic system through wordnet but before topics
 	InitFacts(); 
 	InitDictionary();
+	InitStackHeap();
+	InitCache();
 	// make sets for the part of speech data
 	LoadDictionary();
 	InitFunctionSystem();
@@ -436,138 +447,166 @@ void ReloadSystem()
 	WordnetLockDictionary();
 }
 
-void ProcessArguments(int argc, char* argv[])
+static void ProcessArgument(char* arg)
 {
-	for (int i = 1; i < argc; ++i)
+	if (!argumentsSeen)
 	{
-		if (!stricmp(argv[i],(char*)"trace")) trace = (unsigned int) -1; 
-		else if (!stricmp(argv[i], (char*)"time")) timing = (unsigned int)-1 ^ TIME_ALWAYS;
-		else if (!strnicmp(argv[i],(char*)"bootcmd=",8)) bootcmd = argv[i]+8; 
-		else if (!strnicmp(argv[i],(char*)"dir=",4))
-		{
+		printf("CommandLine:\r\n");
+		argumentsSeen = true;
+	}
+	printf("    %s\r\n",arg);
+	if (!stricmp(arg,(char*)"trace")) trace = (unsigned int) -1; 
+	else if (!strnicmp(arg,(char*)"language=",9)) 
+	{
+		strcpy(language,arg+9);
+		MakeUpperCase(language);
+	}
+	else if (!stricmp(arg,"userencrypt")) userEncrypt = true;
+	else if (!stricmp(arg,"ltmencrypt")) ltmEncrypt = true;
+	else if (!stricmp(arg,"noboot")) noboot = true;
+	else if (!strnicmp(arg,(char*)"apikey=",7)) apikey = arg+7;
+	else if (!strnicmp(arg,(char*)"logsize=",8)) logsize = atoi(arg+8); // bytes avail for log buffer
+	else if (!strnicmp(arg,(char*)"outputsize=",11)) outputsize = atoi(arg+11); // bytes avail for log buffer
+	else if (!stricmp(arg, (char*)"time")) timing = (unsigned int)-1 ^ TIME_ALWAYS;
+	else if (!strnicmp(arg,(char*)"bootcmd=",8)) bootcmd = arg+8; 
+	else if (!strnicmp(arg,(char*)"dir=",4))
+	{
 #ifdef WIN32
-			if (!SetCurrentDirectory(argv[i]+4)) printf((char*)"unable to change to %s\r\n",argv[i]+4);
+		if (!SetCurrentDirectory(arg+4)) printf((char*)"unable to change to %s\r\n",arg+4);
 #else
-			chdir(argv[i]+5);
-#endif
-		}
-		else if (!strnicmp(argv[i],(char*)"source=",7)) 
-		{
-			if (argv[i][7] == '"') 
-			{
-				strcpy(sourceInput,argv[i]+8);
-				size_t len = strlen(sourceInput);
-				if (sourceInput[len-1] == '"') sourceInput[len-1] = 0;
-			}
-			else strcpy(sourceInput,argv[i]+7);
-		}
-		else if (!strnicmp(argv[i],(char*)"login=",6)) 
-		{
-			assignedLogin = true;
-			strcpy(loginID,argv[i]+6);
-		}
-		else if (!strnicmp(argv[i],(char*)"output=",7)) outputLength = atoi(argv[i]+7);
-		else if (!strnicmp(argv[i],(char*)"save=",5)) 
-		{
-			volleyLimit = atoi(argv[i]+5);
-			if (volleyLimit > 255) volleyLimit = 255; // cant store higher
-		}
-
-		// memory sizings
-		else if (!strnicmp(argv[i],(char*)"hash=",5)) 
-		{
-			maxHashBuckets = atoi(argv[i]+5); // size of hash
-			setMaxHashBuckets = true;
-		}
-		else if (!strnicmp(argv[i],(char*)"dict=",5)) maxDictEntries = atoi(argv[i]+5); // how many dict words allowed
-		else if (!strnicmp(argv[i],(char*)"fact=",5)) maxFacts = atoi(argv[i]+5);  // fact entries
-		else if (!strnicmp(argv[i],(char*)"text=",5)) maxHeapBytes = atoi(argv[i]+5) * 1000; // stack and heap bytes in pages
-		else if (!strnicmp(argv[i],(char*)"cache=",6)) // value of 10x0 means never save user data
-		{
-			userCacheSize = atoi(argv[i]+6) * 1000;
-			char* number = strchr(argv[i]+6,'x');
-			if (number) userCacheCount = atoi(number+1);
-		}
-		else if (!strnicmp(argv[i],(char*)"userfacts=",10)) userFactCount = atoi(argv[i]+10); // how many user facts allowed
-		else if (!stricmp(argv[i],(char*)"redo")) redo = true; // enable redo
-		else if (!strnicmp(argv[i],(char*)"authorize=",10)) authorizations = argv[i]+10; // whitelist debug commands
-		else if (!stricmp(argv[i],(char*)"nodebug")) authorizations = (char*) 1; 
-		else if (!strnicmp(argv[i],(char*)"users=",6 )) strcpy(users,argv[i]+6);
-		else if (!strnicmp(argv[i],(char*)"logs=",5 )) strcpy(logs,argv[i]+5);
-		else if (!strnicmp(argv[i],(char*)"private=",8)) privateParams = argv[i]+8;
-		else if (!strnicmp(argv[i],(char*)"treetagger=",11)) treetaggerParams = argv[i]+11;
-		else if (!strnicmp(argv[i],(char*)"encrypt=",8)) encryptParams = argv[i]+8;
-		else if (!strnicmp(argv[i],(char*)"decrypt=",8)) decryptParams = argv[i]+8;
-		else if (!strnicmp(argv[i],(char*)"livedata=",9) ) 
-		{
-			strcpy(livedata,argv[i]+9);
-			sprintf(systemFolder,(char*)"%s/SYSTEM",argv[i]+9);
-			sprintf(languageFolder,(char*)"%s/%s",argv[i]+9,language);
-		}
-		else if (!strnicmp(argv[i],(char*)"nosuchbotrestart=",17) ) 
-		{
-			if (!stricmp(argv[i]+17,"true")) nosuchbotrestart = true;
-			else nosuchbotrestart = false;
-		}
-		else if (!strnicmp(argv[i],(char*)"system=",7) )  strcpy(systemFolder,argv[i]+7);
-		else if (!strnicmp(argv[i],(char*)"english=",8) )  strcpy(languageFolder,argv[i]+8);
-#ifndef DISCARDPOSTGRES
-		else if (!strnicmp(argv[i],(char*)"pguser=",7) )  postgresparams = argv[i]+7;
-#endif
-#ifndef DISCARDMONGO
-		else if (!strnicmp(argv[i],(char*)"mongo=",6) )  mongodbparams = argv[i]+6;
-#endif
-#ifndef DISCARDCLIENT
-		else if (!strnicmp(argv[i],(char*)"client=",7)) // client=1.2.3.4:1024  or  client=localhost:1024
-		{
-			server = false;
-			char buffer[MAX_WORD_SIZE];
-			strcpy(serverIP,argv[i]+7);
-		
-			char* portVal = strchr(serverIP,':');
-			if ( portVal)
-			{
-				*portVal = 0;
-				port = atoi(portVal+1);
-			}
-
-			if (!*loginID)
-			{
-				printf((char*)"%s",(char*)"\r\nEnter client user name: ");
-				ReadALine(buffer,stdin);
-				printf((char*)"%s",(char*)"\r\n");
-				Client(buffer);
-			}
-			else Client(loginID);
-			myexit((char*)"client ended");
-		}  
-#endif
-		else if (!stricmp(argv[i],(char*)"userlog")) userLog = true;
-		else if (!stricmp(argv[i],(char*)"nouserlog")) userLog = false;
-#ifndef DISCARDSERVER
-		else if (!stricmp(argv[i],(char*)"serverretry")) serverRetryOK = true;
- 		else if (!stricmp(argv[i],(char*)"local")) server = false; // local standalone
-		else if (!stricmp(argv[i],(char*)"noserverlog")) serverLog = false;
-		else if (!stricmp(argv[i],(char*)"serverlog")) serverLog = true;
-		else if (!stricmp(argv[i],(char*)"noserverprelog")) serverPreLog = false;
-		else if (!stricmp(argv[i],(char*)"serverctrlz")) serverctrlz = 1;
-		else if (!strnicmp(argv[i],(char*)"port=",5))  // be a server
-		{
-            port = atoi(argv[i]+5); // accept a port=
-			sprintf(serverLogfileName,(char*)"%s/serverlog%d.txt",logs,port);
-			server = true;
-		}
-#ifdef EVSERVER
-		else if (!strnicmp(argv[i], "fork=", 5)) 
-		{
-			static char forkCount[10];
-			sprintf(forkCount,(char*)"evsrv:fork=%d",atoi(argv[i]+5));
-			evsrv_arg = forkCount;
-		}
-#endif
-		else if (!strnicmp(argv[i],(char*)"interface=",10)) interfaceKind = string(argv[i]+10); // specify interface
+		chdir(arg+5);
 #endif
 	}
+	else if (!strnicmp(arg,(char*)"source=",7)) 
+	{
+		if (arg[7] == '"') 
+		{
+			strcpy(sourceInput,arg+8);
+			size_t len = strlen(sourceInput);
+			if (sourceInput[len-1] == '"') sourceInput[len-1] = 0;
+		}
+		else strcpy(sourceInput,arg+7);
+	}
+	else if (!strnicmp(arg,(char*)"login=",6)) 
+	{
+		assignedLogin = true;
+		strcpy(loginID,arg+6);
+	}
+	else if (!strnicmp(arg,(char*)"output=",7)) outputLength = atoi(arg+7);
+	else if (!strnicmp(arg,(char*)"save=",5)) 
+	{
+		volleyLimit = atoi(arg+5);
+		if (volleyLimit > 255) volleyLimit = 255; // cant store higher
+	}
+
+	// memory sizings
+	else if (!strnicmp(arg,(char*)"hash=",5)) 
+	{
+		maxHashBuckets = atoi(arg+5); // size of hash
+		setMaxHashBuckets = true;
+	}
+	else if (!strnicmp(arg,(char*)"dict=",5)) maxDictEntries = atoi(arg+5); // how many dict words allowed
+	else if (!strnicmp(arg,(char*)"fact=",5)) maxFacts = atoi(arg+5);  // fact entries
+	else if (!strnicmp(arg,(char*)"text=",5)) maxHeapBytes = atoi(arg+5) * 1000; // stack and heap bytes in pages
+	else if (!strnicmp(arg,(char*)"cache=",6)) // value of 10x0 means never save user data
+	{
+		userCacheSize = atoi(arg+6) * 1000;
+		char* number = strchr(arg+6,'x');
+		if (number) userCacheCount = atoi(number+1);
+	}
+	else if (!strnicmp(arg,(char*)"userfacts=",10)) userFactCount = atoi(arg+10); // how many user facts allowed
+	else if (!stricmp(arg,(char*)"redo")) redo = true; // enable redo
+	else if (!strnicmp(arg,(char*)"authorize=",10)) authorizations = arg+10; // whitelist debug commands
+	else if (!stricmp(arg,(char*)"nodebug")) authorizations = (char*) 1; 
+	else if (!strnicmp(arg,(char*)"users=",6 )) strcpy(users,arg+6);
+	else if (!strnicmp(arg,(char*)"logs=",5 )) strcpy(logs,arg+5);
+	else if (!strnicmp(arg,(char*)"private=",8)) privateParams = arg+8;
+	else if (!strnicmp(arg,(char*)"treetagger=",11)) treetaggerParams = arg+11;
+	else if (!strnicmp(arg,(char*)"encrypt=",8)) encryptParams = arg+8;
+	else if (!strnicmp(arg,(char*)"decrypt=",8)) decryptParams = arg+8;
+	else if (!strnicmp(arg,(char*)"livedata=",9) ) 
+	{
+		strcpy(livedata,arg+9);
+		sprintf(systemFolder,(char*)"%s/SYSTEM",arg+9);
+		sprintf(languageFolder,(char*)"%s/%s",arg+9,language);
+	}
+	else if (!strnicmp(arg,(char*)"nosuchbotrestart=",17) ) 
+	{
+		if (!stricmp(arg+17,"true")) nosuchbotrestart = true;
+		else nosuchbotrestart = false;
+	}
+	else if (!strnicmp(arg,(char*)"system=",7) )  strcpy(systemFolder,arg+7);
+	else if (!strnicmp(arg,(char*)"english=",8) )  strcpy(languageFolder,arg+8);
+#ifndef DISCARDPOSTGRES
+	else if (!strnicmp(arg,(char*)"pguser=",7) )  postgresparams = arg+7;
+#endif
+#ifndef DISCARDMONGO
+	else if (!strnicmp(arg,(char*)"mongo=",6) )  mongodbparams = arg+6;
+#endif
+#ifndef DISCARDCLIENT
+	else if (!strnicmp(arg,(char*)"client=",7)) // client=1.2.3.4:1024  or  client=localhost:1024
+	{
+		server = false;
+		char buffer[MAX_WORD_SIZE];
+		strcpy(serverIP,arg+7);
+		
+		char* portVal = strchr(serverIP,':');
+		if ( portVal)
+		{
+			*portVal = 0;
+			port = atoi(portVal+1);
+		}
+
+		if (!*loginID)
+		{
+			printf((char*)"%s",(char*)"\r\nEnter client user name: ");
+			ReadALine(buffer,stdin);
+			printf((char*)"%s",(char*)"\r\n");
+			Client(buffer);
+		}
+		else Client(loginID);
+		myexit((char*)"client ended");
+	}  
+#endif
+	else if (!stricmp(arg,(char*)"userlog")) userLog = true;
+	else if (!stricmp(arg,(char*)"nouserlog")) userLog = false;
+#ifndef DISCARDSERVER
+	else if (!stricmp(arg,(char*)"serverretry")) serverRetryOK = true;
+	else if (!stricmp(arg,(char*)"local")) server = false; // local standalone
+	else if (!stricmp(arg,(char*)"noserverlog")) serverLog = false;
+	else if (!stricmp(arg,(char*)"serverlog")) serverLog = true;
+	else if (!stricmp(arg,(char*)"noserverprelog")) serverPreLog = false;
+	else if (!stricmp(arg,(char*)"serverctrlz")) serverctrlz = 1;
+	else if (!strnicmp(arg,(char*)"port=",5))  // be a server
+	{
+           port = atoi(arg+5); // accept a port=
+		sprintf(serverLogfileName,(char*)"%s/serverlog%d.txt",logs,port);
+		server = true;
+	}
+#ifdef EVSERVER
+	else if (!strnicmp(arg, "fork=", 5)) 
+	{
+		static char forkCount[10];
+		sprintf(forkCount,(char*)"evsrv:fork=%d",atoi(arg+5));
+		evsrv_arg = forkCount;
+	}
+#endif
+	else if (!strnicmp(arg,(char*)"interface=",10)) interfaceKind = string(arg+10); // specify interface
+#endif
+}
+
+void ProcessArguments(int argc, char* argv[])
+{
+	for (int i = 1; i < argc; ++i) ProcessArgument(argv[i]);
+}
+
+static void ReadConfig()
+{
+	char buffer[MAX_WORD_SIZE];
+	FILE* in = FopenReadOnly(configFile);
+	if (!in) return;
+	while (ReadALine(buffer,in,MAX_WORD_SIZE) >= 0) ProcessArgument(SkipWhitespace(buffer));
+	fclose(in);
 }
 
 unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* readablePath, char* writeablePath, USERFILESYSTEM* userfiles, DEBUGAPI in, DEBUGAPI out)
@@ -594,10 +633,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 	*loginID = 0;
 
-	if (argc > 1) printf("CommandLine:\r\n");
-	for (int i = 1; i < argc; ++i)
+	for (int i = 1; i < argc; ++i) // essentials
 	{
-		printf("    %s\r\n",argv[i]);
 		if (!strnicmp(argv[i],(char*)"buffer=",7))  // number of large buffers available  8x80000
 		{
 			maxBufferLimit = atoi(argv[i]+7); 
@@ -609,21 +646,11 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 				myexit((char*)"buffer size less than output buffer size");
 			}
 		}
-		if (!strnicmp(argv[i],(char*)"language=",9)) 
-		{
-			strcpy(language,argv[i]+9);
-			MakeUpperCase(language);
-		}
-		if (!strnicmp(argv[i],(char*)"logsize=",8)) logsize = atoi(argv[i]+8); // bytes avail for log buffer
-		if (!strnicmp(argv[i],(char*)"outputsize=",11)) outputsize = atoi(argv[i]+11); // bytes avail for log buffer
+		if (!strnicmp(argv[i],(char*)"config=",7)) configFile = argv[i]+7;
 	}
-	if (argc > 1) printf("\r\n");
 
 	currentRuleOutputBase = currentOutputBase = ourMainOutputBuffer = (char*)malloc(outputsize);
 	currentOutputLimit = outputsize; 
-	strcpy(livedata,(char*)"LIVEDATA"); // default directory for dynamic stuff
-	strcpy(systemFolder,(char*)"LIVEDATA/SYSTEM"); // default directory for dynamic stuff
-	sprintf(languageFolder,"LIVEDATA/%s",language); // default directory for dynamic stuff
 
 	// need buffers for things that run ahead like servers and such.
 	maxBufferSize = (maxBufferSize + 63);
@@ -639,11 +666,20 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	readBuffer = AllocateBuffer();
 	baseBufferIndex = bufferIndex;
 	quitting = false;
+	echo = true;	
+
+	ReadConfig();
+	ProcessArguments(argc,argv);
+	if (argumentsSeen) printf("\r\n");
+	argumentsSeen = false;
+
 	InitTextUtilities();
     sprintf(logFilename,(char*)"%s/log%d.txt",logs,port); // DEFAULT LOG
-	echo = true;	
     sprintf(serverLogfileName,(char*)"%s/serverlog%d.txt",logs,port); // DEFAULT LOG
-	ProcessArguments(argc,argv);
+	
+	strcpy(livedata,(char*)"LIVEDATA"); // default directory for dynamic stuff
+	strcpy(systemFolder,(char*)"LIVEDATA/SYSTEM"); // default directory for dynamic stuff
+	sprintf(languageFolder,"LIVEDATA/%s",language); // default directory for dynamic stuff
 
 	if (redo) autonumber = true;
 
@@ -1324,6 +1360,10 @@ int PerformChatGivenTopic(char* user, char* usee, char* incoming,char* ip,char* 
 	return answer;
 }
 
+// WE DO NOT ALLOW USERS TO ENTER CONTROL CHARACTERS.
+// INTERNAL STRINGS AND STUFF never have control characters either (/r /t /n converted only on output to user)
+// WE internally use /r/n in file stuff for the user topic file.
+
 int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) // returns volleycount or 0 if command done or -1 PENDING_RESTART
 { //   primary entrypoint for chatbot -- null incoming treated as conversation start.
 	pendingUserReset = false;
@@ -1341,12 +1381,13 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	mainOutputBuffer = output;
 	size_t len = strlen(incoming);
 	if (len >= INPUT_BUFFER_SIZE) incoming[INPUT_BUFFER_SIZE-1] = 0; // chop to legal safe limit
-	// now validate that token size MAX_WORD_SIZE is not invalidated
+	// now validate that token size MAX_WORD_SIZE is not invalidated and block all control chars to spaces
 	char* at = mainInputBuffer;
 	bool quote = false;
 	char* start = mainInputBuffer;
 	while (*++at)
 	{
+		if (*at < 31) *at = ' ';
 		if (*at == '"' && *(at-1) != '\\') quote = !quote;
 		if (*at == ' ' && !quote) // proper token separator
 		{
@@ -2211,7 +2252,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 					D = StoreWord(word); // lower case plural form
 					if (D->internalBits & UPPERCASE_HASH) AddProperty(D,NOUN_PROPER_PLURAL|NOUN);
 					else AddProperty(D,NOUN_PLURAL|NOUN);
-					wordStarts[1] = reuseAllocation(wordStarts[1],D->word);
+					wordStarts[1] = D->word;
 				}
 			}
 		}
@@ -2428,7 +2469,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 		Log(ECHOSTDTRACELOG,(char*)"\r\n");
 	}
 
-	wordStarts[wordCount+1] = reuseAllocation(wordStarts[wordCount+1],(char*)""); // visible end of data in debug display
+	wordStarts[wordCount+1] = AllocateHeap((char*)""); // visible end of data in debug display
 	wordStarts[wordCount+2] = 0;
     if (mark && wordCount) MarkAllImpliedWords();
 

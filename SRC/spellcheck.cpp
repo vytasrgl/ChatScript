@@ -370,7 +370,7 @@ bool SpellCheckSentence()
 				GetPosData(i,word,revise,entry,canonical,sysflags,cansysflags,true,true); // dont create a non-existent word
 				if (entry && entry->properties & PART_OF_SPEECH)
 				{
-					wordStarts[i] = reuseAllocation(wordStarts[i],entry->word);
+					wordStarts[i] = entry->word;
 					fixedSpell = true;
 					continue;	// not a legal word character, leave it alone
 				}

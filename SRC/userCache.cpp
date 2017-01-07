@@ -10,14 +10,21 @@ unsigned int userCacheCount = 1;		// holds 1 user by default
 unsigned int userCacheSize = DEFAULT_USER_CACHE; // size of user file buffer (our largest buffers)
 int volleyLimit =  -1;					// default save user records to file every n volley (use default 0 if this value is unchanged by user)
 char* userDataBase = NULL;				// current write user record base
+unsigned int userTopicStoreSize,userTableSize; // memory used which we will display
 
-void InitCache(unsigned int dictStringSize)
+void InitCache()
 {
-	cacheBase = (char*) malloc(dictStringSize + userTopicStoreSize + userTableSize );
+	if (cacheBase != 0) return;	// no need to reallocate on reload
+	
+	userTableSize = userCacheCount * 3 * sizeof(unsigned int);
+	userTableSize /= 64;
+	userTableSize = (userTableSize * 64) + 64; // 64 bit align both ends
+
+	cacheBase = (char*) malloc( userTopicStoreSize + userTableSize );
 	if (!cacheBase)
 	{
-		printf((char*)"Out of  memory space for dictionary w user cache %d %d %d %d\r\n",dictStringSize,userTopicStoreSize,userTableSize,MAX_ENTRIES);
-		ReportBug((char*)"FATAL: Cannot allocate memory space for dictionary %ld\r\n",(long int)(dictStringSize + userTopicStoreSize))
+		printf((char*)"Out of  memory space for user cache %d %d %d\r\n",userTopicStoreSize,userTableSize,MAX_ENTRIES);
+		ReportBug((char*)"FATAL: Cannot allocate memory space for user cache %ld\r\n",(long int) userTopicStoreSize)
 	}
 	cacheIndex = (unsigned int*) (cacheBase + userTopicStoreSize); // linked list for caches - each entry is [3] wide 0=prior 1=next 2=TIMESTAMP
 	char* ptr = cacheBase;
@@ -96,7 +103,7 @@ static void WriteCache(unsigned int which,size_t size)
 	}
 #endif
 #endif
-	EncryptableFileWrite(ptr,1,size,out); // user topic file write
+	EncryptableFileWrite(ptr,1,size,out,userEncrypt); // user topic file write
 	userFileSystem.userClose(out);
 	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"write out cache (%d)\r\n",which);
 	if (timing & TIME_USERCACHE) {
@@ -253,7 +260,7 @@ char* GetFileRead(char* user,char* computer)
 	if (in) // read in data if file exists
 	{
 		size_t readit;
-		readit = DecryptableFileRead(buffer,1,userCacheSize,in); // reading topic file of user
+		readit = DecryptableFileRead(buffer,1,userCacheSize,in,userEncrypt); // reading topic file of user
 		buffer[readit] = 0;
 		buffer[readit+1] = 0; // insure nothing can overrun
 		userFileSystem.userClose(in);

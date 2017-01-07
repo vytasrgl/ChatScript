@@ -326,8 +326,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	sysflags = cansysflags = 0;
 	canonical = 0;
 	if (at == 0) at = 1; //but leave <0 alone, means dont look at neighbors
-	if (at > 0 && !wordStarts[at-1]) wordStarts[at-1] = reuseAllocation(wordStarts[at-1],(char*)""); // protection
-	if (at > 0 && !wordStarts[at+1]) wordStarts[at+1] = reuseAllocation(wordStarts[at+1],(char*)"");	// protection
+	if (at > 0 && !wordStarts[at-1]) wordStarts[at-1] = AllocateHeap((char*)""); // protection
+	if (at > 0 && !wordStarts[at+1]) wordStarts[at+1] = AllocateHeap((char*)"");	// protection
 
 	if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original) && (*original != 'I' || original[1])) MakeLowerCase(original);
 
@@ -373,7 +373,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	{
 		strcpy(original,(char*)"at");
 		entry = canonical = FindWord(original,0,PRIMARY_CASE_ALLOWED);
-		original = reuseAllocation(original,entry->word); 
+		original = AllocateHeap(entry->word); 
 		if (revise) revise = entry;
 	}
 
@@ -382,89 +382,89 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	else if (!stricmp(original,(char*)"the") || !stricmp(original,(char*)"a") || !stricmp(original,(char*)"this") || !stricmp(original,(char*)"these") || !stricmp(original,(char*)"an")  ) // force lower case on these determiners regardless
 	{
 		entry =  canonical = ZZ;
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (ZZ->properties & (PRONOUN_SUBJECT|PRONOUN_OBJECT))
 	{
 		entry =  canonical = ZZ;
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"His") || !stricmp(original,(char*)"Then") || !stricmp(original,(char*)"Thus"))
 	{
 		entry =  canonical = ZZ; //force lower case - dont want "His" as plural of HI nor thi's
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (start != at && tokenControl & STRICT_CASING) {;} // believe all upper case items not at sentence start when using strict casing
 	else if (ZZ->properties & (DETERMINER|PREPOSITION|PRONOUN_POSSESSIVE|PRONOUN_BITS|AUX_VERB) && !IsNumber(original)) // prep and determiner are ALWAYS considered lowercase for parsing (which happens later than proper name extraction)
 	{
 		entry =  canonical = ZZ;
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 		if (ZZ->properties & (MORE_FORM|MOST_FORM)) canonical = NULL;	// we dont know yet
 	}
 	else if (at > 0 && ZZ->properties & (DETERMINER_BITS|PREPOSITION|CONJUNCTION|AUX_VERB) && strcmp(original,(char*)"May") && (*wordStarts[at-1] == '-' || *wordStarts[at-1] == ':' || *wordStarts[at-1] == '"' || at == startSentence || !(STRICT_CASING  & tokenControl))) // not the month
 	{
 		entry =  canonical = ZZ; //force lower case on all determiners and such
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (at == start && ZZ->properties & VERB_INFINITIVE && !entry) // upper case start has no meaning but could be imperative verb, be that
 	{
 		entry = canonical = ZZ;
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	
 	if (!stricmp(original,(char*)"yes") )
 	{
 		entry =  canonical = FindWord(original,0,LOWERCASE_LOOKUP); //force lower case pronoun, dont want "yes" to be Y's
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"p.m") )
 	{
 		entry =  canonical = FindWord((char*)"p.m.",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"a.m") )
 	{
 		entry =  canonical = FindWord((char*)"a.m.",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (at > 0 && !stricmp(original,(char*)"ca") &&  !stricmp(wordStarts[at+1],(char*)"not"))
 	{
 		entry = canonical = FindWord((char*)"can",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (at > 0 && !stricmp(original,(char*)"wo") &&  !stricmp(wordStarts[at+1],(char*)"not"))
 	{
 		entry = canonical = FindWord((char*)"will",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
 		cansysflags = sysflags = entry->systemFlags; // probably nothing here
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"n'") )
 	{
 		entry = canonical = FindWord((char*)"and",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (!stricmp(original,(char*)"'re") )
 	{
 		entry = canonical = FindWord((char*)"are",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (at > 0 && !stricmp(original,(char*)"'s") && (!stricmp(wordStarts[at-1],(char*)"there") || !stricmp(wordStarts[at-1],(char*)"it") || !stricmp(wordStarts[at-1],(char*)"who") || !stricmp(wordStarts[at-1],(char*)"what")  || !stricmp(wordStarts[at-1],(char*)"that") )) //there 's and it's  who's what's
 	{
 		entry = canonical = FindWord((char*)"is",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	size_t len = strlen(original);
@@ -494,7 +494,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		if (check && check->properties & (PREPOSITION|DETERMINER_BITS|CONJUNCTION|PRONOUN_BITS|POSSESSIVE_BITS)) 
 		{
 			entry =  canonical = FindWord(original,0,LOWERCASE_LOOKUP); //force lower case pronoun, dont want "His" as plural of HI nor thi's
-			original = reuseAllocation(original,entry->word);
+			original = AllocateHeap(entry->word);
 			if (revise) revise = entry;
 		}
 	}
@@ -1269,7 +1269,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			}
 			if (flags1) 
 			{
-				original = reuseAllocation(original,D1->word);
+				original = D1->word;
 				if (revise) wordStarts[at] = xrevise->word;
 				entry = D1;
 				canonical = D2;

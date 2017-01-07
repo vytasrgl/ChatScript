@@ -81,6 +81,11 @@
     <ClCompile Include="..\SRC\userSystem.cpp" />
     <ClCompile Include="..\SRC\variableSystem.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\treetagger\treetagger\treetagger.vcxproj">
+      <Project>{ec8fff64-5890-40bb-ad4b-f207a949b17c}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0FE8431D-E404-4E5C-8CC5-D17DDD8430C0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -145,7 +150,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>..\BINARIES\$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>c:/chatscript/treetagger/treetagger.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <AdditionalLibraryDirectories>c:/ChatScript/treetagger</AdditionalLibraryDirectories>
     </Link>

@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 1/1/2017 cs7.0
+> Revision 1/7/2017 cs7.1
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -19,7 +19,6 @@
 * [Esoterica and Fine Detail](ChatScript-Advanced-User-Manual.md#esoterica-and-fine-detail)
 * [Self-Reflection](ChatScript-Advanced-User-Manual.md#self-reflection)
 * [A Fresh build](ChatScript-Advanced-User-Manual.md#a-fresh-build)
-* [Command line Parameters](ChatScript-Advanced-User-Manual.md#command-line-parameters)
 * [Updating CS versions Easily](ChatScript-Advanced-User-Manual.md#updating-cs-versions-easily)
 * [The Dictionary](ChatScript-Advanced-User-Manual.md#the-dictionary)
 
@@ -220,6 +219,15 @@ For outputmacros,
 outputmacro: ^myfunction( ^argument1 ^argument2)
     ^argument1 += 1
 ```
+
+An alternate format allows you to put the output code within {}, which is more nicely visualized by some editors.
+```
+outputmacro: ^myfunction( ^argument1 ^argument2)
+{
+    ^argument1 += 1
+}
+```
+
 Whenever you see a function variable, you
 can imagine it is as though the script had its argument immediately substituted in. This is a call by
 reference. So if the script call
@@ -2048,11 +2056,20 @@ You can have the system include or exclude lines on a line by line basis. To mak
 #german u: (test) this is conditionally compiled
 ```
 This line is normally ignored because it is a comment line and not a named numeric constant. But if you put the `#german` as a tail parameter of the `:build` command, you enable it:
+
+You can also handle blocks of code analogous to the block comment convention by appending a label to the <<## :
+```
+<<##SPECIAL ...
+... >>##
+```
+
 ```
 :build Harry #german
 ```
 You may name up to 9 conditions on your build line. In fact,
 for language-related conditional lines, you don't have to declare anything on the `:build` command. The system will automatically accept lines that name the current language= command line parameter (English being the default).
+
+Conditional compilation applies to script files and the filesxxx.txt files and LIVEDATA files.
 
 # Editing Non-topic Files
 
@@ -2659,132 +2676,6 @@ This gets rid of any funny state of topic builds.
 Probably all is good now. If not quit chatscript. Start up and try it now.
 
 
-
-
-# Command Line Parameters
-
-Most of the command line options are documented with the server documentation,
-because they affect that. Here are general ones.
-
-
-## Memory options
-
-Chatscript statically allocates its memory and so (barring unusual circumstance) will not
-allocate memory every during its interactions with users. These parameters can control
-those allocations. Done typically in a memory poor environment like a cellphone.
-
-| option       | description
-|--------------|-----------------------------------------------------------------------
-|`buffer=15`   | how many buffers to allocate for general use (12 is default)
-|`buffer=15x80`| allocate 15 buffers of 80k bytes each (default buffer size is 80k)
-
-Most chat doesn't require huge output and buffers around 20k each will be more than
-enough. 12 buffers is generally enough too (depends on recursive issues in your scripts).
-
-If the system runs out of buffers, it will perform emergency allocations to try to get more,
-but in limited memory environments (like phones) it might fail. You are not allowed to
-allocate less than a 20K buffer size.
-
-| option       | description
-|--------------|-----------------------------------------------------------------------
-| `dict=n`     | limit dictionary to this size entries
-| `text=n`     | limit string space to this many bytes
-| `fact=n`     | limit fact pool to this number of facts
-| `hash=n`     | use this hash size for finding dictionary words (bigger = faster access)
-| `cache=1x50` | allocate a 50K buffer for handling 1 user file at a time. A server might want to cache multiple users at a time.
-
-A default version of ChatScript will allocate much more than it needs, because it doesn't
-know what you might need. 
-
-If you want to use the least amount of memory (multiple servers on a machine or running on a mobile device), 
-you should look at the USED line on startup and add small amounts to the entries 
-(unless your application does unusual things with facts). 
-
-If you want to know how much, try doing `:show stats` and then `:source REGRESS/bigregress.txt`. 
-This will run your bot against a wide range of input and the stats at the end 
-will include the maximum values needed during a volley. To be paranoid, add beyond those valuse. 
-Take your max dict value and double it. Same with max fact. Add 10000 to max text. 
-
-Just for reference, for our most advanced bot, the actual max values used were: 
-max dict: 346 max fact: 689 max text: 38052. 
-
-And the maximum rules executed to find an answer to an input sentence was 8426 (not that you
-control or care). Typical rules executed for an input sentence was 500-2000 rules.
-For example, add 1000 to the dict and fact used amounts and 10 (kb) to the string space
-to have enough normal working room.
-
-
-## Output options
-
-`output=nnn` limits output line length for a bot to that amount (forcing crnl as needed). 0
-is unlimited.
-
-`outputsize=80000` is the maximum output that can be shipped by a volley from the bot without getting truncated.
-Actually the value is somewhat less, because routines generating partial data for later incorporation into
-the output also use the buffer and need some usually small amount of clearance. You can find out how close
-you have approached the max in a session by typing `:memstats`. If you need to ship a lot of data around,
-you can raise this into the megabyte range and expect CS will continue to function. 80K is the default.
-
-For normal operation, when you change `outputsize` you should also change `logsize` to be at least as much, so that 
-the system can do complete logs. You are welcome to set log size lots smaller if you don't care about the log.
-
-
-## File options
-
-| option | description
-|--------|-----------------------------------------------------------------------------
-|`livedata=xxx` | name relative or absolute path to your own private LIVEDATA folder. Do not add trailing / on this path<br>Recommended is you use `RAWDATA/yourbotfolder/LIVEDATA` to keep all your data in one place. You can have your own live data, yet use ChatScripts default `LIVEDATA/SYSTEM` and `LIVEDATA/ENGLISH` by providing paths to the `system=` and `english=` parameters as well as the `livedata=` parameter
-|`users=xxx` | name relative or absolute path to where you want the USERS folder to be. Do not add trailing `/`
-|`logs=xxx` | name relative or absolute path to where you want the LOGS folder to be. Do not add trailing `/`
-|`trace` | turn on all tracing.
-|`redo` | see documentation for :redo in [ChatScript Debugging Manual](ChatScript-Debugging-Manual.md) manual
-|`userfacts=n` | limit a user file to saving only the n most recently created facts of a user (this does not include facts stored in fact sets). Overridden if the user has `$cs_userfactlimit` set to some value
-|`userlog` | Store a user-bot log in USERS directory (default)
-|`nouserlog` | Don't store a user-bot log
-|`source=xxxx` | Analogous to the `:source` command. The file is executed
-|`login=xxxx` | The same as you would name when asked for a login, this avoids having to ask for it. Can be `login=george` or `login=george:harry` or whatever |
-|`build0=filename` | runs `:build` on the filename as level0 and exits with 0 on success or 4 on failure |
-|`build1=filename` | runs `:build` on the filename as level1 and exits with 0 on success or 4 on failure.<br>Eg. ChatScript `build0=files0.txt` will rebuild the usual level 0 |
-|`debug=:xxx` | xxx runs the given debug command and then exits. Useful for `:trim`, for example or more specific `:build` commands
-|`param=xxxxx` | data to be passed to your private code
-|`login=xxxxx` | initial user id (bypass asking you for user)
-|`encrypt=xxxxx` | data evailable to encrpytion code
-|`decrypt=xxxxx` | data evailable to decrpytion code
-|`bootcmd=xxx` | runs this command string before CSBOOT is run; use it to trace the boot process
-
-
-## Bot variables
-
-You can create predefined bot variables by simply naming permanent variables on the
-command line, using V to replace $ (since Linux shell scripts don't like $). Eg.
-```
-ChatScript Vmyvar=fatcat
-```
-```
-ChatScript Vmyvar="tony is here"
-```
-```
-ChatScript "Vmyvar=tony is here"
-```
-
-Quoted strings will be stored without the quotes. Bot variables are always reset to their
-original value at each volley, even if you overwrite them during a volley. This can be
-used to provide server-host specific values into a script.
-
-
-## No such bot-specific - nosuchbotrestart=true
-
-If the system does not recognize the bot name requested, it can automatically restart a
-server (on the presumption that something got damaged). If you don't expect no such bot
-to happen, you can enable this restart using `nosuchbotrestart=true`. Default is false.
-
-
-## Time options
-
-`Timer=15000` if a volley lasts more than 15 seconds, abort it and return a timeout message.
-
-`Timer=18000x10` same as above, but more roughly, higher number after the x reduces
-how frequently it samples time, reducing the cost of sampling
 
 
 # Updating CS Versions Easily

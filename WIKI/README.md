@@ -132,6 +132,10 @@ really advanced users wanting the appropriate mental model.
  * [ChatScript Exotica](ESOTERIC-CHATSCRIPT/ChatScript-Exotica-Examples.md)
 <br>Brief old interesting scripting tips
 
+ * [ChatScript Exotica](ESOTERIC-CHATSCRIPT/ChatScript-Foreign-Languages.md)
+<br>Running CS in a language other than English.
+
+
 
 ## Papers in order
 

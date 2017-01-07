@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/1/2017 cs7.0</p>
+<p>Revision 1/7/2017 cs7.1</p>
 </blockquote>
 <h1 id="debugging-in-and-out">Debugging in and out</h1>
 <p>While it is possible to connect ChatScript to a GUI IDE for debugging (if you create one because CS does not come with one natively), CS also has a text command debugger analogous to GDB in LINUX.</p>
@@ -63,5 +63,8 @@
 <p>In addition, you can create a file to automatically execute on a breakpoint. The name of the breakpoint should be the name of the file in the debug directory (with .txt added). When a function named the same as such a file has a breakpoint on entry, it will execute the commands. Similarly whenever a topic has a breakpoint on entry, it will execute its commands.</p>
 <h1 id="hooking-up-to-a-gui-ide">Hooking up to a GUI IDE</h1>
 <p>The debugger can swap out its stdin and stdout interactions with the user with functions supplied on the <code>InitSystem</code> interface. The functions take a single argument char* and either get a line of input or write out a line of outout.</p>
+<h1 id="map-file">MAP file</h1>
+<p>The compiler builds a map file used by the debugger to know what files have what and what lines have what.</p>
+<p>In addition, for every rule and function at the end of their data, the system prints out the <code>cyclomatic complexity</code> of the output code.</p>
 </body>
 </html>

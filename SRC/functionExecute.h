@@ -77,6 +77,7 @@ extern unsigned int callArgumentIndex;
 extern int maxGlobalSeen;
 extern long http_response;
 extern char* currentFunctionName;
+extern unsigned int savedSentences;
 
 #define MAX_ARG_LIMIT 15 // max args to a call -- limit using 2 bit (COMPILE/KEEP_QUOTES) per arg for table mapping behavior
 extern unsigned int currentIterator;

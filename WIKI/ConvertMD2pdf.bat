@@ -28,9 +28,13 @@ pandoc ESOTERIC-CHATSCRIPT/ChatScript-Planning.md -s -o ../PDFDOCUMENTATION/ESOT
 pandoc ESOTERIC-CHATSCRIPT/ChatScript-PosParser.md -s -o ../PDFDOCUMENTATION/ESOTERIC-CHATSCRIPT/ChatScript-PosParser.pdf
 pandoc ESOTERIC-CHATSCRIPT/ChatScript-PostgreSQL.md -s -o ../PDFDOCUMENTATION/ESOTERIC-CHATSCRIPT/ChatScript-PostgreSQL.pdf
 pandoc ESOTERIC-CHATSCRIPT/ChatScript-Engine-Manual.md -s -o ../PDFDOCUMENTATION/ESOTERIC-CHATSCRIPT/ChatScript-Engine-Manual.pdf
+pandoc ESOTERIC-CHATSCRIPT/ChatScript-Foreign-Languages.md -s -o ../PDFDOCUMENTATION/ESOTERIC-CHATSCRIPT/ChatScript-Foreign-Languages.pdf
 
 pandoc OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.md -s -o ../PDFDOCUMENTATION/OVERVIEWS-AND-TUTORIALS/ChatScript-Tutorial.pdf
 pandoc OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.md -s -o ../PDFDOCUMENTATION/OVERVIEWS-AND-TUTORIALS/What-is-ChatScript.pdf
+
+pandoc PAPERS/Paper-ARBOR-MakingItReal.md -s -o ../PDFDOCUMENTATION/PAPERS/Paper-ARBOR-MakingItReal.pdf
+pandoc PAPERS/Paper-Google-Talk.md -s -o ../PDFDOCUMENTATION/PAPERS/Paper-Google-Talk.pdf
 
 pandoc PREDEFINED-BOTS/Bot-German.md -s -o ../PDFDOCUMENTATION/PREDEFINED-BOTS/Bot-German.pdf
 pandoc PREDEFINED-BOTS/Bot-Harry.md -s -o ../PDFDOCUMENTATION/PREDEFINED-BOTS/Bot-Harry.pdf

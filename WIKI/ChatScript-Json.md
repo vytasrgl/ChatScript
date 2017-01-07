@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 1/1/2017 cs7.0
+> Revision 1/7/2017 cs7.1
 
 
 # Real World JSON
@@ -136,7 +136,7 @@ you had something like this:
 ```
 ^parsejson("{ a: $var, b: _0aba }").
 ```
-where you ended the value of be to be `"_0aba"`.
+where you wanted the value of `b` to be `"_0aba"`. Had you used an active string, the _0 would have been replaced with its contents.
 
 Also, you can use json dereference operators to take apart an existing json structure and use values of it
 in the current one. If $$y points to a json structure, then
@@ -173,7 +173,8 @@ and then have a pattern to grab the OOB data and call `jsonparse` with it (using
 OOB input is not subject to human tokenization behavior, spellchecking, etc.
 
 Note: There is a limit to how much JSON you can pass as OOB data 
-nominally, because it is considered a single token. You can bypass this limit by asking the tokenizer to directly process OOB data, returning the JSON structure name instead of all the content. Just enable `#JSON_DIRECT_OOB`  on the `$cs_token` value and if it finds OOB data that is entirely JSON, it will parse it and return something like `jo-t1` or `ja-t1` in its place. Eg.
+nominally, because it is considered a single token. 
+You can bypass this limit by asking the tokenizer to directly process OOB data, returning the JSON structure name instead of all the content. Just enable `#JSON_DIRECT_OOB`  on the `$cs_token` value and if it finds OOB data that is entirely JSON, it will parse it and return something like `jo-t1` or `ja-t1` in its place. Eg.
 `[ { "key": "value} ]` will return tokenized as `[jo-t1]`.
 
 ##jsonformat(string)`
@@ -233,6 +234,16 @@ your final path, eg
 ```
 ^jsonpath(.name* $$obj)
 ^jsonpath(.name[4]* $$obj)
+```
+
+Correspondingly, if you are trying to dump all keys and values of a JSON object, you could do a query like this:
+```
+@0 = ^query(direct_s $_jsonobject ? ?)
+^loop()
+{
+    _0 = ^first(@0all)
+    and then you have _1 and _2 as key and value
+}
 ```
 
 If you need to handle the full range of legal keys in json, you can use text string notation like this

@@ -102,7 +102,7 @@ static int JSONArgs()
 			used = true;
 		}
 		else if (!stricmp(word,(char*)"transient"))  used = true;
-		else if (!stricmp(word,(char*)"direct"))  directJsonText = true; // used by jsonopen
+		else if (!stricmp(word,(char*)"direct"))  used = directJsonText = true; // used by jsonopen
 		else if (!stricmp(word,(char*)"safe")) safeJsonParse = used = true;
 	}
 	if (used) ++index;
@@ -496,6 +496,7 @@ char* UrlEncode(char* input)
 	strcpy(buffer,fixed);
 	curl_free(fixed);
 	curl_easy_cleanup(curl);
+	FreeBuffer();
 	return buffer;
 }
 
@@ -581,7 +582,9 @@ FunctionResult JSONOpenCode(char* buffer)
 		if (kind == 'P' || kind == 'U') 
 		{
 			Log(STDTRACELOG,(char*)"\r\n");
-			Log(STDTRACETABLOG,(char*)"Json  data: %s\r\n ",arg);
+			size_t len = strlen(arg);
+			if (len < (logsize - SAFE_BUFFER_MARGIN)) Log(STDTRACETABLOG,(char*)"Json  data %d bytes: %s\r\n ",len,arg);
+			else Log(STDTRACETABLOG,(char*)"Json  data %d bytes\r\n ",len);
 			Log(STDTRACETABLOG,(char*)"");
 		}
 	}
@@ -802,7 +805,7 @@ FunctionResult JSONOpenCode(char* buffer)
 	if (trace & TRACE_JSON)
 	{
 		Log(STDTRACELOG,(char*)"\r\n");
-		Log(STDTRACETABLOG,(char*)"\r\nJSON response: %d size: %d",http_response,output.size);
+		Log(STDTRACETABLOG,(char*)"\r\nJSON response: %d size: %d - ",http_response,output.size);
 		if (output.size < (logsize - SAFE_BUFFER_MARGIN)) Log(STDTRACELOG,(char*)"%s\r\n",output.buffer);
 		Log(STDTRACETABLOG,(char*)"");
 	}

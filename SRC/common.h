@@ -183,8 +183,8 @@ using namespace std;
 
 #include "common1.h"
 
-#include "dictionarySystem.h"
 #include "os.h"
+#include "dictionarySystem.h"
 #include "mainSystem.h"
 #include "factSystem.h"
 #include "functionExecute.h"

@@ -659,7 +659,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define	   OUTPUT_LOOP			0x00000200				// coming from a loop, fail does not cancel output
 #define	   OUTPUT_UNTOUCHEDSTRING 0x00000400	// leave string alone
 #define	   OUTPUT_FACTREAD		0x00000800			// reading in fact field
-#define    OUTPUT_EVALCODE		0x00001000			
+#define    OUTPUT_EVALCODE		0x00001000		// UNUSED now	
 #define	   OUTPUT_DQUOTE_FLIP	0x00002000
 #define	   OUTPUT_ECHO			0x00004000
 #define	   OUTPUT_STRING_EVALED 0x00008000	// format string should be treated like an output call
@@ -696,6 +696,7 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
 	char*     word;					//   entry name
 	unsigned int internalBits;
 	unsigned int parseBits;			// only for words, not for function names or concept names
+									// functions/topics use this for offset into the map file where it is defined (debugger)
 
 	//   if you edit this, you may need to change ReadBinaryEntry and WriteBinaryEntry
 	union {
