@@ -2,16 +2,16 @@
 1. command line parameter apikey for `:translateconcept`
 2. `:translateconcept` to use google translate on concepts from english
 3. conditional block comments now supported:  
-
-	##<<German .....  
-		..  
-	##>>
-
+```
+##<<German .....  
+    ..  
+##>>
+```
 4. `noboot` command line param
 5. cyclomatic complexity listed in map file (described in [Debugger manual](WIKI/ChatScript-Debugger.md))
 6. command line parameter `userencrypt` enables encrypting user topic file if `encrypt=` and `decrypt=` is set
-7. command line parmater `config=` (default is `cs_init.txt`)
-8: optional `{}` around output macro
+7. command line parmater `config=` (default is cs_init.txt)
+8. optional `{}` around output macro
 9. consolidated all command line parameter descriptions into [ChatScript System Variables and Engine-defined Concepts and Parameters](WIKI/ChatScript-System-Variables-and-Engine-defined-Concepts.md)
 10. new manual [ChatScript-Foreign-Languages](WIKI/ESOTERIC-CHATSCRIPT/ChatScript-Foreign-Languages.md)
 
