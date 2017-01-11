@@ -129,19 +129,19 @@ or display it visually.
 CS accepts extended JSON syntax for parsing into a json fact structure. Any place you have an object
 value, you can refer to a ChatScript user or match variable and that value will be substituted in. E.g.,
 ```
-^parsejson("{ a: $var, b: _0 }")
+^jsonparse("{ a: $var, b: _0 }")
 ```
-Note you should use a regular quoted string and not a function string like `^"{ a: $var, b: _0 }"`. If you use a function string, substitution will happen before calling ^parsejson. Which might be a problem if
+Note you should use a regular quoted string and not a function string like `^"{ a: $var, b: _0 }"`. If you use a function string, substitution will happen before calling ^jsonparse. Which might be a problem if
 you had something like this:
 ```
-^parsejson("{ a: $var, b: _0aba }").
+^jsonparse("{ a: $var, b: _0aba }").
 ```
 where you wanted the value of `b` to be `"_0aba"`. Had you used an active string, the _0 would have been replaced with its contents.
 
 Also, you can use json dereference operators to take apart an existing json structure and use values of it
 in the current one. If $$y points to a json structure, then
 ```
-^parsejson("{ a: $var, b: _0.e[2] }")
+^jsonparse("{ a: $var, b: _0.e[2] }")
 ```
 would find a json object reference on `_0`, get the e field, and get the 3rd array value found there.
 An initial argument of safe will locate the correct end of the data for json parsing, allowing you to pass
