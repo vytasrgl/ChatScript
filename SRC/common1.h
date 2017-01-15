@@ -18,38 +18,22 @@ char* ReadCompiledWordOrCall(char* ptr, char* word,bool noquote = false,bool var
 
 #define NUMBER_OF_LAYERS 3
 
-#ifdef BIG_DICTIONARY
-typedef uint64 MEANING;							//   a flagged indexed dict ptr
-#define MAX_DICTIONARY	0x000fffffffffffffULL  //   vocabulary limit 
-#define NODEBITS		0x00ffffffffffffffULL
-#define MULTIWORDHEADER_SHIFT 56
-#define MULTIHEADERBITS 0xFF00000000000000ULL
-
-#define SYNSET_MARKER		0x0800000000000000ULL  // this meaning is a synset head - on keyword import, its quote flag for binary read
-#define INDEX_BITS          0x03F0000000000000ULL  //   6 bits of ontology meaning indexing ability  63 possible meanings allowed
-#define INDEX_OFFSET        52          //   shift for ontoindex  (rang 0..63)  
-#define MAX_MEANING			63			// limit
-#define INDEX_MINUS			0x0010000000000000ULL  // what to decrement to decrement the meaning index
-#define MEANING_BASE		0x000fffffffffffffULL	//   the index of the dictionary item
-#define TYPE_RESTRICTION	0xf000000000000000ULL  // corresponds to basic pos
-#define TYPE_RESTRICTION_SHIFT 32
-
-#else
 typedef unsigned int MEANING;					//   a flagged indexed dict ptr
-#define MAX_DICTIONARY	 0x000fffff				//   1M word vocabulary limit (doubling this FAILS on amazon server)
+#define MAX_DICTIONARY	 0x001fffff				//   2M word vocabulary limit 
 #define NODEBITS 0x00ffffff
 #define MULTIWORDHEADER_SHIFT 24
 #define MULTIHEADERBITS 0xFF000000
 
-#define SYNSET_MARKER		0x08000000  // this meaning is a synset head - on keyword import, its quote flag for binary read
-#define INDEX_BITS          0x03F00000  //   6 bits of ontology meaning indexing ability  63 possible meanings allowed
-#define INDEX_OFFSET        20          //   shift for ontoindex  (rang 0..63)  
 #define MAX_MEANING			63			// limit
-#define INDEX_MINUS			0x00100000  // what to decrement to decrement the meaning index
-#define MEANING_BASE		0x000fffff	//   the index of the dictionary item
+#define MEANING_BASE		0x001fffff	//   the index of the dictionary item (may expand to use synset_marker
+#define SYNSET_MARKER		0x00200000  // this meaning is a synset head - on keyword import, its quote flag for binary read
+#define INDEX_BITS          0x0fC00000  //   6 bits of ontology meaning indexing ability  63 possible meanings allowed
+#define INDEX_MINUS			0x00400000  // what to decrement to decrement the meaning index
+#define INDEX_OFFSET        22          //   shift for ontoindex  (rang 0..63)  
 #define TYPE_RESTRICTION	0xf0000000  // corresponds to basic pos
 #define TYPE_RESTRICTION_SHIFT 0
-#endif
+
+// A meaning = TYPE_RESTRICTION(4 bit) + INDEX_BITS (6 bits) + MEANING_BASE(21 bits) + SYNSET_MARKER(1 bit)
 
 #define SYSVAR_PREFIX '%'
 #define MATCHVAR_PREFIX '_'

@@ -6,9 +6,9 @@ printf "\e[34m###############################\n";
 printf "# Clean files start           #\n";
 printf "###############################\e[0m\n\n";
 
-# move up one dir if we're in LINUX/
+# move up dirs if we're in LINUX/
 if [[ $PWD =~ LINUX ]]; then
-  cd ..;
+  cd ../..;
 fi
 
 printf "\e[34mWorking directory is $PWD\e[0m\n";

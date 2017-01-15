@@ -8,7 +8,7 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 	if (overrideAuthorization) return true; // commanded from script
 
 	char buffer[MAX_WORD_SIZE];
-	if ( authorizations == (char*)1) // command line does not authorize
+	if ( *authorizations == '1') // command line does not authorize
 	{
 		if (in) FClose(in);
 		return false;
@@ -33,7 +33,7 @@ bool VerifyAuthorization(FILE* in) //   is he allowed to use :commands
 		}
 	}
 
-	if (!in) return (authorizations) ? false : true;			//   no restriction file
+	if (!in) return (*authorizations) ? false : true;			//   no restriction file
 
 	bool result = false;
 	while (ReadALine(buffer,in) >= 0 )
@@ -1253,7 +1253,7 @@ static void C_TestPattern(char* input)
 			for (int i = 0; i < wildcardIndex; ++i)
 			{
 				if (*wildcardOriginalText[i]) Log(STDTRACELOG,(char*)"_%d=%s / %s (%d-%d) ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
-				else Log(STDTRACELOG,(char*)"_%d=  ",i);
+				else Log(STDTRACELOG,(char*)"_%d=null (%d-%d) ",i,wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
 			}
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
@@ -2965,7 +2965,7 @@ static void C_VerifySpell(char* file) // test spell checker against a file of en
 			continue;
 		}
 
-		char* fix = SpellFix(wrongWord,1,PART_OF_SPEECH, 0); 
+		char* fix = SpellFix(wrongWord,1,PART_OF_SPEECH); 
 		if (fix && !strcmp(fix,rightWord)) ++right;
 		else
 		{
@@ -3915,7 +3915,9 @@ static void C_Build(char* input)
 {
 	conditionalCompiledIndex = 0;
 #ifndef DISCARDSCRIPTCOMPILER
+	int64 oldbotid = myBot;
 	echo = true;
+	myBot = 0;	// default
 	mystart(input);
 	char oldlogin[MAX_WORD_SIZE];
 	char oldbot[MAX_WORD_SIZE];
@@ -3971,8 +3973,11 @@ static void C_Build(char* input)
 		else if  (file[len-1] == '2') buildId = BUILD2;
 		else buildId = BUILD1; // global so SaveCanon can work
 		ClearVolleyWordMaps();
-		remove((char*)"TOPIC/missingSets.txt"); // precautionary
-		remove((char*)"TOPIC/missingLabel.txt");
+		char file[200];
+		sprintf(file,"%s/missingSets.txt",topic);
+		remove(file); // precautionary
+		sprintf(file,"%s/missingLabel.txt",topic);
+		remove(file);
 		ReadTopicFiles(word,buildId,spell); 
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
 		ClearPendingTopics(); // flush in case topic ids change or go away
@@ -3986,6 +3991,7 @@ static void C_Build(char* input)
 	strcpy(computerIDwSpace,oldbotspace);
 	strcpy(loginName,oldloginname);
 	trace &= -1 ^ TRACE_SCRIPT;
+	myBot = oldbotid;
 #endif
 }  
 
@@ -4097,8 +4103,11 @@ static void LoadDebuggerMap1(char* name)
 static void LoadDebuggerMap()
 {
 	if (debuggerLoaded) return;
-	LoadDebuggerMap1("TOPIC/BUILD0/map0.txt");
-	LoadDebuggerMap1("TOPIC/BUILD1/map1.txt");
+	char file[200];
+	sprintf(file,"%s/BUILD0/map0.txt",topic);
+	LoadDebuggerMap1(file);
+	sprintf(file,"%s/BUILD1/map0.txt",topic);
+	LoadDebuggerMap1(file);
 	debuggerLoaded = true;
 }
 
@@ -4117,7 +4126,7 @@ static void ShowArgs(char* name,bool in) // display current values of function c
 	unsigned int args = 0;
 	if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO)  args = D->w.planArgCount;
 	else if (!D->w.fndefinition) args = 0;
-	else args = MACRO_ARGUMENT_COUNT(D); // expected args
+	else args = MACRO_ARGUMENT_COUNT(D->w.fndefinition); // expected args
 	char* list = (currentFunctionDisplay) ? (currentFunctionDisplay + 2) : NULL;	// skip ( and space xxxx
 	char var[100];
 	*var = 0;
@@ -4362,8 +4371,14 @@ static char* FindDebugLine(char* caller,char* start, char* at, bool define) // r
 	if (!D) return "";
 	int offset = D->parseBits;	// offset into file
 	char* name;
-	if (D->internalBits & BUILD1) name = FindDebug(caller,offset,"TOPIC/BUILD1/map1.txt",atloc);
-	else name = FindDebug(caller,offset,"TOPIC/BUILD0/map0.txt",atloc);
+	char file[200];
+	sprintf(file,"%s/BUILD1/map1.txt",topic);
+	if (D->internalBits & BUILD1) name = FindDebug(caller,offset,file,atloc);
+	else 
+	{
+		sprintf(file,"%s/BUILD0/map0.txt",topic);
+		name = FindDebug(caller,offset,file,atloc);
+	}
 	if (!name) return "";
 	char* buffer = AllocateBuffer();
 	sprintf(buffer," at %s line %d",name,atloc);
@@ -5764,10 +5779,10 @@ static void ShowMacro(WORDP D,uint64 junk)
 	if (!(D->internalBits & FUNCTION_NAME)) {;} // not a function or plan
 	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"plan: %s (%d)\r\n",D->word,D->w.planArgCount);
 	else if (D->x.codeIndex) {;} //is system function (when not plan)
-	else if (D->internalBits & IS_PATTERN_MACRO && D->internalBits & IS_OUTPUT_MACRO) Log(STDTRACELOG,(char*)"dualmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
-	else if (D->internalBits & IS_PATTERN_MACRO) Log(STDTRACELOG,(char*)"patternmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
-	else if (D->internalBits & IS_OUTPUT_MACRO) 	Log(STDTRACELOG,(char*)"outputmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
-	else if (D->internalBits & IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"tablemacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D));
+	else if (D->internalBits & IS_PATTERN_MACRO && D->internalBits & IS_OUTPUT_MACRO) Log(STDTRACELOG,(char*)"dualmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D->w.fndefinition));
+	else if (D->internalBits & IS_PATTERN_MACRO) Log(STDTRACELOG,(char*)"patternmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D->w.fndefinition));
+	else if (D->internalBits & IS_OUTPUT_MACRO) 	Log(STDTRACELOG,(char*)"outputmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D->w.fndefinition));
+	else if (D->internalBits & IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"tablemacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D->w.fndefinition));
 }
 
 static void C_Macros(char* input)
@@ -6717,9 +6732,11 @@ static void C_List(char* input)
 		WalkDictionary(ListTopic,0);
 		if (sorted) SortFacts((char*)"@4subject",true);
 	}
-
-	LoadDescriptions((char*)"TOPIC/BUILD0/describe0.txt");
-	LoadDescriptions((char*)"TOPIC/BUILD1/describe1.txt");
+	char file[200];
+	sprintf(file,"%s/BUILD0/describe0.txt",topic);
+	LoadDescriptions(file);
+	sprintf(file,"%s/BUILD1/describe1.txt",topic);
+	LoadDescriptions(file);
 	if (all || strchr(input,USERVAR_PREFIX))
 	{
 		count = FACTSET_COUNT(0);
@@ -7948,10 +7965,12 @@ char* UrlEncode(char* input);
 
 static void Translate(char* msg,char* to, char* apikey)
 {
+	if (1) return;
+
 #ifndef DISCARDJSON
 	char* url = AllocateBuffer();
 	size_t len = strlen(msg);
-	char* tranurl = UrlEncode(msg);
+	char* tranurl = UrlEncode(msg); // transient stack
 	len = strlen(tranurl);
 	sprintf(url,"https://translation.googleapis.com/language/translate/v2?q=%s&target=%s&format=text&source=en&key=%s",
 		tranurl,to,apikey);
@@ -8024,12 +8043,16 @@ static void C_TranslateConcept(char* input) // give the language & filename to w
 	char filex[200];
 	*filex = 0;
 	ReadCompiledWord(input,filex);
-	if (*filex) sprintf(name,"%s_%s.top",language,filex); 
+	if (*filex) sprintf(name,"%s",filex); 
 	else sprintf(name,"%s_concepts.top",language); 
 	FILE* out = fopen(name, "wb");
+	sprintf(name,"rawdict/%s_extravocabulary.txt",language);
+	FILE* vocab = fopen(name,"ab");
+	char conceptname[MAX_WORD_SIZE];
 	while (ReadALine(readBuffer,in) >= 0)
 	{
 		*output = 0;
+		*conceptname = 0;
 		*outputforeign = 0;
 		*translation = 0;
 		char* ptr = readBuffer;
@@ -8045,7 +8068,16 @@ static void C_TranslateConcept(char* input) // give the language & filename to w
 				ptr -= strlen(name);
 				name[1] = 0;
 			}
-	
+			if (!*output)
+			{
+				WORDP D = FindWord(name); // find this 
+				if (D && !(D->internalBits & (BUILD1|BUILD0))) break; // needs to not be from base system
+				strcpy(conceptname,name);
+				if (!stricmp(conceptname,"~fishes"))
+				{
+					int xx = 0;
+				}
+			}
 			MakeUpperCase(name);
 			strcat(output,name);
 			strcat(output," ");
@@ -8055,45 +8087,14 @@ static void C_TranslateConcept(char* input) // give the language & filename to w
 
 		while ((ptr = ReadCompiledWord(ptr,name))) // get content
 		{
-			if (strchr(name,'~') || IsUpperCase(*name)) // concepts and proper names need no translation
-			{
-				if (*name == '~') 
-				{
-					MakeUpperCase(name);
-					strcat(output,name);
-					strcat(output," ");
-					continue;
-				}
-				// proper name?
-				char* at = name;
-				bool mixedCase = false;
-				while ((at = strchr(at,'_')))
-				{
-					if (IsLowerCase(at[1])) 
-					{
-						mixedCase = true;
-						break;
-					}
-					++at;
-				}
-				at = name;
-				if (!mixedCase) while ((at = strchr(at,' ')))
-				{
-					if (IsLowerCase(at[1])) 
-					{
-						mixedCase = true;
-						break;
-					}
-					++at;
-				}
-				if (!mixedCase || strchr(name,'~')) // normal all upper unlike "Broadway production" and dict refs
-				{
-					strcat(output,name);
-					strcat(output," ");
-					continue;
-				}
-			}
+			if (strchr(name+1,'~') ) continue; //  dict refs need no translation
 			if (*name == ')') break;	
+			if (*name == '~') // maintain concept hierarchies
+			{
+				strcat(output,name);
+				strcat(output," ");
+				continue;
+			}
 
 			// add for translation
 			char* at;
@@ -8147,15 +8148,31 @@ static void C_TranslateConcept(char* input) // give the language & filename to w
 			}
 		}
 		if (strlen(output) >= MAX_BUFFER_SIZE) ReportBug("translate too big");
-		fprintf(out,"#%s %s)\r\n",language,output);
-		printf("%s\r\n",output);
+		if (strnicmp(output,"~a_dummy",8))
+		{
+			fprintf(out,"#%s %s)\r\n",language,output);
+			printf("%s\r\n",output);
+
+			// augmented vocab
+			bool keywords = false;
+			char* ptr = output;
+			while (ptr && *ptr)
+			{
+				char word[MAX_WORD_SIZE];
+				ptr = ReadCompiledWord(ptr,word);
+				if (*word == '(') keywords = true;
+				if (*word == '(' || *word == ')' || strchr(word,'~')) continue;
+				if (keywords) fprintf(vocab,"%s\r\n",word);
+			}
+		}
 	}
 	fclose(out);
 	fclose(in);
+	fclose(vocab);
 	FreeBuffer();
 	FreeBuffer();
 	FreeBuffer();
-	printf("translation complete\r\n");
+	printf("translation of %s complete\r\n",input);
 }
 
 static void C_SortConcept(char* input)

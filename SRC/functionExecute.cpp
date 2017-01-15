@@ -121,6 +121,17 @@ void InitFunctionSystem() // register all functions
 	oldunmarked[0] = 0;	// global unmarking has nothing
 }
 
+unsigned int MACRO_ARGUMENT_COUNT(unsigned char* defn)
+{
+	if (!defn || !*defn) return 0;
+	if (IsDigit(*defn)) // new style
+	{
+		while (IsDigit(*++defn)) {;} // skip botid or arg count int
+		while (IsDigit(*++defn)) {;} // skip macro arguments descriptor
+	}
+	return (unsigned char)(*defn - 'A');
+}
+
 char* InitDisplay(char* list)
 {
 	char word[MAX_WORD_SIZE];
@@ -587,7 +598,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	{
 		callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
 		callStack[callIndex++] = D;
-
+		unsigned int argflags =  D->x.macroFlags;
 		unsigned int args = 0;
 		if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
 		{
@@ -601,12 +612,36 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		}
 		else 
 		{
-			definition = D->w.fndefinition + 1;
-			args = MACRO_ARGUMENT_COUNT(D); // expected args
+			definition = D->w.fndefinition; 
+			if (IsDigit(*definition)) // new format includes bot id then argflags + argcount+definition
+			{
+				int64 botid;
+				unsigned char* genericfn = NULL;
+				definition = (unsigned char*)ReadInt64((char*)definition,botid); // accept the bot id
+				while (myBot != botid && definition) // find a better one
+				{
+					if (!botid) genericfn = definition; // this is a generic function usable on all bots
+					definition = (unsigned char*) strchr((char*)definition,'`');
+					if (definition && definition++ && *definition++) // skip space to index
+					{
+						int index = atoi((char*)definition);
+						definition = (unsigned char*) Index2Heap(index); // chained one
+						definition = (unsigned char*)ReadInt64((char*)definition,botid); // accept the bot id
+					}
+				}
+				if (myBot != botid) definition = genericfn;
+				if (!definition) result = FAILRULE_BIT;
+				else
+				{
+					argflags = atoi((char*) definition); // local form of data
+					while (IsDigit(*++definition)){;} // skip over any new format arg flags
+				}
+			}
+			args = MACRO_ARGUMENT_COUNT(definition); // expected args
+			if (definition) ++definition; // skip over arg count - now pointing to executable code
 		}
 
 		// now process arguments
-		unsigned int argflags =  D->x.macroFlags;
 		char* startRawArg = ptr;
         while (definition && ptr && *ptr && *ptr != ')') //   ptr is after opening (and before an arg but may have white space
         {
@@ -865,7 +900,7 @@ TERMINATE:
 		{
 			int count = 0;
 			char* limit;
-			char* buf = InfiniteStack(limit);
+			char* buf = InfiniteStack(limit,"DoFunction");
 			FACT* F = GetSubjectNondeadHead(FindWord(word));
 			while (F)
 			{
@@ -873,6 +908,7 @@ TERMINATE:
 				else break;
 				F = GetSubjectNondeadNext(F);
 			}
+			ReleaseInfiniteStack();
 			Log(STDTRACELOG,(char*)" - size %d facts", count);
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
@@ -1070,12 +1106,14 @@ FunctionResult FLR(char* buffer,char* which)
 	int store;
 	*buffer = 0;
 	char* limit;
-	char* word = InfiniteStack(limit);
+	char* word = InfiniteStack(limit,"FLR");
 	bool keep = false;
 	char* ptr = GetPossibleFunctionArgument(ARGUMENT(1),word);
-	if (!strnicmp(ptr,(char*)"KEEP",4)) keep = true;
-
 	store = GetSetID(word);
+	char type = *GetSetType(word);
+	ReleaseInfiniteStack();
+
+	if (!strnicmp(ptr,(char*)"KEEP",4)) keep = true;
 	if (store == ILLEGAL_FACTSET) return FAILRULE_BIT;
 	unsigned int count = FACTSET_COUNT(store);
 	if (!count) 
@@ -1120,8 +1158,6 @@ FunctionResult FLR(char* buffer,char* which)
 		SET_FACTSET_COUNT(store,(count-1));
 		memmove(&factSet[store][item],&factSet[store][item+1],sizeof(FACT*) * (count - item)); 
 	}		
-
-	char type = *GetSetType(word);
 
 	// transfer fact pieces appropriately
 	MEANING Mfirst = 0;
@@ -4139,7 +4175,7 @@ FunctionResult ArgumentCode(char* buffer)
 		--d;
 	}
 	if (d < 0) return FAILRULE_BIT;	// could not find requested topic
-	unsigned int arg = MACRO_ARGUMENT_COUNT(callStack[d]); // how many arguments can it handle
+	unsigned int arg = MACRO_ARGUMENT_COUNT(callStack[d]->w.fndefinition); // how many arguments can it handle
 	unsigned int requestedArg = atoi(arg1);
 	if (requestedArg == 0) return NOPROBLEM_BIT;  // just checking to see if caller exists
 	if (requestedArg > arg) return FAILRULE_BIT;	// not a legal arg value, too high
@@ -7095,7 +7131,7 @@ static FunctionResult FieldCode(char* buffer)
 	if (!F || F > factFree) return FAILRULE_BIT;
 	
 	char* limit;
-	word = InfiniteStack(limit);
+	word = InfiniteStack(limit,"FieldCode");
 	FunctionResult result = NOPROBLEM_BIT;
 	WORDP xxs = Meaning2Word(F->subject); // for debugging
 	WORDP xxv = Meaning2Word(F->verb);  // for debugging
@@ -7168,6 +7204,7 @@ static FunctionResult FieldCode(char* buffer)
 		impliedWild = ALREADY_HANDLED;	//   we did the assignment
 	}
 	else result = FAILRULE_BIT;
+	ReleaseInfiniteStack();
 	return result;
 }
 

@@ -579,7 +579,7 @@ int evsrv_do_chat(Client_t *client)
 	echo = false;
 	bool restarted = false;
 #ifndef DISCARDPOSTGRES
-	if (postgresparams && !postgresInited)  
+	if (*postgresparams && !postgresInited)  
 	{
 		PGUserFilesCode(); //Forked must hook uniquely AFTER forking
 		postgresInited = true;
@@ -619,7 +619,7 @@ RESTART_RETRY:
 	}
 	
 #ifndef DISCARDPOSTGRES
-		if (false && postgresparams && postgresInited)  // try to keep going per child
+		if (false && *postgresparams && postgresInited)  // try to keep going per child
 		{
 			PostgresShutDown(); // any script connection
 			PGUserFilesCloseCode();	// filesystem

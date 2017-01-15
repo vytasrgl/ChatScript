@@ -890,7 +890,7 @@ void MarkAllImpliedWords()
 		D = (OL) ? OL : OU;
 		if (!D) D = StoreWord(original); // just so we can't fail later
 		if (D->internalBits & UTF8) MarkFacts(MakeMeaning(StoreWord((char*)"~utf8")),i,i);
-		if (D->internalBits & UPPERCASE_HASH && D->length > 1)  MarkFacts(MakeMeaning(Dpropername),i,i);  // historical - internal is uppercase
+		if (D->internalBits & UPPERCASE_HASH && D->length > 1 && !stricmp(language,"english"))  MarkFacts(MakeMeaning(Dpropername),i,i);  // historical - internal is uppercase
 
         if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"\r\n");
 

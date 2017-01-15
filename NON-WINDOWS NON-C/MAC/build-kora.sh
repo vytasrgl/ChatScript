@@ -8,7 +8,7 @@ printf "###############################\e[0m\n\n";
 
 # move up one dir if we're in MAC/
 if [[ $PWD =~ MAC ]]; then
-  cd ..;
+  cd ../../;
 fi
 
 # $? is the latest command return state

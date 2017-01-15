@@ -165,7 +165,8 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int tokenlimit, int sizel
 	int size = curr.end - curr.start;
 	switch (curr.type) {
 	case JSMN_PRIMITIVE: { //  true  false, numbers, null
-		char* str = AllocateBuffer();
+		char* limit;
+		char* str = InfiniteStack(limit,"factsJsonHelper");
 		strncpy(str,jsontext + curr.start,size);
 		str[size] = 0;
 		if (!strnicmp(str,"ja-",3)) *flags = JSON_ARRAY_VALUE; 
@@ -227,18 +228,19 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int tokenlimit, int sizel
 			else *flags = JSON_STRING_VALUE; // cannot be number
 		}
 		*retMeaning = MakeMeaning(StoreWord(str,AS_IS)); 
-		FreeBuffer();
+		ReleaseInfiniteStack();
 		break;
 	}
 	case JSMN_STRING: {
-		char* str = AllocateBuffer();
+		char* limit;
+		char* str = InfiniteStack(limit,"factsJsonHelper");
 		strncpy(str,jsontext + curr.start,size);
 		str[size] = 0;
 		*flags = JSON_STRING_VALUE; // string null
+		ReleaseInfiniteStack();
 		if (!PreallocateHeap(size)) return FAILRULE_BIT;
 		if (size == 0)  *retMeaning = MakeMeaning(StoreWord((char*)"null",AS_IS));
 		else  *retMeaning = MakeMeaning(StoreWord(str,AS_IS));
-		FreeBuffer();
 		break;
 	}
 	case JSMN_OBJECT: {
@@ -276,7 +278,7 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int tokenlimit, int sizel
 		break;
 	}
 	default: 
-		char* str = AllocateBuffer();
+		char* str = AllocateBuffer(); // cant use InfiniteStack because ReportBug will.
 		strncpy(str,jsontext + curr.start,size);
 		str[size] = 0;
 		FreeBuffer();
@@ -321,7 +323,7 @@ static size_t CurlWriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void
 	struct CurlBufferStruct* mem = (struct CurlBufferStruct*) data;
 	if (!curlBufferBase) 
 	{
-		curlBufferBase = InfiniteStack(limit);
+		curlBufferBase = InfiniteStack(limit,"CurlWriteMemoryCallback"); // can only be released from JSONOpenCode
 		currentLoc = curlBufferBase;
 		mem->buffer = curlBufferBase;
 	}
@@ -492,11 +494,12 @@ char* UrlEncode(char* input)
 		return NULL;
 	}
 	char* fixed = curl_easy_escape(curl,input,0);
-	char* buffer = AllocateBuffer();
+	char* limit;
+	char* buffer = InfiniteStack(limit,"UrlEncode");
 	strcpy(buffer,fixed);
 	curl_free(fixed);
 	curl_easy_cleanup(curl);
-	FreeBuffer();
+	ReleaseInfiniteStack();
 	return buffer;
 }
 
@@ -717,7 +720,6 @@ FunctionResult JSONOpenCode(char* buffer)
 	coding[len1-1] = 0; // remove terminal comma
 #if LIBCURL_VERSION_NUM >= 0x071506
 	// CURLOPT_ACCEPT_ENCODING renamed in curl 7.21.6
-	// cf https://curl.haxx.se/libcurl/c/CURLOPT_ACCEPT_ENCODING.html
 	curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, coding);
 #else
 	curl_easy_setopt(curl, CURLOPT_ENCODING, coding);

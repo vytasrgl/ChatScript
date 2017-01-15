@@ -229,9 +229,13 @@ u: ( dog) I hate dogs</code></pre>
 </tbody>
 </table>
 <p>To support <strong>multiple bots</strong>, you may create multiple copies of a topic name, which vary in their bot restrictions and content. The set of keywords given for a topic is the union of the keywords of all copies of that topic name. You should not name a topic ending in a period and a number (that is used internally to represent multiple topics of the same name).</p>
-<p><code>bot: name</code> - There is also a top level command you can put in a file to label all topics thereafter with a uniform bot restriction. Bot: name will do this, unless the topic has an explicit bot= You can, for example, put at the topic of simpletopic.top the command</p>
+<p><code>bot: name</code> - There is also a top level command you can put in a file to label all topics thereafter with a uniform bot restriction. <code>Bot: name</code> will do this, unless the topic has an explicit bot= You can, for example, put at the topic of simpletopic.top the command</p>
 <pre><code>bot: harry,georgia</code></pre>
 <p>and get all topics in that file restricted to the two bots named. There should be no spaces after the comma. Of course there are only two bots in the first place, so this doesn't actually accomplish anything useful.</p>
+<p>You can also change the current bot owner value at the same time. This affects who owns facts created in tables thereafter as well as allowing multiple copies of the same function to exist, qualified by what the current bot owner is. Just put the fact owner id 1st in the list:</p>
+<pre><code>bot: 1 harry, georgia</code></pre>
+<p>You can change to a bot owner without naming any bots, in which case topics created will be usuable by any bot but facts and functions will be restricted by bot owner.</p>
+<p>And you can use a bot: command as a line in your <code>filesxxx.txt</code> build file. Used there, it sticks forever until some other bot: command is hit. If that is a local file command, then that affects the file but then the compile reverbs to no bot: value until the next one is hit (either globally or in a file).</p>
 <p><code>Share</code> – Normally, if you have multiple bots, they all talk independently to the user. What one learns or says is not available to the other bots. It is possible to create a collection of bots that all can hear what has been said and share information. Share on a topic means that all bots will have common access/modification of a topic's state. So if one bot uses up a gambit, the other bots will not try to use that gambit themselves.</p>
 <p>All facts created will be visible to all bots. And if you create a permanent user variable with the starting name $share_, then all bots can see and modify it. So $share_name becomes a common variable. When sharing is in effect, the state with the user (what he said, what bot said, what turn of the volley this is, where the rejoinder mark is) is all common among the bots- they are advancing a joint conversation.</p>
 <h2 id="rules-that-erase-and-repeat">Rules that erase and repeat</h2>
@@ -516,8 +520,8 @@ u: (I love you today when)</code></pre>
 <p>regardless of whether there were no spaces after is or 100 spaces after is. You may not have comments at the ends of such lines (they would be absorbed into the string).</p>
 <p>While an active string tries to detect and substitute variables, it can't succeed if you have letters immediately after the variable name. E.g.</p>
 <pre><code>^&quot;T$$time_computed_hrs:$$time_computed_mins:$$time_computed_secsZ&quot;</code></pre>
-<p>The Z at the end of the <code>$$time_computed_secs</code> will make that variable hard to detect, since it will look like the variable is <code>$$time_computed_secsZ</code>. If you need to conjoin such things, you can use <code>^join()</code> instead.</p>
-<pre><code> ^join(T $$time_computed_hrs : $$time_computed_mins : $$time_computed_secs Z )</code></pre>
+<p>The Z at the end of the <code>$$time_computed_secs</code> will make that variable hard to detect, since it will look like the variable is <code>$$time_computed_secsZ</code>.</p>
+<p>You can fix that by escaping the next character not part of the name. <code>$$time_computed_secs\Z</code>.</p>
 <h2 id="json-active-strings">Json Active Strings</h2>
 <p><code>^' xxxxxx '</code> is another kind of active string. It is intended for writing easy json, because you don't have to escape doublequotes unless json would need to.</p>
 <p>It will converting <code>\n</code>,<code>\t</code>, <code>\r</code> into their control characters, convert <code>\\</code> into just <code>\</code>, and leave all other characters alone. Eg</p>
@@ -919,7 +923,7 @@ harry</code></pre>
 <p>This means if topic 1 is restricted to ben and topic2 is unrestricted, ben will use topic 1 and all other bots will use topic2. If the order of declaration is flipped, then all bots including ben will use topic 2 (which now precedes topic 1 in declaration).</p>
 <p>You can also use the <code>:disable</code> and <code>:enable</code> commands to turn off all or some topics for a personality.</p>
 <h1 id="common-script-idioms">Common Script Idioms</h1>
-<h2 id="selecting-specific-cases">Selecting Specific Cases</h2>
+<h2 id="selecting-specific-cases-refine">Selecting Specific Cases ^refine</h2>
 <p>To be efficient in rule processing, I often catch a lot of things in a rule and then refine it.</p>
 <pre><code>u: ( ~country) ^refine() # gets any reference to a country
     a: (Turkey) I like Turkey

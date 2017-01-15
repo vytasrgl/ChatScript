@@ -3,7 +3,7 @@
 
 # move up one dir if we're in MAC/
 if [[ $PWD =~ MAC ]]; then
-  cd ..;
+  cd ../../;
 fi
 
 # keep track of our errors
@@ -52,11 +52,13 @@ printf "###############################\e[0m\n";
 if [[ ERROR -eq 0 ]]; then
   
   # first we clean temp files
-  MAC/clean-files.sh
+  chmod +x "NON-WINDOWS NON-C"/MAC/clean-files.sh;
+  "NON-WINDOWS NON-C"/MAC/clean-files.sh
   ERROR+=$?
   
   # then we build kora
-  MAC/build-kora.sh
+  chmod +x "NON-WINDOWS NON-C"/MAC/build-kora.sh;
+  "NON-WINDOWS NON-C"/MAC/build-kora.sh
   ERROR+=$?
   
   # git checkout our DICT files since osx can't fully generate them

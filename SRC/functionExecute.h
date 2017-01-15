@@ -93,6 +93,7 @@ FunctionResult InitWinsock();
 FunctionResult RunJavaScript(char* definition, char* buffer,unsigned int args);
 void DeletePermanentJavaScript();
 void DeleteTransientJavaScript();
+unsigned int MACRO_ARGUMENT_COUNT(unsigned char* defn);
 
 //   argument data for user calls
 char* InitDisplay(char* list);

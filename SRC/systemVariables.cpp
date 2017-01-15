@@ -988,7 +988,7 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%input",Sinput,(char*)"Numeric volley id of the current input"}, 
 	{ (char*)"%ip",Sip,(char*)"String - ip address supplied"}, 
 	{ (char*)"%length",Slength,(char*)"Numeric count of words of current input"}, 
-	{ (char*)"%login",Suser,(char*)"String - user login name suppled - same as %user"}, 
+	{ (char*)"%login",Suser,(char*)"String - user login name supplied - same as %user"}, 
 	{ (char*)"%more",Smore,(char*)"Boolean - is there more input pending"}, 
 	{ (char*)"%morequestion",SmoreQuestion,(char*)"Boolean - is there a ? in pending input"}, 
 	{ (char*)"%originalinput",SoriginalInput,(char*)"returns the raw content of what user sent in"}, 

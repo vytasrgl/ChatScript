@@ -203,7 +203,7 @@ char* HandleIf(char* ptr, char* buffer,FunctionResult& result)
 						for (int i = 0; i < wildcardIndex; ++i)
 						{
 							if (*wildcardOriginalText[i]) Log(STDTRACELOG,(char*)"_%d=%s / %s (%d-%d)   ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
-							else Log(STDTRACELOG,(char*)"_%d=  ",i);
+							else Log(STDTRACELOG,(char*)"_%d=null (%d-%d) ",i,wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
 						}
 					}
 					Log(STDTRACELOG,(char*)"\r\n");

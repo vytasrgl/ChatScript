@@ -84,7 +84,7 @@ extern char systemFolder[500];
 extern int responseIndex;
 extern bool documentMode;
 extern bool assignedLogin;
-extern char* apikey;
+extern char apikey[100];
 extern unsigned int volleyCount;
 extern FILE* sourceFile;
 extern bool oobExists;
@@ -109,7 +109,7 @@ extern int inputSentenceCount;
 extern char* extraTopicData;
 extern char postProcessing;
 extern char rawSentenceCopy[INPUT_BUFFER_SIZE];
-extern char* authorizations;
+extern char authorizations[200];
 extern FILE* userInitFile;
 extern uint64 tokenControl;
 extern unsigned int responseControl;
@@ -137,6 +137,7 @@ extern bool showTopics;
 extern bool shortPos;
 extern char users[100];
 extern char logs[100];
+extern char topic[100];
 
 // pending control
 extern int systemReset;

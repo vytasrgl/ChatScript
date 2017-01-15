@@ -70,7 +70,7 @@ void PopOutputBuffers()
 void AllocateOutputBuffer()
 {
 	PushOutputBuffers();
-	currentRuleOutputBase = currentOutputBase = AllocateBuffer();
+	currentRuleOutputBase = currentOutputBase = AllocateBuffer(); // cant use stack- others may allocate on it from output and we cant free them
 	currentOutputLimit = maxBufferSize;
 	*currentOutputBase = 0;
 }
@@ -1033,7 +1033,11 @@ retry:
         {
 		// groupings
 		case ')':  case ']': case '}':  // ordinary output closers, never space before them
-			if (space) --buffer;
+			if (space) 
+			{
+				--buffer;
+				space = NULL;
+			}
 			*buffer++ = *word;
 			*buffer = 0;
  			--paren;

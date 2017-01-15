@@ -9,7 +9,7 @@ static char pguserFilename[MAX_WORD_SIZE];
 // user files stored in postgres instead of file system
 static  PGconn     *usersconn; // shared db open stuff used instead of files for userwrites
 static char* pgfilesbuffer = 0;
-char* postgresparams = 0; // init string for pguser
+char postgresparams[300]; // init string for pguser
 
 #ifdef WIN32
 #pragma comment(lib, "../SRC/postgres/libpq.lib")

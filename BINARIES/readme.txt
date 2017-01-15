@@ -2,7 +2,8 @@ This folder contains binaries Linux*  that run on Linux.  These are all release 
 All OTHER files are for windows.
 
 ChatScript.exe is the basic windows executable.  Currently always a debug build (using the pdb file).
-ChatScriptpg.exe is one that can talk with postgres. Currently always a debug build.
+ChatScriptpg.exe is one that can talk with postgres, while ChatScriptMongo talks to mongodb.
+Currently always a debug build.
 Loebner.exe runs the Loebner protocol if you are trying to make a Loebner contest entry.
 
 While you may not need to install any more dll's (they should be here), if you find 

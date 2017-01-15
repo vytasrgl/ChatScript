@@ -333,7 +333,7 @@ These enable various LIVEDATA files to perform substitutions on input:
 | `#$DO_NUMBER_MERGE`           |  merge multiple word numbers into one (_four and twenty_)  
 | `#$DO_PROPERNAME_MERGE`       |  merge multiple proper name into one (_George Harrison)  
 |`#DO_DATE_MERGE`             |  merge month day and/or year sequences (_January 2, 1993_)  
-|`#JSON_DIRECT_OOB`             |  asking the tokenizer to directly process OOB data. See ^jsonparse in JSON manual. 
+|`#JSON_DIRECT_FROM_OOB`             |  asking the tokenizer to directly process OOB data. See ^jsonparse in JSON manual. 
 
 If any of the above items affect the input, they will be echoed as values into
 %tokenFlags so you can detect they happened. 
@@ -477,7 +477,7 @@ contents.
 | `$cs_login`             |  login name of the user |
 | `$$csmatch_start`  |  start of found words from ^match |
 | `$$csmatch_end` | end of found words from ^match |
-| `$cs_factowner`    |  when non-zero creates facts restricted by this bitmask so facts created by other masks cannot be seen. allows you to separate facts per bot in a multi-bot environment| 
+| `cs_factowner`    |  when non-zero creates facts restricted by this bitmask so facts created by other masks cannot be seen. allows you to separate facts per bot in a multi-bot environment. During compilation if this is set by a bot: command, then functions created and facts created by tables will be restricted to that owner.| 
 
 
 # Command Line Parameters

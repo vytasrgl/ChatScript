@@ -1,12 +1,7 @@
 
 #define MAX_SYNLOOP	60
 
-#define MAX_HASH_BUCKETS 50000 
-#ifdef WIN32
-#define MAX_ENTRIES      0x000fffff 
-#else
-#define MAX_ENTRIES      (0x000affff)
-#endif
+#define MAX_HASH_BUCKETS 100000 
 
 #define ALLOCATESTRING_SIZE_PREFIX 3
 #define ALLOCATESTRING_SIZE_SAFEMARKER 2
@@ -90,9 +85,6 @@
 #define NOBURST 16		// dont burst (like for a quoted text string)
 
 #define FUNCTIONSTRING '^'
-
-
-#define MACRO_ARGUMENT_COUNT(D) ((unsigned char)(*D->w.fndefinition - 'A')) // for user macros not plans
 
 #define KINDS_OF_PHRASES ( CLAUSE | PHRASE | VERBAL | OMITTED_TIME_PREP | OMITTED_OF_PREP | QUOTATION_UTTERANCE )
 
@@ -323,6 +315,7 @@ bool IsPastHelper(char* word);
 MEANING MakeTypedMeaning(WORDP x, unsigned int y, unsigned int flags);
 MEANING MakeMeaning(WORDP x, unsigned int y = 0);
 WORDP Meaning2Word(MEANING x);
+WORDP Meaning2SmallerWord(MEANING x);
 MEANING AddMeaning(WORDP D,MEANING M);
 MEANING AddTypedMeaning(WORDP D,unsigned int type);
 void AddGloss(WORDP D,char* gloss,unsigned int index);

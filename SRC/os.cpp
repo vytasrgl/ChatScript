@@ -5,8 +5,10 @@ unsigned long maxHeapBytes = MAX_STRING_SPACE;
 char* heapBase;					// start of heap space (runs backward)
 char* heapFree;					// current free string ptr
 char* stackFree;
+char* infiniteCaller = "";
 char* stackStart;
 char* heapEnd;
+static bool infiniteStack = false;
 bool userEncrypt = false;
 bool ltmEncrypt = false;
 unsigned long minHeapAvailable;
@@ -137,7 +139,7 @@ void myexit(char* msg, int code)
 #endif
 
 #ifndef DISCARDPOSTGRES
-	if (postgresparams)  
+	if (*postgresparams)  
 	{
 		PostgresShutDown(); // any script connection
 		PGUserFilesCloseCode();	// filesystem
@@ -255,6 +257,7 @@ void InitStackHeap()
 
 char* AllocateStack(char* word, size_t len,bool localvar) // call with (0,len) to get a buffer
 {
+	if (infiniteStack) ReportBug("Allocating stack while InfiniteStack in progress\r\n");
 	if (len == 0) len = strlen(word);
     if ((stackFree + len + 1) >= heapFree - 5000) // dont get close
     {
@@ -313,11 +316,20 @@ char* RestoreStackSlot(char* variable,char* slot)
 	return slot + sizeof(char*);
 }
 
-char* InfiniteStack(char*& limit)
+char* InfiniteStack(char*& limit,char* caller)
 {
+	if (infiniteStack) ReportBug("Allocating InfiniteStack from %s while one already in progress from %s\r\n",caller, infiniteCaller);
+	infiniteCaller = caller;
+	infiniteStack = true;
 	limit = heapFree - 5000; // leave safe margin of error
 	*stackFree = 0;
 	return stackFree;
+}
+
+void ReleaseInfiniteStack()
+{
+	infiniteStack = false;
+	infiniteCaller = "";
 }
 
 void CompleteBindStack()
@@ -325,6 +337,7 @@ void CompleteBindStack()
 	stackFree += strlen(stackFree) + 1; // convert infinite allocation to fixed one
 	size_t len = heapFree - stackFree;
 	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+	infiniteStack = false;
 }
 
 char* Index2Heap(unsigned int offset) 
@@ -600,7 +613,7 @@ static size_t Encrypt(const void* buffer, size_t size, size_t count, FILE* file)
 void EncryptInit(char* params) // required
 {
 	*encryptServer = 0;
-	if (params) strcpy(encryptServer,params);
+	if (*params) strcpy(encryptServer,params);
 #ifndef DISCARDJSON 
 	if (*encryptServer) userFileSystem.userEncrypt = Encrypt;
 #endif
@@ -609,7 +622,7 @@ void EncryptInit(char* params) // required
 void DecryptInit(char* params) // required
 {
 	*decryptServer = 0;
-	if (params) strcpy(decryptServer,params);
+	if (*params) strcpy(decryptServer,params);
 #ifndef DISCARDJSON 
 	if (*decryptServer) userFileSystem.userDecrypt = Decrypt;
 #endif
@@ -1597,10 +1610,10 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (*currentFilename) fprintf(bug,(char*)"BUG in %s at %d: %s ",currentFilename,currentFileLine,readBuffer);
 			if (!compiling && !loading && channel == BUGLOG && *currentInput)  
 			{
-				char* limit;
-				char* buffer = InfiniteStack(limit); // transient
+				char* buffer = AllocateBuffer(); // transient - cannot insure not called from context of InfiniteStack
 				if (buffer) fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located,currentInput);
 				else fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located);
+				FreeBuffer();
 			}
 			fwrite(logbase,1,bufLen,bug);
 			if (!compiling && !loading) 

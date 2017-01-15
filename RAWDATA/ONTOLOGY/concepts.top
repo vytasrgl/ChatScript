@@ -1839,7 +1839,7 @@
 ##<<ENGLISH concept: ~state (Alabama Alaska Arizona Arkansas California Colorado Connecticut Delaware Florida Georgia Hawaii Idaho Illinois Iowa Kansas Kentucky Louisiana Maine Maryland Massachusetts 
           Michigan Minnesota Mississippi Missouri Montana Nebraska Nevada New_Hampshire New_Jersey New_Mexico New_York North_Carolina North_Dakota Ohio Oklahoma Oregon Pennsylvania 
           Rhode_Island South_Carolina South_Dakota Tennessee Texas Utah Vermont Virginia Washington West_Virginia Wisconsin Wyoming ) ##>>
-##<<ENGLISH concept: ~state_abbreviations NOUN NOUN_PROPER_SINGULAR [ AL AK AZ AR CA CO CT DE  FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY ]
+##<<ENGLISH concept: ~state_abbreviations NOUN NOUN_PROPER_SINGULAR ( AL AK AZ AR CA CO CT DE  FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY ) ##>>
 
 ##<<ENGLISH concept: ~state_words (coagulated colloidal concentrate cream dehydrated gaseous gel jellied liquid powder powdered solid solidified ) ##>>
 ##<<ENGLISH concept: ~states_of_matter (gas liquid plasma solid ) ##>>

@@ -60,7 +60,7 @@ static bool UnacceptableFact(FACT* F,bool jsonavoid)
 {
 	if (!F || F->flags & FACTDEAD) return true;
 	// if ownership flags exist (layer0 or layer1) and we have different ownership.
-	if (F->botBits && !(F->botBits & myBot)) return true;
+	if (!compiling && F->botBits && !(F->botBits & myBot)) return true;
 	// json empty unit fact
 	if (jsonavoid && F->flags & (JSON_ARRAY_VALUE|JSON_OBJECT_VALUE) && F->subject == F->verb) return true;
 	return false;
@@ -232,9 +232,10 @@ char* GetSetEnd(char* x)
 void TraceFact(FACT* F,bool ignoreDead)
 {
 	char* limit;
-	char* word = InfiniteStack(limit); // short term
+	char* word = InfiniteStack(limit,"TraceFact"); // short term
 	Log(STDTRACELOG,(char*)"%d: %s\r\n",Fact2Index(F),WriteFact(F,false,word,ignoreDead,false));
 	Log(STDTRACETABLOG,(char*)"");
+	ReleaseInfiniteStack();
 }
 
 void ClearUserFacts()
@@ -428,7 +429,7 @@ FACT* FindFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_M
 		G = GetSubjectNondeadHead(F);
 		while (G)
 		{
-			if (G->verb == verb &&  G->object == object && G->flags == properties) return G;
+			if (G->verb == verb &&  G->object == object && G->flags == properties  && G->botBits == myBot) return G;
 			G  = GetSubjectNondeadNext(G);
 		}
 		return NULL;
@@ -439,7 +440,7 @@ FACT* FindFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_M
 		G = GetVerbNondeadHead(F);
 		while (G)
 		{
-			if (G->subject == subject && G->object == object &&  G->flags == properties) return G;
+			if (G->subject == subject && G->object == object &&  G->flags == properties  && G->botBits == myBot) return G;
 			G  = GetVerbNondeadNext(G);
 		}
 		return NULL;
@@ -450,7 +451,7 @@ FACT* FindFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_M
 		G = GetObjectNondeadHead(F);
 		while (G)
 		{
-			if (G->subject == subject && G->verb == verb &&  G->flags == properties) return G;
+			if (G->subject == subject && G->verb == verb &&  G->flags == properties && G->botBits == myBot) return G;
 			G  = GetObjectNondeadNext(G);
 		}
 		return NULL;
@@ -459,7 +460,7 @@ FACT* FindFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR_M
 	F = GetSubjectNondeadHead(Meaning2Word(subject));
     while (F)
     {
-		if ( F->subject == subject &&  F->verb ==  verb && F->object == object && properties == F->flags)  return F;
+		if ( F->subject == subject &&  F->verb ==  verb && F->object == object && properties == F->flags && F->botBits == myBot)  return F;
 		F = GetSubjectNondeadNext(F);
     }
     return NULL;
@@ -586,7 +587,7 @@ bool ExportFacts(char* name, int set,char* append)
 	char* base = buffer;
 
 	char* limit;
-	char* word = InfiniteStack(limit); //short term
+	char* word = InfiniteStack(limit,"ExportFacts"); //short term
 	unsigned int count = FACTSET_COUNT(set);
 	for (unsigned int i = 1; i <= count; ++i)
 	{
@@ -601,6 +602,8 @@ bool ExportFacts(char* name, int set,char* append)
 		}
 		buffer += strlen(buffer);
 	}
+	ReleaseInfiniteStack();
+
 	FILE* out;
 	if (strstr(name,"ltm")) out = userFileSystem.userCreate(name); // user ltm file
 	else out = (append && !stricmp(append,"append")) ? FopenUTF8WriteAppend(name) : FopenUTF8Write(name);
@@ -930,7 +933,7 @@ void WriteFacts(FILE* out,FACT* F, int flags) //   write out from here to end
 	if (!out) return;
 
 	char* limit;
-	char* word = InfiniteStack(limit); // WriteFact uses no extra inversespace
+	char* word = InfiniteStack(limit,"WriteFacts"); // WriteFact uses no extra inversespace
     while (++F <= factFree) 
 	{
 		if (!(F->flags & (FACTTRANSIENT|FACTDEAD))) 
@@ -941,6 +944,7 @@ void WriteFacts(FILE* out,FACT* F, int flags) //   write out from here to end
 		}
 	}
     FClose(out);
+	ReleaseInfiniteStack();
 }
 
 void WriteBinaryFacts(FILE* out,FACT* F) //   write out from here to end
@@ -992,10 +996,6 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 	}
 	currentFact = factFree;
 	int index = Fact2Index(currentFact); // for debugging
-	if (index == 416)
-	{
-		int xx = 0;
-	}
 
 	//   init the basics
 	memset(currentFact,0,sizeof(FACT));
@@ -1069,9 +1069,10 @@ FACT* CreateFastFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOI
 	if (trace & TRACE_FACT && CheckTopicTrace())
 	{
 		char* limit;
-		char* buffer = InfiniteStack(limit); // fact might be big, cant use mere WORD_SIZE
+		char* buffer = InfiniteStack(limit,"CreateFastFact"); // fact might be big, cant use mere WORD_SIZE
 		buffer = WriteFact(currentFact,false,buffer,true,false);
 		Log(STDTRACELOG,(char*)"create %s",buffer);
+		ReleaseInfiniteStack();
 	}	
 	return currentFact;
 }
@@ -1224,9 +1225,9 @@ char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead,bool eol) // 
 	if (F->botBits)
 	{
 #ifdef WIN32
-		sprintf(buffer,(char*)"%I64d",F->botBits); 
+		sprintf(buffer,(char*)"%I64d ",F->botBits); 
 #else
-		sprintf(buffer,(char*)"%lld",F->botBits); 
+		sprintf(buffer,(char*)"%lld ",F->botBits); 
 #endif
 		buffer += strlen(buffer);
 	}
@@ -1350,12 +1351,12 @@ FACT* ReadFact(char* &ptr, unsigned int build)
 void ReadFacts(const char* name,const char* layer,unsigned int build,bool user) //   a facts file may have dictionary augmentations and variable also
 {
   	char word[MAX_WORD_SIZE];
-	if (layer) sprintf(word,"TOPIC/%s",name);
+	if (layer) sprintf(word,"%s/%s",topic,name);
 	else strcpy(word,name);
     FILE* in = (user) ? FopenReadWritten(word) : FopenReadOnly(word); //  TOPIC fact/DICT files
 	if (!in && layer) 
 	{
-		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		sprintf(word,"%s/BUILD%s/%s",topic,layer,name);
 		in = FopenReadOnly(word);
 	}
 	if (!in) return;

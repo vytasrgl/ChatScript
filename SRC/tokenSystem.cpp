@@ -302,7 +302,7 @@ char* GetBurstWord(unsigned int n) //   0-based
 char* JoinWords(unsigned int n,bool output)
 {
 	char* limit;
-	char* joinBuffer = InfiniteStack(limit); // transient
+	char* joinBuffer = InfiniteStack(limit,"JoinWords"); // transient
     *joinBuffer = 0;
 	char* at = joinBuffer;
     for (unsigned int i = 0; i < n; ++i)
@@ -324,6 +324,7 @@ char* JoinWords(unsigned int n,bool output)
 		ReportBug("Joinwords was too big %d %s",strlen(joinBuffer),joinBuffer);
 		joinBuffer[MAX_WORD_SIZE-1] = 0; // safety truncation
 	}
+	ReleaseInfiniteStack();
     return joinBuffer;
 }
 
@@ -366,12 +367,13 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 			else // store string as properly tokenized, NOT as a string.
 			{
 				char* limit;
-				char* buf = InfiniteStack(limit); // transient
+				char* buf = InfiniteStack(limit,"HandleQuoter"); // transient
 				++end; // subsume the closing marker
 				strncpy(buf,ptr,end-ptr);
 				buf[end-ptr] = 0;
 				++count;
 				words[count] = AllocateHeap(buf); 
+				ReleaseInfiniteStack();
 				if (!words[count]) words[count] = AllocateHeap((char*)"a"); // safe replacement
 				return end;
 			}
@@ -622,6 +624,10 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			else return end;
 		}
 	}
+
+	char* comma = strchr(ptr,',');
+	if (comma) return comma;
+
 	// could it be email or web address?
 	char* atsign = strchr(ptr,'@'); // possible email?
 	if (atsign && atsign < end)
@@ -1744,7 +1750,8 @@ void ReplaceWords(char* why,int i, int oldlength,int newlength,char** tokens)
 	wordStarts[wordCount+1] = NULL;
 	if (trace & TRACE_PREPARE)
 	{
-		char* buffer = AllocateBuffer();
+		char* limit;
+		char* buffer = InfiniteStack(limit,"ReplaceWords");
 		char* original = buffer;
 		for (int i = 1; i <= wordCount; ++i)
 		{
@@ -1755,7 +1762,7 @@ void ReplaceWords(char* why,int i, int oldlength,int newlength,char** tokens)
 		*buffer = 0;
 		Log(STDUSERLOG,"%s revised input: %s\r\n",why,original);
 
-		FreeBuffer();
+		ReleaseInfiniteStack();
 	}
 }
 

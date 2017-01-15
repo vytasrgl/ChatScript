@@ -390,10 +390,11 @@ void RemoveImpure(char* buffer)
 
 void ChangeSpecial(char* buffer)
 {
-	char* buf = AllocateBuffer();
+	char* limit;
+	char* buf = InfiniteStack(limit,"ChangeSpecial");
 	AddEscapes(buf,buffer,true,MAX_BUFFER_SIZE);
-	FreeBuffer();
 	strcpy(buffer,buf);
+	ReleaseInfiniteStack();
 }
 
 char* AddEscapes(char* to, char* from, bool normal,int limit) // normal true means dont flag with extra markers
@@ -2093,7 +2094,7 @@ char* Purify(char* msg) // used for logging to remove real newline characters so
 	char* nl = strchr(msg,'\n');  // legal 
 	if (!nl) return msg; // no problem
 	char* limit;
-	char* buffer = InfiniteStack(limit); // transient
+	char* buffer = InfiniteStack(limit,"Purify"); // transient
 	strcpy(buffer,msg);
 	nl = (nl - msg) + buffer;
 	while (nl)
@@ -2107,6 +2108,7 @@ char* Purify(char* msg) // used for logging to remove real newline characters so
 		*cr = ' ';
 		cr = strchr(cr,'\r');  // legal 
 	}
+	ReleaseInfiniteStack();
 	return buffer; // nothing else should use ReleaseStackspace 
 }
 
@@ -2139,7 +2141,7 @@ size_t OutputLimit(unsigned char* data) // insert eols where limitations exist
 char* UTF2ExtendedAscii(char* bufferfrom) 
 {
 	char* limit;
-	unsigned char* buffer = (unsigned char*) InfiniteStack(limit); // transient
+	unsigned char* buffer = (unsigned char*) InfiniteStack(limit,"UTF2ExtendedAscii"); // transient
 	unsigned char* bufferto = buffer;
 	while( *bufferfrom && (size_t)(bufferto-buffer) < (size_t)(maxBufferSize-10)) // avoid overflow on local buffer
 	{
@@ -2159,6 +2161,7 @@ char* UTF2ExtendedAscii(char* bufferfrom)
 	}
 	*bufferto = 0;
 	if (outputLength) OutputLimit(buffer);
+	ReleaseInfiniteStack();
 	return (char*) buffer; // it is ONLY good for printf immediate, not for anything long term
 }
 

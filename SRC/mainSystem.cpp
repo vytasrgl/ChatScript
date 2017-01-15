@@ -1,6 +1,6 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.1";
+char* version = "7.11";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
@@ -14,7 +14,7 @@ bool noboot = false;
 bool pendingRestart = false;
 bool pendingUserReset = false;
 bool assignedLogin = false;
-char* apikey = NULL;
+char apikey[100];
 int sentencePreparationIndex = 0;
 DEBUGAPI debugInput = NULL;
 DEBUGAPI debugOutput = NULL;
@@ -32,16 +32,17 @@ int timerCheckRate = 0;					// how often to check calls for time
 clock_t volleyStartTime = 0;
 int timerCheckInstance = 0;
 static char* privateParams = NULL;
-static char* treetaggerParams = NULL;
-char* encryptParams = NULL;
-char* decryptParams = NULL;
+static char treetaggerParams[200];
+static char encryptParams[300];
+static char decryptParams[300];
 char hostname[100];
 bool nosuchbotrestart = false; // restart if no such bot
 char users[100];
 char logs[100];
+char topic[100];
 char* derivationSentence[MAX_SENTENCE_LENGTH];
 int derivationLength;
-char* authorizations = 0;	// for allowing debug commands
+char authorizations[200];	// for allowing debug commands
 char ourMainInputBuffer[INPUT_BUFFER_SIZE];				// user input buffer - ptr to primaryInputBuffer
 char* mainInputBuffer;								// user input buffer - ptr to primaryInputBuffer
 char* ourMainOutputBuffer;				// main user output buffer
@@ -125,7 +126,7 @@ bool all = false;								// generate all possible answers to input
 int regression = NO_REGRESSION;						// regression testing in progress
 unsigned int trace = 0;							// current tracing flags
 bool debugEntry = false;
-char* bootcmd = NULL;						// current boot tracing flags
+char bootcmd[200];						// current boot tracing flags
 unsigned int timing = 0;						// current timing flags
 bool shortPos = false;							// display pos results as you go
 
@@ -276,14 +277,15 @@ void CreateSystem()
 	if (boot && !noboot) // run script on startup of system. data it generates will also be layer 1 data
 	{
 		int oldtrace = trace;
-		if (bootcmd) 	
+		if (*bootcmd) 	
 		{
+			char* at = bootcmd;
 			if (*bootcmd == '"') 
 			{
-				++bootcmd;
-				bootcmd[strlen(bootcmd)-1] = 0;
+				++at;
+				if (bootcmd[strlen(at)-1] == '"')  bootcmd[strlen(at)-1]  = 0;
 			}
-			DoCommand(bootcmd,NULL,false);
+			DoCommand(at,NULL,false);
 		}
 		UnlockLevel(); // unlock it to add stuff
 		FACT* F = factFree;
@@ -402,13 +404,13 @@ void CreateSystem()
 #endif
 	char route[MAX_WORD_SIZE];
 #ifndef DISCARDPOSTGRES
-	if (postgresparams) sprintf(route,"    Postgres enabled. FileSystem routed to %s\r\n",postgresparams);
+	if (*postgresparams) sprintf(route,"    Postgres enabled. FileSystem routed to %s\r\n",postgresparams);
 	else sprintf(route,"    Postgres enabled.\r\n"); 
 	if (server) Log(SERVERLOG,route);
 	else printf(route);
 #endif
 #ifndef DISCARDMONGO
-	if (mongodbparams) sprintf(route,"    Mongo enabled. FileSystem routed to %s\r\n",mongodbparams);
+	if (*mongodbparams) sprintf(route,"    Mongo enabled. FileSystem routed to %s\r\n",mongodbparams);
 	else sprintf(route,"    Mongo enabled.\r\n"); 
 	if (server) Log(SERVERLOG,route);
 	else printf(route);
@@ -464,11 +466,11 @@ static void ProcessArgument(char* arg)
 	else if (!stricmp(arg,"userencrypt")) userEncrypt = true;
 	else if (!stricmp(arg,"ltmencrypt")) ltmEncrypt = true;
 	else if (!stricmp(arg,"noboot")) noboot = true;
-	else if (!strnicmp(arg,(char*)"apikey=",7)) apikey = arg+7;
+	else if (!strnicmp(arg,(char*)"apikey=",7)) strcpy(apikey,arg+7);
 	else if (!strnicmp(arg,(char*)"logsize=",8)) logsize = atoi(arg+8); // bytes avail for log buffer
 	else if (!strnicmp(arg,(char*)"outputsize=",11)) outputsize = atoi(arg+11); // bytes avail for log buffer
 	else if (!stricmp(arg, (char*)"time")) timing = (unsigned int)-1 ^ TIME_ALWAYS;
-	else if (!strnicmp(arg,(char*)"bootcmd=",8)) bootcmd = arg+8; 
+	else if (!strnicmp(arg,(char*)"bootcmd=",8)) strcpy(bootcmd,arg+8); 
 	else if (!strnicmp(arg,(char*)"dir=",4))
 	{
 #ifdef WIN32
@@ -516,14 +518,15 @@ static void ProcessArgument(char* arg)
 	}
 	else if (!strnicmp(arg,(char*)"userfacts=",10)) userFactCount = atoi(arg+10); // how many user facts allowed
 	else if (!stricmp(arg,(char*)"redo")) redo = true; // enable redo
-	else if (!strnicmp(arg,(char*)"authorize=",10)) authorizations = arg+10; // whitelist debug commands
-	else if (!stricmp(arg,(char*)"nodebug")) authorizations = (char*) 1; 
+	else if (!strnicmp(arg,(char*)"authorize=",10)) strcpy(authorizations,arg+10); // whitelist debug commands
+	else if (!stricmp(arg,(char*)"nodebug")) *authorizations = '1'; 
 	else if (!strnicmp(arg,(char*)"users=",6 )) strcpy(users,arg+6);
 	else if (!strnicmp(arg,(char*)"logs=",5 )) strcpy(logs,arg+5);
+	else if (!strnicmp(arg,(char*)"topic=",6 )) strcpy(topic,arg+6);
 	else if (!strnicmp(arg,(char*)"private=",8)) privateParams = arg+8;
-	else if (!strnicmp(arg,(char*)"treetagger=",11)) treetaggerParams = arg+11;
-	else if (!strnicmp(arg,(char*)"encrypt=",8)) encryptParams = arg+8;
-	else if (!strnicmp(arg,(char*)"decrypt=",8)) decryptParams = arg+8;
+	else if (!strnicmp(arg,(char*)"treetagger=",11)) strcpy(treetaggerParams,arg+11);
+	else if (!strnicmp(arg,(char*)"encrypt=",8)) strcpy(encryptParams,arg+8);
+	else if (!strnicmp(arg,(char*)"decrypt=",8)) strcpy(decryptParams,arg+8);
 	else if (!strnicmp(arg,(char*)"livedata=",9) ) 
 	{
 		strcpy(livedata,arg+9);
@@ -538,10 +541,10 @@ static void ProcessArgument(char* arg)
 	else if (!strnicmp(arg,(char*)"system=",7) )  strcpy(systemFolder,arg+7);
 	else if (!strnicmp(arg,(char*)"english=",8) )  strcpy(languageFolder,arg+8);
 #ifndef DISCARDPOSTGRES
-	else if (!strnicmp(arg,(char*)"pguser=",7) )  postgresparams = arg+7;
+	else if (!strnicmp(arg,(char*)"pguser=",7) )  strcpy(postgresparams, arg+7);
 #endif
 #ifndef DISCARDMONGO
-	else if (!strnicmp(arg,(char*)"mongo=",6) )  mongodbparams = arg+6;
+	else if (!strnicmp(arg,(char*)"mongo=",6) )  strcpy(mongodbparams,arg+6);
 #endif
 #ifndef DISCARDCLIENT
 	else if (!strnicmp(arg,(char*)"client=",7)) // client=1.2.3.4:1024  or  client=localhost:1024
@@ -614,6 +617,18 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	strcpy(hostname,(char*)"local");
 	MakeDirectory((char*)"TMP");
 	*sourceInput = 0;
+	*apikey = 0;
+	*bootcmd = 0;
+#ifndef DISCARDMONGO
+	*mongodbparams = 0;
+#endif
+#ifndef DISCARDPOSTGRES
+	*postgresparams = 0;
+#endif
+#ifdef TREETAGGER
+	*treetaggerParams = 0;
+#endif
+	*authorizations = 0;
 	debugInput = in;
 	debugOutput = out;
 	nameDepth[0] = ""; 
@@ -628,6 +643,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	}
 	strcpy(users,(char*)"USERS");
 	strcpy(logs,(char*)"LOGS");
+	strcpy(topic,(char*)"TOPIC");
 
 	strcpy(language,(char*)"ENGLISH");
 
@@ -773,11 +789,11 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 #ifndef DISCARDPOSTGRES
 #ifndef EVSERVER
-	if (postgresparams)  PGUserFilesCode(); // unforked process can hook directly. Forked must hook AFTER forking
+	if (*postgresparams)  PGUserFilesCode(); // unforked process can hook directly. Forked must hook AFTER forking
 #endif
 #endif
 #ifndef DISCARDMONGO
-	if (mongodbparams)  MongoSystemInit(mongodbparams);
+	if (*mongodbparams)  MongoSystemInit(mongodbparams);
 #endif
 	
 #ifdef TREETAGGER
@@ -1215,7 +1231,7 @@ static void FactizeResult() // takes the initial given result
 			}
 
 			//   save sentences as facts
-			char* copy = InfiniteStack(limit); // localized
+			char* copy = InfiniteStack(limit,"FactizeResult"); // localized
 			char* out = copy;
 			char* at = old-1;
 			while (*++at) // copy message and alter some stuff like space or cr lf
@@ -1224,6 +1240,7 @@ static void FactizeResult() // takes the initial given result
 				else *out++ = *at;  
 			}
 			*out = 0;
+			CompleteBindStack();
 			if ((out-copy) > 2) // we did copy something, make a fact of it
 			{
 				char name[MAX_WORD_SIZE];
@@ -1231,6 +1248,7 @@ static void FactizeResult() // takes the initial given result
 				CreateFact(MakeMeaning(StoreWord(copy,AS_IS)),Mchatoutput,MakeMeaning(StoreWord(name)),FACTTRANSIENT);
 			}
 			if (c) *(ptr-1) = c1;
+			ReleaseStack(copy);
 		}	
 	}
 	tokenControl = control;
@@ -1612,10 +1630,10 @@ void Restart()
 	strcpy(us,loginID);
 
 #ifndef DISCARDPOSTGRES
-	if (postgresparams)  PGUserFilesCode();
+	if (*postgresparams)  PGUserFilesCode();
 #endif
 #ifndef DISCARDMONGO
-	if (mongodbparams)  MongoSystemInit(mongodbparams);
+	if (*mongodbparams)  MongoSystemInit(mongodbparams);
 #endif
 #ifdef PRIVATE_CODE
 	PrivateInit(privateParams); 
@@ -2119,7 +2137,7 @@ bool AddResponse(char* msg, unsigned int responseControl)
 	if (!*msg) return true;
 
 	char* limit;
-	char* buffer = InfiniteStack(limit); // localized infinite allocation
+	char* buffer = InfiniteStack(limit,"AddResponse"); // localized infinite allocation
  	if ((buffer + strlen(msg)) > limit)
 	{
 		strncpy(buffer,msg,1000); // 5000 is safestringlimit
@@ -2163,12 +2181,14 @@ bool AddResponse(char* msg, unsigned int responseControl)
 		if (all) Log(ECHOSTDTRACELOG,(char*)"Choice %d: %s  why:%s %d.%d %s\r\n\r\n",++choiceCount,at,GetTopicName(currentTopicID,false),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),ShowRule(currentRule));
         else if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"Rejected: %s already said in %s\r\n",buffer,GetTopicName(currentTopicID,false));
 		else if (showReject) Log(ECHOSTDTRACELOG,(char*)"Rejected: %s already said in %s\r\n",buffer,GetTopicName(currentTopicID,false));
-        return false;
+ 		ReleaseInfiniteStack();
+		return false;
     }
     if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"Message: %s\r\n",buffer);
 
     SaveResponse(buffer);
-    return true;
+ 	ReleaseInfiniteStack();
+	return true;
 }
 
 void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart,bool atlimit) // set currentInput and nextInput

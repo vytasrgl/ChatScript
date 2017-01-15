@@ -27,7 +27,7 @@
 static bool mongoInited = false;		// have we inited mongo overall
 static bool mongoShutdown = false;
 char* mongoBuffer = NULL;
-char* mongodbparams;
+char mongodbparams[300];
 
 // for script use
 mongoc_client_t*		g_pClient = NULL;

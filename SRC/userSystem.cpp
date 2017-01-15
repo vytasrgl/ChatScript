@@ -84,7 +84,7 @@ void Login(char* caller,char* usee,char* ip) //   select the participants
 	char* ptr = caller-1;
 	while (*++ptr) 
 	{
-		if (!IsAlphaUTF8OrDigit(*ptr) && *ptr != '-' && *ptr != '+') *ptr = '_'; // require simple file names
+		if (!IsAlphaUTF8OrDigit(*ptr) && *ptr != '-' && *ptr != '+' && *ptr != '.' && *ptr != '@') *ptr = '_'; // require simple file names
 	}
 
     //   prepare for chat
@@ -258,8 +258,9 @@ static char* SafeLine(char* line) // be JSON text safe
 {
 	if (!line) return line; // null variable (traced)
 	char* limit;
-	char* word = InfiniteStack(limit); // transient safe
+	char* word = InfiniteStack(limit,"SafeLine"); // transient safe
 	AddEscapes(word,line,false,INFINITE_BUFFER);
+	ReleaseInfiniteStack();
 	return word; // buffer will be used immediately so is safe
 }
 

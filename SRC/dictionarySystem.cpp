@@ -78,7 +78,7 @@ static unsigned char* writePtr;				// used for binary dictionary writes
 // memory data
 unsigned long maxHashBuckets = MAX_HASH_BUCKETS;
 bool setMaxHashBuckets = false;
-uint64 maxDictEntries = MAX_ENTRIES;
+uint64 maxDictEntries = MAX_DICTIONARY;
 
 MEANING posMeanings[64];				// concept associated with propertyFlags of WORDs
 MEANING sysMeanings[64];				// concept associated with systemFlags of WORDs
@@ -820,11 +820,8 @@ WORDP FindWord(const char* word, int len,uint64 caseAllowed)
 static WORDP AllocateEntry()
 {
 	WORDP  D = dictionaryFree++;
-#ifdef WIN32
-	if (Word2Index(D) >= maxDictEntries || ((char*)D + sizeof(WORDENTRY)) >= heapFree)// we allow heap space to use up dict space if it needs it
-#else
-	if (Word2Index(D) >= maxDictEntries)
-#endif
+	int index = Word2Index(D);
+	if (index >= maxDictEntries)
 	{
 		ReportBug((char*)"FATAL: used up all dict nodes\r\n")
 	}
@@ -855,7 +852,7 @@ WORDP StoreWord(char* word, uint64 properties)
 	}
 	if (strchr(word,'\n') || strchr(word,'\r') || strchr(word,'\t')) // force backslash format on these characters
 	{ // THIS SHOULD NEVER HAPPEN, not allowed these inside data
-		char* buf = AllocateBuffer();
+		char* buf = AllocateBuffer(); // jsmn fact creation may be using INFINITIE stack space.
 		AddEscapes(buf,word,true,MAX_BUFFER_SIZE);
 		FreeBuffer();
 		word = buf;
@@ -1504,9 +1501,10 @@ static char* ReadString(FILE* in)
 	if (in)
 	{
 		char* limit;
-		char* buffer = InfiniteStack(limit);
+		char* buffer = InfiniteStack(limit,"ReadString");
 		if (fread(buffer,1,len+1,in) != len+1) return NULL;
 		str = AllocateHeap(buffer,len); // readstring
+		ReleaseInfiniteStack();
 	}
 	else 
 	{
@@ -1921,14 +1919,15 @@ MEANING GetMaster(MEANING T)
 		ReportBug((char*)"Bad meaning index %s %d",D->word,index)
 		return MakeMeaning(D,0);
 	}
-	if (index == 0) return T;
+	if (index == 0) return T; // already at master
+
 	MEANING old = T;
 	MEANING at = GetMeanings(D)[index];
 	unsigned int n = 0;
 	while (!(at & SYNSET_MARKER)) // find the correct ptr to return. The marked ptr means OUR dict entry is master, not that the ptr points to.
 	{
 		old = at;
-		WORDP X = Meaning2Word(at);
+		WORDP X = Meaning2SmallerWord(at); // safe access to smaller annotated items
 		int ind = Meaning2Index(at);
 		if (ind > GetMeaningCount(X)) 
 		{
@@ -2124,6 +2123,13 @@ WORDP Meaning2Word(MEANING x) //   convert meaning to its dictionary entry
 	return D;
 }
 
+WORDP Meaning2SmallerWord(MEANING x) //   convert meaning to its dictionary entry w/o synset_marker
+{
+	if (!x) return NULL;
+	x &= -1 ^ SYNSET_MARKER; // no synset mark will exist on large words in dict
+    WORDP D = Index2Word((((uint64)x) & MAX_DICTIONARY)); 
+	return D;
+}
 unsigned int GetMeaningType(MEANING T)
 {
     if (T == 0) return 0;
@@ -2254,7 +2260,7 @@ void NoteLanguage()
 void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,bool filegiven)
 {
 	char file[SMALL_WORD_SIZE];
-	if (layer) sprintf(file,"TOPIC/%s",name);
+	if (layer) sprintf(file,"%s/%s",name,topic);
 	else if (filegiven) strcpy(file,name);
 	else sprintf(file,(char*)"%s/%s/SUBSTITUTES/%s",livedata,language,name);
     char original[MAX_WORD_SIZE];
@@ -2263,7 +2269,7 @@ void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,b
  	char word[MAX_WORD_SIZE];
 	if (!in && layer) 
 	{
-		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		sprintf(word,"%s/BUILD%s/%s",topic,layer,name);
 		in = FopenReadOnly(word);
 	}
 	if (!in) return;
@@ -2372,12 +2378,12 @@ void ReadCanonicals(const char* file,const char* layer)
     char original[MAX_WORD_SIZE];
     char replacement[MAX_WORD_SIZE];
  	char word[MAX_WORD_SIZE];
-	if (layer) sprintf(word,"TOPIC/%s",file);
+	if (layer) sprintf(word,"%s/%s",topic,file);
 	else strcpy(word,file);
     FILE* in = FopenStaticReadOnly(word); // LIVEDATA canonicals
 	if (!in && layer) 
 	{
-		sprintf(word,"TOPIC/BUILD%s/%s",layer,file);
+		sprintf(word,"%s/BUILD%s/%s",topic,layer,file);
 		in = FopenStaticReadOnly(word);
 	}
 	if (!in) return;
@@ -2535,10 +2541,11 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 			ReportBug((char*)"Has no meaning %s %d\r\n",D->word,i)
 			return;
 		}
-		WORDP X = Meaning2Word(M);
+		WORDP X = Meaning2SmallerWord(M);
 		int index = Meaning2Index(M);
-		if (index > GetMeaningCount(X)) 
-			ReportBug((char*)"Has meaning index too high %s.%d points to %s.%d but limit is %d\r\n",D->word,i,X->word,index, GetMeaningCount(X))
+		int count1 = GetMeaningCount(X);
+		if (index > count1) 
+			ReportBug((char*)"Has meaning index too high %s.%d points to %s.%d but limit is %d\r\n",D->word,i,X->word,index, count1)
 			
 		// can we find the master meaning for this meaning?
 		MEANING at = M;
@@ -3030,7 +3037,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		else if ((D->internalBits & FUNCTION_BITS) ==  (IS_PATTERN_MACRO | IS_OUTPUT_MACRO)) kind = (char*) "dual";
 		if (D->x.codeIndex && (D->internalBits & FUNCTION_BITS) !=  IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"systemfunction %d (%d arguments) ", D->x.codeIndex,info->argumentCount);
 		else if (D->x.codeIndex && (D->internalBits & FUNCTION_BITS) ==  IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"plan (%d arguments)", D->w.planArgCount);
-		else Log(STDTRACELOG,(char*)"user %s macro (%d arguments)\r\n  %s \r\n",kind,MACRO_ARGUMENT_COUNT(D),D->w.fndefinition+1); // 1st byte is argument count
+		else Log(STDTRACELOG,(char*)"user %s macro (%d arguments)\r\n  %s \r\n",kind,MACRO_ARGUMENT_COUNT(D->w.fndefinition),D->w.fndefinition+1); // 1st byte is argument count
 		if (D->internalBits & VARIABLE_ARGS_TABLE) Log(STDTRACELOG,(char*)"variableArgs");
 	}
 	Log(STDTRACELOG,(char*)"\r\n  Other:   ");
@@ -3139,7 +3146,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	Log(STDTRACELOG,(char*)"\r\n");
 
 	char* limited;
-	char* buffer = InfiniteStack(limited); 
+	char* buffer = InfiniteStack(limited,"DumpDictionaryEntry"); 
 	Log(STDTRACELOG,(char*)"  Facts:\r\n");
 
 	count = 0;
@@ -3169,6 +3176,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		F = GetObjectNondeadNext(F);
 	}
 	Log(STDTRACELOG,(char*)"\r\n");
+	ReleaseInfiniteStack();
 }
 
 #ifndef DISCARDDICTIONARYBUILD

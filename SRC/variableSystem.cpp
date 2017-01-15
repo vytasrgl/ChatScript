@@ -377,7 +377,7 @@ ANSWER:
 	if (localvar) 
 	{
 		char* limit;
-		char* ans = InfiniteStack(limit); // has complete
+		char* ans = InfiniteStack(limit,"GetUserVariable"); // has complete
 		strcpy(ans,"``");
 		strcpy(ans+2,answer);
 		CompleteBindStack();

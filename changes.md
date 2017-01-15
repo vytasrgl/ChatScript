@@ -1,3 +1,8 @@
+# version 7.11
+1. allowing @ and . in user file names at login
+2. bot: 1  harry    -- sets bot fact owner at same time (see $cs_factowner)
+3. allow bot: command as a line in the filesxxx.txt build file to change bot restrictions from there
+
 # version 7.1 
 1. command line parameter apikey for `:translateconcept`
 2. `:translateconcept` to use google translate on concepts from english

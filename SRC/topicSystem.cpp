@@ -1144,7 +1144,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	if (trace & TRACE_FLOW)
 	{
 		char* limit;
-		char* output = InfiniteStack(limit); // transient
+		char* output = InfiniteStack(limit,"ProcessRuleOutput"); // transient
 		char* output1 = SkipWhitespace(ptr);
 		size_t len = strlen(output1);
 		if (len < 50) strcpy(output,output1);
@@ -1153,6 +1153,7 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 		pattern[30] = 0;
 		if (*label) Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(id),REJOINDERID(id),label,pattern,output); //  \\  blocks linefeed on next Log call
 		else  Log(STDTRACETABLOG, "%s rule %c:%d.%d %s %s\r\n",GetTopicName(currentTopicID),*rule,TOPLEVELID(id),REJOINDERID(id),pattern,output); //  \\  blocks linefeed on next Log call
+		ReleaseInfiniteStack();
 	}
 
    //   now process response
@@ -1166,7 +1167,6 @@ FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer)
 	bool oldErase = ruleErased; // allow underling gambits to erase themselves. If they do, we dont have to.
 	ruleErased = false;
 #ifndef DISCARDTESTING
-	char name[MAX_WORD_SIZE];
 	ChangeDepth(1,"^ruleoutput",false,ptr);
 #endif
 	char* oldcode = codeStart;
@@ -1297,10 +1297,11 @@ retry:
 		if (*ptr == '(')
 		{
 			char* limit;
-			char* pattern = InfiniteStack(limit); // transient
+			char* pattern = InfiniteStack(limit,"TestRule"); // transient
 			GetPattern(rule,NULL,pattern);
 			CleanOutput(pattern);
 			Log(STDTRACELOG,(char*)"       pattern: %s",pattern);
+			ReleaseInfiniteStack();
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
 	}
@@ -2081,11 +2082,11 @@ void CreateFakeTopics(char* data) // ExtraTopic can be used to test this, naming
 static void LoadTopicData(const char* name,const char* layerid,unsigned int build,int layer,bool plan)
 {
 	char word[MAX_WORD_SIZE];
-	sprintf(word,"TOPIC/%s",name);
+	sprintf(word,"%s/%s",topic,name);
 	FILE* in = FopenReadOnly(word); // TOPIC folder
 	if (!in && layerid) 
 	{
-		sprintf(word,"TOPIC/BUILD%s/%s",layerid,name);
+		sprintf(word,"%s/BUILD%s/%s",topic,layerid,name);
 		in = FopenReadOnly(word);
 	}
 	if (!in) return;
@@ -2140,6 +2141,12 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 			{
 				printf((char*)"%s",(char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 2 again.\r\n\r\n");
 			}
+
+			char file[SMALL_WORD_SIZE];
+			sprintf(file,(char*)"%s/missingLabel.txt",topic);
+			remove(file);
+			sprintf(file,(char*)"%s/missingSets.txt",topic);
+			remove(file);
 			return;
 		}
 		compiling = true;
@@ -2206,11 +2213,11 @@ static void LoadTopicData(const char* name,const char* layerid,unsigned int buil
 static void ReadPatternData(const char* name,const char* layer,unsigned int build)
 {
     char word[MAX_WORD_SIZE];
-	sprintf(word,"TOPIC/%s",name);
+	sprintf(word,"%s/%s",topic,name);
     FILE* in = FopenReadOnly(name); // TOPIC folder
 	if (!in && layer) 
 	{
-		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		sprintf(word,"%s/BUILD%s/%s",topic,layer,name);
 		in = FopenReadOnly(word);
 	}
 	if (!in) return;
@@ -2326,11 +2333,11 @@ static void AddRecursiveFlag(WORDP D,uint64 type,bool buildingDictionary,unsigne
 void InitKeywords(const char* name,const char* layer,unsigned int build,bool buildDictionary,bool concept)
 { 
 	char word[MAX_WORD_SIZE];
-	sprintf(word,"TOPIC/%s",name);
+	sprintf(word,"%s/%s",topic,name);
 	FILE* in = FopenReadOnly(word); //  TOPICS keywords files
 	if (!in && layer) 
 	{
-		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		sprintf(word,"%s/BUILD%s/%s",topic,layer,name);
 		in = FopenReadOnly(word);
 	}
 	if (!in) return;
@@ -2416,9 +2423,25 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 		// now read the keywords
 		while (ALWAYS)
 		{
-			ptr = ReadCompiledWord(ptr,word);
+			// may have ` after it so simulate ReadCompiledWord which wont tolerate it
+			char* at = word;
+			if (!*ptr) break;
+			while(*ptr && *ptr != ' ')
+			{
+				*at++ = *ptr++;
+			}
+			*at = 0;
+			if (*ptr) ++ptr;	// skip over space for next time
+
 			if (*word == ')' ||  !*word  ) break; // til end of keywords or end of line
 			MEANING U;
+			myBot = 0;
+			char* botflag = strchr(word,'`');
+			if (botflag)
+			{
+				*botflag = 0;
+				myBot = atoi(botflag+1);
+			}
 			char* p1 = word;
 			bool original = false;
 			if (*p1 == '\'' && p1[1]) // quoted value but not standalone '   
@@ -2535,38 +2558,54 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 		}
 	}
 	FClose(in);
+	myBot = 0;
 }
 
 static void InitMacros(const char* name,const char* layer,unsigned int build)
 {
  	char word[MAX_WORD_SIZE];
-	sprintf(word,"TOPIC/%s",name);
+	sprintf(word,"%s/%s",topic,name);
 	FILE* in = FopenReadOnly(word); // TOPICS macros
 	if (!in && layer) 
 	{
-		sprintf(word,"TOPIC/BUILD%s/%s",layer,name);
+		sprintf(word,"%s/BUILD%s/%s",topic,layer,name);
 		in = FopenReadOnly(word);
 	}
 	if (!in) return;
 	maxFileLine = currentFileLine = 0;
 	while (ReadALine(readBuffer, in)>= 0) //   ^showfavorite O 2 _0 = ^0 _1 = ^1 ^reuse (~xfave FAVE ) 
 	{
+		// eg "%s T a %d %d%s\r\n",macroName,mybot,D->x.macroFlags,data);
+		
 		if (!*readBuffer) continue;
 		char* ptr = ReadCompiledWord(readBuffer,tmpWord); //   the name
 		if (!*tmpWord) continue;
 		WORDP D = StoreWord(tmpWord,0); 
-		AddInternalFlag(D,(unsigned int)(FUNCTION_NAME|build));
+		AddInternalFlag(D,(unsigned int)(FUNCTION_NAME|build)); // must be in same build if multiple
 		D->x.codeIndex = 0;	//   if one redefines a system macro, that macro is lost.
 		ptr = ReadCompiledWord(ptr,tmpWord);
 		if (*tmpWord == 'T') AddInternalFlag(D,IS_TABLE_MACRO);  // table macro
 		else if (*tmpWord == 'O') AddInternalFlag(D,IS_OUTPUT_MACRO); 
 		else if (*tmpWord == 'P') AddInternalFlag(D,IS_PATTERN_MACRO); 
 		else if (*tmpWord == 'D') AddInternalFlag(D,IS_PATTERN_MACRO|IS_OUTPUT_MACRO);
+		ptr = ReadCompiledWord(ptr,tmpWord); // either is "a" (new format) or is the integer bit descriptor (old format) of the arguments
+		char botId[MAX_WORD_SIZE];
+		char* next = ReadCompiledWord(ptr,botId); // skip over mybot or old-style redundant arg count data
 		int val;
-		ptr = ReadInt(ptr,val); 
-		D->x.macroFlags = (unsigned short) val; // controls on text string as KEEP_QUOTE or not 
-		ptr = ReadCompiledWord(ptr,tmpWord); // skip over readable arg count, has arg count embedded also
-		D->w.fndefinition = (unsigned char*) AllocateHeap(ptr);
+		if (*tmpWord == 'a') val = atoi(next); // new format - main fndefn has bit mask at front
+		else ReadInt(tmpWord,val);  // old format
+		D->x.macroFlags = (unsigned short) val; // controls on text string as KEEP_QUOTE or not - redundant somewhat 
+		
+		if (D->w.fndefinition) // need to join old definition to new one
+		{
+			int heapIndex = Heap2Index((char*)D->w.fndefinition);
+			char* at = strchr(ptr,'`'); // find end of define
+			*++at = ' ';
+			sprintf(++at,"%d",heapIndex); // chained on.
+		}
+		else if (*tmpWord != 'a') ptr = next; // old style define
+		
+		D->w.fndefinition = (unsigned char*) AllocateHeap(ptr); // new style has int (mybot) at start of fndefn and may chain
 	}
 	FClose(in);
 }
@@ -2655,11 +2694,11 @@ static void InitLayerMemory(const char* name, int layer)
 	int total;
 	int counter = 0;
 	char filename[SMALL_WORD_SIZE];
-	sprintf(filename,(char*)"TOPIC/script%s.txt",name);
+	sprintf(filename,(char*)"%s/script%s.txt",topic,name);
 	FILE* in = FopenReadOnly(filename); // TOPICS
 	if (!in) 
 	{
-		sprintf(filename,(char*)"TOPIC/BUILD%s/script%s.txt",name,name);
+		sprintf(filename,(char*)"%s/BUILD%s/script%s.txt",topic,name,name);
 		in = FopenReadOnly(filename);
 	}
 	if (in)
@@ -2669,11 +2708,11 @@ static void InitLayerMemory(const char* name, int layer)
 		FClose(in);
 		counter += total;
 	}
-	sprintf(filename,(char*)"TOPIC/plans%s.txt",name);
+	sprintf(filename,(char*)"%s/plans%s.txt",topic,name);
 	in = FopenReadOnly(filename); 
 	if (!in)
 	{
-		sprintf(filename,(char*)"TOPIC/BUILD%s/plans%s.txt",name,name);
+		sprintf(filename,(char*)"%s/BUILD%s/plans%s.txt",topic,name,name);
 		in = FopenReadOnly(filename); 	
 	}
 	if (in)

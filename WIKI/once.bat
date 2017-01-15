@@ -1,2 +1,2 @@
 
-pandoc CS-Engine.md -s -o CS-Engine.pdf
+pandoc ESOTERIC-CHATSCRIPT/ChatScript-Engine.md -s -o ../PDFDOCUMENTATION/ESOTERIC-CHATSCRIPT/ChatScript-Engine.pdf

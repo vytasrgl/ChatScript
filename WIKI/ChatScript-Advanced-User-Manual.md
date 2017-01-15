@@ -373,7 +373,7 @@ keywords of all copies of that topic name. You should not name a topic ending in
 and a number (that is used internally to represent multiple topics of the same name).
 
 `bot: name` - There is also a top level command you can put in a file to label all topics
-thereafter with a uniform bot restriction. Bot: name will do this, unless the topic has an
+thereafter with a uniform bot restriction. `Bot: name` will do this, unless the topic has an
 explicit bot=
 You can, for example, put at the topic of simpletopic.top the command
 ```
@@ -382,6 +382,21 @@ bot: harry,georgia
 and get all topics in that file restricted to the two bots named. There should be no spaces
 after the comma. Of course there are only two bots in the first place, so this doesn't
 actually accomplish anything useful.
+
+You can also change the current bot owner value at the same time. This affects who owns facts created
+in tables thereafter as well as allowing multiple copies of the same function to exist, qualified
+by what the current bot owner is. Just put the fact owner id 1st in the list:
+```
+bot: 1 harry, georgia
+```
+
+You can change to a bot owner without naming any bots, in which case topics created will be usuable
+by any bot but facts and functions will be restricted by bot owner.
+
+And you can use a bot: command as a line in your `filesxxx.txt` build file. Used there, it sticks forever
+until some other bot: command is hit. If that is a local file command, then that affects the file but then
+the compile reverbs to no bot: value until the next one is hit (either globally or in a file).
+
 
 `Share` – Normally, if you have multiple bots, they all talk independently to the
 user. What one learns or says is not available to the other bots. It is possible to create a
@@ -1214,13 +1229,10 @@ it can't succeed if you have letters immediately after the variable name. E.g.
 ```
 ^"T$$time_computed_hrs:$$time_computed_mins:$$time_computed_secsZ"
 ```
-
 The Z at the end of the `$$time_computed_secs` will make that variable hard to detect,
 since it will look like the variable is `$$time_computed_secsZ`. 
-If you need to conjoin such things, you can use `^join()` instead.
-```
- ^join(T $$time_computed_hrs : $$time_computed_mins : $$time_computed_secs Z )
-```
+
+You can fix that by escaping the next character not part of the name. `$$time_computed_secs\Z`.
 
 ## Json Active Strings
 
@@ -2216,7 +2228,7 @@ You can also use the `:disable` and `:enable` commands to turn off all or some t
 
 # Common Script Idioms
 
-## Selecting Specific Cases
+## Selecting Specific Cases ^refine
 
 To be efficient in rule processing, I often catch a lot of things in a rule and then refine it.
 ```

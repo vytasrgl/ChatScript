@@ -64,7 +64,7 @@ void ShowMatchResult(FunctionResult result, char* rule,char* label)
 			for (int i = 0; i < wildcardIndex; ++i)
 			{
 				if (*wildcardOriginalText[i]) Log(STDTRACELOG,(char*)"_%d=%s / %s (%d-%d)  ",i,wildcardOriginalText[i],wildcardCanonicalText[i],wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
-				else Log(STDTRACELOG,(char*)"_%d=  ",i);
+				else Log(STDTRACELOG,(char*)"_%d=null (%d-%d)  ",i,wildcardPosition[i] & 0x0000ffff,wildcardPosition[i]>>16);
 			}
 		}
 		Log(STDTRACELOG,(char*)"\r\n");
@@ -291,7 +291,7 @@ static bool FindPhrase(char* word, int start,bool reverse, int & actualStart, in
 }
 
 // NOTE: in reverse mode, positionStart is still earlier in the sentence than PositionEnd. We do not flip viewpoint.
-// rebindable refers to ability to relocate firstmatched on failure
+// rebindable refers to ability to relocate firstmatched on failure (1 means we can shift from here, 3 means we enforce spacing and cannot rebind)
 // returnStart and returnEnd are the range of the match that happened
 // Firstmatched is a real word (not wildcard) where we first bound a match (for rebinding restarts)
 // Startposition is where we start matching from
@@ -483,6 +483,7 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					}
 					if (beginmatch == -1) beginmatch = positionStart; // treat this as a real match
 					matched = true;
+					if (rebindable) rebindable = 3;	// not allowed to rebind from this, it is a fixed location
 				}
 				else
 				{
@@ -507,15 +508,16 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					positionStart = positionEnd = at; //   idiom < * and < _* handled under *
 					matched = true;
 				}
+				if (matched && rebindable) rebindable = 3;	// not allowed to rebind from this, it is a fixed location
                 break;
             case '>': //   sentence end marker
 				if (word[1] == '>')  goto DOUBLERIGHT; //   >> closer, and reset to start of sentence wild again...
-				at = positionEnd;
-				while (unmarked[++at] && at <= wordCount){;} // skip over hidden data
-				if (at > wordCount) at = positionEnd;	// he was the end
-				else at = wordCount; // the presumed real end
-				
 				ptr = nextTokenStart;
+				if (*kind == '[') rebindable = 2; // let outer level decide if it is right  
+				// # get 3 days forecast in Orlando, New York | London and San Francisco
+				//	u: (_and) _10 = _0
+				//	u: TEST (@_10+ * _[ ~arrayseparator > ])
+
 				if ((wildcardSelector & WILDGAP) && reverse) // cannot memorize going backward to  end of sentence
 				{
 					matched = false;
@@ -527,18 +529,24 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					positionStart = positionEnd = wordCount + 1; 
 					matched = true;
 				}
-				else if ((wildcardSelector & WILDGAP) || positionEnd == at)// you can go to end from anywhere if you have a gap OR you are there
+				else if ((wildcardSelector & WILDGAP) || positionEnd == wordCount)// you can go to end from anywhere if you have a gap OR you are there
 				{
 					matched =  true;
-					positionStart = positionEnd = at + 1; //   pretend to match a word off end of sentence
+					positionStart = positionEnd = wordCount+1; //   pretend to match a word off end of sentence
 				}
 				else if (*kind == '[' || *kind == '{') // nested unit will figure out if legal 
 				{
 					matched =  true;
-					positionStart = positionEnd = at + 1; //   pretend to match a word at end of sentence
+					positionStart = positionEnd = wordCount+1; //   pretend to match a word at end of sentence
+				}
+				else if (positionStart == INFINITE_MATCH) 
+				{
+					positionStart = positionEnd = wordCount + 1; 
+					matched = true;
 				}
 				else matched = false;
-				break;
+				if (matched && rebindable && rebindable != 2) rebindable = 3;	// not allowed to rebind from this, it is a fixed location
+ 				break;
              case '*':
 				if (beginmatch == -1) beginmatch = startposition + 1;
 				if (word[1] == '-') //   backward grab, -1 is word before now -- BUG does not respect unmark system
@@ -796,9 +804,9 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 						rEnd = 0;
 						rStart = INFINITE_MATCH; 
 					}
-					int localRebindable = 0; // not allowed to try rebinding start again
-					if (positionStart == INFINITE_MATCH) localRebindable = 1;
-					if (oldselect & WILDGAP) localRebindable = 2; // allowed to gap in
+					int localRebindable = 0; // not allowed to try rebinding start again by default
+					if (positionStart == INFINITE_MATCH) localRebindable = 1; // we can move the start
+					if (oldselect & WILDGAP) localRebindable = 2; // allowed to gap in 
 					matched = Match(buffer,ptr,depth+1,positionEnd,type, localRebindable,0,returnStart,
 						returnEnd,uppercasemat,whenmatched,positionStart,positionEnd,reverse); //   subsection ok - it is allowed to set position vars, if ! get used, they dont matter because we fail
 					wildcardSelector = oldselect; // restore outer environment
@@ -1192,7 +1200,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				}
 			}
 		}
-		else if (!legalgap && rebindable != 2) // forward requirement
+		else if (!legalgap && rebindable != 2) // forward requirement must be tested (1 means we are allowed to rebind)
 		{
 			if (oldEnd < oldStart && positionStart <= (oldStart + 1)){;} // legal move ahead given matched WITHIN last time -- what does match within mean?
 			else if (positionStart > (oldEnd + 1))  // failed to match position advance of one

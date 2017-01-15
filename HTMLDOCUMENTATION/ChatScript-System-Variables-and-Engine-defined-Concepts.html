@@ -538,7 +538,7 @@
 <td>merge month day and/or year sequences (<em>January 2, 1993</em>)</td>
 </tr>
 <tr class="odd">
-<td><code>#JSON_DIRECT_OOB</code></td>
+<td><code>#JSON_DIRECT_FROM_OOB</code></td>
 <td>asking the tokenizer to directly process OOB data. See ^jsonparse in JSON manual.</td>
 </tr>
 </tbody>
@@ -832,8 +832,8 @@ s: (name is _*)
 <td>end of found words from ^match</td>
 </tr>
 <tr class="even">
-<td><code>$cs_factowner</code></td>
-<td>when non-zero creates facts restricted by this bitmask so facts created by other masks cannot be seen. allows you to separate facts per bot in a multi-bot environment</td>
+<td><code>cs_factowner</code></td>
+<td>when non-zero creates facts restricted by this bitmask so facts created by other masks cannot be seen. allows you to separate facts per bot in a multi-bot environment. During compilation if this is set by a bot: command, then functions created and facts created by tables will be restricted to that owner.</td>
 </tr>
 </tbody>
 </table>

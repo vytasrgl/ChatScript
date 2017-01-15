@@ -110,12 +110,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>JSON originally required a JSON string be a composite of some kind. Now it allows any JSON type to be a JSON document. CS sticks to the original requirement, because passing around a single value as JSON is pretty useless.</p>
 <p>Once you have a JSON fact structure, you can go the opposite direction and convert it back into a string or display it visually.</p>
 <p>CS accepts extended JSON syntax for parsing into a json fact structure. Any place you have an object value, you can refer to a ChatScript user or match variable and that value will be substituted in. E.g.,</p>
-<pre><code>^parsejson(&quot;{ a: $var, b: _0 }&quot;)</code></pre>
-<p>Note you should use a regular quoted string and not a function string like <code>^&quot;{ a: $var, b: _0 }&quot;</code>. If you use a function string, substitution will happen before calling ^parsejson. Which might be a problem if you had something like this:</p>
-<pre><code>^parsejson(&quot;{ a: $var, b: _0aba }&quot;).</code></pre>
+<pre><code>^jsonparse(&quot;{ a: $var, b: _0 }&quot;)</code></pre>
+<p>Note you should use a regular quoted string and not a function string like <code>^&quot;{ a: $var, b: _0 }&quot;</code>. If you use a function string, substitution will happen before calling ^jsonparse. Which might be a problem if you had something like this:</p>
+<pre><code>^jsonparse(&quot;{ a: $var, b: _0aba }&quot;).</code></pre>
 <p>where you wanted the value of <code>b</code> to be <code>&quot;_0aba&quot;</code>. Had you used an active string, the _0 would have been replaced with its contents.</p>
 <p>Also, you can use json dereference operators to take apart an existing json structure and use values of it in the current one. If $$y points to a json structure, then</p>
-<pre><code>^parsejson(&quot;{ a: $var, b: _0.e[2] }&quot;)</code></pre>
+<pre><code>^jsonparse(&quot;{ a: $var, b: _0.e[2] }&quot;)</code></pre>
 <p>would find a json object reference on <code>_0</code>, get the e field, and get the 3rd array value found there. An initial argument of safe will locate the correct end of the data for json parsing, allowing you to pass excess data. This is important for passing in json data in OOB information. OOB information comes in <code>[]</code> and Json itself uses <code>[]</code> at times, so it would be impossible to find the correct end of pattern with normal pattern matching. Instead just do:</p>
 <pre><code>u: ( \[ _* ) and call ^jsonparse(safe _0)</code></pre>
 <p>This will figure out where the OOB marker actually is and only parse within it. You can add NOFAIL before the string argument, to tell it to return null but not fail if a dereference path fails cannot be found.</p>
@@ -125,7 +125,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Instead you should call a website using <code>^jsonopen</code> which will automatically convert returned JSON data into internal CS data. Or you can pass JSON data on input via OOB notation:</p>
 <pre><code>[ {&quot;token&quot;: &quot;myid&quot;, &quot;accounts&quot;: [&quot;whatever&quot;]}]  User message</code></pre>
 <p>and then have a pattern to grab the OOB data and call <code>jsonparse</code> with it (using SAFE as a parameter). OOB input is not subject to human tokenization behavior, spellchecking, etc.</p>
-<p>Note: There is a limit to how much JSON you can pass as OOB data nominally, because it is considered a single token. You can bypass this limit by asking the tokenizer to directly process OOB data, returning the JSON structure name instead of all the content. Just enable <code>#JSON_DIRECT_OOB</code> on the <code>$cs_token</code> value and if it finds OOB data that is entirely JSON, it will parse it and return something like <code>jo-t1</code> or <code>ja-t1</code> in its place. Eg. <code>[ { &quot;key&quot;: &quot;value} ]</code> will return tokenized as <code>[jo-t1]</code>.</p>
+<p>Note: There is a limit to how much JSON you can pass as OOB data nominally, because it is considered a single token. You can bypass this limit by asking the tokenizer to directly process OOB data, returning the JSON structure name instead of all the content. Just enable <code>#JSON_DIRECT_FROM_OOB</code> on the <code>$cs_token</code> value and if it finds OOB data that is entirely JSON, it will parse it and return something like <code>jo-t1</code> or <code>ja-t1</code> in its place. Eg. <code>[ { &quot;key&quot;: &quot;value} ]</code> will return tokenized as <code>[jo-t1]</code>.</p>
 <h2 id="jsonformatstring">jsonformat(string)`</h2>
 <p>Because technically JSON requires you put quotes around field names (though various places ignore that requirement) and because CS doesn't, the function takes in a slack json text string and outputs a strict one.</p>
 <h2 id="accessing-json-structures">Accessing JSON structures</h2>
