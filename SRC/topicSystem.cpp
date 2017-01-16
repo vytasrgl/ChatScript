@@ -2417,15 +2417,14 @@ void InitKeywords(const char* name,const char* layer,unsigned int build,bool bui
 
 		required = set->systemFlags & (PROBABLE_NOUN|PROBABLE_VERB|PROBABLE_ADJECTIVE|PROBABLE_ADVERB); // aka ONLY_NOUN ONLY_VERB etc
 		if (set->systemFlags & ONLY_NONE) 
-
 			sys &= -1 ^ ONLY_NONE; // dont pass this on to anyone
-
 		// now read the keywords
 		while (ALWAYS)
 		{
 			// may have ` after it so simulate ReadCompiledWord which wont tolerate it
 			char* at = word;
 			if (!*ptr) break;
+			ptr = SkipWhitespace(ptr);
 			while(*ptr && *ptr != ' ')
 			{
 				*at++ = *ptr++;

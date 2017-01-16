@@ -6228,6 +6228,7 @@ static FunctionResult NthCode(char* buffer)
 		FACT* F = GetObjectNondeadHead(D);
 		while (F) // back to front order, need to invert, count how many
 		{
+			TraceFact(F);
 			++count;
 			F = GetObjectNondeadNext(F);
 		}

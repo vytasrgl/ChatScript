@@ -1,6 +1,6 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.11";
+char* version = "7.111";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
