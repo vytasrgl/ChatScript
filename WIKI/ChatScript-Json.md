@@ -525,3 +525,30 @@ Representing JSON in CS facts is more than just a bunch of subject-verb-object f
 The facts have typing bits on them that describe the structure and arrays have index values that must
 remain consistent. Therefore you should not create and alter JSON fact structures using ordinary CS
 fact routines like `^createfact` and `^delete`. Instead use the JSON routines provided.
+
+
+## Practical Examples
+
+The write jsonwrite and json tree print out different views of the same data..
+
+    u: (-testcase1) $$jsonObject = ^jsoncreate(object)
+        ˆjsonobjectinsert( $$jsonObject name “some name” )
+        ˆjsonobjectinsert( $$jsonObject phone “some number” )
+        ˆjsonwrite ( $$jsonObject ) \n
+        ^jsontree ( $$jsonObject )\n
+
+Note in this next example how to escpe a json string with ^''.  This makes creating json objects from static data very intuitive and clear.
+    
+    u: (-testcase2) $$tmp = ^jsonparse( ^'{name: "Todd Kuebler", phone: "555.1212"}' )
+        ^jsonwrite( $$tmp ) \n
+        ^jsontree( $$tmp ) \n
+        name: $$tmp.name, phone: $$tmp.phone
+ 
+ This example shows the . notation access of data inside an json object in chatscript.  This is probably the most intuitive way of interacting with the data. 
+ 
+    u: (-testcase3) $$tmp = ^jsoncreate(object)
+        $$tmp.name = "Todd Kuebler"
+        $$tmp.phone = "555-1212"
+        ^jsonwrite( $$tmp ) \n
+        ^jsontree( $$tmp ) \n
+        name: $$tmp.name, phone: $$tmp.phone 

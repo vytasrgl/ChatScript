@@ -24,6 +24,12 @@ make file in SRC. And you have to install curl and optionally postgres. If you d
 or want them you can in your build file do defines of: DISCARDDATABASE and
 DISCARDJSON.
 
+Alternatively you can use the binary in `BINARIES/MacChatScript`, but it is at least one version behind unless you are grabbing chatscript directly from github.   
+
+There is also an Xcode project in the `NON-WINDOWS NON-C/Xcode` directory  that you can launch and build your own binary with.  This is probably the prefered method for advanced users.
+
+See the `Chatscript on a Mac` in `Overviews and Tutorials` directory of the docs for a more indepth discusion of compiling and using ChatScript on a mac.
+
 
 ## Installing Linux
 
@@ -57,17 +63,38 @@ whatever. That's not the ideal way however.
 
 The ideal way to do ChatScript is to have a folder that somehow contains your bot data
 AND contains CS as a subfolder. Like this:
-```
-MYFOLDER
-  BOTDATA
-  filesmybot.txt
-  ChatScript
-```
+
+    MYFOLDER/
+        startserver.sh
+        BOTDATA/
+            Smooth/
+                smoothcontrol.top
+            Fuzzy/
+                fuzzycontrol.top
+                flea.top
+            AllBots/
+                shopping.top
+        filesmybot.txt
+        ChatScript/
 
 In your `filesmybot.txt` you name the path to your `BOTDATA` files and folders
 appropriately. Then, to update ChatScript, you remove the ChatScript folder and drop in
 the new one. ChatScript automatically looks above itself to find your `filesxxx.txt` file if it
 can't find it within.
+
+Example filesmybot.txt for the directory structure above:
+
+    # multibot example
+    ../BOTDATA/Smooth/
+    ../BOTDATA/Fuzzy/
+    ../BOTDATA/AllBots/
+    # load in standard chatscript quibbles
+    RAWDATA/QUIBBLE/
+
+You then start the server in the 'MYFOLDER' directory with a script like this on Mac or Linux, windows is similar:
+
+    #!/bin/sh
+    cd ChatScript && BINARIES/MacChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH system=LIVEDATA/SYSTEM local
 
 Similarly, if you have your own `LIVEDATA` files, you can give a reference to your copy
 of files in `MYDATA/LIVEDATA` so you don't have to worry that CS copies may have
