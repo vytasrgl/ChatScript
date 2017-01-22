@@ -584,7 +584,7 @@ This example shows the . notation access of data inside an json object in chatsc
         name: $$tmp.name, phone: $$tmp.phone 
         
         
-### Arrays (of objects)
+### Arrays of objects
 
 In the example below, we add two items into an array of objects and we display the formatted array:
 
@@ -593,10 +593,9 @@ u: ( testcase4 )
     # create a phoneBook as an array of structured items (objects)
     $$phoneBook = ^jsoncreate(array)
 
+    #
     # add first object in the array
-    $$i = 0
-
-    # create an object
+    #
     $$item = ^jsoncreate(object)
 
     # assign values
@@ -605,10 +604,9 @@ u: ( testcase4 )
 
     ^jsonarrayinsert($$phoneBook $$item)
 
+    #
     # add a second object in the array
-    $$i = 1
-
-    # create an object
+    #
     $$item = ^jsoncreate(object)
 
     # assign values
@@ -621,7 +619,7 @@ u: ( testcase4 )
     ^jsontree( $$phoneBook ) \n
 
     #
-    # show all items in the phone book
+    # print formatted items in the phone book
     #
     phone book:\n
     $$i = 0
