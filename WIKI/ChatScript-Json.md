@@ -2,7 +2,6 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
-
 > Revision 1/7/2017 cs7.1
 
 
@@ -11,7 +10,7 @@
 JSON (JavaScript Object Notation) is an open standard format using human-readable text to transmit
 data objects over the web. It is a common standard largely replacing XML which is too wordy and hard
 to read. JSON has two datatypes that represents collections of values, the array and the object.
-A JSON array is a list of JSON entities separated by commas and placed within [], e.g.,
+A JSON array is a list of JSON entities separated by commas and placed within `[]`, e.g.,
 ```
 [ A 2 [ help life] [] ]
 ```
@@ -78,26 +77,28 @@ structure in CS, the facts will all be unique.
 
 Routines that will create facts for JSON will by default create them as transients (they die at end of
 volley unless you work to save them). You can override this default by saying
-permanent or transient. This applies to `^jsonopen`, `^jsonparse`, `^jsoncreate`,
+`permanent` or `transient`. This applies to `^jsonopen`, `^jsonparse`, `^jsoncreate`,
 `^jsonobjectinsert`, `^jsonarrayinsert`, `^jsoncopy`.
 
-You can also add a flag safe to `^jsonparse`, `^jsonobjectinsert`, `^jsonarraydelete`. 
-You can also add a flag unique to `^jsonarrayinsert`.
-You can also add `DUPLICATE` to ^jsonobjectinsert.
+You can also add a flag `safe` to `^jsonparse`, `^jsonobjectinsert`, `^jsonarraydelete`. 
+You can also add a flag `unique` to `^jsonarrayinsert`.
+You can also add `duplicate` to ^jsonobjectinsert.
 
 When multiple flags are desired, put them into a simple string, `"DUPLICATE PERMANENT"`. Case doesn't matter.
 
 When you want to add a reference to a normal factid (as is returned by ^createfact) you can add the flag `AUTODELETE`
 
-You can also assign user flags by listing USER_FLAG1, thru USER_FLAG4 as a flag as well. The JSON fact will have that flag on it, which you can use in conjunction with ^query to limit what matches can be found.
+You can also assign user flags by listing `USER_FLAG1`, through `USER_FLAG4` as a flag as well. 
+The JSON fact will have that flag on it, which you can use in conjunction with `^query` to limit what matches can be found.
+
 
 ### `^jsonparse`( {JSONFLAGS} string )
+
 `string` is a JSON text string (as might be returned from a website) and this parses into facts. 
 It returns the name of the root node JSON composite. This name will look like this:
 
-`ja-0` – a json array numbered `0`.
-
-`jo-0` – a json object numbered `0`.
+* `ja-0` – a json array numbered `0`.
+* `jo-0` – a json object numbered `0`.
 
 As new JSON composites are created during a volley, the numbers increase to keep them all distinct.
 JSON composites are all created as transient facts and will die at the end of the volley unless you do
@@ -177,7 +178,9 @@ nominally, because it is considered a single token.
 You can bypass this limit by asking the tokenizer to directly process OOB data, returning the JSON structure name instead of all the content. Just enable `#JSON_DIRECT_FROM_OOB`  on the `$cs_token` value and if it finds OOB data that is entirely JSON, it will parse it and return something like `jo-t1` or `ja-t1` in its place. Eg.
 `[ { "key": "value} ]` will return tokenized as `[jo-t1]`.
 
-##jsonformat(string)`
+
+## `jsonformat`(string)
+
 Because technically JSON requires you put quotes around field names
 (though various places ignore that requirement) and because CS doesn't, the function takes in a slack
 json text string and outputs a strict one.
@@ -186,12 +189,14 @@ json text string and outputs a strict one.
 ## Accessing JSON structures
 
 ### `^jsonpath`( string id )
-`string` is a description of how to walk JSON. 
-`id` is the name of the node you want to start at (typically returned from `^jsonopen` or `^jsonparse`). 
+
+* `string` is a description of how to walk JSON. 
+* `id` is the name of the node you want to start at (typically returned from `^jsonopen` or `^jsonparse`). 
 
 Array values are accessed using typical array notation like `[3]` and object fields using dotted notation. 
 A simple path access might look like this: `[1].id` which means take the root object passed as id, 
 e.g., `ja-1`, get the 2nd index value (arrays are 0-based in JSON). 
+
 That value is expected to be an object, so return the value corresponding to the id field of that object. 
 In more complex situations, the value of id might itself be an object or an array, 
 which you could continue indexing like `[1].id.firstname`.
@@ -227,7 +232,8 @@ if you add a 3rd argument "safe" to the call.
 ```
 
 ### `^jsonpath`
-can also return the actual factid of the match, instead of the object of the fact. This would
+
+Can also return the actual factid of the match, instead of the object of the fact. This would
 allow you to see the index of a found array element, or the json object/array name involved. Or you
 could use ^revisefact to change the specific value of that fact (not creating a new fact). Just add * after
 your final path, eg
@@ -259,6 +265,7 @@ You may omit the leading . of a path and CS will by default assume it
 If a variable holds a JSON object value, you can directly set and get from fields of that object
 using dotted notation. This can be a fixed static fieldname you give or a variable value:
  `$myvar.$myfield` is legal.
+
 Dotted notation is cleaner and faster than `^jsonpath` and `jsonobjectinsert` and for get, has
 the advantage that it never fails, it only returns null if it can't find the field. 
 On the other hand, assignment fails if the path does not contain a json object at some level.
@@ -329,23 +336,28 @@ number restricts how deep it displays. 0 (default) means all. 1 is just top leve
 You can build up a JSON structure without using `^jsonparse` if you want to build it piece by piece.
 And you can edit existing structures.
 
+
 ### `^jsoncreate`( {JSONFLAGS} type ) 
+
 Type is either array or object and a json composite with no content is created and its name returned. 
 See `^jsonarrayinsert`, `^jsonobjectinsert`, and `^jsondelete` for how to manipulate it. 
 See writeup earlier about optional json flags.
 
+
 ### `^jsonarrayinsert`( {JSONFLAGS} arrayname value ) 
+
 Given the name of a json array and a value, it adds the value to the end of the array. 
 See writeup earlier about optional json flags. 
 If you use the flag unique then if value already exists in the array, no duplicate will be added.
 
-### `^jsonarraydelete`( [INDEX, VALUE] arrayname value ) 
-This deletes a single entry from a JSON array. It does not damage the thing deleted, just its member in the array. 
-If the first argument is INDEX, then value is a number which is the array index (0 … n-1). 
-If the first argument is VALUE, then value is the value to find and remove as the object of the json fact.
 
-You can delete every matching `VALUE` entry by adding the optional argument `ALL`. Like:
-`^jsonarraydelete("INDEX ALL" $array 4)`
+### `^jsonarraydelete`( [`INDEX`, `VALUE`] arrayname value ) 
+
+This deletes a single entry from a JSON array. It does not damage the thing deleted, just its member in the array. 
+* If the first argument is `INDEX`, then value is a number which is the array index (0 ... n-1). 
+* If the first argument is `VALUE`, then value is the value to find and remove as the object of the json fact.
+
+You can delete every matching `VALUE` entry by adding the optional argument `ALL`. Like: `^jsonarraydelete("INDEX ALL" $array 4)`
 
 If there are numbered elements after this one, then those elements immediately renumber downwards
 so that the array indexing range is contiguous.
@@ -356,12 +368,17 @@ suppress this with the `SAFE` flag. `^jsonarraydelete(SAFE $obj $key)`.
 
 
 ### `^jsonarraysize`( name ) 
+
 deprecated in favor of ^length
 
+
 ### `^jsoncopy`( name ) 
+
 Given the name of a json structure, makes a duplicate of it. If it is not the name of a json structure, it merely returns what you pass it.
 
+
 ### `^jsonobjectinsert`( {JSONFLAGS} objectname key value ) 
+
 inserts the key value pair into the object named. The key does not require quoting. 
 Inserting a json string as value requires a quoted string. 
 Duplicate keys are ignored unless the optional 1st argument `DUPLICATE` is given.
@@ -371,30 +388,40 @@ If the key has an existing value and `DUPLICATE` is not a factor, then if the va
 recursively deleted provided its data is not referenced by some other fact (not by any variables). You can
 suppress this with the `SAFE` flag. `jsonobjectinsert(SAFE $obj $key null)`.
 
+
 ### `^jsondelete`( factid ) 
+
 deprecated in favor of ^delete
 
+
 ### `^jsongather`( {fact-set} jsonid {level}) 
+
 takes the facts involved in the json data (as returned by `^jsonparse` or `^jsonopen`) 
-and stores them in the named factset. 
+and stores them in the named factset.  
 This allows you to remove their transient flags or save them in the users permanent data file.
 
 You can omit fact-set as an argument if you are using an assignment statement:
-`@1 = ^jsongather(jsonid)'
+`@1 = ^jsongather(jsonid)`
 
 `^Jsongather` normally gathers all levels of the data recursively. You can limit how far down it goes by
 supplying `level`. Level 0 is all. Level 1 is the top level of data. Etc.
 
+
 ### `^jsonlabel`( label )
+
 assigns a text sequence to add to jo- and ja- items created thereafter. See System functions manual.
 
+
 ### `^jsonundecodestring`( string ) 
+
 removes all json escape markers back to normal for possible printout
 to a user. This translates \\n to newline, \\r to carriage return, \\t to tab, and \\" to a simple quote.
+
 
 ## WEB JSON
 
 ### `^jsonopen`( {JSONFLAGS} kind url postdata header {timeout})
+
 this function queries a website and returns a JSON datastructure as facts. 
 It uses the standard CURL library, so it's arguments and how to use them are 
 generally defined by CURL documentation and the website you intend to access. 
@@ -459,7 +486,8 @@ the field is the id. You could manually write script to walk the entire tree. Bu
 `^jsonpath` to retrieve specific pieces of data you want. For example, you could do a query on the
 value returned by `^jsonopen` as subject, to find out how many array elements there are. Then use
 `^jsonpath` to walk each array element to retrieve a specific field buried within.
-Note- for things like primitive null, null arrays, null strings, null objects, these are represented as "null"
+
+Note - for things like primitive null, null arrays, null strings, null objects, these are represented as "null"
 and the corresponding fact flag tells you the kind of value it is.
 
 You can also ask CS to show those out visually using `^jsontree`.
@@ -489,6 +517,7 @@ System variables `%httpresponse` will hold the most recent http return code from
 If you call `^jsonopen(direct ...` then the result will not be facts, but the text will be directly shipped
 back as the answer. Be wary of doing this if the result will be large (>30K?) since you will overflow your
 buffer without being checked.
+
 
 ## JSON & Out-of-band output data
 
@@ -529,6 +558,7 @@ fact routines like `^createfact` and `^delete`. Instead use the JSON routines pr
 
 ## Practical Examples
 
+### Objects
 The write jsonwrite and json tree print out different views of the same data..
 
     u: (-testcase1) $$jsonObject = ^jsoncreate(object)
@@ -544,7 +574,7 @@ Note in this next example how to escpe a json string with ^''.  This makes creat
         ^jsontree( $$tmp ) \n
         name: $$tmp.name, phone: $$tmp.phone
  
- This example shows the . notation access of data inside an json object in chatscript.  This is probably the most intuitive way of interacting with the data. 
+This example shows the . notation access of data inside an json object in chatscript.  This is probably the most intuitive way of interacting with the data. 
  
     u: (-testcase3) $$tmp = ^jsoncreate(object)
         $$tmp.name = "Todd Kuebler"
@@ -552,3 +582,57 @@ Note in this next example how to escpe a json string with ^''.  This makes creat
         ^jsonwrite( $$tmp ) \n
         ^jsontree( $$tmp ) \n
         name: $$tmp.name, phone: $$tmp.phone 
+        
+        
+### Arrays (of objects)
+
+In the example below, we add two items into an array of objects and we display the formatted array:
+
+```
+u: ( testcase4 )
+    # create a phoneBook as an array of structured items (objects)
+    $$phoneBook = ^jsoncreate(array)
+
+    # add first object in the array
+    $$i = 0
+
+    # create an object
+    $$item = ^jsoncreate(object)
+
+    # assign values
+    $$item.name = "Todd Kuebler"
+    $$item.phone = "555-1212"
+
+    ^jsonarrayinsert($$phoneBook $$item)
+
+    # add a second object in the array
+    $$i = 1
+
+    # create an object
+    $$item = ^jsoncreate(object)
+
+    # assign values
+    $$item.name = "Giorgio Robino"
+    $$item.phone = "111-123456789"
+
+    ^jsonarrayinsert($$phoneBook $$item)    
+    
+    # display JSON tree
+    ^jsontree( $$phoneBook ) \n
+
+    #
+    # show all items in the phone book
+    #
+    phone book:\n
+    $$i = 0
+    loop()
+      {
+      # print out formatted item
+      name: $$phoneBook[$$i].name, phone: $$phoneBook[$$i].phone\n
+
+      $$i += 1
+      $$size = ^length($$phoneBook)
+      if ( $$i == $$size ) { end( loop ) }
+      }
+```
+        
