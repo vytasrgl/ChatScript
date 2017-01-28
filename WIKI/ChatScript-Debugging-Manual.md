@@ -15,12 +15,13 @@ You can erase the entire contents of the TMP directory a:trny time you want to. 
 Debugging generally requires use of some :xxxx commands. I don't always remember them all, so at times I might simply say
 
 ## `:commands` 
+to get a list of the commands and a rough description. 
 ```
 :commands
 ```
-
-to get a list of the commands and a rough description. 
+the above : statement show the list:
 ```
+
 ---- Debugging commands -
 :do        - Execute the arguments as an output stream, e.g., invoke a function, set variables, etc
 :silent    - toggle silent - dont show outputs
