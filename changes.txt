@@ -1,3 +1,13 @@
+version 7.12  -- recompile your bot. TOPIC format has changed slightly
+1. ^jsonreadcvs  to read spreadsheet files
+2. fixed concurrency bug  -- CHANGING to VS2015 since source using C++11 no longer compiles in VS2010 and you cant easily
+ get that compiler version any more.
+3. :trim 11 shows when exchange happened, and noob argument can now control input and/or output trimming
+4. Command line parameter manual split off from system concepts and variables
+5. topic=  command line parameter
+6. renamed $cs_factowner to $cs_botid
+7. Moved and expanded discussion of multiple bots from advanced manual to new ChatScript Multiple Bots manual
+
 
 version 7.111   1/15/2017
 1. fixed major bug in concept reading I introduced in 7.11

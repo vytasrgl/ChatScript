@@ -137,8 +137,18 @@ Trim will read every file and generate output depending on the integer code give
 | `7`  |  display rule responsible for output. Analogous to :why, it shows the rule tag, the sample input comment if there is one, the rule type and pattern, the input from the user and the output from the chatbot. If the rule doing the output was the target of a local ^reuse (same topic), then the data about the
 rule comes from the calling rule, not the output rule.
 | `8`  |  puts the user and chatbot on separate lines, indenting the chatbots line and prefixes it with the topic generating the response. Easier to read and debug.
+| `11`  |  puts the timestamp and user on first line and and chatbot on second line,indenting the chatbots line. 
 
-Normally trim displays everything. But with an optional 3rd argument `nooob`, you can omit out-of-bands data. E.g.,
+Normally trim displays everything. But with an optional 3rd argument `nooob`, you can omit out-of-bands data from output. E.g.,
 ```
 :trim bob 6 nooob
+```
+You can separately choose to trim input and output oob using a numeric bits, where `1` is input and `2` is output (the same as `noob`) and
+`3` is both
+
+`:trim 11` looks like this:
+
+```
+Jan25'17-13:49:21  when is the help desk open?
+               The Helpdesk is available Monday through Friday from 7:00AM to 7:00PM Pacific. 
 ```

@@ -120,7 +120,7 @@ static char* WriteUserFacts(char* ptr,bool sharefile,int limit)
     unsigned int count;
 	if (!shared || sharefile)  for (i = 0; i <= MAX_FIND_SETS; ++i) 
     {
-		if (!(setControl & (uint64) (1 << i))) continue; // purely transient stuff
+		if (!(setControl & (uint64) ((uint64)1 << i))) continue; // purely transient stuff
 
 		//   remove dead references
 		FACT** set = factSet[i];
@@ -601,7 +601,6 @@ void WriteUserData(time_t curr)
 #ifndef DISCARDTESTING
 		if (filesystemOverride == NORMALFILES &&  (!server || serverRetryOK)  && !documentMode  && !callback)  
 		{
-			char name[MAX_WORD_SIZE];
 			sprintf(name,(char*)"TMP/backup-share-%s_%s.bin",loginID,computerID);
 			CopyFile2File(name,userDataBase,false);	// backup for debugging
 			if (redo)
@@ -696,7 +695,8 @@ void ReadUserData() // passed  buffer with file content (where feasible)
 	clock_t start_time = ElapsedMilliseconds();
 
 	// std defaults
-	tokenControl = (DO_SUBSTITUTE_SYSTEM | DO_INTERJECTION_SPLITTING | DO_PROPERNAME_MERGE | DO_NUMBER_MERGE | DO_SPELLCHECK | DO_PARSE );
+	tokenControl = (DO_SUBSTITUTE_SYSTEM | DO_INTERJECTION_SPLITTING | DO_PROPERNAME_MERGE | DO_NUMBER_MERGE | DO_SPELLCHECK );
+	if (!stricmp(language,"english")) tokenControl |= DO_PARSE;
 	responseControl = ALL_RESPONSES;
 	*wildcardSeparator = ' ';
 

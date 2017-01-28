@@ -405,7 +405,7 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
     }
 	localAddr.sin_port = htons(port_g);
     
-	if (bind(srv_socket_g, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) 
+	if (::bind(srv_socket_g, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) 
 	{
  		return -1; // typical when server is already running and cron tries to start
 	}
@@ -589,7 +589,8 @@ int evsrv_do_chat(Client_t *client)
  
 RESTART_RETRY:
 	strcpy(ourMainInputBuffer,client->message);
-    char* dateLog = GetTimeInfo(true)+SKIPWEEKDAY;
+	struct tm ptm;
+    char* dateLog = GetTimeInfo(&ptm,true)+SKIPWEEKDAY;
 	if (serverPreLog && restarted)  Log(SERVERLOG,(char*)"ServerPre: retry pid: %d %s (%s) %s %s\r\n",getpid(),client->user,client->bot,ourMainInputBuffer, dateLog);
  	else if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: pid: %d %s (%s) %s %s\r\n",getpid(),client->user,client->bot,ourMainInputBuffer, dateLog);
 	int turn = PerformChat(

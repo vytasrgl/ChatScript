@@ -174,7 +174,7 @@ int64 atoi64(char* ptr );
 char* ReadQuote(char* ptr, char* buffer,bool backslash = false, bool noblank = true);
 char* ReadArgument(char* ptr, char* buffer, FunctionResult &result);
 
-int ReadALine(char* buf,FILE* file,unsigned int limit = maxBufferSize,bool returnEmptyLines = false);
+int ReadALine(char* buf,FILE* file,unsigned int limit = maxBufferSize,bool returnEmptyLines = false,bool convertTabs = true);
 char* SkipWhitespace(char* ptr);
 char* BalanceParen(char* ptr,bool within=true,bool wildcards=false);
 int64 NumberPower(char* number);

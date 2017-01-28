@@ -8,6 +8,27 @@
     </LocalDebuggerCommandArguments>
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Mongo|Win32'">
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\BINARIES</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommand>$(SolutionDir)..\BINARIES\chatscriptmongo.exe </LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments />
+    <ShowAllFiles>true</ShowAllFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Postgres|Win32'">
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\BINARIES</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommand>$(SolutionDir)..\BINARIES\chatscript.exe </LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments />
+    <ShowAllFiles>true</ShowAllFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Treetagger|Win32'">
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)..\BINARIES</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommand>$(SolutionDir)..\BINARIES\chatscript.exe </LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments />
+    <ShowAllFiles>true</ShowAllFiles>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>..\BINARIES</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>

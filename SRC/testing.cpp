@@ -58,7 +58,7 @@ static FILE* debugSource = NULL;
 static bool abortCheck = false;
 static void C_Trace(char* input);
 static void C_DoInternal(char* input,bool internal);
-static bool nooob = false;
+static int nooob = 0;
 static int lineLimit = 0; // in abstract report lines that are longer than this...
 static WORDP topLevel = 0;
 static unsigned int err = 0;
@@ -3978,6 +3978,10 @@ static void C_Build(char* input)
 		remove(file); // precautionary
 		sprintf(file,"%s/missingLabel.txt",topic);
 		remove(file);
+		MakeDirectory((char*)"TOPIC");
+		if (buildId == BUILD0) MakeDirectory((char*)"TOPIC/BUILD0");
+		else if (buildId == BUILD1) MakeDirectory((char*)"TOPIC/BUILD1");
+		else if (buildId == BUILD2) MakeDirectory((char*)"TOPIC/BUILD2");
 		ReadTopicFiles(word,buildId,spell); 
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
 		ClearPendingTopics(); // flush in case topic ids change or go away
@@ -7965,8 +7969,6 @@ char* UrlEncode(char* input);
 
 static void Translate(char* msg,char* to, char* apikey)
 {
-	if (1) return;
-
 #ifndef DISCARDJSON
 	char* url = AllocateBuffer();
 	size_t len = strlen(msg);
@@ -7986,11 +7988,7 @@ static void Translate(char* msg,char* to, char* apikey)
 	FreeBuffer();
 #endif
 	char* at = strstr(msg,"translatedText");
-	if (http_response != 200 || !at) 
-	{
-		Log(STDUSERLOG,"%s\r\n",msg);
-		myexit("translate failure");
-	}
+	if (http_response != 200 || !at)  ReportBug("FATAL: translate failure %s\r\n",msg);
 	at += 4 + 14; // start of answer past the quote
 	while (1)
 	{
@@ -8015,7 +8013,7 @@ static void Translate(char* msg,char* to, char* apikey)
 static void C_TranslateConcept(char* input) // give the language & filename to write
 {
 #ifdef INFORMATION
-	1. first use :sortconcept to get data into concepts.top
+	1. first use :sortconcept to get data into concepts.top using noboot
 	2. use the apikey command line parameter to name a google translate account
 	3. :translateconcept german filename  (or some other supported language)
 #endif
@@ -8133,7 +8131,7 @@ static void C_TranslateConcept(char* input) // give the language & filename to w
 				strncpy(translation,start,lasthole-start);
 				translation[lasthole-start] = 0;
 				start = lasthole + 1;
-				Translate(translation,"de",apikey); // de fr it es
+				Translate(translation,into,apikey); // de fr it es
 				strcat(output,translation);
 				strcat(output," ");
 				size_t l = strlen(output);
@@ -8142,7 +8140,8 @@ static void C_TranslateConcept(char* input) // give the language & filename to w
 			else // direct use or final chunk
 			{
 				if (start[len-1] == ' ') start[len-1] = 0;	// remove trailing blank
-				Translate(start,"de",apikey); // de fr it es
+				if (*start) 
+                    Translate(start,into,apikey); // de fr it es
 				strcat(output,start);
 				break;
 			}
@@ -9178,6 +9177,7 @@ static void BuildForeign(char* input)
 	}
 	fclose(in);
 }
+
 static void TrimIt(char* name,uint64 flag) 
 {
 	//  0 = user->bot
@@ -9191,6 +9191,7 @@ static void TrimIt(char* name,uint64 flag)
 	//  8 = topic indent bot
 	//  9 = generate user log files from system log
 	// 10 = generate statistics from logs
+	// 11 = timeline of user->bot
 
 	char prior[MAX_BUFFER_SIZE];
 	FILE* in = FopenReadWritten(name);
@@ -9263,8 +9264,9 @@ static void TrimIt(char* name,uint64 flag)
 
 		char* output = strstr(at,(char*)" ==> ");
 		if (!output) continue;
-		*output = 0;	// end of input
-		output += 5;
+		*output++ = 0;	// end of input
+		*output = 0;	// end of input just in case of null input
+		output += 4;
 		output = SkipWhitespace(output);  // start of output
 
 		char* when = strstr(output,(char*)"When:");
@@ -9291,24 +9293,9 @@ static void TrimIt(char* name,uint64 flag)
 		char display[MAX_BUFFER_SIZE];
 		display[0] = 0;
 
-		if (nooob)
-		{
-			char* at = output-1;
-			char* oobstart = strchr(output,'[');
-			if (oobstart) while (*++at) if (*at != ' ' && *at != '\t') break;
-			bool quote = false;
-			int depth = 1;
-			if (at == oobstart) while (*++at) // we have one. find the end
-			{
-				if (*at == '"') quote = !quote;
-				else if (*at == '[' && !quote) ++depth;
-				else if (*at == ']' && !quote)
-				{
-					if (--depth == 0) break;
-				}
-			}
-			if (oobstart && *at) memmove(oobstart,at+1,strlen(at));
-		}
+		// trim any oob
+		if (nooob & 1) input = SkipOOB(input);
+		if (nooob & 2) output = SkipOOB(output);
 
 		if (flag == 0) sprintf(display,(char*)"\r\n%s   =>   %s\r\n",input,output); //  showing both as pair, user first
 		else if (flag == 1)  sprintf(display,(char*)"\r\n%s   =>   %s\r\n",prior,input);  // pair, bot first
@@ -9432,6 +9419,7 @@ static void TrimIt(char* name,uint64 flag)
 				}
 			}
 		}
+		else if (flag == 11)  sprintf(display, (char*)"\r\n%s  %s\r\n\t%s\r\n", when, input, output); //  timeline, user first
 
 		if (*display) 
 		{
@@ -9448,6 +9436,7 @@ static void TrimIt(char* name,uint64 flag)
 				else if ( flag == 6) type = "user only";
 				else if ( flag == 7) type = "tags verify user->bot";
 				else if ( flag == 8) type = "indent bot + topic";
+				else if ( flag == 11) type = "timeline";
 				char* last = strrchr(name,'/');
 				if (last) name = last;
 				fprintf(out,(char*)"\r\n# ----------------- %s   %s\r\n",name,type);
@@ -9506,10 +9495,12 @@ static void C_Trim(char* input) // create simple file of user chat from director
 	else if (!stricmp(word,(char*)"indentbot")) flag = 5;
 	else if (!stricmp(word,(char*)"usersfromsystem")) flag = 9;
 	else if (!stricmp(word,(char*)"statistics")) flag = 10;
-	else flag = atoi(word); 
+	else if (!stricmp(word,(char*)"timeline")) flag = 11;
+	else flag = atoi(word);
 
 	input = ReadCompiledWord(input,word);
-	nooob = !stricmp(word,"nooob");
+	if (!stricmp(word, "nooob")) nooob = 2;  // original was output only
+	else nooob = atoi(word);
 
 	FILE* out = FopenUTF8Write((char*)"TMP/tmp.txt");
 	fprintf(out,(char*)"# %s\r\n",original);
@@ -9618,7 +9609,7 @@ CommandInfo commandSet[] = // NEW
 	
 	{ (char*)"\r\n---- internal support",0,(char*)""}, 
 	{ (char*)":topicdump",C_TopicDump,(char*)"Dump topic data suitable for inclusion as extra topics into TMP/tmp.txt (:extratopic or PerformChatGivenTopic)"},
-	{ (char*)":builddict",BuildDictionary,(char*)" basic, layer0, layer1, or wordnet are options instead of default full"}, 
+	{ (char*)":builddict",BuildDictionary,(char*)" basic, layer0, layer1, foreign, or wordnet are options instead of default full"}, 
 	{ (char*)":buildforeign",BuildForeign,(char*)""}, 
 	{ (char*)":clean",C_Clean,(char*)"Convert source files to NL instead of CR/LF for unix"},
 #ifndef DISCARDPOSTGRES

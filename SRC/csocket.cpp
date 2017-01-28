@@ -134,7 +134,7 @@ void CSocket::setLocalPort(unsigned short localPort) throw(SocketException) {
 	localAddr.sin_family = AF_INET;
 	localAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	localAddr.sin_port = htons(localPort);
-	if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) throw SocketException((char*)"Set of local port failed (bind())", true);
+	if (::bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) throw SocketException((char*)"Set of local port failed (bind())", true);
 }
 
 void CSocket::setLocalAddressAndPort(const string &localAddress,
@@ -149,7 +149,7 @@ void CSocket::setLocalAddressAndPort(const string &localAddress,
 #else
 	setsockopt(sockDesc, SOL_SOCKET, SO_REUSEADDR, (void*) &off, sizeof(on));
 #endif
-	if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0)  throw SocketException((char*)"Set of local address and port failed (bind())", true);
+	if (::bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0)  throw SocketException((char*)"Set of local address and port failed (bind())", true);
 }
 
 void CSocket::cleanUp() throw(SocketException) {
@@ -504,7 +504,8 @@ void* RegressLoad(void* junk)// test load for a server
 
 void LogChat(clock_t starttime,char* user,char* bot,char* IP, int turn,char* input,char* output)
 {
-	char* date = GetTimeInfo(true)+SKIPWEEKDAY;
+	struct tm ptm;
+	char* date = GetTimeInfo(&ptm,true)+SKIPWEEKDAY;
 	date[15] = 0;	// suppress year
 	memmove(date+3,date+4,13); // compress out space
 	char* why = output + strlen(output) + 3; //skip terminator + 2 ctrl z end marker
@@ -835,7 +836,8 @@ static void* AcceptSockets(void*) // accepts incoming connections from users
    try {
         while(1)
         {  
-            char* time = GetTimeInfo(true)+SKIPWEEKDAY;
+			struct tm ptm;
+            char* time = GetTimeInfo(&ptm,true)+SKIPWEEKDAY;
             TCPSocket *sock = serverSocket->accept();
 			LaunchClient((void*)sock);
          }
@@ -947,7 +949,6 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 				return Done(sock,memory);
 			}
 
-			//ReportBug((char*)"%s %s bot: %s msg: %s  NO USER ID \r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY,bot,msg)
 			strcpy(output,(char*)"[you have no user id]\r\n"); 
 			return Done(sock,memory);
 		}
@@ -972,7 +973,8 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 
 	  } catch (...)  
 	  {
-			ReportBug((char*)"***%s client presocket failed %s\r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY)
+			struct tm ptm;
+			ReportBug((char*)"***%s client presocket failed %s\r\n",IP,GetTimeInfo(&ptm,true)+SKIPWEEKDAY)
  			return Done(sock,memory);
 	  }
 
@@ -997,14 +999,16 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		size_t len = strlen(output);
 		if (outputLength) len = OutputLimit((unsigned char*) output);
 		if (serverctrlz) len += 3; // send end marker for positive confirmation of completion
+
 		sock->send(output, len);
 } catch (...)  {
 		printf((char*)"%s",(char*)"client socket fail\r\n");
-		ReportBug((char*)"***%s client socket failed %s \r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY)}
+		struct tm ptm;
+		ReportBug((char*)"***%s client socket failed %s \r\n",IP,GetTimeInfo(&ptm,true)+SKIPWEEKDAY)}
 
 	delete sock;
 
-	if (serverLog)  LogChat(starttime,user,bot, IP,*((int*)memory),msg,output);
+	if (serverLog && msg)  LogChat(starttime,user,bot, IP,*((int*)memory),msg,output);
 	
 	// do not delete memory til after server would have given up
 	free(memory);
@@ -1036,7 +1040,6 @@ static void* MainChatbotServer()
 	ServerStartup(); //   get initial control over the mutex so we can start. - on linux if thread dies, we must reacquire here 
 	// we now own the chatlock
 	clock_t lastTime = ElapsedMilliseconds(); 
-
 	if (setjmp(scriptJump[SERVER_RECOVERY])) // crashes come back to here
 	{
 		printf((char*)"%s",(char*)"***Server exception\r\n");
@@ -1093,7 +1096,8 @@ RESTART_RETRY:
 		}
 		else strcpy(ourMainInputBuffer,ptr); // xfer user message to our incoming feed
 		echo = false;
-        char* dateLog = GetTimeInfo(true)+SKIPWEEKDAY;
+		struct tm ptm;
+        char* dateLog = GetTimeInfo(&ptm,true)+SKIPWEEKDAY;
 		if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s %s\r\n",user,bot,ourMainInputBuffer, dateLog);
 
 		returnValue = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.

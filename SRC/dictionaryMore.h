@@ -234,6 +234,7 @@ void ClearBacktracks();
 unsigned int* AllocateWhereInSentence(WORDP D);
 MEANING GetFactBack(WORDP D);
 void SetFactBack(WORDP D, MEANING M);
+bool ReadForeignPosTags(char* fname);
 int GetWords(char* word, WORDP* set,bool strict);
 void ReadQueryLabels(char* file);
 void ClearWordWhere(WORDP D,int at);

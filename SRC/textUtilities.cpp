@@ -421,8 +421,8 @@ char* AddEscapes(char* to, char* from, bool normal,int limit) // normal true mea
 			*to++ = '\\'; 
 			*to++ = 't'; // legal
 		}
-		else if (*at == '"') { // we dont need to preserve that it was escaped, we always escape it in json anyway
-			// if (!normal) *to++ = ESCAPE_FLAG; 
+		else if (*at == '"') { // we  need to preserve that it was escaped, though we always escape it in json anyway, because writeuservars needs to know
+			if (!normal) *to++ = ESCAPE_FLAG; 
 			*to++ = '\\'; 
 			*to++ = '"';
 		}
@@ -1008,10 +1008,6 @@ unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or wor
 	if (*word == '#' && IsDigitWord(word+1)) return DIGIT_NUMBER; // #123
 
 	if (*word == '\'' && !strchr(word+1,'\'') && IsDigitWord(word+1)) return DIGIT_NUMBER;	// includes date and feet
-    WORDP D;
-    D = FindWord(word);
-    if (D && D->properties & NUMBER_BITS) 
-		return (D->systemFlags & ORDINAL) ? PLACETYPE_NUMBER : WORD_NUMBER;   // known number
 	uint64 valx;
 	if (IsRomanNumeral(word,valx)) return ROMAN_NUMBER;
 	if (IsDigitWithNumberSuffix(word)) return WORD_NUMBER;
@@ -1021,7 +1017,7 @@ unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or wor
 	else if (!strcmp(word,(char*)"thirds") ) return FRACTION_NUMBER;
 	else if ( !strcmp(word,(char*)"quarter") ) return FRACTION_NUMBER;
 	else if ( !strcmp(word,(char*)"quarters") ) return FRACTION_NUMBER;
-	
+	WORDP D;
 	char* ptr;
     if (placeAllowed && IsPlaceNumber(word)) return PLACETYPE_NUMBER; // th or first or second etc. but dont call if came from there
     else if (!IsDigit(*word) && ((ptr = strchr(word+1,'-')) || (ptr = strchr(word+1,'_'))))	// composite number as word, but not digits
@@ -1038,10 +1034,11 @@ unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or wor
 	{
 		char c = *hyphen;
 		*hyphen = 0;
+		int kind = IsNumber(word); // what kind of number
         int64 piece1 = Convert2Integer(word);      
 		*hyphen = c;
 		if (piece1 == NOT_A_NUMBER && stricmp(word,(char*)"zero") && *word != '0') {;}
-		else if (IsPlaceNumber(hyphen+1)) return FRACTION_NUMBER;
+		else if (IsPlaceNumber(hyphen+1) || kind == FRACTION_NUMBER) return FRACTION_NUMBER;
 	}
 
 	// test for fraction or percentage
@@ -1059,6 +1056,10 @@ unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or wor
 		if (slash && !*ptr) return FRACTION_NUMBER;  
 		if (percent && !*ptr) return FRACTION_NUMBER;  
 	}
+
+    D = FindWord(word);
+    if (D && D->properties & NUMBER_BITS) 
+		return (D->systemFlags & ORDINAL) ? PLACETYPE_NUMBER : WORD_NUMBER;   // known number
 
     return (Convert2Integer(word) != NOT_A_NUMBER) ? WORD_NUMBER : 0;		//   try to read the number
 }
@@ -1148,7 +1149,12 @@ bool IsNumericDate(char* word,char* end) // 01.02.2009 or 1.02.2009 or 1.2.2009
 bool IsUrl(char* word, char* end)
 { //     if (!strnicmp(t+1,(char*)"co.",3)) //   jump to accepting country
     if (*word == '@') return false;
-    if (!strnicmp((char*)"www.",word,4) || !strnicmp((char*)"http",word,4) || !strnicmp((char*)"ftp:",word,4)) return true; // classic urls
+    if (!strnicmp((char*)"www.",word,4) || !strnicmp((char*)"http",word,4) || !strnicmp((char*)"ftp:",word,4)) 
+	{
+		char* colon = strchr(word,':');
+		if (colon && (colon[1] != '/' || colon[2] != '/')) return false;
+		return true; // classic urls
+	}
 	size_t len = strlen(word);
 	if (len > 200) return false;
     char tmp[MAX_WORD_SIZE];
@@ -1455,7 +1461,7 @@ static bool ConditionalReadRejected(char* start,char*& buffer,bool revise)
 	return true; // reject this line 
 }
 
-int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines) 
+int ReadALine(char* buffer,FILE* in,unsigned int limit,bool returnEmptyLines,bool convertTabs) 
 { //  reads text line stripping of cr/nl
 	currentFileLine = maxFileLine; // revert to best seen
 	if (currentFileLine == 0) BOM = (BOM == BOMSET) ? BOMUTF8 : NOBOM; // start of file, set BOM to null
@@ -1504,7 +1510,7 @@ RESUME:
 			if (!c) 
 				break;	// end of buffer
 		}
-		if (c == '\t') c = ' ';
+		if (c == '\t' && convertTabs) c = ' ';
 		if (c & 0x80) // high order utf?
 		{
 			unsigned char convert = 0;
@@ -1898,6 +1904,7 @@ Used for function calls, to read their callArgumentList. Arguments are not evalu
 	4. a ^functionarg
 #endif
     char* start = buffer;
+	result = NOPROBLEM_BIT;
 
     *buffer = 0;
     int paren = 0;
@@ -2414,7 +2421,7 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
     {
         if (len == numberValues[i].length && !strnicmp(word,numberValues[i].word,len)) 
 		{
-			return numberValues[i].value;  // a match 
+			return numberValues[i].value;  // a match (but may be a fraction number)
 		}
     }
 

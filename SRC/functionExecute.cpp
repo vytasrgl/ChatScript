@@ -1,6 +1,5 @@
 #include "common.h"
 
-
 #ifdef INFORMATION
 
 Function calls all run through DoCommand().
@@ -618,13 +617,13 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 				int64 botid;
 				unsigned char* genericfn = NULL;
 				definition = (unsigned char*)ReadInt64((char*)definition,botid); // accept the bot id
-				while (myBot != botid && definition) // find a better one
+				while (myBot != botid && definition && *definition) // find a better one
 				{
 					if (!botid) genericfn = definition; // this is a generic function usable on all bots
 					definition = (unsigned char*) strchr((char*)definition,'`');
-					if (definition && definition++ && *definition++) // skip space to index
+					if (definition && definition++ && *definition) // skip end marker to either a null or index of next definition
 					{
-						int index = atoi((char*)definition);
+						int index = atoi((char*)++definition);
 						definition = (unsigned char*) Index2Heap(index); // chained one
 						definition = (unsigned char*)ReadInt64((char*)definition,botid); // accept the bot id
 					}
@@ -1727,7 +1726,7 @@ static FunctionResult DoRefine(char* buffer,char* arg1, bool fail, bool all)
 		{
 			ARGUMENT(1) = AllocateStack(GetTopicName(currentTopicID));
 			ARGUMENT(2) = AllocateStack((char*)"");
-			GambitCode(buffer+strlen(buffer));
+			result = GambitCode(buffer+strlen(buffer));
 		}
 	}
 	if (locals && currentTopicDisplay != oldTopicDisplay && !failed) RestoreDisplay(releaseStackDepth[globalDepth],locals);
@@ -1857,7 +1856,7 @@ static FunctionResult RejoinderCode(char* buffer)
 		{
 			ARGUMENT(1) = AllocateStack(GetTopicName(currentTopicID));
 			ARGUMENT(2) = AllocateStack((char*)"");
-			GambitCode(buffer+strlen(buffer));
+			result = GambitCode(buffer+strlen(buffer));
 		}
 	}
 	if (pushed) PopTopic(); 
@@ -3099,7 +3098,7 @@ static FunctionResult TimeFromSecondsCode(char* buffer)
 	seconds += offsetHours *  60 * 60; // hours offset
 
 	// convert to text string in whatever timezone the raw is in.
-	strcpy(buffer,ctime(&sec));
+	myctime(&sec,buffer);
 	*strchr(buffer,'\n') = 0; // erase newline at end
 
 	return NOPROBLEM_BIT;
@@ -3111,7 +3110,8 @@ static FunctionResult TimeInfoFromSecondsCode(char* buffer)
 	char* word = ARGUMENT(1);
 	ReadInt64(word,seconds);
 	time_t sec = (time_t) seconds;
-	struct tm *time = localtime((time_t *)&sec);
+	struct tm time;
+	mylocaltime((time_t *)&sec,&time);
 	if (impliedWild != ALREADY_HANDLED)  
 	{
 		SetWildCardIndexStart(impliedWild); //   start of wildcards to spawn
@@ -3119,19 +3119,19 @@ static FunctionResult TimeInfoFromSecondsCode(char* buffer)
 	}
 	else SetWildCardIndexStart(0); //   start of wildcards to spawn
 	char value[MAX_WORD_SIZE];
-	sprintf(value,(char*)"%d",time->tm_sec);
+	sprintf(value,(char*)"%d",time.tm_sec);
 	SetWildCard(value,value,0,0);
-	sprintf(value,(char*)"%d",time->tm_min);
+	sprintf(value,(char*)"%d",time.tm_min);
 	SetWildCard(value,value,0,0);
-	sprintf(value,(char*)"%d",time->tm_hour);
+	sprintf(value,(char*)"%d",time.tm_hour);
 	SetWildCard(value,value,0,0);
-	sprintf(value,(char*)"%d",time->tm_mday);
+	sprintf(value,(char*)"%d",time.tm_mday);
 	SetWildCard(value,value,0,0);
-	sprintf(value,(char*)"%s",months[time->tm_mon]); // january = 0
+	sprintf(value,(char*)"%s",months[time.tm_mon]); // january = 0
 	SetWildCard(value,value,0,0);
-	sprintf(value,(char*)"%d",time->tm_year + 1900);
+	sprintf(value,(char*)"%d",time.tm_year + 1900);
 	SetWildCard(value,value,0,0);
-	sprintf(value,(char*)"%s",days[time->tm_wday]); // sunday = 0
+	sprintf(value,(char*)"%s",days[time.tm_wday]); // sunday = 0
 	SetWildCard(value,value,0,0);
 
 	return NOPROBLEM_BIT;
@@ -3143,7 +3143,7 @@ static FunctionResult TimeToSecondsCode(char* buffer)
 	struct tm timeinfo;
 	time_t rawtime;
 	time (&rawtime );
-	memcpy((char*)&timeinfo,(char*)localtime (&rawtime ),sizeof(timeinfo)); // get daylight savings value in
+	mylocaltime (&rawtime,&timeinfo ); // get daylight savings value in
 
 	/*
 	tm_sec	int	seconds after the minute	0-61*
@@ -3839,7 +3839,7 @@ static int saveCount = 0;
 
 static FunctionResult SaveSentenceCode(char* buffer)
 {
-	if (documentMode) return FAILRULE_BIT;
+ 	if (documentMode) return FAILRULE_BIT;
 	char* arg1 = ARGUMENT(1);
 	if (!*arg1) return FAILRULE_BIT;	// need an id
 	MEANING M = MakeMeaning(StoreWord(arg1,AS_IS));
@@ -3865,7 +3865,10 @@ static FunctionResult SaveSentenceCode(char* buffer)
 	savedSentences = Heap2Index((char*) memory); // threaded list
 	memory[1] = M; // key 
 	memory[2] = sentencePreparationIndex;
-	((uint64*)memory)[3] = tokenFlags; // 3,4
+	unsigned int x = tokenFlags >> 32;
+	unsigned int y = tokenFlags & 0x00000000ffffffff;
+	memory[3] = x;
+	memory[4] = y;
 	memory[5] = wordCount;
 	memory[6] = (moreToCome) ? 1 : 0;
 	if (moreToComeQuestion) memory[6] |= 2;
@@ -3954,7 +3957,7 @@ static FunctionResult RestoreSentenceCode(char* buffer)
 	lastRestoredIndex = memory[2];
 
 	ClearWhereInSentence();
-	tokenFlags = ((uint64*)memory)[3]; // 3,4
+	tokenFlags = ((uint64)memory[3] << 32) | (uint64) memory[4];
 	wordCount = memory[5];
 	moreToCome = (memory[6] & 1) ? true : false;
 	moreToComeQuestion = (memory[6] & 2) ? true : false;
@@ -4190,13 +4193,16 @@ FunctionResult CallstackCode(char* buffer)
 	if (n == ILLEGAL_FACTSET) return FAILRULE_BIT;
 
 	char tag[200];
+	int frame = 0;
 	for (int i = 1; i < globalDepth; ++i) // dont include the call to callstack
 	{
-		char* topic = GetTopicName(atoi((char*)tagDepth[i]));
-		sprintf(tag,"%s%s",topic,strchr((char*)tagDepth[i],'.'));
-		factSet[n][i] = CreateFact(	MakeMeaning(StoreWord(nameDepth[i])), MakeMeaning(StoreWord("callstack")), MakeMeaning(StoreWord(tag)),FACTTRANSIENT); 
+		if (*nameDepth[i]) { // not everything is named on the depth chart
+			char* topic = GetTopicName(atoi((char*)tagDepth[i]));
+			sprintf(tag, "%s%s", topic, strchr((char*)tagDepth[i], '.'));
+			factSet[n][++frame] = CreateFact(MakeMeaning(StoreWord(nameDepth[i])), MakeMeaning(StoreWord("callstack")), MakeMeaning(StoreWord(tag)), FACTTRANSIENT);
+		}
 	}
-	SET_FACTSET_COUNT(n,globalDepth-1);
+	SET_FACTSET_COUNT(n,frame);
 	return NOPROBLEM_BIT;
 }
 
@@ -4543,6 +4549,7 @@ static FunctionResult IntersectWordsCode(char* buffer)
 	}
 
 	if (impliedSet == ALREADY_HANDLED && count == 0) return FAILRULE_BIT;
+	impliedSet = ALREADY_HANDLED;
 	return NOPROBLEM_BIT;
 }
 
@@ -6228,7 +6235,6 @@ static FunctionResult NthCode(char* buffer)
 		FACT* F = GetObjectNondeadHead(D);
 		while (F) // back to front order, need to invert, count how many
 		{
-			TraceFact(F);
 			++count;
 			F = GetObjectNondeadNext(F);
 		}
@@ -8134,6 +8140,9 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ "^jsonlabel", JSONLabelCode, 1, 0, "use label when creating json arrays and objects" },
 	{ "^jsonundecodestring", JSONUndecodeStringCode, 1, 0, "remove escapes from json data" },
 	{ "^jsonopen", JSONOpenCode, VARIABLE_ARG_COUNT, SAMELINE, "send command to JSON server and parse reply strings" },
+	{ "^jsonreadcsv", JSONReadCSVCode, VARIABLE_ARG_COUNT, SAMELINE, "read tsv file into json array of objects" },
+
+
 #endif
 
 #ifdef PRIVATE_CODE

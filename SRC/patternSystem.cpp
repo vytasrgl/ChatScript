@@ -512,6 +512,11 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
                 break;
             case '>': //   sentence end marker
 				if (word[1] == '>')  goto DOUBLERIGHT; //   >> closer, and reset to start of sentence wild again...
+				at = positionEnd;
+				while (unmarked[++at] && at <= wordCount){;} // skip over hidden data
+				if (at > wordCount) at = positionEnd;	// he was the end
+				else at = wordCount; // the presumed real end
+
 				ptr = nextTokenStart;
 				if (*kind == '[') rebindable = 2; // let outer level decide if it is right  
 				// # get 3 days forecast in Orlando, New York | London and San Francisco
@@ -529,15 +534,15 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					positionStart = positionEnd = wordCount + 1; 
 					matched = true;
 				}
-				else if ((wildcardSelector & WILDGAP) || positionEnd == wordCount)// you can go to end from anywhere if you have a gap OR you are there
+				else if ((wildcardSelector & WILDGAP) || positionEnd == at)// you can go to end from anywhere if you have a gap OR you are there
 				{
 					matched =  true;
-					positionStart = positionEnd = wordCount+1; //   pretend to match a word off end of sentence
+					positionStart = positionEnd = at+1; //   pretend to match a word off end of sentence
 				}
 				else if (*kind == '[' || *kind == '{') // nested unit will figure out if legal 
 				{
 					matched =  true;
-					positionStart = positionEnd = wordCount+1; //   pretend to match a word at end of sentence
+					positionStart = positionEnd = at+1; //   pretend to match a word at end of sentence
 				}
 				else if (positionStart == INFINITE_MATCH) 
 				{
@@ -713,6 +718,7 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					}
 					FreeOutputBuffer();
                 }
+				// else if (!(D->internalBits & IS_PATTERN_MACRO)) matched = false; // not allowed by compiler
 				else // user function - execute it in pattern context as continuation of current code
 				{ 
 					if (functionNest >= MAX_PAREN_NEST) // fail, too deep nesting
@@ -726,13 +732,12 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					argStack[functionNest] = callArgumentIndex; 
 					fnVarBaseStack[functionNest] = fnVarBase;
 
-					if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"((char*)"); 
+					if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"("); 
 					ptr += 2; // skip ( and space
-					result = NOPROBLEM_BIT;
+					FunctionResult result = NOPROBLEM_BIT;
 					// read arguments
 					while (*ptr && *ptr != ')' ) 
 					{
-						FunctionResult result;
 						ptr = ReadArgument(ptr,buffer,result);  // gets the unevealed arg
 						callArgumentList[callArgumentIndex++] = AllocateStack(buffer);
 						if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s, ",buffer); 
@@ -747,6 +752,12 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					fnVarBase = callArgumentBase = argStack[functionNest];
 					ptrStack[functionNest++] = ptr+2; // skip closing paren and space
 					ptr = (char*) D->w.fndefinition + 1; // continue processing within the macro, skip argument count
+					while (*ptr) // skip over locals list
+					{
+						char word[MAX_WORD_SIZE];
+						ptr = ReadCompiledWord(ptr,word);
+						if (*word == ')') break;
+					}
 					oldtrace = trace;
 					if (D->internalBits & MACRO_TRACE  && CheckTopicTrace()) 
 					{

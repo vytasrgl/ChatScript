@@ -2,8 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
-> Revision 1/7/2017 cs7.1
-
+> Revision 1/28/2017 cs7.12
 
 # Real World JSON
 
@@ -140,11 +139,11 @@ you had something like this:
 where you wanted the value of `b` to be `"_0aba"`. Had you used an active string, the _0 would have been replaced with its contents.
 
 Also, you can use json dereference operators to take apart an existing json structure and use values of it
-in the current one. If $$y points to a json structure, then
+in the current one. If $_y points to a json structure, then
 ```
-^jsonparse("{ a: $var, b: _0.e[2] }")
+^jsonparse("{ a: $var, b: $_y.e[2] }")
 ```
-would find a json object reference on `_0`, get the e field, and get the 3rd array value found there.
+would find a json object reference on `$_y`, get the e field, and get the 3rd array value found there.
 An initial argument of safe will locate the correct end of the data for json parsing, allowing you to pass
 excess data. This is important for passing in json data in OOB information. OOB information comes in
 `[]` and Json itself uses `[]` at times, so it would be impossible to find the correct end of pattern with
@@ -201,7 +200,7 @@ That value is expected to be an object, so return the value corresponding to the
 In more complex situations, the value of id might itself be an object or an array, 
 which you could continue indexing like `[1].id.firstname`.
 
-You can walk an array by using `[$$index]` and varying the value of `$$index`.
+You can walk an array by using `[$_index]` and varying the value of `$_index`.
 When you access an array element, you have to quote the text because it consists of multiple tokens to
 CS which breaks off `[` and `]`. If you are just accesing an object field of something, you can quote the
 string or just type it direct
@@ -228,7 +227,7 @@ But if the value contains whitespace, or JSON special characters, that may mess 
 `^JSONFormat`. You can get `^jsonpath` to return dangerous data as a string with double quotes around it
 if you add a 3rd argument "safe" to the call.
 ```
-^jsonpath(".name" $$jsonobject safe)
+^jsonpath(".name" $_jsonobject safe)
 ```
 
 ### `^jsonpath`
@@ -411,6 +410,10 @@ supplying `level`. Level 0 is all. Level 1 is the top level of data. Etc.
 
 assigns a text sequence to add to jo- and ja- items created thereafter. See System functions manual.
 
+### `^jsonreadcvs`( TAB filepath )
+
+reads a tsv (tab delimited spreadsheet file) and returns a JSON array representing it. The lines are all objects in an array.
+The line is an object where non-empty fields are given as field indexes. The first field is 0. Empty fields are skipped over and their number omitted.
 
 ### `^jsonundecodestring`( string ) 
 
@@ -545,7 +548,7 @@ during a volley. Input might look like this:
 ```
 You can pattern match the oob section of the input as follows:
 ```
-u: ( \[ _* ) $$tmp = ^jsonparse('_0)
+u: ( \[ _* ) $_tmp = ^jsonparse('_0)
 ```
 `_0` will contain an excess right bracket (the end of the oob message), but that won't bother `^jsonparse`.
 
@@ -561,27 +564,27 @@ fact routines like `^createfact` and `^delete`. Instead use the JSON routines pr
 ### Objects
 The write jsonwrite and json tree print out different views of the same data..
 
-    u: (-testcase1) $$jsonObject = ^jsoncreate(object)
-        ˆjsonobjectinsert( $$jsonObject name “some name” )
-        ˆjsonobjectinsert( $$jsonObject phone “some number” )
-        ˆjsonwrite ( $$jsonObject ) \n
-        ^jsontree ( $$jsonObject )\n
+    u: (-testcase1) $_jsonObject = ^jsoncreate(object)
+        ˆjsonobjectinsert( $_jsonObject name “some name” )
+        ˆjsonobjectinsert( $_jsonObject phone “some number” )
+        ˆjsonwrite ( $_jsonObject ) \n
+        ^jsontree ( $_jsonObject )\n
 
 Note in this next example how to escpe a json string with ^''.  This makes creating json objects from static data very intuitive and clear.
     
-    u: (-testcase2) $$tmp = ^jsonparse( ^'{name: "Todd Kuebler", phone: "555.1212"}' )
-        ^jsonwrite( $$tmp ) \n
-        ^jsontree( $$tmp ) \n
-        name: $$tmp.name, phone: $$tmp.phone
+    u: (-testcase2) $_tmp = ^jsonparse( ^'{name: "Todd Kuebler", phone: "555.1212"}' )
+        ^jsonwrite( $_tmp ) \n
+        ^jsontree( $_tmp ) \n
+        name: $_tmp.name, phone: $_tmp.phone
  
 This example shows the . notation access of data inside an json object in chatscript.  This is probably the most intuitive way of interacting with the data. 
  
-    u: (-testcase3) $$tmp = ^jsoncreate(object)
-        $$tmp.name = "Todd Kuebler"
-        $$tmp.phone = "555-1212"
-        ^jsonwrite( $$tmp ) \n
-        ^jsontree( $$tmp ) \n
-        name: $$tmp.name, phone: $$tmp.phone 
+    u: (-testcase3) $_tmp = ^jsoncreate(object)
+        $_tmp.name = "Todd Kuebler"
+        $_tmp.phone = "555-1212"
+        ^jsonwrite( $_tmp ) \n
+        ^jsontree( $_tmp ) \n
+        name: $_tmp.name, phone: $_tmp.phone 
         
         
 ### Arrays of objects
@@ -591,46 +594,44 @@ In the example below, we add two items into an array of objects and we display t
 ```
 u: ( testcase4 )
     # create a phoneBook as an array of structured items (objects)
-    $$phoneBook = ^jsoncreate(array)
+    $_phoneBook = ^jsoncreate(array)
 
     #
     # add first object in the array
     #
-    $$item = ^jsoncreate(object)
+    $_item = ^jsoncreate(object)
 
     # assign values
-    $$item.name = "Todd Kuebler"
-    $$item.phone = "555-1212"
+    $_item.name = "Todd Kuebler"
+    $_item.phone = "555-1212"
 
-    ^jsonarrayinsert($$phoneBook $$item)
+    ^jsonarrayinsert($_phoneBook $_item)
 
     #
     # add a second object in the array
     #
-    $$item = ^jsoncreate(object)
+    $_item = ^jsoncreate(object)
 
     # assign values
-    $$item.name = "Giorgio Robino"
-    $$item.phone = "111-123456789"
+    $_item.name = "Giorgio Robino"
+    $_item.phone = "111-123456789"
 
-    ^jsonarrayinsert($$phoneBook $$item)    
+    ^jsonarrayinsert($_phoneBook $_item)    
     
     # display JSON tree
-    ^jsontree( $$phoneBook ) \n
+    ^jsontree( $_phoneBook ) \n
 
     #
     # print formatted items in the phone book
     #
     phone book:\n
-    $$i = 0
-    loop()
-      {
+    $_i = 0
+    $_size = ^length($_phoneBook)
+    loop($_size)
+    {
       # print out formatted item
-      name: $$phoneBook[$$i].name, phone: $$phoneBook[$$i].phone\n
-
-      $$i += 1
-      $$size = ^length($$phoneBook)
-      if ( $$i == $$size ) { end( loop ) }
-      }
+      name: $_phoneBook[$_i].name, phone: $_phoneBook[$_i].phone\n
+      $_i += 1
+    }
 ```
         

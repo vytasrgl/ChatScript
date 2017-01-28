@@ -495,6 +495,14 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	char token[MAX_WORD_SIZE];
 	ReadCompiledWord(ptr,token);
 	
+	// find current token which has comma after it and separate it, like myba,atat,joha
+	char* comma = strchr(token+1,',');
+	if (comma) 
+	{
+		*comma = 0; // break apart token
+		comma = ptr + (comma - token);
+	}
+
 	// check for negative number
 	if (*token == '-' && IsDigit(token[1]))
 	{
@@ -540,7 +548,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		emote[index++] = *at;
 		if (IsAlphaUTF8(*at) || IsDigit(*at)) ++letters;
 		if (letters > 1) break; // to many to be emoticon
-		if (*at == '?' || *at == '!' || *at == '.')
+		if (*at == '?' || *at == '!' || *at == '.' || *at == ',')
 		{
 			letters = 5;
 			break;	// punctuation we dont want to lose
@@ -551,6 +559,11 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		return at;
 	}
 
+	if (comma && IsDigit(*(comma-1)) && !IsDigit(ptr[1])) return comma; // $7, 99
+	if (comma && IsDigit(comma[1]) && IsDigit(comma[2]) && IsDigit(comma[3]) && IsDigit(comma[4])) return comma; // 25,2019 
+	if (comma && IsDigit(comma[1]) && !IsDigit(comma[2]) ) return comma; // 25,2
+	if (comma && IsDigit(comma[1]) && IsDigit(comma[2]) && !IsDigit(comma[3]) ) return comma; // 25,20 
+	
 	if (kind & BRACKETS && ( (c != '>' && c != '<') || next != '=') ) 
 	{
 		if (c == '<' && next == '/') return ptr + 2; // keep html together  </
@@ -581,6 +594,8 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		if (*end == ';' && !fullstopper) fullstopper = end; // alternate possible end  (e.g. 8.4-ounce)
 		if (end[0] == '.' && end[1] == '.' && end[2] == '.') break; // ...
 	}
+	if (comma && end > comma) end = comma;
+
 	if (end == ptr) ++end;	// must shift at least 1
 	WORDP X = FindWord(ptr,end-ptr,PRIMARY_CASE_ALLOWED);
 	// avoid punctuation so we can detect emoticons
@@ -624,9 +639,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			else return end;
 		}
 	}
-
-	char* comma = strchr(ptr,',');
-	if (comma) return comma;
 
 	// could it be email or web address?
 	char* atsign = strchr(ptr,'@'); // possible email?
@@ -684,7 +696,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			if (hyphen)	return ptr + (hyphen - token);	// break off regardless
 		}
 	}
-
+	
 	// check for place number
 	char* place = ptr;
 	while (IsDigit(*place)) ++place;
@@ -937,7 +949,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		{
 			char* word = AllocateHeap(ptr,len-1);  // number w/o the '
 			if (word) words[count++] = word;
-			words[count] = words[count],((lastc == '\'') ? (char*) "feet": (char*)"inches",0); // spell out the notation
+			words[count] = StoreWord((lastc == '\'') ? (char*) "feet": (char*)"inches",0)->word; // spell out the notation
 			ptr = SkipWhitespace(end);
 			strcpy(priorToken,words[count]);
 			continue;
@@ -945,7 +957,7 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		//   handle symbols for feet and inches by expanding them
 		if (!(tokenControl & TOKEN_AS_IS) &&  startc == '"' && len == 1 && count > 1 && IsDigit(words[count-1][0]))
 		{
-			words[count] = words[count],((char*)"inches",0); // spell out the notation
+			words[count] = StoreWord((char*)"inches",0)->word; // spell out the notation
 			ptr = SkipWhitespace(end);
 			strcpy(priorToken,words[count]);
 			continue;
@@ -1532,6 +1544,16 @@ static void MergeNumbers(int& start,int& end) //   four score and twenty = four-
 		char* item = wordStarts[i];
         if (*item == ',') continue; //   ignore commas
 		if (i > start && *item == '-') ++item; // skip leading -
+		if (i > start && IsDigit(*wordStarts[i-1]) && !IsDigit(*item)) // digit followed by word
+		{
+			end = start = (unsigned int)UNINIT;
+			return; 
+		}
+		if (i > start && !IsDigit(*wordStarts[i-1]) && IsDigit(*item) && *wordStarts[i-1] != '-' && *wordStarts[i-1] != '+' ) // word followed by digit
+		{
+			end = start = (unsigned int)UNINIT;
+			return; 
+		}
 
         size_t len = strlen(wordStarts[i]);
 		//   one thousand one hundred and twenty three
@@ -1629,9 +1651,10 @@ void ProcessCompositeNumber()
 
     for (int i = FindOOBEnd(1); i <= wordCount; ++i) 
     {
-        bool isNumber = IsNumber(wordStarts[i]) && !IsPlaceNumber(wordStarts[i]) && !GetCurrency((unsigned char*) wordStarts[i],number);
-		size_t len = strlen(wordStarts[i]);
-        if (isNumber || (start == UNINIT && *wordStarts[i] == '-' && i < wordCount && IsDigit(*wordStarts[i+1]))) // is this a number or part of one
+		char* word = wordStarts[i];
+        bool isNumber = IsNumber(word) && !IsPlaceNumber(word) && !GetCurrency((unsigned char*) word,number);
+		size_t len = strlen(word);
+        if (isNumber || (start == UNINIT && *word == '-' && i < wordCount && IsDigit(*wordStarts[i+1]))) // is this a number or part of one
         {
             if (start == UNINIT) start = i;
             if (end != UNINIT) end = (unsigned int)UNINIT;
@@ -1642,7 +1665,7 @@ void ProcessCompositeNumber()
             if (i != wordCount && i != 1) // middle words AND and , 
 			{
 				// AND between words 
-				if (!strnicmp((char*)"and",wordStarts[i],len)) 
+				if (!strnicmp((char*)"and",word,len)) 
 				{
 					end = i;
 					if (!IsDigit(*wordStarts[i-1]) && !IsDigit(*wordStarts[i+1])) // potential word number 

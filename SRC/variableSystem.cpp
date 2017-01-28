@@ -471,7 +471,11 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 	{
 		int64 val = 0;
 		if (word && *word) ReadInt64(word,val);
-		else val = (DO_INTERJECTION_SPLITTING|DO_SUBSTITUTE_SYSTEM|DO_NUMBER_MERGE|DO_PROPERNAME_MERGE|DO_SPELLCHECK);
+		else 
+		{
+			val = (DO_INTERJECTION_SPLITTING|DO_SUBSTITUTE_SYSTEM|DO_NUMBER_MERGE|DO_PROPERNAME_MERGE|DO_SPELLCHECK);
+			if (!stricmp(language,"english")) val |= DO_PARSE;
+		}
 		tokenControl = val;
 	}
 	// trace
@@ -494,8 +498,8 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 		else val = ALL_RESPONSES;
 		responseControl = (unsigned int)val;
 	}	
-	// factowner changes are noticed by the engine
-	else if (!stricmp(var,(char*)"$cs_factowner")) 
+	// cs_botid changes are noticed by the engine
+	else if (!stricmp(var,(char*)"$cs_botid")) 
 	{
 		int64 val = 0;
 		if (word && *word) ReadInt64(word,val);
@@ -504,11 +508,12 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 	// wildcardseparator changes are noticed by the engine
 	else if (!stricmp(var,(char*)"$cs_wildcardSeparator")) 
 	{
-		*wildcardSeparator = (*word == '"') ? word[1] : *word; // 1st char in string if need be
+		if (*word == '\\') *wildcardSeparator = word[2];
+		else *wildcardSeparator = (*word == '"') ? word[1] : *word; // 1st char in string if need be
 	}	
 	if (trace && D->internalBits & MACRO_TRACE) 
 	{
-		char pattern[100];
+		char pattern[110];
 		char label[MAX_LABEL_SIZE];
 		GetPattern(currentRule,label,pattern,100);  // go to output
 		Log(ECHOSTDTRACELOG,"%s -> %s at %s.%d.%d %s %s\r\n",D->word,word, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),label,pattern);

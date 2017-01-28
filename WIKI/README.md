@@ -6,7 +6,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com
 
 
-> Revision 1/1/16 cs7.0
+> Revision 1/28/2017 cs7.12
 
 ChatScript has a lot of documentation in various manuals, so knowing what to read may seem daunting.
 Here is an overview.
@@ -87,6 +87,9 @@ really advanced users wanting the appropriate mental model.
 
 * [ChatScript Command Line Parameters](ChatScript-Command-Line-Parameters.md)
 <br> Command line parameters details and usage.
+
+* [ChatScript Multiple Bots](ChatScript-Multiple-Bots.md)
+<br> How to control multiple bots in a single server.
 
 * [Installing and Updating ChatScript](Installing-and-Updating-ChatScript.md)
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).

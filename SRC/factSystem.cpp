@@ -1239,8 +1239,9 @@ char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead,bool eol) // 
 	return start;
 }
 
-char* ReadField(char* ptr,char* field,char fieldkind, unsigned int& flags)
+char* ReadField(char* ptr,char* &field,char fieldkind, unsigned int& flags)
 {
+	field = AllocateStack(NULL,MAX_BUFFER_SIZE); // released above
 	if (*ptr == '(')
 	{
 		FACT* G = ReadFact(ptr,(flags & FACTBUILD2) ? BUILD2 : 0);
@@ -1305,14 +1306,18 @@ FACT* ReadFact(char* &ptr, unsigned int build)
 	unsigned int flags = 0;
 	if (build == BUILD2) flags |= FACTBUILD2;
 	else if (build == BUILD1) flags |= FACTBUILD1;
-	char subjectname[MAX_WORD_SIZE];
+	char* subjectname;
 	ptr = ReadField(ptr,subjectname,'s',flags);
-    char verbname[MAX_WORD_SIZE];
+    char* verbname;
 	ptr = ReadField(ptr,verbname,'v',flags);
-    char objectname[MAX_WORD_SIZE];
+    char* objectname;
 	ptr = ReadField(ptr,objectname,'o',flags);
 
-	if (!ptr) return NULL;
+	if (!ptr) 
+	{
+		ReleaseStack(subjectname);
+		return NULL;
+	}
 	
     //   handle the flags on the fact
     uint64 properties = 0;
@@ -1336,6 +1341,7 @@ FACT* ReadFact(char* &ptr, unsigned int build)
 		else object = (MEANING) atoi(objectname);
 	}
 	else  object = ReadMeaning(objectname,true,true);
+	ReleaseStack(subjectname);
 	
 	myBot = 0; // no owner by default unless read in by fact
 	if (*ptr && *ptr != ')') ptr = ReadInt64(ptr,(int64&)myBot); // read bot bits

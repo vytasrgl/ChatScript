@@ -159,7 +159,6 @@ void ReformatString(char starter, char* input,char*& output, FunctionResult& res
 {
 	*output = 0;
 	controls |= OUTPUT_NOCOMMANUMBER; // never reformat a number from here
-	if (space) {*output++ = ' '; *output = 0;}
 	size_t len = strlen(input);
 	if (!len)
 		return;
@@ -607,8 +606,10 @@ static char* Output_Backslash(char* word, char* ptr, char* space,char*& buffer, 
 static char* ResetOutputPtr(char* start,char* buffer)
 {
 	char* at = strrchr(start,'`');	// where it ended
-	size_t len = strlen(at+1);
-	memmove(start,at+1,len + 1);	// shift new data back to start
+	size_t len = strlen(at+1); 
+	memmove(start,at+1,len+1);	// shift new data back to start
+	if (start[len-1] == ' ') --len;	// output ended with a space, remove it
+	start[len] = 0;
 	return start + len; // resume back at original buffer location
 }
 
@@ -693,7 +694,7 @@ static char* Output_Function(char* word, char* ptr,  char* space,char*& buffer, 
 			ptr =  DoFunction(word,ptr,buffer,result); 
 
 			if (result == UNDEFINED_FUNCTION) result = NOPROBLEM_BIT;
-			else if (space && *buffer && *buffer != ' ' && result != ENDCALL_BIT) // we need to add a space, but not if requesting a call return ^return
+			else if (space && *space != ' ' && result != ENDCALL_BIT) // we need to add a space, but not if requesting a call return ^return
 			{
 				memmove(buffer+1,buffer,strlen(buffer) + 1);
 				*buffer = ' ';
@@ -1009,11 +1010,13 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			}
 			else if (quoted && *word == '\\' && word[1] == '"') allow = false; // ending quoted
 			// dont space after $  or # or [ or ( or " or / e   USERVAR_PREFIX
-			else if (c == '(' || c == '[' || c == '{'  || c == '$' || c == '#' || c == '/') allow = false;
+			else if (c == '(' || c == '[' || c == '{'  || c == '$' || c == '#' || c == '/' || c == '`' || c == '\n') allow = false; //erased text is `
+			else if (c == 'n' && *(buffer-2) == '\\') allow = false; // slow form of \n
 			else if (*word == '"' && word[1] == '^') allow = false; // format string handles its own spacing so
 			else if (*word == '\\' && word[1] == ')') allow = false; // dont space before )
 			else if (*word == '\\' && word[1] == '"' && (controls & OUTPUT_DQUOTE_FLIP) ) allow = false;	// closing dq
-
+			else if ((*word == '.' && !word[1]) || (*word == '?' && !word[1]) || (*word == '!' && !word[1])|| (*word == ',' && !word[1])|| (*word == ':' && !word[1]) || (*word == ';' && !word[1]) || (*word == '.' && !word[1])) allow = false;
+			else if (*word == '\'' ) allow = false;
 			if (allow) // add space separator
 			{
 				space = buffer;
@@ -1136,7 +1139,7 @@ retry:
 			ptr = Output_Text(word, ptr, space, buffer, controls,result);
         }
 		
-		if (*start == '`') buffer = ResetOutputPtr(start,buffer); // buffer flushed
+		if (*start == '`') buffer = ResetOutputPtr(start,buffer); // buffer got flushed
 		else if (space && !space[1]) // generated nothing but the space, remove the space
 		{
 			*--buffer = 0;

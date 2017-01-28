@@ -79,7 +79,8 @@ static char* Sdate(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
- 	char* x = GetTimeInfo() + 8;
+	struct tm ptm;
+ 	char* x = GetTimeInfo(&ptm) + 8;
     ReadCompiledWord(x,systemValue);
     if (regression) return "1";
     return systemValue; //   1 or 2 digit date
@@ -91,7 +92,8 @@ static char* SdayOfWeek(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
     if (regression) return "Monday";
-    ReadCompiledWord(GetTimeInfo(),systemValue);
+	struct tm ptm;
+    ReadCompiledWord(GetTimeInfo(&ptm),systemValue);
     switch(systemValue[1])
     {
         case 'o': return "Monday";
@@ -109,7 +111,8 @@ static char* SdayNumberOfWeek(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	ReadCompiledWord(GetTimeInfo(),systemValue);
+	struct tm ptm;
+	ReadCompiledWord(GetTimeInfo(&ptm),systemValue);
 	int n;
     switch(systemValue[1])
     {
@@ -146,7 +149,8 @@ static char* Shour(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	strncpy(systemValue,GetTimeInfo()+11,2);
+	struct tm ptm;
+	strncpy(systemValue,GetTimeInfo(&ptm)+11,2);
 	systemValue[2] = 0;
     return  systemValue;
 }
@@ -158,8 +162,9 @@ static char* SleapYear(char* value)
 	if (*hold != '.') return hold;
 	time_t rawtime;
 	time (&rawtime );
-	struct tm* timeinfo = localtime (&rawtime );
-    int year = timeinfo->tm_year + 1900;
+	struct tm timeinfo;
+	mylocaltime (&rawtime,&timeinfo );
+    int year = timeinfo.tm_year + 1900;
 	bool leap = false;
 	if ((year % 400) == 0) leap = true;
 	else if ((year % 100) != 0 && (year % 4) == 0) leap = true;
@@ -173,8 +178,9 @@ static char* Sdaylightsavings(char* value)
 	if (*hold != '.') return hold;
 	time_t rawtime;
 	time (&rawtime );
-	struct tm* timeinfo = localtime (&rawtime );
-    int dst = timeinfo->tm_isdst;
+ 	struct tm timeinfo;
+	mylocaltime (&rawtime,&timeinfo );
+    int dst = timeinfo.tm_isdst;
     return dst ? (char*)"1" : (char*)"";
 }  
 
@@ -183,7 +189,8 @@ static char* Sminute(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	ReadCompiledWord(GetTimeInfo()+14,systemValue);
+	struct tm ptm;
+	ReadCompiledWord(GetTimeInfo(&ptm)+14,systemValue);
 	systemValue[2] = 0;
 	return systemValue;
 }
@@ -194,7 +201,8 @@ static char* Smonth(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 	if (regression) return "6";
-    ReadCompiledWord(GetTimeInfo()+SKIPWEEKDAY,systemValue);
+ 	struct tm ptm;
+    ReadCompiledWord(GetTimeInfo(&ptm)+SKIPWEEKDAY,systemValue);
 	switch(systemValue[0])
 	{
 		case 'J':  //   january june july 
@@ -219,7 +227,8 @@ static char* SmonthName(char* value)
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
 	if (regression) return "June";
-    ReadCompiledWord(GetTimeInfo()+SKIPWEEKDAY,systemValue);
+ 	struct tm ptm;
+    ReadCompiledWord(GetTimeInfo(&ptm)+SKIPWEEKDAY,systemValue);
 	switch(systemValue[0])
 	{
 		case 'J':  //   january june july 
@@ -243,7 +252,8 @@ static char* Ssecond(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    ReadCompiledWord(GetTimeInfo()+17,systemValue);
+	struct tm ptm;
+    ReadCompiledWord(GetTimeInfo(&ptm)+17,systemValue);
     systemValue[2] = 0;
     return systemValue;
 }
@@ -263,7 +273,8 @@ static char* Stime(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    strncpy(systemValue,GetTimeInfo()+11,5);
+	struct tm ptm;
+    strncpy(systemValue,GetTimeInfo(&ptm)+11,5);
     systemValue[5] = 0;
     return systemValue;
 }
@@ -273,9 +284,10 @@ static char* Szulutime(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    GetTimeInfo(true,true);
-	sprintf(systemValue,(char*)"%d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d.0Z",ptm->tm_year+1900,ptm->tm_mon+1,ptm->tm_mday,
-		ptm->tm_hour,ptm->tm_min,ptm->tm_sec);
+	struct tm ptm;
+    GetTimeInfo(&ptm,true,true);
+	sprintf(systemValue,(char*)"%d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d.0Z",ptm.tm_year+1900,ptm.tm_mon+1,ptm.tm_mday,
+		ptm.tm_hour,ptm.tm_min,ptm.tm_sec);
     return systemValue;
 }
 
@@ -284,8 +296,9 @@ static char* Stimenumbers(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    GetTimeInfo();
-	sprintf(systemValue,(char*)"%2.2d %2.2d %2.2d %d %d %d %d",ptm->tm_sec,ptm->tm_min, ptm->tm_hour, ptm->tm_wday, ptm->tm_mday, ptm->tm_mon, ptm->tm_year+1900); 
+	struct tm ptm;
+    GetTimeInfo(&ptm);
+	sprintf(systemValue,(char*)"%2.2d %2.2d %2.2d %d %d %d %d",ptm.tm_sec,ptm.tm_min, ptm.tm_hour, ptm.tm_wday, ptm.tm_mday, ptm.tm_mon, ptm.tm_year+1900); 
     return systemValue;
 }
 static char* SweekOfMonth(char* value)
@@ -295,7 +308,8 @@ static char* SweekOfMonth(char* value)
 	if (*hold != '.') return hold;
     if (regression) return "1";
 	int n;
-	char* x = GetTimeInfo() + 8;
+	struct tm ptm;
+	char* x = GetTimeInfo(&ptm) + 8;
 	if (*x == ' ') ++x; // Mac uses space, pc uses 0 for 1 digit numbers 
     ReadInt(x,n);
 	systemValue[0] = (char)('0' + (n/7) + 1);
@@ -308,7 +322,8 @@ static char* Syear(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    ReadCompiledWord(GetTimeInfo()+20,systemValue);
+	struct tm ptm;
+    ReadCompiledWord(GetTimeInfo(&ptm)+20,systemValue);
     return (regression) ? (char*)"1951" : systemValue;
 }
 

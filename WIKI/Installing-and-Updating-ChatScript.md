@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 12/23/2015 cs5.91
+> Revision 1/28/2017 cs7.12
 
 # Installing (Windows, Mac, Linux) 
 

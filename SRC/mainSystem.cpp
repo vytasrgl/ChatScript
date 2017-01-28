@@ -1,6 +1,6 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.111";
+char* version = "7.12";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
@@ -524,7 +524,7 @@ static void ProcessArgument(char* arg)
 	else if (!strnicmp(arg,(char*)"logs=",5 )) strcpy(logs,arg+5);
 	else if (!strnicmp(arg,(char*)"topic=",6 )) strcpy(topic,arg+6);
 	else if (!strnicmp(arg,(char*)"private=",8)) privateParams = arg+8;
-	else if (!strnicmp(arg,(char*)"treetagger=",11)) strcpy(treetaggerParams,arg+11);
+	else if (!stricmp(arg,(char*)"treetagger")) strcpy(treetaggerParams,"1");
 	else if (!strnicmp(arg,(char*)"encrypt=",8)) strcpy(encryptParams,arg+8);
 	else if (!strnicmp(arg,(char*)"decrypt=",8)) strcpy(decryptParams,arg+8);
 	else if (!strnicmp(arg,(char*)"livedata=",9) ) 
@@ -612,7 +612,7 @@ static void ReadConfig()
 	fclose(in);
 }
 
-unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* readablePath, char* writeablePath, USERFILESYSTEM* userfiles, DEBUGAPI in, DEBUGAPI out)
+unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* readablePath, char* writeablePath, USERFILESYSTEM* userfiles, DEBUGAPI infn, DEBUGAPI outfn)
 { // this work mostly only happens on first startup, not on a restart
 	strcpy(hostname,(char*)"local");
 	MakeDirectory((char*)"TMP");
@@ -629,8 +629,8 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	*treetaggerParams = 0;
 #endif
 	*authorizations = 0;
-	debugInput = in;
-	debugOutput = out;
+	debugInput = infn;
+	debugOutput = outfn;
 	nameDepth[0] = ""; 
 	argc = argcx;
 	argv = argvx;
@@ -771,12 +771,13 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 	if (server)
 	{
+		struct tm ptm;
 #ifndef EVSERVER
-		Log(SERVERLOG, "\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
-		printf((char*)"\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
+		Log(SERVERLOG, "\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(&ptm,true),oldserverlog,userLog);
+		printf((char*)"\r\n\r\n======== Began server %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",version,compileDate,hostname,port,GetTimeInfo(&ptm,true),oldserverlog,userLog);
 #else
-		Log(SERVERLOG, "\r\n\r\n======== Began EV server pid %d %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",getpid(),version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
-		printf((char*)"\r\n\r\n======== Began EV server pid %d  %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",getpid(),version,compileDate,hostname,port,GetTimeInfo(true),oldserverlog,userLog);
+		Log(SERVERLOG, "\r\n\r\n======== Began EV server pid %d %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",getpid(),version,compileDate,hostname,port,GetTimeInfo(&ptm,true),oldserverlog,userLog);
+		printf((char*)"\r\n\r\n======== Began EV server pid %d  %s compiled %s on host %s port %d at %s serverlog:%d userlog: %d\r\n",getpid(),version,compileDate,hostname,port,GetTimeInfo(&ptm,true),oldserverlog,userLog);
 #endif
 	}
 	serverLog = oldserverlog;
@@ -1162,16 +1163,16 @@ void ComputeWhy(char* buffer,int n)
 	for (int i = start; i < end; ++i) 
 	{
 		unsigned int order = responseOrder[i];
-		int topic = responseData[order].topic;
-		if (!topic) continue;
+		int topicid = responseData[order].topic;
+		if (!topicid) continue;
 		char label[MAX_WORD_SIZE];
 		int id;
 		char* more = GetRuleIDFromText(responseData[order].id,id); // has no label in text
-		char* rule = GetRule(topic,id);
+		char* rule = GetRule(topicid,id);
 		GetLabel(rule,label);
 		char c = *more;
 		*more = 0;
-		sprintf(buffer,(char*)"%s%s",GetTopicName(topic),responseData[order].id); // topic and rule 
+		sprintf(buffer,(char*)"%s%s",GetTopicName(topicid),responseData[order].id); // topic and rule 
 		buffer += strlen(buffer);
 		if (*label) 
 		{
@@ -1183,7 +1184,7 @@ void ComputeWhy(char* buffer,int n)
 		// was there a relay
 		if (*more)
 		{
-			int topicid = atoi(more+1); // topic number
+			topicid = atoi(more+1); // topic number
 			more = strchr(more+1,'.'); // r top level + rejoinder
 			char* dotinfo = more;
 			more = GetRuleIDFromText(more,id);
@@ -1353,15 +1354,18 @@ void FinishVolley(char* incoming,char* output,char* postvalue,int limit)
 		// now convert output separators between rule outputs to space from ' for user display result (log has ', user sees nothing extra) 
 		if (prepareMode != REGRESS_MODE)
 		{ 
-			char* sep = output;
+			char* sep = output+1;
 			while ((sep = strchr(sep,ENDUNIT))) 
 			{
-				if (*(sep-1) == ' ') memmove(sep,sep+1,strlen(sep));
+				if (*(sep-1) == ' ') memmove(sep,sep+1,strlen(sep)); // since prior had space, we can just omit our separator.
+				else if (!sep[1]) *sep = 0; // show nothing extra on last separator
+				else if (sep[1] == ' ' && !sep[2]) *sep = 0; // show nothing extra on last separator w blank after
 				else *sep = ' ';
 			}
 		}
 	}
 	else *output = 0;
+	size_t x = strlen(output);
 	ClearVolleyWordMaps(); 
 	if (!documentMode) 
 	{
@@ -1389,7 +1393,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	timerCheckInstance = 0;
 	modifiedTraceVal = 0;
 	modifiedTrace = false;
-
+	myBot = 0;
 	if (!documentMode) tokenCount = 0;
 #ifndef DISCARDJSON
 	InitJSONNames(); // reset indices for this volley
@@ -1548,6 +1552,14 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	p = incoming;
 	while ((p = strchr(p,'\t'))) *p = ' '; // remove special character 
 	p = incoming;
+	while ((p = strchr(p, (char)0xC2))) {  // remove non breaking space
+		if (p[1] == (char)0xA0) {
+			*p++ = ' ';
+			*p = ' ';
+		}
+		++p;
+	}
+	p = incoming;
 	while ((p = strchr(p,(char)-30))) // handle curved quote
 	{
 		if (p[1] == (char)-128 && p[2] == (char)-103)
@@ -1602,17 +1614,17 @@ FunctionResult Reply()
 		Log(STDTRACELOG,(char*)"\r\n  Pending topics: %s\r\n",ShowPendingTopics());
 	}
 	FunctionResult result = NOPROBLEM_BIT;
-	char* topic = GetUserVariable((char*)"$cs_control_main");
+	char* topicName = GetUserVariable((char*)"$cs_control_main");
 	howTopic = 	 (tokenFlags & QUESTIONMARK) ? (char*) "question" : (char*)  "statement";
-	ChangeDepth(1,topic);
-	int pushed = PushTopic(FindTopicIDByName(topic));
+	ChangeDepth(1, topicName);
+	int pushed = PushTopic(FindTopicIDByName(topicName));
 	if (pushed < 0) 
 	{
-		ChangeDepth(-1,topic);
+		ChangeDepth(-1, topicName);
 		return FAILRULE_BIT;
 	}
 	result = PerformTopic(0,currentOutputBase); //   allow control to vary
-	ChangeDepth(-1,topic);
+	ChangeDepth(-1, topicName);
 	if (pushed) PopTopic();
 	if (globalDepth) ReportBug((char*)"Main code global depth not 0");
 	return result;
@@ -1650,7 +1662,8 @@ void Restart()
 	}
 	else 
 	{
-		Log(STDTRACELOG,(char*)"System restarted %s\r\n",GetTimeInfo(true)); // shows user requesting restart.
+		struct tm ptm;
+		Log(STDTRACELOG,(char*)"System restarted %s\r\n",GetTimeInfo(&ptm,true)); // shows user requesting restart.
 	}
 	pendingRestart = false;
 }
@@ -1829,11 +1842,11 @@ bool PrepassSentence(char* prepassTopic)
 	howTopic = 	 (tokenFlags & QUESTIONMARK) ? (char*) "question" : (char*)  "statement";
 	if (prepassTopic && *prepassTopic)
 	{
-		int topic = FindTopicIDByName(prepassTopic);
-		if (topic && !(GetTopicFlags(topic) & TOPIC_BLOCKED))  
+		int topicid = FindTopicIDByName(prepassTopic);
+		if (topicid && !(GetTopicFlags(topicid) & TOPIC_BLOCKED))
 		{
 			ChangeDepth(1,prepassTopic);
-			int pushed =  PushTopic(topic); 
+			int pushed =  PushTopic(topicid);
 			if (pushed < 0)
 			{
 				ChangeDepth(-1,prepassTopic);
@@ -1902,10 +1915,6 @@ retry:
 		}
 		moreToComeQuestion = (strchr(nextInput,'?') != 0);
 	}
-	else
-	{
-		int xx = 0;
-	}
 
 	char nextWord[MAX_WORD_SIZE];
 	ReadCompiledWord(nextInput,nextWord);
@@ -1929,8 +1938,8 @@ retry:
 			FACT* F = factSet[0][i];
 			WORDP D = Meaning2Word(F->subject);
 			WORDP N = Meaning2Word(F->object);
-			int topic = FindTopicIDByName(D->word);
-			char* name = GetTopicName(topic);
+			int topicid = FindTopicIDByName(D->word);
+			char* name = GetTopicName(topicid);
 			Log(STDTRACELOG,(char*)"%s (%s) : (char*)",name,N->word);
 			//   look at references for this topic
 			int start = -1;
@@ -1983,12 +1992,12 @@ void OnceCode(const char* var,char* function) //   run before doing any of his i
 	callIndex = 0;
 	topicIndex = currentTopicID = 0; 
 	char* name = (!function || !*function) ? GetUserVariable(var) : function;
-	int topic = FindTopicIDByName(name);
-	if (!topic) return;
+	int topicid = FindTopicIDByName(name);
+	if (!topicid) return;
 	ResetReuseSafety();
 	ChangeDepth(1,name);
 
-	int pushed = PushTopic(topic);
+	int pushed = PushTopic(topicid);
 	if (pushed < 0) 
 	{
 		ChangeDepth(-1,name);
@@ -2012,11 +2021,11 @@ void OnceCode(const char* var,char* function) //   run before doing any of his i
 	}
 	
 	// prove it has gambits
-	topicBlock* block = TI(topic);
-	if (BlockedBotAccess(topic) || GAMBIT_MAX(block->topicMaxRule) == 0)
+	topicBlock* block = TI(topicid);
+	if (BlockedBotAccess(topicid) || GAMBIT_MAX(block->topicMaxRule) == 0)
 	{
 		char word[MAX_WORD_SIZE];
-		sprintf(word,"There are no gambits in topic %s for %s.",GetTopicName(topic),var);
+		sprintf(word,"There are no gambits in topic %s for %s.",GetTopicName(topicid),var);
 		AddResponse(word,0);
 		ChangeDepth(-1,name);
 		return;
@@ -2294,13 +2303,13 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	if (tokenControl & (DO_SUBSTITUTE_SYSTEM|DO_PRIVATE)  && !oobExists)  
 	{
 		// test for punctuation not done by substitutes (eg "?\")
-	char c = (wordCount) ? *wordStarts[wordCount] : 0;
-	if ((c == '?' || c == '!') && wordStarts[wordCount])  
-	{
-		char* tokens[3];
-		tokens[1] = AllocateHeap(wordStarts[wordCount],1,1);
-		ReplaceWords("Remove ?!",wordCount,1,1,tokens);
-	}  
+		char c = (wordCount) ? *wordStarts[wordCount] : 0;
+		if ((c == '?' || c == '!') && wordStarts[wordCount])  
+		{
+			char* tokens[3];
+			tokens[1] = AllocateHeap(wordStarts[wordCount],1,1);
+			ReplaceWords("Remove ?!",wordCount,1,1,tokens);
+		}  
 
 		// test for punctuation badly done at end (eg "?\")
 		ProcessSubstitutes();
@@ -2352,20 +2361,20 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 		}
 	}
 
-	int i;
+	int i,j;
  	for (i = 1; i <= wordCount; ++i)  originalCapState[i] = IsUpperCase(*wordStarts[i]); // note cap state
  	if (mytrace & TRACE_PREPARE || prepareMode == PREPARE_MODE) 
 	{
 		int changed = 0;
 		if (wordCount != originalCount) changed = true;
-		for (int j = 1; j <= wordCount; ++j) if (original[j] != wordStarts[j]) changed = j;
+		for (j = 1; j <= wordCount; ++j) if (original[j] != wordStarts[j]) changed = j;
 		if (changed)
 		{
 			if (tokenFlags & DO_PROPERNAME_MERGE) Log(STDTRACELOG,(char*)"Name-");
 			if (tokenFlags & DO_NUMBER_MERGE) Log(STDTRACELOG,(char*)"Number-");
 			if (tokenFlags & DO_DATE_MERGE) Log(STDTRACELOG,(char*)"Date-");
 			Log(STDTRACELOG,(char*)"merged: ");
-			for (int i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s  ",wordStarts[i]);
+			for (i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s  ",wordStarts[i]);
 			Log(STDTRACELOG,(char*)"\r\n");
 			memcpy(original+1,wordStarts+1,wordCount * sizeof(char*));	// replicate for test
 			originalCount = wordCount;
@@ -2384,11 +2393,11 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 		{
  			int changed = 0;
 			if (wordCount != originalCount) changed = true;
-			for (int i = 1; i <= wordCount; ++i) if (original[i] != wordStarts[i]) changed = i;
+			for (i = 1; i <= wordCount; ++i) if (original[i] != wordStarts[i]) changed = i;
 			if (changed)
 			{
 				Log(STDTRACELOG,(char*)"Spelling changed into: ");
-				for (int i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s  ",wordStarts[i]);
+				for (i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s  ",wordStarts[i]);
 				Log(STDTRACELOG,(char*)"\r\n");
 			}
 		}
@@ -2411,7 +2420,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 			++more;	// dont add comma onto input
 			derivationIndex[1]++;	// extend end onto comma
 		}
-		for (int i = more; i <= derivationLength; ++i) // rest of data after input.
+		for (i = more; i <= derivationLength; ++i) // rest of data after input.
 		{
 			strcat(buffer,derivationSentence[i]);
 			strcat(buffer,(char*)" ");
@@ -2439,14 +2448,14 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	*rawSentenceCopy = 0;
 	char* atword = rawSentenceCopy;
 	int reach = 0;
-	for (int i = 1; i <= wordCount; ++i)
+	for (i = 1; i <= wordCount; ++i)
 	{
 		int start = derivationIndex[i] >> 8;
 		int end = derivationIndex[i] & 0x00ff;
 		if (start > reach)
 		{
 			reach = end;
-			for (int j = start; j <= reach; ++j)
+			for (j = start; j <= reach; ++j)
 			{
 				strcpy(atword, derivationSentence[j]);
 				atword += strlen(atword);
@@ -2459,7 +2468,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	if (mytrace & TRACE_PREPARE || prepareMode == PREPARE_MODE)
 	{
 		Log(STDTRACELOG,(char*)"Actual used input: ");
-		for (int i = 1; i <= wordCount; ++i) 
+		for (i = 1; i <= wordCount; ++i) 
 		{
 			Log(STDTRACELOG,(char*)"%s",wordStarts[i]);
 			int start = derivationIndex[i] >> 8;
@@ -2467,10 +2476,10 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 			if (start == end && wordStarts[i] == derivationSentence[start]) {;} // unchanged from original
 			else // it came from somewhere else
 			{
-				int start = derivationIndex[i] >> 8;
-				int end = derivationIndex[i] & 0x00Ff;
+				start = derivationIndex[i] >> 8;
+				end = derivationIndex[i] & 0x00Ff;
 				Log(STDTRACELOG,(char*)"(");
-				for (int j = start; j <= end; ++j)
+				for (j = start; j <= end; ++j)
 				{
 					if (j != start) Log(STDTRACELOG,(char*)" ");
 					Log(STDTRACELOG,(char*)"%s",derivationSentence[j]);
@@ -2485,7 +2494,7 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	if (echoSource == SOURCE_ECHO_LOG) 
 	{
 		Log(ECHOSTDTRACELOG,(char*)"  => ");
-		for (int i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s  ",wordStarts[i]);
+		for (i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s  ",wordStarts[i]);
 		Log(ECHOSTDTRACELOG,(char*)"\r\n");
 	}
 
