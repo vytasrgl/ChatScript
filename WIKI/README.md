@@ -85,6 +85,9 @@ really advanced users wanting the appropriate mental model.
 * [ChatScript System Variables and Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md)
 <br> Engine-defined Concepts. System Variables. Control over Input. Interchange Variables.
 
+* [ChatScript Command Line Parameters](ChatScript-Command-Line-Parameters.md)
+<br> Command line parameters details and usage.
+
 * [Installing and Updating ChatScript](Installing-and-Updating-ChatScript.md)
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
 
