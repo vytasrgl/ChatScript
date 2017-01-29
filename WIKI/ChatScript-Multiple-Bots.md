@@ -113,6 +113,7 @@ topic: ~topic1 ()
 bot: Ben
 topic: ~topic2 ()   This topic is restricted to Ben
 ...
+```
 
 Furthermore, you don't have to do it per file. You can do it in the filesxxx.txt build file. But you need to
 compile any bot definitions without a bot restriction in effect. E.g.
@@ -144,7 +145,7 @@ topic: ~mytopic SHARE REPEAT ()
 ```
 
 All facts created will be visible to all bots. And if you create a permanent user variable with
-the starting name $share_, then all bots can see and modify it. So $share_name becomes a
+the starting name `$share_`, then all bots can see and modify it. So `$share_name` becomes a
 common variable. When sharing is in effect, the state with the user (what he said, what
 bot said, what turn of the volley this is, where the rejoinder mark is) is all common
 among the bots- they are advancing a joint conversation.
@@ -182,5 +183,3 @@ You disable ownership rules with
 ```
 bot: 0
 ```
-
-

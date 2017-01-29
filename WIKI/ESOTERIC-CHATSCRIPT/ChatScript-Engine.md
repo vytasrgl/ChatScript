@@ -340,7 +340,7 @@ finds them in the dictionary, they too are marked.
 
 This ontology marking merges ontology, pos-tagging, parsing, and lemmas (canonical forms) into a single representation suitable for pattern matching. Below is an example.
 
-![](../ontology.png)
+![](../ontolog.png)
 
 ## Script Compiler
 

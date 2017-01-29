@@ -94,8 +94,6 @@ really advanced users wanting the appropriate mental model.
 * [Installing and Updating ChatScript](Installing-and-Updating-ChatScript.md)
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
 
-* [ChatScript Engine and Private Code Manual](CS-Engine.md)
-<br>How the internals of the engine work and how to extend it with private code.
 
 ## Specialized ChatScript
 
@@ -140,8 +138,11 @@ really advanced users wanting the appropriate mental model.
  * [ChatScript Exotica](ESOTERIC-CHATSCRIPT/ChatScript-Exotica-Examples.md)
 <br>Brief old interesting scripting tips
 
- * [ChatScript Exotica](ESOTERIC-CHATSCRIPT/ChatScript-Foreign-Languages.md)
+ * [ChatScript Foreign Languages](ESOTERIC-CHATSCRIPT/ChatScript-Foreign-Languages.md)
 <br>Running CS in a language other than English.
+
+ * [ChatScript Engine](ESOTERIC-CHATSCRIPT/ChatScript-Engine.md)
+<br>How the internals of the engine work and how to extend it with private code.
 
 
 ## Papers in order
