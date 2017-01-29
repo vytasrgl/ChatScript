@@ -141,7 +141,7 @@ really advanced users wanting the appropriate mental model.
  * [ChatScript Foreign Languages](ESOTERIC-CHATSCRIPT/ChatScript-Foreign-Languages.md)
 <br>Running CS in a language other than English.
 
-* [ChatScript Engine](ESOTERIC-CHATSCRIPT/ChatScript-Engine.md)
+ * [ChatScript Engine](ESOTERIC-CHATSCRIPT/ChatScript-Engine.md)
 <br>How the internals of the engine work and how to extend it with private code.
 
 
