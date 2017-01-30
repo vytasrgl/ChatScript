@@ -1,3 +1,8 @@
+#compile on osx
+
+note: Please read the 'ChatScript on a Mac' for more options, including xcode and make.
+
+
 Make sure that cURL is installed on your machine:
 ```bash
 curl --version
