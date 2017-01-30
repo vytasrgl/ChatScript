@@ -13,16 +13,9 @@ However ChatScript builds and runs just fine on any version of OSX ( now called 
 
 ### Method 1 - build from command line
 
-After unzipping into a folder
-(typically called ChatScript), you need to compile the src in SRC. The alternate
-technology is to beg in the ChatScript forum on ChatBots.org for a mac user to send you
-their executable copy of the latest build.
-To compile means using XCODE and making an appropriate make file for it based on the
-make file in SRC. And you have to install curl and optionally postgres. If you don't have
-or want them you can in your build file do defines of: DISCARDDATABASE and
-DISCARDJSON.
+After unzipping into a folder or cloing from github directly, you need to compile the src in SRC. 
 
-The example/default command line compile is located in NON-WINDOWS NON-C/MAC/MacCompile.sh.  Read the readme in that directory for more instructions.
+The example/default command line compile is located in NON-WINDOWS NON-C/MAC/MacCompile.sh.  Read the compile-on-osx.md in that directory for more instructions. 
 
 ### Method 2 - use outdated binary in the BINARIES folder
 Alternatively you can use the binary in BINARIES/MacChatScript, but it is at least one version behind unless you are grabbing chatscript directly from github.   
@@ -30,7 +23,12 @@ Alternatively you can use the binary in BINARIES/MacChatScript, but it is at lea
 ### Method 3 - use the included Xcode project to build
 There is also an Xcode project in the 'NON-WINDOWS NON-C/Xcode' directory  that you can launch and build your own binary with.  This is probably the prefered method for advanced users.
 
-## Prerequisites for compiling via Xcode
+### Method 4 - cd to the SRC directory and type 'make'
+
+Essentially this is identical to the linux compile instructions.  To do this you have to have XCode and the developer command line tools installed on your Mac.  This produces the higher performance EVSERVER binary for your architecture, but if there are errors it's largely unsupported.  
+
+
+## Prerequisites for compiling via Xcode or 'make'
 
 ####(included) curl library
 This is actually part of the default mac ecosystem and is already included in the Xcode project under 'TARGETS/MacChatScript/Build Phases/Link Binary with Libaries' ( navigation path in xcode editor )
