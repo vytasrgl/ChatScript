@@ -66,9 +66,10 @@ mongoserver: LDFLAGS+= -lcrypt -lsasl2 -L/usr/local/lib -lmongoc-1.0 -lbson-1.0
 endif
 
 ifeq ($(UNAME), Darwin)
-$(info ************ MAC VERSION ************)
-LDFLAGS=-mmacosx-version-min=10.7 $(PGLOAD)  
-CFLAGS=-mmacosx-version-min=10.7 -c  -Wall  -funsigned-char -Wno-write-strings -Wno-char-subscripts 
+OSXRELEASE := $(shell defaults read loginwindow SystemVersionStampAsString)
+$(info ************ MAC VERSION $OSXRELEASE detected ************)
+LDFLAGS=-mmacosx-version-min=$(OSXRELEASE) -lcurl $(PGLOAD)  
+CFLAGS=-mmacosx-version-min=$(OSXRELEASE) -c  -Wall  -funsigned-char -Wno-write-strings -Wno-char-subscripts 
 endif
 
 SOURCES=constructCode.cpp evserver.cpp csocket.cpp cs_ev.c dictionarySystem.cpp englishTagger.cpp factSystem.cpp json.cpp functionExecute.cpp english.cpp infer.cpp javascript.cpp jsmn.cpp markSystem.cpp mongodb.cpp os.cpp outputSystem.cpp patternSystem.cpp postgres.cpp privatesrc.cpp scriptCompile.cpp spellcheck.cpp secure.cpp systemVariables.cpp tagger.cpp testing.cpp textUtilities.cpp tokenSystem.cpp topicSystem.cpp userCache.cpp userSystem.cpp variableSystem.cpp mainSystem.cpp 
