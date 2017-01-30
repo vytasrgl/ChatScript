@@ -1,4 +1,10 @@
 #include "common.h"
+
+#ifdef SAFETIME // some time routines are not thread safe (not relevant with EVSERVER)
+#include <mutex>
+static std::mutex mtx;
+#endif 
+
 static char logLastCharacter = 0;
 #define MAX_STRING_SPACE 100000000  // transient+heap space 100MB
 unsigned long maxHeapBytes = MAX_STRING_SPACE;
@@ -21,7 +27,6 @@ int outputsize = MAX_BUFFER_SIZE;
 char* logmainbuffer = NULL;					// where we build a log line
 static bool pendingWarning = false;			// log entry we are building is a warning message
 static bool pendingError = false;			// log entry we are building is an error message
-struct tm* ptm;
 int userLog = LOGGING_NOT_SET;				// do we log user
 int serverLog = LOGGING_NOT_SET;			// do we log server
 bool serverPreLog = true;					// show what server got BEFORE it works on it
@@ -124,6 +129,20 @@ bool KeyReady()
 /// EXCEPTION/ERROR
 /////////////////////////////////////////////////////////
 
+void SafeLock()
+{
+#ifdef SAFETIME
+	mtx.lock();
+#endif
+}
+
+void SafeUnlock()
+{
+#ifdef SAFETIME
+	mtx.unlock();
+#endif
+}
+
 void JumpBack()
 {
 	if (jumpIndex < 0) return;	// not under handler control
@@ -150,7 +169,8 @@ void myexit(char* msg, int code)
 	FILE* in = FopenUTF8WriteAppend(name);
 	if (in) 
 	{
-		fprintf(in,(char*)"%s %d - called myexit at %s\r\n",msg,code,GetTimeInfo(true));
+		struct tm ptm;
+		fprintf(in,(char*)"%s %d - called myexit at %s\r\n",msg,code,GetTimeInfo(&ptm,true));
 		FClose(in);
 	}
 	if (code == 0) exit(0);
@@ -164,7 +184,8 @@ void mystart(char* msg)
 	FILE* in = FopenUTF8WriteAppend(name);
 	if (in) 
 	{
-		fprintf(in,(char*)"System startup %s %s\r\n",msg,GetTimeInfo(true));
+		struct tm ptm;
+		fprintf(in,(char*)"System startup %s %s\r\n",msg,GetTimeInfo(&ptm,true));
 		FClose(in);
 	}
 }
@@ -257,7 +278,7 @@ void InitStackHeap()
 
 char* AllocateStack(char* word, size_t len,bool localvar) // call with (0,len) to get a buffer
 {
-	if (infiniteStack) ReportBug("Allocating stack while InfiniteStack in progress\r\n");
+	if (infiniteStack) ReportBug("Allocating stack while InfiniteStack in progress from %s\r\n",infiniteCaller);
 	if (len == 0) len = strlen(word);
     if ((stackFree + len + 1) >= heapFree - 5000) // dont get close
     {
@@ -326,10 +347,29 @@ char* InfiniteStack(char*& limit,char* caller)
 	return stackFree;
 }
 
+char* InfiniteStack64(char*& limit,char* caller)
+{
+	if (infiniteStack) ReportBug("Allocating InfiniteStack from %s while one already in progress from %s\r\n",caller, infiniteCaller);
+	infiniteCaller = caller;
+	infiniteStack = true;
+	limit = heapFree - 5000; // leave safe margin of error
+	uint64 base = (uint64) (stackFree+63);
+	base &= 0xFFFFFFFFFFFFFFC0ULL;
+	return (char*) base; // slop may be lost when allocated finally, but it can be reclaimed later
+}
+
 void ReleaseInfiniteStack()
 {
 	infiniteStack = false;
 	infiniteCaller = "";
+}
+
+void CompleteBindStack64(int n,char* base)
+{
+	stackFree =  base + ((n+1) * sizeof(FACT*)); // convert infinite allocation to fixed one given element count
+	size_t len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+	infiniteStack = false;
 }
 
 void CompleteBindStack()
@@ -346,12 +386,12 @@ char* Index2Heap(unsigned int offset)
 	char* ptr = heapBase - offset;
 	if (ptr < heapFree)  
 	{
-		ReportBug((char*)"String offset into free space\r\n");
+		ReportBug((char*)"String offset into free space\r\n")
 		return NULL;
 	}
 	if (ptr > heapBase)  
 	{
-		ReportBug((char*)"String offset before heap space\r\n");
+		ReportBug((char*)"String offset before heap space\r\n")
 		return NULL;
 	}
 	return ptr;
@@ -1019,16 +1059,32 @@ char* GetUserPath(char* login)
 /// TIME FUNCTIONS
 /////////////////////////////////////////////////////////
 
-char* GetTimeInfo(bool nouser,bool utc) //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
+void mylocaltime (const time_t * timer,struct tm* ptm)
+{
+	SafeLock();
+	*ptm = *localtime(timer); // copy data across so not depending on it outside of lock
+	SafeUnlock();
+}
+
+void myctime(time_t * timer,char* buffer)//	Www Mmm dd hh:mm:ss yyyy
+{
+	SafeLock();
+	strcpy(buffer,ctime(timer));
+	SafeUnlock();
+}
+
+char* GetTimeInfo(struct tm* ptm, bool nouser,bool utc) //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
 {
     time_t curr = time(0); // local machine time
     if (regression) curr = 44444444; 
-	ptm = localtime (&curr);
+	mylocaltime (&curr,ptm);
 	char* utcoffset = (nouser) ? (char*)"" : GetUserVariable((char*)"$cs_utcoffset");
 	if (utc) utcoffset = (char*)"+0";
 	if (*utcoffset) // report UTC relative time - so if time is 1PM and offset is -1:00, time reported to user is 12 PM.  
 	{
-		ptm = gmtime (&curr); 
+		SafeLock();
+ 		*ptm = *gmtime (&curr); // this library call is not thread safe, copy its data
+		SafeUnlock();
 
 		// determine leap year status
 		int year = ptm->tm_year + 1900;
@@ -1145,15 +1201,18 @@ char* GetTimeInfo(bool nouser,bool utc) //   Www Mmm dd hh:mm:ss yyyy Where Www 
 			ptm->tm_year += 1; // on to next year
 		}
 	}
-	char *mytime = asctime (ptm);
-    mytime[strlen(mytime)-1] = 0; //   remove newline
+	SafeLock();
+	char *mytime = asctime (ptm); // not thread safe
+	SafeUnlock();
+	mytime[strlen(mytime)-1] = 0; //   remove newline
 	if (mytime[8] == ' ') mytime[8] = '0';
     return mytime;
 }
 
 char* GetMyTime(time_t curr)
 {
-	char *mytime = ctime(&curr); //	Www Mmm dd hh:mm:ss yyyy
+	char mytime[100];
+	myctime(&curr,mytime); //	Www Mmm dd hh:mm:ss yyyy
 	static char when[40];
 	strncpy(when,mytime+4,3); // mmm
 	if (mytime[8] == ' ') mytime[8] = '0';
@@ -1611,12 +1670,13 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (!compiling && !loading && channel == BUGLOG && *currentInput)  
 			{
 				char* buffer = AllocateBuffer(); // transient - cannot insure not called from context of InfiniteStack
-				if (buffer) fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located,currentInput);
-				else fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located);
+				struct tm ptm;
+				if (buffer) fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(&ptm,true),volleyCount,logbase,loginID,computerID,located,currentInput);
+				else fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s\r\n",GetTimeInfo(&ptm,true),volleyCount,logbase,loginID,computerID,located);
 				FreeBuffer();
 			}
 			fwrite(logbase,1,bufLen,bug);
-			if (!compiling && !loading) 
+			if (!compiling && !loading && !strstr(logbase, "No such bot"))
 			{
 				fprintf(bug,(char*)"MinReleaseStackGap %dMB MinHeapAvailable %dMB\r\n",maxReleaseStackGap/1000000,(int)(minHeapAvailable/1000000));
 				fprintf(bug,(char*)"MaxBuffers used %d of %d\r\n\r\n",maxBufferUsed,maxBufferLimit);
@@ -1627,8 +1687,9 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		}
 		if ((echo||localecho) && !silent && !server)
 		{
+			struct tm ptm;
 			if (*currentFilename) fprintf(stdout,(char*)"\r\n   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
+			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(&ptm,true),currentInput);
 		}
 		strcat(logbase,(char*)"\r\n");	//   end it
 
@@ -1641,7 +1702,8 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 				FILE* out = FopenUTF8WriteAppend(name);
 				if (out) 
 				{
-					fprintf(out,(char*)"\r\n%s: input:%s caller:%s callee:%s\r\n",GetTimeInfo(true),currentInput,loginID,computerID);
+					struct tm ptm;
+					fprintf(out,(char*)"\r\n%s: input:%s caller:%s callee:%s\r\n",GetTimeInfo(&ptm,true),currentInput,loginID,computerID);
 					BugBacktrace(bug);
 					fclose(out);
 				}
@@ -1689,9 +1751,10 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (doserver)
 		{
 			fwrite(logbase,1,bufLen,out);
+			struct tm ptm;
 			if (!bugLog);
  			else if (*currentFilename) fprintf(out,(char*)"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
+			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(&ptm,true),currentInput);
 		}
 		fclose(out); // dont use FClose
 		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logbase);

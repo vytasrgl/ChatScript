@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/1/2017 cs7.0</p>
+<p>Revision 1/28/2017 cs7.12</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
@@ -716,6 +716,8 @@ else {$$tcpopen_error}</code></pre>
 <h3 id="jsonlabel-label"><code>^jsonlabel</code>( label )</h3>
 <p>Assigns a text sequence to add to <code>jo-</code> and <code>ja-</code> items created thereafter. E.g. <code>^jsonlabel(x)</code> generates <code>jo-x1</code> and <code>ja-x1</code>. You can turn it back off again with <code>^jsonlabel(&quot;&quot;)</code></p>
 <p>This allows you to create json namespaces which will not conflict. Eg, you may load a bunch of json during a system bootup (<code>^csboot</code>) under one naming and then use a different naming for user json created later and code can determine the source of the data.</p>
+<h3 id="jsonreadcvs-tab-filepath"><code>^jsonreadcvs</code>( TAB filepath )</h3>
+<p>reads a tsv (tab delimited spreadsheet file) and returns a JSON array representing it. The lines are all objects in an array. The line is an object where non-empty fields are given as field indexes. The first field is 0. Empty fields are skipped over and their number omitted.</p>
 <h3 id="jsonundecodestring-string"><code>^jsonundecodestring</code>( string )</h3>
 <p>Removes all json escape markers back to normal for possible printout to a user. This translates <code>\n</code> to newline, <code>\r</code> to carriage return, <code>\t</code> to tab, and <code>\&quot;</code> to a simple quote.</p>
 <h3 id="jsonobjectinsert-duplicate-objectname-key-value"><code>^jsonobjectinsert</code>( {DUPLICATE} objectname key value )</h3>

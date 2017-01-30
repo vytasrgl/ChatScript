@@ -11,7 +11,9 @@ pandoc ChatScript-Overview-of-Input-to-Output.md -s -o ../PDFDOCUMENTATION/ChatS
 pandoc ChatScript-Pattern-Redux.md -s -o ../PDFDOCUMENTATION/ChatScript-Pattern-Redux.pdf
 pandoc ChatScript-System-Functions-Manual.md -s -o ../PDFDOCUMENTATION/ChatScript-System-Functions-Manual.pdf
 pandoc ChatScript-System-Variables-and-Engine-defined-Concepts.md -s -o ../PDFDOCUMENTATION/ChatScript-System-Variables-and-Engine-defined-Concepts.pdf
+pandoc ChatScript-Command-Line-Parameters.md -s -o ../PDFDOCUMENTATION/ChatScript-Command-Line-Parameters.pdf
 pandoc Installing-and-Updating-ChatScript.md -s -o ../PDFDOCUMENTATION/Installing-and-Updating-ChatScript.pdf
+pandoc ChatScript-Multiple-Bots.md -s -o ../PDFDOCUMENTATION/ChatScript-Multiple-Bots.pdf
 pandoc README.md -s -o ../PDFDOCUMENTATION/README.pdf
 
 pandoc CLIENTS-AND-SERVERS/ChatScript-Amazon-Server.md -s -o ../PDFDOCUMENTATION/CLIENTS-AND-SERVERS/ChatScript-Amazon-Server.pdf

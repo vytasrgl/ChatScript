@@ -74,7 +74,7 @@ void FreeFact(FACT* F);
 char* GetSetEnd(char* x);
 
 // fact reading and writing
-char* ReadField(char* ptr,char* field,char fieldkind,unsigned int& flags);
+char* ReadField(char* ptr,char* &field,char fieldkind,unsigned int& flags);
 char* EatFact(char* ptr,char* buffer,unsigned int flags = 0,bool attribute = false);
 FACT* ReadFact(char* &ptr,unsigned int build);
 void ReadFacts(const char* name,const char* layer,unsigned int build,bool user = false);

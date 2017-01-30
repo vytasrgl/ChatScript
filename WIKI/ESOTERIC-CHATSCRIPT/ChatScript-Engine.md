@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
-> Revision 1/7/2017 cs7.1
+> Revision 1/28/2017 cs7.12
 
 * [Data](ChatScript-Engine.md#Data)
 * [Memory Management](ChatScript-Engine.md#Memory Management)
@@ -337,6 +337,10 @@ words. This allows you to correct or augment meanings.
 
 In addition to marking words, the system generates sequences of 5 contiguous words (phrases), and if it
 finds them in the dictionary, they too are marked.
+
+This ontology marking merges ontology, pos-tagging, parsing, and lemmas (canonical forms) into a single representation suitable for pattern matching. Below is an example.
+
+![](../ontolog.png)
 
 ## Script Compiler
 

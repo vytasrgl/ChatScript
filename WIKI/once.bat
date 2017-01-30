@@ -1,2 +1,3 @@
 
-pandoc ESOTERIC-CHATSCRIPT/ChatScript-Engine.md -s -o ../PDFDOCUMENTATION/ESOTERIC-CHATSCRIPT/ChatScript-Engine.pdf
+pandoc ChatScript-Command-Line-Parameters.md -s -o ChatScript-Command-Line_Parameters.html
+pause

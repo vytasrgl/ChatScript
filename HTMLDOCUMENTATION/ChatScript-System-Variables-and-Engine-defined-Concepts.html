@@ -8,19 +8,18 @@
   <style type="text/css">code{white-space: pre;}</style>
 </head>
 <body>
-<h1 id="chatscript-system-variables-and-engine-defined-concepts-and-parameters">ChatScript System Variables and Engine-defined Concepts and Parameters</h1>
+<h1 id="chatscript-system-variables-and-engine-defined-concepts">ChatScript System Variables and Engine-defined Concepts</h1>
 <blockquote>
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/7/2017 cs7.1</p>
+<p>Revision 1/28/2017 cs7.12</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#engine-defined-concepts">Engine-defined Concepts</a></li>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#system-variables">System Variables</a></li>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#control-over-input">Control over Input</a></li>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#interchange-variables">Interchange Variables</a></li>
-<li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#command-line-parameters">Command line Parameters</a></li>
 </ul>
 <h1 id="engine-defined-concepts">Engine-defined concepts</h1>
 <p>In addition to concepts defined in script files, the system automatically defines a bunch of dictionary-based sets as well as dynamically computed concept members.</p>
@@ -103,34 +102,101 @@
 <p>Likewise sure and I am sure are different. Words that have a different meaning at the start of a sentence are commonly called interjections.</p>
 <p>In ChatScript these are defined by the <code>livedata/interjections.txt</code> file. In addition, the file augments this concept with &quot;discourse acts&quot;, phrases that are like an interjection. All interjections and discourse acts map to concept sets, which come thru as the user input instead of what they wrote. For example yes and sure and of course are all treated as meaning the discourse act of agreement in the interjections file. So you don’t see yes, I will go coming out of the engine.</p>
 <p>The interjections file will remap that to the sentence ~yes, breaking off that into its own sentence, followed by I will go as a new sentence.</p>
-<p>These generic interjections (which are open to author control via interjections.txt) are: <code>~yes</code>,<code>~no</code>,<code>~emomaybe</code>,<code>~emohello</code>,<code>~emogoodbye</code>,<code>~emohowzit</code>,<code>~emothanks</code>, <code>~emolaugh</code>,<code>~emohappy</code>,<code>~emosad</code>,<code>~emosurprise</code>, <code>~emomisunderstand</code>, <code>~emoskeptic</code>,<code>~emoignorance</code>,<code>~emobeg</code>, <code>~emobored</code>, <code>~emopain</code>,<code>~emoangry</code>, <code>~emocurse</code>,<code>~emodisgust</code>,<code>~emoprotest</code>, <code>~emoapology</code>,<code>~emomutual</code></p>
+<p>These generic interjections (which are open to author control via interjections.txt) are: * <code>~yes</code> * <code>~no</code> * <code>~emomaybe</code> * <code>~emohello</code> * <code>~emogoodbye</code> * <code>~emohowzit</code> * <code>~emothanks</code> * <code>~emolaugh</code> * <code>~emohappy</code> * <code>~emosad</code> * <code>~emosurprise</code> * <code>~emomisunderstand</code> * <code>~emoskeptic</code> * <code>~emoignorance</code> * <code>~emobeg</code> * <code>~emobored</code> * <code>~emopain</code> * <code>~emoangry</code> * <code>~emocurse</code> * <code>~emodisgust</code> * <code>~emoprotest</code> * <code>~emoapology</code> * <code>~emomutual</code></p>
 <p>Because all interjections at the start of a sentence are broken off into their own sentence, this kind of pattern does not work:</p>
 <pre><code>u: (~yes _*)</code></pre>
 <p>You cannot capture the rest of the sentence here, because it will be part of the next sentence instead. This means interjections act somewhat differently from other concepts.</p>
 <p>If you use a word in a pattern which may get remapped on input, the script compiler will issue a warning. Likely you should use the remapped name instead.</p>
-<p>The following concepts are triggered by exactly repeating either the chatbot or oneself (to a repeat count of how often repeated). Repeats are within a recency window of about 20 volleys. <code>~repeatme</code>, <code>~repeatinput1</code>, <code>~repeatinput2</code>, <code>~repeatinput3</code>, <code>~repeatinput4</code>, <code>~repeatinput5</code>, <code>~repeatinput6</code>,</p>
+<p>The following concepts are triggered by exactly repeating either the chatbot or oneself (to a repeat count of how often repeated). Repeats are within a recency window of about 20 volleys. * <code>~repeatme</code> * <code>~repeatinput1</code> * <code>~repeatinput2</code> * <code>~repeatinput3</code> * <code>~repeatinput4</code> * <code>~repeatinput5</code> * <code>~repeatinput6</code></p>
 <h2 id="pos-part-of-speech-tags">POS (Part of Speech) Tags</h2>
-<p>Words will have pos-tags attached, specififying both generic and specific tag attributes, eg., <code>~noun</code> and <code>~noun_singular</code>.</p>
-<h3 id="genric-specifics">Genric Specifics</h3>
-<p><code>~noun</code>, <code>~noun_singular</code>, <code>~noun_plural</code>, <code>~noun_proper_singular</code>, <code>~noun_proper_plural</code>, <code>~noun_gerund</code>, <code>~noun_number</code>, <code>~noun_infinitive</code>, <code>~noun_omitted_adjective</code>, <code>~verb</code>, <code>~verb_present</code>, <code>~verb_present_3ps</code>, <code>~verb_infinitive</code>, <code>~verb_present_participle</code>, <code>~verb_past</code>, <code>~verb_past_participle</code>, <code>~aux_verb</code>, <code>~aux_verb_present</code>, <code>~aux_verb_past</code>, <code>~aux_verb_future</code> (<code>~aux_verb_tenses</code>), <code>~aux_be</code>, <code>~aux_have</code>, <code>~aux_do</code></p>
+<p>Words will have pos-tags attached, specififying both generic and specific tag attributes, eg., * <code>~noun</code> * <code>~noun_singular</code>.</p>
+<h3 id="generic-specifics">Generic Specifics</h3>
+<ul>
+<li><code>~noun</code></li>
+<li><code>~noun_singular</code></li>
+<li><code>~noun_plural</code></li>
+<li><code>~noun_proper_singular</code></li>
+<li><code>~noun_proper_plural</code></li>
+<li><code>~noun_gerund</code></li>
+<li><code>~noun_number</code></li>
+<li><code>~noun_infinitive</code></li>
+<li><code>~noun_omitted_adjective</code></li>
+<li><code>~verb</code></li>
+<li><code>~verb_present</code></li>
+<li><code>~verb_present_3ps</code></li>
+<li><code>~verb_infinitive</code></li>
+<li><code>~verb_present_participle</code></li>
+<li><code>~verb_past</code></li>
+<li><code>~verb_past_participle</code></li>
+<li><code>~aux_verb</code></li>
+<li><code>~aux_verb_present</code></li>
+<li><code>~aux_verb_past</code></li>
+<li><code>~aux_verb_future</code></li>
+<li><code>~aux_verb_tenses</code></li>
+<li><code>~aux_be</code></li>
+<li><code>~aux_have</code></li>
+<li><code>~aux_do</code></li>
+</ul>
 <p>Auxilliary verbs are segmented into normal ones and special ones. Normal ones give their tense directly. Special ones give their root word. The tense of the be/have/do verbs can be had via <code>^properties()</code> and testing for verb tenses</p>
-<p><code>~adjective</code>, <code>~adjective_normal</code>, <code>~adjective_number</code>, <code>~adjective_noun</code>, <code>~adjective_participle</code></p>
-<p>Adjectives in comparative form will also have <code>~more_form</code> or <code>~most_form</code>. <code>~adverb</code>, <code>~adverb_normal</code></p>
-<p>Adverbs in comparative form will also have <code>~more_form</code> or <code>~most_form</code>. <code>~pronoun</code>, <code>~pronoun_subject</code>, <code>~pronoun_object</code>, <code>~conjunction_bits</code>, <code>~conjunction_coordinate</code> , <code>~conjunction_subordinate</code>, <code>~determiner_bits</code>, <code>~determiner</code>, <code>~pronoun_possessive</code>, <code>~predeterminer</code>, <code>~possessive</code> (covers ' and 's at end of word), <code>~to_infinitive</code> (&quot;to&quot; when used before a noun infinitive), <code>~preposition</code>, <code>~particle</code> (free-floating preposition tied to idiomatic verb), <code>~comma</code>, <code>~quote</code> (covers ' and &quot; when not embedded in a word), <code>~paren</code> (covers opening and closing parens), <code>~foreign_word</code> (some unknown word), <code>~there_existential</code> (the word there used existentially),</p>
+<ul>
+<li><code>~adjective</code></li>
+<li><code>~adjective_normal</code></li>
+<li><code>~adjective_number</code></li>
+<li><code>~adjective_noun</code></li>
+<li><code>~adjective_participle</code></li>
+</ul>
+<p>Adjectives in comparative form will also have * <code>~more_form</code> or <code>~most_form</code>. * <code>~adverb</code> * <code>~adverb_normal</code></p>
+<p>Adverbs in comparative form will also have * <code>~more_form</code> or <code>~most_form</code> * <code>~pronoun</code>, <code>~pronoun_subject</code>, <code>~pronoun_object</code> * <code>~conjunction_bits</code>, <code>~conjunction_coordinate</code> , <code>~conjunction_subordinate</code> * <code>~determiner_bits</code>, <code>~determiner</code>, <code>~pronoun_possessive</code>, <code>~predeterminer</code> * <code>~possessive</code> (covers <em>'</em> and <em>'s</em> at end of word) * <code>~to_infinitive</code> (&quot;to&quot; when used before a noun infinitive) * <code>~preposition</code>, <code>~particle</code> (free-floating preposition tied to idiomatic verb) * <code>~comma</code> * <code>~quote</code> (covers <em>'</em> and <em>&quot;</em> when not embedded in a word) * <code>~paren</code> (covers opening and closing parens) * <code>~foreign_word</code> (some unknown word) * <code>~there_existential</code> (the word there used existentially)</p>
 <p>In addition to normal generic kinds of pos tags, words which are serving a pos-tag role different from their putative word type are marked as members of the major tag they act as part of. E.g,</p>
-<p><code>~noun_gerund</code> – verb used as a ~noun <code>~noun_infinitive</code> – verb used as a ~noun <code>~noun_omitted_adjective</code> – an adjective used as a collective noun (eg the beautiful are kind)</p>
-<p><code>~adjectival_noun</code> (noun used as adjective like bank &quot;bank teller&quot;) <code>~adjective_participle</code> (verb participle used as an adjective)</p>
+<ul>
+<li><code>~noun_gerund</code> – verb used as a ~noun</li>
+<li><code>~noun_infinitive</code> – verb used as a ~noun</li>
+<li><code>~noun_omitted_adjective</code> – an adjective used as a collective noun (eg the beautiful are kind)</li>
+<li><code>~adjectival_noun</code> (noun used as adjective like bank &quot;bank teller&quot;)</li>
+<li><code>~adjective_participle</code> (verb participle used as an adjective)</li>
+</ul>
 <p>For <code>~noun_gerund</code> in <em>I like swimming</em> the verb gerund <em>swimming</em> is treated as a noun (hence called noun-gerund) but retains verb sense when matching keywords tagged with part-of-speech (i.e., it would match <code>swim~v</code> as well as <code>swim~n</code>).</p>
-<p><code>~number</code> is not a part of speech, but is comprise of <code>~noun_number</code> (a normal number value like <em>17</em> or <em>seventeen</em>) and <code>~adjective_number</code> (also a normal numeral value and also <code>~placenumber</code>) like first. Additionally, there is <code>~integer</code>, <code>~float</code>, <code>~positiveinteger</code>, and <code>~negativeinteger</code>.</p>
+<ul>
+<li><code>~number</code> is not a part of speech, but is comprise of <code>~noun_number</code> (a normal number value like <em>17</em> or <em>seventeen</em>)</li>
+<li><code>~adjective_number</code> (also a normal numeral value and also <code>~placenumber</code>) like first.</li>
+</ul>
+<p>Additionally, there is * <code>~integer</code> * <code>~float</code> * <code>~positiveinteger</code> * <code>~negativeinteger</code>.</p>
 <p>To can be a preposition or it can be special. When used in the infinitive phrase To go, it is marked <code>~to_infinitive</code> and is followed by <code>~noun_infinitive</code>.</p>
-<p><code>~verb_infinitive</code> refers to a match on the infinitive form of the verb (I hear John sing or I will sing).</p>
-<p><code>~There_existential</code> refers to the use of where not involving location, meaning the existence of, as in There is no future.</p>
-<p><code>~Particle</code> refers to a preposition piece of a compound verb idiom which allows being separated from the verb. If you say <em>I will call off the meeting</em>, call_off is the composite verb and is a single token. But if you split it as in <em>I will call the meeting off</em>, then there are two tokens. The original form of the verb will be call and the canonical form of the verb will be call_off, while the free-standing off will be labeled <code>~particle</code>.</p>
-<p><code>~verb_present</code> will be used for normal present verbs not in third person singular like I walk and <code>~verb_present_3ps</code> will be used for things like he walks</p>
-<p><code>~possesive</code> refers to ‘s and ‘ that indicate possession, while possessive pronouns get their own labeling <code>~pronoun_possessive</code>.</p>
-<p><code>~pronoun_subject</code> is a pronoun used as a subject (like he) while pronoun_object refers to objective form like (him)</p>
+<ul>
+<li><p><code>~verb_infinitive</code> refers to a match on the infinitive form of the verb (<em>I hear John sing</em> or <em>I will sing</em>).</p></li>
+<li><p><code>~There_existential</code> refers to the use of where not involving location, meaning the existence of, as in There is no future.</p></li>
+<li><p><code>~Particle</code> refers to a preposition piece of a compound verb idiom which allows being separated from the verb. If you say <em>I will call off the meeting</em>, call_off is the composite verb and is a single token. But if you split it as in <em>I will call the meeting off</em>, then there are two tokens. The original form of the verb will be call and the canonical form of the verb will be call_off, while the free-standing off will be labeled <code>~particle</code>.</p></li>
+<li><code>~verb_present</code> will be used for normal present verbs not in third person singular like <em>I walk</em> and</li>
+<li><code>~verb_present_3ps</code> will be used for things like <em>he walks</em></li>
+<li><code>~possesive</code> refers to <em>‘s</em> and <em>‘</em> that indicate possession, while possessive pronouns get their own labeling <code>~pronoun_possessive</code>.</li>
+<li><code>~pronoun_subject</code> is a pronoun used as a subject (like <em>he</em>) while</li>
+<li><p><code>~pronoun_object</code> refers to objective form like <em>him</em></p></li>
+</ul>
 <p>Individual words serve roles in the parse of a sentence, which are retrievable. These include:</p>
-<p><code>~mainsubject</code>, <code>~mainverb</code>, <code>~mainindirect</code>, <code>~maindirect</code>, <code>~subject2</code>, <code>~verb2</code>, <code>~indirectobject2</code>, <code>~object2</code>, <code>~subject_complement</code> – (adjective object of sentence involving linking verb), <code>~object_complement</code> – (2ndary noun or infinitive verb filling modifying mainobject or object2), <code>~conjunct_noun</code>, <code>~conjunct_verb</code>, <code>~conjunct_adjective</code>, <code>~conjunct_adverb</code> <code>~conjunct_phrase</code>, <code>~conjunct_clause</code>, <code>~conjunct_sentence</code>, <code>~postnominalAdjective</code> - adjective occuring AFTER the noun it modified, <code>~reflexive</code> - (reflexive pronouns), <code>~not</code>, <code>~address</code> – noun used as addressee of sentence, <code>~appositive</code> – noun restating and modifying prior noun, <code>~absolutephrase</code> – special phrase describing whole sentence, <code>~omittedtimeprep</code> – modified time word used as phrase but lacking preposition (Next tuesday I will go), <code>~phrase</code> – a prepositional phrase start (except, <code>~clause</code> – a subordinate clause start, <code>~verbal</code> – a verb phrase.</p>
+<ul>
+<li><code>~mainsubject</code></li>
+<li><code>~mainverb</code></li>
+<li><code>~mainindirect</code></li>
+<li><code>~maindirect</code></li>
+<li><code>~subject2</code></li>
+<li><code>~verb2</code></li>
+<li><code>~indirectobject2</code></li>
+<li><code>~object2</code></li>
+<li><code>~subject_complement</code> – (adjective object of sentence involving linking verb),</li>
+<li><code>~object_complement</code> – (2ndary noun or infinitive verb filling modifying mainobject or object2),</li>
+<li><code>~conjunct_noun</code>, <code>~conjunct_verb</code>, <code>~conjunct_adjective</code>, <code>~conjunct_adverb</code></li>
+<li><code>~conjunct_phrase</code>, <code>~conjunct_clause</code>, <code>~conjunct_sentence</code></li>
+<li><code>~postnominalAdjective</code> - adjective occuring AFTER the noun it modified</li>
+<li><code>~reflexive</code> - (reflexive pronouns)</li>
+<li><code>~not</code></li>
+<li><code>~address</code> – noun used as addressee of sentence</li>
+<li><code>~appositive</code> – noun restating and modifying prior noun</li>
+<li><code>~absolutephrase</code> – special phrase describing whole sentence</li>
+<li><code>~omittedtimeprep</code> – modified time word used as phrase but lacking preposition (<em>Next tuesday I will go</em>)</li>
+<li><code>~phrase</code> – a prepositional phrase start (except</li>
+<li><code>~clause</code> – a subordinate clause start</li>
+<li><code>~verbal</code> – a verb phrase</li>
+</ul>
 <h1 id="system-variables">System Variables</h1>
 <p>The system has some predefined variables which you can generally test and use but not normally assign to. These all begin with <code>%</code> . Ones that are reasonable to set are written in bold underline. Boolean values are always <code>1</code> or <code>null</code> on returns. <code>1</code> or <code>0</code> if you are setting them.</p>
 <h2 id="date-time-numbers">Date &amp; Time &amp; Numbers</h2>
@@ -386,7 +452,7 @@
 </tr>
 <tr class="odd">
 <td><code>%maxmatchvariables</code></td>
-<td>highest number of _match variables, currently 20</td>
+<td>highest number of match variables, currently 20</td>
 </tr>
 <tr class="even">
 <td><code>%maxfactsets</code></td>
@@ -832,254 +898,10 @@ s: (name is _*)
 <td>end of found words from ^match</td>
 </tr>
 <tr class="even">
-<td><code>cs_factowner</code></td>
-<td>when non-zero creates facts restricted by this bitmask so facts created by other masks cannot be seen. allows you to separate facts per bot in a multi-bot environment. During compilation if this is set by a bot: command, then functions created and facts created by tables will be restricted to that owner.</td>
+<td><code>cs_botid</code></td>
+<td>when non-zero creates facts and functions restricted by this bitmask so facts and functions created by other masks cannot be seen. allows you to separate facts and functions per bot in a multi-bot environment. During compilation if this is set by a bot: command, then functions created and facts created by tables will be restricted to that owner.</td>
 </tr>
 </tbody>
 </table>
-<h1 id="command-line-parameters">Command Line Parameters</h1>
-<p>You can give parameters on the run command or in a config file. The default config file is <code>cs_init.txt</code> at the top level of CS (if the file exists). Or you can name where the file is on a command line parameter <code>config=xxx</code>. Config file data are command line parameters, 1 per line, like below:</p>
-<pre><code>noboot 
-port=20</code></pre>
-<p>Actual command line parameters have priority over config file values.</p>
-<h2 id="memory-options">Memory options</h2>
-<p>Chatscript statically allocates its memory and so (barring unusual circumstance) will not allocate memory every during its interactions with users. These parameters can control those allocations. Done typically in a memory poor environment like a cellphone.</p>
-<table>
-<colgroup>
-<col width="17%" />
-<col width="82%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>option</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>buffer=50</code></td>
-<td>how many buffers to allocate for general use (80 is default)</td>
-</tr>
-<tr class="even">
-<td><code>buffer=15x80</code></td>
-<td>allocate 15 buffers of 80k bytes each (default buffer size is 80k)</td>
-</tr>
-</tbody>
-</table>
-<p>Most chat doesn't require huge output and buffers around 20k each will be more than enough. 20 buffers is often enough too (depends on recursive issues in your scripts).</p>
-<p>If the system runs out of buffers, it will perform emergency allocations to try to get more, but in limited memory environments (like phones) it might fail. You are not allowed to allocate less than a 20K buffer size.</p>
-<table>
-<colgroup>
-<col width="17%" />
-<col width="82%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>option</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>dict=n</code></td>
-<td>limit dictionary to this size entries</td>
-</tr>
-<tr class="even">
-<td><code>text=n</code></td>
-<td>limit string space to this many bytes</td>
-</tr>
-<tr class="odd">
-<td><code>fact=n</code></td>
-<td>limit fact pool to this number of facts</td>
-</tr>
-<tr class="even">
-<td><code>hash=n</code></td>
-<td>use this hash size for finding dictionary words (bigger = faster access)</td>
-</tr>
-<tr class="odd">
-<td><code>cache=1x50</code></td>
-<td>allocate a 50K buffer for handling 1 user file at a time. A server might want to cache multiple users at a time.</td>
-</tr>
-</tbody>
-</table>
-<p>A default version of ChatScript will allocate much more than it needs, because it doesn't know what you might need.</p>
-<p>If you want to use the least amount of memory (multiple servers on a machine or running on a mobile device), you should look at the USED line on startup and add small amounts to the entries (unless your application does unusual things with facts).</p>
-<p>If you want to know how much, try doing <code>:show stats</code> and then <code>:source REGRESS/bigregress.txt</code>. This will run your bot against a wide range of input and the stats at the end will include the maximum values needed during a volley. To be paranoid, add beyond those valuse. Take your max dict value and double it. Same with max fact. Add 10000 to max text.</p>
-<p>Just for reference, for our most advanced bot, the actual max values used were: max dict: 346 max fact: 689 max text: 38052.</p>
-<p>And the maximum rules executed to find an answer to an input sentence was 8426 (not that you control or care). Typical rules executed for an input sentence was 500-2000 rules. For example, add 1000 to the dict and fact used amounts and 10 (kb) to the string space to have enough normal working room.</p>
-<h2 id="output-options">Output options</h2>
-<p><code>output=nnn</code> limits output line length for a bot to that amount (forcing crnl as needed). 0 is unlimited.</p>
-<p><code>outputsize=80000</code> is the maximum output that can be shipped by a volley from the bot without getting truncated. Actually the value is somewhat less, because routines generating partial data for later incorporation into the output also use the buffer and need some usually small amount of clearance. You can find out how close you have approached the max in a session by typing <code>:memstats</code>. If you need to ship a lot of data around, you can raise this into the megabyte range and expect CS will continue to function. 80K is the default.</p>
-<p>For normal operation, when you change <code>outputsize</code> you should also change <code>logsize</code> to be at least as much, so that the system can do complete logs. You are welcome to set log size lots smaller if you don't care about the log.</p>
-<h2 id="file-options">File options</h2>
-<table>
-<colgroup>
-<col width="10%" />
-<col width="89%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>option</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>livedata=xxx</code></td>
-<td>name relative or absolute path to your own private LIVEDATA folder. Do not add trailing / on this path<br>Recommended is you use <code>RAWDATA/yourbotfolder/LIVEDATA</code> to keep all your data in one place. You can have your own live data, yet use ChatScripts default <code>LIVEDATA/SYSTEM</code> and <code>LIVEDATA/ENGLISH</code> by providing paths to the <code>system=</code> and <code>english=</code> parameters as well as the <code>livedata=</code> parameter</td>
-</tr>
-<tr class="even">
-<td><code>users=xxx</code></td>
-<td>name relative or absolute path to where you want the USERS folder to be. Do not add trailing <code>/</code></td>
-</tr>
-<tr class="odd">
-<td><code>logs=xxx</code></td>
-<td>name relative or absolute path to where you want the LOGS folder to be. Do not add trailing <code>/</code></td>
-</tr>
-<tr class="even">
-<td><code>userlog</code></td>
-<td>Store a user-bot log in USERS directory (default)</td>
-</tr>
-<tr class="odd">
-<td><code>nouserlog</code></td>
-<td>Don't store a user-bot log</td>
-</tr>
-</tbody>
-</table>
-<h2 id="execution-options">Execution options</h2>
-<table>
-<colgroup>
-<col width="10%" />
-<col width="89%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>option</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>source=xxxx</code></td>
-<td>Analogous to the <code>:source</code> command. The file is executed</td>
-</tr>
-<tr class="even">
-<td><code>login=xxxx</code></td>
-<td>The same as you would name when asked for a login, this avoids having to ask for it. Can be <code>login=george</code> or <code>login=george:harry</code> or whatever</td>
-</tr>
-<tr class="odd">
-<td><code>build0=filename</code></td>
-<td>runs <code>:build</code> on the filename as level0 and exits with 0 on success or 4 on failure</td>
-</tr>
-<tr class="even">
-<td><code>build1=filename</code></td>
-<td>runs <code>:build</code> on the filename as level1 and exits with 0 on success or 4 on failure.<br>Eg. ChatScript <code>build0=files0.txt</code> will rebuild the usual level 0</td>
-</tr>
-<tr class="odd">
-<td><code>debug=:xxx</code></td>
-<td>xxx runs the given debug command and then exits. Useful for <code>:trim</code>, for example or more specific <code>:build</code> commands</td>
-</tr>
-<tr class="even">
-<td><code>param=xxxxx</code></td>
-<td>data to be passed to your private code</td>
-</tr>
-<tr class="odd">
-<td><code>bootcmd=xxx</code></td>
-<td>runs this command string before CSBOOT is run; use it to trace the boot process</td>
-</tr>
-<tr class="even">
-<td><code>trace</code></td>
-<td>turn on all tracing.</td>
-</tr>
-<tr class="odd">
-<td><code>redo</code></td>
-<td>see documentation for :redo in <a href="ChatScript-Debugging-Manual.html">ChatScript Debugging Manual</a> manual</td>
-</tr>
-<tr class="even">
-<td><code>noboot</code></td>
-<td>Do not run any boot script on engine startup</td>
-</tr>
-</tbody>
-</table>
-<h2 id="bot-variables">Bot variables</h2>
-<p>You can create predefined bot variables by simply naming permanent variables on the command line, using V to replace $ (since Linux shell scripts don't like $). Eg.</p>
-<pre><code>ChatScript Vmyvar=fatcat</code></pre>
-<pre><code>ChatScript Vmyvar=&quot;tony is here&quot;</code></pre>
-<pre><code>ChatScript &quot;Vmyvar=tony is here&quot;</code></pre>
-<p>Quoted strings will be stored without the quotes. Bot variables are always reset to their original value at each volley, even if you overwrite them during a volley. This can be used to provide server-host specific values into a script.</p>
-<h2 id="no-such-bot-specific---nosuchbotrestarttrue">No such bot-specific - nosuchbotrestart=true</h2>
-<p>If the system does not recognize the bot name requested, it can automatically restart a server (on the presumption that something got damaged). If you don't expect no such bot to happen, you can enable this restart using <code>nosuchbotrestart=true</code>. Default is false.</p>
-<h2 id="time-options">Time options</h2>
-<p><code>Timer=15000</code> if a volley lasts more than 15 seconds, abort it and return a timeout message.</p>
-<p><code>Timer=18000x10</code> same as above, but more roughly, higher number after the x reduces how frequently it samples time, reducing the cost of sampling</p>
-<h2 id="translateconcept-google-api-key">:TranslateConcept Google API Key</h2>
-<p><code>apikey=xxxxxx</code> is how you provide a google translate api key to :translate concept.</p>
-<h1 id="security">Security</h1>
-<p>Typically security parameters only are used in a server configuration.</p>
-<pre><code>sandbox</code></pre>
-<p>If the engine is not allowed to alter the server machine other than through the standard ChatScript directories, you can start it with the parameter <code>sandbox</code> which disables Export and System calls.</p>
-<pre><code>nodebug</code></pre>
-<p>Users may not issue debug commands (regardless of authorizations). Scripts can still do so.</p>
-<pre><code>authorize=&quot;&quot; bunch of authorizations &quot;&quot;</code></pre>
-<p>The contents of the string are just like the contents of the authorizations file for the server. Each entry separated from the other by a space. This list is checked first. If it fails to authorize AND there is a file, then the file will be checked also. Otherwise authorization is denied.</p>
-<pre><code>encrypt=xxxxx
-decrypt=xxxxx</code></pre>
-<p>These name URLs that accept JSON data to encrypt and decrypt user data. User data is of two forms, topic data and LTM data. LTM data is intended to be more personalized for a user, so if <code>encrypt</code> is set, LTM will be encrypted. User topic data is often just execution state of the user and potentially big, so by default it is not encrypted. You can request encryption using <code>userencrypt</code> as a command line parameter to encrypt the topic file and <code>ltmdecrypt</code> to encrypt the ltm file.</p>
-<p>The JSON data sent to the URL given by the parameters looks like this:</p>
-<pre><code>{&quot;datavalues&quot;: {&quot;x&quot;: &quot;...&quot;}} </code></pre>
-<p>where ... is the text to encrypt or decrypt. Data from CS will be filled into the ... and are JSON compatible.</p>
-<h1 id="server-parameters">Server Parameters</h1>
-<p>Either Mac/LINUX or Windows versions accept the following command line args:</p>
-<pre><code>port=xxx</code></pre>
-<p>This tells the system to be a server and to use the given numeric port. You must do this to tell Windows to run as a server. The standard port is 1024 but you can use any port.</p>
-<pre><code>local</code></pre>
-<p>The opposite of the port command, this says run the program as a stand-alone system, not as a server.</p>
-<pre><code>interface=127.0.0.1</code></pre>
-<p>By default the value is <code>0.0.0.0</code> and the system directly uses a port that may be open to the internet. You can set the interface to a different value and it will set the local port of the TCP connection to what you designate.</p>
-<h1 id="user-data">User Data</h1>
-<p>Scripts can direct the system to store individualized data for a user in the user's topic file in USERS. It can store user variables (<code>$xxx</code>) or facts. Since variables hold only a single piece of information a script already controls how many of those there are. But facts can be arbitrarily created by a script and there is no natural limit. As these all take up room in the user's file, affecting how long it takes to process a volley (due to the time it takes to load and write back a topic file), you may want to limit how many facts each user can have written. This is unrelated to universal facts the system has at its permanent disposal as part of the base system.</p>
-<p><code>userfacts=n</code> limits a user file to saving only the n most recently created facts of a user (this does not include facts stored in fact sets). Overridden if the user has <code>$cs_userfactlimit</code> set to some value</p>
-<h3 id="user-caching">User Caching</h3>
-<p>Each user is tracked via their topic file in USERS. The system must load it and write it back for each volley and in some cases will become I/O bound as a result (particularly if the filesystem is not local).</p>
-<p>You can direct the system to keep a cache in memory of recent users, to reduce the I/O volume. It will still write out data periodically, but not every volley. Of course if you do this and the server crashes, writebacks may not have happened and some system rememberance of user interaction will be lost.</p>
-<p>Of course if the system crashes, user's may not think it unusually that the chatbot forgot some of what happened. By default, the system automatically writes to disk every volley, If you use a different value, a user file will never be more out of date than that.</p>
-<pre><code>cache=20
-cache=20x1</code></pre>
-<p>This specifies how many users can be cached in memory and how big the cache block in kb should be for a user. The default block size is <code>50</code> (50,000 bytes). User files typically are under 20,000 bytes.</p>
-<p>If a file is too big for the block, it will just have to write directly to and from the filesystem. The default cache count is 1, telling how many users to cache at once, but you can explicitly set how many users get cached with the number after the &quot;x&quot;. If the second number is 0, then no caching is done and users have no data saved. They remember nothing from volley to volley.</p>
-<p>Do not use caching with fork. The forks will be hiding user data from each other.</p>
-<pre><code>save=n</code></pre>
-<p>This specifies how many volleys should elapse before a cached user is saved to disk. Default is 1. A value of 0 not only causes a user's data to be written out every volley, but also causes the user record to be dropped from the cache, so it is read back in every time it is needed (handy when running multi-core copies of chatscript off the same port).</p>
-<p>Note, if you change the default to a number higher than 1, you should always use <code>:quit</code> to end a server. Merely killing the process may result in loss of the most recent user activity.</p>
-<h2 id="logging-or-not">Logging or Not</h2>
-<p>In stand-alone mode the system logs what a user says with a bot in the USERS folder. It can also do this in server mode. It can also log what the server itself does. But logging slows down the system. Particularly if you have an intervening server running and it is logging things, you may have no use whatsoever for ChatScript's logging.</p>
-<pre><code>Userlog</code></pre>
-<p>Store a user-bot log in USERS directory. Stand-alone default if unspecified.</p>
-<pre><code>Nouserlog</code></pre>
-<p>Don't store a user-bot log. Server default if unspecified.</p>
-<pre><code>Serverlog</code></pre>
-<p>Write a server log. Server default if unspecified. The server log will be put into the LOGS directory under serverlogxxx.txt where xxx is the port.</p>
-<pre><code>Noserverprelog</code></pre>
-<p>Normally CS writes of a copy of input before server begins work on it to server log. Helps see what crashed the server (since if it crashes you get no log entry). This turns it off to improve performance.</p>
-<pre><code>Serverctrlz</code></pre>
-<p>Have server terminate its output with 0x00 0xfe 0xff as a verification the client received the entire message, since without sending to server, client cannot be positive the connection wasn't broken somewhere and await more input forever.</p>
-<pre><code>Noserverlog</code></pre>
-<p>Don't write a server log.</p>
-<pre><code>Fork=n</code></pre>
-<p>If using LINUX EVSERVER, you can request extra copies of ChatScript (to run on each core for example). n specifies how many additional copies of ChatScript to launch.</p>
-<pre><code>Serverretry</code></pre>
-<p>Allows <code>:retry</code> to work from a server - don't use this except for testing a single-person on a server as it slows down the server.</p>
-<h2 id="no-such-bot-specific---nosuchbotrestarttrue-1">No such bot-specific - nosuchbotrestart=true</h2>
-<p>If the system does not recognize the bot name requested, it can automatically restart a server (on the presumption that something got damaged). If you don't expect no such bot to happen, you can enable this restart using <code>nosuchbotrestart=true</code>. Default is false.</p>
-<h2 id="testing-a-server">Testing a server</h2>
-<p>There are various configurations for having an instance be a client to test a server.</p>
-<pre><code>client=xxxx:yyyy</code></pre>
-<p>This says be a client to test a remote server at IP xxxx and port yyyy. You will be able to &quot;login&quot; to this client and then send and receive messages with a server.</p>
-<pre><code>client=localhost:yyyy</code></pre>
-<p>This says be a client to test a local server on port yyyy. Similar to above.</p>
-<pre><code>Load=1</code></pre>
-<p>This creates a localhost client that constantly sends messages to a server. Works its way through <code>REGRESS/bigregress.txt</code> as its input (over 100K messages). Can assign different numbers to create different loading clients (e.g., load=10 creates 10 clients).</p>
-<pre><code>Dual</code></pre>
-<p>Yet another client. But this one feeds the output of the server back as input for the next round. There are also command line parameters for controlling memory usage which are not specific to being a server.</p>
 </body>
 </html>

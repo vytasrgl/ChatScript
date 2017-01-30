@@ -30,6 +30,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //#define DISCARDJAVASCRIPT 1
 #define DISCARDMYSQL 1
 
+// these can add components
+//#define  TREETAGGER 1
+
 #ifdef LOEBNER
 #define DISCARDSERVER 1
 #define DISCARDSCRIPTCOMPILER 1
@@ -49,7 +52,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DISCARDPOSTGRES 1
 #define DISCARDMONGO 1
 //#undef  DISCARDDICTIONARYBUILD  // only a windows version can build a dictionary from scratch
-//#define  TREETAGGER 1
 
 #elif IOS
 #define DISCARDCOUNTER 1
@@ -77,6 +79,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //#define DISCARDMONGO 1
 
 #else // GENERIC LINUX
+#ifndef EVSERVER
+#define SAFETIME 1  // protect server from time concurrency issues in C++ library.
+#endif
 #endif
 
 // These can be used to include LINUX EVSERVER component - this is automatically done by the makefile in src - EV Server does not work under windows

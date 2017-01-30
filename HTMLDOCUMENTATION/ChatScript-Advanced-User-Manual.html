@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/7/2017 cs7.1</p>
+<p>Revision 1/28/2017 cs7.12</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
@@ -26,7 +26,6 @@
 <li><a href="ChatScript-Advanced-User-Manual.html#system-callback-functions">System callback functions</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#advanced-build">Advanced :build</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#editing-non-topic-files">Editing Non-topic Files</a></li>
-<li><a href="ChatScript-Advanced-User-Manual.html#which-bot">Which Bot?</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#common-script-idioms">Common Script Idioms</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#esoterica-and-fine-detail">Esoterica and Fine Detail</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#self-reflection">Self-Reflection</a></li>
@@ -224,20 +223,10 @@ u: ( dog) I hate dogs</code></pre>
 </tr>
 <tr class="odd">
 <td><code>Bot=name</code></td>
-<td>if this is given, only named bots are allowed to use this topic. You can name multiple bots separated by commas with no extra spaces. E.g. <code>topic: ~mytopic bot=harry,,roman [mykeyword]</code></td>
+<td>if this is given, only named bots are allowed to use this topic. See <code>ChatScript Multiple Bots manual</code></td>
 </tr>
 </tbody>
 </table>
-<p>To support <strong>multiple bots</strong>, you may create multiple copies of a topic name, which vary in their bot restrictions and content. The set of keywords given for a topic is the union of the keywords of all copies of that topic name. You should not name a topic ending in a period and a number (that is used internally to represent multiple topics of the same name).</p>
-<p><code>bot: name</code> - There is also a top level command you can put in a file to label all topics thereafter with a uniform bot restriction. <code>Bot: name</code> will do this, unless the topic has an explicit bot= You can, for example, put at the topic of simpletopic.top the command</p>
-<pre><code>bot: harry,georgia</code></pre>
-<p>and get all topics in that file restricted to the two bots named. There should be no spaces after the comma. Of course there are only two bots in the first place, so this doesn't actually accomplish anything useful.</p>
-<p>You can also change the current bot owner value at the same time. This affects who owns facts created in tables thereafter as well as allowing multiple copies of the same function to exist, qualified by what the current bot owner is. Just put the fact owner id 1st in the list:</p>
-<pre><code>bot: 1 harry, georgia</code></pre>
-<p>You can change to a bot owner without naming any bots, in which case topics created will be usuable by any bot but facts and functions will be restricted by bot owner.</p>
-<p>And you can use a bot: command as a line in your <code>filesxxx.txt</code> build file. Used there, it sticks forever until some other bot: command is hit. If that is a local file command, then that affects the file but then the compile reverbs to no bot: value until the next one is hit (either globally or in a file).</p>
-<p><code>Share</code> – Normally, if you have multiple bots, they all talk independently to the user. What one learns or says is not available to the other bots. It is possible to create a collection of bots that all can hear what has been said and share information. Share on a topic means that all bots will have common access/modification of a topic's state. So if one bot uses up a gambit, the other bots will not try to use that gambit themselves.</p>
-<p>All facts created will be visible to all bots. And if you create a permanent user variable with the starting name $share_, then all bots can see and modify it. So $share_name becomes a common variable. When sharing is in effect, the state with the user (what he said, what bot said, what turn of the volley this is, where the rejoinder mark is) is all common among the bots- they are advancing a joint conversation.</p>
 <h2 id="rules-that-erase-and-repeat">Rules that erase and repeat</h2>
 <p>Normally a rule that successfully generates output directly erases itself so it won't run again. Gambits do this and responders do this.</p>
 <p>Gambits will erase themselves even if they don't generate output. They are intended to tell a story or progress some action, and so do their thing and then disappear automatically.</p>
@@ -884,44 +873,6 @@ $tmp = ##first</code></pre>
 <p>Processing done by various of these files can be suppressed by setting <code>$cs_token</code> differently. See Control over Input.</p>
 <p>The <code>queries.txt</code> file defines queries available to <code>^query</code>. A query is itself a script. See the file for more information.</p>
 <p>The <code>canonical.txt</code> file is a list of words and override canonical values. When the word on the left is seen in raw input, the word on the right will be used as its canonical form. The lowercasetitles.txt file is a list of lower-case words that can be accepted in a title. Normally lower case words would break up a title.</p>
-<h1 id="which-bot">WHICH BOT?</h1>
-<p>The system can support multiple bots cohabiting the same engine. You can restrict topics to be available only to certain bots (see Advanced Topics). You can restrict rules to being available only to certain bots by using something like</p>
-<pre><code>?: ($bot=harry ...)
-
-?: (!$bot=harry ...).
-
-t: ($bot=harry) My name is harry.</code></pre>
-<p>The demo system has only one bot, Harry. If it had two bots in it, harry and Georgia, you could get Georgia by logging in as <code>yourname:georgia</code>. And you can confirm who she is by asking what is your name.</p>
-<p>You specify which bot you want when you login, by appending <code>:botname</code> to your login name, e.g., <code>bruce:harry</code>.</p>
-<p>When you don't do that, you get the default bot. How does the system know what that is? It looks for a fact in the database whose subject will be the default bot name and whose verb is defaultbot. If none is found, the default bot is called anonymous, and probably nothing works at all. Defining the default bot is what a table does when you compile <code>simplecontrol.top</code>. It has:</p>
-<pre><code>table: defaultbot (^name)
-^createfact(^name defaultbot defaultbot)
-DATA:
-harry</code></pre>
-<p>Typically when you build a level 1 topic base (e.g., <code>:build ben</code> or <code>:build 1</code> or whatever), that layer has the initialization function for your bot(s) otherwise your bot cannot work.</p>
-<p>This function is invoked when a new user tries to speak to the bot and tells things like what topic to start the bot in and what code processes the users input. You need one of these functions for each bot, though the functions might be pure duplicates (or might not be). In the case of harry, the function is</p>
-<pre><code>^outputmacro: harry()
-    ^addtopic(~introductions)
-    $cs_control_pre = ~control
-    $cs_control_main = ~control
-    $cs_control_post = ~control</code></pre>
-<p><code>SimpleControl.top</code> also has a function that declares who the default bot is.</p>
-<pre><code>table: defaultbot (^name)
-^createfact(^name defaultbot defaultbot)
-DATA:
-harry</code></pre>
-<p>You can change default bots merely by requesting different build files that name the default, or by editing your table.</p>
-<p>To have multiple bots available, one might start by making multiple folder copies of Harry and changing them to separate bots with separate <code>filesxxx.txt</code>. That's fine for building them as each stand-alone bots, but if you want them to cohabit you must have a single <code>filesxxx.txt</code> file that names the separate bot's folders- they must be built together.</p>
-<p>Of course if you merely cloned those folders, they have topics all with the same name, like <code>~control</code> and <code>~introductions</code> and <code>~childhood</code>. This is a problem. Likely you would want only one copy of <code>~control</code> that both bots used. And either they should have different topic names for <code>~introductions</code> and <code>~childhood</code> OR you must put a bot restriction on each of the duplicate topics, naming which bot can use it.</p>
-<h1 id="topics-by-bot">Topics By Bot</h1>
-<p>You should already know that a topic can be restricted to specific bots. Now you learn that you can create multiple copies of the same topic, so different bots can have different copies. These form a topic family with the same name. The rules are:</p>
-<ul>
-<li>the topics share the union of keywords</li>
-<li><code>:verify</code> can only verify the first copy of a topic it is allowed access to</li>
-</ul>
-<p>When the system is trying to access a topic, it will check the bot restrictions. If a topic fails, it will try the next duplicate in succession until it finds a copy that the bot is allowed to use.</p>
-<p>This means if topic 1 is restricted to ben and topic2 is unrestricted, ben will use topic 1 and all other bots will use topic2. If the order of declaration is flipped, then all bots including ben will use topic 2 (which now precedes topic 1 in declaration).</p>
-<p>You can also use the <code>:disable</code> and <code>:enable</code> commands to turn off all or some topics for a personality.</p>
 <h1 id="common-script-idioms">Common Script Idioms</h1>
 <h2 id="selecting-specific-cases-refine">Selecting Specific Cases ^refine</h2>
 <p>To be efficient in rule processing, I often catch a lot of things in a rule and then refine it.</p>

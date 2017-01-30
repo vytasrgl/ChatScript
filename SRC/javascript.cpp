@@ -53,6 +53,7 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 	char returnType[MAX_WORD_SIZE];
 	char* callbase = NULL;
 	char* code = definition;
+	
 	if (!stricmp(word,"call")) // skip over the description for now
 	{
 		definition = ReadCompiledWord(definition,returnType); 
@@ -80,6 +81,10 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 		if (!*code) return FAILRULE_BIT; // require some code
 	}
 	else if (!*name) return FAILRULE_BIT;	// need to define someting, be it a compile or a call
+	
+	char* terminator = strchr(code,'`');
+	*terminator = 0; // hide this from javascript
+	
 	if (*code && !inited) // code was supplied, handle it if not yet executed
 	{
 		*defstart = '.';
@@ -118,6 +123,7 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 		if (!found)
 		{
 			duk_pop(ctx); // discard context
+			*terminator = '`';
 			return FAILRULE_BIT;
 		}
 		unsigned int index = 0;
@@ -130,6 +136,7 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 			{
 				for (unsigned int i = 0; i < index; ++i) duk_pop(ctx); // discard saved args
 				duk_pop(ctx); // discard context
+				*terminator = '`';
 				return FAILRULE_BIT;
 			}
 			callbase = ReadCompiledWord(callbase,type);
@@ -163,6 +170,7 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 		{				
 			for (unsigned int i = 0; i < index; ++i) duk_pop(ctx); // discard saved args
 			duk_pop(ctx); // discard context
+			*terminator = '`';
 			return FAILRULE_BIT;
 		}
 
@@ -170,6 +178,7 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 		{
 			printf("Javascript Error: %s\n", duk_safe_to_string(ctx, -1));
 			duk_pop(ctx);
+			*terminator = '`';
 			return FAILRULE_BIT;
 		} 
 		else 
@@ -182,10 +191,11 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 			else if (!stricmp(returnType,"int")) strcpy(buffer,duk_safe_to_string(ctx, -1)); // assumes there is a return string!
 			else if (!stricmp(returnType,"float")) strcpy(buffer,duk_safe_to_string(ctx, -1)); // assumes there is a return string!
 			duk_pop(ctx);
+			*terminator = '`';
 			return NOPROBLEM_BIT;
 		}
 	}
-
+	*terminator = '`';
 	return NOPROBLEM_BIT;
 #else
 	return FAILRULE_BIT; // if javascript not compiled into engine

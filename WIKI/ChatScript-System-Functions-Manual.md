@@ -2,8 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
-
-> Revision 1/1/2017 cs7.0
+> Revision 1/28/2017 cs7.12
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -1152,6 +1151,11 @@ You can turn it back off again with `^jsonlabel("")`
 This allows you to create json namespaces which will not conflict. Eg, you may load a
 bunch of json during a system bootup (`^csboot`) under one naming and then use a
 different naming for user json created later and code can determine the source of the data.
+
+### `^jsonreadcvs`( TAB filepath )
+
+reads a tsv (tab delimited spreadsheet file) and returns a JSON array representing it. The lines are all objects in an array.
+The line is an object where non-empty fields are given as field indexes. The first field is 0. Empty fields are skipped over and their number omitted.
 
 ### `^jsonundecodestring`( string )
 Removes all json escape markers back to normal for possible printout to a user. 

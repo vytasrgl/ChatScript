@@ -265,7 +265,7 @@ It has no impact whatsoever on a user in chat.
 # What Files are Where
 
 
-The ChatScript engine can run multiple bots at once, each with a unique persona. So one
+The ChatScript engine can run multiple bots at once (ChatScript Multiple Bots manual), each with a unique persona. So one
 user can connect and talk with a specific personality while another user connects and
 talks with a different one (or the same one). 
 

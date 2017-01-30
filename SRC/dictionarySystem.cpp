@@ -93,7 +93,6 @@ std::map <WORDP, int> wordValues; // per volley
 std::map <WORDP, MEANING> backtracks; // per volley
 std::map <WORDP, int> triedData; // per volley index into heap space
 
-
 int concepts[MAX_SENTENCE_LENGTH];  // concept chains per word
 int topics[MAX_SENTENCE_LENGTH];  // topics chains per word
 
@@ -237,8 +236,8 @@ unsigned int* AllocateWhereInSentence(WORDP D)
 	unsigned int* data = NULL;
 	if (documentMode && freeTriedList) // reuse memory
 	{
-		MEANING* data = (MEANING*) Index2Heap(freeTriedList);
-		freeTriedList = *data;
+		MEANING* d = (MEANING*) Index2Heap(freeTriedList);
+		freeTriedList = *d;
 	}
 	if (!data) data = (unsigned int*) AllocateHeap(NULL, ((sizeof(uint64) + maxRefSentence)+3)/4,4,false); // 64 bits (2 words) + 64 bytes (16 words) = 18 words  BUG?
 	if (!data) return NULL;
@@ -456,6 +455,30 @@ MEANING FindChild(MEANING who,int n)
     return 0;
 } 
 
+bool ReadForeignPosTags(char* fname)
+{
+	FILE* in = FopenReadOnly(fname);
+	if (!in) return false;
+	char word[MAX_WORD_SIZE];
+	*word = '_';	// marker to keep any collision away from foreign pos
+	while (ReadALine(readBuffer,in)>= 0)  // foreign name followed by bits of english pos
+	{
+		char* ptr = ReadCompiledWord(readBuffer,word+1);
+		uint64 flags = 0;
+		char flag[MAX_WORD_SIZE];
+		while (*ptr)
+		{
+			ptr = ReadCompiledWord(ptr,flag);
+			if (!*flag) break;
+			uint64 val = FindValueByName(flag);
+			flags |= val;
+		}
+		StoreWord(word,flags);
+	}
+	fclose(in);
+	return true;
+}
+
 unsigned char BitCount(uint64 n)  
 {  
 	unsigned char count = 0;  
@@ -528,6 +551,12 @@ void BuildDictionary(char* label)
 		maxHashBuckets = 10000;
 		setMaxHashBuckets = true;
 	}
+    else if (!stricmp(word, (char*)"foreign") ) // a foreign dictionary
+    {
+        miniDict = 6;
+        maxHashBuckets = 10000;
+        setMaxHashBuckets = true;
+    }
 	strcpy(lang,mini);
 	// insure language subdirectory exists
 	MakeUpperCopy(language,lang); // localized version of dict. otherwise its of the current language
@@ -540,7 +569,7 @@ void BuildDictionary(char* label)
 #ifndef DISCARDDICTIONARYBUILD
 	LoadRawDictionary(miniDict); 
 #endif
-	if (miniDict) StoreWord((char*)"minidict"); // mark it as a mini dictionary
+	if (miniDict && miniDict != 6) StoreWord((char*)"minidict"); // mark it as a mini dictionary
 
 	// dictionary has been built now
 	printf((char*)"%s",(char*)"Dumping dictionary\r\n");
@@ -1338,13 +1367,13 @@ static void WriteBinaryEntry(WORDP D, FILE* out)
 	if (GetComparison(D)) Write32(MakeMeaning(GetComparison(D)),0);
 	if (GetMeaningCount(D)) 
 	{
-		unsigned char c = (unsigned char)GetMeaningCount(D);
+		c = (unsigned char)GetMeaningCount(D);
 		Write8(c,0);  //   limit 255 no problem
 		for (int i = 1; i <= GetMeaningCount(D); ++i) Write32(GetMeaning(D,i),0);
 	}
 	if (GetGlossCount(D)) 
 	{
-		unsigned char c = (unsigned char)GetGlossCount(D);
+		c = (unsigned char)GetGlossCount(D);
 		Write8(c,0); //   limit 255 no problem
 		for (int i = 1; i <= GetGlossCount(D); ++i) 
 		{
@@ -1959,16 +1988,20 @@ void RemoveMeaning(MEANING M, MEANING M1)
 
 MEANING ReadMeaning(char* word,bool create,bool precreated)
 {// be wary of multiple deletes of same word in low-to-high-order
-	char hold[MAX_WORD_SIZE];
-	if (strlen(word) >= (MAX_WORD_SIZE-2)) 
+	char* hold = AllocateStack(NULL,MAX_BUFFER_SIZE);
+	if (strlen(word) >= (MAX_BUFFER_SIZE-2)) 
 	{
 		ReportBug("ReadMeaning has word too long: %s",word);
-		word[MAX_WORD_SIZE - 2] = 0; // safety
+		word[MAX_BUFFER_SIZE - 2] = 0; // safety
 	}
 	if (*word == '\\' && word[1] && !word[2])  strcpy(hold,word+1);	//   special single made safe, like \[  or \*
 	else strcpy(hold,word);
 	word = hold;
-	if (!*word) return 0;
+	if (!*word) 
+	{
+		ReleaseStack(hold);
+		return 0;
+	}
 
 	unsigned int flags = 0;
 	unsigned int index = 0;
@@ -2033,6 +2066,7 @@ MEANING ReadMeaning(char* word,bool create,bool precreated)
 		//}
 	}
 	WORDP D = (create) ? StoreWord(word,AS_IS) : FindWord(word,0,PRIMARY_CASE_ALLOWED);
+	ReleaseStack(hold);
     return (!D)  ? (MEANING)0 :  (MakeMeaning(D,index) | flags);
 }
 
@@ -2091,11 +2125,11 @@ bool ReadDictionary(char* file)
 			for (unsigned int i = 1; i <= meaningCount; ++i) //   read each meaning
 			{
 				ReadALine(readBuffer,in);
-				char* ptr = ReadCompiledWord(readBuffer,junk);
+				char* p = ReadCompiledWord(readBuffer,junk);
 				GetMeaning(D,i) = ReadMeaning(junk,true,true);
-				if (*ptr == '(') ptr = strchr(ptr,')') + 2; // point after the )
-				if (glossCount && *ptr && GetMeaning(D,i) & SYNSET_MARKER) 
-					D->w.glosses[++glossIndex] =  Heap2Index(AllocateHeap(ptr)) + (i << 24);
+				if (*p == '(') p = strchr(p,')') + 2; // point after the )
+				if (glossCount && *p && GetMeaning(D,i) & SYNSET_MARKER)
+					D->w.glosses[++glossIndex] =  Heap2Index(AllocateHeap(p)) + (i << 24);
 			}
 			if (glossIndex != glossCount)
 			{
@@ -2300,11 +2334,11 @@ void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,b
 		char wd[MAX_WORD_SIZE];
 		strcpy(wd,JoinWords(1));
 		// now determine the multiword headerness...
-		char* word = wd;
-		if (*word == '<') ++word;		// do not show the < starter for lookup
-		size_t len = strlen(word);
-		if (len > 1 && word[len-1] == '>')  word[len-1] = 0;	// do not show the > on the starter for lookup
-		WORDP E = StoreWord(word);		// create the 1-word header
+		char* myword = wd;
+		if (*myword == '<') ++myword;		// do not show the < starter for lookup
+		size_t len = strlen(myword);
+		if (len > 1 && myword[len-1] == '>')  myword[len-1] = 0;	// do not show the > on the starter for lookup
+		WORDP E = StoreWord(myword);		// create the 1-word header
 		if (n > GETMULTIWORDHEADER(E)) SETMULTIWORDHEADER(E,n);	//   mark it can go this far for an idiom
 
 		WORDP S = NULL;
@@ -2531,7 +2565,7 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 	if (D->properties & NOUN && !(D->properties & NOUN_BITS)) ReportBug((char*)"Noun %s lacks subkind\r\n",D->word);
 	if (D->properties & ADVERB && !(D->properties & ADVERB)) ReportBug((char*)"Adverb %s lacks subkind\r\n",D->word);
 	if (D->properties & ADJECTIVE && !(D->properties & ADJECTIVE_BITS)) ReportBug((char*)"Adjective %s lacks subkind\r\n",D->word);
-
+	WORDP X;
 	unsigned int count = GetMeaningCount(D);
 	for(unsigned int i = 1; i <= count; ++i)
 	{
@@ -2541,7 +2575,7 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 			ReportBug((char*)"Has no meaning %s %d\r\n",D->word,i)
 			return;
 		}
-		WORDP X = Meaning2SmallerWord(M);
+		X = Meaning2SmallerWord(M);
 		int index = Meaning2Index(M);
 		int count1 = GetMeaningCount(X);
 		if (index > count1) 
@@ -2552,7 +2586,7 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 		int n = 0;
 		while (!(at & SYNSET_MARKER)) // find the correct ptr to return as master
 		{
-			WORDP X = Meaning2Word(at);
+			X = Meaning2Word(at);
 			if (X->internalBits & DELETED_MARK) ReportBug((char*)"Synset goes to dead word %s",X->word)
 			int ind = Meaning2Index(at);
 			if (ind > GetMeaningCount(X)) 
@@ -2592,7 +2626,7 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 		synsetHeads = 0;
 		unsigned int counter = 0;
 		MEANING M = GetMeaning(D,i);
-		WORDP X = Meaning2Word(M);
+		X = Meaning2Word(M);
 		int index = Meaning2Index(M);
 		if (M & SYNSET_MARKER);
 		else while (X != D) // run til we loop once back to this entry, counting synset heads we see
@@ -2682,13 +2716,13 @@ void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and 
 	// anything with a singular noun meaning should have an uplink
 	if (D->properties & NOUN_SINGULAR && GetMeanings(D) && buildDictionary)
 	{
-		unsigned int count = GetMeaningCount(D);
+		count = GetMeaningCount(D);
 		for (unsigned int i = 1; i <= count; ++i)
 		{
 			if (! (GETTYPERESTRICTION(GetMeaning(D,i)) & NOUN)) continue;
 
 			// might be just a "more noun" word
-			WORDP X = Meaning2Word(GetMeaning(D,i));
+			X = Meaning2Word(GetMeaning(D,i));
 			if (X == D) continue; // points to self is good enough
 
 			MEANING M = GetMaster(GetMeaning(D,i));

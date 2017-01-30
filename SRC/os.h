@@ -70,6 +70,8 @@ char* AllocateStack(char* word, size_t len = 0, bool localvar = false);
 void ReleaseInfiniteStack();
 void ReleaseStack(char* word);
 char* InfiniteStack(char*& limit,char* caller);
+char* InfiniteStack64(char*& limit,char* caller);
+void CompleteBindStack64(int n,char* base);
 void CompleteBindStack();
 bool AllocateStackSlot(char* variable);
 char* RestoreStackSlot(char* variable,char* slot);
@@ -87,7 +89,6 @@ void EncryptRestart();
 extern unsigned int currentFileLine;
 extern unsigned int maxFileLine;
 extern char currentFilename[MAX_WORD_SIZE];
-extern struct tm* ptm;
 int FClose(FILE* file);
 void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath);
 void C_Directories(char* x);
@@ -148,8 +149,10 @@ char* GetUserPath(char* name);
 
 #define SKIPWEEKDAY 4 // from gettimeinfo
 
-char* GetTimeInfo(bool nouser=false,bool utc=false);
+char* GetTimeInfo(struct tm* ptm, bool nouser=false,bool utc=false);
 char* GetMyTime(time_t curr);
+void mylocaltime (const time_t * timer, struct tm* ptm);
+void myctime(time_t * timer,char* buffer);
 
 #ifdef __MACH__
 void clock_get_mactime(struct timespec &ts);

@@ -140,10 +140,10 @@ static char* ReadDisplay(FILE* in, char* ptr)
 
 static char* WriteDisplay(char* pack)
 {
+	*pack++ = '(';
+	*pack++ = ' ';
 	if (displayIndex) // show and merge in the new stuff
 	{
-		*pack++ = '(';
-		*pack++ = ' ';
 		Log(STDUSERLOG,"    Locals: ");
 		for (int i = 0; i < displayIndex; ++i)
 		{
@@ -153,11 +153,11 @@ static char* WriteDisplay(char* pack)
 			*pack++ = ' ';
 		}
 		Log(STDUSERLOG,"\r\n");
-		*pack++ = ')';
-		*pack++ = ' ';
-		*pack = 0;
 		displayIndex = 0;
 	}
+	*pack++ = ')';
+	*pack++ = ' ';
+	*pack = 0;
 	return pack;
 }
 
@@ -1502,6 +1502,8 @@ static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char* argset[ARGSETL
 	}
 	else if ((!stricmp(nextToken,(char*)"^first") || !stricmp(nextToken,(char*)"^last") || !stricmp(nextToken,(char*)"^random")) && *arg2) BADSCRIPT((char*)"CALL-23 Too many arguments to first/last/random - %s",arg2)
 	else if (!stricmp(D->word,(char*)"^respond") && atoi(arg1))  BADSCRIPT((char*)"CALL-? argument to ^respond should be a topic, not a number. Did you intend ^response? - %s",arg1)
+	else if (!stricmp(D->word,(char*)"^respond") && !stricmp(arg1,currentTopicName)) WARNSCRIPT((char*)"Recursive call to topic - possible infinite recursion danger %s\r\n",arg1)
+	else if (!stricmp(D->word,(char*)"^gambit") && !stricmp(arg1,currentTopicName)) WARNSCRIPT((char*)"Recursive call to topic - possible infinite recursion danger %s\r\n",arg1)
 	else if (!stricmp(D->word,(char*)"^response") && *arg1 == '~')  BADSCRIPT((char*)"CALL-? argument to ^response should be a number, not a topic. Did you intend ^respond? - %s",arg1)
 	else if (!stricmp(D->word,(char*)"^burst") && !stricmp(arg1,(char*)"wordcount")) BADSCRIPT((char*)"CALL-? argument to ^burst renamed. Use 'count' instead of 'wordcount'")
 	//   validate inference calls if we can
@@ -2585,6 +2587,13 @@ static char* ReadChoice(char* word, char* ptr, FILE* in, char* &data,char* rejoi
 	return ptr;
 }
 
+static bool ValidIfOperand(char c)
+{
+    return (c != '<' && c != '+' && c != '-' && c != '*'
+        && c != '/' && c != '&' && c != '|' && c != '%' && c != '='
+        && c != '<' && c != '>' && c != '%' && c != '^' && c != '!' && c != '?');
+}
+
 static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 {
 	char word[MAX_WORD_SIZE];
@@ -2606,31 +2615,18 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 		++ptr;
 		word[1] = 0;
 	}
-	char* equal = strchr(word+1,'='); // actually a test joined on?
-	if (equal)
+    // actually a test joined on?
+    char* at = word;
+    while (*++at && ValidIfOperand(*at)) {;}
+	if (*at)
 	{
-		if (equal[1] == '=' && equal[2]) // break it off
-		{
-			ptr -= strlen(equal);
-			memmove(ptr+3,ptr+2,strlen(ptr+2)+1);
-			ptr[2] = ' ';
-			*equal = 0;
-		}
-		else if ((*(equal-1) == '!' || *(equal-1) == '>' || *(equal-1) == '<') && equal[1]) // break it off
-		{
-			ptr -= strlen(equal-1);
-			memmove(ptr+3,ptr+2,strlen(ptr+2)+1);
-			ptr[2] = ' ';
-			*(equal-1) = 0;
-		}
-	}
-	char* question = strchr(word+1,'?');
-	if (question && word[1])
-	{
-		ptr -= strlen(question);
-		memmove(ptr+1,ptr,strlen(ptr) + 1);
-		*ptr = ' ';
-		*question = 0;
+        size_t len = strlen(at);
+        *at = 0;
+		ptr -= len; // back up to rescan
+        at = ptr;
+        while (!ValidIfOperand(*at)) {++at;} // where does operand end?
+        memmove(at + 1, at, strlen(at)+1);
+        *at = ' '; // separate operand
 	}
 
 	bool notted = false;
@@ -3529,7 +3525,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 			{
 				int64 bid;
 				ReadInt64((char*)D->w.fndefinition,bid); 
-				if (bid == myBot)BADSCRIPT((char*)"MACRO-3 macro %s already defined",macroName)
+				if (bid == (int64)myBot)BADSCRIPT((char*)"MACRO-3 macro %s already defined",macroName)
 			}
 			continue;
 		}
@@ -3556,6 +3552,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 				gettingArguments = false;
 				break;
 			case '$': // declaring local
+				if (typeFlags & IS_PATTERN_MACRO) BADSCRIPT((char*)"MACRO-? May not use locals in a pattern/dual macro %s",word)
 				if (word[1] != '_') BADSCRIPT((char*)"MACRO-? Variable name as argument must be local %s",word)
 				if (strchr(word,'.') || strchr(word,'[')) BADSCRIPT((char*)"MACRO-? Variable name as argument must be simple, not json reference %s",word)
 				AddDisplay(word);
@@ -3604,8 +3601,13 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	char d[MAX_BUFFER_SIZE];
 	if ( (typeFlags & FUNCTION_BITS) == IS_PATTERN_MACRO)  
 	{
-		ptr = ReadPattern(ptr,in,pack,true,false);
-		*pack = 0;
+		char* at = d;
+		ptr = ReadPattern(ptr,in,at,true,false);
+		*at = 0;
+		// insert display and add body back
+		pack = WriteDisplay(pack);
+		strcpy(pack,d);
+		pack += at - d;
 	}
 	else 
 	{

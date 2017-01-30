@@ -379,21 +379,9 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 
 	WORDP ZZ = FindWord(original,0,LOWERCASE_LOOKUP);
 	if (!ZZ) {;}
-	else if (!stricmp(original,(char*)"the") || !stricmp(original,(char*)"a") || !stricmp(original,(char*)"this") || !stricmp(original,(char*)"these") || !stricmp(original,(char*)"an")  ) // force lower case on these determiners regardless
-	{
-		entry =  canonical = ZZ;
-		original = AllocateHeap(entry->word);
-		if (revise) revise = entry;
-	}
 	else if (ZZ->properties & (PRONOUN_SUBJECT|PRONOUN_OBJECT))
 	{
 		entry =  canonical = ZZ;
-		original = AllocateHeap(entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"His") || !stricmp(original,(char*)"Then") || !stricmp(original,(char*)"Thus"))
-	{
-		entry =  canonical = ZZ; //force lower case - dont want "His" as plural of HI nor thi's
 		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
@@ -421,43 +409,6 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	if (!stricmp(original,(char*)"yes") )
 	{
 		entry =  canonical = FindWord(original,0,LOWERCASE_LOOKUP); //force lower case pronoun, dont want "yes" to be Y's
-		original = AllocateHeap(entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"p.m") )
-	{
-		entry =  canonical = FindWord((char*)"p.m.",0,LOWERCASE_LOOKUP);
-		original = AllocateHeap(entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"a.m") )
-	{
-		entry =  canonical = FindWord((char*)"a.m.",0,LOWERCASE_LOOKUP);
-		original = AllocateHeap(entry->word);
-		if (revise) revise = entry;
-	}
-	else if (at > 0 && !stricmp(original,(char*)"ca") &&  !stricmp(wordStarts[at+1],(char*)"not"))
-	{
-		entry = canonical = FindWord((char*)"can",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
-		original = AllocateHeap(entry->word);
-		if (revise) revise = entry;
-	}
-	else if (at > 0 && !stricmp(original,(char*)"wo") &&  !stricmp(wordStarts[at+1],(char*)"not"))
-	{
-		entry = canonical = FindWord((char*)"will",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
-		cansysflags = sysflags = entry->systemFlags; // probably nothing here
-		original = AllocateHeap(entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"n'") )
-	{
-		entry = canonical = FindWord((char*)"and",0,LOWERCASE_LOOKUP);
-		original = AllocateHeap(entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"'re") )
-	{
-		entry = canonical = FindWord((char*)"are",0,LOWERCASE_LOOKUP);
 		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
@@ -606,13 +557,12 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			if (hyphen) // we have prepart composite number like 3-1/2
 			{
 				*hyphen = 0;
-				basenumber = atoi(original);
+				basenumber = atoi(original); // part before the - 
 				*hyphen = '-';
-				original = hyphen + 1;
+				original = hyphen + 1; // piece before fraction
 			}
 			char number[MAX_WORD_SIZE];
-			strcpy(number,original);
-			number[fraction-original] = 0;
+			strcpy(number,original); // the number before the -
 			if (IsNumber(number) && IsNumber(fraction+1))
 			{
 				int x = atoi(number);
@@ -670,7 +620,13 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			*br = 0;
 			int64 val1 = Convert2Integer(original);
 			int64 val2 = Convert2Integer(br+1);
-			float val = (float)((float)val1 / (float)val2);
+			float val;
+			if (IsNumber(original) == FRACTION_NUMBER) // half-dozen
+			{
+				val = (float)(1.0 / (float) val1);
+				val *=  (float)val2; // one-half
+			}
+			else val = (float)((float)val1 / (float)val2); // one-half
 			sprintf(number,(char*)"%1.2f",val );
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
 			*br = c;

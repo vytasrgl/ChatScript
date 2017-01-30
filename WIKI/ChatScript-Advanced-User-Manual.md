@@ -1,8 +1,8 @@
-# ChatScript Advanced User's Manual
+﻿# ChatScript Advanced User's Manual
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 1/7/2017 cs7.1
+> Revision 1/28/2017 cs7.12
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -14,7 +14,6 @@
 * [System callback functions](ChatScript-Advanced-User-Manual.md#system-callback-functions)
 * [Advanced :build](ChatScript-Advanced-User-Manual.md#advanced-build)
 * [Editing Non-topic Files](ChatScript-Advanced-User-Manual.md#editing-non-topic-files)
-* [Which Bot?](ChatScript-Advanced-User-Manual.md#which-bot)
 * [Common Script Idioms](ChatScript-Advanced-User-Manual.md#common-script-idioms)
 * [Esoterica and Fine Detail](ChatScript-Advanced-User-Manual.md#esoterica-and-fine-detail)
 * [Self-Reflection](ChatScript-Advanced-User-Manual.md#self-reflection)
@@ -365,50 +364,7 @@ The flags and their meanings are:
 |`NoSamples`   |   should not perform any sample tests on this topic in `:verify`
 |`NoKeys`      |   should not perform any keyword tests on this topic in `:verify`
 |`More`        |   normally if you try to redeclare a concept, you get an error. `MORE` tells CS you intend to extend the concept and allows additional keywords.
-|`Bot=name`    |   if this is given, only named bots are allowed to use this topic. You can name multiple bots separated by commas with no extra spaces. E.g. `topic: ~mytopic bot=harry,,roman [mykeyword]`
-
-To support **multiple bots**, you may create multiple copies of a topic name, which vary in
-their bot restrictions and content. The set of keywords given for a topic is the union of the
-keywords of all copies of that topic name. You should not name a topic ending in a period
-and a number (that is used internally to represent multiple topics of the same name).
-
-`bot: name` - There is also a top level command you can put in a file to label all topics
-thereafter with a uniform bot restriction. `Bot: name` will do this, unless the topic has an
-explicit bot=
-You can, for example, put at the topic of simpletopic.top the command
-```
-bot: harry,georgia
-```
-and get all topics in that file restricted to the two bots named. There should be no spaces
-after the comma. Of course there are only two bots in the first place, so this doesn't
-actually accomplish anything useful.
-
-You can also change the current bot owner value at the same time. This affects who owns facts created
-in tables thereafter as well as allowing multiple copies of the same function to exist, qualified
-by what the current bot owner is. Just put the fact owner id 1st in the list:
-```
-bot: 1 harry, georgia
-```
-
-You can change to a bot owner without naming any bots, in which case topics created will be usuable
-by any bot but facts and functions will be restricted by bot owner.
-
-And you can use a bot: command as a line in your `filesxxx.txt` build file. Used there, it sticks forever
-until some other bot: command is hit. If that is a local file command, then that affects the file but then
-the compile reverbs to no bot: value until the next one is hit (either globally or in a file).
-
-
-`Share` – Normally, if you have multiple bots, they all talk independently to the
-user. What one learns or says is not available to the other bots. It is possible to create a
-collection of bots that all can hear what has been said and share information. Share on a
-topic means that all bots will have common access/modification of a topic's state. So if
-one bot uses up a gambit, the other bots will not try to use that gambit themselves. 
-
-All facts created will be visible to all bots. And if you create a permanent user variable with
-the starting name $share_, then all bots can see and modify it. So $share_name becomes a
-common variable. When sharing is in effect, the state with the user (what he said, what
-bot said, what turn of the volley this is, where the rejoinder mark is) is all common
-among the bots- they are advancing a joint conversation.
+|`Bot=name`    |   if this is given, only named bots are allowed to use this topic. See `ChatScript Multiple Bots manual`
 
 
 ## Rules that erase and repeat
@@ -2131,99 +2087,6 @@ The `canonical.txt` file is a list of words and override canonical values. When 
 the left is seen in raw input, the word on the right will be used as its canonical form.
 The lowercasetitles.txt file is a list of lower-case words that can be accepted in a title.
 Normally lower case words would break up a title.
-
-
-
-# WHICH BOT?
-
-The system can support multiple bots cohabiting the same engine. You can restrict topics
-to be available only to certain bots (see Advanced Topics). You can restrict rules to being
-available only to certain bots by using something like
-```
-?: ($bot=harry ...)
-
-?: (!$bot=harry ...).
-
-t: ($bot=harry) My name is harry.
-```
-
-The demo system has only one bot, Harry. If it had two bots in it, harry and Georgia, you
-could get Georgia by logging in as `yourname:georgia`. And you can confirm who she is
-by asking what is your name.
-
-You specify which bot you want when you login, by appending `:botname` to your login name, e.g., `bruce:harry`. 
-
-When you don't do that, you get the default bot. How does the system know what that is? 
-It looks for a fact in the database whose subject will be the default bot name and whose verb is defaultbot. 
-If none is found, the default bot is called anonymous, and probably nothing works at all. 
-Defining the default bot is what a table does when you compile `simplecontrol.top`. It has:
-```
-table: defaultbot (^name)
-^createfact(^name defaultbot defaultbot)
-DATA:
-harry
-```
-
-Typically when you build a level 1 topic base (e.g., `:build ben` or `:build 1` or whatever), 
-that layer has the initialization function for your bot(s) otherwise your bot cannot work.
-
-This function is invoked when a new user tries to speak to the bot and tells things like
-what topic to start the bot in and what code processes the users input. 
-You need one of these functions for each bot, though the functions might be pure duplicates 
-(or might not be). In the case of harry, the function is
-```
-^outputmacro: harry()
-    ^addtopic(~introductions)
-    $cs_control_pre = ~control
-    $cs_control_main = ~control
-    $cs_control_post = ~control
-```
-
-`SimpleControl.top` also has a function that declares who the default bot is.
-```
-table: defaultbot (^name)
-^createfact(^name defaultbot defaultbot)
-DATA:
-harry
-```
-
-You can change default bots merely by requesting different build files that name the
-default, or by editing your table.
-
-To have multiple bots available, one might start by making multiple folder copies of
-Harry and changing them to separate bots with separate `filesxxx.txt`. 
-That's fine for building them as each stand-alone bots, 
-but if you want them to cohabit you must have a single `filesxxx.txt` file 
-that names the separate bot's folders- they must be built together.
-
-Of course if you merely cloned those folders, they have topics all with the same name,
-like `~control` and `~introductions` and `~childhood`. This is a problem. 
-Likely you would want only one copy of `~control` that both bots used. 
-And either they should have different topic names for `~introductions` and `~childhood` 
-OR you must put a bot restriction on each of the duplicate topics, naming which bot can use it.
-
-
-
-# Topics By Bot
-
-You should already know that a topic can be restricted to specific bots. Now you learn
-that you can create multiple copies of the same topic, so different bots can have different
-copies. These form a topic family with the same name. 
-The rules are:
-
-* the topics share the union of keywords
-* `:verify` can only verify the first copy of a topic it is allowed access to
-
-When the system is trying to access a topic, it will check the bot restrictions. If a topic
-fails, it will try the next duplicate in succession until it finds a copy that the bot is allowed to use. 
-
-This means if topic 1 is restricted to ben and topic2 is unrestricted, ben will use topic 1 
-and all other bots will use topic2. 
-If the order of declaration is flipped, then all bots including ben will use topic 2 
-(which now precedes topic 1 in declaration).
-
-You can also use the `:disable` and `:enable` commands to turn off all or some topics for a personality.
-
 
 
 # Common Script Idioms

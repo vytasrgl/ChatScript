@@ -191,6 +191,7 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
+		if (D <= dictionaryPreBuild[0]) return D->word; // in dictionary
 		if (stricmp(language,"English") && !IS_NEW_WORD(D)) return D->word; // foreign word we know
 		if (IsConceptMember(D)) return D->word;
 		// are there facts using this word? -- issue with facts because on seeing input second time, having made facts of original, we see original
@@ -206,6 +207,7 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
+		if (D <= dictionaryPreBuild[0]) return D->word; // in dictionary
 		if (stricmp(language,"English") && !IS_NEW_WORD(D)) return D->word; // foreign word we know
 		if (IsConceptMember(D)) return D->word;
 
@@ -222,6 +224,7 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
+		if (D <= dictionaryPreBuild[0]) return D->word; // in dictionary
 		if (stricmp(language,"English") && !IS_NEW_WORD(D)) return D->word; // foreign word we know
 		if (IsConceptMember(D)) return D->word;
 
@@ -520,6 +523,28 @@ bool SpellCheckSentence()
 				}
 			}
 			continue; // ignore hypenated errors that we couldnt solve, because no one mistypes a hypen
+		}
+
+		// see if number in front of unit split like 10mg
+		if (IsDigit(*word))
+		{
+			char* at = word;
+			while (*++at && IsDigit(*at)) {;}
+			WORDP E = FindWord(at);
+			if (E) // number in front of known word
+			{
+				char token1[MAX_WORD_SIZE];
+				int len = at - word;
+				strncpy(token1,word,len);
+				token1[len] = 0;
+				D = StoreWord(token1);
+				char* tokens[4];
+				tokens[1] = D->word;
+				tokens[2] = E->word;
+				ReplaceWords("Split",i,1,2,tokens);
+				fixedSpell = true;
+				continue;
+			}
 		}
 		
 		// leave uppercase in first position if not adjusted yet... but check for lower case spell error

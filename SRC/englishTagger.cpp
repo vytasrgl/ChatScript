@@ -3937,12 +3937,12 @@ static bool FinishSentenceAdjust(bool resolved,bool & changed,int start,int end)
 {
 	if (verbStack[MAINLEVEL] > end) 
 	{
-		ReportBug((char*)"verb out of range");
+		ReportBug((char*)"mainverb out of range in sentence %d>%d", verbStack[MAINLEVEL],end);
 		return true;
 	}
 	if (subjectStack[MAINLEVEL] > end) 
 	{
-		ReportBug((char*)"object out of range");
+		ReportBug((char*)"mainSubject out of range", subjectStack[MAINLEVEL], end);
 		return true;
 	}
 	if (ImpliedNounObjectPeople(end, needRoles[roleIndex] & (MAINOBJECT|OBJECT2),changed)) return false;
@@ -9984,79 +9984,34 @@ static void TreeTagger()
 			canonicalLower[i] = StoreWord(lemma,0);
 		}
 		char newtag[MAX_WORD_SIZE];
-		*newtag = '~';	// private word label
+		*newtag = '~';	// concept from the tag
 		strcpy(newtag+1,tag);
 		WORDP X = StoreWord(newtag);
-		posValues[i] |= X->properties;
 		wordTag[i] = X;
+		*newtag = '_';
+		X = FindWord(newtag);
+		if (X) posValues[i] |= X->properties; // english pos tag references
+
 		if (IsDigit(wordStarts[i][0])) posValues[i] |= NOUN_NUMBER; // regardless of language, recognize ~number
 		if (trace & TRACE_PREPARE) Log(STDTRACELOG,"%s/%s/%s ",wordStarts[i], tag, lemma);
     }
     if (trace & TRACE_PREPARE) Log(STDTRACELOG,"\r\n");
 }
 
-void InitTreeTagger(char* params) // tags=xxxx
+void InitTreeTagger(char* params) // tags=xxxx - just triggers this thing
 {
 	if (!params) return;
     printf("External Tagging: %s\r\n",params);
 
-	// read pos tags and assign value
-	char* tags = strstr(params,"tags=");
-	if (!tags) return;
-	char* end  = strchr(tags,' ');
-	if (end) *end = 0;
-	tags += 5;
-	uint64 tagflags = 0;
-	WORDP D = NULL;
-	FILE* in = fopen(tags,(char*)"rb");
-	if (end) *end = ' ';
-	if (!in) 
-	{
-		printf("Unable to read tags %s\r\n",tags);
-		return;
-	}
-	externalTagger = 2;	// using external tagging
+	// load each foreign postag and its correspondence to english postags
+	char name[MAX_WORD_SIZE];
+	sprintf(name,"treetagger/%s_tags.txt",language);
+	if (!ReadForeignPosTags(name)) return; //failed 
 
+	externalTagger = 2;	// using external tagging
 	char langfile[MAX_WORD_SIZE];
 	sprintf(langfile, "treetagger/%s.par",language);
 	MakeLowerCase(langfile);
-	char word[MAX_WORD_SIZE];
-	char type[MAX_WORD_SIZE];
-	bool found = false;
-	while (ReadALine(readBuffer,in))
-	{
-		uint64 flags = 0;
-		char* ptr = ReadCompiledWord(readBuffer,word);
-		if (!*word) break;
-		if (*word == '=') // a line of CS POS TYPES to be global
-		{
-			while (ptr && *ptr) // for each flag on this flag line
-			{
-				ptr = ReadCompiledWord(ptr,type);
-				if (!*type) break;
-				flags |= FindValueByName(type); // type known?
-			}
-			tagflags = flags;	
-		}
-		else // a foreign postag  using global flags and local flags on its line
-		{
-			char label[MAX_WORD_SIZE];
-			*label = '~';	// marker as a concept
-			strcpy(label+1,word);
-			while (ptr && *ptr) // for each flag
-			{
-				ptr = ReadCompiledWord(ptr,type);
-				if (!*type) break;
-				flags |= FindValueByName(type); // type known?
-				if (!flags) Log(STDUSERLOG,"Type not known %s for %s\r\n",word,type);
-			}
-			D = StoreWord(label,tagflags | flags);
-			found = true;
-		}
-	}
-	fclose(in);
-	if (!found) return; // could not read tagset
-
 	init_treetagger(langfile);  /* Initialization of the tagger with the language parameter file */
 	externalPostagger = TreeTagger;
 

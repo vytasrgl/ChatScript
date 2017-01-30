@@ -1,0 +1,814 @@
+﻿Build started 1/27/2017 12:30:32 PM.
+     1>Project "C:\ChatScript\VS2015\chatscript.vcxproj" on node 2 (Rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Debug Treetagger\chatscript.tlog\chatscript.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Debug Treetagger\chatscript.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I..\lib\libev /I..\SRC\curl /I..\SRC\mongo\bson /I..\SRC\mongo\mongoc /ZI /nologo /W4 /WX- /Od /Ob0 /Oy- /D SAFETIME /D TREETAGGER /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /GF /Gm /EHsc /RTC1 /MTd /GS /fp:fast /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug Treetagger\\" /Fd"Debug Treetagger\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt /J ..\SRC\constructCode.cpp ..\SRC\csocket.cpp ..\SRC\dictionarySystem.cpp ..\SRC\english.cpp ..\SRC\englishtagger.cpp ..\SRC\evserver.cpp ..\SRC\factSystem.cpp ..\SRC\javascript.cpp ..\SRC\jsmn.cpp ..\SRC\json.cpp ..\SRC\mongodb.cpp ..\SRC\mysql.cpp ..\SRC\os.cpp ..\SRC\functionExecute.cpp ..\SRC\infer.cpp ..\SRC\mainSystem.cpp ..\SRC\markSystem.cpp ..\SRC\outputSystem.cpp ..\SRC\patternSystem.cpp ..\SRC\postgres.cpp ..\SRC\privatesrc.cpp ..\SRC\scriptCompile.cpp ..\SRC\secure.cpp ..\SRC\spellcheck.cpp ..\SRC\systemVariables.cpp ..\SRC\tagger.cpp ..\SRC\testing.cpp ..\SRC\textUtilities.cpp ..\SRC\tokenSystem.cpp ..\SRC\topicSystem.cpp ..\SRC\userCache.cpp ..\SRC\userSystem.cpp ..\SRC\variableSystem.cpp
+         variableSystem.cpp
+         userSystem.cpp
+         userCache.cpp
+         topicSystem.cpp
+     1>c:\chatscript\src\topicsystem.cpp(2276): warning C4459: declaration of 'buildDictionary' hides global declaration
+         c:\chatscript\src\dictionarymore.h(181): note: see declaration of 'buildDictionary'
+     1>c:\chatscript\src\topicsystem.cpp(2300): warning C4459: declaration of 'buildDictionary' hides global declaration
+         c:\chatscript\src\dictionarymore.h(181): note: see declaration of 'buildDictionary'
+     1>c:\chatscript\src\topicsystem.cpp(2329): warning C4459: declaration of 'buildDictionary' hides global declaration
+         c:\chatscript\src\dictionarymore.h(181): note: see declaration of 'buildDictionary'
+     1>c:\chatscript\src\topicsystem.cpp(2344): warning C4459: declaration of 'buildDictionary' hides global declaration
+         c:\chatscript\src\dictionarymore.h(181): note: see declaration of 'buildDictionary'
+     1>c:\chatscript\src\topicsystem.cpp(2375): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\topicsystem.cpp(2346): note: see declaration of 'word'
+     1>c:\chatscript\src\topicsystem.cpp(2508): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\topicsystem.cpp(2435): note: see declaration of 'at'
+         tokenSystem.cpp
+     1>c:\chatscript\src\tokensystem.cpp(137): warning C4457: declaration of 'next' hides function parameter
+         c:\chatscript\src\tokensystem.cpp(129): note: see declaration of 'next'
+     1>c:\chatscript\src\tokensystem.cpp(482): warning C4456: declaration of 'end' hides previous local declaration
+         c:\chatscript\src\tokensystem.cpp(392): note: see declaration of 'end'
+     1>c:\chatscript\src\tokensystem.cpp(618): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\tokensystem.cpp(545): note: see declaration of 'at'
+     1>c:\chatscript\src\tokensystem.cpp(634): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\tokensystem.cpp(545): note: see declaration of 'at'
+     1>c:\chatscript\src\tokensystem.cpp(689): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\tokensystem.cpp(545): note: see declaration of 'at'
+     1>c:\chatscript\src\tokensystem.cpp(817): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\tokensystem.cpp(1246): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\tokensystem.cpp(1217): note: see declaration of 'word'
+     1>c:\chatscript\src\tokensystem.cpp(1261): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\tokensystem.cpp(1211): note: see declaration of 'D'
+     1>c:\chatscript\src\tokensystem.cpp(1282): warning C4456: declaration of 'next' hides previous local declaration
+         c:\chatscript\src\tokensystem.cpp(1278): note: see declaration of 'next'
+     1>c:\chatscript\src\tokensystem.cpp(1357): warning C4456: declaration of 'end' hides previous local declaration
+         c:\chatscript\src\tokensystem.cpp(1328): note: see declaration of 'end'
+     1>c:\chatscript\src\tokensystem.cpp(1779): warning C4457: declaration of 'i' hides function parameter
+         c:\chatscript\src\tokensystem.cpp(1749): note: see declaration of 'i'
+         textUtilities.cpp
+     1>c:\chatscript\src\textutilities.cpp(341): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\textutilities.cpp(465): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(478): warning C4459: declaration of 'value' hides global declaration
+         c:\chatscript\src\textutilities.cpp(30): note: see declaration of 'value'
+     1>c:\chatscript\src\textutilities.cpp(590): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(690): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(700): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(716): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(732): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(747): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(764): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(781): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(800): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(958): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(963): warning C4459: declaration of 'value' hides global declaration
+         c:\chatscript\src\textutilities.cpp(30): note: see declaration of 'value'
+     1>c:\chatscript\src\textutilities.cpp(989): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1049): warning C4456: declaration of 'ptr' hides previous local declaration
+         c:\chatscript\src\textutilities.cpp(1021): note: see declaration of 'ptr'
+     1>c:\chatscript\src\textutilities.cpp(1067): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1103): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1116): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1149): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1198): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1253): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1302): warning C4459: declaration of 'value' hides global declaration
+         c:\chatscript\src\textutilities.cpp(30): note: see declaration of 'value'
+     1>c:\chatscript\src\textutilities.cpp(1380): warning C4459: declaration of 'value' hides global declaration
+         c:\chatscript\src\textutilities.cpp(30): note: see declaration of 'value'
+     1>c:\chatscript\src\textutilities.cpp(1426): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1949): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(1964): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(2069): warning C4459: declaration of 'value' hides global declaration
+         c:\chatscript\src\textutilities.cpp(30): note: see declaration of 'value'
+     1>c:\chatscript\src\textutilities.cpp(2331): warning C4459: declaration of 'word' hides global declaration
+         c:\chatscript\src\textutilities.cpp(29): note: see declaration of 'word'
+     1>c:\chatscript\src\textutilities.cpp(2406): warning C4459: declaration of 'value' hides global declaration
+         c:\chatscript\src\textutilities.cpp(30): note: see declaration of 'value'
+     1>c:\chatscript\src\textutilities.cpp(2521): warning C4459: declaration of 'value' hides global declaration
+         c:\chatscript\src\textutilities.cpp(30): note: see declaration of 'value'
+     1>c:\chatscript\src\textutilities.cpp(2615): warning C4459: declaration of 'sourceFile' hides global declaration
+         c:\chatscript\src\mainsystem.h(89): note: see declaration of 'sourceFile'
+     1>c:\chatscript\src\textutilities.cpp(2662): warning C4459: declaration of 'oob' hides global declaration
+         c:\chatscript\src\os.h(186): note: see declaration of 'oob'
+     1>c:\chatscript\src\textutilities.cpp(2722): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\textutilities.cpp(2661): note: see declaration of 'at'
+         testing.cpp
+     1>c:\chatscript\src\testing.cpp(160): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\testing.cpp(205): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\testing.cpp(283): warning C4457: declaration of 'D' hides function parameter
+         c:\chatscript\src\testing.cpp(274): note: see declaration of 'D'
+     1>c:\chatscript\src\testing.cpp(541): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(549): warning C4457: declaration of 'input' hides function parameter
+         c:\chatscript\src\testing.cpp(467): note: see declaration of 'input'
+     1>c:\chatscript\src\testing.cpp(612): warning C4459: declaration of 'silent' hides global declaration
+         c:\chatscript\src\os.h(187): note: see declaration of 'silent'
+     1>c:\chatscript\src\testing.cpp(677): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(777): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\testing.cpp(611): note: see declaration of 'at'
+     1>c:\chatscript\src\testing.cpp(800): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\testing.cpp(636): note: see declaration of 'len'
+     1>c:\chatscript\src\testing.cpp(1127): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1046): note: see declaration of 'at'
+     1>c:\chatscript\src\testing.cpp(1129): warning C4456: declaration of 'var' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1042): note: see declaration of 'var'
+     1>c:\chatscript\src\testing.cpp(1148): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1046): note: see declaration of 'at'
+     1>c:\chatscript\src\testing.cpp(1156): warning C4456: declaration of 'var' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1042): note: see declaration of 'var'
+     1>c:\chatscript\src\testing.cpp(1185): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(1209): warning C4611: interaction between '_setjmp' and C++ object destruction is non-portable
+     1>c:\chatscript\src\testing.cpp(1273): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(1351): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(1369): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(1529): warning C4456: declaration of 'pattern' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1508): note: see declaration of 'pattern'
+     1>c:\chatscript\src\testing.cpp(1559): warning C4456: declaration of 'label' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1507): note: see declaration of 'label'
+     1>c:\chatscript\src\testing.cpp(1598): warning C4456: declaration of 'label' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1507): note: see declaration of 'label'
+     1>c:\chatscript\src\testing.cpp(1599): warning C4456: declaration of 'pattern' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1508): note: see declaration of 'pattern'
+     1>c:\chatscript\src\testing.cpp(1609): warning C4456: declaration of 'result' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1517): note: see declaration of 'result'
+     1>c:\chatscript\src\testing.cpp(1634): warning C4456: declaration of 'result' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1517): note: see declaration of 'result'
+     1>c:\chatscript\src\testing.cpp(1725): warning C4456: declaration of 'junk' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1421): note: see declaration of 'junk'
+     1>c:\chatscript\src\testing.cpp(1784): warning C4456: declaration of 'label' hides previous local declaration
+         c:\chatscript\src\testing.cpp(1507): note: see declaration of 'label'
+     1>c:\chatscript\src\testing.cpp(1814): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(1827): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(1843): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(2094): warning C4459: declaration of 'tags' hides global declaration
+         c:\chatscript\src\tagger.h(53): note: see declaration of 'tags'
+     1>c:\chatscript\src\testing.cpp(2163): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(2033): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(2621): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\testing.cpp(2161): note: see declaration of 'at'
+     1>c:\chatscript\src\testing.cpp(2627): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(2163): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(2750): warning C4459: declaration of 'tags' hides global declaration
+         c:\chatscript\src\tagger.h(53): note: see declaration of 'tags'
+     1>c:\chatscript\src\testing.cpp(2757): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(2742): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(2867): warning C4456: declaration of 'start' hides previous local declaration
+         c:\chatscript\src\testing.cpp(2832): note: see declaration of 'start'
+     1>c:\chatscript\src\testing.cpp(3257): warning C4457: declaration of 'ptr' hides function parameter
+         c:\chatscript\src\testing.cpp(3132): note: see declaration of 'ptr'
+     1>c:\chatscript\src\testing.cpp(3433): warning C4456: declaration of 'outfile' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3152): note: see declaration of 'outfile'
+     1>c:\chatscript\src\testing.cpp(3530): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3256): note: see declaration of 'at'
+     1>c:\chatscript\src\testing.cpp(3556): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3256): note: see declaration of 'at'
+     1>c:\chatscript\src\testing.cpp(3686): warning C4456: declaration of 'end' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3494): note: see declaration of 'end'
+     1>c:\chatscript\src\testing.cpp(3692): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3256): note: see declaration of 'at'
+     1>c:\chatscript\src\testing.cpp(3727): warning C4456: declaration of 'end' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3494): note: see declaration of 'end'
+     1>c:\chatscript\src\testing.cpp(3740): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3692): note: see declaration of 'at'
+     1>c:\chatscript\src\testing.cpp(3775): warning C4456: declaration of 'end' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3494): note: see declaration of 'end'
+     1>c:\chatscript\src\testing.cpp(3976): warning C4456: declaration of 'file' hides previous local declaration
+         c:\chatscript\src\testing.cpp(3930): note: see declaration of 'file'
+     1>c:\chatscript\src\testing.cpp(5063): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\testing.cpp(4994): note: see declaration of 'D'
+     1>c:\chatscript\src\testing.cpp(5250): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\testing.cpp(5242): note: see declaration of 'D'
+     1>c:\chatscript\src\testing.cpp(5497): warning C4456: declaration of 'restrict' hides previous local declaration
+         c:\chatscript\src\testing.cpp(5466): note: see declaration of 'restrict'
+     1>c:\chatscript\src\testing.cpp(5518): warning C4456: declaration of 'gloss' hides previous local declaration
+         c:\chatscript\src\testing.cpp(5505): note: see declaration of 'gloss'
+     1>c:\chatscript\src\testing.cpp(5534): warning C4456: declaration of 'index' hides previous local declaration
+         c:\chatscript\src\testing.cpp(5467): note: see declaration of 'index'
+     1>c:\chatscript\src\testing.cpp(5631): warning C4456: declaration of 'start' hides previous local declaration
+         c:\chatscript\src\testing.cpp(5626): note: see declaration of 'start'
+     1>c:\chatscript\src\testing.cpp(5632): warning C4456: declaration of 'end' hides previous local declaration
+         c:\chatscript\src\testing.cpp(5627): note: see declaration of 'end'
+     1>c:\chatscript\src\testing.cpp(5869): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(5916): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(5931): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(5953): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(6072): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(6118): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(6262): warning C4456: declaration of 'flags' hides previous local declaration
+         c:\chatscript\src\testing.cpp(6256): note: see declaration of 'flags'
+     1>c:\chatscript\src\testing.cpp(6339): warning C4457: declaration of 'F' hides function parameter
+         c:\chatscript\src\testing.cpp(6316): note: see declaration of 'F'
+     1>c:\chatscript\src\testing.cpp(6387): warning C4457: declaration of 'F' hides function parameter
+         c:\chatscript\src\testing.cpp(6316): note: see declaration of 'F'
+     1>c:\chatscript\src\testing.cpp(6396): warning C4457: declaration of 'M' hides function parameter
+         c:\chatscript\src\testing.cpp(6316): note: see declaration of 'M'
+     1>c:\chatscript\src\testing.cpp(6415): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(6473): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\testing.cpp(6475): warning C4456: declaration of 'ptr' hides previous local declaration
+         c:\chatscript\src\testing.cpp(6441): note: see declaration of 'ptr'
+     1>c:\chatscript\src\testing.cpp(6660): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\testing.cpp(6707): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(6672): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(6719): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(6672): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(6831): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(6958): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+     1>c:\chatscript\src\testing.cpp(7107): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(7648): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(7811): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(7878): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(7970): warning C4459: declaration of 'apikey' hides global declaration
+         c:\chatscript\src\mainsystem.h(87): note: see declaration of 'apikey'
+     1>c:\chatscript\src\testing.cpp(8020): warning C4459: declaration of 'language' hides global declaration
+         c:\chatscript\src\mainsystem.h(80): note: see declaration of 'language'
+     1>c:\chatscript\src\testing.cpp(8157): warning C4456: declaration of 'ptr' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8056): note: see declaration of 'ptr'
+     1>c:\chatscript\src\testing.cpp(8205): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8195): note: see declaration of 'D'
+     1>c:\chatscript\src\testing.cpp(8217): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(8402): warning C4456: declaration of 'end' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8374): note: see declaration of 'end'
+     1>c:\chatscript\src\testing.cpp(8415): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8355): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(8628): warning C4456: declaration of 'end' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8374): note: see declaration of 'end'
+     1>c:\chatscript\src\testing.cpp(8686): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8354): note: see declaration of 'D'
+     1>c:\chatscript\src\testing.cpp(8699): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8354): note: see declaration of 'D'
+     1>c:\chatscript\src\testing.cpp(8704): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8355): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(8743): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8355): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(8753): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8355): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(8780): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8355): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(8796): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8355): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(8972): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\testing.cpp(8937): note: see declaration of 'word'
+     1>c:\chatscript\src\testing.cpp(9033): warning C4459: declaration of 'err' hides global declaration
+         c:\chatscript\src\testing.cpp(64): note: see declaration of 'err'
+     1>c:\chatscript\src\testing.cpp(9146): warning C4459: declaration of 'language' hides global declaration
+         c:\chatscript\src\mainsystem.h(80): note: see declaration of 'language'
+     1>c:\chatscript\src\testing.cpp(9237): warning C4456: declaration of 'file' hides previous local declaration
+         c:\chatscript\src\testing.cpp(9205): note: see declaration of 'file'
+     1>c:\chatscript\src\testing.cpp(9255): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\testing.cpp(9340): warning C4456: declaration of 'dot' hides previous local declaration
+         c:\chatscript\src\testing.cpp(9323): note: see declaration of 'dot'
+     1>c:\chatscript\src\testing.cpp(9377): warning C4456: declaration of 'file' hides previous local declaration
+         c:\chatscript\src\testing.cpp(9205): note: see declaration of 'file'
+     1>c:\chatscript\src\testing.cpp(9411): warning C4456: declaration of 'dot' hides previous local declaration
+         c:\chatscript\src\testing.cpp(9390): note: see declaration of 'dot'
+     1>c:\chatscript\src\testing.cpp(9414): warning C4456: declaration of 'c' hides previous local declaration
+         c:\chatscript\src\testing.cpp(9402): note: see declaration of 'c'
+         tagger.cpp
+     1>c:\chatscript\src\tagger.cpp(410): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\tagger.cpp(328): note: see declaration of 'i'
+     1>c:\chatscript\src\tagger.cpp(417): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\tagger.cpp(328): note: see declaration of 'i'
+     1>c:\chatscript\src\tagger.cpp(443): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\tagger.cpp(328): note: see declaration of 'i'
+     1>c:\chatscript\src\tagger.cpp(475): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\tagger.cpp(328): note: see declaration of 'i'
+     1>c:\chatscript\src\tagger.cpp(501): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\tagger.cpp(328): note: see declaration of 'i'
+         systemVariables.cpp
+         spellcheck.cpp
+     1>c:\chatscript\src\spellcheck.cpp(244): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(189): note: see declaration of 'D'
+     1>c:\chatscript\src\spellcheck.cpp(326): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'D'
+     1>c:\chatscript\src\spellcheck.cpp(337): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'D'
+     1>c:\chatscript\src\spellcheck.cpp(364): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(301): note: see declaration of 'word'
+     1>c:\chatscript\src\spellcheck.cpp(383): warning C4456: declaration of 'E' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'E'
+     1>c:\chatscript\src\spellcheck.cpp(389): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(303): note: see declaration of 'len'
+     1>c:\chatscript\src\spellcheck.cpp(423): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'D'
+     1>c:\chatscript\src\spellcheck.cpp(484): warning C4456: declaration of 'E' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'E'
+     1>c:\chatscript\src\spellcheck.cpp(485): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'D'
+     1>c:\chatscript\src\spellcheck.cpp(533): warning C4456: declaration of 'E' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'E'
+     1>c:\chatscript\src\spellcheck.cpp(537): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(303): note: see declaration of 'len'
+     1>c:\chatscript\src\spellcheck.cpp(555): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'D'
+     1>c:\chatscript\src\spellcheck.cpp(562): warning C4456: declaration of 'E' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(271): note: see declaration of 'E'
+     1>c:\chatscript\src\spellcheck.cpp(974): warning C4457: declaration of 'i' hides function parameter
+         c:\chatscript\src\spellcheck.cpp(942): note: see declaration of 'i'
+     1>c:\chatscript\src\spellcheck.cpp(1111): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\spellcheck.cpp(1049): note: see declaration of 'D'
+         secure.cpp
+         scriptCompile.cpp
+     1>c:\chatscript\src\scriptcompile.cpp(268): warning C4459: declaration of 'newline' hides global declaration
+         c:\chatscript\src\textutilities.h(78): note: see declaration of 'newline'
+     1>c:\chatscript\src\scriptcompile.cpp(467): warning C4456: declaration of 'start' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(388): note: see declaration of 'start'
+     1>c:\chatscript\src\scriptcompile.cpp(487): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(462): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(514): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(462): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(530): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(462): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(550): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(462): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(749): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(666): note: see declaration of 'len'
+     1>c:\chatscript\src\scriptcompile.cpp(870): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(822): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(882): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(822): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(896): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(822): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(927): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(822): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(968): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(822): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(1687): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(1588): note: see declaration of 'D'
+     1>c:\chatscript\src\scriptcompile.cpp(1693): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(1588): note: see declaration of 'D'
+     1>c:\chatscript\src\scriptcompile.cpp(1806): warning C4389: '!=': signed/unsigned mismatch
+     1>c:\chatscript\src\scriptcompile.cpp(2282): warning C4457: declaration of 'ptr' hides function parameter
+         c:\chatscript\src\scriptcompile.cpp(1991): note: see declaration of 'ptr'
+     1>c:\chatscript\src\scriptcompile.cpp(2354): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(2051): note: see declaration of 'len'
+     1>c:\chatscript\src\scriptcompile.cpp(2415): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(2051): note: see declaration of 'len'
+     1>c:\chatscript\src\scriptcompile.cpp(2507): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(2051): note: see declaration of 'len'
+     1>c:\chatscript\src\scriptcompile.cpp(2795): warning C4456: declaration of 'original' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(2771): note: see declaration of 'original'
+     1>c:\chatscript\src\scriptcompile.cpp(2937): warning C4457: declaration of 'ptr' hides function parameter
+         c:\chatscript\src\scriptcompile.cpp(2924): note: see declaration of 'ptr'
+     1>c:\chatscript\src\scriptcompile.cpp(3732): warning C4611: interaction between '_setjmp' and C++ object destruction is non-portable
+     1>c:\chatscript\src\scriptcompile.cpp(3996): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(3969): note: see declaration of 'D'
+     1>c:\chatscript\src\scriptcompile.cpp(4238): warning C4459: declaration of 'display' hides global declaration
+         c:\chatscript\src\scriptcompile.cpp(11): note: see declaration of 'display'
+     1>c:\chatscript\src\scriptcompile.cpp(4308): warning C4459: declaration of 'baseName' hides global declaration
+         c:\chatscript\src\scriptcompile.cpp(32): note: see declaration of 'baseName'
+     1>c:\chatscript\src\scriptcompile.cpp(4318): warning C4459: declaration of 'duplicateCount' hides global declaration
+         c:\chatscript\src\topicsystem.h(72): note: see declaration of 'duplicateCount'
+     1>c:\chatscript\src\scriptcompile.cpp(4606): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(4579): note: see declaration of 'len'
+     1>c:\chatscript\src\scriptcompile.cpp(4779): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\scriptcompile.cpp(4830): warning C4456: declaration of 'name' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(4800): note: see declaration of 'name'
+     1>c:\chatscript\src\scriptcompile.cpp(5206): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(5193): note: see declaration of 'at'
+     1>c:\chatscript\src\scriptcompile.cpp(5218): warning C4456: declaration of 'output' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(5122): note: see declaration of 'output'
+     1>c:\chatscript\src\scriptcompile.cpp(5264): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\scriptcompile.cpp(5148): note: see declaration of 'word'
+         privatesrc.cpp
+         postgres.cpp
+         patternSystem.cpp
+     1>c:\chatscript\src\patternsystem.cpp(559): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(316): note: see declaration of 'at'
+     1>c:\chatscript\src\patternsystem.cpp(578): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(316): note: see declaration of 'at'
+     1>c:\chatscript\src\patternsystem.cpp(664): warning C4456: declaration of 'result' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(311): note: see declaration of 'result'
+     1>c:\chatscript\src\patternsystem.cpp(695): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(316): note: see declaration of 'at'
+     1>c:\chatscript\src\patternsystem.cpp(712): warning C4456: declaration of 'id' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(328): note: see declaration of 'id'
+     1>c:\chatscript\src\patternsystem.cpp(737): warning C4456: declaration of 'result' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(311): note: see declaration of 'result'
+     1>c:\chatscript\src\patternsystem.cpp(757): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(304): note: see declaration of 'word'
+     1>c:\chatscript\src\patternsystem.cpp(1132): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(312): note: see declaration of 'D'
+     1>c:\chatscript\src\patternsystem.cpp(1140): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(304): note: see declaration of 'word'
+     1>c:\chatscript\src\patternsystem.cpp(1142): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(316): note: see declaration of 'at'
+     1>c:\chatscript\src\patternsystem.cpp(1155): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(304): note: see declaration of 'word'
+     1>c:\chatscript\src\patternsystem.cpp(1157): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(316): note: see declaration of 'at'
+     1>c:\chatscript\src\patternsystem.cpp(1159): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(312): note: see declaration of 'D'
+     1>c:\chatscript\src\patternsystem.cpp(1233): warning C4456: declaration of 'success' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(315): note: see declaration of 'success'
+     1>c:\chatscript\src\patternsystem.cpp(1367): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\patternsystem.cpp(316): note: see declaration of 'at'
+         outputSystem.cpp
+     1>c:\chatscript\src\outputsystem.cpp(278): warning C4456: declaration of 'base' hides previous local declaration
+         c:\chatscript\src\outputsystem.cpp(262): note: see declaration of 'base'
+     1>c:\chatscript\src\outputsystem.cpp(285): warning C4456: declaration of 'base' hides previous local declaration
+         c:\chatscript\src\outputsystem.cpp(262): note: see declaration of 'base'
+     1>c:\chatscript\src\outputsystem.cpp(498): warning C4457: declaration of 'ptr' hides function parameter
+         c:\chatscript\src\outputsystem.cpp(447): note: see declaration of 'ptr'
+         markSystem.cpp
+     1>c:\chatscript\src\marksystem.cpp(198): warning C4459: declaration of 'tried' hides global declaration
+         c:\chatscript\src\tagger.h(100): note: see declaration of 'tried'
+     1>c:\chatscript\src\marksystem.cpp(246): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\marksystem.cpp(194): note: see declaration of 'D'
+     1>c:\chatscript\src\marksystem.cpp(247): warning C4457: declaration of 'M' hides function parameter
+         c:\chatscript\src\marksystem.cpp(190): note: see declaration of 'M'
+     1>c:\chatscript\src\marksystem.cpp(284): warning C4457: declaration of 'M' hides function parameter
+         c:\chatscript\src\marksystem.cpp(190): note: see declaration of 'M'
+     1>c:\chatscript\src\marksystem.cpp(383): warning C4456: declaration of 'X' hides previous local declaration
+         c:\chatscript\src\marksystem.cpp(332): note: see declaration of 'X'
+     1>c:\chatscript\src\marksystem.cpp(855): warning C4456: declaration of 'k' hides previous local declaration
+         c:\chatscript\src\marksystem.cpp(852): note: see declaration of 'k'
+         mainSystem.cpp
+     1>c:\chatscript\src\mainsystem.cpp(279): warning C4456: declaration of 'oldtrace' hides previous local declaration
+         c:\chatscript\src\mainsystem.cpp(225): note: see declaration of 'oldtrace'
+     1>c:\chatscript\src\mainsystem.cpp(405): warning C4101: 'route': unreferenced local variable
+     1>c:\chatscript\src\mainsystem.cpp(601): warning C4459: declaration of 'argc' hides global declaration
+         c:\chatscript\src\mainsystem.cpp(25): note: see declaration of 'argc'
+     1>c:\chatscript\src\mainsystem.cpp(601): warning C4459: declaration of 'argv' hides global declaration
+         c:\chatscript\src\mainsystem.cpp(26): note: see declaration of 'argv'
+     1>c:\chatscript\src\mainsystem.cpp(936): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\mainsystem.cpp(915): note: see declaration of 'at'
+     1>c:\chatscript\src\mainsystem.cpp(1191): warning C4456: declaration of 'rule' hides previous local declaration
+         c:\chatscript\src\mainsystem.cpp(1171): note: see declaration of 'rule'
+     1>c:\chatscript\src\mainsystem.cpp(1827): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\mainsystem.cpp(1685): note: see declaration of 'at'
+     1>c:\chatscript\src\mainsystem.cpp(1945): warning C4456: declaration of 'start' hides previous local declaration
+         c:\chatscript\src\mainsystem.cpp(1899): note: see declaration of 'start'
+     1>c:\chatscript\src\mainsystem.cpp(2142): warning C4459: declaration of 'responseControl' hides global declaration
+         c:\chatscript\src\mainsystem.cpp(111): note: see declaration of 'responseControl'
+     1>c:\chatscript\src\mainsystem.cpp(2521): warning C4459: declaration of 'argc' hides global declaration
+         c:\chatscript\src\mainsystem.cpp(25): note: see declaration of 'argc'
+     1>c:\chatscript\src\mainsystem.cpp(2521): warning C4459: declaration of 'argv' hides global declaration
+         c:\chatscript\src\mainsystem.cpp(26): note: see declaration of 'argv'
+         infer.cpp
+     1>c:\chatscript\src\infer.cpp(239): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\infer.cpp(312): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\infer.cpp(266): note: see declaration of 'D'
+     1>c:\chatscript\src\infer.cpp(416): warning C4456: declaration of 'index' hides previous local declaration
+         c:\chatscript\src\infer.cpp(385): note: see declaration of 'index'
+     1>c:\chatscript\src\infer.cpp(878): warning C4457: declaration of 'kind' hides function parameter
+         c:\chatscript\src\infer.cpp(523): note: see declaration of 'kind'
+     1>c:\chatscript\src\infer.cpp(1233): warning C4457: declaration of 'match' hides function parameter
+         c:\chatscript\src\infer.cpp(523): note: see declaration of 'match'
+     1>c:\chatscript\src\infer.cpp(1297): warning C4457: declaration of 'count' hides function parameter
+         c:\chatscript\src\infer.cpp(523): note: see declaration of 'count'
+     1>c:\chatscript\src\infer.cpp(1381): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\infer.cpp(548): note: see declaration of 'word'
+         functionExecute.cpp
+     1>c:\chatscript\src\functionexecute.cpp(355): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(514): warning C4456: declaration of 'start' hides previous local declaration
+         c:\chatscript\src\functionexecute.cpp(458): note: see declaration of 'start'
+     1>c:\chatscript\src\functionexecute.cpp(620): warning C4389: '!=': signed/unsigned mismatch
+     1>c:\chatscript\src\functionexecute.cpp(631): warning C4389: '!=': signed/unsigned mismatch
+     1>c:\chatscript\src\functionexecute.cpp(1375): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(1443): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(1559): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(1605): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(1630): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(1660): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\functionexecute.cpp(1665): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(1776): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(1923): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(2050): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(2133): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(2160): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(2200): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(2377): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(3363): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(3775): warning C4611: interaction between '_setjmp' and C++ object destruction is non-portable
+     1>c:\chatscript\src\functionexecute.cpp(4129): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(4139): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(4198): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(5751): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\functionexecute.cpp(5955): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(6024): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(6149): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(6286): warning C4459: declaration of 'topic' hides global declaration
+         c:\chatscript\src\mainsystem.h(140): note: see declaration of 'topic'
+     1>c:\chatscript\src\functionexecute.cpp(6529): warning C4459: declaration of 'port' hides global declaration
+         c:\chatscript\src\mainsystem.h(150): note: see declaration of 'port'
+     1>c:\chatscript\src\functionexecute.cpp(7359): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\functionexecute.cpp(7338): note: see declaration of 'D'
+     1>c:\chatscript\src\functionexecute.cpp(7451): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\functionexecute.cpp(7430): note: see declaration of 'D'
+     1>c:\chatscript\src\functionexecute.cpp(6802): warning C4505: 'ShowLinks': unreferenced local function has been removed
+     1>c:\chatscript\src\functionexecute.cpp(6816): warning C4505: 'ShowFactLinks': unreferenced local function has been removed
+         Generating Code...
+         Compiling...
+         os.cpp
+     1>c:\chatscript\src\os.cpp(478): warning C4127: conditional expression is constant
+     1>c:\chatscript\src\os.cpp(579): warning C4459: declaration of 'server' hides global declaration
+         c:\chatscript\src\mainsystem.h(151): note: see declaration of 'server'
+     1>c:\chatscript\src\os.cpp(999): warning C4459: declaration of 'loginID' hides global declaration
+         c:\chatscript\src\usersystem.h(36): note: see declaration of 'loginID'
+     1>c:\chatscript\src\os.cpp(1508): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\os.cpp(1488): note: see declaration of 'i'
+     1>c:\chatscript\src\os.cpp(1529): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\os.cpp(1488): note: see declaration of 'i'
+     1>c:\chatscript\src\os.cpp(1700): warning C4456: declaration of 'name' hides previous local declaration
+         c:\chatscript\src\os.cpp(1661): note: see declaration of 'name'
+         mysql.cpp
+         mongodb.cpp
+         json.cpp
+     1>c:\chatscript\src\json.cpp(588): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\json.cpp(510): note: see declaration of 'len'
+     1>c:\chatscript\src\json.cpp(589): warning C4018: '<': signed/unsigned mismatch
+     1>c:\chatscript\src\json.cpp(811): warning C4018: '<': signed/unsigned mismatch
+     1>c:\chatscript\src\json.cpp(1736): warning C4456: declaration of 'object' hides previous local declaration
+         c:\chatscript\src\json.cpp(1726): note: see declaration of 'object'
+     1>c:\chatscript\src\json.cpp(1865): warning C4456: declaration of 'object' hides previous local declaration
+         c:\chatscript\src\json.cpp(1856): note: see declaration of 'object'
+     1>c:\chatscript\src\json.cpp(1925): warning C4459: declaration of 'all' hides global declaration
+         c:\chatscript\src\mainsystem.h(121): note: see declaration of 'all'
+     1>c:\chatscript\src\json.cpp(2157): warning C4456: declaration of 'index' hides previous local declaration
+         c:\chatscript\src\json.cpp(2126): note: see declaration of 'index'
+         jsmn.cpp
+     1>c:\chatscript\src\jsmn.cpp(17): warning C4100: 'len': unreferenced formal parameter
+         javascript.cpp
+     1>c:\chatscript\vs2015\duk_api_stack.c(3948): warning C4127: conditional expression is constant
+     1>c:\chatscript\vs2015\duk_bi_date.c(632): warning C4551: function call missing argument list
+     1>c:\chatscript\vs2015\duk_js_call.c(1057): warning C4611: interaction between '_setjmp' and C++ object destruction is non-portable
+     1>c:\chatscript\src\javascript.cpp(98): warning C4456: declaration of 'name' hides previous local declaration
+         c:\chatscript\src\javascript.cpp(51): note: see declaration of 'name'
+     1>c:\chatscript\src\javascript.cpp(31): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(57): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(64): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(73): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(79): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(93): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(95): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(143): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(147): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(156): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(186): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(191): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\src\javascript.cpp(192): warning C4996: 'stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _stricmp. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.10586.0\ucrt\string.h(546): note: see declaration of 'stricmp'
+     1>c:\chatscript\vs2015\duk_bi_date.c(460): warning C4505: 'duk_bi_date_timeval_in_leeway_range': unreferenced local function has been removed
+         factSystem.cpp
+     1>c:\chatscript\src\factsystem.cpp(837): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\factsystem.cpp(713): note: see declaration of 'word'
+     1>c:\chatscript\src\factsystem.cpp(1166): warning C4459: declaration of 'comments' hides global declaration
+         c:\chatscript\src\tagger.h(75): note: see declaration of 'comments'
+     1>c:\chatscript\src\factsystem.cpp(1388): warning C4456: declaration of 'word' hides previous local declaration
+         c:\chatscript\src\factsystem.cpp(1359): note: see declaration of 'word'
+     1>c:\chatscript\src\factsystem.cpp(1424): warning C4456: declaration of 'ptr' hides previous local declaration
+         c:\chatscript\src\factsystem.cpp(1372): note: see declaration of 'ptr'
+         evserver.cpp
+         englishtagger.cpp
+     1>c:\chatscript\src\englishtagger.cpp(2335): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(2136): note: see declaration of 'D'
+     1>c:\chatscript\src\englishtagger.cpp(2530): warning C4459: declaration of 'tags' hides global declaration
+         c:\chatscript\src\tagger.h(53): note: see declaration of 'tags'
+     1>c:\chatscript\src\englishtagger.cpp(2907): warning C4459: declaration of 'ambiguous' hides global declaration
+         c:\chatscript\src\englishtagger.cpp(110): note: see declaration of 'ambiguous'
+     1>c:\chatscript\src\englishtagger.cpp(3283): warning C4459: declaration of 'roles' hides global declaration
+         c:\chatscript\src\tagger.h(98): note: see declaration of 'roles'
+     1>c:\chatscript\src\englishtagger.cpp(4001): warning C4457: declaration of 'start' hides function parameter
+         c:\chatscript\src\englishtagger.cpp(3936): note: see declaration of 'start'
+     1>c:\chatscript\src\englishtagger.cpp(4180): warning C4127: conditional expression is constant
+     1>c:\chatscript\src\englishtagger.cpp(4364): warning C4456: declaration of 'subj' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(3958): note: see declaration of 'subj'
+     1>c:\chatscript\src\englishtagger.cpp(4978): warning C4456: declaration of 'deepBefore' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(4882): note: see declaration of 'deepBefore'
+     1>c:\chatscript\src\englishtagger.cpp(5067): warning C4456: declaration of 'deepBefore' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(5023): note: see declaration of 'deepBefore'
+     1>c:\chatscript\src\englishtagger.cpp(5756): warning C4456: declaration of 'currentVerb' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(5626): note: see declaration of 'currentVerb'
+     1>c:\chatscript\src\englishtagger.cpp(6750): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(6734): note: see declaration of 'at'
+     1>c:\chatscript\src\englishtagger.cpp(6856): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(6734): note: see declaration of 'at'
+     1>c:\chatscript\src\englishtagger.cpp(6882): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(6734): note: see declaration of 'at'
+     1>c:\chatscript\src\englishtagger.cpp(8720): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(8629): note: see declaration of 'at'
+     1>c:\chatscript\src\englishtagger.cpp(8872): warning C4459: declaration of 'tags' hides global declaration
+         c:\chatscript\src\tagger.h(53): note: see declaration of 'tags'
+     1>c:\chatscript\src\englishtagger.cpp(9676): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(8826): note: see declaration of 'i'
+     1>c:\chatscript\src\englishtagger.cpp(9688): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\englishtagger.cpp(8826): note: see declaration of 'i'
+     1>c:\chatscript\src\englishtagger.cpp(10004): warning C4459: declaration of 'tags' hides global declaration
+         c:\chatscript\src\tagger.h(53): note: see declaration of 'tags'
+         english.cpp
+     1>c:\chatscript\src\english.cpp(514): warning C4457: declaration of 'at' hides function parameter
+         c:\chatscript\src\english.cpp(281): note: see declaration of 'at'
+     1>c:\chatscript\src\english.cpp(530): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\english.cpp(514): note: see declaration of 'at'
+     1>c:\chatscript\src\english.cpp(556): warning C4456: declaration of 'hyphen' hides previous local declaration
+         c:\chatscript\src\english.cpp(465): note: see declaration of 'hyphen'
+     1>c:\chatscript\src\english.cpp(833): warning C4456: declaration of 'X' hides previous local declaration
+         c:\chatscript\src\english.cpp(822): note: see declaration of 'X'
+     1>c:\chatscript\src\english.cpp(841): warning C4456: declaration of 'kind' hides previous local declaration
+         c:\chatscript\src\english.cpp(422): note: see declaration of 'kind'
+     1>c:\chatscript\src\english.cpp(1253): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\english.cpp(421): note: see declaration of 'len'
+     1>c:\chatscript\src\english.cpp(1437): warning C4456: declaration of 'i' hides previous local declaration
+         c:\chatscript\src\english.cpp(1419): note: see declaration of 'i'
+     1>c:\chatscript\src\english.cpp(1745): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\english.cpp(1729): note: see declaration of 'len'
+     1>c:\chatscript\src\english.cpp(1763): warning C4456: declaration of 'inf' hides previous local declaration
+         c:\chatscript\src\english.cpp(1730): note: see declaration of 'inf'
+     1>c:\chatscript\src\english.cpp(1766): warning C4456: declaration of 'at' hides previous local declaration
+         c:\chatscript\src\english.cpp(1735): note: see declaration of 'at'
+     1>c:\chatscript\src\english.cpp(1811): warning C4456: declaration of 'D' hides previous local declaration
+         c:\chatscript\src\english.cpp(1717): note: see declaration of 'D'
+     1>c:\chatscript\src\english.cpp(1819): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\english.cpp(1729): note: see declaration of 'len'
+     1>c:\chatscript\src\english.cpp(2084): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\english.cpp(2026): note: see declaration of 'len'
+     1>c:\chatscript\src\english.cpp(2477): warning C4456: declaration of 'len' hides previous local declaration
+         c:\chatscript\src\english.cpp(2452): note: see declaration of 'len'
+         dictionarySystem.cpp
+         csocket.cpp
+     1>c:\chatscript\src\csocket.cpp(71): warning C4459: declaration of 'port' hides global declaration
+         c:\chatscript\src\mainsystem.h(150): note: see declaration of 'port'
+     1>c:\chatscript\src\csocket.cpp(334): warning C4456: declaration of 'bytesReceived' hides previous local declaration
+         c:\chatscript\src\csocket.cpp(302): note: see declaration of 'bytesReceived'
+         constructCode.cpp
+         Generating Code...
+     1>c:\chatscript\vs2015\duk_api_call.c(125): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_call.c(154): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_call.c(214): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_call.c(524): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_codec.c(407): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(245): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(460): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(1120): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(1164): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(1233): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(1277): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(1594): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(3866): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_var.c(78): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_var.c(85): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_bi_global.c(1209): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_bi_thread.c(299): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_bi_thread.c(303): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_bi_thread.c(180): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_bi_thread.c(184): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_bi_thread.c(188): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_error_macros.c(19): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(303): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_hobject_props.c(4430): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_hobject_props.c(2261): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_hobject_props.c(3301): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(1665): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(1644): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_api_stack.c(3781): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_unicode_support.c(254): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_util_bufwriter.c(69): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_heap_stringcache.c(297): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_bi_buffer.c(174): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_hobject_props.c(339): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_hobject_props.c(350): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_js_call.c(944): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_hobject_props.c(2070): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_regexp_compiler.c(818): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_js_call.c(779): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_regexp_executor.c(102): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_regexp_executor.c(645): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_lexer.c(611): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_js_executor.c(1217): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_regexp_executor.c(71): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_js_compiler.c(2117): warning C4702: unreachable code
+     1>c:\chatscript\vs2015\duk_js_compiler.c(2188): warning C4701: potentially uninitialized local variable 'd3' used
+     1>c:\chatscript\vs2015\duk_js_var.c(1775): warning C4702: unreachable code
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I..\lib\libev /I..\SRC\curl /I..\SRC\mongo\bson /I..\SRC\mongo\mongoc /ZI /nologo /W4 /WX- /Od /Ob0 /Oy- /D SAFETIME /D TREETAGGER /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /GF /Gm /EHsc /RTC1 /MTd /GS /fp:fast /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug Treetagger\\" /Fd"Debug Treetagger\vc140.pdb" /Gd /TC /analyze- /errorReport:prompt /J ..\SRC\cs_ev.c
+         cs_ev.c
+     1>c:\chatscript\src\cs_ev.c(8): warning C4206: nonstandard extension used: translation unit is empty
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\BINARIES\chatscript.exe" /INCREMENTAL /NOLOGO /LIBPATH:c:/ChatScript/treetagger c:/chatscript/treetagger/treetagger.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST:NO /DEBUG /PDB:"C:\ChatScript\VS2015\..\BINARIES\chatscript.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\ChatScript\VS2015\..\BINARIES\chatscript.lib" /MACHINE:X86 "Debug Treetagger\constructCode.obj"
+         "Debug Treetagger\csocket.obj"
+         "Debug Treetagger\cs_ev.obj"
+         "Debug Treetagger\dictionarySystem.obj"
+         "Debug Treetagger\english.obj"
+         "Debug Treetagger\englishtagger.obj"
+         "Debug Treetagger\evserver.obj"
+         "Debug Treetagger\factSystem.obj"
+         "Debug Treetagger\javascript.obj"
+         "Debug Treetagger\jsmn.obj"
+         "Debug Treetagger\json.obj"
+         "Debug Treetagger\mongodb.obj"
+         "Debug Treetagger\mysql.obj"
+         "Debug Treetagger\os.obj"
+         "Debug Treetagger\functionExecute.obj"
+         "Debug Treetagger\infer.obj"
+         "Debug Treetagger\mainSystem.obj"
+         "Debug Treetagger\markSystem.obj"
+         "Debug Treetagger\outputSystem.obj"
+         "Debug Treetagger\patternSystem.obj"
+         "Debug Treetagger\postgres.obj"
+         "Debug Treetagger\privatesrc.obj"
+         "Debug Treetagger\scriptCompile.obj"
+         "Debug Treetagger\secure.obj"
+         "Debug Treetagger\spellcheck.obj"
+         "Debug Treetagger\systemVariables.obj"
+         "Debug Treetagger\tagger.obj"
+         "Debug Treetagger\testing.obj"
+         "Debug Treetagger\textUtilities.obj"
+         "Debug Treetagger\tokenSystem.obj"
+         "Debug Treetagger\topicSystem.obj"
+         "Debug Treetagger\userCache.obj"
+         "Debug Treetagger\userSystem.obj"
+         "Debug Treetagger\variableSystem.obj"
+         chatscript.vcxproj -> C:\ChatScript\VS2015\..\BINARIES\chatscript.exe
+         chatscript.vcxproj -> C:\ChatScript\VS2015\..\BINARIES\chatscript.pdb (Full PDB)
+       FinalizeBuildStatus:
+         Deleting file "Debug Treetagger\chatscript.tlog\unsuccessfulbuild".
+         Touching "Debug Treetagger\chatscript.tlog\chatscript.lastbuildstate".
+     1>Done Building Project "C:\ChatScript\VS2015\chatscript.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:42.63
