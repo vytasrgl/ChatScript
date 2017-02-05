@@ -150,7 +150,7 @@ really advanced users wanting the appropriate mental model.
 * [Paper - ChatBots 102](../PAPERS/Paper-%20ChatBots%20102.pdf)
 <br>My first paper, looking at the flaws of AIML and why I felt I could do better (before Suzette won anything).
 
-* [Paper - Pattern Matching for Natural Language](../PAPERS/Paper-%20Pattern_Matching_for_Natural_Language_Applications.pdf)
+* [Paper - Pattern Matching for Natural Language](PAPERS/Paper-Pattern-Matching-for-Natural-Language-Applications.md)
 <br>Compares CS, AIML, and Facade
 
 * [Paper - Suzette The Most Human Computer](../PAPERS/Paper%20-%20Suzette_The_Most_Human_Computer.pdf)
@@ -174,5 +174,5 @@ really advanced users wanting the appropriate mental model.
 * [Paper - Winning the Loebner's](PAPERS/Paper%20-%20WinningTheLoebners.md)
 <br>Realities of the Loebner competition and additional ideas of english applied to chatbots
 
-* [ChatScript Training](../PDFDOCUMENTATION/OVERVIEWS-AND-TUTORIALS/ChatScript%20Training.pdf)
+* [ChatScript Training](PAPERS/ChatScript-Training.md)
 <br>A slide series on how CS works and how the engine works.
