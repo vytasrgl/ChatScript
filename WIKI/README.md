@@ -174,5 +174,5 @@ really advanced users wanting the appropriate mental model.
 * [Paper - Winning the Loebner's](PAPERS/Paper%20-%20WinningTheLoebners.md)
 <br>Realities of the Loebner competition and additional ideas of english applied to chatbots
 
-* [ChatScript Training](../PDFDOCUMENTATION/OVERVIEWS-AND-TUTORIALS/ChatScript%20Training.pdf)
+* [ChatScript Training](PAPERS/ChatScript-Training.md)
 <br>A slide series on how CS works and how the engine works.
