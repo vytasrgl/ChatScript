@@ -346,25 +346,25 @@ The flags and their meanings are:
 
 |flag              |  description 
 |:----------------:|-------------- 
-|__`Random`__      |    search rules randomly instead of linearly
-|__`NoRandom`__    |    (default) search rules linearly
-|__`Keep`__        |    do not erase responders ever. Gambits (and rejoinders) are not affected by this
-|__`Erase`__       |    (default) erase responders that successfully generate output.<br>Gambits automatically erase unless you suppress them specifically.
-|__`NoStay`__      |    do not consider this a topic to remain in, leave it (except for rejoinders)
-|__`Stay`__        |   (default) make this a pending topic when it generates output
-|__`Repeat`__      |    allow rules to generate output which has been output recently
-|__`NoRepeat`__    |    (default) do not generate output if it matches output made recently
-|__`Priority`__    |    raise the priority of this topic when matching keywords
-|__`Normal`__      |    (default) give this topic normal priority when matching keywords
-|__`Deprioritize`__|   lower the priority of this topic when matching keywords
-|__`System`__      |   this is a system topic. It is automatically `NoStay`, `Keep`.<br>`Keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files.
-|__`User`__        |   (default) this is a normal topic
-|__`NoBlocking`__  |   should not perform any blocking tests on this topic in `:verify`
-|__`NoPatterns`__  |   should not perform any pattern tests on this topic in `:verify`
-|__`NoSamples`__   |   should not perform any sample tests on this topic in `:verify`
-|__`NoKeys`__      |   should not perform any keyword tests on this topic in `:verify`
-|__`More`__        |   normally if you try to redeclare a concept, you get an error. `MORE` tells CS you intend to extend the concept and allows additional keywords.
-|__`Bot=name`__    |   if this is given, only named bots are allowed to use this topic. See `ChatScript Multiple Bots manual`
+|__`random`__      |    search rules randomly instead of linearly
+|__`norandom`__    |    (default) search rules linearly
+|__`keep`__        |    do not erase responders ever. Gambits (and rejoinders) are not affected by this
+|__`erase`__       |    (default) erase responders that successfully generate output.<br>Gambits automatically erase unless you suppress them specifically.
+|__`nostay`__      |    do not consider this a topic to remain in, leave it (except for rejoinders)
+|__`stay`__        |   (default) make this a pending topic when it generates output
+|__`repeat`__      |    allow rules to generate output which has been output recently
+|__`norepeat`__    |    (default) do not generate output if it matches output made recently
+|__`priority`__    |    raise the priority of this topic when matching keywords
+|__`normal`__      |    (default) give this topic normal priority when matching keywords
+|__`deprioritize`__|   lower the priority of this topic when matching keywords
+|__`system`__      |   this is a system topic. It is automatically `nostay`, `keep`.<br>`keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files.
+|__`user`__        |   (default) this is a normal topic
+|__`noblocking`__  |   should not perform any blocking tests on this topic in `:verify`
+|__`nopatterns`__  |   should not perform any pattern tests on this topic in `:verify`
+|__`nosamples`__   |   should not perform any sample tests on this topic in `:verify`
+|__`nokeys`__      |   should not perform any keyword tests on this topic in `:verify`
+|__`more`__        |   normally if you try to redeclare a concept, you get an error. `more` tells CS you intend to extend the concept and allows additional keywords.
+|__`bot=name`__    |   if this is given, only named bots are allowed to use this topic. See [ChatScript Multiple Bots](ChatScript-Multiple-Bots.md) manual.
 
 
 ## Rules that erase and repeat
@@ -1552,7 +1552,7 @@ early termination effects.
 # System Functions
 
 There are many system functions to perform specific tasks. These are enumerated in the
-[ChatScript System Functions Manual](ChatScript-System-Functions-Manual.md) manual and the [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
+[ChatScript System Functions Manual](ChatScript-System-Functions-Manual.md) and the [ChatScript Fact Manual](ChatScript-Fact-Manual.md).
 
 
 ## Randomized Output Revisited `[ ]`
@@ -1995,7 +1995,7 @@ $tmp = ##first
 
 ## Defining private Queries 
 
-see [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
+see [ChatScript Fact Manual](ChatScript-Fact-Manual.md).
 
 
 ## Documenting variables, functions, factsets, and match variables
@@ -2211,7 +2211,7 @@ The user prompt wants to use the user's login name so it is a format string, whi
 processed and stored on the user prompt variable. The botprompt wants to force a space
 at the end, so it also uses a format string to store on the bot prompt variable.
 
-### In color.tbl is there a reason that the color grey includes both building and ~building?
+___In color.tbl is there a reason that the color grey includes both building and ~building?___
 
 Yes. Rules often want to distinguish members of sets that have supplemental data from
 ones that don't. The set of ~musician has extra table data, like what they did and doesn't
@@ -2221,7 +2221,7 @@ has supplemental data available.
 This is made clearer when the set is named something list `~xxxlist`. 
 But the system evolved and is not consistent.
 
-### How are double-quoted strings handled?
+___How are double-quoted strings handled?___
 
 First, note that you are not allowed strings that end in punctuation followed by a space.
 This string _"I love you. "_ is illegal. There is no function adding that space serves.
@@ -2262,7 +2262,7 @@ spacing and punctuation, and stripping off the double quotes.
 u: (test) ^"This $var is good." # if $var is kid the result is This kid is good.
 ```
 
-### What really happens on the output side of a rule?
+___What really happens on the output side of a rule?___
 
 Well, really, the system "evaluates" every token. Simple English words and punctuation
 always evaluate to themselves, and the results go into the output stream. Similarly, the
@@ -2303,7 +2303,7 @@ value.
 Calling a function discards any output stream generated and aside from other side
 effects means did the function fail (return a fail code) or not.
 
-### How does the system tell a function call w/o ^ from English ?
+___How does the system tell a function call w/o ^ from English?___
 
 If like is defined as an output macro and if you write:
 ```
@@ -2319,7 +2319,7 @@ When it is a user function, it looks to see if the
 Contiguous is treated as a function call and apart is treated as English. 
 This is not done for built-ins because it's more likely you spaced it accidently than that you intended it to be English.
 
-### How should I go about creating a responder?
+___How should I go about creating a responder?___
 
 First you have to decide the topic it is in and insure the topic has appropriate keywords if
 needed.
@@ -2330,7 +2330,7 @@ sentence. This will tell you how the system will tokenize it and what concepts i
 trigger. This will help you decide what the structure of the pattern should be and how
 general you can make important keywords.
 
-### What really happens with rule erasure?
+___What really happens with rule erasure?___
 
 The system's default behavior is to erase rules that put output into the output stream, so
 they won't repeat themselves later. You can explicitly make a rule erase with `^erase()` and
@@ -2347,12 +2347,11 @@ These can never erase themselves directly, so the erasure will again rebound to 
 
 Note that a topic declared system NEVER erases its rules, neither gambits nor responders,
 even if you put ^erase() on a rule.
-
-> How can I get the original input when I have a pattern like 
 ```
 u: (~emogoodbye)
 ```
-### How can I get the original input when I have a pattern like `u: (~emogoodbye)` ?
+
+___How can I get the original input when I have a pattern like `u: (~emogoodbye)` ?___
 
 To get the original input, you need to do the following:
 ```
@@ -2562,8 +2561,7 @@ does a "cd ChatScript" to be in the right directory, and then runs ChatScript wi
 following parameters:
 
 ```
-ChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH
-system=LIVEDATA/SYSTEM
+ChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH system=LIVEDATA/SYSTEM
 ```
 
 Normally while you might override various substitutes files, you would not override the
@@ -2592,6 +2590,3 @@ them when you run CS.
 
 [[Wiki home](/WIKI/README.md)] - [[Basic User Manual](ChatScript-Basic-User-Manual.md)]
 
----
-
-© Bruce Wilcox, mail: gowilcox@gmail.com web: www.brilligunderstanding.com revision: 12/7/2016 cs6.91
