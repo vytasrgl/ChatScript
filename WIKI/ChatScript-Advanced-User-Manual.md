@@ -1,8 +1,7 @@
-﻿# ChatScript Advanced User's Manual
-
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
-
-> Revision 1/28/2017 cs7.12
+# ChatScript Advanced User's Manual
+© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com 
+<br>Revision 1/28/2017 cs7.12
+<br><br>
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -102,14 +101,15 @@ CS just directly embeds the arguments in the string and any attempt to use
 the active string implicitly invokes the equivalent of sprintf.
 
 User variables also come in permanent and transient forms. 
-<br>**Permanent variables** start with a single `$` and are preserved across user interactions 
-(are saved and restored from disk). You can see and alter their value from anywhere.
 
-<br>**Transient variables** start with `$$` and completely disappear when a user interaction
-happens (are not saved to disk). You can see and alter their value from anywhere.
+- **Permanent variables**
+  start with a single `$` and are preserved across user interactions  (are saved and restored from disk). You can see and alter their value from anywhere.
 
-<br>**Local variables** (described later) start with `$_` and completely disappear when a user interaction
-happens (are not saved to disk). You can see and alter their value only within the topic or outputmacro they are used.
+- **Transient variables**
+  start with `$$` and completely disappear when a user interaction happens (are not saved to disk). You can see and alter their value from anywhere.
+
+- **Local variables** 
+  (described later) start with `$_` and completely disappear when a user interaction happens (are not saved to disk). You can see and alter their value only within the topic or outputmacro they are used.
 
 
 ### Facts 
@@ -234,17 +234,16 @@ was this
 ```
     ^myfunction( $myvar 1)
 ```
-then the effect of `^argument1 += 1` is as though `$myvar += 1` were done and `$myvar` would now be one
-higher. Of course, had you tried to do
-`^argument2 += 1` then that would be the illegal `1 += 1` and the assignment would fail.
+then the effect of `^argument1 += 1` is as though `$myvar += 1` were done and `$myvar` would now be one higher. 
 
+Of course, had you tried to do `^argument2 += 1` then that would be the illegal `1 += 1` and the assignment would fail.
 
 ```
 outputmacro: ^myfunction( $_argument1 $_argument2)
     $_argument1 += 1
 ```
 
-Use of $_ variables in the function definition is a call by value. All $_ variables are purely local and cannot
+Use of `$_` variables in the function definition is a call by value. All `$_` variables are purely local and cannot
 be seen outside of the function (or topic) they are used in. You can also mix call by reference and call by
 value arguments.
 
@@ -299,7 +298,8 @@ Concepts can be built from other concepts that do not have specific words.
 Concept: ~myconcept (!thisword ~otherconcept)
 ```
 
-Note: the system has two kinds of concepts. Enumerated concepts are ones formed from an explicit list of members. Stuff in definitions of concept: ~xxx()  are that. There are also internal concepts marked by the system. These include part of speech of a word (requires using the pos-tagger to decide from the input what part of speech it was of possibly several), grammatical roles, words from infinite sets like ~number and ~placenumber and ~weburl, and so forth.  
+Note: the system has two kinds of concepts. Enumerated concepts are ones formed from an explicit list of members. Stuff in definitions of `concept: ~xxx()` are that. 
+There are also internal concepts marked by the system. These include part of speech of a word (requires using the pos-tagger to decide from the input what part of speech it was of possibly several), grammatical roles, words from infinite sets like `~number` and `~placenumber` and `~weburl`, and so forth.  
 
 In a pattern of some kind, if you are referencing a sentence location using a match variable, you can match both kinds of concepts. But if you are not tied to a location in  a sentence, you can't match internally computed ones. So something like
 ```
@@ -323,13 +323,13 @@ When a topic is executing rules, it does not stop just because a rule matches. I
 executing rules until some rule generates ouput for the user or something issues an
 appropriate `^end` or `^fail` call. So you can do things like this:
 ```
-u: (I love) $userloves = true
+u: ( I love ) $userloves = true
 
 u: ( dog ) $animal = dog
 
-u: ( love) Glad to hear it
+u: ( love ) Glad to hear it
 
-u: ( dog) I hate dogs
+u: ( dog ) I hate dogs
 ```
 and given _I love dogs_, the system will set $userloves and $animal and output glad to
 hear it.
@@ -344,27 +344,27 @@ topic: ~rust keep random [rust iron oxide]
 ```
 The flags and their meanings are:
 
-|flag         |  description                        |
-|-------------|-------------------------------------|  
-|`Random`     |    search rules randomly instead of linearly
-|`NoRandom`   |    (default) search rules linearly
-|`Keep`       |    do not erase responders ever. Gambits (and rejoinders) are not affected by this
-|`Erase`      |    (default) erase responders that successfully generate output.<br>Gambits automatically erase unless you suppress them specifically.
-|`NoStay`     |    do not consider this a topic to remain in, leave it (except for rejoinders)
-|`Stay`       |   (default) make this a pending topic when it generates output
-|`Repeat`     |    allow rules to generate output which has been output recently
-|`NoRepeat`   |    (default) do not generate output if it matches output made recently
-|`Priority`   |    raise the priority of this topic when matching keywords
-|`Normal`     |    (default) give this topic normal priority when matching keywords
-|`Deprioritize`|   lower the priority of this topic when matching keywords
-|`System`      |   this is a system topic. It is automatically `NoStay`, `Keep`.<br>`Keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files.
-|`User`        |   (default) this is a normal topic
-|`NoBlocking`  |   should not perform any blocking tests on this topic in `:verify`
-|`NoPatterns`  |   should not perform any pattern tests on this topic in `:verify`
-|`NoSamples`   |   should not perform any sample tests on this topic in `:verify`
-|`NoKeys`      |   should not perform any keyword tests on this topic in `:verify`
-|`More`        |   normally if you try to redeclare a concept, you get an error. `MORE` tells CS you intend to extend the concept and allows additional keywords.
-|`Bot=name`    |   if this is given, only named bots are allowed to use this topic. See `ChatScript Multiple Bots manual`
+|flag              |  description 
+|:----------------:|-------------- 
+|__`random`__      |    search rules randomly instead of linearly
+|__`norandom`__    |    (default) search rules linearly
+|__`keep`__        |    do not erase responders ever. Gambits (and rejoinders) are not affected by this
+|__`erase`__       |    (default) erase responders that successfully generate output.<br>Gambits automatically erase unless you suppress them specifically.
+|__`nostay`__      |    do not consider this a topic to remain in, leave it (except for rejoinders)
+|__`stay`__        |   (default) make this a pending topic when it generates output
+|__`repeat`__      |    allow rules to generate output which has been output recently
+|__`norepeat`__    |    (default) do not generate output if it matches output made recently
+|__`priority`__    |    raise the priority of this topic when matching keywords
+|__`normal`__      |    (default) give this topic normal priority when matching keywords
+|__`deprioritize`__|   lower the priority of this topic when matching keywords
+|__`system`__      |   this is a system topic. It is automatically `nostay`, `keep`.<br>`keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files.
+|__`user`__        |   (default) this is a normal topic
+|__`noblocking`__  |   should not perform any blocking tests on this topic in `:verify`
+|__`nopatterns`__  |   should not perform any pattern tests on this topic in `:verify`
+|__`nosamples`__   |   should not perform any sample tests on this topic in `:verify`
+|__`nokeys`__      |   should not perform any keyword tests on this topic in `:verify`
+|__`more`__        |   normally if you try to redeclare a concept, you get an error. `more` tells CS you intend to extend the concept and allows additional keywords.
+|__`bot=name`__    |   if this is given, only named bots are allowed to use this topic. See [ChatScript Multiple Bots](ChatScript-Multiple-Bots.md) manual.
 
 
 ## Rules that erase and repeat
@@ -934,7 +934,7 @@ the `_` equivalent) is a single item, whereas ( take charge) is 4 items.
 
 So the first rule will below will match faster than the second rule:
 ```
-u: ( "I love you today when")
+u: ("I love you today when")
 
 u: (I love you today when)
 ```
@@ -1552,7 +1552,7 @@ early termination effects.
 # System Functions
 
 There are many system functions to perform specific tasks. These are enumerated in the
-[ChatScript System Functions Manual](ChatScript-System-Functions-Manual.md) manual and the [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
+[ChatScript System Functions Manual](ChatScript-System-Functions-Manual.md) and the [ChatScript Fact Manual](ChatScript-Fact-Manual.md).
 
 
 ## Randomized Output Revisited `[ ]`
@@ -1796,22 +1796,14 @@ and have the system automatically generate gestures during postprocessing on its
 The stand-alone engine and the WEBINTERFACE/BETTER scripts automatically handle
 the following oob outputs:
 
-**Callback**: The webpage or stand-alone engine will wait for the designated milliseconds
-and if the user has not begun typing will send in the oob message [callback] to CS. If user
-begins typing before the timeout, the callback is cancelled.
-e.g. `[callback=3000]` will wait 3 seconds.
+- **Callback**
+  The webpage or stand-alone engine will wait for the designated milliseconds and if the user has not begun typing will send in the oob message [callback] to CS. If user begins typing before the timeout, the callback is cancelled. e.g. `[callback=3000]` will wait 3 seconds.
 
-**Loopback**: The webpage or stand-alone engine will wait for the designated milliseconds
-after every output from CS and if the user has not begun typing will send in the oob
-message [loopback] to CS. If user begins typing before the timeout, the loopback is
-cancelled for this output only, and will resume counting on the next output.
-e.g. `[loopback=3000]` will wait 3 seconds after every output.
+- **Loopback** 
+  The webpage or stand-alone engine will wait for the designated milliseconds after every output from CS and if the user has not begun typing will send in the oob message [loopback] to CS. If user begins typing before the timeout, the loopback is cancelled for this output only, and will resume counting on the next output. e.g. `[loopback=3000]` will wait 3 seconds after every output.
 
-**Alarm**: The webpage or stand-alone engine will wait for the designated milliseconds and
-then send in the oob message [alarm] to CS. Input typing has no effect.
-e.g. `[alarm=3000]` will wait 3 seconds and then send in the alarm.
-CS can cancel any of these by sending an oob message with a milliseconds of 0.
-e.g. `[loopback=0 callback=0 alarm=0]` cancels any pending callbacks into the future.
+- **Alarm**
+  The webpage or stand-alone engine will wait for the designated milliseconds and then send in the oob message [alarm] to CS. Input typing has no effect. e.g. `[alarm=3000]` will wait 3 seconds and then send in the alarm. CS can cancel any of these by sending an oob message with a milliseconds of 0. e.g. `[loopback=0 callback=0 alarm=0]` cancels any pending callbacks into the future.
 
 
 # System callback functions 
@@ -2003,7 +1995,7 @@ $tmp = ##first
 
 ## Defining private Queries 
 
-see [ChatScript Fact Manual](ChatScript-Fact-Manual.md) manual.
+see [ChatScript Fact Manual](ChatScript-Fact-Manual.md).
 
 
 ## Documenting variables, functions, factsets, and match variables
@@ -2091,7 +2083,7 @@ Normally lower case words would break up a title.
 
 # Common Script Idioms
 
-## Selecting Specific Cases ^refine
+## Selecting Specific Cases `^refine`
 
 To be efficient in rule processing, I often catch a lot of things in a rule and then refine it.
 ```
@@ -2144,6 +2136,7 @@ u: (where * you * live) ^reuse(HOUSE)
 The rule on disabling a rule after use is that the rule that actually generates the output gets disabled. 
 So the default behavior (if you don't set keep on the topic or the rule) is that if the question is asked first, 
 it reuses HOUSE. 
+
 Since we have given the answer, we don't want to repetitiously volunteer it, HOUSE gets disabled. 
 But, if the user repetitiously asks the question (maybe he forgot the answer), we will answer it again because the responder
 didn't get disabled, just the gambit. And disabling applies to allowing a rule to try to
@@ -2218,7 +2211,7 @@ The user prompt wants to use the user's login name so it is a format string, whi
 processed and stored on the user prompt variable. The botprompt wants to force a space
 at the end, so it also uses a format string to store on the bot prompt variable.
 
-### In color.tbl is there a reason that the color grey includes both building and ~building?
+___In color.tbl is there a reason that the color grey includes both building and ~building?___
 
 Yes. Rules often want to distinguish members of sets that have supplemental data from
 ones that don't. The set of ~musician has extra table data, like what they did and doesn't
@@ -2228,7 +2221,7 @@ has supplemental data available.
 This is made clearer when the set is named something list `~xxxlist`. 
 But the system evolved and is not consistent.
 
-### How are double-quoted strings handled?
+___How are double-quoted strings handled?___
 
 First, note that you are not allowed strings that end in punctuation followed by a space.
 This string _"I love you. "_ is illegal. There is no function adding that space serves.
@@ -2269,7 +2262,7 @@ spacing and punctuation, and stripping off the double quotes.
 u: (test) ^"This $var is good." # if $var is kid the result is This kid is good.
 ```
 
-### What really happens on the output side of a rule?
+___What really happens on the output side of a rule?___
 
 Well, really, the system "evaluates" every token. Simple English words and punctuation
 always evaluate to themselves, and the results go into the output stream. Similarly, the
@@ -2310,7 +2303,7 @@ value.
 Calling a function discards any output stream generated and aside from other side
 effects means did the function fail (return a fail code) or not.
 
-### How does the system tell a function call w/o ^ from English ?
+___How does the system tell a function call w/o ^ from English?___
 
 If like is defined as an output macro and if you write:
 ```
@@ -2326,7 +2319,7 @@ When it is a user function, it looks to see if the
 Contiguous is treated as a function call and apart is treated as English. 
 This is not done for built-ins because it's more likely you spaced it accidently than that you intended it to be English.
 
-### How should I go about creating a responder?
+___How should I go about creating a responder?___
 
 First you have to decide the topic it is in and insure the topic has appropriate keywords if
 needed.
@@ -2337,7 +2330,7 @@ sentence. This will tell you how the system will tokenize it and what concepts i
 trigger. This will help you decide what the structure of the pattern should be and how
 general you can make important keywords.
 
-### What really happens with rule erasure?
+___What really happens with rule erasure?___
 
 The system's default behavior is to erase rules that put output into the output stream, so
 they won't repeat themselves later. You can explicitly make a rule erase with `^erase()` and
@@ -2354,12 +2347,11 @@ These can never erase themselves directly, so the erasure will again rebound to 
 
 Note that a topic declared system NEVER erases its rules, neither gambits nor responders,
 even if you put ^erase() on a rule.
-
-> How can I get the original input when I have a pattern like 
 ```
 u: (~emogoodbye)
 ```
-### How can I get the original input when I have a pattern like `u: (~emogoodbye)` ?
+
+___How can I get the original input when I have a pattern like `u: (~emogoodbye)` ?___
 
 To get the original input, you need to do the following:
 ```
@@ -2569,8 +2561,7 @@ does a "cd ChatScript" to be in the right directory, and then runs ChatScript wi
 following parameters:
 
 ```
-ChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH
-system=LIVEDATA/SYSTEM
+ChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH system=LIVEDATA/SYSTEM
 ```
 
 Normally while you might override various substitutes files, you would not override the
@@ -2599,6 +2590,3 @@ them when you run CS.
 
 [[Wiki home](/WIKI/README.md)] - [[Basic User Manual](ChatScript-Basic-User-Manual.md)]
 
----
-
-© Bruce Wilcox, mail: gowilcox@gmail.com web: www.brilligunderstanding.com revision: 12/7/2016 cs6.91
