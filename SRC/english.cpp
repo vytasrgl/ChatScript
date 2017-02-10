@@ -1318,6 +1318,16 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		if (!canonical) canonical = DunknownWord;
 	}
 	if (!canonical) canonical = entry;
+
+    int alphanumeric = 0;
+    char* atx = original - 1;
+    while (*++atx)
+    {
+        if (IsAlphaUTF8(*atx)) alphanumeric |= 1;
+        else if (IsDigit(*atx)) alphanumeric |= 2;
+    }
+    if (alphanumeric == 3) properties |= MODEL_NUMBER;
+
 	AddProperty(entry,properties);
 	// interpolate singular normal nouns to adjective_noun EXCEPT qword nouns like "why"
 	//if (properties & (NOUN_SINGULAR|NOUN_PLURAL) && !(entry->properties & QWORD) && !strchr(entry->word,'_')) flags |= ADJECTIVE_NOUN; // proper names also when followed by ' and 's  merge to be adjective nouns  
@@ -1348,7 +1358,7 @@ void SetSentenceTense(int start, int end)
 	bool subjectFound = false;
 	if ((trace & TRACE_POS || prepareMode == POS_MODE) && CheckTopicTrace()) 
 	{
-		if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) Log(STDTRACELOG,(char*)"Not doing a parse.\r\n");
+		if (  tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) Log(STDTRACELOG,(char*)"Not doing a parse.\r\n");
 	}
 
 	// assign sentence type

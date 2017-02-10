@@ -1,4 +1,12 @@
-# version 7.12  -- 1/28/2015 recompile your bot. TOPIC format has changed slightly
+# version 7.2  2-9-2017
+1. ^jsonreadcvs takes optional 3rd argument - function to invoke with the fields instead of returning json
+2. ^tokenize($_text) returns facts of (sentence ^tokenize ^tokenize)
+3: :mixedcase - lists all words which have multiple case forms
+4. %language returns current dictionary language
+5. engine concept ~model_number marks words with both alpha and digit in them
+6. command line buildfiles=xxxx to tell where filesxxx.txt are
+
+# version 7.12  -- 1/28/2017 recompile your bot. TOPIC format has changed slightly
 1. ^jsonreadcvs  to read tab-delimited spreadsheet files
 2. fixed concurrency bug  -- CHANGING to VS2015 since source using C++11 no longer compiles in VS2010 and you cant easily
  get that compiler version any more.

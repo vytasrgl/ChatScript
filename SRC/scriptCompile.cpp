@@ -144,15 +144,12 @@ static char* WriteDisplay(char* pack)
 	*pack++ = ' ';
 	if (displayIndex) // show and merge in the new stuff
 	{
-		Log(STDUSERLOG,"    Locals: ");
 		for (int i = 0; i < displayIndex; ++i)
 		{
-			Log(STDUSERLOG,"%s, ",display[i]);
 			strcpy(pack,display[i]);
 			pack += strlen(pack);
 			*pack++ = ' ';
 		}
-		Log(STDUSERLOG,"\r\n");
 		displayIndex = 0;
 	}
 	*pack++ = ')';
@@ -1325,6 +1322,7 @@ static void WritePatternWord(char* word)
 	
 	// do we want to note this word
 	WORDP D = StoreWord(word);
+	// if word is not resident, maybe its properties are transient so we must save pattern marker
 	if (!(D->properties & NORMAL_WORD)) AddSystemFlag(D,PATTERN_WORD);
 	if (!compiling) return; 
 
@@ -1334,12 +1332,13 @@ static void WritePatternWord(char* word)
 	WORDP lower = FindWord(word,0,LOWERCASE_LOOKUP);
 	WORDP upper = FindWord(word,0,UPPERCASE_LOOKUP);
 	if (!strcmp(tmp,word))  {;} // came in as lower case
-	else if (upper && GetMeaningCount(upper) > 0){;} // clearly known as upper case
+	else if (upper && (GetMeaningCount(upper) > 0 || upper->properties & NORMAL_WORD )){;} // clearly known as upper case
 	else if (lower && lower->properties & NORMAL_WORD && !(lower->properties & (DETERMINER|AUX_VERB))) 
 		WARNSCRIPT((char*)"Keyword %s should not be uppercase - did prior rule fail to close\r\n",word)
 	else if (spellCheck && lower && lower->properties & VERB && !(lower->properties & NOUN)) 
 		WARNSCRIPT((char*)"Uppercase keyword %s is usually a verb.  Did prior rule fail to close\r\n",word)
-	
+	char* pos;
+	if ((pos = strchr(word,'\'')) && (pos[1] != 's' && !pos[1]))  WARNSCRIPT((char*)"Contractions are always expanded - %s won't be recognized\r\n",word)
 	if (D->properties & NORMAL_WORD) return;	// already a known word
 	if (D->internalBits & BEEN_HERE) return;	//   already written to pattern file or doublecheck topic ref file
 	if (patternFile) 
@@ -1898,9 +1897,9 @@ static void SpellCheckScriptWord(char* input,int startSeen,bool checkGrade)
 		//if (!canon) canon = GetAdverbBase(word,false);
 		if (!flags)
 		{
-			WORDP E = FindWord(word,0,SECONDARY_CASE_ALLOWED);
+			WORDP E = FindWord(word,0,SECONDARY_CASE_ALLOWED); // uppercase
 			if (E && E != D && E->word[2]) WARNSCRIPT((char*)"Word %s only known in opposite case\r\n",word)   
-			else WARNSCRIPT((char*)"%s is not a known word. Is it misspelled?\r\n",word)
+			else if (E &&  !(E->internalBits & UPPERCASE_HASH) && !D ) WARNSCRIPT((char*)"%s is not a known word. Is it misspelled?\r\n",word)
 			canonical = E; // the base word
 		}
 	}
@@ -2597,9 +2596,7 @@ static bool ValidIfOperand(char c)
 static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 {
 	char word[MAX_WORD_SIZE];
-	int paren = 0;
-	
-	++paren;
+	int paren = 1;
 	//   test is either a function call OR an equality comparison OR an IN relation OR an existence test
 	//   the followup will be either (or  < > ==  or  IN  or )
 	//   The function call returns a status code, you cant do comparison on it
@@ -2617,16 +2614,21 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 	}
     // actually a test joined on?
     char* at = word;
-    while (*++at && ValidIfOperand(*at)) {;}
+    while (*++at && ValidIfOperand(*at)) {;} // never look at first character
 	if (*at)
 	{
         size_t len = strlen(at);
-        *at = 0;
-		ptr -= len; // back up to rescan
-        at = ptr;
-        while (!ValidIfOperand(*at)) {++at;} // where does operand end?
-        memmove(at + 1, at, strlen(at)+1);
-        *at = ' '; // separate operand
+		if (*at == '-' && *word == '$') {;} // $atat-ata could be subtract or name, but cannot be subtract in if test
+		else if (*at == '^' && *word == '\'') {;} // '^arg is not an operator
+		else
+		{
+			*at = 0;
+			ptr -= len; // back up to rescan
+			at = ptr;
+			while (!ValidIfOperand(*at)) {++at;} // where does operand end?
+			memmove(at + 1, at, strlen(at)+1);
+			*at = ' '; // separate operand
+		}
 	}
 
 	bool notted = false;
@@ -2641,7 +2643,8 @@ static char* ReadIfTest(char* ptr, FILE* in, char* &data)
 	{
 		*data++ = '\'';
 		ptr = ReadNextSystemToken(in,ptr,word,false,false); 
-		if (*word != '_') BADSCRIPT((char*)"IF-3 Can only quote _matchvar in IF test")
+		if (*word != '_' && *word != '^') 
+			BADSCRIPT((char*)"IF-3 Can only quote _matchvar (or functionvar of one) in IF test")
 	}
 	if (*word == '!') BADSCRIPT((char*)"IF-4 Cannot do two ! in a row")
 	ReadNextSystemToken(in,ptr,nextToken,false,true); 
@@ -3478,6 +3481,7 @@ Then one of 3 kinds of character:
 static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 {
 	bool table = !stricmp(kind,(char*)"table:"); // create as a transient notwrittentofile 
+	*currentTopicName = 0;
 	displayIndex = 0;
 	complexity = 1;
 	uint64 typeFlags = 0;
@@ -4776,18 +4780,18 @@ void DoubleCheckReuse()
 	if (!in) return;
 
 	char word[MAX_WORD_SIZE];
-	char topic[MAX_WORD_SIZE];
+	char topicname[MAX_WORD_SIZE];
 	while (ReadALine(readBuffer,in) >= 0)
 	{
 		char *ptr = ReadCompiledWord(readBuffer,word);		// topic + label
-		ptr = ReadCompiledWord(ptr,topic);					// from topic
+		ptr = ReadCompiledWord(ptr,topicname);					// from topic
 		ptr = ReadCompiledWord(ptr,tmpWord);				// from file
 		int line;
 		ReadInt(ptr,line);									// from line
 		WORDP D = FindWord(word);
 		if (!D) // cannot find full label
 		{
-			if (!strcmp(topic,word))  WARNSCRIPT((char*)"Missing local label %s for reuse/unerase in topic %s in File: %s Line: %d\r\n",word,topic,tmpWord,line)
+			if (!strcmp(topicname,word))  WARNSCRIPT((char*)"Missing local label %s for reuse/unerase in topic %s in File: %s Line: %d\r\n",word,topicname,tmpWord,line)
 			else  WARNSCRIPT((char*)"Missing cross-topic label %s for reuse in File: %s Line: %d\r\n",word,tmpWord,line)
 		}
 	}
@@ -5125,9 +5129,17 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	if (!in)
 	{
 		char file[SMALL_WORD_SIZE];
-		sprintf(file,(char*)"RAWDATA/%s",name); // 2nd default is rawdata itself
-		in = FopenReadNormal(file);
-		if (!in)
+        if (*buildfiles)
+        {
+            sprintf(file, (char*)"%s/%s", name,buildfiles); // 2nd default is rawdata itself
+            in = FopenReadNormal(file);
+        }
+        if (!in)
+        {
+            sprintf(file, (char*)"RAWDATA/%s", name); // 2nd default is rawdata itself
+            in = FopenReadNormal(file);
+        }
+        if (!in)
 		{
 			sprintf(file,(char*)"private/%s",name); // 3rd default is private
 			in = FopenReadNormal(file);

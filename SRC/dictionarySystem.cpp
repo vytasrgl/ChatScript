@@ -97,6 +97,7 @@ int concepts[MAX_SENTENCE_LENGTH];  // concept chains per word
 int topics[MAX_SENTENCE_LENGTH];  // topics chains per word
 
 bool fullDictionary = true;				// we have a big master dictionary, not a mini dictionary
+bool primaryLookupSucceeded = false;
 
 #ifndef DISCARDDICTIONARYBUILD
 void LoadRawDictionary(int mini);
@@ -239,11 +240,16 @@ unsigned int* AllocateWhereInSentence(WORDP D)
 		MEANING* d = (MEANING*) Index2Heap(freeTriedList);
 		freeTriedList = *d;
 	}
-	if (!data) data = (unsigned int*) AllocateHeap(NULL, ((sizeof(uint64) + maxRefSentence)+3)/4,4,false); // 64 bits (2 words) + 64 bytes (16 words) = 18 words  BUG?
+	size_t len =  ((sizeof(uint64) + maxRefSentence)+3)/4;
+	if (!data) 
+	{
+		//  64bit tried by meaning field (aligned) + sentencerefs (2 bytes each) + a byte for uppercase
+		data = (unsigned int*) AllocateHeap(NULL,len,4,false); // 64 bits (2 words) + 32 bytes (8 words) = 11 words  
+	}
 	if (!data) return NULL;
+	memset((char*)data,0xff,len*4); // clears sentence xref start/end bits and casing byte
 	*data = 0; // clears the tried meanings list
 	data[1] = 0;
-	memset(data+2,0xff,maxRefSentence); // clears sentence xref start/end bits
 	// store where in the temps data
 	int index = Heap2Index((char*) data);
 	triedData[D] = index;
@@ -420,7 +426,7 @@ void DictionaryRelease(WORDP until,char* stringUsed)
 		D = Index2Word(at[1]);
 		D->systemFlags = *((uint64*) (at+2));
 	}
-	while (dictionaryFree > until) DeleteDictionaryEntry(--dictionaryFree); //   remove entry from buckets
+	if (until) while (dictionaryFree > until) DeleteDictionaryEntry(--dictionaryFree); //   remove entry from buckets
     heapFree = stringUsed; 
 }
 
@@ -431,12 +437,12 @@ char* UseDictionaryFile(char* name)
 	else if (!*language) sprintf(junk,(char*)"%s",(char*)"DICT");
 	else if (!name) sprintf(junk,(char*)"DICT/%s",language);
 	else sprintf(junk,(char*)"DICT/%s",language);
+	MakeDirectory(junk); // if it doesnt exist
 	if (name && *name) 
 	{
 		strcat(junk,(char*)"/");
 		strcat(junk,name);
 	}
-	else MakeDirectory(junk); // if it doesnt exist
 	return junk;
 }
 
@@ -525,8 +531,7 @@ void BuildDictionary(char* label)
 	buildDictionary = true;
 	int miniDict = 0;
 	char word[MAX_WORD_SIZE];
-	char lang[MAX_WORD_SIZE];
-	mini = "ENGLISH";
+	mini = language;
 	char* ptr = ReadCompiledWord(label,word);
 	bool makeBaseList = false;
 	if (!stricmp(word,(char*)"wordnet")) // the FULL wordnet dictionary w/o synset removal
@@ -551,15 +556,12 @@ void BuildDictionary(char* label)
 		maxHashBuckets = 10000;
 		setMaxHashBuckets = true;
 	}
-    else if (!stricmp(word, (char*)"foreign") ) // a foreign dictionary
+    else if (stricmp(language, (char*)"english") ) // a foreign dictionary
     {
         miniDict = 6;
         maxHashBuckets = 10000;
         setMaxHashBuckets = true;
     }
-	strcpy(lang,mini);
-	// insure language subdirectory exists
-	MakeUpperCopy(language,lang); // localized version of dict. otherwise its of the current language
 	UseDictionaryFile(NULL); 
 
 	InitFacts(); 
@@ -807,6 +809,7 @@ WORDP FindWord(const char* word, int len,uint64 caseAllowed)
 	//   normal or fixed case bucket
 	WORDP D;
 	WORDP almost;
+    primaryLookupSucceeded = true;
 	if (caseAllowed & (PRIMARY_CASE_ALLOWED|LOWERCASE_LOOKUP|UPPERCASE_LOOKUP))
 	{
 		almost = NULL;
@@ -832,7 +835,8 @@ WORDP FindWord(const char* word, int len,uint64 caseAllowed)
 	}
 
     //    alternate case bucket (checking opposite case)
-	if (caseAllowed & SECONDARY_CASE_ALLOWED) 
+    primaryLookupSucceeded = false;
+    if (caseAllowed & SECONDARY_CASE_ALLOWED)
 	{
 		almost = NULL;
 		D = dictionaryBase + hash + ((hasUpperCharacters) ? -1 : 1);
@@ -935,7 +939,7 @@ WORDP StoreWord(char* word, uint64 properties)
 	// fill in data on word
     D->word = wordx; 
 	if (hasUTF8Characters) AddInternalFlag(D,UTF8);
-	if (hasUpperCharacters) AddInternalFlag(D,UPPERCASE_HASH);
+	if (hasUpperCharacters) AddInternalFlag(D,UPPERCASE_HASH); // dont label it NOUN or NOUN_UPPERCASE
 	D->hash = fullhash;
 	D->length = (unsigned short) len;
     AddProperty(D,properties);
@@ -2291,7 +2295,7 @@ void NoteLanguage()
 	FClose(out);
 }
 
-void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,bool filegiven)
+void ReadSubstitutes(const char* name,unsigned int build,const char* layer, unsigned int fileFlag,bool filegiven)
 {
 	char file[SMALL_WORD_SIZE];
 	if (layer) sprintf(file,"%s/%s",name,topic);
@@ -2299,7 +2303,7 @@ void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,b
 	else sprintf(file,(char*)"%s/%s/SUBSTITUTES/%s",livedata,language,name);
     char original[MAX_WORD_SIZE];
     char replacement[MAX_WORD_SIZE];
-    FILE* in = FopenStaticReadOnly(file); // LIVEDATA substitutes
+    FILE* in = FopenStaticReadOnly(file); // LIVEDATA substitutes or from script TOPIC world
  	char word[MAX_WORD_SIZE];
 	if (!in && layer) 
 	{
@@ -2311,21 +2315,29 @@ void ReadSubstitutes(const char* name,const char* layer, unsigned int fileFlag,b
     {
         if (*readBuffer == '#' || *readBuffer == 0) continue;
         char* ptr = ReadCompiledWord(readBuffer,original); //   original phrase
+		if (*original == '"')
+		{
+			size_t len = strlen(original);
+			original[len-1] = 0;
+			memmove(original,original+1,len);
+			char* at = original;
+			while ((at = strchr(at,' '))) *at = '_';	// change spaces to blanks
+		}
 		
-        if (*original == 0 || *original == '#') continue;
+        if (original[0] == 0 || original[0] == '#') continue;
 		//   replacement can be multiple words joined by + and treated as a single entry.  
 		ptr = ReadCompiledWord(ptr,replacement);    //   replacement phrase
-		WORDP D = FindWord(original,0,PRIMARY_CASE_ALLOWED);	//   do we know original already?
+		WORDP D = FindWord(original,0, LOWERCASE_LOOKUP);	//   do we know original already?
 		if (D && D->internalBits & HAS_SUBSTITUTE)
 		{
-			if (!compiling) Log(STDTRACELOG,(char*)"Currently have a substitute for %s in %s\r\n",original,readBuffer);
+			if (!compiling) Log(STDTRACELOG,(char*)"Currently have a substitute for %s in %s of file %s\r\n",original,readBuffer,name);
 			continue;
 		}
 		D = StoreWord(original,AS_IS); //   original word
-		AddInternalFlag(D,fileFlag|HAS_SUBSTITUTE);
+		AddInternalFlag(D,fileFlag|HAS_SUBSTITUTE|build);
 		D->w.glosses = NULL;
 		if (!(D->systemFlags & CONDITIONAL_IDIOM)) D->w.substitutes = NULL;
-		else printf((char*)"BAD Substitute conflicts with conditional idiom %s\r\n",D->word);
+		else printf((char*)"BAD Substitute conflicts with conditional idiom %s\r\n",original);
 		if (GetPlural(D))  SetPlural(D,0);
 		if (GetComparison(D))  SetComparison(D,0);
 		if (GetTense(D)) SetTense(D,0);
@@ -2514,20 +2526,20 @@ void ReadLiveData()
 	// system livedata
 	char word[MAX_WORD_SIZE];
 	sprintf(word,(char*)"%s/systemessentials.txt",systemFolder);
-	ReadSubstitutes(word,NULL,DO_ESSENTIALS,true);
+	ReadSubstitutes(word,0,NULL,DO_ESSENTIALS,true);
 	sprintf(word,(char*)"%s/queries.txt",systemFolder);
 	ReadQueryLabels(word);
 	if (!noboot)
 	{
-		sprintf(word,(char*)"%s/%s/canonical.txt",systemFolder,language);
+		sprintf(word,(char*)"%s/%s/canonical.txt",livedata,language);
 		ReadCanonicals(word,NULL);
-		ReadSubstitutes((char*)"substitutes.txt",NULL,DO_SUBSTITUTES);
-		ReadSubstitutes((char*)"contractions.txt",NULL,DO_CONTRACTIONS);
-		ReadSubstitutes((char*)"interjections.txt",NULL,DO_INTERJECTIONS);
-		ReadSubstitutes((char*)"british.txt",NULL,DO_BRITISH);
-		ReadSubstitutes((char*)"spellfix.txt",NULL,DO_SPELLING);
-		ReadSubstitutes((char*)"texting.txt",NULL,DO_TEXTING);
-		ReadSubstitutes((char*)"noise.txt",NULL,DO_NOISE);
+		ReadSubstitutes((char*)"substitutes.txt",0,NULL,DO_SUBSTITUTES);
+		ReadSubstitutes((char*)"contractions.txt",0,NULL,DO_CONTRACTIONS);
+		ReadSubstitutes((char*)"interjections.txt",0,NULL,DO_INTERJECTIONS);
+		ReadSubstitutes((char*)"british.txt",0,NULL,0,DO_BRITISH);
+		ReadSubstitutes((char*)"spellfix.txt",0,NULL,0,DO_SPELLING);
+		ReadSubstitutes((char*)"texting.txt",0,NULL,0,DO_TEXTING);
+		ReadSubstitutes((char*)"noise.txt",0,NULL,DO_NOISE);
 		ReadWordsOf((char*)"lowercaseTitles.txt",LOWERCASE_TITLE);
 	}
 }
@@ -2559,6 +2571,7 @@ static bool ReadAsciiDictionary()
 
 void VerifyEntries(WORDP D,uint64 junk) // prove meanings have synset heads and major kinds have subkinds
 {
+	if (stricmp(language,"english")) return;	// dont validate
 	if (D->internalBits & (DELETED_MARK|WORDNET_ID) || D->internalBits & DEFINES) return;
 
 	if (D->properties & VERB && !(D->properties & VERB_BITS)) ReportBug((char*)"Verb %s lacks tenses\r\n",D->word);
@@ -2941,7 +2954,8 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	WORDP D = Meaning2Word(M);
 	if (D && IS_NEW_WORD(D) && (*D->word == '~' || *D->word == USERVAR_PREFIX   || *D->word == '^')) D = 0;	// debugging may have forced this to store, its not in base system
 	if (limit == 0) limit = 5; // default
-	if (D) 	Log(STDTRACELOG,(char*)"\r\n%s (%d):\r\n  Properties: ",name,Word2Index(D));
+	char* old = (D <= dictionaryPreBuild[0]) ? (char*) "old" : (char*) "";
+	if (D) 	Log(STDTRACELOG,(char*)"\r\n%s (%d): %s\r\n  Properties: ",name,Word2Index(D),old);
 	else Log(STDTRACELOG,(char*)"\r\n%s (unknown word):\r\n  Properties: ",name);
 	uint64 properties = (D) ? D->properties : 0;
 	uint64 sysflags = (D) ? D->systemFlags : 0;
@@ -3057,6 +3071,15 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		if (GetSubstitute(D)) Log(STDTRACELOG,(char*)"%s ",GetSubstitute(D)->word); 
 		else Log(STDTRACELOG,(char*)"  ");
 	}
+    if (D->internalBits & DO_ESSENTIALS)  Log(STDTRACELOG, (char*)"essentials ");
+    if (D->internalBits & DO_SUBSTITUTES)  Log(STDTRACELOG, (char*)"substitutes ");
+    if (D->internalBits & DO_CONTRACTIONS)  Log(STDTRACELOG, (char*)"contractions ");
+    if (D->internalBits & DO_INTERJECTIONS)  Log(STDTRACELOG, (char*)"interjections ");
+    if (D->internalBits & DO_BRITISH)  Log(STDTRACELOG, (char*)"british ");
+    if (D->internalBits & DO_SPELLING)  Log(STDTRACELOG, (char*)"spelling ");
+    if (D->internalBits & DO_TEXTING)  Log(STDTRACELOG, (char*)"texting ");
+    if (D->internalBits & DO_NOISE)  Log(STDTRACELOG, (char*)"noise ");
+    if (D->internalBits & DO_PRIVATE)  Log(STDTRACELOG, (char*)"private ");
 	if (D->internalBits & FUNCTION_NAME) 
 	{
 		char* kind = "";
@@ -3074,6 +3097,8 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		else Log(STDTRACELOG,(char*)"user %s macro (%d arguments)\r\n  %s \r\n",kind,MACRO_ARGUMENT_COUNT(D->w.fndefinition),D->w.fndefinition+1); // 1st byte is argument count
 		if (D->internalBits & VARIABLE_ARGS_TABLE) Log(STDTRACELOG,(char*)"variableArgs");
 	}
+
+
 	Log(STDTRACELOG,(char*)"\r\n  Other:   ");
 	if (*D->word == SYSVAR_PREFIX) Log(STDTRACELOG,(char*)"systemvar ");
 	if (*D->word == USERVAR_PREFIX)

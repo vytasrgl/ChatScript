@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,7 +13,7 @@
 <p>Copyright Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/28/2017 cs7.12</p>
+<p>Revision 2/09/2017 cs7.2</p>
 </blockquote>
 <h1 id="command-line-parameters">Command Line Parameters</h1>
 <p>You can give parameters on the run command or in a config file. The default config file is <code>cs_init.txt</code> at the top level of CS (if the file exists). Or you can name where the file is on a command line parameter <code>config=xxx</code>. Config file data are command line parameters, 1 per line, like below:</p>
@@ -132,18 +132,22 @@ port=20</code></pre>
 <td>name relative or absolute path to your own private TOPIC folder. Do not add trailing / on this path <code>/</code></td>
 </tr>
 <tr class="odd">
+<td><code>buildfiles=xxx</code></td>
+<td>name relative or absolute path to your own folder where filesxxx.txt is found. Do not add trailing / on this path <code>/</code></td>
+</tr>
+<tr class="even">
 <td><code>users=xxx</code></td>
 <td>name relative or absolute path to where you want the USERS folder to be. Do not add trailing <code>/</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>logs=xxx</code></td>
 <td>name relative or absolute path to where you want the LOGS folder to be. Do not add trailing <code>/</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>userlog</code></td>
 <td>Store a user-bot log in USERS directory (default)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>nouserlog</code></td>
 <td>Don't store a user-bot log</td>
 </tr>

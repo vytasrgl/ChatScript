@@ -377,6 +377,14 @@ static char* Sip(char* value)
     return systemValue;
 }
 
+static char* Slanguage(char* value)
+{
+	static char hold[50] = ".";
+	if (value) return AssignValue(hold,value);
+	if (*hold != '.') return hold;
+	strcpy(systemValue,language);
+    return systemValue;
+}
 static char* Sos(char* value)
 {
 	static char hold[50] = ".";
@@ -1002,6 +1010,7 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%impliedyou",Simpliedyou,(char*)"Boolean - is the current input have you as an implied subject"},
 	{ (char*)"%input",Sinput,(char*)"Numeric volley id of the current input"}, 
 	{ (char*)"%ip",Sip,(char*)"String - ip address supplied"}, 
+	{ (char*)"%language",Slanguage,(char*)"what language is enabled"},
 	{ (char*)"%length",Slength,(char*)"Numeric count of words of current input"}, 
 	{ (char*)"%login",Suser,(char*)"String - user login name supplied - same as %user"}, 
 	{ (char*)"%more",Smore,(char*)"Boolean - is there more input pending"}, 

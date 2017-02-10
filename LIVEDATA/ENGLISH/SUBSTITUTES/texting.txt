@@ -5,6 +5,7 @@
  :]  ~emohappy
  :{ ~emosad
  :}   ~emohappy
+ nvm nevermind
  <ack ~yes
  <cos? why?
  <cu ~emogoodbye
@@ -74,10 +75,8 @@
  luv love
  me_2 me+too
  plz please
- r are
  tmr tomorrow
  tnx thanks
- u you
  ur your
  urs yours
  urself yourself

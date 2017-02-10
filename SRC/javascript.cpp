@@ -176,7 +176,7 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 
 		if (duk_pcall(ctx, args) != 0) // call failed
 		{
-			printf("Javascript Error: %s\n", duk_safe_to_string(ctx, -1));
+			printf("Javascript Error: %s\r\n", duk_safe_to_string(ctx, -1));
 			duk_pop(ctx);
 			*terminator = '`';
 			return FAILRULE_BIT;

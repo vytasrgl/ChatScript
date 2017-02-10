@@ -479,7 +479,7 @@ static void MemorizeRegress(char* input)
 		sprintf(file,(char*)"%s/log-%s.txt",users,word); // presume only login given, go find full file
 		in = FopenReadNormal(file); // source
 	}
-	if (!in) Log(STDTRACELOG,(char*)"Couldn't find %s\n",file);
+	if (!in) Log(STDTRACELOG,(char*)"Couldn't find %s\r\n",file);
 	else  
 	{
 		FILE* out = NULL;
@@ -1793,7 +1793,7 @@ static void VerifyAccess(char* topic,char kind,char* prepassTopic) // prove patt
 					{
 						char tmp[MAX_WORD_SIZE];
 						strcpy(tmp,ShowRule(rule));
-						Log(STDTRACETABLOG,(char*)"Bad sample rule %d %s  For: %s \r\n   want- %d.%d %s\n   got - %s => %s",++err,topic,test,
+						Log(STDTRACETABLOG,(char*)"Bad sample rule %d %s  For: %s \r\n   want- %d.%d %s\r\n   got - %s => %s",++err,topic,test,
 							TOPLEVELID(verifyRuleID),REJOINDERID(verifyRuleID),tmp,
 							responseData[0].id+1,ShowRule(gotrule));
 						if (*gotrule2) Log(STDTRACELOG,(char*)"\n   via %s.%d.%d: %s" ,GetTopicName(replytopic2),TOPLEVELID(gotid2),REJOINDERID(gotid2),gotrule2);
@@ -2942,10 +2942,12 @@ static void C_TimePos(char* file) // how many wps for pos tagging
 
 static void C_VerifySpell(char* file) // test spell checker against a file of entries  wrong-spell rightspell like livedata/spellfix.txt
 { 
+    if (!*file) file = "LIVEDATA/ENGLISH/SUBSTITUTES/spellfix.txt";
 	FILE* in = fopen(file,(char*)"rb");
 	if (!in) return;
 	unsigned int right = 0;
 	unsigned int wrong = 0;
+    unsigned int unfix = 0;
 	while (ReadALine(readBuffer,in) >= 0)
 	{
 		// pull out the wrong and right words
@@ -2957,25 +2959,33 @@ static void C_VerifySpell(char* file) // test spell checker against a file of en
 		if (strchr(wrongWord,'>') || strchr(wrongWord,'.') || strchr(wrongWord,',')) continue;  // unusual stuff
 		ReadCompiledWord(ptr,rightWord);
 		if (!*rightWord || strchr(rightWord,'+') || *rightWord == '~'  || *rightWord == '%') continue;  // unusual stuff
-		
+        int diff = strlen(wrongWord) - strlen(rightWord);
+        diff *= diff;
+        if (diff > 1) continue;
+
 		WORDP D = FindWord(wrongWord);
 		if (D && D->properties & (PART_OF_SPEECH|FOREIGN_WORD)) // already has a meaning
 		{
 			Log(STDTRACELOG,(char*)"%s already in dictionary\r\n",wrongWord);
 			continue;
 		}
-
+  
 		char* fix = SpellFix(wrongWord,1,PART_OF_SPEECH); 
 		if (fix && !strcmp(fix,rightWord)) ++right;
-		else
+        else if (!fix)
+        {
+//          Log(STDTRACELOG, (char*)"%s wanted %s but went unfixed\r\n", wrongWord, rightWord);
+            ++unfix;
+        }
+        else
 		{
-			Log(STDTRACELOG,(char*)"%s wanted %s but got %s\r\n",wrongWord,rightWord,fix);
+			Log(STDTRACELOG,(char*)"Bad fix:\r\n    %s wrong\r\n    %s right\r\n    %s fix %s\r\n",wrongWord,rightWord,fix, multichoice ? "ambigchoice" : "");
 			++wrong;
 		}
 	}
 
 	FClose(in);
-	Log(STDTRACELOG,(char*)"Right:%d  Wrong:%d\r\n",right,wrong);
+	Log(STDTRACELOG,(char*)"Right:%d  Wrong:%d Unfix:%d\r\n",right,wrong,unfix);
 }
 
 static void VerifySubstitutes1(WORDP D, uint64 unused)
@@ -5555,6 +5565,45 @@ static void C_Up(char* input)
 	DumpUpHierarchy(M,0);
 }
 
+static void C_MixedCase(char* input)
+{
+	int n = 0;
+	for (WORDP D = dictionaryBase+1; D < dictionaryFree; ++D) 
+	{
+		if (!D->word) continue;
+		if (D->internalBits & HAS_SUBSTITUTE) continue; // not real
+		char* apos = strchr(D->word,'\'');
+		if (apos && !(strchr(D->word,'_') || strchr(D->word,' ')) && D > dictionaryPreBuild[0] ) 
+		{
+			Log(ECHOSTDTRACELOG," has apostrophe %s\r\n",D->word);
+		}
+		if (D->word && D->internalBits & UPPERCASE_HASH)
+		{
+			WORDP E = FindWord(D->word,SECONDARY_CASE_ALLOWED);
+			if (E && (E > dictionaryPreBuild[0] || D > dictionaryPreBuild[0] ))
+			{
+				if (E->internalBits & HAS_SUBSTITUTE) continue; // not real
+				Log(ECHOSTDTRACELOG,"%s",D->word);
+				char* loc;
+				if (D <= dictionaryPreBuild[0]) loc = "w";
+				else if (D->internalBits & BUILD0) loc = "0";
+				else if (D->internalBits & BUILD1) loc = "1";
+				else loc = "?";
+				Log(ECHOSTDTRACELOG," (%s)",loc);
+				Log(ECHOSTDTRACELOG,"    %s",E->word);
+				if (E <= dictionaryPreBuild[0]) loc = "w";
+				else if (E->internalBits & BUILD0) loc = "0";
+				else if (E->internalBits & BUILD1) loc = "1";
+				else loc = "?";
+				Log(ECHOSTDTRACELOG," (%s)",loc);
+				Log(ECHOSTDTRACELOG,"\r\n");
+				++n;
+			}
+		}
+	}
+	Log(ECHOSTDTRACELOG,"There are %d entries\r\n",n);
+}
+
 static void C_Word(char* input)
 {
 	char word[MAX_WORD_SIZE];
@@ -7145,7 +7194,7 @@ static void C_Show(char* input)
 	{
 		if (*value) oob = set;
 		else oob = !oob;
-		Log(STDTRACELOG,(char*)" oob set to %d\n",oob);
+		Log(STDTRACELOG,(char*)" oob set to %d\r\n",oob);
 	}
 	else if (!stricmp(word,(char*)"newline"))
 	{
@@ -7466,7 +7515,7 @@ static void NoTraceTime(char* input, unsigned int topicflag, unsigned int macrof
 			if (mode == 1) TimeFunction(D,flag, 1);
 			else TimeFunction(D,flag, 0);
 
-			if (!fromScript) Log(STDTRACELOG, (char*)" %s %s %s\n", cmd, word, (mode == 1) ? (char*)"on" : (char*)"off");
+			if (!fromScript) Log(STDTRACELOG, (char*)" %s %s %s\r\n", cmd, word, (mode == 1) ? (char*)"on" : (char*)"off");
 		}
 	}
 }
@@ -7638,7 +7687,7 @@ static void C_Trace(char* input)
 			PrepareVariableChange(D,"",false);
 			if (!fromScript)
 			{
-				Log(ECHOSTDTRACELOG,(char*)" tracing %s %s\n",word, (D->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
+				Log(ECHOSTDTRACELOG,(char*)" tracing %s %s\r\n",word, (D->internalBits & MACRO_TRACE) ? (char*)"on" : (char*)"off");
 			}
 		}
 		else if (*word == '~') // tracing a topic or rule by label
@@ -7697,7 +7746,7 @@ static void C_Trace(char* input)
 			trace |= TRACE_ON | TRACE_ECHO;
 			if (noecho) trace ^= TRACE_ECHO;	// requested to be off
 		}
-		Log(ECHOSTDTRACELOG,(char*)" trace = %d (0x%x)\n",trace,trace);
+		Log(ECHOSTDTRACELOG,(char*)" trace = %d (0x%x)\r\n",trace,trace);
 	}	
 	wasCommand = TRACECMD; // save results to user file
 }
@@ -7799,7 +7848,7 @@ static void C_Time(char* input)
 				TimeFunction(FN,MACRO_TIME, -1);
 				if (!fromScript)
 				{
-					Log(ECHOSTDTRACELOG, (char*)" timing %s %s\n", word, (FN->internalBits & MACRO_TIME) ? (char*)"on" : (char*)"off");
+					Log(ECHOSTDTRACELOG, (char*)" timing %s %s\r\n", word, (FN->internalBits & MACRO_TIME) ? (char*)"on" : (char*)"off");
 				}
 			}
 			else Log(ECHOSTDTRACELOG, (char*)"No such function %s\r\n", word);
@@ -8043,9 +8092,9 @@ static void C_TranslateConcept(char* input) // give the language & filename to w
 	ReadCompiledWord(input,filex);
 	if (*filex) sprintf(name,"%s",filex); 
 	else sprintf(name,"%s_concepts.top",language); 
-	FILE* out = fopen(name, "wb");
+	FILE* out = FopenUTF8Write(name);
 	sprintf(name,"rawdict/%s_extravocabulary.txt",language);
-	FILE* vocab = fopen(name,"ab");
+	FILE* vocab = FopenUTF8WriteAppend(name);
 	char conceptname[MAX_WORD_SIZE];
 	while (ReadALine(readBuffer,in) >= 0)
 	{
@@ -9574,6 +9623,7 @@ CommandInfo commandSet[] = // NEW
 	{ (char*)":overlap",C_Overlap,(char*)"Direct members of set x that are also in set y somehow"}, 
 	{ (char*)":up",C_Up,(char*)"Display concept structure above a word"}, 
 	{ (char*)":word",C_Word,(char*)"Display information about given word"}, 
+	{ (char*)":mixedcase",C_MixedCase,(char*)"List words occurring in both cases, not part of WordNet"}, 
 
 	{ (char*)"\r\n---- System Control commands",0,(char*)""}, 
 	{ (char*)":build",C_Build,(char*)"Compile a script - filename {nospell,outputspell,reset}"}, 

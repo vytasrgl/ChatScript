@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
-> Revision 1/28/2017 cs7.12
+> Revision 2/9/2017 cs7.2
 
 # Real World JSON
 
@@ -410,10 +410,15 @@ supplying `level`. Level 0 is all. Level 1 is the top level of data. Etc.
 
 assigns a text sequence to add to jo- and ja- items created thereafter. See System functions manual.
 
-### `^jsonreadcvs`( TAB filepath )
+### `^jsonreadcsv`( TAB filepath {'^fn})
 
 reads a tsv (tab delimited spreadsheet file) and returns a JSON array representing it. The lines are all objects in an array.
 The line is an object where non-empty fields are given as field indexes. The first field is 0. Empty fields are skipped over and their number omitted.
+
+If an optional 3rd parameter of a function name is given, the code does not create a JSON structure to return. 
+Instead it calls the function with each field of a line being an argument. This is sort of analogous to `:document` mode
+in that you can potentially read large amounts of data in a single volley and may need to use `^memorymark` and
+`^memoryfree` to manage the issue.
 
 ### `^jsonundecodestring`( string ) 
 

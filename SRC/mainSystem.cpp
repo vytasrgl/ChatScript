@@ -1,6 +1,6 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.12";
+char* version = "7.2";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
@@ -40,6 +40,7 @@ bool nosuchbotrestart = false; // restart if no such bot
 char users[100];
 char logs[100];
 char topic[100];
+char buildfiles[100];
 char* derivationSentence[MAX_SENTENCE_LENGTH];
 int derivationLength;
 char authorizations[200];	// for allowing debug commands
@@ -173,6 +174,23 @@ void InitStandalone()
 #endif
 }
 
+static void SetBotVarible(char* word)
+{
+    char* eq = strchr(word, '=');
+    if (eq)
+    {
+
+        *eq = 0;
+        ReturnToAfterLayer(1, true);
+        *word = USERVAR_PREFIX;
+        SetUserVariable(word, eq + 1);
+        if (server) Log(SERVERLOG, (char*)"botvariable: %s = %s\r\n", word, eq + 1);
+        else printf((char*)"botvariable: %s = %s\r\n", word, eq + 1);
+        NoteBotVariables();
+        LockLayer(1, false);
+    }
+}
+
 void CreateSystem()
 {
 	overrideAuthorization = false;	// always start safe
@@ -243,6 +261,17 @@ void CreateSystem()
 	*botPrefix = *userPrefix = 0;
 
 	char word[MAX_WORD_SIZE];
+    char buffer[MAX_WORD_SIZE];
+    FILE* in = FopenReadOnly(configFile);
+    if (in)
+    {
+        while (ReadALine(buffer, in, MAX_WORD_SIZE) >= 0)
+        {
+            ReadCompiledWord(buffer, word);
+            if (*word == 'V') SetBotVarible(word);
+        }
+        fclose(in);
+    }
 	for (int i = 1; i < argc; ++i)
 	{
 		strcpy(word,argv[i]);
@@ -252,22 +281,7 @@ void CreateSystem()
 			size_t len = strlen(word);
 			if (word[len-1] == '"') word[len-1] = 0;
 		}
-		if (*word == 'V') // predefined bot variable
-		{
-			char* eq = strchr(word,'=');
-			if (eq) 
-			{
-
-				*eq = 0;
-				ReturnToAfterLayer(1,true);
-				*word = USERVAR_PREFIX;
-				SetUserVariable(word,eq+1);
-				if (server) Log(SERVERLOG,(char*)"botvariable: %s = %s\r\n",word,eq+1);
-				else printf((char*)"botvariable: %s = %s\r\n",word,eq+1);
-  				NoteBotVariables();
-				LockLayer(1,false);
-			}
-		}
+        if (*word == 'V') SetBotVarible(word); // predefined bot variable
 	}
 #ifndef DISCARDTESTING
 	if (debugEntry) Debugger("");
@@ -523,7 +537,8 @@ static void ProcessArgument(char* arg)
 	else if (!strnicmp(arg,(char*)"users=",6 )) strcpy(users,arg+6);
 	else if (!strnicmp(arg,(char*)"logs=",5 )) strcpy(logs,arg+5);
 	else if (!strnicmp(arg,(char*)"topic=",6 )) strcpy(topic,arg+6);
-	else if (!strnicmp(arg,(char*)"private=",8)) privateParams = arg+8;
+    else if (!strnicmp(arg, (char*)"buildfiles=", 11)) strcpy(buildfiles, arg + 11);
+    else if (!strnicmp(arg,(char*)"private=",8)) privateParams = arg+8;
 	else if (!stricmp(arg,(char*)"treetagger")) strcpy(treetaggerParams,"1");
 	else if (!strnicmp(arg,(char*)"encrypt=",8)) strcpy(encryptParams,arg+8);
 	else if (!strnicmp(arg,(char*)"decrypt=",8)) strcpy(decryptParams,arg+8);
@@ -617,6 +632,7 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	strcpy(hostname,(char*)"local");
 	MakeDirectory((char*)"TMP");
 	*sourceInput = 0;
+    *buildfiles = 0;
 	*apikey = 0;
 	*bootcmd = 0;
 #ifndef DISCARDMONGO
@@ -1404,20 +1420,23 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	size_t len = strlen(incoming);
 	if (len >= INPUT_BUFFER_SIZE) incoming[INPUT_BUFFER_SIZE-1] = 0; // chop to legal safe limit
 	// now validate that token size MAX_WORD_SIZE is not invalidated and block all control chars to spaces
-	char* at = mainInputBuffer;
-	bool quote = false;
-	char* start = mainInputBuffer;
+    char* at = mainInputBuffer;
+#ifndef DISCARDJSON
+	if (tokenControl & JSON_DIRECT_FROM_OOB) at = SkipOOB(mainInputBuffer);
+#endif
+	char* startx = at;
+    bool quote = false;
 	while (*++at)
 	{
 		if (*at < 31) *at = ' ';
 		if (*at == '"' && *(at-1) != '\\') quote = !quote;
 		if (*at == ' ' && !quote) // proper token separator
 		{
-			if ((at-start) > (MAX_WORD_SIZE-1)) break; // trouble
-			start = at + 1;
+			if ((at-startx) > (MAX_WORD_SIZE-1)) break; // trouble
+			startx = at + 1;
 		}
 	}
-	if ((at-start) > (MAX_WORD_SIZE-1)) start[MAX_WORD_SIZE-5] = 0; // trouble - cut him off at the knees
+	if ((at-startx) > (MAX_WORD_SIZE-1)) startx[MAX_WORD_SIZE-5] = 0; // trouble - cut him off at the knees
 
 	char* first = SkipWhitespace(incoming);
 #ifndef DISCARDTESTING
@@ -2384,23 +2403,40 @@ void PrepareSentence(char* input,bool mark,bool user, bool analyze,bool oobstart
 	// spell check unless 1st word is already a known interjection. Will become standalone sentence
 	if (tokenControl & DO_SPELLCHECK && wordCount && *wordStarts[1] != '~'  && !oobExists)  
 	{
-		if (SpellCheckSentence())
-		{
-			tokenFlags |= DO_SPELLCHECK;
-			if (tokenControl & (DO_SUBSTITUTE_SYSTEM|DO_PRIVATE))  ProcessSubstitutes();
-		}
+		if (SpellCheckSentence()) tokenFlags |= DO_SPELLCHECK;
 		if (mytrace & TRACE_PREPARE || prepareMode == PREPARE_MODE)
 		{
  			int changed = 0;
 			if (wordCount != originalCount) changed = true;
-			for (i = 1; i <= wordCount; ++i) if (original[i] != wordStarts[i]) changed = i;
+            for (i = 1; i <= wordCount; ++i)
+            {
+                if (original[i] != wordStarts[i])
+                {
+                    original[i] = wordStarts[i];
+                    changed = i;
+                }
+            }
 			if (changed)
 			{
 				Log(STDTRACELOG,(char*)"Spelling changed into: ");
 				for (i = 1; i <= wordCount; ++i) Log(STDTRACELOG,(char*)"%s  ",wordStarts[i]);
 				Log(STDTRACELOG,(char*)"\r\n");
 			}
+            originalCount = wordCount;
 		}
+        if (tokenControl & (DO_SUBSTITUTE_SYSTEM | DO_PRIVATE))  ProcessSubstitutes();
+        if (mytrace & TRACE_PREPARE || prepareMode == PREPARE_MODE)
+        {
+            int changed = 0;
+            if (wordCount != originalCount) changed = true;
+            for (i = 1; i <= wordCount; ++i) if (original[i] != wordStarts[i]) changed = i;
+            if (changed)
+            {
+                Log(STDTRACELOG, (char*)"Substitution changed into: ");
+                for (i = 1; i <= wordCount; ++i) Log(STDTRACELOG, (char*)"%s  ", wordStarts[i]);
+                Log(STDTRACELOG, (char*)"\r\n");
+            }
+        }
 	}
 	if (tokenControl & DO_PROPERNAME_MERGE && wordCount  && !oobExists)  ProperNameMerge();   
 	if (tokenControl & DO_DATE_MERGE && wordCount  && !oobExists)  ProcessCompositeDate();   

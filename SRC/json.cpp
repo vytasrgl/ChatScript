@@ -1003,7 +1003,8 @@ static char* jwritehierarchy(int depth, char* buffer, WORDP D, int subject, int 
 		// continuing composite
 		buffer = jwritehierarchy(depth+2,buffer, Meaning2Word(F->object),F->flags, nest);
 		if (i < (indexsize-1)) strcpy(buffer++,(char*)",");
-		strcpy(buffer++,(char*)"\r\n");
+		strcpy(buffer,(char*)"\r\n");
+		buffer += 2;
 	}
 	buffer = jtab(depth-2,buffer);
 	if (D->word[1] == 'a') strcpy(buffer,(char*)"]");
@@ -1775,15 +1776,23 @@ FunctionResult JSONVariableAssign(char* word,char* value)
 
 	char* val = GetUserVariable(word); // gets the initial variable
 	if (*separator == '.' && strnicmp(val,"jo-",3)) 
+    { 
+        if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "AssignFail Object: %s->%s\r\n", word, val);
 		return FAILRULE_BIT;	// not a json object
-	else if (*separator == '[' && strnicmp(val,"ja-",3)) 
-		return FAILRULE_BIT;	// not a json array
-	
-	strcpy(variable,val);
+    }
+    else if (*separator == '[' && strnicmp(val, "ja-", 3))
+    {
+        if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "AssignFail Array: %s->%s\r\n", word, val);
+        return FAILRULE_BIT;	// not a json array
+    }
+    strcpy(variable, val);
 	WORDP objectname = FindWord(val);
-	if (!objectname) 
-		return FAILRULE_BIT;	// doesnt exist?
-	WORDP base = FindWord(word);
+    if (!objectname)
+    {
+        if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "AssignFail key: %s\r\n", word);
+        return FAILRULE_BIT;	// doesnt exist?
+    }
+    WORDP base = FindWord(word);
 	
 #ifndef DISCARDTESTING
 	CheckAssignment(word,value);  // all changes to the base json
@@ -1814,7 +1823,7 @@ LOOP: // now we look at $x.key or $x[0]
 		strcpy(keyx,answer);
 		if (*keyx == '$') 
 		{
-			if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s.%s\r\n",variable,keyx);
+			if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVarStillVar: %s.%s\r\n",variable,keyx);
 			return FAILRULE_BIT;	// cannot be indirection
 		}
 	}
@@ -1823,7 +1832,7 @@ LOOP: // now we look at $x.key or $x[0]
 	else keyname =  StoreWord(keyx,AS_IS); // its a terminal key, create it (not needed for arrays because we dont allow blind assignment)
 	if (!keyname) 
 	{
-		if (trace &  TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s\r\n",variable);
+		if (trace &  TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar NoKey: %s\r\n",variable);
 		return FAILRULE_BIT;	// unable to find key or index
 	}
 	if (*separator == '.') strcat(variable,".");
@@ -1841,7 +1850,11 @@ LOOP: // now we look at $x.key or $x[0]
 			if (F->verb == MakeMeaning(keyname)) break;
 			F = GetSubjectNondeadNext(F);
 		}
-		if (!F) return FAILRULE_BIT;
+        if (!F)
+        {
+            if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "JsonAssignFail: %s.%s\r\n", objectname, keyname);
+            return FAILRULE_BIT;
+        }
 		objectname = Meaning2Word(F->object);
 		separator = separator1;
 		if (*separator == ']') ++separator;
@@ -1874,7 +1887,6 @@ LOOP: // now we look at $x.key or $x[0]
 				TraceFact(F,true);
 			}
 			KillFact(F,jsonkill);
-
 			break;
 		}
 		F = GetSubjectNondeadNext(F);
@@ -2128,54 +2140,94 @@ FunctionResult JSONReadCSVCode(char* buffer)
 	bool tabdelimit = (!stricmp(ARGUMENT(index),"tab"));
 	if (!tabdelimit) return FAILRULE_BIT;
 	++index;
-	char* name = ARGUMENT(index);
+	char* name = ARGUMENT(index++);
 	FILE* in = FopenReadOnly(name);
 	if (!in) return FAILRULE_BIT;
 
+	char* fnname = ARGUMENT(index);
+	if (fnname && *fnname == '\'') ++fnname;
+	if (fnname && *fnname != '^') return FAILRULE_BIT; // optional function
+
 	unsigned int arrayflags = JSON_ARRAY_FACT | jsonPermanent | jsonCreateFlags | JSON_OBJECT_VALUE;
 	unsigned int flags = JSON_OBJECT_FACT | jsonPermanent | jsonCreateFlags;
-
-	MEANING arrayName = GetUniqueJsonComposite((char*)"ja-") ;
-	WORDP D = Meaning2Word(arrayName);
-	sprintf(buffer, "%s", D->word);
-	MakeEmptyUnit(D); 
+	char* initialData = AllocateStack(NULL,1); // placeholder label
+	MEANING arrayName = NULL;
 	int arrayIndex = 0;
+	if (!fnname) // if building json structure
+	{
+		arrayName = GetUniqueJsonComposite((char*)"ja-") ;
+		WORDP D = Meaning2Word(arrayName);
+		sprintf(buffer, "%s", D->word);
+		MakeEmptyUnit(D); 
+	}
+    FunctionResult result = NOPROBLEM_BIT;
 	while (ReadALine(readBuffer,in,maxBufferSize,false,false) >= 0) // create json facts from csv
 	{
-		MEANING object = GetUniqueJsonComposite((char*)"jo-");
-		WORDP E = Meaning2Word(object);
-		MakeEmptyUnit(E); 
-
-		CreateFact(arrayName,MakeMeaning(StoreWord(arrayIndex++)),object,arrayflags); // WATCH OUT FOR EMPTY SET!!!
-
+		MEANING object = NULL;
+		if (!fnname) // not passing to a routine, building json structure
+		{
+			object = GetUniqueJsonComposite((char*)"jo-");
+			WORDP E = Meaning2Word(object);
+			MakeEmptyUnit(E); 
+			CreateFact(arrayName,MakeMeaning(StoreWord(arrayIndex++)),object,arrayflags); // WATCH OUT FOR EMPTY SET!!!
+		}
 		int field = 0;
+        char call[400];
+        sprintf(call, "( ");
 		char* ptr = readBuffer;
 		strcpy(ptr+strlen(ptr),"\t"); // trailing tab forces recog of all fields
 		char* tab;
 		while ((tab = strchr(ptr,'\t'))) // for each field ending in a tab
 		{
-			char index[400];
-			sprintf(index,"%d",field++);
-			MEANING key = MakeMeaning(StoreWord(index));
 			int len = tab - ptr;	
 			char* limit;
 			char* data = InfiniteStack(limit,"JSONReadCSVFileCode");
+			if (fnname)
+			{
+				*data = ENDUNIT;
+				data[1] = ENDUNIT;
+				data += 2;
+			}
 			strncpy(data,ptr,len);
 			data[len] = 0;
 			CompleteBindStack();
 			
-			ptr = tab + 1;
-			if (*data)
+			if (!fnname) // not passing to a routine, building json structure
 			{
-				MEANING valx = jsonValue(data,flags);
-				CreateFact(object,key,valx,flags);
+				char index[400];
+				sprintf(index,"%d",field++);
+				MEANING key = MakeMeaning(StoreWord(index));
+				if (*data)
+				{
+					MEANING valx = jsonValue(data,flags);
+					CreateFact(object,key,valx,flags);
+				}
+				ReleaseStack(data);
 			}
-			ReleaseStack(data);
+            else
+            {
+                char var[100];
+                sprintf(var, "$__%d", field++); // internal variable cannot be entered in script
+                WORDP V = StoreWord(var);
+                V->w.userValue = data; // has the 2 hidden markers of preevaled
+                strcat(call, var);
+                strcat(call, " ");
+            }
+			
+			ptr = tab + 1;
 		}
+        if (fnname) // invoke function
+        {
+            strcat(call, ")");
+            DoFunction(fnname, call, buffer, result);
+            if (result != NOPROBLEM_BIT) break;
+        }
 	}
+
+	ReleaseStack(initialData);
 	fclose(in);
 	currentFact = NULL;
-	return NOPROBLEM_BIT;
+	return result;
 }
 
 #endif // ---------------------------- END  : CURL/JSON related code ---------------------

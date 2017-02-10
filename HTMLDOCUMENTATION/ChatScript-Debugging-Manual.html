@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/28/2017 cs7.12</p>
+<p>Revision 2/9/2017 cs7.2</p>
 </blockquote>
 <p>You've written script. It doesn't work. Now what? Now you need to debug it, fix it, and recompile it. Debugging is mostly a matter of tracing what the system does testpaand finding out where it doesn't do what you expected. Debugging mostly done by issuing commands to the engine, as opposed to chatting.</p>
 <p>If the system detects bugs during execution, they go into <code>TMP/bugs.txt</code> You can erase the entire contents of the TMP directory a:trny time you want to. But odds are this is not your problem.</p>
@@ -468,6 +468,8 @@ RAWDATA/simpletopic.top # things we can chat about
 <p>List all concepts defined in the system or with an argument like <code>~w*</code>, show all concepts starting with <code>~w</code></p>
 <h3 id="definition-xxxx"><code>:definition</code> <em>^xxxx</em></h3>
 <p>Shows the code of the user-defined macro named.</p>
+<h3 id="mixedcase"><code>:mixedcase</code></h3>
+<p>Lists all words which have multiple case forms and where the words came from (dictionary, layer 0, layer 1). Helps you locate words where you inadvertently created a wrong case.</p>
 <h3 id="directories"><code>:directories</code></h3>
 <p>Lists the directories in use: the path to the exe file, the current working directory, and directory overrides used in embedded applications.</p>
 <h3 id="findwords-word"><code>:findwords</code> <em>word</em></h3>

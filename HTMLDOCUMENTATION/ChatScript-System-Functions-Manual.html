@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/28/2017 cs7.12</p>
+<p>Revision 2/9/2017 cs7.2</p>
 </blockquote>
 <ul>
 <li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
@@ -186,7 +186,10 @@ t: () name(xxx ) # explicitly add an empty pattern</code></pre>
 <p>Cannot be used in document mode. <code>^savesentence</code> returns the number of 4-byte words the save took.</p>
 <h1 id="input-functions">Input Functions</h1>
 <h3 id="analyze-stream"><code>^analyze</code>( stream )</h3>
-<p>The stream generates output (not printed to user) and then prepares the content as though it were current input. This means the current sentence flagging and marking are all replaced by this one's. It does not affect any pending input still to be processed. If the stream is quoted string, the quotes are removed. This would be common, for example, when analyzing output from the chatbot gotten via grabbing facts with &quot;chatoutput&quot; as the verb.</p>
+<p>The stream generates output (not printed to user) and then prepares the content as though it were current input sentence. This means the current sentence flagging and marking are all replaced by this one's. It does not affect any pending input still to be processed. If the stream is quoted string, the quotes are removed. This would be common, for example, when analyzing output from the chatbot gotten via grabbing facts with &quot;chatoutput&quot; as the verb.</p>
+<p>Note that the stream is considered a single sentence. If you want to supply multiple sentences, you need to call <code>^tokenize</code> and then loop on the facts created.</p>
+<h3 id="tokenize-stream"><code>^tokenize</code>( stream )</h3>
+<p>Splits the stream into sentences and creates facts of each like this: <code>(sentence ^tokenize ^tokenize)</code>.</p>
 <h3 id="capitalized-n"><code>^capitalized</code>( n )</h3>
 <p>Returns <code>1</code> if the nth word of the sentences starts with a capital letter in user input, else returns <code>0</code>. If <code>n</code> is alphabetic, it returns whether or not it starts with a capital letter. Illegal values of n return failrule.</p>
 <h3 id="input"><code>^input</code>( … )</h3>

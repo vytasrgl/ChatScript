@@ -1,9 +1,9 @@
-﻿ 440_yards ( meanings=1 NOUN NOUN_PLURAL ) 
+﻿ 4-hitter ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+    four-hitter~1n 
+ 440_yards ( meanings=1 NOUN NOUN_PLURAL ) 
     quarter_mile~1n 
  401-k ( meanings=1 NOUN NOUN_SINGULAR ) 
     401-k_plan~1n 
- 4-hitter ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
-    four-hitter~1n 
  4WD ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
     four-wheel_drive~1n 
     four-wheel_drive~2n 

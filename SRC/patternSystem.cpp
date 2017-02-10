@@ -823,6 +823,14 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 					wildcardSelector = oldselect; // restore outer environment
 					if (matched) 
 					{
+                        // return positions are always returned forward looking
+                        if (reverse && returnStart > returnEnd)
+                        {
+                            int x = returnStart;
+                            returnStart = returnEnd;
+                            returnEnd = x;
+                        }
+
 						positionStart = returnStart;
 						if (positionStart == INFINITE_MATCH && returnStart > 0 &&  returnStart != INFINITE_MATCH) positionStart = returnEnd;
 						positionEnd = returnEnd;
@@ -1330,10 +1338,15 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 	
 	if (success)
 	{
-		if (depth > 0 && *word == ')') returnstart = positionStart;		// where we began this level
-		else if (!reverse) returnstart = (firstMatched > 0) ? firstMatched : positionStart; // if never matched a real token, report 0 as start
-		else returnstart = positionStart;
-		returnend = positionEnd;
+        returnend = positionEnd;
+        if (depth > 0 && *word == ')' && !reverse) returnstart = positionStart;		// where we began this level
+        else if (depth > 0 && reverse && positionStart > positionEnd) // our data is in reverse, flip it around
+        {
+            returnend = positionStart;
+            returnstart = positionEnd;
+        }
+        else if (depth > 0 && *word == ')') returnstart = positionStart;		// where we began this level
+        else returnstart = (firstMatched > 0) ? firstMatched : positionStart; // if never matched a real token, report 0 as start
 	}
 
 	//   if we leave this level w/o seeing the close, show it by elipsis 

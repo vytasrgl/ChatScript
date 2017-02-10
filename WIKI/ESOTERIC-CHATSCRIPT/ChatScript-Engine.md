@@ -244,17 +244,26 @@ evaluate to their content, unless they are dotted or subscripted, in which case 
 content and then perform a JSON object lookup.
 
 # Natural Language Pipeline
-
-Aside from a range of script-callable engine functions that are oriented toward natural language processing and processing facts as part of reasoning in script, the system preprocesses user input to make it easy to find meaning within it. These are both classic and unusual NL processing tasks.
-Other than tokenization, which is required, and ontology marking, which is why you use ChatScript,
-the other stages are all completely script omittable under control of `$cs_token`.
+CS pre-processes user input to make it easy to find meaning within it. 
+These are both classic and unusual NL processing steps. 
+All steps in the pipeline  use data representations that work together. 
+Much of the work aims toward normalization, that is making different ways of typing in the 
+same thing look the same to scripts, so they don't have to account for variations 
+(making script writing and maintenance easier). Other than tokenization, all other pipeline steps 
+are under control the script (`$cs_token`), which can choose to use any combination of them at any time.
 
 ![](../NLPipeline.png)
 
 
 ## Tokenization
 
-The input is a stream of characters. If there is OOB data, this is detected and split off as a single word
+Tokenization is the process of taking a stream of input characters and breaking it sentences consisting of words
+ and punctuation (tokens).  ChatScript can process any number of sentences as a single input, 
+ but it will do so one at a time. In addition to the naive tokenization done by other systems, 
+ CS also performs some normalizations at this point. For example  5'6” is converted into tokens “5 feet 6 inch” .
+
+This is also where out-of-band (OOB) data gets split off from user input. ChatScript can send and receive information from the user and the application simultaneously. Inbound OOB can pass along any context like what category and specialty the user is starting in or what sensors have seen of the user (gesture recognition, etc). Outbound OOB can tell the system how to manipulate an avatar, why the current outgoing user message was emitted, or any other special system data. The CS convention for OOB is that it is always first in the message and is encased in [ ]. 
+The input is a stream of characters. If there is OOB data, this is detected and split off as a single 
 sentence in its own right. The rest of the input is then separated into the next sentence and the leftover
 unprocessed characters. A sentence has a 254 word limit, so anything attempting to be one beyond that
 will be split at that boundary. 
@@ -266,18 +275,19 @@ part of a number or a piece of punctuation of the sentence? If something is a `1
 separated into `12 / 2 / 1933` which leaves the decision to date merge or not under control of the
 scripter.
 
-While doing tokenization, some transformations revise toward canonical forms what is seen. `6'12`  is
-autoconvered into `6 feet 12 inches`.
-
 The process of tokenization is not visible to the script. It cannot easily know what transformations were
 made. This becomes the real sentence the user input, and is visible from the ^original function.
 
 
 ## Substitution
 
-The LIVEDATA folder contains a series of files representing sequences of words one might expect and how you might want to revise them. Revisions are either to correct the user input or make it easier to understand the meaning by converting to a standard form. The files include:
+Substitution involves replacing specific tokens or token sequences with different ones. Substitutions
+come from the LIVEDATA folder or `replace:` in scripts. 
+A substitution represents sequences of words one might expect and how you might want to revise them. 
+Revisions are either to correct the user input or make it easier to understand the meaning by converting to 
+a standard form. The files include:
 
-* british: a british spelling and its american equivalent, since the system is american based
+* british: a british spelling and its american equivalent like _colour_ into _color_
 * contractions: expands contractions like _don't_ into _do not_
 * interjections: revises dialog acts like so long. into `~emogoodbye` or _sure._ into `~yes`
 * noise: removes useless words like _very_ or _I mean that_
@@ -291,13 +301,15 @@ Standard spell check algorithms based on edit distance and cost are used, but on
 are of the same length plus or minus one.
 
 The system also checks for bursting tokens into multiple words or merging multiple tokens into a word,
-and makes decisions about hypenated words. For english, since the dictionary only contains lemma
+and makes decisions about hypenated words. For English, since the dictionary only contains lemma
 (canonical) forms of words, it checks standard conjugations to see if it recognizes a word. For foreign
-languages, it lacks this code, so the dictionary needs to include all conjugated forms of a word.
+languages, the engine lacks the ability to conjugate words, so the dictionary needs to include all conjugated forms of a word.
 
 ## Merging
 
-One can have proper names merged, date tokens merged, and number tokens merged. Numbermerging,
+Merging converts multiple tokens into single ones that can be manipulated more easily.
+One can have proper names merged (John Smith → John_Smith) which supports the classic named-entity extraction (finding proper names).
+Date tokens merged (January 2, 1990 → January_2_,_1990), and number tokens merged. Number merging,
 in particular, converts things like _four score and seven years ago_ into a single token
 _four_score_and_seven_years_ago_ which is marked as a number and whose canonical value is 87.
 
@@ -307,6 +319,12 @@ Dialog acts can be split into separate sentences so that _Yes I love you_ and _Y
 you_ all become the same input of two sentences - the dialog act `~yes` and _I love you_.
 
 ## Pos-parsing
+
+
+Pos-Parsing performs classic part-of-speech tagging of the tokens. This means that `He flies` where `flies`
+ is a verb in present 3rd person is distinguished from `He eats flies` where `flies` is a plural noun. 
+ The system also attempts to parse the sentence to determine things like what is the main subject,
+  main verb, main object, object of a clause or phrase, etc. 
 
 For English, which is native to CS, the system runs pos-parsing in two passes. The first pass is
 execution of rule from `LIVEDATA/ENGLISH/POS` which help it prune out possible meanings of
@@ -325,7 +343,29 @@ so while you know part-of-speech data, you don't know roles like mainsubject, ma
 
 ## Ontology Marking
 
-The system takes the input and splits it into the original input and a canonical one. Both are `marked`.
+Ontology Marking performs a step unique to ChatScript. It marks each word with what alternative views 
+one might have of it. Pattern matching can match not just specific words but any of the alternate views 
+of a word. A pattern like (I * ~like * ~animals) can match any sentence which has that rough meaning, 
+covering thousands of animals and dozens of words that mean  to like. These ~ words are concept names, 
+and ChatScript can match them just as easily as it can match words.
+
+CS finds concept sets a word belongs to. Concept sets are lists of words and phrases (and concepts) 
+where the words have some kind of useful relationship to each other. 
+
+A classic concept set is a synonym of a word. ~like is the set of words that mean to like, 
+e.g., admire, love, like, take a shine to, etc. Another kind of concept set is a property of things 
+like ~burnable which lists substances and items that burn readily. 
+A third concept set kind defines affiliated words, like ~baseball has umpire, bat, ball, glove, field, etc. 
+And yet another concept set can define similar objects that are not synonyms, like ~role 
+which is the set of all known human occupations. ChatScript comes with 2000 such sets, 
+and it is easy for developers to create new ones at any time.
+
+Pos-tags like ~noun, ~noun_singular, and sentence roles like ~mainSubject are also concept sets and 
+so the results of pos-tagging merely become marked concept sets attached to a word.
+
+Marking also does the classic lemmatization (finding the canonical root). This includes canonical numbers 
+so a number-merged  one thousand three hundred and two which became a single token has the canonical form 1302 also.
+
 Marking means taking the words of the sentence in order (where they may have pos-specific values)
 and noting on each word where they occur in the sentence (they may occur more than once). 
 
@@ -338,8 +378,6 @@ words. This allows you to correct or augment meanings.
 In addition to marking words, the system generates sequences of 5 contiguous words (phrases), and if it
 finds them in the dictionary, they too are marked.
 
-This ontology marking merges ontology, pos-tagging, parsing, and lemmas (canonical forms) into a single representation suitable for pattern matching. Below is an example.
-
 ![](../ontolog.png)
 
 ## Script Compiler
@@ -350,7 +388,7 @@ quickly move from one rule to another, and from an `if` test to the start of eac
 fails, it doesn't have to read all the code involved in the failing branch. 
 
 It also sometimes inserts a character at the start of a patttern element to identify what kind of element it is. 
-E.g., and equal sign before a comparison token or an asterisk before a word that has wildcard spelling.
+E.g., an equal sign before a comparison token or an asterisk before a word that has wildcard spelling.
 
 
 # Private Code

@@ -159,7 +159,7 @@ char* GetCanonical(WORDP D);
 void SetCanonical(WORDP D,MEANING M);
 uint64 GetTriedMeaning(WORDP D);
 void SetTriedMeaning(WORDP D,uint64 bits);
-void ReadSubstitutes(const char* name,const char* layer,unsigned int fileFlag,bool filegiven = false);
+void ReadSubstitutes(const char* name,unsigned int build,const char* layer,unsigned int fileFlag,bool filegiven = false);
 void Add2ConceptTopicList(int list[256], WORDP D,int start,int end,bool unique);
 void SuffixMeaning(MEANING T,char* at, bool withPos);
 
@@ -186,6 +186,7 @@ extern WORDP dictionaryPreBuild[NUMBER_OF_LAYERS+1];
 extern char* stringsPreBuild[NUMBER_OF_LAYERS+1];
 extern WORDP dictionaryFree;
 extern char dictionaryTimeStamp[20];
+extern bool primaryLookupSucceeded;
 
 // internal references to defined words
 extern WORDP Dplacenumber;

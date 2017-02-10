@@ -275,17 +275,17 @@ void ReformatString(char starter, char* input,char*& output, FunctionResult& res
 			}
 			else if (*tmp == '_' && IsDigit(tmp[1])) // canonical match variable
 			{
-				char* base = tmp++;
+				char* wildbase = tmp++;
 				if (IsDigit(*tmp)) ++tmp; // 2nd digit
-				strcpy(output,GetwildcardText(GetWildcardID(base),true));
+				strcpy(output,GetwildcardText(GetWildcardID(wildbase),true));
 				output = FixFormatOutput(output,controls); 
 			}
 			else if (*tmp == '\'' && tmp[1] == '_' && IsDigit(tmp[2])) // quoted match variable
 			{
-				char* base = ++tmp;
+				char* wildbase = ++tmp;
 				++tmp;
 				if (IsDigit(*tmp)) ++tmp; // 2nd digit
-				strcpy(output,GetwildcardText(GetWildcardID(base),false));
+				strcpy(output,GetwildcardText(GetWildcardID(wildbase),false));
 				output = FixFormatOutput(output,controls);
 			}
 			else if (*tmp == SYSVAR_PREFIX && IsAlphaUTF8(tmp[1])) // system variable
@@ -1003,11 +1003,12 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 		{
 			bool allow = true;
 			char c = *(buffer-1);
-			if (quoted && buffer == startQuoted) // first thingy after \"
-			{
-				allow = false;
-				startQuoted = NULL;
-			}
+            if (quoted && buffer == startQuoted) // first thingy after \"
+            {
+                allow = false;
+                startQuoted = NULL;
+            }
+            else if (stricmp(language, "french") &&  (c == ':' || c == ';' || c == '!' || c == '?')) {; }
 			else if (quoted && *word == '\\' && word[1] == '"') allow = false; // ending quoted
 			// dont space after $  or # or [ or ( or " or / e   USERVAR_PREFIX
 			else if (c == '(' || c == '[' || c == '{'  || c == '$' || c == '#' || c == '/' || c == '`' || c == '\n') allow = false; //erased text is `
@@ -1016,7 +1017,7 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			else if (*word == '\\' && word[1] == ')') allow = false; // dont space before )
 			else if (*word == '\\' && word[1] == '"' && (controls & OUTPUT_DQUOTE_FLIP) ) allow = false;	// closing dq
 			else if ((*word == '.' && !word[1]) || (*word == '?' && !word[1]) || (*word == '!' && !word[1])|| (*word == ',' && !word[1])|| (*word == ':' && !word[1]) || (*word == ';' && !word[1]) || (*word == '.' && !word[1])) allow = false;
-			else if (*word == '\'' ) allow = false;
+			else if (*word == '\'' && (!word[1] || word[1] == 's' )) allow = false;
 			if (allow) // add space separator
 			{
 				space = buffer;

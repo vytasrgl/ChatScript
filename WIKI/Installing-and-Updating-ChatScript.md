@@ -1,6 +1,6 @@
 # Installing and Updating ChatScript
 © Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 1/28/2017 cs7.12
+<br>Revision 2/09/2017 cs7.2
 <br>
 
 # Installing (Windows, Mac, Linux) 

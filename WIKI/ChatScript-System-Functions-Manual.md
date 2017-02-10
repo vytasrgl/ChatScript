@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
-> Revision 1/28/2017 cs7.12
+> Revision 2/9/2017 cs7.2
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -425,11 +425,17 @@ the save took.
 
 ### `^analyze`( stream )
 The stream generates output (not printed to user) and then prepares
-the content as though it were current input. This means the current sentence flagging and
+the content as though it were current input sentence. This means the current sentence flagging and
 marking are all replaced by this one's. It does not affect any pending input still to be
 processed. If the stream is quoted string, the quotes are removed. This would be
 common, for example, when analyzing output from the chatbot gotten via grabbing facts
 with "chatoutput" as the verb.
+
+Note that the stream is considered a single sentence. If you want to supply multiple sentences, you need to
+call `^tokenize` and then loop on the facts created.
+
+### `^tokenize`( stream )
+Splits the stream into sentences and creates facts of each like this: `(sentence ^tokenize ^tokenize)`.
 
 ### `^capitalized`( n )
 Returns `1` if the nth word of the sentences starts with a capital letter in

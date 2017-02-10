@@ -512,8 +512,8 @@ void LogChat(clock_t starttime,char* user,char* bot,char* IP, int turn,char* inp
 	char* activeTopic = why + strlen(why) + 1;
 	clock_t endtime = ElapsedMilliseconds(); 
 	char* nl = (LogEndedCleanly()) ? (char*) "" : (char*) "\r\n";
-	if (*input) Log(SERVERLOG,(char*)"%sRespond: user:%s bot:%s ip:%s (%s) %d %s  ==> %s  When:%s %dms %s\n", nl,user,bot,IP,activeTopic,turn,input,Purify(output),date,(int)(endtime - starttime),why);
-	else Log(SERVERLOG,(char*)"%sStart: user:%s bot:%s ip:%s (%s) %d ==> %s  When:%s %dms Version:%s Build0:%s Build1:%s %s\n",nl, user,bot,IP,activeTopic,turn,Purify(output),date,(int)(endtime - starttime),version,timeStamp[0],timeStamp[1],why);
+	if (*input) Log(SERVERLOG,(char*)"%sRespond: user:%s bot:%s ip:%s (%s) %d %s  ==> %s  When:%s %dms %s\r\n", nl,user,bot,IP,activeTopic,turn,input,Purify(output),date,(int)(endtime - starttime),why);
+	else Log(SERVERLOG,(char*)"%sStart: user:%s bot:%s ip:%s (%s) %d ==> %s  When:%s %dms Version:%s Build0:%s Build1:%s %s\r\n",nl, user,bot,IP,activeTopic,turn,Purify(output),date,(int)(endtime - starttime),version,timeStamp[0],timeStamp[1],why);
 }
 
 #ifndef EVSERVER // til end of file
@@ -910,12 +910,12 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 				}
 				else if ( len >= (SERVERTRANSERSIZE - 100))
 				{
-					ReportBug((char*)"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
-					Log(SERVERLOG,(char*)"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
+					ReportBug((char*)"Refusing overly long input from %s\r\n", sock->getForeignAddress().c_str());
+					Log(SERVERLOG,(char*)"Refusing overly long input from %s\r\n", sock->getForeignAddress().c_str());
 				}
 				else 
 				{
-					ReportBug((char*)"TCP %s closed connection prematurely\n", sock->getForeignAddress().c_str());
+					ReportBug((char*)"TCP %s closed connection prematurely\r\n", sock->getForeignAddress().c_str());
 					Log(SERVERLOG,(char*)"TCP %s closed connection prematurely\n", sock->getForeignAddress().c_str());
 				}
 				delete sock;
@@ -1003,8 +1003,7 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		sock->send(output, len);
 } catch (...)  {
 		printf((char*)"%s",(char*)"client socket fail\r\n");
-		struct tm ptm;
-		ReportBug((char*)"***%s client socket failed %s \r\n",IP,GetTimeInfo(&ptm,true)+SKIPWEEKDAY)}
+		}
 
 	delete sock;
 

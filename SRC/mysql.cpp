@@ -24,11 +24,11 @@ FunctionResult MySQLInitCode(char* buffer)
    conn = mysql_init(NULL);
 
    if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
-      fprintf(stderr, "%s\n", mysql_error(conn));
+      fprintf(stderr, "%s\r\n", mysql_error(conn));
       exit(1);
    }
    if (mysql_query(conn, "show tables")) {
-      fprintf(stderr, "%s\n", mysql_error(conn));
+      fprintf(stderr, "%s\r\n", mysql_error(conn));
       exit(1);
    }
    res = mysql_use_result(conn);

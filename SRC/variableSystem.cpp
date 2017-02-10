@@ -649,6 +649,32 @@ void NoteBotVariables() // system defined variables
 	userVariableIndex = 0;
 }
 
+void MigrateUserVariables(char* above)
+{
+    unsigned int count = userVariableIndex;
+    while (count)
+    {
+        WORDP D = userVariableList[--count]; // 0 based
+        if (!above || D->w.userValue < above) // heap spaces runs DOWN, so this passes more recent entries into here
+        {
+            D->w.userValue = AllocateStack(D->w.userValue,0);
+        }
+    }
+}
+
+void RecoverUserVariables(char* above)
+{
+    unsigned int count = userVariableIndex;
+    while (count)
+    {
+        WORDP D = userVariableList[--count]; // 0 based
+        if (!above || D->w.userValue < above) // heap spaces runs DOWN, so this passes more recent entries into here
+        {
+            D->w.userValue = AllocateHeap(D->w.userValue, 0);
+        }
+    }
+}
+
 void ClearUserVariables(char* above) 
 {
 	unsigned int count = userVariableIndex;

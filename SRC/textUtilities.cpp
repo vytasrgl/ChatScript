@@ -26,10 +26,6 @@ unsigned char extendedascii2utf8[128] =
 	0,0xbc,0xa9,0xa2,0xa4,0xa0,0xa5, 0xa7,0xaa,0xab,	0xa8,0xaf,0xae,0xac,0x84,0x85,0x89,0xa6,0x86,0xb4,  
 	0xb6,0xb2,0xbb,0xb9,0xbf,0x96,0x9c,0xa2,0xa3,0xa5,	0x00,0xa1,0xad,0xb3,0xba,0xb1,0x91,
 };
-   const char* word;		//   word of a number
-    int value;				//   value of word
-	unsigned int length;	//   length of word
-	int realNumber;			// the type, one two are real, third is fraction
 
 NUMBERDECODE numberValues[] = { 
  { (char*)"zero",0,4,REALNUMBER}, { (char*)"zilch",0,5,0},
@@ -820,10 +816,14 @@ bool IsArithmeticOperator(char* word)
 		);
 } 
 
-static char* IsUTF8(char* buffer) // swallow a single utf8 character (ptr past it) or return null 
+char* IsUTF8(char* buffer,char* character) // swallow a single utf8 character (ptr past it) or return null 
 {
-	if (((unsigned char)*buffer) < 127) return NULL; // not utf8
+	*character = *buffer;
+	character[1] = 0;  // simple ascii character
+    if (*buffer == 0) return buffer; // dont walk past end
+	if (((unsigned char)*buffer) < 127) return buffer+1; // not utf8
 
+	char* start = buffer;
 	unsigned char c = (unsigned char) *buffer;
 	unsigned int count = 0; // bytes beyond first
 	if (c >= 192 && c <= 223) count = 1;
@@ -835,8 +835,14 @@ static char* IsUTF8(char* buffer) // swallow a single utf8 character (ptr past i
 
 	// does count of extenders match requested count
 	unsigned int n = 0;
-	while (*++buffer && *(unsigned char*) buffer >= 128 && *(unsigned char*) buffer <= 191) ++n; 
-	return (n == count)	? buffer : NULL; 
+	while (*++buffer && *(unsigned char*) buffer >= 128 && *(unsigned char*) buffer <= 191) ++n;
+	if (n == count)
+	{
+		strncpy(character,start,count+1);
+		character[count+1] = 0;
+		return buffer;
+	}
+	return start+1; 
 }
 
 char GetTemperatureLetter(char* ptr)
@@ -982,7 +988,32 @@ bool IsRomanNumeral(char* word, uint64& val)
 	}
 	return (!*word); // finished or not
 }
- 
+
+void ComputeWordData(char* word, WORDINFO* info) // how many characters in word
+{
+    memset(info, 0, sizeof(WORDINFO));
+    info->word = word;
+    int n = 0;
+    char utfcharacter[10];
+    while (*word)
+    {
+        char* x = IsUTF8(word, utfcharacter); // return after this character if it is valid.
+        ++n;
+        if (utfcharacter[1]) // utf8 char
+        {
+            word = x;
+            ++info->charlen;
+            info->bytelen += (x - word);
+        }
+        else // normal ascii
+        {
+            ++info->charlen;
+            ++info->bytelen;
+            ++word;
+        }
+    }
+}
+
 unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or word number or currency number
 {
 	if (!*num) return false;
@@ -1753,8 +1784,9 @@ RESUME:
 			if (*buffer & 0x80) // is utf in theory
 			{
 				char prior = (start == buffer) ? 0 :  *(buffer-1);
-				char* x = IsUTF8(buffer); // return after this character if it is valid.
-				if (x) // rewrite some utf8 characters to std ascii
+				char utfcharacter[10];
+				char* x = IsUTF8(buffer,utfcharacter); // return after this character if it is valid.
+				if (utfcharacter[1]) // rewrite some utf8 characters to std ascii
 				{
 					if (buffer[0] == 0xc2 && buffer[1] == 0xb4) // a form of '
 					{
@@ -1809,7 +1841,6 @@ RESUME:
 					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && buffer[2] == 0x94 && !(tokenControl & NO_FIX_UTF) && !compiling)  // mdash
 					{
 						*buffer =  '-';
-	
 					}
 					else if (buffer[0] == 0xe2 && buffer[1] == 0x80 && (buffer[2] == 0x94 || buffer[2] == 0x93)&& !(tokenControl & NO_FIX_UTF)&& !compiling)  // mdash
 					{
@@ -1828,7 +1859,7 @@ RESUME:
 	}
 	if (hasbadutf && showBadUTF && !server)  
 		Log(STDTRACELOG,(char*)"Bad UTF-8 %s at %d in %s\r\n",start,currentFileLine,currentFilename);
-	return (buffer - start);
+    return (buffer - start);
 }
 
 char* ReadQuote(char* ptr, char* buffer,bool backslash,bool noblank)

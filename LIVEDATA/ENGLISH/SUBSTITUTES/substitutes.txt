@@ -17,8 +17,8 @@
  # xxx> means sentence then end stop
  # if you want to have the result NOT tokenized, put it in quotes
  a.i. artificial+intelligence
- wifi wi-fi
  touring_test Turing+test
+ meds medications
  im I+am
  1am 1+am
  2am 2+am
@@ -424,7 +424,6 @@ prof. professor
  anonymous_stranger stranger
  appeared_to_be was
  apple_iphone iPhone
- Apple_iPhone iPhone
  are_lead_by are+led+by
  archeological archaeological
  archeologically archaeologically
@@ -980,7 +979,6 @@ prof. professor
  may_possibly may
  mayn many
  meaningful_dialogue dialogue
- meds medicines
  mental_thought thought
  merci thanks
  merge_together merge
@@ -1048,10 +1046,10 @@ prof. professor
  not_sur not+sure
  not_the_same different
  noyb none+of+your+business
+ legit legitimate
  np no+problem
  nuff enough
  null_and_void void
- nvm nevermind
  ny New+York
  nyc New+York+City
   of_the_clock o'clock
@@ -1459,7 +1457,6 @@ prof. professor
  wouldnt would+not
  wreck_havoc wreak+havoc
  xmas Christmas
- Xmas Christmas
   yessum yes+Madam
  yo you
  yo_mamm your+mother

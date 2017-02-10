@@ -2,7 +2,7 @@
 
 > Copyright Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 1/28/2017 cs7.12
+> Revision 2/09/2017 cs7.2
 
 # Command Line Parameters
 
@@ -84,6 +84,7 @@ the system can do complete logs. You are welcome to set log size lots smaller if
 |---------------|-----------------------------------------------------------------------------
 |`livedata=xxx` | name relative or absolute path to your own private LIVEDATA folder. Do not add trailing / on this path<br>Recommended is you use `RAWDATA/yourbotfolder/LIVEDATA` to keep all your data in one place. You can have your own live data, yet use ChatScripts default `LIVEDATA/SYSTEM` and `LIVEDATA/ENGLISH` by providing paths to the `system=` and `english=` parameters as well as the `livedata=` parameter
 |`topic=xxx` | name relative or absolute path to your own private TOPIC folder. Do not add trailing / on this path `/`
+|`buildfiles=xxx` | name relative or absolute path to your own folder where filesxxx.txt is found. Do not add trailing / on this path `/`
 |`users=xxx`    | name relative or absolute path to where you want the USERS folder to be. Do not add trailing `/`
 |`logs=xxx`     | name relative or absolute path to where you want the LOGS folder to be. Do not add trailing `/`
 |`userlog`      | Store a user-bot log in USERS directory (default)

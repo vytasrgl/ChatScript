@@ -63,6 +63,15 @@ typedef struct NUMBERDECODE
 #define WORD_NUMBER 5
 #define FRACTION_NUMBER 6
 
+#define LETTERMAX 40
+
+typedef struct WORDINFO
+{
+    char* word;
+    int charlen; // characters in word
+    int bytelen; // bytes in word
+} WORDINFO;
+
 // accesses to these arrays MUST use unsigned char in the face of UTF8 strings
 extern int BOM;
 extern unsigned char punctuation[];
@@ -113,7 +122,7 @@ WORDP BUILDCONCEPT(char* word) ;
 void RemoveTilde(char* output);
 char* RemoveEscapesWeAdded(char* at);
 void ConvertNL(char* ptr);
-
+void ComputeWordData(char* word, WORDINFO* info);
 char* CopyRemoveEscapes(char* to, char* at,int limit,bool all = false);
 char* AddEscapes(char* to, char* from,bool normal,int limit);
 void AcquireDefines(char* fileName);
@@ -126,6 +135,7 @@ char* FindParseNameByValue(uint64 val); // parse flags
 uint64 FindParseValueByName(char* name); // parse flags
 uint64 FindMiscValueByName(char* name); // misc data
 void CloseTextUtilities();
+char* IsUTF8(char* buffer,char* character);
 char* Purify(char* msg);
 void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine);
 size_t OutputLimit(unsigned char* data);

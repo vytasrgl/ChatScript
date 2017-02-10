@@ -1,6 +1,6 @@
 # ChatScript System Variables and Engine-defined Concepts
 © Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 1/28/2017 cs7.12
+<br>Revision 2/09/2017 cs7.2
 <br>
 
 * [Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
@@ -178,7 +178,8 @@ Additionally, there is
 * `~integer` 
 * `~float`
 * `~positiveinteger`
-* `~negativeinteger`.
+* `~negativeinteger`
+* `~modelnumber` (not a true number, but a word with both alpha and numeric)
 
 To can be a preposition or it can be special. When used in the infinitive phrase To go, it is
 marked `~to_infinitive` and is followed by `~noun_infinitive`.
@@ -218,8 +219,8 @@ include:
 * `~absolutephrase` – special phrase describing whole sentence
 * `~omittedtimeprep` – modified time word used as phrase but lacking preposition (_Next tuesday I will go_)
 * `~phrase` – a prepositional phrase start (except
-* `~clause` – a subordinate clause start
-* `~verbal` – a verb phrase
+* `~clause` – a subordinate clause start |
+* `~verbal` – a verb phrase |
 
 
 # System Variables
@@ -261,27 +262,28 @@ your server is in Virginia and you are in Colorado).
 
 | variable | description |
 | -------- | ------- |
-| `%bot` |  current bot responding
-| `%revisedinput` |  Boolean is current input from ^input not direct from user
-| `%command` |  Boolean was the user input a command
-| `%foreign` |  Boolean is bulk of the sentence composed of foreign words
-| `%impliedyou` |  Boolean was the user input having you as implied subject
-| `%input` |  the count of the number of volleys this user has made ever
-| `%ip` |  ip address supplied
-| `%length` |  the length in tokens of the current sentence
-| `%more` |  Boolean is there another sentence after this
-| `%morequestion` |  Boolean is there a ? or question word in the pending sentences
+| `%bot` |  current bot responding |
+| `%revisedinput` |  Boolean is current input from ^input not direct from user |
+| `%command` |  Boolean was the user input a command |
+| `%foreign` |  Boolean is bulk of the sentence composed of foreign words |
+| `%impliedyou` |  Boolean was the user input having you as implied subject |
+| `%input` |  the count of the number of volleys this user has made ever |
+| `%ip` |  ip address supplied |
+| `%language` |  current dictionary language |
+| `%length` |  the length in tokens of the current sentence |
+| `%more` |  Boolean is there another sentence after this |
+| `%morequestion` |  Boolean is there a ? or question word in the pending sentences |
 | `%originalinput` | all sentences user passed into volley, before adjusted in any way except OOB data is stripped off |
-| `%originalsentence` |  the current sentence after tokenization but before any adjustments
-| `%parsed` |  Boolean was current input parsed successfully
-| `%question` |  Boolean was the user input a question – same as ? in a pattern
-| `%quotation` |  Boolean is current input a quotation
-| `%sentence` |  Boolean does it seem like a sentence (subject/verb or command)
-| `%tense` |  past , present, or future simple tense (present perfect is a past tense)
-| `%user` |  user login name supplied
-| `%userfirstline` |  value of %input that is at the start of this conversation start
-| `%userinput` |  Boolean is the current input from the user (vs the chatbot)
-| `%voice` |  active or passive on current input 
+| `%originalsentence` |  the current sentence after tokenization but before any adjustments |
+| `%parsed` |  Boolean was current input parsed successfully |
+| `%question` |  Boolean was the user input a question – same as ? in a pattern |
+| `%quotation` |  Boolean is current input a quotation |
+| `%sentence` |  Boolean does it seem like a sentence (subject/verb or command) |
+| `%tense` |  past , present, or future simple tense (present perfect is a past tense) |
+| `%user` |  user login name supplied |
+| `%userfirstline` |  value of %input that is at the start of this conversation start |
+| `%userinput` |  Boolean is the current input from the user (vs the chatbot) |
+| `%voice` |  active or passive on current input  |
 
 ## Chatbot Output
 
@@ -321,11 +323,11 @@ your server is in Virginia and you are in Colorado).
 ## Build data+
 | variable   | description                         |
 | --------   | -------                             
-| `%dict`    | date/time the dictionary was built
-| `%engine`  |  date/time the engine was compiled 
-| `%os`      |  os invovled (linux windows mac ios) 
-| `%script`  |  date/time build1 was compiled
-| `%version` |  engine version number
+| `%dict`    | date/time the dictionary was built |
+| `%engine`  |  date/time the engine was compiled  |
+| `%os`      |  os invovled (linux windows mac ios)  |
+| `%script`  |  date/time build1 was compiled |
+| `%version` |  engine version number |
 
 You actually can assign to any of them. This will override them and make them return
 what you tell them to and is a particularly BAD thing to do if this is running on a server
@@ -364,19 +366,23 @@ These enable various LIVEDATA files to perform substitutions on input:
 
 | flag                        | description |
 | ----                        | ------- |
-| `#DO_ESSENTIALS`             |  perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead
-| `#DO_SUBSTITUTES`            |  perform LIVEDATA/substitutes 
-| `#DO_CONTRACTIONS`           |  perform LIVEDATA/contractions, expanding contractions  
-| `#DO_INTERJECTIONS`          |  perform LIVEDATA/interjections, changing phrases to interjections
-| `#DO_BRITISH`                |  perform LIVEDATA/british, respelling brit words to American 
-| `#DO_SPELLING`               |  performs the LIVEDATA/spelling file (manual spell correction)  
-| `#DO_TEXTING`                |  performs the LIVEDATA/texting file (expand texting notation)
-| `#DO_SUBSTITUTE_SYSTEM`      |  do all LIVEDATA file expansions
-| `#DO_INTERJECTION_SPLITTING` |  break off leading interjections into own sentence 
-| `#$DO_NUMBER_MERGE`           |  merge multiple word numbers into one (_four and twenty_)  
-| `#$DO_PROPERNAME_MERGE`       |  merge multiple proper name into one (_George Harrison)  
-|`#DO_DATE_MERGE`             |  merge month day and/or year sequences (_January 2, 1993_)  
-|`#JSON_DIRECT_FROM_OOB`             |  asking the tokenizer to directly process OOB data. See ^jsonparse in JSON manual. 
+| `#DO_ESSENTIALS`             |  perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead  |
+| `#DO_SUBSTITUTES`            |  perform LIVEDATA/substitutes | 
+| `#DO_CONTRACTIONS`           |  perform LIVEDATA/contractions, expanding contractions  | 
+| `#DO_INTERJECTIONS`          |  perform LIVEDATA/interjections, changing phrases to interjections |
+| `#DO_BRITISH`                |  perform LIVEDATA/british, respelling brit words to American  |
+| `#DO_SPELLING`               |  performs the LIVEDATA/spelling file (manual spell correction)   |
+| `#DO_TEXTING`                |  performs the LIVEDATA/texting file (expand texting notation) |
+| `#DO_SUBSTITUTE_SYSTEM`      |  do all LIVEDATA file expansions |
+| `#DO_INTERJECTION_SPLITTING` |  break off leading interjections into own sentence  |
+| `#$DO_NUMBER_MERGE`           |  merge multiple word numbers into one (_four and twenty_)  | 
+| `#$DO_PROPERNAME_MERGE`       |  merge multiple proper name into one (_George Harrison)   |
+|`#DO_DATE_MERGE`             |  merge month day and/or year sequences (_January 2, 1993_)  | 
+|`#JSON_DIRECT_FROM_OOB`             |  asking the tokenizer to directly process OOB data. See ^jsonparse in JSON manual.  |
+The contents of the files are pairs of tokens per line.
+Left is the word to replace and right is the replacement. When multiple words are
+involved, the left side uses underscores to represent this and the right side uses +. If the
+right side is missing, it means just delete.
 
 If any of the above items affect the input, they will be echoed as values into
 %tokenFlags so you can detect they happened. 
@@ -384,8 +390,8 @@ The next changes do not echo into %tokenFlags and relate to grammar of input:
 
 | flag                    | description |
 | ----                    | -------     |
-| `DO_POSTAG`             |  allow pos-tagging (labels like ~noun ~verb become marked)
-| `DO_PARSE`              |  allow parser (labels for word roles like ~main_subject)
+| `DO_POSTAG`             |  allow pos-tagging (labels like ~noun ~verb become marked) |
+| `DO_PARSE`              |  allow parser (labels for word roles like ~main_subject) |
 | `DO_CONDITIONAL_POSTAG` |  perform pos-tagging only if all words are known. Avoids wasting time on foreign sentences in particular |
 |  `NO_ERASE`             |  where a substitution would delete a word entirely as junk, don't |
 | `DO_SPLIT_UNDERSCORES`  |  happens after all other input tokenization and adjustments except number merge, and separates words that have been conjoined either because the dictionary has them (_credit_card_) or because they were merged by proper name merging, or by substitution. The result is only words without underscores (excluding number words like _five_thousand_and_four_ | 
@@ -466,6 +472,9 @@ $cs_token = #DO_INTERJECTION_SPLITTING |
             #DO_PARSE | 
             #DO_PRIVATE
 ```
+The left side of the substitution pair is case insensitive (matches either case on input)
+and can be placed in double-quotes (which converts spaces to underscorers).
+
 Similarly while canonical values of words can be defined in
 `LIVEDATA/SYSTEM/canonical.txt`, you can define private canonical values for your
 bots by using the scripting language. You can say:

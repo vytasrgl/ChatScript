@@ -5,6 +5,7 @@
  have_to_go> ~emogoodbye
  have_to_stop> ~emogoodbye
  have_to_leave> ~emogoodbye
+ wtf ~emomisunderstand
  <oh? why?
  <never ~no 
  <no_, ~no 
@@ -497,7 +498,6 @@
  <oh_dear_oh_dear ~emosad
  <oh_dear_what_a_pity ~emosad
  <oh_my_god ~emosurprise
- <oh_my_God ~emosurprise
  <oh_my_gosh_I_am_sorry ~emoapology
  <oh_no ~emosad
  <oh_okay ~yes

@@ -1388,7 +1388,7 @@ void ReadFacts(const char* name,const char* layer,unsigned int build,bool user) 
 			char word[MAX_WORD_SIZE];
 			char* at = ReadCompiledWord(readBuffer+2,word); //   start at valid token past space
 			WORDP D = FindWord(word,0,PRIMARY_CASE_ALLOWED);
-			if (!D)
+			if (!D || strcmp(D->word,word)) // alternate capitalization?
 			{
 				D = StoreWord(word);
 				AddInternalFlag(D,(unsigned int)build);

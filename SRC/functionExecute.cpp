@@ -452,26 +452,436 @@ static FunctionResult PlanCode(WORDP plan, char* buffer)
 	return result; // these are swallowed
 }
 
+static char* SystemCall(char* buffer,char* ptr, WORDP D,FunctionResult &result,bool & streamArg,unsigned int firstArgument)
+{
+	unsigned int j = 0;
+	char* paren = ptr;
+	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
+	SystemFunctionInfo* info = &systemFunctionSet[D->x.codeIndex];
+	callArgumentBase = callArgumentIndex - 1;
+	char* start = ptr;
+	int flags = 0x00000100;	// do we leave this unevaled?
+	while (ptr && *ptr != ')' && *ptr != ENDUNIT) // read arguments
+	{ 
+		if (info->argumentCount != STREAM_ARG) // break them up
+		{
+			if (info->argumentCount == UNEVALED) ptr = ReadCompiledWordOrCall(ptr,buffer);
+			// unevaled counted arg
+			else if (info->argumentCount != VARIABLE_ARG_COUNT && info->argumentCount & (flags << j)) 
+				ptr = ReadCompiledWord(ptr,buffer);
+			else // VARIABLE ARG OR COUNTED ARG
+			{
+				ptr = GetCommandArg(ptr,buffer,result,OUTPUT_UNTOUCHEDSTRING);
+			}
+			callArgumentList[callArgumentIndex] = AllocateStack(buffer);
+			ptr = SkipWhitespace(ptr);
+			if (callArgumentList[callArgumentIndex] && callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX &&
+				strstr(callArgumentList[callArgumentIndex],"$_")) // NOT by reference but by value somewhere in the chain
+			{
+				callArgumentList[callArgumentIndex] = AllocateStack(GetUserVariable(callArgumentList[callArgumentIndex])); // pass by unmarked value - no one will try to store thru it
+			}
+			++j;
+			if (result != NOPROBLEM_BIT) return ptr;  // arg failed
+		}
+		else // swallow unevaled arg stream
+		{
+			ptr = BalanceParen(paren,false,false);  // start after (, point after closing ) if one can, to next token - it may point 2 after )  or it may point 1 after )
+			while (*--ptr != ')'){;} // back up to closing
+			size_t len = ptr++ - start; // length of argument bytes not including paren, and end up after paren
+			while (start[len-1] == ' ') --len; // dont want trailing blanks
+			callArgumentList[callArgumentIndex] = AllocateStack(start,len);
+			streamArg = true;
+		}
+		if (!callArgumentList[callArgumentIndex])
+		{
+			ReportBug("Stack space exhausted %s",D->word);
+			result = FAILRULE_BIT;
+			return ptr;
+		}
+		if (++callArgumentIndex >= MAX_ARG_LIST) 
+		{
+			ReportBug("Globally too many arguments %s",D->word);
+			result = FAILRULE_BIT;
+			return ptr;
+		}
+		if (info->argumentCount == STREAM_ARG) break; // end of arguments
+		ptr = SkipWhitespace(ptr);
+	}
+	callArgumentList[callArgumentIndex] = (char*) ""; 
+	callArgumentList[callArgumentIndex+1] = (char*) ""; // optional arguments excess
+	callArgumentList[callArgumentIndex+2] = (char*) ""; // optional arguments excess
+	callArgumentList[callArgumentIndex+3] = (char*) ""; 
+	callArgumentList[callArgumentIndex+4] = (char*) ""; // optional arguments excess
+	callArgumentList[callArgumentIndex+5] = (char*) ""; // optional arguments excess
+	if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
+	{
+		--globalDepth; // patch depth because call data should be outside of depth
+		Log(STDTRACETABLOG,(char*) "System call %s(",D->word);
+		for (unsigned int i = firstArgument; i < callArgumentIndex; ++i)
+		{	
+			char c = callArgumentList[i][120];
+			callArgumentList[i][120] = 0;
+			Log(STDTRACELOG, (char*) "`%s`",callArgumentList[i]);
+			if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)",");
+			callArgumentList[i][120] = c;
+		}
+		Log(STDTRACELOG, ")\r\n");
+		++globalDepth;
+	}
+	*buffer = 0; // remove any leftover argument data
+	fnOutput = start;
+	if (result & ENDCODES); // failed during argument processing
+	else 
+	{
+		ChangeDepth(1,D->word); 
+		if (streamArg) ChangeDepth(1,"");  // argument processing by streamer is invisible to step
+		result = (*info->fn)(buffer);
+		if (streamArg) ChangeDepth(-1,"",true); 
+		ChangeDepth(-1,D->word,streamArg); 
+	}
+	return ptr;
+}
+
+char* InvokeUser(char* &buffer,char* ptr, FunctionResult& result,WORDP D,unsigned char* &definition,unsigned int &oldArgumentIndex,
+	unsigned int &args,unsigned int &firstArgument,char* &startRawArg)
+{
+	// handle any display variables
+	char* basevalues = 0;
+	char* oldFunctionDisplay = currentFunctionDisplay;
+	currentFunctionDisplay = 0;
+	if ((D->internalBits & FUNCTION_BITS) != IS_PLAN_MACRO && definition && definition[0] == '(')
+	{
+		currentFunctionDisplay = (char*)(definition);
+		basevalues = stackFree; // here is where we allocate values
+		definition = (unsigned char*) InitDisplay((char*)definition); // will return 0 if runs out of heap space
+		if (!definition) result = FAILRULE_BIT;
+	}
+	
+	// now do defaulted null arguments
+	while (definition && (callArgumentIndex - oldArgumentIndex) < args) // fill in defaulted args to null
+	{
+		callArgumentList[callArgumentIndex++] = AllocateStack("",0);
+	}
+
+	// now if args are local vars instead of ^, set them up (we have protected them by now)
+	char var[MAX_WORD_SIZE];
+	char* list = (currentFunctionDisplay) ? (currentFunctionDisplay + 2) : NULL;	// skip ( and space xxxx
+	if (list) for (unsigned int i = oldArgumentIndex; i < callArgumentIndex; ++i)
+	{
+		list = ReadCompiledWord(list,var); 
+		if (*var == USERVAR_PREFIX) 
+		{
+			WORDP arg = FindWord(var);
+			if (!arg) continue;	// should never happen
+			char* val = callArgumentList[i]; // constants wont have `` in front of them
+			if (*val == USERVAR_PREFIX) val = GetUserVariable(val);
+			else if (*val == SYSVAR_PREFIX) 
+			{
+				Output(val,buffer,result,0);
+				val = AllocateStack(buffer,0,true);
+				*buffer = 0;
+			}
+			else if (val[0] == ENDUNIT && val[1] == ENDUNIT) val += 2; // skip over noeval marker
+			else if (val[0] == '\'' && val[1] == '_' && IsDigit(val[2]))
+			{
+				int id = GetWildcardID(val+1);
+				if (id >= 0) val = AllocateStack(wildcardCanonicalText[id],0,true);
+				else val = AllocateStack("");
+			}
+			else if (val[0] == '_' && IsDigit(val[1]))
+			{
+				int id = GetWildcardID(val);
+				if (id >= 0) val = AllocateStack(wildcardOriginalText[id],0,true);
+				else val = AllocateStack("");
+			}
+			if (*val && *(val-2) != '`' && *(val-1) != '`') 
+				val = AllocateStack(val,0,true);
+			arg->w.userValue = val;
+		}
+	}
+
+	if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) trace = (unsigned int) D->inferMark;
+
+	if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
+	{
+		--globalDepth; // patch depth because call data should be outside of depth
+		char a = *ptr;
+		*ptr = 0;
+		Log(STDTRACETABLOG,(char*) "User call %s(%s):(",D->word,startRawArg);
+		for (unsigned int i = firstArgument; i < callArgumentIndex; ++i)
+		{	
+			char* x = callArgumentList[i];
+			if (*x == USERVAR_PREFIX) 
+			{
+				strncpy(buffer,GetUserVariable(x,false,true),40);
+				x = buffer;
+			}
+			else if (*x == '_' && IsDigit(x[1])) 
+			{
+				int id = GetWildcardID(x);
+				if (id >= 0) 
+				{
+					strncpy(buffer,wildcardOriginalText[id],40);
+					x = buffer;
+				}
+			}
+			else if (*x == '\'' && x[1] == '_' && IsDigit(x[2])) 
+			{
+				int id = GetWildcardID(x+1);
+				if (id >= 0) 
+				{
+					strncpy(buffer,wildcardCanonicalText[id],40);
+					x = buffer;
+				}
+			}
+			else if (*x == LCLVARDATA_PREFIX) x += 2; // skip ``
+
+			// limited to 40, provide ... and restore
+			char d[4];
+			d[0] = x[40];
+			d[1] = x[41];
+			d[2] = x[42];
+			d[3] = x[43];
+			strcpy(x+40,"...");
+			Log(STDTRACELOG, (char*) "`%s`",x);
+			x[40] = d[0];
+			x[41] = d[1];
+			x[42] = d[2];
+			x[43] = d[3];
+			if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)", ");
+		}
+		Log(STDTRACELOG, ")\r\n");
+		Log(STDTRACETABLOG,(char*)"");
+		*ptr = a;
+		++globalDepth;
+	}
+
+	fnVarBase = callArgumentBase = oldArgumentIndex; 
+	*buffer = 0; // remove any leftover argument data
+
+	//   run the definition
+	codeStart = NULL;
+	if (D->internalBits & NOTRACE_FN) trace = 0;
+	if (result & ENDCODES)	ChangeDepth(1,D->word); 
+	else if (callArgumentIndex >= (MAX_ARGUMENT_COUNT-1)) 	// pinned max (though we could legally arrive by accident on this last one)
+	{
+		ChangeDepth(1,D->word);
+		// undo any display variables
+		if (definition && currentFunctionDisplay) RestoreDisplay(basevalues,currentFunctionDisplay);
+		currentFunctionDisplay = oldFunctionDisplay;
+		ReportBug((char*)"User function nesting too deep %d",MAX_ARGUMENT_COUNT);
+		result = FAILRULE_BIT;
+	}
+	else if (definition && (D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
+	{
+		ChangeDepth(1,D->word);
+		result = PlanCode(D,buffer); // run a plan
+	}
+#ifndef DISCARDJAVASCRIPT
+	else if (definition && *definition == '*' && !strncmp((char*)definition,"*JavaScript",11))
+	{
+		ChangeDepth(1,D->word);
+		result = RunJavaScript((char*)definition+11,buffer,args); // point at space after label
+	}
+#endif
+	else if (definition)
+	{
+		codeStart = (char*) definition;
+		ChangeDepth(1,D->word,false,(char*)definition);
+		unsigned int flags = OUTPUT_FNDEFINITION;
+		if (!(D->internalBits & IS_OUTPUT_MACRO)) flags |= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
+		Output((char*)definition,buffer,result,flags);
+	}
+	fnOutput = buffer;
+	ChangeDepth(-1,D->word,false,NULL,result); 
+
+	// undo any display variables
+	if (definition && currentFunctionDisplay) RestoreDisplay(basevalues,currentFunctionDisplay);
+	currentFunctionDisplay = oldFunctionDisplay;
+
+	if (callIndex) --callIndex; // safe decrement
+	if (result & ENDCALL_BIT) result = (FunctionResult) (result ^ ENDCALL_BIT); // terminated user call 
+	return ptr;
+}
+
+char* UserCall(char* buffer,char* ptr, WORDP D,FunctionResult &result,unsigned int firstArgument,
+	unsigned char* &definition,unsigned int oldArgumentBase,unsigned int oldArgumentIndex)
+{
+	unsigned int j = 0;
+	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
+	callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
+	callStack[callIndex++] = D;
+	unsigned int argflags =  D->x.macroFlags;
+	unsigned int args = 0;
+	if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
+	{
+		definition = NULL; 
+		args = D->w.planArgCount;
+	}
+	else if (!D->w.fndefinition)
+	{
+		ReportBug((char*)"Missing function definition for %s\r\n",D->word);
+		result = FAILRULE_BIT;
+	}
+	else 
+	{
+		definition = D->w.fndefinition; 
+		if (IsDigit(*definition)) // new format includes bot id then argflags + argcount+definition
+		{
+			int64 botid;
+			unsigned char* genericfn = NULL;
+			definition = (unsigned char*)ReadInt64((char*)definition,botid); // accept the bot id
+			while (myBot != botid && definition && *definition) // find a better one
+			{
+				if (!botid) genericfn = definition; // this is a generic function usable on all bots
+				definition = (unsigned char*) strchr((char*)definition,'`');
+				if (definition && definition++ && *definition) // skip end marker to either a null or index of next definition
+				{
+					int index = atoi((char*)++definition);
+					definition = (unsigned char*) Index2Heap(index); // chained one
+					definition = (unsigned char*)ReadInt64((char*)definition,botid); // accept the bot id
+				}
+			}
+			if (myBot != botid) definition = genericfn;
+			if (!definition) result = FAILRULE_BIT;
+			else
+			{
+				argflags = atoi((char*) definition); // local form of data
+				while (IsDigit(*++definition)){;} // skip over any new format arg flags
+			}
+		}
+		args = MACRO_ARGUMENT_COUNT(definition); // expected args
+		if (definition) ++definition; // skip over arg count - now pointing to executable code
+	}
+
+	// now process arguments
+	char* startRawArg = ptr;
+    while (definition && ptr && *ptr && *ptr != ')') //   ptr is after opening (and before an arg but may have white space
+    {
+		if (currentRule == NULL) //   this is a table function- DONT EVAL ITS ARGUMENTS AND... keep quoted item intact
+		{
+			ptr = ReadCompiledWord(ptr,buffer); // return dq args as is
+#ifndef DISCARDSCRIPTCOMPILER
+			if (compiling && ptr == NULL) BADSCRIPT((char*)"TABLE-11 Arguments to %s ran out",D->word)
+#endif
+		}
+		else 
+		{
+			bool stripQuotes =  (argflags & ( 1 << j)) ? 1 : 0; // want to use quotes 
+			// arguments to user functions are not evaluated, they will be used, in place, in the function.
+			// EXCEPT evaluation of ^arguments must be immediate to maintain current context- both ^arg and ^"xxx" stuff
+			ptr = ReadArgument(ptr,buffer,result); //   ptr returns on next significant char
+			if (*buffer == '"' && stripQuotes)
+			{
+				size_t len = strlen(buffer);
+				if (buffer[len-1] == '"') 
+				{
+					buffer[len-1] = 0;
+					memmove(buffer,buffer+1,strlen(buffer));
+				}
+				// and purify internal \" to simple quote
+				char* x = buffer;
+				while ((x = strchr(x,'\\')))
+				{
+					if (x[1] == '"') memmove(x,x+1,strlen(x)); // remove 
+				}
+			}
+		}
+		if (*buffer == 0) strcpy(buffer,(char*)"null");// no argument found - caller had null data in argument
+
+		//   within a function, seeing function argument as an argument 
+		//   switch to incoming arg now, later callArgumentBase will be wrong
+		if (*buffer == '^' && IsDigit(buffer[1]) ) strcpy(buffer,callArgumentList[atoi(buffer+1) + fnVarBase]); 
+		if (*buffer == '"' && buffer[1] == ENDUNIT) // internal special quoted item, remove markers.
+		{
+			size_t len = strlen(buffer);
+			if (buffer[len-2] == ENDUNIT)
+			{
+				buffer[len-2] = 0;
+				memmove(buffer,buffer+2,len-1);
+			}
+		}
+		if (*buffer == FUNCTIONSTRING && (buffer[1] == '"' || buffer[1] == '\''))
+		{
+			char* buf = AllocateStack(NULL,MAX_BUFFER_SIZE,false); // initial form expected small
+			size_t len = strlen(buffer);
+			if (len >= (MAX_BUFFER_SIZE-2)) // overflow our intent
+			{
+				ReportBug("FormatString > MAX BUFFER SIZE");
+				result = FAILRULE_BIT;
+				return ptr; // ReleaseStack(buf) also happens when ChangeDepth finishes
+			}
+			strcpy(buf,buffer);
+			ReformatString(buf[1],buf+2,buffer,result,0);
+			ReleaseStack(buf);
+		}
+		if (buffer[0] == USERVAR_PREFIX && strstr(buffer,"$_"))  
+		{
+			char* data = GetUserVariable(buffer)-2;
+			if (buffer[1] == LOCALVAR_PREFIX && buffer[2] == LOCALVAR_PREFIX) // internal variable from jsonreadcsv
+			{
+				callArgumentList[callArgumentIndex++] = data; // shared data ptr
+			}
+			else
+			{
+				strcpy(buffer,data); // NOT by reference but by marked value
+				if (!stricmp(buffer,(char*)"null")) *buffer = 0;	 // pass NOTHING as the value
+				callArgumentList[callArgumentIndex++] = AllocateStack(buffer);
+			}
+		}
+		else 
+		{
+			if (!stricmp(buffer,(char*)"null")) *buffer = 0;	 // pass NOTHING as the value
+			callArgumentList[callArgumentIndex++] = AllocateStack(buffer);
+		}
+
+		if (!callArgumentList[callArgumentIndex-1])
+		{
+			if (callIndex) --callIndex;
+			result = FAILRULE_BIT;
+			return ptr;
+		}
+		if (callArgumentIndex >= MAX_ARGUMENT_COUNT) --callArgumentIndex; // force lock to fail but swallow all args to update ptr
+		++j;
+		ptr = SkipWhitespace(ptr); // yevs pattern doesnt space right
+	} // end of argument processing
+
+	ptr = InvokeUser(buffer,ptr,result,D,definition,oldArgumentIndex,args,firstArgument,startRawArg);
+	return ptr;
+}
+
 char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // DoCall(
 {
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
-	char* start = buffer;
-	 if (!D || !(D->internalBits & FUNCTION_NAME))
+	if (!D || !(D->internalBits & FUNCTION_NAME))
     {
 		result = UNDEFINED_FUNCTION;
 		return ptr; 
 	}
-	char* oldcurrent = currentFunctionName;
-	int oldimpliedIf = impliedIf;
-	*buffer = 0;
-	if (stricmp(name,"^substitute")) impliedIf = ALREADY_HANDLED;	// we all allow immediate if context to pass thru here safely
-	result = NOPROBLEM_BIT;
 	ptr = SkipWhitespace(ptr);
-	if (*ptr != '(') // should have been
+	if (*ptr != '(') // should have been arg list
 	{
 		result = FAILRULE_BIT;
 		return ptr;
 	}
+
+	clock_t start_time = ElapsedMilliseconds();
+	*buffer = 0;
+
+	// restorable context
+	char* oldcurrent = currentFunctionName;
+	int oldimpliedIf = impliedIf;
+	SystemFunctionInfo* info = NULL;
+	char* oldcode = codeStart;
+	char* oldRealCode = realCode;
+	unsigned int oldArgumentBase = callArgumentBase;
+	unsigned int oldArgumentIndex = callArgumentIndex;
+	unsigned int oldFnVarBase = fnVarBase;
+	int oldtrace = trace;
+
+	if (stricmp(name,"^substitute")) impliedIf = ALREADY_HANDLED;	// we all allow immediate if context to pass thru here safely
+	result = NOPROBLEM_BIT;
+
 	if (timerLimit) // check for violating time restriction
 	{
 		if (timerCheckInstance == TIMEOUT_INSTANCE) 
@@ -491,391 +901,23 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 		}
 	}
 
-	char* oldcode = codeStart;
-	char* oldRealCode = realCode;
-	char* paren = ptr;
-	ptr = SkipWhitespace(ptr+1); // aim to next major thing after ( 
-	SystemFunctionInfo* info = NULL;
-	unsigned int oldArgumentBase = callArgumentBase;
-	unsigned int oldArgumentIndex = callArgumentIndex;
-	unsigned char* definition = NULL;
-	unsigned int j = 0;
-	unsigned int oldFnVarBase = fnVarBase;
-	clock_t start_time = ElapsedMilliseconds();
-	unsigned int firstArgument = callArgumentIndex;
 	ChangeDepth(1,""); 
-	bool streamArg = false;
-	int oldtrace = trace;
+
 	currentFunctionName = D->word;
+	bool streamArg = false;
+	unsigned char* definition = NULL;
+	unsigned int firstArgument = callArgumentIndex;
+
 	if (D->x.codeIndex && !(D->internalBits & (IS_PLAN_MACRO|IS_TABLE_MACRO))) // system function --  macroFlags are also on codeindex, but IS_TABLE_MACRO distinguishes  but PLAN also has a topicindex which is a codeindex
 	{
-		callArgumentBase = callArgumentIndex - 1;
+		ptr = SystemCall(buffer,ptr,D,result,streamArg,firstArgument);
 		info = &systemFunctionSet[D->x.codeIndex];
-		char* start = ptr;
-		int flags = 0x00000100;	// do we leave this unevaled?
-		while (ptr && *ptr != ')' && *ptr != ENDUNIT) // read arguments
-		{ 
-			if (info->argumentCount != STREAM_ARG) // break them up
-			{
-				if (info->argumentCount == UNEVALED) ptr = ReadCompiledWordOrCall(ptr,buffer);
-				// unevaled counted arg
-				else if (info->argumentCount != VARIABLE_ARG_COUNT && info->argumentCount & (flags << j)) 
-					ptr = ReadCompiledWord(ptr,buffer);
-				else // VARIABLE ARG OR COUNTED ARG
-				{
-					ptr = GetCommandArg(ptr,buffer,result,OUTPUT_UNTOUCHEDSTRING);
-				}
-				callArgumentList[callArgumentIndex] = AllocateStack(buffer);
-				ptr = SkipWhitespace(ptr);
-				if (callArgumentList[callArgumentIndex] && callArgumentList[callArgumentIndex][0] == USERVAR_PREFIX &&
-					strstr(callArgumentList[callArgumentIndex],"$_")) // NOT by reference but by value somewhere in the chain
-				{
-					callArgumentList[callArgumentIndex] = AllocateStack(GetUserVariable(callArgumentList[callArgumentIndex])); // pass by unmarked value - no one will try to store thru it
-				}
-				++j;
-				if (result != NOPROBLEM_BIT) goto TERMINATE;  // arg failed
-			}
-			else // swallow unevaled arg stream
-			{
-				ptr = BalanceParen(paren,false,false);  // start after (, point after closing ) if one can, to next token - it may point 2 after )  or it may point 1 after )
-				while (*--ptr != ')'){;} // back up to closing
-				size_t len = ptr++ - start; // length of argument bytes not including paren, and end up after paren
-				while (start[len-1] == ' ') --len; // dont want trailing blanks
-				callArgumentList[callArgumentIndex] = AllocateStack(start,len);
-				streamArg = true;
-			}
-			if (!callArgumentList[callArgumentIndex])
-			{
-				ReportBug("Stack space exhausted %s",D->word);
-				result = FAILRULE_BIT;
-				goto TERMINATE;
-			}
-
-			if (++callArgumentIndex >= MAX_ARG_LIST) 
-			{
-				ReportBug("Globally too many arguments %s",D->word);
-				result = FAILRULE_BIT;
-				goto TERMINATE;
-			}
-			if (info->argumentCount == STREAM_ARG) break; // end of arguments
-			ptr = SkipWhitespace(ptr);
-		}
-		callArgumentList[callArgumentIndex] = (char*) ""; 
-		callArgumentList[callArgumentIndex+1] = (char*) ""; // optional arguments excess
-		callArgumentList[callArgumentIndex+2] = (char*) ""; // optional arguments excess
-		callArgumentList[callArgumentIndex+3] = (char*) ""; 
-		callArgumentList[callArgumentIndex+4] = (char*) ""; // optional arguments excess
-		callArgumentList[callArgumentIndex+5] = (char*) ""; // optional arguments excess
-		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
-		{
-			--globalDepth; // patch depth because call data should be outside of depth
-			Log(STDTRACETABLOG,(char*) "System call %s(",D->word);
-			for (unsigned int i = firstArgument; i < callArgumentIndex; ++i)
-			{	
-				char c = callArgumentList[i][120];
-				callArgumentList[i][120] = 0;
-				Log(STDTRACELOG, (char*) "`%s`",callArgumentList[i]);
-				if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)",");
-				callArgumentList[i][120] = c;
-			}
-			Log(STDTRACELOG, ")\r\n");
-			++globalDepth;
-		}
-		*buffer = 0; // remove any leftover argument data
-		if (result & ENDCODES); // failed during argument processing
-		else 
-		{
-			ChangeDepth(1,D->word); 
-			if (streamArg) ChangeDepth(1,"");  // argument processing by streamer is invisible to step
-			result = (*info->fn)(buffer);
-			fnOutput = start;
-			if (streamArg) ChangeDepth(-1,"",true); 
-			ChangeDepth(-1,D->word,streamArg); 
-		}
 	} 
 	else //   user function (plan macro, inputmacro, outputmacro, tablemacro)) , eg  ^call (_10 ^2 it ^call2 (3 ) )  spot each token has 1 space separator 
 	{
-		callArgumentBases[callIndex] = callArgumentIndex - 1; // call stack
-		callStack[callIndex++] = D;
-		unsigned int argflags =  D->x.macroFlags;
-		unsigned int args = 0;
-		if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
-		{
-			definition = NULL; 
-			args = D->w.planArgCount;
-		}
-		else if (!D->w.fndefinition)
-		{
-			ReportBug((char*)"Missing function definition for %s\r\n",D->word);
-			result = FAILRULE_BIT;
-		}
-		else 
-		{
-			definition = D->w.fndefinition; 
-			if (IsDigit(*definition)) // new format includes bot id then argflags + argcount+definition
-			{
-				int64 botid;
-				unsigned char* genericfn = NULL;
-				definition = (unsigned char*)ReadInt64((char*)definition,botid); // accept the bot id
-				while (myBot != botid && definition && *definition) // find a better one
-				{
-					if (!botid) genericfn = definition; // this is a generic function usable on all bots
-					definition = (unsigned char*) strchr((char*)definition,'`');
-					if (definition && definition++ && *definition) // skip end marker to either a null or index of next definition
-					{
-						int index = atoi((char*)++definition);
-						definition = (unsigned char*) Index2Heap(index); // chained one
-						definition = (unsigned char*)ReadInt64((char*)definition,botid); // accept the bot id
-					}
-				}
-				if (myBot != botid) definition = genericfn;
-				if (!definition) result = FAILRULE_BIT;
-				else
-				{
-					argflags = atoi((char*) definition); // local form of data
-					while (IsDigit(*++definition)){;} // skip over any new format arg flags
-				}
-			}
-			args = MACRO_ARGUMENT_COUNT(definition); // expected args
-			if (definition) ++definition; // skip over arg count - now pointing to executable code
-		}
-
-		// now process arguments
-		char* startRawArg = ptr;
-        while (definition && ptr && *ptr && *ptr != ')') //   ptr is after opening (and before an arg but may have white space
-        {
-			if (currentRule == NULL) //   this is a table function- DONT EVAL ITS ARGUMENTS AND... keep quoted item intact
-			{
-				ptr = ReadCompiledWord(ptr,buffer); // return dq args as is
-#ifndef DISCARDSCRIPTCOMPILER
-				if (compiling && ptr == NULL) BADSCRIPT((char*)"TABLE-11 Arguments to %s ran out",name)
-#endif
-			}
-			else 
-			{
-				bool stripQuotes =  (argflags & ( 1 << j)) ? 1 : 0; // want to use quotes 
-				// arguments to user functions are not evaluated, they will be used, in place, in the function.
-				// EXCEPT evaluation of ^arguments must be immediate to maintain current context- both ^arg and ^"xxx" stuff
-				ptr = ReadArgument(ptr,buffer,result); //   ptr returns on next significant char
-				if (*buffer == '"' && stripQuotes)
-				{
-					size_t len = strlen(buffer);
-					if (buffer[len-1] == '"') 
-					{
-						buffer[len-1] = 0;
-						memmove(buffer,buffer+1,strlen(buffer));
-					}
-					// and purify internal \" to simple quote
-					char* x = buffer;
-					while ((x = strchr(x,'\\')))
-					{
-						if (x[1] == '"') memmove(x,x+1,strlen(x)); // remove 
-					}
-				}
-			}
-			if (*buffer == 0) strcpy(buffer,(char*)"null");// no argument found - caller had null data in argument
-
-			//   within a function, seeing function argument as an argument 
-			//   switch to incoming arg now, later callArgumentBase will be wrong
-			if (*buffer == '^' && IsDigit(buffer[1]) ) strcpy(buffer,callArgumentList[atoi(buffer+1) + fnVarBase]); 
-			if (*buffer == '"' && buffer[1] == ENDUNIT) // internal special quoted item, remove markers.
-			{
-				size_t len = strlen(buffer);
-				if (buffer[len-2] == ENDUNIT)
-				{
-					buffer[len-2] = 0;
-					memmove(buffer,buffer+2,len-1);
-				}
-			}
-			if (*buffer == FUNCTIONSTRING && (buffer[1] == '"' || buffer[1] == '\''))
-			{
-				char* buf = AllocateStack(NULL,MAX_BUFFER_SIZE,false); // initial form expected small
-				size_t len = strlen(buffer);
-				if (len >= (MAX_BUFFER_SIZE-2)) // overflow our intent
-				{
-					ReportBug("FormatString > MAX BUFFER SIZE");
-					result = FAILRULE_BIT;
-					goto TERMINATE; // ReleaseStack(buf) also happens when ChangeDepth finishes
-				}
-				strcpy(buf,buffer);
-				ReformatString(buf[1],buf+2,buffer,result,0);
-				ReleaseStack(buf);
-			}
-			if (buffer[0] == USERVAR_PREFIX && strstr(buffer,"$_"))  strcpy(buffer,GetUserVariable(buffer)-2); // NOT by reference but by marked value
-				
-			if (!stricmp(buffer,(char*)"null")) *buffer = 0;	 // pass NOTHING as the value
-
-			callArgumentList[callArgumentIndex++] = AllocateStack(buffer);
-			if (!callArgumentList[callArgumentIndex-1])
-			{
-				if (callIndex) --callIndex;
-				result = FAILRULE_BIT;
-				goto TERMINATE;
-			}
-			if (callArgumentIndex >= MAX_ARGUMENT_COUNT) --callArgumentIndex; // force lock to fail but swallow all args to update ptr
-			++j;
-			ptr = SkipWhitespace(ptr); // yevs pattern doesnt space right
-		} // end of argument processing
-
-		// handle any display variables
-		char* basevalues = 0;
-		char* oldFunctionDisplay = currentFunctionDisplay;
-		currentFunctionDisplay = 0;
-		if ((D->internalBits & FUNCTION_BITS) != IS_PLAN_MACRO && definition && definition[0] == '(')
-		{
-			currentFunctionDisplay = (char*)(definition);
-			basevalues = stackFree; // here is where we allocate values
-			definition = (unsigned char*) InitDisplay((char*)definition); // will return 0 if runs out of heap space
-			if (!definition) result = FAILRULE_BIT;
-		}
-	
-		// now do defaulted null arguments
-		while (definition && (callArgumentIndex - oldArgumentIndex) < args) // fill in defaulted args to null
-		{
-			callArgumentList[callArgumentIndex++] = AllocateStack("",0);
-		}
-
-		// now if args are local vars instead of ^, set them up (we have protected them by now)
-		char var[MAX_WORD_SIZE];
-		char* list = (currentFunctionDisplay) ? (currentFunctionDisplay + 2) : NULL;	// skip ( and space xxxx
-		if (list) for (unsigned int i = oldArgumentIndex; i < callArgumentIndex; ++i)
-		{
-			list = ReadCompiledWord(list,var); 
-			if (*var == USERVAR_PREFIX) 
-			{
-				WORDP arg = FindWord(var);
-				if (!arg) continue;	// should never happen
-				char* val = callArgumentList[i]; // constants wont have `` in front of them
-				if (*val == USERVAR_PREFIX) val = GetUserVariable(val);
-				else if (*val == SYSVAR_PREFIX) 
-				{
-					Output(val,buffer,result,0);
-					val = AllocateStack(buffer,0,true);
-					*buffer = 0;
-				}
-				else if (val[0] == ENDUNIT && val[1] == ENDUNIT) val += 2; // skip over noeval marker
-				else if (val[0] == '\'' && val[1] == '_' && IsDigit(val[2]))
-				{
-					int id = GetWildcardID(val+1);
-					if (id >= 0) val = AllocateStack(wildcardCanonicalText[id],0,true);
-					else val = AllocateStack("");
-				}
-				else if (val[0] == '_' && IsDigit(val[1]))
-				{
-					int id = GetWildcardID(val);
-					if (id >= 0) val = AllocateStack(wildcardOriginalText[id],0,true);
-					else val = AllocateStack("");
-				}
-				if (*val && *(val-2) != '`' && *(val-1) != '`') 
-					val = AllocateStack(val,0,true);
-				arg->w.userValue = val;
-			}
-		}
-
-		if (D->internalBits & MACRO_TRACE && !(D->internalBits & NOTRACE_FN)) trace = (unsigned int) D->inferMark;
-
-		if ((trace & (TRACE_OUTPUT|TRACE_USERFN) || D->internalBits & MACRO_TRACE) && !(D->internalBits & NOTRACE_FN) && CheckTopicTrace()) 
-		{
-			--globalDepth; // patch depth because call data should be outside of depth
-			char a = *ptr;
-			*ptr = 0;
-			Log(STDTRACETABLOG,(char*) "User call %s(%s):(",D->word,startRawArg);
-			for (unsigned int i = firstArgument; i < callArgumentIndex; ++i)
-			{	
-				char* x = callArgumentList[i];
-				if (*x == USERVAR_PREFIX) 
-				{
-					strncpy(buffer,GetUserVariable(x,false,true),40);
-					x = buffer;
-				}
-				else if (*x == '_' && IsDigit(x[1])) 
-				{
-					int id = GetWildcardID(x);
-					if (id >= 0) 
-					{
-						strncpy(buffer,wildcardOriginalText[id],40);
-						x = buffer;
-					}
-				}
-				else if (*x == '\'' && x[1] == '_' && IsDigit(x[2])) 
-				{
-					int id = GetWildcardID(x+1);
-					if (id >= 0) 
-					{
-						strncpy(buffer,wildcardCanonicalText[id],40);
-						x = buffer;
-					}
-				}
-				else if (*x == LCLVARDATA_PREFIX) x += 2; // skip ``
-
-				// limited to 40, provide ... and restore
-				char d[4];
-				d[0] = x[40];
-				d[1] = x[41];
-				d[2] = x[42];
-				d[3] = x[43];
-				strcpy(x+40,"...");
-				Log(STDTRACELOG, (char*) "`%s`",x);
-				x[40] = d[0];
-				x[41] = d[1];
-				x[42] = d[2];
-				x[43] = d[3];
-				if (i < (callArgumentIndex - 1)) Log(STDTRACELOG, (char*)", ");
-			}
-			Log(STDTRACELOG, ")\r\n");
-			Log(STDTRACETABLOG,(char*)"");
-			*ptr = a;
-			++globalDepth;
-		}
-
-		fnVarBase = callArgumentBase = oldArgumentIndex; 
-		*buffer = 0; // remove any leftover argument data
-
-		//   run the definition
-		codeStart = NULL;
-		if (D->internalBits & NOTRACE_FN) trace = 0;
-		if (result & ENDCODES)	ChangeDepth(1,D->word); 
-		else if (callArgumentIndex >= (MAX_ARGUMENT_COUNT-1)) 	// pinned max (though we could legally arrive by accident on this last one)
-		{
-			ChangeDepth(1,D->word);
-			// undo any display variables
-			if (definition && currentFunctionDisplay) RestoreDisplay(basevalues,currentFunctionDisplay);
-			currentFunctionDisplay = oldFunctionDisplay;
-			ReportBug((char*)"User function nesting too deep %d",MAX_ARGUMENT_COUNT);
-			result = FAILRULE_BIT;
-		}
-		else if (definition && (D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
-		{
-			ChangeDepth(1,D->word);
-			result = PlanCode(D,buffer); // run a plan
-		}
-#ifndef DISCARDJAVASCRIPT
-		else if (definition && *definition == '*' && !strncmp((char*)definition,"*JavaScript",11))
-		{
-			ChangeDepth(1,D->word);
-			result = RunJavaScript((char*)definition+11,buffer,args); // point at space after label
-		}
-#endif
-		else if (definition)
-		{
-			codeStart = (char*) definition;
-			ChangeDepth(1,D->word,false,(char*)definition);
-			unsigned int flags = OUTPUT_FNDEFINITION;
-			if (!(D->internalBits & IS_OUTPUT_MACRO)) flags |= OUTPUT_NOTREALBUFFER;// if we are outputmacro, we are merely extending an existing buffer
-			Output((char*)definition,buffer,result,flags);
-		}
-		fnOutput = start;
-		ChangeDepth(-1,D->word,streamArg,NULL,result); 
-
-		// undo any display variables
-		if (definition && currentFunctionDisplay) RestoreDisplay(basevalues,currentFunctionDisplay);
-		currentFunctionDisplay = oldFunctionDisplay;
-
-		if (callIndex) --callIndex; // safe decrement
-		if (result & ENDCALL_BIT) result = (FunctionResult) (result ^ ENDCALL_BIT); // terminated user call 
+		ptr = UserCall(buffer,ptr,D,result,firstArgument,definition,oldArgumentBase,oldArgumentIndex);
 	} // end user function
 
-TERMINATE:
 	fnVarBase = oldFnVarBase;
 	ChangeDepth(-1,"",streamArg); // dont cut back ReleaseStacks of a stream
 	// things like ^notrace(_$x = 5) should not endanger the variable in outer scope
@@ -935,11 +977,11 @@ TERMINATE:
 	callArgumentBase = oldArgumentBase;
 	currentFunctionName = oldcurrent;
 	codeStart = oldcode;
+	impliedIf = oldimpliedIf;
 	realCode = oldRealCode;
 
 	trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
 
-	impliedIf = oldimpliedIf;
 	if (ptr && *ptr == ')') // skip ) and space if there is one...
 	{
 		if (ptr[1] == ' ') return ptr+2; // if this is a pattern comparison, this will NOT be a space, but will be a comparison op instead missing it
@@ -2508,7 +2550,8 @@ static FunctionResult MarkCode(char* buffer)
 	NextInferMark();
 	if (showMark || (trace & TRACE_PREPARE)) Log(ECHOSTDTRACELOG,(char*)"Mark %s: \r\n",D->word);
 	if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"mark all @word %d ",D->word);
-	MarkFacts(M,startPosition,endPosition);
+	bool ucase = D->internalBits & UPPERCASE_HASH ? true : false;
+	MarkFacts(ucase,M,startPosition,endPosition);
 	if (showMark) Log(ECHOSTDTRACELOG,(char*)"------\r\n");
 	*buffer = 0;
 	return NOPROBLEM_BIT;
@@ -3360,10 +3403,10 @@ static FunctionResult InsertPrintCode(char* buffer)
 	
 	if (*beforeIndex == '~') // put before 1st reference to this topic
 	{
-		int topic = FindTopicIDByName(beforeIndex);
+		int topicid = FindTopicIDByName(beforeIndex);
 		for (int i = responseIndex-1; i > 0; --i)
 		{
-			if (topic == responseData[responseOrder[i]].topic) index = responseOrder[i];
+			if (topicid == responseData[responseOrder[i]].topic) index = responseOrder[i];
 		}	
 	}
 	else if (IsDigit(*beforeIndex)) // numeric index he gives must be 1 based, eg before %response 
@@ -3445,7 +3488,8 @@ static FunctionResult SetPronounCode(char* buffer)
 	if (startPosition < 1) startPosition = 1;
 	if (startPosition > wordCount)  startPosition = wordCount;
 	WORDP D = StoreWord(word);
-	MarkFacts(MakeMeaning(D),startPosition,startPosition);
+	bool ucase = D->internalBits & UPPERCASE_HASH ? true : false;
+	MarkFacts(ucase,MakeMeaning(D),startPosition,startPosition);
 
 	WORDP entry;
 	WORDP canonical;
@@ -3503,6 +3547,46 @@ static FunctionResult ResponseRuleIDCode(char* buffer)
 //////////////////////////////////////////////////////////
 /// POSTPROCESSING FUNCTIONS
 //////////////////////////////////////////////////////////
+
+static FunctionResult TokenizeCode(char* buffer)
+{
+	if (impliedSet != ALREADY_HANDLED) SET_FACTSET_COUNT(impliedSet,0);
+	char* limit;
+	int index = 0;
+	char* ptr = ARGUMENT(1);
+	MEANING M = MakeMeaning(StoreWord("^tokenize"));
+	// each sentence becomes a transient fact
+	while (ptr && *ptr) // find sentences of response
+	{
+		char* old = ptr;
+		int count;
+		char* starts[MAX_SENTENCE_LENGTH];
+		memset(starts,0,sizeof(char*)*MAX_SENTENCE_LENGTH);
+		ptr = Tokenize(ptr,count,(char**) starts,false,true);   //   only used to locate end of sentence but can also affect tokenFlags (no longer care)
+
+		//   save sentences as facts
+		char* copy = InfiniteStack(limit,"FactizeResult"); // localized
+		char* at = copy;
+		for (int i = 1; i <= count; ++i)
+		{
+			strcpy(at,starts[i]);
+			at += strlen(at);
+			*at++ = ' ';
+		}
+		*at = 0;
+		CompleteBindStack();
+		FACT* F = CreateFact(MakeMeaning(StoreWord(copy,AS_IS)),M,M,FACTTRANSIENT);
+		if (impliedSet != ALREADY_HANDLED) factSet[impliedSet][++index] = F;
+		ReleaseStack(copy);
+	}
+	if (impliedSet != ALREADY_HANDLED) 
+	{
+		SET_FACTSET_COUNT(impliedSet,index);
+		impliedSet = ALREADY_HANDLED;
+	}
+	currentFact = NULL;
+	return NOPROBLEM_BIT;
+}
 
 static FunctionResult AnalyzeCode(char* buffer)
 {
@@ -4099,15 +4183,20 @@ void ResetBaseMemory()
 FunctionResult MemoryFreeCode(char* buffer)
 {
 	if (!memoryText) return FAILRULE_BIT;
+	char* val = ARGUMENT(1);
 	memset(wordStarts,0,sizeof(char*)*MAX_SENTENCE_LENGTH);
 	for (unsigned int i = 0; i < MAX_SENTENCE_LENGTH; ++i) 
 	{
 		if (wordStarts[i] && wordStarts[i] < memoryText)
 			wordStarts[i] = 0;	// do not point to released space
 	}
-	ClearUserVariables(memoryText); // reset any above and delete from list but leave alone ones below
-	ResetFactSystem(memoryFact);// empties all fact sets and releases facts above marker
-	DictionaryRelease(memoryDict,memoryText); // word & text
+    if (strstr(val, "variables")) MigrateUserVariables(memoryText);// keep vars by gc
+	else ClearUserVariables(memoryText); // reset any above and delete from list but leave alone ones below
+    if (strstr(val, "variables")) RecoverUserVariables(memoryText);// keep vars by gc
+
+	if (!val || strstr(val,"fact")) ResetFactSystem(memoryFact);// empties all fact sets and releases facts above marker
+	if (!val || !strstr(val,"dictionary")) DictionaryRelease(memoryDict,memoryText); // word & text
+	else DictionaryRelease(NULL,memoryText); // just text, leave dict entries in place
 	return NOPROBLEM_BIT;
 }
 
@@ -4136,14 +4225,14 @@ FunctionResult InContextCode(char* buffer)
 {
 	char* arg = ARGUMENT(1);
 	char* dot = strchr(arg,'.');
-	int topic = currentTopicID;
+	int topicid = currentTopicID;
 	if (dot) 
 	{
 		*dot = 0;
-		topic = FindTopicIDByName(arg);
+        topicid = FindTopicIDByName(arg);
 		arg = dot + 1;
 	}
-	unsigned int turn = InContext(topic,arg);
+	unsigned int turn = InContext(topicid,arg);
 	if (turn == 0) return FAILRULE_BIT;
 	sprintf(buffer,(char*)"%d",turn);
 	return NOPROBLEM_BIT;
@@ -4197,8 +4286,8 @@ FunctionResult CallstackCode(char* buffer)
 	for (int i = 1; i < globalDepth; ++i) // dont include the call to callstack
 	{
 		if (*nameDepth[i]) { // not everything is named on the depth chart
-			char* topic = GetTopicName(atoi((char*)tagDepth[i]));
-			sprintf(tag, "%s%s", topic, strchr((char*)tagDepth[i], '.'));
+			char* topicname = GetTopicName(atoi((char*)tagDepth[i]));
+			sprintf(tag, "%s%s", topicname, strchr((char*)tagDepth[i], '.'));
 			factSet[n][++frame] = CreateFact(MakeMeaning(StoreWord(nameDepth[i])), MakeMeaning(StoreWord("callstack")), MakeMeaning(StoreWord(tag)), FACTTRANSIENT);
 		}
 	}
@@ -5734,7 +5823,7 @@ static FunctionResult AddPropertyCode(char* buffer)
 				}
 				AddProperty(D,val1);
 				AddSystemFlag(D,sysval);
-				if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s\n",D->word);
+				if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s\r\n",D->word);
 			}
 		}
 	}
@@ -5925,7 +6014,7 @@ static FunctionResult RemovePropertyCode(char* buffer)
 			{
 				RemoveProperty(D,val);
 				RemoveSystemFlag(D,sysval);
-				if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s\n",D->word);
+				if (trace & TRACE_INFER && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s\r\n",D->word);
 			}
 		}
 	}
@@ -5956,7 +6045,7 @@ static FunctionResult DisableCode(char* buffer)
 	{
 		if (planning) return FAILRULE_BIT;
 		int id = 0;
-		int topic = currentTopicID;
+		int topicid = currentTopicID;
 		bool fulllabel;
 		bool crosstopic;
 		char* rule;
@@ -5966,10 +6055,10 @@ static FunctionResult DisableCode(char* buffer)
 			rule = currentRule;
 			id = currentRuleID;
 		}
-		else if (dot && IsDigit(dot[1])) rule = GetRuleTag(topic,id,arg2);
-		else rule = GetLabelledRule(topic,arg2,(char*)"",fulllabel,crosstopic,id,currentTopicID);
+		else if (dot && IsDigit(dot[1])) rule = GetRuleTag(topicid,id,arg2);
+		else rule = GetLabelledRule(topicid,arg2,(char*)"",fulllabel,crosstopic,id,currentTopicID);
 		if (!rule) return FAILRULE_BIT;
-		SetRuleDisableMark(topic,id);
+		SetRuleDisableMark(topicid,id);
 		return NOPROBLEM_BIT;
 	}
 	else if (!stricmp(arg1,(char*)"rejoinder") || !stricmp(arg1,(char*)"outputrejoinder"))
@@ -6025,16 +6114,16 @@ static FunctionResult EnableCode(char* buffer)
 	{
 		if (planning) return FAILRULE_BIT;
 		int id = 0;
-		int topic = currentTopicID;
+		int topicid = currentTopicID;
 		bool fulllabel;
 		bool crosstopic;
 		char* rule;
 		char* dot = strchr(arg2,'.');
-		if (dot && IsDigit(dot[1])) rule = GetRuleTag(topic,id,arg2);
-		else rule = GetLabelledRule(topic,arg2,ARGUMENT(3),fulllabel,crosstopic,id,currentTopicID);
+		if (dot && IsDigit(dot[1])) rule = GetRuleTag(topicid,id,arg2);
+		else rule = GetLabelledRule(topicid,arg2,ARGUMENT(3),fulllabel,crosstopic,id,currentTopicID);
 		if (!rule) return FAILRULE_BIT;
-		UndoErase(rule,topic,id);
-		AddTopicFlag(topic,TOPIC_USED); 
+		UndoErase(rule,topicid,id);
+		AddTopicFlag(topicid,TOPIC_USED); 
 		return NOPROBLEM_BIT;
 	}
 	else if (!stricmp(ARGUMENT(1),(char*)"save")) 
@@ -6150,14 +6239,14 @@ static FunctionResult NextCode(char* buffer)
 		bool gambit = (*arg1 == 'G' || *arg1 == 'g');
 		bool responder = !stricmp(arg1,(char*)"responder");
 		bool rejoinder = !stricmp(arg1,(char*)"rejoinder");
-		int topic = currentTopicID;
+		int topicid = currentTopicID;
 		int id;
 		bool fulllabel = false;
 		bool crosstopic = false;
 		char* rule;
 		char* dot = strchr(arg2,'.');
-		if (dot && IsDigit(dot[1])) rule = GetRuleTag(topic,id,arg2);
-		else rule = GetLabelledRule(topic,arg2,arg2,fulllabel,crosstopic,id,currentTopicID);
+		if (dot && IsDigit(dot[1])) rule = GetRuleTag(topicid,id,arg2);
+		else rule = GetLabelledRule(topicid,arg2,arg2,fulllabel,crosstopic,id,currentTopicID);
 		if (!rule) return FAILRULE_BIT; // unable to find labelled rule 
 
 		char* data = rule;
@@ -6173,7 +6262,7 @@ static FunctionResult NextCode(char* buffer)
 			else if (!gambit && !responder && !rejoinder) break;	// any next rule
 		}
 		if (!data || !*data) return FAILRULE_BIT;
-		sprintf(buffer,(char*)"%s.%d.%d",GetTopicName(topic),TOPLEVELID(id),REJOINDERID(id));
+		sprintf(buffer,(char*)"%s.%d.%d",GetTopicName(topicid),TOPLEVELID(id),REJOINDERID(id));
 	}
 	return NOPROBLEM_BIT;
 }
@@ -6287,12 +6376,12 @@ static FunctionResult ResetCode(char* buffer)
 	else if (!stricmp(word,(char*)"TOPIC"))
 	{
 		word = ARGUMENT(2);
-		int topic;
+		int topicid;
 		if (*word == '*' && word[1] == 0) // all topics
 		{
 			if (!all) ResetTopics(); 
 		}
-		else if ((topic = FindTopicIDByName(word))) ResetTopic(topic);
+		else if ((topicid = FindTopicIDByName(word))) ResetTopic(topicid);
 		else return FAILRULE_BIT;
 		return NOPROBLEM_BIT;
 	}
@@ -7360,7 +7449,7 @@ static FunctionResult IntersectFactsCode(char* buffer)
 		unsigned int limit = FACTSET_COUNT(toset);
 		for (i = 1; i <= limit; ++i)
 		{
-			WORDP D;
+			WORDP X;
 			F = factSet[toset][i];
 			if (!F) continue;
 			if (trace & TRACE_INFER && CheckTopicTrace())   TraceFact(F);
@@ -7369,12 +7458,12 @@ static FunctionResult IntersectFactsCode(char* buffer)
  			else if (toKind == 'o') Meaning2Word(F->object)->inferMark = usedMark;
 			else // mark all pieces
 			{
-				D = Meaning2Word(F->subject);
-				D->inferMark = usedMark;
-				D = Meaning2Word(F->verb);
-				D->inferMark = usedMark;
-				D = Meaning2Word(F->object);
-				D->inferMark = usedMark;
+				X = Meaning2Word(F->subject);
+				X->inferMark = usedMark;
+				X = Meaning2Word(F->verb);
+				X->inferMark = usedMark;
+				X = Meaning2Word(F->object);
+				X->inferMark = usedMark;
 				F->flags |= MARKED_FACT;
 			}
 		}
@@ -7956,6 +8045,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^setrole",SetRoleCode,2,SAMELINE,(char*)"for word n, set its parse role value"}, 
 
 	{ (char*)"\r\n---- Input",0,0,0,(char*)""},
+	{ (char*)"^tokenize",TokenizeCode,1,0,(char*)"generate facts from sentences of arguments"}, 
 	{ (char*)"^analyze",AnalyzeCode,STREAM_ARG,0,(char*)"Take an output stream and do preparation on it like it was user input"}, 
 	{ (char*)"^capitalized",CapitalizedCode,1,SAMELINE,(char*)"given index of word in sentence return 1 or 0 for whether user capitalized it"}, 
 	{ (char*)"^decodepos",DecodePosCode,2,SAMELINE,(char*)"decode into text the pos bits of given pos (POS) or role (ROLE) "}, 
@@ -8016,7 +8106,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^load",LoadCode,1,0,(char*)"Dynamic load of a layer as layer 2"},
 	{ (char*)"^match",MatchCode,STREAM_ARG,0,(char*)"Perform given pattern match"},
 	{ (char*)"^matches",MatchesCode,0,0,(char*)"note the indexes of the words matched by the most recent pattern"},
-	{ (char*)"^memoryfree",MemoryFreeCode,0,0,(char*)"release dict,fact,text allocated since last memorymark"},
+	{ (char*)"^memoryfree",MemoryFreeCode,VARIABLE_ARG_COUNT,0,(char*)"release dict,fact,text allocated since last memorymark"},
 	{ (char*)"^memorymark",MemoryMarkCode,0,0,(char*)"note memory information for later memory free"}, 
 	{ (char*)"^norejoinder",NoRejoinderCode,0,0,(char*)"block assigning rejoinder from this rule"}, 
 	{ (char*)"^nofail",NoFailCode,STREAM_ARG,0,(char*)"execute script but ignore all failures thru some level"}, 

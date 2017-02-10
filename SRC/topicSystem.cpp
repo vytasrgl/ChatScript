@@ -854,7 +854,7 @@ static bool HasDebugRuleMark(int topicid)
 		if (block->topicDebugRule[i]) 
 		{
 			tracing = true;
-			Log(STDTRACELOG,(char*)" Some rule(s) being traced in %s\n",GetTopicName(topicid));
+			Log(STDTRACELOG,(char*)" Some rule(s) being traced in %s\r\n",GetTopicName(topicid));
 
 		}
 	}
@@ -907,7 +907,7 @@ static bool HasTimingRuleMark(int topicid)
 		if (block->topicTimingRule[i])
 		{
 			doTiming = true;
-			Log(STDTRACELOG, (char*)" Some rule(s) being timed in %s\n", GetTopicName(topicid));
+			Log(STDTRACELOG, (char*)" Some rule(s) being timed in %s\r\n", GetTopicName(topicid));
 
 		}
 	}
@@ -2244,7 +2244,7 @@ static void ReadPatternData(const char* fname,const char* layer,unsigned int bui
 		WORDP old = FindWord(name);
 		if (old && (old->systemFlags & PATTERN_WORD)) old = NULL;	// old is not changing value at all
 		else if (build != BUILD2) old = NULL; // only protect from a layer 2 load
-		StoreWord(name,0,PATTERN_WORD);
+		StoreWord(name,0,PATTERN_WORD|build);
 		// if old was not previously pattern word and it is now, we will have to unwind on unload. If new word, word gets unwound automatically
 		if (old)
 		{
@@ -2326,6 +2326,7 @@ static void AddRecursiveRequired(WORDP D,WORDP set,uint64 type,bool buildDiction
 		F = GetObjectNondeadNext(F);
 	}
 }
+
 static void AddRecursiveFlag(WORDP D,uint64 type,bool buildDictionary,unsigned int build)
 {
 	AddSystemFlag(D,type);
@@ -2337,6 +2338,21 @@ static void AddRecursiveFlag(WORDP D,uint64 type,bool buildDictionary,unsigned i
 	while (F)
 	{
 		AddRecursiveFlag(Meaning2Word(F->subject),type,buildDictionary,build); // but may NOT have been defined yet!!!
+		F = GetObjectNondeadNext(F);
+	}
+}
+
+static void AddRecursiveInternal(WORDP D,unsigned int intbits,bool buildDictionary,unsigned int build)
+{
+	AddInternalFlag(D,intbits);
+	if (buildDictionary) AddSystemFlag(D,MARKED_WORD);
+	if (*D->word != '~') return;
+	if (D->inferMark == inferMark) return;
+	D->inferMark = inferMark;
+	FACT* F = GetObjectNondeadHead(D);
+	while (F)
+	{
+		AddRecursiveInternal(Meaning2Word(F->subject),intbits,buildDictionary,build); // but may NOT have been defined yet!!!
 		F = GetObjectNondeadNext(F);
 	}
 }
@@ -2360,6 +2376,7 @@ void InitKeywords(const char* fname,const char* layer,unsigned int build,bool bu
 	unsigned int holdindex = 0;
 	uint64 type = 0;
 	uint64 sys = 0;
+	unsigned int intbits = 0;
 	unsigned int parse= 0;
 	unsigned int required = 0;
 	StartFile(fname);
@@ -2368,16 +2385,17 @@ void InitKeywords(const char* fname,const char* layer,unsigned int build,bool bu
 	WORDP set = NULL;
 	while (ReadALine(readBuffer, in)>= 0) //~hate (~dislikeverb )
 	{
-		parse = 0;
-		required = 0;
-		type = 0;
-		sys = 0;
 		char word[MAX_WORD_SIZE];
 		*word = 0;
 		char name[MAX_WORD_SIZE];
 		char* ptr = readBuffer;
 		if (*readBuffer == '~' || endseen || *readBuffer == 'T') // concept, not-a-keyword, topic
 		{
+			parse = 0;
+			required = 0;
+			type = 0;
+			sys = 0;
+			intbits = 0;
 			// get the main concept name
 			ptr = ReadCompiledWord(ptr,word); //   leaves ptr on next good word
 			if (*word == 'T') memmove(word,word+1,strlen(word));
@@ -2387,14 +2405,14 @@ void InitKeywords(const char* fname,const char* layer,unsigned int build,bool bu
 			AddInternalFlag(set,(unsigned int) (CONCEPT|build));// sets and concepts are both sets. Topics get extra labelled on script load
 			if (buildDictionary) AddSystemFlag(set,MARKED_WORD);
 			if (set->internalBits & DELETED_MARK && !(set->internalBits & TOPIC)) RemoveInternalFlag(set,DELETED_MARK); // restore concepts but not topics
-
+			
 			// read any properties to mark on the members
 			while (*ptr != '(' && *ptr != '"')
 			{
 				ptr = ReadCompiledWord(ptr,word);
 				if (!stricmp(word,(char*)"UPPERCASE_MATCH"))
 				{
-					AddInternalFlag(set,UPPERCASE_MATCH);
+					intbits |= UPPERCASE_MATCH;
 					continue;
 				}
 				uint64 val = FindValueByName(word);
@@ -2414,6 +2432,7 @@ void InitKeywords(const char* fname,const char* layer,unsigned int build,bool bu
 			AddProperty(set,type);
 			AddSystemFlag(set,sys); 
 			AddParseBits(set,parse); 
+			AddInternalFlag(set,intbits);
 			if (sys & DELAYED_RECURSIVE_DIRECT_MEMBER) sys ^= DELAYED_RECURSIVE_DIRECT_MEMBER; // only mark top set for this recursive membership
 			char* dot = strchr(word,'.');
 			if (dot) // convert the topic family to the root name --- BUG breaks with amazon data...
@@ -2476,6 +2495,7 @@ void InitKeywords(const char* fname,const char* layer,unsigned int build,bool bu
 				AddSystemFlag(D,sys);
 				AddParseBits(D,parse); 
 				AddProperty(D,type); // require type doesnt set the type, merely requires it be that
+				AddInternalFlag(D,intbits);
 				if (type & NOUN && *p1 != '~' && !(D->properties & (NOUN_SINGULAR|NOUN_PLURAL|NOUN_PROPER_SINGULAR|NOUN_PROPER_PLURAL|NOUN_NUMBER)))
 				{
 					if (D->internalBits & UPPERCASE_HASH) AddProperty(D,NOUN_PROPER_SINGULAR);
@@ -2495,6 +2515,7 @@ void InitKeywords(const char* fname,const char* layer,unsigned int build,bool bu
 				AddProperty(D,type);
 				AddSystemFlag(D,sys);
 				AddParseBits(D,parse); 
+				AddInternalFlag(D,intbits);
 				U |= (type | required)  & (NOUN|VERB|ADJECTIVE|ADVERB); // add any pos restriction as well
 
 				// if word is proper name, allow it to be substituted
@@ -2554,6 +2575,11 @@ void InitKeywords(const char* fname,const char* layer,unsigned int build,bool bu
 		{
 			NextInferMark();
 			AddRecursiveFlag(D,sys, buildDictionary,build);
+		}
+		if (intbits) 
+		{
+			NextInferMark();
+			AddRecursiveInternal(D,intbits, buildDictionary,build);
 		}
 		if (parse) 
 		{
@@ -2815,7 +2841,7 @@ FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 	LoadTopicData(filename,name,build,layer,true);
 
 	sprintf(filename,(char*)"private%s.txt",name);
-	ReadSubstitutes(filename,name,DO_PRIVATE,true);
+	ReadSubstitutes(filename,build,name,DO_PRIVATE,true);
 	sprintf(filename,(char*)"canon%s.txt",name );
 	ReadCanonicals(filename,name);
 	WalkDictionary(IndirectMembers,build); // having read in all concepts, handled delayed word marks

@@ -859,7 +859,7 @@ FILE* FopenBinaryWrite(const char* name) // writeable file path
 	else strcpy(path,name);
 	FILE* out = fopen(path,(char*)"wb");
 	if (out == NULL && !inLog) 
-		ReportBug((char*)"Error opening binary write file %s: %s\n",path,strerror(errno));
+		ReportBug((char*)"Error opening binary write file %s: %s\r\n",path,strerror(errno));
 	return out;
 }
 
@@ -887,7 +887,7 @@ FILE* FopenUTF8Write(const char* filename) // insure file has BOM for UTF8
 		bom[2] = 0xBF;
 		fwrite(bom,1,3,out);
 	}
-	else ReportBug((char*)"Error opening utf8 write file %s: %s\n",path,strerror(errno));
+	else ReportBug((char*)"Error opening utf8 write file %s: %s\r\n",path,strerror(errno));
 	return out;
 }
 
@@ -909,7 +909,7 @@ FILE* FopenUTF8WriteAppend(const char* filename,const char* flags)
 		fwrite(bom,1,3,out);
 	}
 	else if (!out && !inLog) 
-		ReportBug((char*)"Error opening utf8writeappend file %s: %s\n",path,strerror(errno));
+		ReportBug((char*)"Error opening utf8writeappend file %s: %s\r\n",path,strerror(errno));
 	return out;
 }
 
@@ -919,7 +919,7 @@ int getdir (string dir, vector<string> &files)
     DIR *dp;
     struct dirent *dirp;
     if((dp  = opendir(dir.c_str())) == NULL) {
- 		ReportBug((char*)"No such directory %s\n",strerror(errno));
+ 		ReportBug((char*)"No such directory %s\r\n",strerror(errno));
 		return errno;
     }
     while ((dirp = readdir(dp)) != NULL) files.push_back(string(dirp->d_name));
@@ -954,7 +954,7 @@ void WalkDirectory(char* directory,FILEWALK function, uint64 flags)
 
 	if (hFind == INVALID_HANDLE_VALUE) 
 	{
-		ReportBug((char*)"No such directory %s\n",DirSpec);
+		ReportBug((char*)"No such directory %s\r\n",DirSpec);
 		return;
 	} 
 	else 
@@ -1449,7 +1449,10 @@ bool LogEndedCleanly()
 unsigned int Log(unsigned int channel,const char * fmt, ...)
 {
 	if (channel == STDTRACELOG) channel = STDUSERLOG;
-
+    if (strchr(fmt, '\n') && !strchr(fmt, '\r'))
+    {
+        int xx = 0;
+    }
 	static unsigned int id = 1000;	
 	if (quitting) return id;
 	logged = true;
@@ -1505,10 +1508,9 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (logLastCharacter == 1 && globalDepth == priordepth) {} // we indented already
 		else if (logLastCharacter == 1 && globalDepth > priordepth) // we need to indent a bit more
 		{
-			for (int i = priordepth; i < globalDepth; i++)
+			for (i = priordepth; i < globalDepth; i++)
 			{
 				*at++ = (i == 4 || i == 9) ? ',' : '.';
-				//*at++ = ' ';
 			}
 			priordepth = globalDepth;
 		}
@@ -1526,11 +1528,10 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
 			int n = globalDepth;
 			if (n < 0) n = 0; //   just in case
-			for (int i = 0; i < n; i++)
+			for (i = 0; i < n; i++)
 			{
 				if (channel == STDTRACEATTNLOG) *at++ = (i == 1) ? '*' : ' ';
 				else *at++ = (i == 4 || i == 9) ? ',' : '.';
-				// *at++ = ' ';
 			}
 			priordepth = globalDepth;
 		}
@@ -1697,9 +1698,9 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		{
 			if (!compiling && !loading) 
 			{
-				char name[100];
-				sprintf(name,(char*)"%s/exitlog.txt",logs);
-				FILE* out = FopenUTF8WriteAppend(name);
+				char fname[100];
+				sprintf(fname,(char*)"%s/exitlog.txt",logs);
+				FILE* out = FopenUTF8WriteAppend(fname);
 				if (out) 
 				{
 					struct tm ptm;

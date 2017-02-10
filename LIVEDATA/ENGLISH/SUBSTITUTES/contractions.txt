@@ -85,16 +85,11 @@
  how's how+is
  how've how+have
  how_'s how+is
- I'd I+'d
  i'd I+'d
  i'd_'ve I+would+have
- I'd_'ve I+would+have
  i'll I+will
- I'll I+will
  i'm I+am
- I'm I+am
  i've I+have
- I've I+have
  in't is+it+not
  int'l international
  isn't is+not

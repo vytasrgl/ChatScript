@@ -491,7 +491,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	if (*ptr == '-' && ptr[1] == '-' && (ptr[2] == ' ' || IsAlphaUTF8(ptr[2]) )) return ptr + 2; // the -- break
 	if (*ptr == ';' && ptr[1] != ')' && ptr[1] != '(') return ptr + 1; // semicolon not emoticon
 	if (*ptr == ',' && ptr[1] != ':') return ptr + 1; // comma not emoticon
-	
+    if (*ptr == '|') return ptr + 1;
 	char token[MAX_WORD_SIZE];
 	ReadCompiledWord(ptr,token);
 	
@@ -502,13 +502,23 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		*comma = 0; // break apart token
 		comma = ptr + (comma - token);
 	}
+    // find current token which has | after it and separate it, like myba,atat,joha
+    char* pipe = strchr(token + 1, '|');
+    if (pipe)
+    {
+        *pipe = 0; // break apart token
+    }
 
 	// check for negative number
 	if (*token == '-' && IsDigit(token[1]))
 	{
 		char* at = token;
 		while (*++at && (IsDigit(*at) || *at == '.')){;}
-		if (!*at) return ptr+strlen(token);
+		if (!*at) {
+			// might be at the year part of a date 10-1-1992
+			if (count > 2 && IsDigit(*priorToken) && *words[count-1] == '-' && IsDigit(*words[count-2])) {;}
+			else return ptr + strlen(token);
+		}
 	}
 
 	// Things that are normally separated as single character tokens
@@ -708,6 +718,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	while (++ptr && !IsWordTerminator(*ptr)) // now scan to find end of token one by one, stopping where appropriate
     {
 		c = *ptr;
+        if (c == '|') break;
 		kind = IsPunctuation(c);
 		next = ptr[1];
 		if (c == ',') 
@@ -1317,6 +1328,7 @@ void ProcessCompositeDate()
 			ReplaceWords("Date",start,end-start+1,1,tokens);
 			tokenFlags |= DO_DATE_MERGE;
 		}
+  
 	}
 }
 
@@ -1914,85 +1926,89 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 	return true;
 }
 
-static WORDP ViableIdiom(char* text,int i,unsigned int n,unsigned int caseform)
-{ // n is words merged into "word"
-
-	// DONT convert plural to singular here
-
-	WORDP word = FindWord(text,0,caseform);
-    if (!word) 
-	{
-		if (i != 1 || !IsUpperCase(*text)) return 0;
-		char lower[MAX_WORD_SIZE];
-		MakeLowerCopy(lower,text);
-		word = FindWord(lower,0,caseform);
-		if (!word) return 0;
-	}
+static WORDP Viability(WORDP word, int i, unsigned int n)
+{
     if (word->systemFlags & CONDITIONAL_IDIOM) //  dare not unless there are no conditions
-	{
-		char* script = word->w.conditionalIdiom;
-		if (script[1] != '=') return 0; // no conditions listed
-	}
-	if (word->internalBits & HAS_SUBSTITUTE)
-	{
-		uint64 allowed = tokenControl & (DO_SUBSTITUTE_SYSTEM|DO_PRIVATE);
-		return (allowed & word->internalBits) ? word : 0; // allowed transform
-	}
+    {
+        char* script = word->w.conditionalIdiom;
+        if (script[1] != '=') return 0; // no conditions listed
+    }
+    if (word->internalBits & HAS_SUBSTITUTE)
+    {
+        WORDP X = GetSubstitute(word);
+        if (X && !strcmp(X->word, word->word)) return NULL; // avoid infinite substitute
+        uint64 allowed = tokenControl & (DO_SUBSTITUTE_SYSTEM | DO_PRIVATE);
+        return (allowed & word->internalBits) ? word : 0; // allowed transform
+    }
+    if (!(tokenControl & DO_SUBSTITUTES)) return 0; // no dictionary word merge
 
-	if (!(tokenControl & DO_SUBSTITUTES)) return 0; // no dictionary word merge
-	
-	//   exclude titles of works and , done as composites later
-	if (word->properties & NOUN_TITLE_OF_WORK) return 0;
+                                                    // here are substitutions 
+
+                                                    //   exclude titles of works and , done as composites later
+    if (word->properties & NOUN_TITLE_OF_WORK) return 0;
 
     //   dont swallow - before a number
-    if (i < wordCount && IsDigit(*wordStarts[i+1]))
+    if (i < wordCount && IsDigit(*wordStarts[i + 1]))
     {
         char* name = word->word;
         if (*name == '-' && name[1] == 0) return 0;
         if (*name == '<' && name[1] == '-' && name[2] == 0) return 0;
     }
 
-    if (word->properties & (PUNCTUATION|COMMA|PREPOSITION|AUX_VERB) && n) return word; //   multiword prep is legal as is "used_to" helper
-	if (GETMULTIWORDHEADER(word) && !(word->systemFlags & PATTERN_WORD)) return 0; // if it is not a name or interjection or preposition, we dont want to use the wordnet composite word list, UNLESS it is a pattern word (like nautical_mile)
- 
-	// exclude "going to" if not followed by a potential verb 
-	if (!stricmp(word->word,(char*)"going_to")  && i < wordCount)
-	{
-		WORDP D = FindWord(wordStarts[i+2]); // +1 will be "to"
-		return (D && !(D->properties & VERB_INFINITIVE)) ? word : 0;	
-	}
-	if (!n) return 0;
+    if (word->properties & (PUNCTUATION | COMMA | PREPOSITION | AUX_VERB) && n) return word; //   multiword prep is legal as is "used_to" helper
+    if (GETMULTIWORDHEADER(word) && !(word->systemFlags & PATTERN_WORD)) return 0; // if it is not a name or interjection or preposition, we dont want to use the wordnet composite word list, UNLESS it is a pattern word (like nautical_mile)
+                                                                                   // exclude "going to" if not followed by a potential verb 
+    if (!stricmp(word->word, (char*)"going_to") && i < wordCount)
+    {
+        WORDP D = FindWord(wordStarts[i + 2]); // +1 will be "to"
+        return (D && !(D->properties & VERB_INFINITIVE)) ? word : 0;
+    }
+    if (!n) return 0;
 
-	// how to handle proper nouns for merging here
-	if (!IsUpperCase(*word->word)) {;}
-	else if (!(tokenControl & DO_PROPERNAME_MERGE)) return 0; // do not merge any proper name
-    else if (n && IsUpperCase(*word->word) && word->properties & PART_OF_SPEECH  && !IS_NEW_WORD(word)) 
-		return word;// Merge dictionary names.  We  merge other proper names later.  words declared ONLY as interjections wont convert in other slots
-	else if (n  && word->properties & word->systemFlags & PATTERN_WORD) return word;//  Merge any proper name which is a keyword. 
-	
-	// dont merge words with underscore if each word is also a word (though wordnet does- like executive)director), unless its a known keyword like "nautical_mile"
-	char* part = strchr(word->word,'_');
-	if (word->properties & (NOUN|ADJECTIVE|ADVERB|VERB) && part && !(word->systemFlags & PATTERN_WORD))
-	{
-		char* part1 = strchr(part+1,'_');
-		WORDP P2 = FindWord(part+1,0,LOWERCASE_LOOKUP);
-		WORDP P1 = FindWord(word->word,(part-word->word),LOWERCASE_LOOKUP);
-		if (!part1 && P1 && P2 && P1->properties & PART_OF_SPEECH && P2->properties & PART_OF_SPEECH) 
-		{
-			// if there a noun this is plural of? like "square feet" where "square_foot" is the keyword
-			char* noun = GetSingularNoun(word->word,false,true);
-			if (noun)
-			{
-				WORDP D1 = FindWord(noun);
-				if (D1->systemFlags & PATTERN_WORD) {;}
-				else return 0; // we dont merge non-pattern words?
-			}
-			else return 0;
-		}
-	}
+    // how to handle proper nouns for merging here
+    if (!IsUpperCase(*word->word)) { ; }
+    else if (!(tokenControl & DO_PROPERNAME_MERGE)) return 0; // do not merge any proper name
+    else if (n && IsUpperCase(*word->word) && word->properties & PART_OF_SPEECH && !IS_NEW_WORD(word))
+        return word;// Merge dictionary names.  We  merge other proper names later.  words declared ONLY as interjections wont convert in other slots
+    else if (n  && word->properties & word->systemFlags & PATTERN_WORD) return word;//  Merge any proper name which is a keyword. 
+    
+    char* part = strchr(word->word, '_');
+    if (word->properties & (NOUN | ADJECTIVE | ADVERB | VERB) && part && !(word->systemFlags & PATTERN_WORD))
+    {
+        char* part1 = strchr(part + 1, '_');
+        WORDP P2 = FindWord(part + 1, 0, LOWERCASE_LOOKUP);
+        WORDP P1 = FindWord(word->word, (part - word->word), LOWERCASE_LOOKUP);
+        if (!part1 && P1 && P2 && P1->properties & PART_OF_SPEECH && P2->properties & PART_OF_SPEECH)
+        {
+            // if there a noun this is plural of? like "square feet" where "square_foot" is the keyword
+            char* noun = GetSingularNoun(word->word, false, true);
+            if (noun)
+            {
+                WORDP D1 = FindWord(noun);
+                if (D1->systemFlags & PATTERN_WORD) { ; }
+                else return 0; // we dont merge non-pattern words?
+            }
+            else return 0;
+        }
+    }
 
-    if (word->properties & (NOUN|ADJECTIVE|ADVERB|CONJUNCTION_SUBORDINATE) && !IS_NEW_WORD(word)) return word; // merge dictionary found normal word but not if we created it as a sequence ourselves
-	return 0;
+    if (word->properties & (NOUN | ADJECTIVE | ADVERB | CONJUNCTION_SUBORDINATE) && !IS_NEW_WORD(word)) return word; // merge dictionary found normal word but not if we created it as a sequence ourselves
+    return 0;
+}
+
+static WORDP ViableIdiom(char* text,int i,unsigned int n)
+{ // n is words merged into "word"
+
+	// DONT convert plural to singular here
+
+	WORDP word = FindWord(text,0, STANDARD_LOOKUP);
+    if (!word) return 0;
+    bool again = primaryLookupSucceeded;
+    WORDP X = Viability(word, i, n);
+    if (X || !again) return X;
+    // allowed to try other case
+    word = FindWord(text, 0, SECONDARY_CASE_ALLOWED);
+    return (word) ? Viability(word, i, n) : NULL;
 }
 
 static bool ProcessMyIdiom(int i,unsigned int max,char* buffer,char* ptr)
@@ -2022,81 +2038,50 @@ static bool ProcessMyIdiom(int i,unsigned int max,char* buffer,char* ptr)
 			word = NULL;
 			*ptr++ = '>'; //   end marker
 			*ptr-- = 0;
-			word = ViableIdiom(buffer,1,n,PRIMARY_CASE_ALLOWED);
+			word = ViableIdiom(buffer,1,n);
 			if (word) 
 			{
 				found = word;  
 				idiomMatch = n;     //   n words ADDED to 1st word
 			}
-			if (found == localfound)
-			{
-				word = ViableIdiom(buffer,1,n,SECONDARY_CASE_ALLOWED);
-				if (word) 
-				{
-					found = word;  
-					idiomMatch = n;     //   n words ADDED to 1st word
-				}			
-			}
 			*ptr = 0; //   remove tail end
 		}
-		if (found == localfound && i == 1 && (word = ViableIdiom(buffer,1,n,PRIMARY_CASE_ALLOWED))) // match at start
+		if (found == localfound && i == 1 && (word = ViableIdiom(buffer,1,n))) // match at start
 		{
 			found = word;   
 			idiomMatch = n;   
 		}
- 		if (found == localfound && i == 1 && (word = ViableIdiom(buffer,1,n,SECONDARY_CASE_ALLOWED))) // match at start
-		{
-			found = word;   
-			idiomMatch = n;   
-		}
-        if (found == localfound && (word = ViableIdiom(buffer+1,i,n,PRIMARY_CASE_ALLOWED))) // match normal
+        if (found == localfound && (word = ViableIdiom(buffer+1,i,n))) // match normal
         {
 			found = word; 
 			idiomMatch = n; 
-		}
-        if (found == localfound && (word =  ViableIdiom(buffer+1,i,n,SECONDARY_CASE_ALLOWED))) // used to not allow upper mapping to lower, but want it for start of sentence
-        {
-			if (!IsUpperCase(buffer[1]) || i == 1) // lower can always try upper, but upper can try lower ONLY at sentence start
-			{
-				found = word; 
-				idiomMatch = n; 
-			}
 		}
         if (found == localfound && j == wordCount)  //   sentence ender
 		{
 			*ptr++ = '>'; //   end of sentence marker
 			*ptr-- = 0;  
-			word = ViableIdiom(buffer+1,0,n,PRIMARY_CASE_ALLOWED);
+			word = ViableIdiom(buffer+1,0,n);
 			if (word)
             {
 				found = word; 
 				idiomMatch = n; 
-			}
-			if (found == localfound)
-			{
-				word = ViableIdiom(buffer+1,0,n,SECONDARY_CASE_ALLOWED);
-				if (word)
-				{
-					found = word; 
-					idiomMatch = n; 
-				}
 			}
 			*ptr= 0; //   back to normal
         }
 		if (found == localfound && *(ptr-1) == 's' && j != i) // try singularlizing a noun
 		{
 			size_t len = strlen(buffer+1);
-			word = FindWord(buffer+1,len-1,PRIMARY_CASE_ALLOWED|SECONDARY_CASE_ALLOWED); // remove s
+			word = FindWord(buffer+1,len-1); // remove s
 			if (len > 3 && !word && *(ptr-2) == 'e') 
-				word = FindWord(buffer+1,len-2,PRIMARY_CASE_ALLOWED|SECONDARY_CASE_ALLOWED); // remove es
+				word = FindWord(buffer+1,len-2); // remove es
 			if (len > 3 && !word && *(ptr-2) == 'e' && *(ptr-3) == 'i') // change ies to y
 			{
 				char noun[MAX_WORD_SIZE];
 				strcpy(noun,buffer);
 				strcpy(noun+len-3,(char*)"y");
-				word = FindWord(noun,0,PRIMARY_CASE_ALLOWED|SECONDARY_CASE_ALLOWED);
+				word = FindWord(noun,0, STANDARD_LOOKUP);
 			}
-			if (word && ViableIdiom(word->word,i,n,PRIMARY_CASE_ALLOWED|SECONDARY_CASE_ALLOWED)) // was composite
+			if (word && ViableIdiom(word->word,i,n)) // was composite
 			{
 				char* second = strchr(buffer,'_');
 				if ( !IsUpperCase(*word->word) || (second && IsUpperCase(second[1]))) // be case sensitive in matching composites

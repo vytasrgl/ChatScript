@@ -2,7 +2,7 @@
 
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
-> Revision 1/28/2017 cs7.12
+> Revision 2/9/2017 cs7.2
 
 You've written script. It doesn't work. Now what? Now you need to debug it, fix it, and
 recompile it. Debugging is mostly a matter of tracing what the system does testpaand
@@ -649,6 +649,10 @@ show all concepts starting with `~w`
 
 ### `:definition` _^xxxx_
 Shows the code of the user-defined macro named.
+
+### `:mixedcase` 
+Lists all words which have multiple case forms and where the words came from (dictionary, layer 0, layer 1).
+Helps you locate words where you inadvertently created a wrong case.
 
 ### `:directories`
 Lists the directories in use: the path to the exe file, the current working directory, and
