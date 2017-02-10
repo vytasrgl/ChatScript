@@ -5,6 +5,7 @@
 4. %language returns current dictionary language
 5. engine concept ~model_number marks words with both alpha and digit in them
 6. command line buildfiles=xxxx to tell where filesxxx.txt are
+7. French, German, Spanish dictionarys and utf8 spellcheck support
 
 # version 7.12  -- 1/28/2017 recompile your bot. TOPIC format has changed slightly
 1. ^jsonreadcvs  to read tab-delimited spreadsheet files
