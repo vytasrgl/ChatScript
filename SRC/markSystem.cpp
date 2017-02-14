@@ -795,6 +795,7 @@ void MarkAllImpliedWords()
 		}
 		else 
 		{
+			if (!OL && !OU) OL = StoreWord(original);
 			StdMark(MakeTypedMeaning(OL,0,restriction), i, i,false);
 		}
 
@@ -831,7 +832,6 @@ void MarkAllImpliedWords()
 			StdMark(MakeTypedMeaning(CU,0,NOUN), i, i,true);
 		}
 		else StdMark(MakeTypedMeaning(CL,0, (unsigned int)(finalPosValues[i] & BASIC_POS)), i, i,true);
-		
 
  		markLength = 0;
 	    if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)" // "); //   close canonical form lowercase
