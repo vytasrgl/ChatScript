@@ -121,8 +121,9 @@ by Bruce Wilcox
   * _label_ – way for other rules to refer to it
   * _pattern_ – IF test for allowing output to execute
   * _output_ – THEN part for taking action
-  
-        u: MYRULE ( I love meat) So do I.
+```  
+u: MYRULE ( I love meat) So do I.
+```
       
 ---
 
@@ -137,11 +138,12 @@ by Bruce Wilcox
   * t: Have you ever had a pet?
 
 * _Rejoinders_ – based on what we just said to user
-
-      a: (yes) What kind of pet?
-        b: (dog) I like dogs.
-        b: (cat) I prefer dogs.
-      a: (no) Pets are fun. You should try having one.
+```
+a: (yes) What kind of pet?
+  b: (dog) I like dogs.
+  b: (cat) I prefer dogs.
+a: (no) Pets are fun. You should try having one.
+```
 
 ---
 
@@ -205,7 +207,6 @@ by Bruce Wilcox
 
 * Generally done on the current sentence
 * Tokens are instructions to process, left to right.
-
 
         #! what is my name
         ?: ( what is my name) - simple pattern
@@ -534,15 +535,15 @@ Convert on use into simple text Is not autoformatted
 * Can define tables of data to process into fact.
 * Processing happens at build time
 * Efficient scripting- all elaborate patterns in common topic
-
-      table: ^favetable(~foods)
-      chocolate candy    "I love Cadbury's Flake chocolate bar."
-      Easter    candy    "I love marshmallow bunnies."
-      [salad _] dressing "I prefer sweet dressings to sour ones."
-      pizza     topping  "My favorite pizza topping is pepperoni because I like meat."
-      comfort   food     "My favorite comfort food is is a Gruyere cheese toastie."
-      _         pizza    "My favorite pizza is pepperoni because I like pizza with meat toppings."
-
+```
+table: ^favetable(~foods)
+chocolate candy    "I love Cadbury's Flake chocolate bar."
+Easter    candy    "I love marshmallow bunnies."
+[salad _] dressing "I prefer sweet dressings to sour ones."
+pizza     topping  "My favorite pizza topping is pepperoni because I like meat."
+comfort   food     "My favorite comfort food is is a Gruyere cheese toastie."
+_         pizza    "My favorite pizza is pepperoni because I like pizza with meat toppings."
+```
 ---
 
 # Data - JSON
