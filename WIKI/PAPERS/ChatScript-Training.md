@@ -323,7 +323,7 @@ Particularly important. Breaks the straight-jacket of sequence.
 ```
 u: ( << I [like love adore] [pizza bacon] >>) So do I.
 ```
-matches: _I love bacon_, <br>_Pizza is what I adore_, _I hate pizza but love rocks_
+matches: _I love bacon_, _Pizza is what I adore_, _I hate pizza but love rocks_
 ```
 u: ( I love [ meat << flesh animal >> ] ) So do I.
 ```
