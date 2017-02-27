@@ -135,7 +135,9 @@ u: MYRULE ( I love meat) So do I.
   * `u:` - responds to union of questions and statements
 
 * _Gambits_ – program says when it has sente
-  * t: Have you ever had a pet?
+```
+  t: Have you ever had a pet?
+```
 
 * _Rejoinders_ – based on what we just said to user
 ```
@@ -174,17 +176,19 @@ a: (no) Pets are fun. You should try having one.
 
 * Executed if a rule's pattern matches
   - Can be simple text
-
-        ?: ( << you ~like pizza >>) I love pizza.
-
+```
+?: ( << you ~like pizza >>) I love pizza.
+```
   - Can be random text
-
-        ?: ( << you ~like pizza >>) [Of course][Absolutely] I [love it.][ adore it.]
+```
+?: ( << you ~like pizza >>) [Of course][Absolutely] I [love it.][ adore it.]
+```
 
 * Text autoformats
   - Can be code and text intermix or code only
-  
-        ?: ( << what you age >>) I am ^compute(%year – 1989) years old.
+```  
+?: ( << what you age >>) I am ^compute(%year – 1989) years old.
+```
 
 * Rule output is discarded if code fails in a rule
 
@@ -207,28 +211,29 @@ a: (no) Pets are fun. You should try having one.
 
 * Generally done on the current sentence
 * Tokens are instructions to process, left to right.
-
-        #! what is my name
-        ?: ( what is my name) - simple pattern
+```
+#! what is my name
+?: ( what is my name) - simple pattern
+```
 
 * # grab indicated letter if we have a phone number
-
-        u: LETTERS($$phone @_10+ _*1 ) - esoteric pattern
-
+```
+u: LETTERS($$phone @_10+ _*1 ) - esoteric pattern
+```
 ---
 
 # Simple Pattern Match
 
 * Match words in sentence
-
-        u: (I love pizza)
-
+```
+u: (I love pizza)
+```
 match: _I love pizza_, _I will love pizza_
 
 * Pattern words cased as they should be
-
-        u: ( I love pizza from Pizza Hut) 
-        
+```
+u: ( I love pizza from Pizza Hut) 
+```        
 match: _i love pizza from pizza hut_, _I LOVE PIZZA FROM PIZZA HUT_, _i LOVE pizza From pizza Hut_
 
 ---
@@ -240,9 +245,9 @@ match: _i love pizza from pizza hut_, _I LOVE PIZZA FROM PIZZA HUT_, _i LOVE piz
   - eliminate case – all upper case (losing useful data)
   - eliminate punctuation (losing useful data)
   - adding wildcard * to match 1 or more words
-
-        I * LOVE * YOU
-
+```
+I * LOVE * YOU
+```
 ---
 
 # AIML Problem
@@ -271,9 +276,9 @@ match: _i love pizza from pizza hut_, _I LOVE PIZZA FROM PIZZA HUT_, _i LOVE piz
   - numbers: _two_ -> _2_ _2.0_ -> _2_ _two thousand and fifty_ -> _2050_
   - determiners: _the_ -> _a_
   - personal pronouns: _my_ -> _I him_ -> _he whom_ -> _who_
-
-        u: (I love pizza) 
-
+```
+u: (I love pizza) 
+```
 matches: _I loved pizza_, _me loves pizzas_
 
 ---
@@ -281,13 +286,14 @@ matches: _I loved pizza_, _me loves pizzas_
 # Patterns - Canonical forms
 
 * Can require original form only using `'`
-
-      u: ( 'I 'love 'pizza)
+```
+u: ( 'I 'love 'pizza)
+```
 
 * Can require original form if not canonical
-
-      u: ( I loved pizzas)
-
+```
+u: ( I loved pizzas)
+```
 matches: _me love pizza_, _me loved pizzas_
 
 ---
@@ -295,29 +301,32 @@ matches: _me love pizza_, _me loved pizzas_
 # Patterns – bags of words
 
 * `[` `]` - find one
-
-      u: ( I love [ pizza bacon sausage hamburger])
+```
+u: ( I love [ pizza bacon sausage hamburger])
+```
 
 * `{` `}` - maybe find one
-
-      u: ( I love {the my} moon )
+```
+u: ( I love {the my} moon )
+```
 
 * `<<` `>>` - find all in any order anywhere
-      
-      u: ( << pizza I love >> )
 
+```
+u: ( << pizza I love >> )
+```
 Particularly important. Breaks the straight-jacket of sequence.
 
 ---
 
 # Patterns – composed bags
-
-    u: ( << I [like love adore] [pizza bacon] >>) So do I.
-
+```
+u: ( << I [like love adore] [pizza bacon] >>) So do I.
+```
 matches: _I love bacon_, <br>_Pizza is what I adore_, _I hate pizza but love rocks_
-
-    u: ( I love [ meat << flesh animal >> ] ) So do I.
-
+```
+u: ( I love [ meat << flesh animal >> ] ) So do I.
+```
 matches: _I love meat_, _I love animal flesh_, _I love the flesh of an animal_
 
 ---
@@ -328,20 +337,23 @@ matches: _I love meat_, _I love animal flesh_, _I love the flesh of an animal_
 
 * `*` - any number of words (including 0)
 
-      u: ( I love * pizza) - matches "I love spicy pepperoni pizza"
-
+```
+u: ( I love * pizza) - matches "I love spicy pepperoni pizza"
+```
 but matches _I love you and hate pizza_ – still a flaw with AIML
 
 * `*1` - 1 word exactly `*2`, `*3` ..
 
-      u: ( I love *1 pizza)
-
+```
+u: ( I love *1 pizza)
+```
 matches _I love pepperoni pizza_
 
 * `*~1` - 0 or 1 word `*~2`, `*~3` ..
 
-      u: ( I *~2 love *~2 pizza) ?? examples?
-
+```
+u: ( I *~2 love *~2 pizza) ?? examples?
+```
 But _I do not love pizza_ is a problem.
 
 ---
@@ -359,20 +371,20 @@ But _I do not love pizza_ is a problem.
 # Patterns- Phrases
 
 * Phrase = sequence of 1-5 words in `"` `"` 
-
-      u: ( I * work * "International Business Machines")
-
+```
+u: ( I * work * "International Business Machines")
+```
 How is this different from
-
-    u: (I * work * International Business Machines )
-
+```
+u: (I * work * International Business Machines )
+```
 The phrase is a single idea, an entity. Your pattern should
 reflect that. Humans will understand your pattern better. And CS
 will handle it correctly against a range of tokenization options.
 Particularly if it involves periods and commas
-
-    u: (I * live * “Raleigh, North Carolina”)
-
+```
+u: (I * live * “Raleigh, North Carolina”)
+```
 ---
 
 # Patterns - Concepts
@@ -410,22 +422,28 @@ _I like pizza_ -> `_0` is null, _I like pepperoni pizza_ -> `_0` is pepperoni
 # Patterns - comparisons
 
 * Can test relationships `>` `<` `==` `!=`
+```
+u: ( _~number _0==3) # relatively pointless since u: (3) is equivalent
+u: ( _~number _0>0 _0<10)
+```    
 
-      u: ( _~number _0==3) # relatively pointless since u: (3) is equivalent
-      u: ( _~number _0>0 _0<10)
-    
 * Can test concept membership `?` `!?`
 
-      u: ( _~animals _0?~pets)
+```
+u: ( _~animals _0?~pets)
+```
 
 * Can test bit patterns `&` `^`
 
-      u: (_~number _0&1)
+```
+u: (_~number _0&1)
+```
 
 * Can test existence (not null)
 
-      u: ( I love _{pepperoni} pizza _0) – but a pointless pattern here
-
+```
+u: ( I love _{pepperoni} pizza _0) – but a pointless pattern here
+```
 ---
 
 # Patterns - tag-along patterns
@@ -449,18 +467,22 @@ Be aware:
 * You can jump around in the sentence.
 * You can match partial spellings of words.
 
-      u: ( my sign is Sagitt* )
+```
+u: ( my sign is Sagitt* )
+```
 
 * You can hide or add concept meanings
 
-      u: ( _coffee ~nutrient) ^unmark(~color _0)
-
+```
+u: ( _coffee ~nutrient) ^unmark(~color _0)
+```
 _I like coffee ice cream_ –> coffee is not a color
 
 * Force alignment to start or end of sentence
 
-      u: ( < ice is nice > ) ice is 1 st word of sentence, nice is last word
-
+```
+u: ( < ice is nice > ) ice is 1 st word of sentence, nice is last word
+```
 ---
 
 # Agenda - Topics, Output, Data, Functions
@@ -558,16 +580,18 @@ _         pizza    "My favorite pizza is pepperoni because I like pizza with mea
 
 * Classic functions with arguments start with `^`
 
-      $$tmp = ^pick(~animals)
+```
+$$tmp = ^pick(~animals)
+```
 
 * Call by reference
 * Variety of predefined functions
 * Can define user functions for patterns or output
 * Most useful are:
-
-      ^gambit(~topic), ^respond(~topic)
-      ^refine(), ^reuse(label)
-
+```
+^gambit(~topic), ^respond(~topic)
+^refine(), ^reuse(label)
+```
 ---
 
 # Functions vs Rules vs Topics
@@ -770,9 +794,10 @@ ChatScript manages 2 channels of data
 * Input and output with the application
 
 * Application data (OOB) in `[``]` first.
-
-      [category: vet specialty: cat] Hi, I'm Rosa.
-      [callback: 600] My name is Pearl.
+```
+[category: vet specialty: cat] Hi, I'm Rosa.
+[callback: 600] My name is Pearl.
+```
 
 * Application responsible for handling `[``]` in output
 * Script responsible for handling `[``]` in input
