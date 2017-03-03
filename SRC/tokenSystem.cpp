@@ -248,12 +248,12 @@ int BurstWord(char* word, int contractionStyle)
 		else if (*word == '\'' && contractionStyle & (POSSESSIVES|CONTRACTIONS)) //  possible word boundary by split of contraction or possession
         {
             int split = 0;
-            if (word[1] == 0 || word[1] == ' '  || word[1] == '_') split = 1;  //   ' at end of word
+            if (word[1] == 0 || word[1] == ' ' || word[1] == '_') split = 1;  //   ' at end of word
             else if (word[1] == 's' && (word[2] == 0 || word[2] == ' ' || word[2] == '_')) split = 2;  //   's at end of word
 			else if (!(contractionStyle & CONTRACTIONS)) {;} // only accepting possessives
             else if (word[1] == 'm' && (word[2] == 0 || word[2] == ' '  || word[2] == '_')) split = 2;  //   'm at end of word
             else if (word[1] == 't' && (word[2] == 0 || word[2] == ' '  || word[2] == '_')) split = 2;  //   't at end of word
-            else if ((word[1] == 'r' || word[2] == 'v') && word[2] == 'e' && (word[3] == 0 || word[3] == ' '  || word[3] == '_')) split = 3; //    're 've
+            else if ((word[1] == 'r' || word[1] == 'v') && word[2] == 'e' && (word[3] == 0 || word[3] == ' '  || word[3] == '_')) split = 3; //    're 've
             else if (word[1] == 'l'  && word[2] == 'l' && (word[3] == 0 || word[3] == ' '  || word[3] == '_')) split = 3; //    'll
             if (split) 
             {
@@ -710,7 +710,8 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	// check for place number
 	char* place = ptr;
 	while (IsDigit(*place)) ++place;
-	if (!stricmp(place,"st") || !stricmp(place,"nd") || !stricmp(place,"rd")) return end;
+	if (stricmp(language, "english") && (!stricmp(place,"st") || !stricmp(place,"nd") || !stricmp(place,"rd"))) return end;
+	else if (stricmp(language, "french") && (!stricmp(place,"er") || !stricmp(place,"ere") || !stricmp(place,"ère") || !stricmp(place,"nd") || !stricmp(place,"nde") || !stricmp(place,"eme") || !stricmp(place,"ème"))) return end;
 	int len = end - ptr;
 	char next2;
 	if (*ptr == '/') return ptr+1; // split of things separated
@@ -747,8 +748,11 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 					break;	
 				}
 				// ' as particle ellision
-				if ((ptr-start) == 1 && (*start == 'd' || *start == 'j' || *start == 'l' || *start == 's'  || *start == 't')) return ptr + 1;  // break off d' argent and other foreign particles
-	
+				if ((ptr-start) == 1 && (*start == 'd' || *start == 'c' || *start == 'j' || *start == 'l' || *start == 's' || *start == 't' || *start == 'm' || *start == 'n')) return ptr + 1;  // break off d' argent and other foreign particles
+				else if ((ptr-start) == 2 && *start == 'q' && *(start+1) == 'u') return ptr + 1;  // break off qu'
+				else if ((ptr-start) == 6 && *start == 'l' && *(start+1) == 'o' && *(start+2) == 'r' && *(start+3) == 's' && *(start+4) == 'q' && *(start+5) == 'u') return ptr + 1;  // break off lorsqu'
+				else if ((ptr-start) == 6 && *start == 'p' && *(start+1) == 'u' && *(start+2) == 'i' && *(start+3) == 's' && *(start+4) == 'q' && *(start+5) == 'u') return ptr + 1;  // break off puisqu'
+
 				//   12'6" or 12'. or 12' 
 				if (IsDigit(*start) && !IsAlphaUTF8(next)) return ptr + 1;  //   12' swallow ' into number word
 			}
@@ -781,17 +785,34 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 					break; // the anyways-- break 
 			}
 			// number before things? 8months but not 24%  And dont split 1.23 or time words 10:30 and 30:20:20. dont break 6E
+			
 			if (IsDigit(*start) && IsDigit(*(ptr-1)) && !IsDigit(c) && c != '%' && c != '.' && c != ':' && ptr[1] && ptr[2] && ptr[1] != ' ' && ptr[2] != ' ')
 			{
-				if (c == 's' && ptr[1] == 't'){;} // 1st
-				else if (c == 'n' && ptr[1] == 'd'){;} // 2nd
-				else if (c == 'r' && ptr[1] == 'd'){;} // 3rd
-				else if (c == 't' && ptr[1] == 'h'){;} // 5th
-				else // break apart known word but not single value or non-word
+				if (stricmp(language, "english")) 
 				{
-					char word[MAX_WORD_SIZE];
-					ReadCompiledWord(ptr-1,word); // what is the word
-					if (FindWord(word,0)) return ptr; // we know this second word after the digit
+					if (c == 's' && ptr[1] == 't'){;} // 1st
+					else if (c == 'n' && ptr[1] == 'd'){;} // 2nd
+					else if (c == 'r' && ptr[1] == 'd'){;} // 3rd
+					else if (c == 't' && ptr[1] == 'h'){;} // 5th
+					else // break apart known word but not single value or non-word
+					{
+						char word[MAX_WORD_SIZE];
+						ReadCompiledWord(ptr-1,word); // what is the word
+						if (FindWord(word,0)) return ptr; // we know this second word after the digit
+					}
+				}
+				else if (stricmp(language, "french"))
+				{
+					if (c == 'e' && ptr[1] == 'r'){;} // 1er
+					else if (c == 'n' && ptr[1] == 'd'){;} // 2nd
+					else if (c == 'n' && ptr[1] == 'd' && ptr[2] == 'e'){;} // 2nde
+					else if ((c == 'e' || c == 'è') && (ptr[1] == 'r' || ptr[1] == 'm') && ptr[2] == 'e'){;} // 1ère 3ème
+					else // break apart known word but not single value or non-word
+					{
+						char word[MAX_WORD_SIZE];
+						ReadCompiledWord(ptr-1,word); // what is the word
+						if (FindWord(word,0)) return ptr; // we know this second word after the digit
+					}
 				}
 			}
 			if ( c == ']' || c == ')') break; //closers
