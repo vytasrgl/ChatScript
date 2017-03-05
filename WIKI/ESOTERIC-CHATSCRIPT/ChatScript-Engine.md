@@ -22,7 +22,7 @@ and how to extend it with private code.
 
 First you need to understand the basic data available to the user and CS and how it is allocated.
 
-![](../alloc.png)
+![](alloc.png)
 
 ## Text Strings
 
@@ -252,7 +252,7 @@ same thing look the same to scripts, so they don't have to account for variation
 (making script writing and maintenance easier). Other than tokenization, all other pipeline steps 
 are under control the script (`$cs_token`), which can choose to use any combination of them at any time.
 
-![](../NLPipeline.png)
+![](NLPipeline.png)
 
 
 ## Tokenization
@@ -378,7 +378,7 @@ words. This allows you to correct or augment meanings.
 In addition to marking words, the system generates sequences of 5 contiguous words (phrases), and if it
 finds them in the dictionary, they too are marked.
 
-![](../ontolog.png)
+![](ontolog.png)
 
 ## Script Compiler
 
@@ -433,7 +433,7 @@ Debug table entries like this:
 
 # Code Zones
 
-![](../arch.png)
+![](arch.png)
 
 The system is divided into the code zones shown above. All code is in SRC.
 

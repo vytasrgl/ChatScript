@@ -642,6 +642,14 @@ static char* SRestart(char* value)
 	else return systemRestartValue;
 }
 
+static char* STimeout(char* value)
+{
+	static char hold[50] = ".";
+	if (value) return AssignValue(hold, value);
+	if (*hold != '.') return hold;
+	return  timerCheckInstance == TIMEOUT_INSTANCE ? (char*)"1" : (char*)"";
+}
+
 ////////////////////////////////////////////////////
 /// USER INPUT
 ////////////////////////////////////////////////////
@@ -995,7 +1003,7 @@ SYSTEMVARIABLE sysvars[] =
 	{ (char*)"%trace",STrace,(char*)"Numeric value of trace flag"}, 
 	{ (char*)"%pid",SPID,(char*)"Process id of this instance (linux)"}, 
 	{ (char*)"%restart",SRestart,(char*)"pass string back to a restart"}, 
-
+	{ (char*)"%timeout",STimeout,(char*)"did system time out happen" },
 	{ (char*)"\r\n---- Build variables",0,(char*)""},
 	{ (char*)"%dict",Sdict,(char*)"String - when dictionary was built"}, 
 	{ (char*)"%engine",Sengine,(char*)"String - when engine was compiled (date/time)"}, 
