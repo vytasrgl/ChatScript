@@ -1,6 +1,6 @@
 # Version 7.3 3-4-2017
 1. topic files of user stored by language as well as user id and bot name if not english
-2. NO_CONDITIONAL_IDIOM
+2. `NO_CONDITIONAL_IDIOM`
 3. `^tokenize(WORD xxx)` and `tokenize(FULL)`
 4. MemoryGC
 5. `?$var` pattern test
@@ -15,7 +15,7 @@
 # version 7.2  2-9-2017
 1. `^jsonreadcvs` takes optional 3rd argument - function to invoke with the fields instead of returning json
 2. `^tokenize($_text)` returns facts of (sentence `^tokenize` `^tokenize`)
-3: `:mixedcase` - lists all words which have multiple case forms
+3. `:mixedcase` - lists all words which have multiple case forms
 4. `%language` returns current dictionary language
 5. engine concept `~model_number` marks words with both alpha and digit in them
 6. command line `buildfiles=xxxx` to tell where `filesxxx.txt` are
