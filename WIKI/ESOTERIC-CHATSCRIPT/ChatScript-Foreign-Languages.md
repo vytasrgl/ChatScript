@@ -1,8 +1,6 @@
 # Foreign Language Support
-
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
-
-> Revision 3/4/2017 cs7.3
+© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com<br>
+Revision 3/4/2017 cs7.3
 
 # Foreign Language Overview
 
@@ -50,8 +48,10 @@ of a word because there is no in-built support to figure that out. You may also 
 
 If you want actual POS values and lemmas (canonical form of a word), you will need a POS-tagger of some sort.
 While it is possible to hook in an external tagger via a web call, that will be noticably slower than an
-in-built system. ChatScript supports in-build TreeTagger system, which supports a number of languages. However,
-you can only use this if you have a commercial license. You can try it out using ^popen, as is done in the German
+in-built system. 
+
+ChatScript supports in-build TreeTagger system, which supports a number of languages. However,
+you can only use this if you have a commercial license. You can try it out using `^popen`, as is done in the German
 bot, however it will be slow because it has to reinitialize TreeTagger for every sentence. The in-built system
 does not. A license (per language) is about $1000 for universal life-time use. You can contact me if you want to arrange to use it.
 
@@ -69,13 +69,13 @@ apikey=AIzaSyAxxxx
 ```
 
 When I want to translate all level 0 concepts I do the following:
-```
+
 1. erase the contents of TOPIC folder
-2. :build 0
+2. `:build 0`
 3. run CS using command line parameter `noboot` and your apikey
-4. :sortconcept x
-5. :translateconcept german myfilename
-```
+4. `:sortconcept x`
+5. `:translateconcept german myfilename`
+
 
 If you run ^csboot and that generates new concept data then you need `noboot`, otherwise it doesn't matter.
 
@@ -86,19 +86,16 @@ If you run ^csboot and that generates new concept data then you need `noboot`, o
 The resulting file will automatically prepend each line with conditional compile markers for the language you named, so you can directly add it to your bot and it will only compile when you are in that language mode.
 
 If you want to translate concepts from your bot, then do the following: 
-```
+
 1. erase the contents of TOPIC folder
-2. :build harry (or whatever your bot is)
+2. `:build harry` (or whatever your bot is)
 3. run CS using command line parameter `noboot` and your apikey
-4. :sortconcept x
-5. :translateconcept french myfilename
-```
+4. `:sortconcept x`
+5. `:translateconcept french myfilename`
+
 If you just want to translate a single concept/topic then you can call
-`:translateconcept ~myconcept french myfilename`. It will, as a byproduct,
-provide the sorted english form of the concept on a single line in
-`cset.txt`. If you dont give a language and filename, then it will just
-sort your english concept and write it out.
-
-
-
-
+```
+:translateconcept ~myconcept french myfilename
+```
+It will, as a byproduct, provide the sorted english form of the concept on a single line in `cset.txt`. 
+If you dont give a language and filename, then it will just sort your english concept and write it out.
