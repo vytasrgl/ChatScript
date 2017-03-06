@@ -392,7 +392,7 @@ static char* Sos(char* value)
 	if (*hold != '.') return hold;
 #ifdef WIN32
 	strcpy(systemValue,(char*)"windows");
-#elif  MACH
+#elif  __MACH__
 	strcpy(systemValue,(char*)"mac");
 #elif IOS
 	strcpy(systemValue,(char*)"ios");
