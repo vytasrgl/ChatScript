@@ -701,18 +701,19 @@ static int EditDistance(WORDINFO& dictWordData, WORDINFO& realWordData,int min)
         resumeDict2 = IsUTF8((char*)resumeDict1, next1CharDict);
 		baseCharReal = UnaccentedChar(currentCharReal);
 		baseCharDict = UnaccentedChar(currentCharDict);
-		if (baseCharReal && baseCharReal == baseCharDict)
+		if (!stricmp(currentCharReal, currentCharDict)) // match chars
 		{
 			dictinfo = resumeDict;
 			realinfo = resumeReal;
 			continue;
 		}
-		if (!stricmp(currentCharReal,currentCharDict)) // match chars
-        {
-            dictinfo = resumeDict;
-            realinfo = resumeReal;
-            continue;
-        }
+		if (baseCharReal && baseCharReal == baseCharDict)
+		{
+			dictinfo = resumeDict;
+			realinfo = resumeReal;
+			val += 1; // minimal charge but separate forms of delivre
+			continue;
+		}
         // treat german double s and ss equivalent
         if (!stricmp(language, "german"))
         {
