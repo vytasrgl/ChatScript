@@ -20,6 +20,66 @@ static SUFFIX stems[] =
 	{0},
 };
 
+static SUFFIX stems_french[] = 
+{
+	{ (char*)"âtre",ADJECTIVE},
+	{ (char*)"able",ADJECTIVE},
+	{ (char*)"ade",NOUN},
+	{ (char*)"age",NOUN},
+	{ (char*)"aille",NOUN},
+	{ (char*)"ain",NOUN|ADJECTIVE},
+	{ (char*)"ais",NOUN|ADJECTIVE},
+	{ (char*)"al",ADJECTIVE},
+	{ (char*)"ance",NOUN},
+	{ (char*)"ant",ADJECTIVE},
+	{ (char*)"ard",ADJECTIVE},
+	{ (char*)"aud",ADJECTIVE},
+	{ (char*)"ère",NOUN},
+	{ (char*)"ée",NOUN},
+	{ (char*)"el",ADJECTIVE},
+	{ (char*)"et",ADJECTIVE},
+	{ (char*)"esse",NOUN},
+	{ (char*)"eur",ADJECTIVE|NOUN},
+	{ (char*)"euse",NOUN},
+	{ (char*)"eux",ADJECTIVE},
+	{ (char*)"ible",ADJECTIVE},
+	{ (char*)"isme",NOUN},
+	{ (char*)"iste",NOUN|ADJECTIVE},
+	{ (char*)"ien",NOUN|ADJECTIVE},
+	{ (char*)"ier",NOUN},
+	{ (char*)"ie",NOUN},
+	{ (char*)"if",ADJECTIVE},
+	{ (char*)"in",ADJECTIVE},
+	{ (char*)"ir",VERB},
+	{ (char*)"asser",VERB},
+	{ (char*)"ater",VERB},
+	{ (char*)"ailler",VERB},
+	{ (char*)"ifier",VERB},
+	{ (char*)"iner",VERB},
+	{ (char*)"iser",VERB},
+	{ (char*)"oter",VERB},
+	{ (char*)"ot",ADJECTIVE},
+	{ (char*)"oyer",VERB},
+	{ (char*)"er",VERB|NOUN},
+	{ (char*)"ment",ADVERB|NOUN},
+	{ (char*)"ois",NOUN},
+	{ (char*)"son",NOUN},
+	{ (char*)"tion",NOUN},
+	{ (char*)"ure",NOUN},
+	{ (char*)"logue",NOUN},
+	{ (char*)"logie",NOUN},
+	{ (char*)"gène",NOUN},
+	{ (char*)"gramme",NOUN},
+	{ (char*)"manie",NOUN},
+	{ (char*)"phobe",NOUN},
+	{ (char*)"phobie",NOUN},
+	{ (char*)"ose",NOUN},
+	{0},
+};
+
+
+
+
 bool multichoice = false;
 
 void InitSpellCheck()
@@ -70,7 +130,8 @@ static int SplitWord(char* word)
 	size_t len = strlen(word);
     for (unsigned int k = 1; k < len-1; ++k)
     {
-        if (k == 1 &&*word != 'a' &&*word != 'A' &&*word != 'i' &&*word != 'I') continue; //   only a and i are allowed single-letter words
+        if (!stricmp(language,"english") && k == 1 &&*word != 'a' &&*word != 'A' &&*word != 'i' &&*word != 'I') continue; //   only a and i are allowed single-letter words
+        else if (!stricmp(language,"french") && k == 1 &&*word != 'y' &&*word != 'a' &&*word != 'A' &&*word != 'à' &&*word != 'À' &&*word != 'ô' &&*word != 'Ô') continue; //   in french only y, a and ô are allowed single-letter words
 		WORDP D1 = FindWord(word,k,PRIMARY_CASE_ALLOWED);
         if (!D1) continue;
 		good = (D1->properties & (PART_OF_SPEECH|FOREIGN_WORD)) != 0 || (D1->internalBits & HAS_SUBSTITUTE) != 0; 
@@ -829,6 +890,94 @@ static int EditDistance(WORDINFO& dictWordData, WORDINFO& realWordData,int min)
                 continue;
             }
         }
+        // french common bad spellings
+        if (!stricmp(language, "french"))
+        {
+            if (*currentCharReal == 'a' && *currentCharDict == 'â')
+            {
+            	val += 1;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'e' && *currentCharDict == 'ê')
+            {
+            	val += 10;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'è' && *currentCharDict == 'ê')
+            {
+            	val += 5;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'i' && *currentCharDict == 'î')
+            {
+            	val += 1;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'o' && *currentCharDict == 'ô')
+            {
+            	val += 1;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'u' && *currentCharDict == 'û')
+            {
+            	val += 5;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'y' && *currentCharDict == 'l' && *nextCharDict == 'l')
+            {
+            	val += 10;
+                dictinfo = resumeDict1;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'k' && *currentCharDict == 'q' && *nextCharDict == 'u')
+            {
+            	val += 10;
+                dictinfo = resumeDict1;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'f' && *currentCharDict == 'p' && *nextCharDict == 'h')
+            {
+            	val += 5;
+                dictinfo = resumeDict1;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 's' && *currentCharDict == 'c')
+            {
+            	val += 10;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 's' && *currentCharDict == 'ç')
+            {
+            	val += 5;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+            if (*currentCharReal == 'c' && *currentCharDict == 'ç')
+            {
+            	val += 5;
+                dictinfo = resumeDict;
+                realinfo = resumeReal;
+                continue;
+            }
+        }
         // probable transposition since swapping syncs up
         if (!strcmp(currentCharReal, nextCharDict) && !strcmp(nextCharReal, currentCharDict))
         {
@@ -927,19 +1076,41 @@ static char* StemSpell(char* word,unsigned int i,uint64& base)
 	{
 		unsigned int i = 0;
 		char* suffix;
-		while ((suffix = stems[i].word))
+		if (!stricmp(language, "english")) 
 		{
-			uint64 kind = stems[i++].flags;
-			size_t suffixlen = strlen(suffix);
-			if (!strnicmp(word+len-suffixlen,suffix,suffixlen))
+			while ((suffix = stems[i].word))
 			{
-				word1[len-suffixlen] = 0;
-				best = SpellFix(word1,0,kind); 
-				if (best) 
+				uint64 kind = stems[i++].flags;
+				size_t suffixlen = strlen(suffix);
+				if (!strnicmp(word+len-suffixlen,suffix,suffixlen))
 				{
-					ending = suffix;
-                    base = stems[i].flags;
-					break;
+					word1[len-suffixlen] = 0;
+					best = SpellFix(word1,0,kind); 
+					if (best) 
+					{
+						ending = suffix;
+	                    base = stems[i].flags;
+						break;
+					}
+				}
+			}
+		}
+		else if (!stricmp(language, "french")) 
+		{
+			while ((suffix = stems_french[i].word))
+			{
+				uint64 kind = stems_french[i++].flags;
+				size_t suffixlen = strlen(suffix);
+				if (!strnicmp(word+len-suffixlen,suffix,suffixlen))
+				{
+					word1[len-suffixlen] = 0;
+					best = SpellFix(word1,0,kind); 
+					if (best) 
+					{
+						ending = suffix;
+	                    base = stems_french[i].flags;
+						break;
+					}
 				}
 			}
 		}

@@ -724,7 +724,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	char* place = ptr;
 	while (IsDigit(*place)) ++place;
 	if (!stricmp(place,"st") || !stricmp(place,"nd") || !stricmp(place,"rd")) return end;
-	else if (stricmp(language, "french") && (!stricmp(place, "er") || !stricmp(place, "ere") || !stricmp(place, "ère") || !stricmp(place, "nd") || !stricmp(place, "nde") || !stricmp(place, "eme") || !stricmp(place, "ème"))) return end;
+	else if (!stricmp(language, "french") && (!stricmp(place, "er") || !stricmp(place, "ere") || !stricmp(place, "ère") || !stricmp(place, "nd") || !stricmp(place, "nde") || !stricmp(place, "eme") || !stricmp(place, "ème"))) return end;
 	int len = end - ptr;
 	char next2;
 	if (*ptr == '/') return ptr+1; // split of things separated
@@ -762,9 +762,11 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				}
 				// ' as particle ellision 
 				if ((ptr - start) == 1 && (*start == 'd' || *start == 'c' || *start == 'j' || *start == 'l' || *start == 's' || *start == 't' || *start == 'm' || *start == 'n')) return ptr + 1;  // break off d' argent and other foreign particles
-				else if ((ptr - start) == 2 && *start == 'q' && *(start + 1) == 'u') return ptr + 1;  // break off qu'
-				else if ((ptr - start) == 6 && *start == 'l' && *(start + 1) == 'o' && *(start + 2) == 'r' && *(start + 3) == 's' && *(start + 4) == 'q' && *(start + 5) == 'u') return ptr + 1;  // break off lorsqu'
-				else if ((ptr - start) == 6 && *start == 'p' && *(start + 1) == 'u' && *(start + 2) == 'i' && *(start + 3) == 's' && *(start + 4) == 'q' && *(start + 5) == 'u') return ptr + 1;  // break off puisqu'
+				else if (!stricmp(language, "french") && (ptr - start) == 1 && (*start == 'D' || *start == 'C' || *start == 'J' || *start == 'L' || *start == 'S' || *start == 'T' || *start == 'M' || *start == 'N')) return ptr + 1;  // break off french particles in upper case
+				else if (!stricmp(language, "french") && (ptr - start) == 2 && (*start == 'q' || *start == 'Q') && *(start + 1) == 'u') return ptr + 1;  // break off qu'
+				else if (!stricmp(language, "french") && (ptr - start) == 5 && (*start == 'j' || *start == 'J') && *(start + 1) == 'u' && *(start + 2) == 's' && *(start + 3) == 'q' && *(start + 4) == 'u') return ptr + 1;  // break off jusqu'
+				else if (!stricmp(language, "french") && (ptr - start) == 6 && (*start == 'l' || *start == 'L') && *(start + 1) == 'o' && *(start + 2) == 'r' && *(start + 3) == 's' && *(start + 4) == 'q' && *(start + 5) == 'u') return ptr + 1;  // break off lorsqu'
+				else if (!stricmp(language, "french") && (ptr - start) == 6 && (*start == 'p' || *start == 'P') && *(start + 1) == 'u' && *(start + 2) == 'i' && *(start + 3) == 's' && *(start + 4) == 'q' && *(start + 5) == 'u') return ptr + 1;  // break off puisqu'
 
 				//   12'6" or 12'. or 12' 
 				if (IsDigit(*start) && !IsAlphaUTF8(next)) return ptr + 1;  //   12' swallow ' into number word
