@@ -60,7 +60,42 @@ NUMBERDECODE numberValues[] = {
  { (char*)"gross",144,5,0},
  { (char*)"thousand",1000,8,REALNUMBER},
  { (char*)"million",1000000,7,REALNUMBER},
- { (char*)"billion",1000000,7,REALNUMBER},
+ { (char*)"billion",1000000000,7,REALNUMBER},
+};
+
+NUMBERDECODE numberValuesFrench[] = { 
+ { (char*)"zéro",0,4,REALNUMBER}, { (char*)"zero",0,4,REALNUMBER},
+ { (char*)"un",1,2,REALNUMBER}, { (char*)"une",1,3}, { (char*)"premier",1,7}, { (char*)"première",1,8}, { (char*)"mono",1,4,0}, { (char*)"uni",1,3,0}, { (char*)"one",1,3,0},
+ { (char*)"deux",2,4,REALNUMBER}, { (char*)"second",2,6}, { (char*)"seconde",2,7}, { (char*)"deuxième",2,8}, { (char*)"double",2,6,0}, { (char*)"bi",2,2,0}, { (char*)"paire",2,5,0}, { (char*)"moitié",2,5,FRACTION_NUMBER}, { (char*)"demi",2,4,FRACTION_NUMBER}, { (char*)"two",2,3,0},
+ { (char*)"trois",3,5,REALNUMBER}, { (char*)"troisième",3,9}, { (char*)"triple",3,6,0}, { (char*)"tiers",3,5,FRACTION_NUMBER}, { (char*)"three",3,5,0}, { (char*)"III",3,3,0},
+ { (char*)"quatre",4,6,REALNUMBER}, { (char*)"quatrième",4,9}, { (char*)"quart",4,5,FRACTION_NUMBER}, { (char*)"four",4,4,0}, { (char*)"IV",4,2,0},
+ { (char*)"cinq",5,4,REALNUMBER}, { (char*)"cinqième",5,8}, { (char*)"five",5,4,0}, { (char*)"V",5,1,0},
+ { (char*)"six",6,3,REALNUMBER}, { (char*)"sixième",6,7}, { (char*)"VI",6,2,0},
+ { (char*)"sept",7,4,REALNUMBER}, { (char*)"septième",7,8}, { (char*)"seven",7,5,0}, { (char*)"VII",7,3,0},
+ { (char*)"huit",8,4,REALNUMBER}, { (char*)"huitième",8,8}, { (char*)"eight",8,5,0}, { (char*)"VIII",8,4,0},
+ { (char*)"neuf",9,4,REALNUMBER}, { (char*)"neuvième",9,8}, { (char*)"nine",9,4,0}, { (char*)"IX",9,2,0},
+ { (char*)"dix",10,3,REALNUMBER}, { (char*)"dixième",10,7}, { (char*)"dizaine",10,7,0}, { (char*)"ten",10,3,0}, { (char*)"X",10,1,0},
+ { (char*)"onze",11,4,REALNUMBER}, { (char*)"onzième",11,7}, { (char*)"XI",11,2,0},
+ { (char*)"douze",12,5,REALNUMBER}, { (char*)"douzième",12,8}, { (char*)"douzaine",12,8,0}, { (char*)"XII",12,3,0},
+ { (char*)"treize",13,6,REALNUMBER}, { (char*)"treizième",13,9}, { (char*)"XIII",13,4,0},
+ { (char*)"quatorze",14,8,REALNUMBER}, { (char*)"quatorzième",14,11}, { (char*)"XIV",14,3,0},
+ { (char*)"quinze",15,6,REALNUMBER}, { (char*)"quinzième",15,9}, { (char*)"XV",15,2,0},
+ { (char*)"seize",16,5,REALNUMBER}, { (char*)"seizième",16,8}, { (char*)"XVI",16,3,0},
+ { (char*)"dix-sept",17,8,REALNUMBER}, { (char*)"dix-septième",17,12}, { (char*)"XVII",17,4,0},
+ { (char*)"dix-huit",18,8,REALNUMBER}, { (char*)"dix-huitième",18,12}, { (char*)"XVIII",18,5,0},
+ { (char*)"dix-neuf",19,8,REALNUMBER}, { (char*)"dix-neuvième",19,12}, { (char*)"XIX",19,3,0},
+ { (char*)"vingt",20,5,REALNUMBER}, { (char*)"vingtième",20,9}, { (char*)"XX",20,2,0},
+ { (char*)"trente",30,6,REALNUMBER}, { (char*)"trentième",30,9},
+ { (char*)"quarante",40,8,REALNUMBER}, { (char*)"quarantième",40,11},
+ { (char*)"cinquante",50,9,REALNUMBER}, { (char*)"cinquantième",50,12},
+ { (char*)"soixante",60,8,REALNUMBER}, { (char*)"soixantième",60,11},
+ { (char*)"soixante-dix",70,12,REALNUMBER}, { (char*)"septante",70,8,REALNUMBER}, { (char*)"soixante-dixième",70,17},
+ { (char*)"quatre-vingt",80,12,REALNUMBER}, { (char*)"octante",80,7,REALNUMBER}, { (char*)"quatre-vingtième",80,16},
+ { (char*)"quatre-vingt-dix",90,16,REALNUMBER}, { (char*)"nonante",90,7,REALNUMBER}, { (char*)"quatre-vingt-dixième",90,20},
+ { (char*)"cent",100,4,REALNUMBER}, { (char*)"cents",100,5,REALNUMBER}, { (char*)"centième",100,8}, { (char*)"centaine",100,8,0},
+ { (char*)"mille",1000,5,REALNUMBER}, { (char*)"millième",1000,8}, { (char*)"millier",1000,7,0},
+ { (char*)"million",1000000,7,REALNUMBER}, { (char*)"millions",1000000,8,REALNUMBER}, { (char*)"millionième",1000000,11},
+ { (char*)"milliard",1000000000,8,REALNUMBER}, { (char*)"milliards",1000000000,9,REALNUMBER}, { (char*)"milliardième",1000000000,12},
 };
 
 char toHex[16] = {
@@ -2445,11 +2480,18 @@ int64 Convert2Integer(char* number)  //  non numbers return NOT_A_NUMBER
 	if (hyp) *hyp = '-';
 
 	// look up direct word numbers
-	if (!hasDigit) for (unsigned int i = 0; i < sizeof(numberValues)/sizeof(NUMBERDECODE); ++i)
+	if (!stricmp(language, "english") && !hasDigit) for (unsigned int i = 0; i < sizeof(numberValues)/sizeof(NUMBERDECODE); ++i)
     {
         if (len == numberValues[i].length && !strnicmp(word,numberValues[i].word,len)) 
 		{
 			return numberValues[i].value;  // a match (but may be a fraction number)
+		}
+    }
+    else if (!stricmp(language, "french") && !hasDigit) for (unsigned int i = 0; i < sizeof(numberValuesFrench)/sizeof(NUMBERDECODE); ++i)
+    {
+        if (len == numberValuesFrench[i].length && !strnicmp(word,numberValuesFrench[i].word,len)) 
+		{
+			return numberValuesFrench[i].value;  // a match (but may be a fraction number)
 		}
     }
 
