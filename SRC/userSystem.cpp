@@ -23,7 +23,7 @@ static char* saveVersion = "jul2116";	// format of save file
 int userFirstLine = 0;	// start volley of current conversation
 uint64 setControl = 0;	// which sets should be saved with user
 
-char ipAddress[50];
+char ipAddress[ID_SIZE];
 char computerID[ID_SIZE];
 char computerIDwSpace[ID_SIZE];
 char loginID[ID_SIZE];    //   user FILE name (lower case)
@@ -76,10 +76,10 @@ void Login(char* caller,char* usee,char* ip) //   select the participants
 	MakeLowerCopy(computerIDwSpace+1,computerID);
 	strcat(computerIDwSpace,(char*)" ");
 
-	if (ip && *ip) // maybe use ip in generating unique login
+	if (*ipAddress) // maybe use ip in generating unique login
 	{
-		if (!stricmp(caller,(char*)"guest")) sprintf(caller,(char*)"guest%s",ip);
-		else if (*caller == '.') sprintf(caller,(char*)"%s",ip);
+		if (!stricmp(caller,(char*)"guest")) sprintf(caller,(char*)"guest%s", ipAddress);
+		else if (*caller == '.') sprintf(caller,(char*)"%s", ipAddress);
 	}
 	char* ptr = caller-1;
 	while (*++ptr) 
@@ -89,7 +89,7 @@ void Login(char* caller,char* usee,char* ip) //   select the participants
 	}
 
     //   prepare for chat
-    PartialLogin(caller,ip);
+    PartialLogin(caller, ipAddress);
  }
 
 void ReadComputerID()

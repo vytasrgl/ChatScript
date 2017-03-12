@@ -10,7 +10,7 @@ extern char* callArgumentList[MAX_ARGUMENT_COUNT+1];    //   function callArgume
 extern unsigned int callArgumentBase;
 
 #define ARGUMENT(n) callArgumentList[callArgumentBase+n]
-char* ReadCompiledWord(char* ptr, char* word,bool noquote = false,bool var = false);
+char* ReadCompiledWord(char* ptr, char* word,bool noquote = false,bool var = false,bool nolimit = false);
 char* ReadCompiledWordOrCall(char* ptr, char* word,bool noquote = false,bool var = false);
 
 #define INPUT_BUFFER_SIZE   80000

@@ -303,7 +303,7 @@ char* GetBurstWord(unsigned int n) //   0-based
 	return burstWords[n];
 }
 
-char* JoinWords(unsigned int n,bool output)
+char* JoinWords(unsigned int n,bool output) // 
 {
 	char* limit;
 	char* joinBuffer = InfiniteStack(limit,"JoinWords"); // transient
@@ -328,7 +328,7 @@ char* JoinWords(unsigned int n,bool output)
 		ReportBug("Joinwords was too big %d %s",strlen(joinBuffer),joinBuffer);
 		joinBuffer[MAX_WORD_SIZE-1] = 0; // safety truncation
 	}
-	ReleaseInfiniteStack();
+	CompleteBindStack(); //  we'd like to leave this infinite but string copy by caller may be into infinite as well
     return joinBuffer;
 }
 
@@ -723,7 +723,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	// check for place number
 	char* place = ptr;
 	while (IsDigit(*place)) ++place;
-	if (!stricmp(place,"st") || !stricmp(place,"nd") || !stricmp(place,"rd")) return end;
+	if (!stricmp(language, "english") && (!stricmp(place,"st") || !stricmp(place,"nd") || !stricmp(place,"rd"))) return end;
 	else if (!stricmp(language, "french") && (!stricmp(place, "er") || !stricmp(place, "ere") || !stricmp(place, "ère") || !stricmp(place, "nd") || !stricmp(place, "nde") || !stricmp(place, "eme") || !stricmp(place, "ème"))) return end;
 	int len = end - ptr;
 	char next2;
@@ -762,12 +762,15 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				}
 				// ' as particle ellision 
 				if ((ptr - start) == 1 && (*start == 'd' || *start == 'c' || *start == 'j' || *start == 'l' || *start == 's' || *start == 't' || *start == 'm' || *start == 'n')) return ptr + 1;  // break off d' argent and other foreign particles
-				else if (!stricmp(language, "french") && (ptr - start) == 1 && (*start == 'D' || *start == 'C' || *start == 'J' || *start == 'L' || *start == 'S' || *start == 'T' || *start == 'M' || *start == 'N')) return ptr + 1;  // break off french particles in upper case
-				else if (!stricmp(language, "french") && (ptr - start) == 2 && (*start == 'q' || *start == 'Q') && *(start + 1) == 'u') return ptr + 1;  // break off qu'
-				else if (!stricmp(language, "french") && (ptr - start) == 5 && (*start == 'j' || *start == 'J') && *(start + 1) == 'u' && *(start + 2) == 's' && *(start + 3) == 'q' && *(start + 4) == 'u') return ptr + 1;  // break off jusqu'
-				else if (!stricmp(language, "french") && (ptr - start) == 6 && (*start == 'l' || *start == 'L') && *(start + 1) == 'o' && *(start + 2) == 'r' && *(start + 3) == 's' && *(start + 4) == 'q' && *(start + 5) == 'u') return ptr + 1;  // break off lorsqu'
-				else if (!stricmp(language, "french") && (ptr - start) == 6 && (*start == 'p' || *start == 'P') && *(start + 1) == 'u' && *(start + 2) == 'i' && *(start + 3) == 's' && *(start + 4) == 'q' && *(start + 5) == 'u') return ptr + 1;  // break off puisqu'
-
+				else if (!stricmp(language, "french"))
+				{
+					if ((ptr - start) == 1 && (*start == 'D' || *start == 'C' || *start == 'J' || *start == 'L' || *start == 'S' || *start == 'T' || *start == 'M' || *start == 'N')) return ptr + 1;  // break off french particles in upper case
+					else if ((ptr - start) == 2 && (*start == 'q' || *start == 'Q') && *(start + 1) == 'u') return ptr + 1;  // break off qu'
+					else if ((ptr - start) == 5 && (*start == 'j' || *start == 'J') && *(start + 1) == 'u' && *(start + 2) == 's' && *(start + 3) == 'q' && *(start + 4) == 'u') return ptr + 1;  // break off jusqu'
+					else if ((ptr - start) == 6 && (*start == 'l' || *start == 'L') && *(start + 1) == 'o' && *(start + 2) == 'r' && *(start + 3) == 's' && *(start + 4) == 'q' && *(start + 5) == 'u') return ptr + 1;  // break off lorsqu'
+					else if ((ptr - start) == 6 && (*start == 'p' || *start == 'P') && *(start + 1) == 'u' && *(start + 2) == 'i' && *(start + 3) == 's' && *(start + 4) == 'q' && *(start + 5) == 'u') return ptr + 1;  // break off puisqu'
+				}
+	
 				//   12'6" or 12'. or 12' 
 				if (IsDigit(*start) && !IsAlphaUTF8(next)) return ptr + 1;  //   12' swallow ' into number word
 			}
@@ -1628,9 +1631,9 @@ static void MergeNumbers(int& start,int& end) //   four score and twenty = four-
         {
   			int64 power1 = NumberPower(wordStarts[i-1]);
 			int64 power2 = NumberPower(wordStarts[i]);
-			if (power1 == power2)
+			if (power1 == power2 && power1 != 1) // allow one two three
 			{
-				end = start = (unsigned int)UNINIT; // dont merge one two
+				end = start = (unsigned int)UNINIT; 
 				return;
 			}
 	        if (*word == '-' && !IsDigit(*item)) 

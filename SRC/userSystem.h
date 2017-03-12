@@ -22,7 +22,7 @@ extern char humanSaid[MAX_USED+1][SAID_LIMIT+3]; //   last n messages read from 
 extern int humanSaidIndex;
 extern int chatbotSaidIndex;
 extern char timeturn15[100];
-extern char ipAddress[50];
+extern char ipAddress[ID_SIZE];
 extern char timeturn0[20];
 extern char timePrior[20];
 extern int userFirstLine;

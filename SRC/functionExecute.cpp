@@ -594,8 +594,7 @@ char* InvokeUser(char* &buffer,char* ptr, FunctionResult& result,WORDP D,unsigne
 				if (id >= 0) val = AllocateStack(wildcardOriginalText[id],0,true);
 				else val = AllocateStack("");
 			}
-			if (*val && *(val-2) != '`' && *(val-1) != '`') 
-				val = AllocateStack(val,0,true);
+			else if (*val && *(val-1) != '`') val = AllocateStack(val,0,true);
 			arg->w.userValue = val;
 		}
 	}
@@ -3850,11 +3849,9 @@ FunctionResult MatchCode(char* buffer)
 		ReadShortCommandArg(word1,word,result,OUTPUT_NOQUOTES); 
 		if (result != NOPROBLEM_BIT) return result;
 	}
-	else 
-	{
-		if (word1[0] == FUNCTIONSTRING && word1[1] == '(') strcpy(word,word1+1);
-		else strcpy(word,word1); // otherwise it is what to say (like from idiom table)
-	}
+	else if (word1[0] == FUNCTIONSTRING && word1[1] == '(') strcpy(word,word1+1);
+	else strcpy(word, ARGUMENT(1)); // otherwise it is what to say (like from idiom table)
+	
 	WORDP X = FindWord(word);
 	if (*word == '~' && (!X || !(X->internalBits & (CONCEPT|TOPIC))) && strchr(word,'.')) // named an existing rule 
 	{
@@ -5906,14 +5903,15 @@ static FunctionResult AddPropertyCode(char* buffer)
 	WORDP D = NULL;
 	int store = 0;
 	unsigned int count = 0;
+	char arg3 = 0;
 	if (*arg1 == '@') // add property to all facts in set either on a field or fact as a whole
 	{
 		store = GetSetID(arg1);
 		if (store == ILLEGAL_FACTSET) return FAILRULE_BIT;
 		count =  FACTSET_COUNT(store);
+		arg3 = *GetSetType(arg1);
 	}
 	else  D = StoreWord(arg1,0); // add property to dictionary word
-	char arg3 = *GetSetType(arg1);
 
 	uint64 val = 0;
 	uint64 sysval = 0;

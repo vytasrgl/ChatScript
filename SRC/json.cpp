@@ -237,14 +237,15 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int tokenlimit, int sizel
 	}
 	case JSMN_STRING: {
 		char* limit;
-		char* str = InfiniteStack(limit,"factsJsonHelper");
+		char* str = InfiniteStack(limit,"factsJsonHelper string");
 		strncpy(str,jsontext + curr.start,size);
 		str[size] = 0;
 		*flags = JSON_STRING_VALUE; // string null
-		ReleaseInfiniteStack();
+		CompleteBindStack();
 		if (!PreallocateHeap(size)) return FAILRULE_BIT;
 		if (size == 0)  *retMeaning = MakeMeaning(StoreWord((char*)"null",AS_IS));
 		else  *retMeaning = MakeMeaning(StoreWord(str,AS_IS));
+		ReleaseStack(str);
 		break;
 	}
 	case JSMN_OBJECT: {
@@ -984,7 +985,7 @@ static char* jwritehierarchy(int depth, char* buffer, WORDP D, int subject, int 
 		size = (buffer - currentOutputBase + 400); // 400 slop to protect us
 		if (size >= currentOutputLimit) 
 		{
-			ReportBug((char*)"Json too much");
+			ReportBug((char*)"Json too much %d items size %d", indexsize,size);
 			ReleaseStack((char*)stack);
 			return buffer; // too much output
 		}

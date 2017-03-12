@@ -227,6 +227,7 @@ bool GetSetMod(char* x)
 
 char* GetSetType(char* x)
 { // @13subject returns subject
+	if (!x[0] || !x[1] ) return ""; // safety from bad data
 	x += 2;
 	if (IsDigit(*x)) ++x;
 	return x;
@@ -1364,7 +1365,7 @@ char* ReadField(char* ptr,char* &field,char fieldkind, unsigned int& flags)
 		CopyRemoveEscapes(field,start,90000);	// we only remove ones we added
 		return end+2; // point AFTER the space after the closer
 	}
-    else  ptr = ReadCompiledWord(ptr,field); // no escaping or anything weird needed
+    else  ptr = ReadCompiledWord(ptr,field,false,false,true); // no escaping or anything weird needed
 	if (field[0] == '~') MakeLowerCase(field);	// all concepts/topics are lower case
 	return ptr; //   return at new token
 }

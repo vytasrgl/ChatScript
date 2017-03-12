@@ -7020,10 +7020,11 @@ static void C_UserFacts(char* input)
 	unsigned int count = 0;
 	while (++F <= factFree)
 	{
-		char word[MAX_WORD_SIZE];
+		char* word = AllocateBuffer();
 		++count;
 		char* fact = WriteFact(F,false,word,false,false);
 		Log(STDTRACELOG,(char*)"%s  # %d %s\r\n",fact,Fact2Index(F), WriteFactFlags(F));
+		FreeBuffer();
 	}
 	Log(STDTRACELOG,(char*)"user facts: %d\r\n",count);
 }

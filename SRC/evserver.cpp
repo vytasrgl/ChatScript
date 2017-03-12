@@ -106,22 +106,22 @@ struct Client_t
     char* bot;
     char* message;
     char* user;
-    char* data;
+    char* data = NULL;
 
     Client_t(int fd, struct ev_loop *l_p) : fd(fd), l(l_p), requestValid(false)
     {
         strcpy(this->magic, "deadbeef");
         ev_io_init(&this->ev_r, client_read, this->fd, EV_READ);
         ev_io_init(&this->ev_w, client_write, this->fd, EV_WRITE);
-		this->data = NULL;
-       this->ev_r.data = this;
+        this->ev_r.data = this;
         this->ev_w.data = this;
         ev_io_start(this->l, &this->ev_r);
     }
 
-    ~Client_t()
+    ~Client_t() // if child dies, this destructor is not called
     {
-		if (this->data) free(this->data);
+		if (this->data) free(this->data); 
+		this->data = NULL;
         if (ev_is_active(&this->ev_r))  ev_io_stop(this->l, &this->ev_r);
         if (ev_is_active(&this->ev_w))  ev_io_stop(this->l, &this->ev_w);
         close(this->fd);
@@ -186,7 +186,8 @@ struct Client_t
             }
 
             Log(SERVERLOG, "evserver: send_data() could not send, errno: %s", strerror(errno));
-            return -1;
+			printf( "evserver: send_data() could not send, errno: %s", strerror(errno));
+			return -1;
         }
 
         if (r < (int)len) 
@@ -209,7 +210,8 @@ struct Client_t
         if (this->ip.length() == 0) 
 		{
             Log(SERVERLOG, "evserver: prepare_for_chat() could not get ip for client: %d\r\n", this->fd);
-            return -1;
+			printf("evserver: prepare_for_chat() could not get ip for client: %d\r\n", this->fd);
+			return -1;
         }
 
         return 1;
@@ -258,12 +260,14 @@ static int setnonblocking(int fd)
     int flags = fcntl(fd, F_GETFL, 0);
     if (flags == -1) {
         Log(SERVERLOG, "evserver: setnonblocking() fcntl(F_GETFL) failed, errno: %s\r\n", strerror(errno));
-        return -1;
+		printf( "evserver: setnonblocking() fcntl(F_GETFL) failed, errno: %s\r\n", strerror(errno));
+		return -1;
     }
     if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) 
 	{
         Log(SERVERLOG, "evserver: setnonblocking() fcntl(F_SETFL) failed, errno: %s\r\n", strerror(errno));
-        return -1;
+		printf( "evserver: setnonblocking() fcntl(F_SETFL) failed, errno: %s\r\n", strerror(errno));
+		return -1;
     }
     return 1;
 }
@@ -277,7 +281,8 @@ int fork_child(ev_child *child_watcher = 0)
     pid = fork();
     if (pid < 0) {
 		Log(SERVERLOG, "evserver: fork failed, errno %d\r\n", errno);
-        return -1;
+		printf( "evserver: fork failed, errno %d\r\n", errno);
+		return -1;
     }
  
     if (pid > 0) {
@@ -307,10 +312,21 @@ int fork_child(ev_child *child_watcher = 0)
 }
 
 static void evsrv_child_died(EV_P_ ev_child *w, int revents) {
-    Log(SERVERLOG, "evserver: evsrv_child_died [pid: %d]\r\n", w->pid);
-    int r = fork_child(w);
-    if (r < 0)  Log(SERVERLOG, "  evserver: could not re-spawn child after it died [pid: %d]\r\n", w->pid);
-    else if (r == 1)   Log(SERVERLOG, "  evserver child: re-spawned [pid: %d]\r\n", getpid());
+	Log(SERVERLOG, "evserver: evsrv_child_died [pid: %d]\r\n", w->pid);
+	printf("evserver: evsrv_child_died [pid: %d]\r\n", w->pid);
+
+	int r = fork_child(w);
+	if (r < 0)
+	{
+		Log(SERVERLOG, "  evserver: could not re-spawn child after it died [pid: %d]\r\n", w->pid);
+		printf("  evserver: could not re-spawn child after it died [pid: %d]\r\n", w->pid);
+	}
+
+	else if (r == 1)
+	{
+		Log(SERVERLOG, "  evserver child: re-spawned [pid: %d]\r\n", getpid());
+		printf("  evserver child: re-spawned [pid: %d]\r\n", getpid());
+	}
 }
 #endif
 
@@ -453,6 +469,7 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
     ev_io_init(&ev_accept_r_g, evsrv_accept, srv_socket_g, EV_READ);
     ev_io_start(l_g, &ev_accept_r_g);
 	Log(SERVERLOG, "  evserver: running pid: %d\r\n",getpid());
+	printf( "  evserver: running pid: %d\r\n", getpid());
 
     return 1;
 }
@@ -541,6 +558,12 @@ static void client_read(EV_P_ ev_io *w, int revents)
     }
 
     r = client->send_data();
+	if (client->data)
+	{
+		free(client->data);
+		client->data = NULL;
+	}
+
     if (r < 0) {
         Log(SERVERLOG, "evserver: could not sent data to client: %d\r\n", client->fd);
         delete client;
@@ -586,7 +609,8 @@ int evsrv_do_chat(Client_t *client)
 	}
 #endif
 	if (!client->data) 	client->data = (char*) malloc(outputsize);
- 
+	if (!client->data) printf("Malloc failed for child data\r\n");
+
 RESTART_RETRY:
 	strcpy(ourMainInputBuffer,client->message);
 	struct tm ptm;

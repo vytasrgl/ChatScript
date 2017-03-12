@@ -616,8 +616,8 @@ bool SpellCheckSentence()
 			// dont spell check proper names to improper, if word before or after is lower case originally
 			if (word && i != 1 && originalCapState[i] && !IsUpperCase(*word))
 			{
-				if (!originalCapState[i-1]) return false;
-				else if (i != wordCount && !originalCapState[i+1]) return false;
+				if (!originalCapState[i-1]) continue;
+				else if (i != wordCount && !originalCapState[i+1]) continue;
 			}
 
 			if (word && !*word) // performed substitution on prior word, restart this one

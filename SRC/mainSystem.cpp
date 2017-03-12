@@ -1088,7 +1088,11 @@ inputRetry:
 			extraTopicData = NULL;
 		}
 		else turn = PerformChat(loginID, computerID, ourMainInputBuffer, NULL, ourMainOutputBuffer); // no ip
-		if (turn == PENDING_RESTART) Restart();
+		if (turn == PENDING_RESTART)
+		{
+			ourMainInputBuffer[0] = ourMainInputBuffer[1] = 0;
+			Restart();
+		}
 	}
 	if (sourceFile != stdin) 
 	{
