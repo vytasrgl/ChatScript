@@ -69,7 +69,7 @@ A topic breakpoint will break on entry and exit of topic by whatever manner (nor
 `^reuse`, etc). 
 
 
-## Rule breakpoints##
+## Rule breakpoints
 
 A rule can broken upon by doing 
 
