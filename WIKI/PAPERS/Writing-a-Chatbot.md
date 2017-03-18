@@ -453,7 +453,7 @@ of the normally generated conversation. So if you asked her do you have any pets
 answer with any emotional spice occasionally added in a sentence in front. Here is some of her hostile
 spice topic, which gets progressively worse during the conversation:
 
-?: () ^preprint(Why should I tell you? )
+    ?: () ^preprint(Why should I tell you? )
     ?: () ^preprint(Go figure it out on your own. )
     ...
     u: () ^preprint(Do you actually have any friends? )
