@@ -1,8 +1,7 @@
 # ChatScript Wiki (user guides, tutorials, papers)
-ChatScript Guide To Documentation
+**ChatScript Guide To Documentation**
 <br>© Bruce Wilcox, gowilcox@gmail.com
-
-> Revision 3/4/2017 cs7.3
+<br>Revision 3/4/2017 cs7.3
 
 ChatScript has a lot of documentation in various manuals, so knowing what to read may seem daunting.
 Here is an overview.
@@ -46,7 +45,6 @@ NLTK means nothing to you.
 <br>An illustration of hooking in an external pos-tagger for foreign language support.
 
 
-
 ## Advanced ChatScript
 
 * [ChatScript Advanced User Manual](ChatScript-Advanced-User-Manual.md)
@@ -60,16 +58,6 @@ NLTK means nothing to you.
 
 * [ChatScript Json](ChatScript-Json.md)
 <br>ChatScript support for Json
-
-* [ChatScript Debugging Manual](ChatScript-Debugging-Manual.md)
-<br>The features of CS that support debugging, including tracing. See next manual below for Debugger.
-
- * [ChatScript Debugger](ChatScript-Debugger.md)
-<br>Built-in text oriented debugger.
-
-* [ChatScript Finalizing a Bot](ChatScript-Finalizing-A-Bot.md)
-<br>Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely
-never be complete because you will want to keep improving it.
 
 * [ChatScript Overview Input to Output](ChatScript-Overview-of-Input-to-Output.md)
 <br>An overview of the process of converting input to output. Not necessary except for
@@ -89,6 +77,19 @@ really advanced users wanting the appropriate mental model.
 
 * [Installing and Updating ChatScript](Installing-and-Updating-ChatScript.md)
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
+
+
+## Test and Debug
+
+* [ChatScript Finalizing a Bot](ChatScript-Finalizing-A-Bot.md)
+<br>Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely
+never be complete because you will want to keep improving it.
+
+* [ChatScript Testing Manual](ChatScript-Debugging-Manual.md)
+<br>The features of CS that support debugging, including tracing.
+
+ * [ChatScript Debugger](ChatScript-Debugger.md)
+<br>Built-in text oriented step debugger.
 
 
 ## Specialized ChatScript
@@ -158,7 +159,7 @@ really advanced users wanting the appropriate mental model.
 * [Paper - Google Talk](PAPERS/Paper-Google-Talk.md)
 <br>A talk I gave at Google about my history, CS, and writing code to act out stories
 
-* [Paper - Writing a Chatbot](../PAPERS/Paper-%20Writing%20a%20Chatbot.pdf)
+* [Paper - Writing a Chatbot](PAPERS/Writing-a-Chatbot.md)
 <br>Useful discussion on how to think about writing a chatbot
 
 * [Paper - ARBOR_ MakingItReal](PAPERS/Paper-ARBOR-MakingItReal.md)
