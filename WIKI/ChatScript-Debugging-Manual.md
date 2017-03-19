@@ -1,8 +1,6 @@
 # ChatScript Debugging Manual
-
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
-
-> Revision 3/4/2017 cs7.3
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com<br>
+Revision 3/4/2017 cs7.3
 
 You've written script. It doesn't work. Now what? Now you need to debug it, fix it, and
 recompile it. Debugging is mostly a matter of tracing what the system does testpaand
@@ -10,7 +8,7 @@ finding out where it doesn't do what you expected. Debugging mostly done by issu
 commands to the engine, as opposed to chatting.
 
 If the system detects bugs during execution, they go into `TMP/bugs.txt` 
-You can erase the entire contents of the TMP directory a:trny time you want to. But odds are this is not your problem. 
+You can erase the entire contents of the TMP directory any time you want to. But odds are this is not your problem. 
 
 Debugging generally requires use of some :xxxx commands. I don't always remember them all, so at times I might simply say
 
@@ -138,7 +136,13 @@ the above : statement show the list:
 :verifySentence    - verification data
 ```
 
-All commands can be written in full, or most can be abbreviated using `:firstletterlastletter`, eg `:build` can be :`bd`
+All commands can be written in full, or most can be abbreviated using `:firstletterlastletter`, eg 
+
+    :build
+can be
+
+    :bd
+    
 `:commands off` will locally disable commands until a corresponding `:commands on` is given.
 
 **Before it goes wrong during execution**
@@ -157,15 +161,15 @@ The system will warn you as it compiles and it will summarize its findings at th
 The compilation messages occur on screen and in the log file.
 
 The most significant warnings are a reference to an undefined set or an undefined `^reuse` label. E.g.,
-```
-*** Warning- missing set definition ~car_names
-*** Warning- Missing cross-topic label ~allergy.JOHN for reuse
-```
+
+    *** Warning- missing set definition ~car_names
+    *** Warning- Missing cross-topic label ~allergy.JOHN for reuse
+
 Those you should fix because clearly they are wrong, although the script will execute fine
 everywhere but in those places.
-```
-*** Warning- flowglow is unknown as a word in pattern
-```
+
+    *** Warning- flowglow is unknown as a word in pattern
+
 Warnings about words in patterns that it doesn't recognize or it recognizes in lower case
 but you used upper case may or may not matter. Neither of these is wrong, unless you
 didn't intend it. Words it doesn't recognize arise either because you made a typo
@@ -179,23 +183,23 @@ secondary dictionaries in the `TOPIC` folder and those are easy to adjust. To al
 you can define concepts that add local dictionary entries. The names of important word
 type bits are in `src/dictionarySystem.h` but the basics are `NOUN`, `VERB`, `ADJECTIVE`,
 and `ADVERB`.
-```
-concept: ~morenoun NOUN (fludge flwoa boara)
-```
+
+    concept: ~morenoun NOUN (fludge flwoa boara)
+
 A concept like the above, declared before use of those words, will define them into the
 local dictionary as nouns and suppress the warning message. You can be more specific as
 well with multiple flags like this:
-```
-concept: ~myverbs VERB VERB_INFINITIVE (spluat babata)
-```
+
+    concept: ~myverbs VERB VERB_INFINITIVE (spluat babata)
+
 You can define concepts at level 0 and/or level 1 of the build, so you can put define new
 words whenever you need to.
 
 When build is complete, it will pick up where it left off with the user (his data files
 unchanged). If you want to automatically clear the user and start afresh, use
-```
-:build xxx reset
-```
+
+    :build xxx reset
+
 
 **After it goes wrong during execution**
 
@@ -211,7 +215,8 @@ Thus the most common debug command is `:prepare`.
 
 ## Most Useful Debug Commands
 
-### `:prepare` *this is my sample input*
+### `:prepare this is my sample input`
+
 This shows you how the system will tokenize a sentence and what concepts it matches.
 It's what the system does to prepare to match topics against your input. From that you
 can deduce what patterns would match and what topics might be invoked.
@@ -221,25 +226,26 @@ which disables actually responding. Not usually what you want.
 
 There is an optional first argument to `:prepare`, which is a variable. 
 If given it indicates the `$cs_token` value to use for preparation. E.g
-```
-:prepare $mytoken this is a sentence.
-```
+
+    :prepare $mytoken this is a sentence.
+
 The `$cs_prepass` variable contains optional script that will be executed before the main
 control script is executed. 
 
 The advantage of `$cs_prepass` is that it is also executed by `:prepare`, 
 so you can see traces of it there. If you want to see preparation w/o this topic
 (raw preparation by the engine) you can add the optional argument `NOPREPASS` or `PREPASS`. Eg.
-```
-:prepare NOPREPASS This is a sentence
-:prepare $newtoken NOPREPASS This is a sentence.
-```
+
+    :prepare NOPREPASS This is a sentence
+    :prepare $newtoken NOPREPASS This is a sentence.
+
 The use of the `PREPASS` or `NOPREPASS` is remembered during the run of CS, so that
 the next time you call `:prepare` you can omit it and the same setting will be used.
 If all you want to know is what concepts a word is involved in, consider `:common`.
 
 
 ### `:why`
+
 When I test my bots (assuming they pass verification), I chat with them until I get an
 answer I don't like. I then ask it why it generated the answer it did.
 
@@ -250,56 +256,61 @@ so for that I'll need typically need tracing.
 
 ## Trace
 
-### `:trace` _all_
-### `:trace` _always_
-### `:trace` _none_
+### `:trace all` / `:trace always` / `:trace none`
 The ultimate debugging command dumps a trace of everything that happens during
 execution onto screen and into the log file. After entering this, you type in your chat and
 watch what happens (which also gets dumped into the current log file). Problem is, it's
 potentially a large trace. You really want to be more focused in your endeavor.
 
-But ignoring that, `:trace all` turns on all tracing. It can be suppressed in areas of code
-executing within `^NOTRACE()`. 
+But ignoring that, 
 
-`:trace always` ignores ^notrace protection and traces everything. 
+    :trace all 
+    
+turns on all tracing. It can be suppressed in areas of code executing within `^NOTRACE()`. 
 
-`:trace ignorenotrace` allows you to use the limited traces below, and still ignore `NOTRACE` covered calls.
+    :trace always
 
-### `:trace` _^myfunction_
+ignores ^notrace protection and traces everything. 
+
+    :trace ignorenotrace
+
+allows you to use the limited traces below, and still ignore `NOTRACE` covered calls.
+
+### `:trace ^myfunction`
 this enables tracing for the function. Call it again to restore to normal.
 
-### `:trace` _$var_
+### `:trace $var`
 this enables tracing when this variable changes. Local variables only show
 a trace during the current volley. Global variables show a trace across volleys.
 
-### `:trace` _~education_
+### `:trace ~education`
 this enables tracing for this topic and all the topics it calls. Call it
 again to restore to normal. This is probably what you need usually to see what went
 wrong. You know the code you expected to execute, so monitor the topic it is in.
 
-### `:trace` _!~education_
+### `:trace !~education`
 this disables current tracing for this topic and all the topics it calls
 when `:trace all` is running. Call it again to restore to normal.
 
 Similarly you can do
 
-### `:trace` _~education.4.5_
+### `:trace ~education.4.5`
 which says to trace just the 4th top level rule in `~education`, rejoinder # 5.
 The above defaults to tracing everything while in that topic. You can specify what you
 want to trace by naming trace values and then the topic.
 
-### `:trace` _prepare basic facts ~education_
+### `:trace prepare basic facts ~education`
 The above will turn on a bunch of trace values and then assign them to the topic, 
 clearing the trace values.
 
-### `:trace` _prepare basic facts ^myfunc_
+### `:trace prepare basic facts ^myfunc`
 The above will turn on a bunch of trace values and then assign them to the function, 
 clearing the trace values.
 
 Note: If you want to set a regular trace value and a topic and/or function, the regular trace values
 must occur last, after all topic and function traces.
 
-### `:trace` _factcreate subject verb object_
+### `:trace factcreate subject verb object`
 subject, verb, and object name values of those fields. You can use null when you don't want to name a value. 
 This trace will show whenever facts matching this template are created.
 You can insert a trace command in the data of a table declaration, to trace a table being
@@ -316,37 +327,39 @@ Utah Salt_lake_city
 ```
 
 You can insert a trace in the list of files to process for a build. From files1.txt
-```
-RAWDATA/simplecontrol.top # conversational control
-:trace all
-RAWDATA/simpletopic.top # things we can chat about
-:trace none
-```
+
+    RAWDATA/simplecontrol.top # conversational control
+    :trace all
+    RAWDATA/simpletopic.top # things we can chat about
+    :trace none
+
 And you can insert a trace in the list of commands of a topic file:
-```
-topic: foo […]
-…
-:trace all
-```
+
+    topic: foo […]
+    ...
+    :trace all
 
 Tracing is also good in conjunction with some other commands that give you a restricted view. 
 You can name tracing options by subtraction. E.g.,
-```
-:trace all -infer -pattern
-```
-When I'm doing a thorough trace, I usually do `:trace all` – query because I want to see fact searches but only need the answers and not all the processing the query did.
 
-Note, if you want tracing to start at startup, when you don't have control, login with a botname of trace. 
-E.g, at the login type:
-```
-john:trace
-```
+    :trace all -infer -pattern
+
+When I'm doing a thorough trace, I usually do 
+    
+    :trace all –query
+
+because I want to see fact searches but only need the answers and not all the processing the query did.
+
+NOTE: if you want tracing to start at startup, when you don't have control, login with a botname of trace. 
+E.g, at the login type: 
+
+    john:trace
+
 This will turn on all tracing.
 
 `:trace` also has individual collections and items it can trace. If you just say :trace you get a listing of things.
-```
-:notrace {ON,OFF} ~topic1 ~topic2 {ON,OFF} ~topic3
-```
+
+    :notrace {ON,OFF} ~topic1 ~topic2 {ON,OFF} ~topic3
 
 Regardless of the use of `:trace`, `:notrace` marks some topics to not trace.
 
@@ -388,24 +401,25 @@ you can name some and add more in another call. Here are things you can trace:
 | deep         | input macro sample infer substitute fact varassign query user pos tcp usercache sql label topic |
 
 Example:
-```
-:trace all -query -infer
-```
+
+    :trace all -query -infer
+
 If you want to trace a topic in a limited manner, set the limits before naming the topic:
-```
-:trace pattern pos ~mytopic
-```
+
+    :trace pattern pos ~mytopic
+
 The system will set the limits, then upon hitting the topic name, swallow them to be used
 for that topic. This means you can do multiple topics and global limits in one command:
-```
-:trace pattern ~mytopic pos ~yourtopic varassign
-```
+
+    :trace pattern ~mytopic pos ~yourtopic varassign
+
 `~mytopic` gets the pattern limit, `~yourtopic` gets the pos limit, and globally you do varassign.
+
 
 ### Understanding a pattern trace
 
 ```
-          try 3.0: ( ! %response=0 !%lastquestion !%outputrejoinder )   
+    try 3.0: ( ! %response=0 !%lastquestion !%outputrejoinder )   
             ( !%response(0)=0- Remaining pattern: !%lastquestion ! %outputrejoinder )
           try 6.0: ( < do you know _a _* )
             ( <+ do- Remaining pattern: you know _a _* )    
@@ -470,9 +484,7 @@ lists what topics are currently being timed.
 list functions currently being timed
 
 
-
-### `:retry`
-### `:retry` _This is my new input_
+### `:retry` / `:retry This is my new input`
 `:retry` tells the system to rerun the most recent input on the state of the system a moment
 ago, and retry it. It should do exactly what it did before, but this time if you have turned
 on tracing it will trace it. 
@@ -487,16 +499,17 @@ You can also put in different input using `:retry`. This is a fast way to try al
 context and see what the system would do.
 
 You can also designate a file you want loaded instead (if you have copied some previous user topic file out) by saying
-```
-:retry FILE filepath  _This is my input_
-```
+
+    :retry FILE filepath  _This is my input_
+
 
 `:retry` is expected to be used on a stand-alone system. NORMAL servers only allow users
 in the authorizedip.txt file to use debug commands.. If retry has been server enabled
 using the command line parameter "serverretry", thereafter each volley is tracked
 
 
-### `:redo` _5 This is new input_
+### `:redo 5 This is new input`
+
 `:redo` is like `:retry` but takes a volley number and requires substitute input. 
 
 The command line parameter `redo` enables this command (otherwise becomes a `:retry`). 
@@ -505,17 +518,17 @@ You can then back up to the input leading to any volley number by saying
 `:redo n` here is new input. Can chew up file space in TMP directory
 
 
-### `:do` _stream_
+### `:do stream`
 This execute sthe stream specified as though a rule has matched input and has this
 stream as its output section. E.g.
-```
-:do pos(noun word plural) will output "words".
-:do $cs_token |= #STRICT_CASING will augment the user variable.
-```
+
+    :do pos(noun word plural) will output "words".
+    :do $cs_token |= #STRICT_CASING will augment the user variable.
+
 Sometimes you need the system to set up a situation (typically pronoun resolution).
-```
-:do hello world
-```
+
+    :do hello world
+
 will tell the system to generate hello world as its output.
 
 In all cases the system will literally pretend a dummy user input of `:do`, incrementing
@@ -524,19 +537,18 @@ topic, it merely executes the stream you gave it as though that were from some r
 matched during main processing. The output generated is handled per normal and the
 system then runs the postprocess. The results are saved in the user's topic file.
 
-### `:topics` _This is my sample input_
+### `:topics This is my sample input`
 This will display the topics whose keywords match the input, the score the topic gets, and
 the specific words that matched.
 
-### `:say` _this is bot output_
+### `:say this is bot output`
 This will output whatever you wrote as though the chatbot said it. Useful for testing
 postprocessing code.
 
 ### `:silent`
-This toggles whether or not output is sent to the user. Useful when running regression
-tests.
+This toggles whether or not output is sent to the user. Useful when running regression tests.
 
-### `:diff` _file1 file2 optional-separator_
+### `:diff file1 file2 optional-separator`
 Reports on lines that are different between the two files. Useful when running regression
 tests. Often used with `:silent` and `:log` as well. 
 
@@ -553,82 +565,82 @@ The `:show` choices are all toggles. Each call flips its state. However, you can
 second argument to `:show`, which is a value and instead of toggling the flag will be set to
 that value.
 
-### `:show` _all_
+### `:show all`
 toggles a system mode where it will not stop after it first finds an output. It
 will find everything that matches and shows all the outputs. It just doesn't proceed to do
 gambits. Since it is showing everything, it erases nothing. There is a system variable %all
 you can query to see if the all mode is turned on if you want some of your script to be
 unreactive when running all.
 
-### `:show` _input_ 
+### `:show input` 
 displays the things you send back into the system using the `^input` function.
 
-### `:show` _mark_ 
+### `:show mark` 
 is not something you are likely to use but it displays in the log the
 propogation of marked items in your sentence. 
 If you do `:echo` that stuff will also display on your screen.
 
-### `:show` _newline_ 
+### `:show newline` 
 normally the log file transcodes all newline/return characters so that the
 log line of the bot output is all one line (so various tools work). But if you have an
 indented/newline oriented display you want to see in the logs, you can make this true. It
 does ruin the ability to use other tools like :regress, etc.
 
-### `:show` _number_ 
+### `:show number` 
 displays the current input number at the front of the bot's output. It is
 always shown in the log, but this shows it on-screen. 
 
 I use this before running a large regression test like `:source REGRESS/bigregress.txt` 
 so I will know how far it has gotten while it's running.
 
-### `:show` _pos_ 
+### `:show pos` 
 displays summary on the POS-tagging. Not useful for a user, but useful to me in debugging the engine itself.
 
-### `:show` _topic_ 
+### `:show topic`
 displays the current topic the bot is in, prefixed to its output.
 
-### `:show` _topics_ 
+### `:show topics` 
 displays all the topics whose keywords matched the input.
 
-### `:show` _why_ 
+### `:show why` 
 this turns on `:why` for each volley so you always see the rule causing output before seeing the output.
 
-### `:log` _xxxx_ 
+### `:log xxxx` 
 put the message you write directly into the log file. Useful for testers to send
 comments back to scriptors in the moment of some issue arising.
 
 ### `:noreact` 
 toggles whether the system tries to respond to input.
 
-### `:testtopic` _~topic sentence_
+### `:testtopic ~topic sentence`
 This will execute responder mode of the named topic on the sentence given, to see what
 would happen. It forces focus on that topic, so no other topic could intervene. In addition
 to showing you the output it generates, it shows you the values of all user variables it changes.
 
-### `:testpattern` _(…) sentence_
+### `:testpattern (...) sentence`
 The system inputs the sentence and tests the pattern you provide against it. It tells you
 whether it matched or failed.
-```
-:testpattern ( it died ) Do you know if it died?
-```
+
+    :testpattern ( it died ) Do you know if it died?
+
 Some patterns require variables to be set up certain ways. You can perform assignments
 prior to the sentence.
-```
-:testpattern ($gender=male hit) $gender = male hit me
-```
+
+    :testpattern ($gender=male hit) $gender = male hit me
+
 Typically you might use `:testpattern` to see if a subset of your pattern that fails works, 
 trying to identify what has gone wrong. The corresponding thing for testing output is `:do`.
 You can also name an existing rule, rather than supply a pattern.
-```
-:testpattern ~aliens.ufo do you believe in aliens?
-```
+
+    :testpattern ~aliens.ufo do you believe in aliens?
+
 
 ### `:topicstats`
 This walks all topics and computes how many rules of various kinds you have
 (e.g., how big is your system). You can also just name a topic or use a wildcard like `~do*`
 to see all topics starting with `~do`.
 
-### `:skip` _n_
+### `:skip n`
 The system will disable the next n gambits of the current topic, and tell you where you
 will end up next. Thereafter your next simple input like _ok_ will execute that gambit,
 and the n previous will already have been used up.
@@ -645,14 +657,13 @@ Topics that have been entered recently but are not the current topic.
 ### `:commands`
 Displays available commands and a brief statement of purpose.
 
-### `:concepts` _word_
+### `:concepts word`
 Lists all concepts that are affiliated with this word.
 
-### `:conceptlist` _{argument}_
-List all concepts defined in the system or with an argument like `~w*`, 
-show all concepts starting with `~w`
+### `:conceptlist {argument}`
+List all concepts defined in the system or with an argument like `~w*`, show all concepts starting with `~w`
 
-### `:definition` _^xxxx_
+### `:definition ^xxxx`
 Shows the code of the user-defined macro named.
 
 ### `:mixedcase` 
@@ -663,13 +674,13 @@ Helps you locate words where you inadvertently created a wrong case.
 Lists the directories in use: the path to the exe file, the current working directory, and
 directory overrides used in embedded applications.
 
-### `:findwords` _word_
+### `:findwords word`
 Given a word pattern, find all words in the dictionary that match that
 pattern. The pattern starts with a normal word character, after which you can intermix the
 wildcard * with other normal characters. 
 For example, 
-`slo*` finds _slothful_, _slower_, _sloshed_. 
-`s*p*y` finds _supposedly_, _spendy_, and _surprizingly_.
+* `slo*` finds _slothful_, _slower_, _sloshed_. 
+* `s*p*y` finds _supposedly_, _spendy_, and _surprizingly_.
 
 ### `:functions`
 Show all `^functions` defined by the system.
@@ -683,7 +694,7 @@ Show memory use, number of words, number of facts, amount of text space used, nu
 ### `:queries`
 Show all defined queries.
 
-### `:variables` _{kind}_
+### `:variables {kind}`
 Rarely will the issue be that some variable of yours isn't correct. But you can show the
 values of all user `$variables` and all system `%variables` and all match variables. 
 If you provide an argument, "system" restricts it to system variables and "user" restricts it to
@@ -692,17 +703,17 @@ user variables, and "match" restricts it to all match variables.
 ### `:who`
 Show name of current user and current bot.
 
-### `:nonset` _type set_
+### `:nonset type set`
 find what words of the given part of speech are not encompassed by
 the named concept. This is a command to determine if some words are not covered by an
 ontology tree, and not used by normal scripters. E.g., `:nonset NOUN ~nounlist`.
 
-### `:common` _dog cat_
+### `:common dog cat`
 Given 2 or more words, this displays the concepts they share in common, most close first.
 This only applies to statically defined concepts, and not to dynamic engine concepts like
 parts-of-speech, role-in-sentence, `~number`, etc
 
-### `:word` _apple_
+### `:word apple`
 Given a word, this displays the dictionary entry for it as well some data up it's hierarchy.
 The word is case sensitive and if you want to check out a composite word, you need to
 use underscores instead of blanks. So `:word TV_star`.
@@ -713,24 +724,24 @@ This prints out the current facts stored with the user.
 ### `:allfacts`
 This dumps a list of all the facts (including system facts) into the file `TMP/facts.txt`.
 
-### `:facts` _meaning_
-### `:facts` _@n_
+### `:facts meaning` / `:facts @n`
 This displays all facts for the given word or meaning. If you give a meaning (e.g., `sky~1`)
 then only facts involving that specific meaning are displayed. You can also give a fact like (subject verb object) and all facts containing that fact will be shown, but the fact can
 not contain any facts itself, it must be all simple fields.
+
 If you use `:facts @2` then it will display all facts in that fact set. Bear in mind that
 normally factsets are NOT stored across volleys, so displaying a factset will likely show
 nothing unless you've executed ^save to protect it.
 
-### `:up` _word_
+### `:up word`
 Shows the dictionary and concept hierarchy of things above the given word or concept.
 
-### `:down` _word n_
+### `:down word n`
 Shows the dictionary hierarchy below a word or, if the word is name of a concept, the
 members of the concept. Since displaying down can subsume a lot of entries, you can
 specify how many levels down to display (n). The default is 1.
 
-### `:findwords` _pattern_
+### `:findwords pattern`
 This uses the pattern of characters and * to name words and phrases in the dictionary
 matching it. E.g.
 ```
@@ -743,13 +754,11 @@ chief_executive_officer
 Dancing_and_singing_are_my_idea_of_exercise.
 ```
 
-### `:overlap` _set1 set2_
-This tests atomic members of set1 to see if they are also in set2, printing out the ones that
-are in both.
+### `:overlap set1 set2`
+This tests atomic members of set1 to see if they are also in set2, printing out the ones that are in both.
 
 
 ## System Control Commands
-
 
 ### `:build`
 
@@ -763,16 +772,16 @@ A build file has as its content a list of file paths to read as the script sourc
 It may also have comment lines starting with `#`. 
 
 These paths are usually relative to the top level directory. E.g,
-```
-# ontology data
-RAWDATA/ONTOLOGY/adverbhierarchy.top
-RAWDATA/ONTOLOGY/adjectivehierarchy.top
-RAWDATA/ONTOLOGY/prepositionhierarchy.top
-```
+
+    # ontology data
+    RAWDATA/ONTOLOGY/adverbhierarchy.top
+    RAWDATA/ONTOLOGY/adjectivehierarchy.top
+    RAWDATA/ONTOLOGY/prepositionhierarchy.top
+
 Depending on what you put into it, 
 a build file may build a single bot or lots of bots or a common set of data or whatever.
 
-### `:bot` _sue_
+### `:bot sue`
 Change focus to conversing with the named bot (presuming you have such a bot). It
 resets the user back to complete new, flushing the users history, variables, etc.
 
@@ -781,11 +790,11 @@ Flush the current user's total history (erases the `USER/TOPIC` file), variables
 starting conversation from the beginning. Can be done from within a script without
 damaging the existing control flow or input sentence.
 
-### `:user` _username_
+### `:user username`
 Change your login id. It will then prompt you for new input as that user and proceed from
 there, not starting a new conversation but merely continuing a prior one.
 
-### `:source` _REGRESS/bigregress.txt_
+### `:source REGRESS/bigregress.txt`
 Switch the system to reading input from the named file. Good for regression testing.
 
 The system normally prints out just the output, while the log file contains both the input
@@ -832,7 +841,7 @@ startup behavior. E.g., from script:
 ^eval(:restart erase Vserver=app.john.com/api/1.1 )
 ```
 
-### `:autoreply` _xxx_
+### `:autoreply xxx`
 
 This command causes the system to talk to itself. 
 As the user it always says whatever you put in xxx.
@@ -848,35 +857,39 @@ to follow code thereafter if you can debug c code.
 This allows you to print something directly to the users log file. You can actually append
 to any file by putting at the front of your output the word FILE in capital letters followed
 by the name of the file. E.g.,
-```
-^log(FILE TMP/mylog.txt This is my log output.)
-```
+
+    ^log(FILE TMP/mylog.txt This is my log output.)
 
 Logging appends to the file. If you want to clear it first, issue a log command like this:
-```
-^log(FILE TMP/mylog.txt NEW This is my log output)
-```
+
+    ^log(FILE TMP/mylog.txt NEW This is my log output)
+
 The "new" tells it to initialize the file to empty.
 Additionally you can optimize log file behavior. If you expect to write to a file a lot
 during a volley (eg during :document mode), you can leave the file open by using
-```
-^log(OPEN TMP/mylog.txt This is my log output.)
-```
+
+    ^log(OPEN TMP/mylog.txt This is my log output.)
+
 which caches the file ptr. After which you can write with OPEN or FILE equivalently. 
 To close the file use
-```
-^log(CLOSE TMP/mylog.txt)
-```
+
+    ^log(CLOSE TMP/mylog.txt)
+
 
 ## Login after crash
+
 If you want to repeat a crash and not go thru all the trouble to recreate the situation you
 can do the login differently. The old status of the system is still in the user's folder.
 Normally when you login, it picks that up, but begins a new conversation. 
 
 To resume the old conversation as though you had never left, login with `loginname:&`. 
-If before you were user bruce, login as `bruce:&` . Now if you say what you said before, it should crash just the same. Not that that will do most of you any good, but it's handy if you can debug src code.
+If before you were user bruce, login as `bruce:&`. 
+Now if you say what you said before, it should crash just the same. Not that that will do most of you any good, 
+but it's handy if you can debug src code.
+
 
 ## When all else fails
+
 Usually you can email me for advice and solutions.
 
 # :sortconcept
@@ -884,19 +897,18 @@ Usually you can email me for advice and solutions.
 This takes one or all concepts currently compiled, and can neaten
 them up in various ways.
 
-`:sortconcept ~concept 1` will take the named concept and write it out to
-`cset.txt` as a single line, with members sorted alphabetically.
+    :sortconcept ~concept 1
 
-`:sortconcept ~concept 0` will take the named concept and write it out to
-`cset.txt` as a multiple tidy lines, with members sorted alphabetically.
+will take the named concept and write it out to `cset.txt` as a single line, with members sorted alphabetically.
 
-`:sortconcept 1` will take the all built concept and write them out to
-`concepts.top` as a single line, with members sorted alphabetically and
-concept declarations sorted alphabetically. You can use this output to replace
-your original scripted concepts.
+    :sortconcept ~concept 0
 
-`:sortconcept 0` will take the all built concept and write them out to
-`concepts.top` as a multiple line, with members sorted alphabetically. If you want
-the concept declarations sorted alphabetically, first do `:sortconcept 1`, then
-take `concepts.top` and replace your original script concepts from it. Then do this
-and then replace your original script concepts from this.
+will take the named concept and write it out to `cset.txt` as a multiple tidy lines, with members sorted alphabetically.
+
+    :sortconcept 1
+
+will take the all built concept and write them out to `concepts.top` as a single line, with members sorted alphabetically and concept declarations sorted alphabetically. You can use this output to replace your original scripted concepts.
+
+    :sortconcept 0
+
+will take the all built concept and write them out to `concepts.top` as a multiple line, with members sorted alphabetically. If you want the concept declarations sorted alphabetically, first do `:sortconcept 1`, then take `concepts.top` and replace your original script concepts from it. Then do this and then replace your original script concepts from this.
