@@ -26,7 +26,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8F32F3931E6CE222002D388C /* SRC */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SRC; path = ../../SRC; sourceTree = "<group>"; };
+		8F0489EC1E7DE03200CF5BA6 /* SRC */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SRC; path = ../../SRC; sourceTree = "<group>"; };
 		8FB930071ACBBC3F00BD7EF2 /* MacChatScript */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MacChatScript; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FCEF5691E0B7540004B6762 /* libcurl.3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.3.tbd; path = usr/lib/libcurl.3.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -46,7 +46,7 @@
 		8F2A54AB1C606DB700305D6A /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				8F32F3931E6CE222002D388C /* SRC */,
+				8F0489EC1E7DE03200CF5BA6 /* SRC */,
 			);
 			name = Source;
 			sourceTree = "<group>";
