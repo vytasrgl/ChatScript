@@ -1,4 +1,4 @@
-# ChatScript Syntax plugin for Sublime Text editor 
+# ChatScript syntax plugin for Sublime Text editor 
 
 [Sublime Text](https://www.sublimetext.com/) is a sophisticated text editor for code, markup and prose. There is a syntax definition for ChatScript for this editor.
 
