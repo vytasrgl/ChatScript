@@ -1,7 +1,6 @@
 # ChatScript Pattern Redux
-
-© Bruce Wilcox, gowilcox@gmail.com<br>
-Revision 3/4/2017 cs7.3
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 4/8/2017 cs7.31
 
 Pattern matching information was introduced in the Beginner manual and expanded in the 
 [Advanced User Manual](ChatScript-Advanced-User-Manual.md).
@@ -39,11 +38,11 @@ input so highly.
 ## IF Patterns
 
 Pattern matching can be done not just in a rule's pattern component but also in its output component,
-within an IF statement as follows:
+within an IF statement, e.g.:
 
-    if ( pattern _~conjunction ... ) { ... }
+    if ( PATTERN _~number  ) { print( _0)  }
 
-That is, if the first word in the test condition is the word `pattern`, 
+That is, if the first word in the test condition is the word `PATTERN`, 
 the rest is treated as a standard pattern of a rule (not using `AND` `OR` etc). 
 You can capture data here or do anything a normal pattern does. 
 

@@ -1756,7 +1756,7 @@
 ~celestial_observation ( telescope stargazing planetarium Perseid observatory eclipse constellation )
 ~ceo ( Ted_Turner Steve_Jobs Steve_Case Larry_Ellison Jeff_Bezos Bill_Gates Andy_Grove CEO )
 ~chatbotlist ( Verbot unhuman talk_bot Smarterchild robot program NPC nonhuman chatterbox chatterbot chatbox chatbot chat_box chat_bot chat-program bot automaton artificial_intelligence artificial Alicebot AIML AI )
-~cheeses ( Époisses yogurt Tomme_de_Savoie Reblochon Pont_l'Évêque Pont_l'Eveque muenster fromage Epoisses Chèvre Chevre Brie_de_Meaux Tilsit Swiss_cheese Stilton Roquefort Rochefort ricotta quark provolone pepper_jack Parmesan munster Muenster mozzarella Monterey_Jack Limburger havarti Gruyere Gouda Gorgonzola feta Danish_blue cream_cheese Colby cheddar Camembert Cambozola Brie Boursin blue_cheese )
+~cheeses ( Ã‰poisses yogurt Tomme_de_Savoie Reblochon Pont_l'Ã‰vÃªque Pont_l'Eveque muenster fromage Epoisses ChÃ¨vre Chevre Brie_de_Meaux Tilsit Swiss_cheese Stilton Roquefort Rochefort ricotta quark provolone pepper_jack Parmesan munster Muenster mozzarella Monterey_Jack Limburger havarti Gruyere Gouda Gorgonzola feta Danish_blue cream_cheese Colby cheddar Camembert Cambozola Brie Boursin blue_cheese )
 ~chemicals ( organic_compound~1 compound~3 chemical )
 ~chinese_cooking_styles ( Szechuan Sichuan Mongolian Hunan Chinese Cantonese )
 ~christmas_words ( Xmas Christmas_Eve Christmas_Day Christmas )

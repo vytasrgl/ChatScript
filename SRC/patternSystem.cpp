@@ -24,7 +24,7 @@
 #define QUOTE_BIT		0X00080000
 #define WILDGAP					0X20000000  // start of gap is 0x000000ff, limit of gap is 0x0000ff00  
 #define WILDMEMORIZEGAP			0X40000000  // start of gap is 0x000000ff, limit of gap is 0x0000ff00  
-#define WILDMEMORIZESPECIFIC	0X80000000  //   while 0x1f0000 is wildcard index to use
+#define WILDMEMORIZESPECIFIC	  0X80000000  //   while 0x1f0000 is wildcard index to use
 #define GAP_SHIFT 16
 #define SPECIFIC_SHIFT 24
 #define GAPLIMITSHIFT 8
@@ -332,7 +332,7 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 		if (*word == '<' && word[1] == '<')  ++nextTokenStart; // skip the 1st < of <<  form
 		if (*word == '>' && word[1] == '>')  ++nextTokenStart; // skip the 1st > of >>  form
 		nextTokenStart = SkipWhitespace(nextTokenStart+1);	// ignore blanks after if token is a simple single thing like !
-
+		uppercaseFind = -1;
 		char c = *word;
 		if (deeptrace) Log(STDTRACELOG,(char*)" token:%s ",word);
         switch(c) 
@@ -458,6 +458,16 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 						int oldend = positionEnd; // will be 0 if we are starting out with no required match
 						positionStart = WILDCARD_START(wild);
 						positionEnd = WILDCARD_END(wild);
+						if (positionStart < oldend && !reverse) // we are trying to jump backwards
+						{
+							matched = false;
+							break;
+						}
+						else if (positionStart > oldend && reverse)
+						{
+							matched = false;
+							break;
+						}
 						reverse = false;
 						if (!wildcardSelector && oldend && *end != '+' && positionStart != (oldend + 1) && positionStart != INFINITE_MATCH) // this is an anchor that does not match
 						{
@@ -639,13 +649,15 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
                 }
                 break;
             case USERVAR_PREFIX: // is user variable defined
+				if (IsAlphaUTF8(word[1]) || word[1] == '_' || word[1] == USERVAR_PREFIX) // legal variable, not $ or $100
 				{
 					char* val = GetUserVariable(word);
 					matched = *val ? true : false;
 				}
+				else goto matchit;
                 break;
             case '^': //   function call, function argument  or indirect function variable assign ref like ^$$tmp = null
-                 if  (IsDigit(word[1]) || word[1] == USERVAR_PREFIX || word[1] == '_') //   macro argument substitution or indirect function variable
+                if  (IsDigit(word[1]) || word[1] == USERVAR_PREFIX || word[1] == '_') //   macro argument substitution or indirect function variable
                 {
                     argumentText = ptr; //   transient substitution of text
 
@@ -751,14 +763,18 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					if ((trace & TRACE_PATTERN || D->internalBits & MACRO_TRACE)  && CheckTopicTrace()) Log(STDTRACELOG,(char*)")\r\n"); 
 					fnVarBase = callArgumentBase = argStack[functionNest];
 					ptrStack[functionNest++] = ptr+2; // skip closing paren and space
-
-					ptr = (char*)D->w.fndefinition + 1; // continue processing within the macro, skip argument count
-					while (*ptr) // skip over locals list
+					ptr = (char*)FindAppropriateDefinition(D, result); 
+					if (ptr)
 					{
 						char word[MAX_WORD_SIZE];
-						ptr = ReadCompiledWord(ptr,word);
-						if (*word == ')') break;
+						ptr = ReadCompiledWord(ptr, word) + 2; // eat flags and count and (
+						while (*ptr) // skip over locals list
+						{
+							ptr = ReadCompiledWord(ptr, word);
+							if (*word == ')') break;
+						}
 					}
+					else ptr = ""; // null function
 					oldtrace = trace;
 					if (D->internalBits & MACRO_TRACE  && CheckTopicTrace()) 
 					{
@@ -768,8 +784,9 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 					if (trace & TRACE_PATTERN  && CheckTopicTrace()) Log(STDTRACELOG,(char*)"%s=> ",word);
 					if (result == NOPROBLEM_BIT) continue;
 				}
+				if (result == FAILRULE_BIT) matched = false;
 				break;
-          case 0: case '`': // end of data (argument or function - never a real rule)
+          case 0: // end of data (argument or function - never a real rule)
 	           if (argumentText) // return to normal from argument substitution
                 {
                     ptr = argumentText;
@@ -1042,6 +1059,7 @@ DOUBLELEFT:  case '(': case '[':  case '{': // nested condition (required or opt
 				matched = MatchTest(reverse,FindWord(word),(positionEnd < basicStart && firstMatched < 0) ? basicStart : positionEnd,NULL,NULL,
 					statusBits & QUOTE_BIT,uppercasematch,positionStart,positionEnd);
 				if (!matched || !(wildcardSelector & WILDMEMORIZESPECIFIC)) uppercasematch = false;
+				if (!matched || *word != '~') uppercaseFind = -1; // casing is unknown
 				if (!(statusBits & NOT_BIT) && matched && firstMatched < 0) firstMatched = positionStart;
 				if (matched && !(statusBits & NOT_BIT)) 
 				{

@@ -11,9 +11,15 @@ copies of the Software, and to permit persons to whom the Software is furnished 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
+
+#define LAYER_KERNEL -1
+#define LAYER_0 0
+#define LAYER_1 1
+#define LAYER_BOOT 2
+#define LAYER_USER 3
 
 #define MAX_LABEL_SIZE 100
 
@@ -59,7 +65,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define NOMORERULES 0x0fffffff		// finished walking a rule index map
 
 #define MAX_TOPIC_STACK 50
-
+extern int currentBeforeLayer;
 extern bool stats;
 extern unsigned int ruleCount;
 
@@ -149,7 +155,7 @@ FunctionResult DoOutput(char* buffer,char* rule, unsigned int id);
 unsigned int EstablishTopicTrace();
 char* GetRuleIDFromText(char* ptr, int & id);
 char* GetVerify(char* tag,int & topicid, int &id);//  ~topic.#.#=LABEL<~topic.#.#  is a maximally complete why
-void UnwindLayer2Protect();
+void UnwindUserLayerProtect();
 void InitKeywords(const char* name,const char* layer,unsigned int build,bool mark=false,bool concept=true);
 extern unsigned int currentTopicDisplay;
 bool AreDebugMarksSet();

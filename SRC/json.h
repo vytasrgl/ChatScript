@@ -13,9 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
-#ifndef DISCARDJSON
 extern int jsonOpenSize; 
-char* UrlEncode(char* input);
 FunctionResult JSONTreeCode(char* buffer);
 FunctionResult JSONKindCode(char* buffer);
 FunctionResult JSONPathCode(char* buffer);
@@ -24,7 +22,6 @@ FunctionResult JSONParseFileCode(char* buffer);
 FunctionResult JSONObjectInsertCode(char* buffer) ;
 FunctionResult JSONVariableAssign(char* word,char* value);
 FunctionResult JSONArrayInsertCode(char* buffer) ;
-FunctionResult JSONOpenCode(char* buffer);
 FunctionResult JSONLabelCode(char* buffer) ;
 FunctionResult JSONUndecodeStringCode(char* buffer) ;
 FunctionResult JSONWriteCode(char* buffer);
@@ -41,6 +38,10 @@ MEANING jsonValue(char* value, unsigned int& flags);
 void JsonRenumber(FACT* F);
 void jkillfact(WORDP D);
 void InitJSONNames();
+
+#ifndef DISCARDJSONOPEN
+char* UrlEncode(char* input);
+FunctionResult JSONOpenCode(char* buffer);
 void CurlShutdown();
 #endif
 

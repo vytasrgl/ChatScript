@@ -1,3 +1,13 @@
+# Version 7.31  4/8/2017 --- NEED TO RECOMPILE YOUR BOT! format has changed in TOPIC folder
+1. ^wordAtIndex({original, canonical} n) retrieves word at index either original or canonical
+2. ^cs_reboot and ^reboot
+3. $x.y = 1  autogenerates
+4. replace:  now takes quoted expressions on the right side, decoding to x+y
+5. Livedata- internalconcepts.top is a concept listing all internal non-enumerated concepts
+6. Livedata- numbers.txt (per language) describes canonical numeric value of numerically oriented words
+7. Previously undocumented ^makereal function changed and documented to take an argument. It allows to make transient facts
+in a factset permanent (or such facts created after a given fact)
+
 # Version 7.3 3-4-2017
 1. topic files of user stored by language as well as user id and bot name if not english
 2. `NO_CONDITIONAL_IDIOM`

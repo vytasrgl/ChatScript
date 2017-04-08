@@ -902,7 +902,6 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 	}
 }
 
-
 static char* OpDecode(uint64 field)
 {
 	static char buff[500];
@@ -928,7 +927,8 @@ static char* OpDecode(uint64 field)
 	{
 		WORDP D = Meaning2Word((unsigned int)bits);
 		strcat(buff,(char*)" ");
-		strcat(buff,D->word);
+		if (D) strcat(buff,D->word);
+		else strcat(buff, "bad bits");
 	}
 	return buff;
 }
@@ -1159,12 +1159,13 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 			if (allOriginalWordBits[i] & NOUN_ABSTRACT || lcSysFlags[i] & NOUN_NODETERMINER) answer = true;
 			break;
 		case ISORIGINAL: // original word is this
-			{
-				WORDP X =  Meaning2Word((int)bits);
-				answer = !stricmp(wordStarts[i],X->word);
-				if (posValues[i-1] == IDIOM) answer = false;	// doesnt match eg  "I scamper *out *of her way
-				if (tracex) Log(STDTRACELOG,(char*)" vs %s ",X->word);
-			}
+		{
+			WORDP X = Meaning2Word((int)bits);
+			if (!X) { Bug(); break; }
+			answer = !stricmp(wordStarts[i], X->word);
+			if (posValues[i - 1] == IDIOM) answer = false;	// doesnt match eg  "I scamper *out *of her way
+			if (tracex) Log(STDTRACELOG, (char*)" vs %s ", X->word);
+		}
 			break;
 		case ISQWORD:
 			if (originalLower[i] && originalLower[i]->properties & QWORD) answer = true;
@@ -1172,9 +1173,10 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		case ISCANONICAL: // canonical form of word is this (we never have canonical on upper that we care about)
 			{
 				WORDP X =  Meaning2Word((int)bits);
-				answer =  canonicalLower[i] == X;
-				if (posValues[i-1] == IDIOM) answer = false;	// doesnt match
-				if (tracex) Log(STDTRACELOG,(char*)" vs %s ",X->word);
+				if (!X) { Bug(); break; }
+				answer = canonicalLower[i] == X;
+				if (posValues[i - 1] == IDIOM) answer = false;	// doesnt match
+				if (tracex) Log(STDTRACELOG, (char*)" vs %s ", X->word);
 			}
 			break;
 		case HAS2VERBS: // GLOBAL    subord conjunct will require it
@@ -1194,6 +1196,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		case PRIORCANONICAL:
 			{
 				WORDP D = Meaning2Word((int)bits);
+				if (!D) { Bug(); break; }
 				if (tracex) Log(STDTRACELOG,(char*)" vs %s ",D->word);
 				int x = i;
 				while (--x >= startSentence)
@@ -1210,6 +1213,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 			case PRIORORIGINAL:
 			{
 				WORDP D = Meaning2Word((int)bits);
+				if (!D) { Bug(); break; }
 				if (tracex) Log(STDTRACELOG,(char*)" vs %s ",D->word);
 				int x = i;
 				while (--x >= startSentence)
@@ -1226,6 +1230,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 			case POSTORIGINAL:
 			{
 				WORDP D = Meaning2Word((int)bits);
+				if (!D) { Bug(); break; }
 				if (tracex) Log(STDTRACELOG,(char*)" vs %s ",D->word);
 				int x = i;
 				while (++x <= endSentence)
@@ -1515,9 +1520,8 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 		case ISMEMBER:  case ISORIGINALMEMBER:// direct member...
 			{
 				WORDP D = Meaning2Word((int)bits);
-				if (!D) break;
-				if (tracex) 
-					Log(STDTRACELOG,(char*)" vs %s ",D->word);
+				if (!D) { Bug(); break; }
+				if (tracex) Log(STDTRACELOG,(char*)" vs %s ",D->word);
 				FACT* F = GetObjectNondeadHead(D);
 				MEANING M = (control == ISMEMBER) ? MakeMeaning(canonicalLower[i]) : MakeMeaning(originalLower[i]);
 				while (F)
@@ -4184,7 +4188,7 @@ static bool FinishSentenceAdjust(bool resolved,bool & changed,int start,int end)
 				else if ((canSysFlags[i] & (LOCATIONWORD | TIMEWORD|HOWWORD )) == (LOCATIONWORD | TIMEWORD |HOWWORD) ) where = when = how = true; // needs closer inspection, might be either, decide when we see the object
 				else if ((canSysFlags[i] & (LOCATIONWORD | TIMEWORD )) == (LOCATIONWORD | TIMEWORD ) ) when = where = true;// needs closer inspection, might be either, decide when we see the object
 				else if ((canSysFlags[i] & (TIMEWORD|HOWWORD )) == (TIMEWORD |HOWWORD) ) when = how = true; // needs closer inspection, might be either, decide when we see the object
-				else if ((canSysFlags[i] & (LOCATIONWORD|HOWWORD) ) == (TIMEWORD |LOCATIONWORD) ) where = how = true; // needs closer inspection, might be either, decide when we see the object
+				else if ((canSysFlags[i] & (LOCATIONWORD|HOWWORD) ) == (LOCATIONWORD | HOWWORD) ) where = how = true; // needs closer inspection, might be either, decide when we see the object
 				else how = true; // default is how if not when or where or why
 				// if we dont know the prep role yet, assign it based on this object
 				if (!(roles[i] & ADVERBIALTYPE) && when)
@@ -5328,7 +5332,7 @@ static void HandleComplement( int i,bool & changed)
 		else if (i > 1 && IsUpperCase(*wordStarts[i])){;} // anything uppercase not 1st word is good
 		else 
 		{
-			if (trace & TRACE_POS && (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"    Abandoning indirect object at %s nonanimate\r\n",wordStarts[i]);
+			if (trace & TRACE_POS && (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"    Abandoning indirect object at %s nonanimate\r\n",wordStarts[i]);
 			needRoles[roleIndex] &= -1 ^ (MAININDIRECTOBJECT|INDIRECTOBJECT2); 
 			indirectObject = 0;
 		}
@@ -5656,20 +5660,20 @@ static bool ValidateSentence(bool &resolved)
 	if (roleIndex > MAINLEVEL) 
 	{
 		resolved = false; 
-		if (trace & TRACE_POS && (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: roleIndex > main level\r\n");
+		if (trace & TRACE_POS && (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: roleIndex > main level\r\n");
 	}
 	// check main verb  vs aux
 	else if (!verb) // main verb doesnt exist
 	{
 		resolved = false; // some unfinished business
-		if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: no main verb\r\n");
+		if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: no main verb\r\n");
 	}
 	if (auxVerbStack[MAINLEVEL] && resolved) // aux exists, prove main verb matches
 	{ // legal: "have you had your breakfast"  -- but so is "you are having your breakfast"
 		if (posValues[verb] & (VERB_PRESENT|VERB_PRESENT_3PS))
 		{
 			resolved = false; // some unfinished business
-			if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb %s has aux but not aux tense\r\n",wordStarts[verb]);
+			if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb %s has aux but not aux tense\r\n",wordStarts[verb]);
 		}
 	}
 	else if (resolved)// no aux exists, prove main verb matches
@@ -5681,7 +5685,7 @@ static bool ValidateSentence(bool &resolved)
 		else
 		{
 			resolved = false; // some unfinished business
-			if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb %s has aux tense but no aux\r\n",wordStarts[verb]);
+			if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb %s has aux tense but no aux\r\n",wordStarts[verb]);
 		}
 	}
 	// prove subject/verb match
@@ -5690,24 +5694,24 @@ static bool ValidateSentence(bool &resolved)
 		if (resolved && posValues[verb] != VERB_INFINITIVE)
 		{
 			resolved = false; // some unfinished business
-			if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb lacks subject and is not infinitive\r\n");
+			if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb lacks subject and is not infinitive\r\n");
 		}
 		else if (resolved && posValues[verb] == VERB_PRESENT  && posValues[subject] & (NOUN_SINGULAR|NOUN_PROPER_SINGULAR))
 		{
 			resolved = false; // some unfinished business
-			if (trace & TRACE_POS  &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb is plural and subject is singulare\r\n");
+			if (trace & TRACE_POS  &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb is plural and subject is singulare\r\n");
 		}
 		else if (resolved && posValues[verb] == VERB_PRESENT_3PS && posValues[subject] & (NOUN_PLURAL|NOUN_PROPER_PLURAL) )
 		{
 			resolved = false; // some unfinished business
-			if (trace & TRACE_POS  &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb is singular and subject is plural\r\n");
+			if (trace & TRACE_POS  &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: main verb is singular and subject is plural\r\n");
 		}
 	}
 	// prove subject is not in zone immediately before verb zone (except coordinate zone is fine since conjoined subject will span multiple zones
 	if (resolved && subject && verb && (zoneMember[verb] - zoneMember[subject]) == 1 && !clauses[subject] && !coordinates[subject])  
 	{
 		// resolved = false; // some unfinished business
-		// if (trace & TRACE_POS  &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: subject in zone immediately before verb\r\n"); // dumb 1st grade has "the dog with the black spot on his tail, is with Tom"
+		// if (trace & TRACE_POS  &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: subject in zone immediately before verb\r\n"); // dumb 1st grade has "the dog with the black spot on his tail, is with Tom"
 	}
 
 	int adjective = 0;
@@ -5733,20 +5737,20 @@ static bool ValidateSentence(bool &resolved)
 			if (resolved && object && verb && (zoneMember[object] - zoneMember[verb]) == 1 && !coordinates[object]) // verb can be in earlier zone if conjoined objects
 			{
 				resolved = false; // some unfinished business
-				if (trace & TRACE_POS  &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: object in zone immediately after verb\r\n");
+				if (trace & TRACE_POS  &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: object in zone immediately after verb\r\n");
 			}
 		}
 
 		if (roles[i] & (MAINVERB|VERB2) && indirectObjectRef[i] && !objectRef[i])
 		{
 				resolved = false; // some unfinished business
-				if (trace & TRACE_POS  &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: freestanding indirect object\r\n");
+				if (trace & TRACE_POS  &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: freestanding indirect object\r\n");
 		}
 	
 		else if (roles[i] & MAINVERB && !isQuestion && objectRef[i] && objectRef[i] < verb && objectRef[i] != startSentence)
 		{
 			resolved = false; // some unfinished business
-			if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: object preceeds verb and not start or question r\n");
+			if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: object preceeds verb and not start or question r\n");
 		}
 		
 		// check for tag questions
@@ -5765,7 +5769,7 @@ static bool ValidateSentence(bool &resolved)
 			}
 			else
 			{
-				if (trace & TRACE_POS  &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: %s OBJECT2 not in clause/verbal/phrase\r\n",wordStarts[i]);
+				if (trace & TRACE_POS  &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: %s OBJECT2 not in clause/verbal/phrase\r\n",wordStarts[i]);
 				break;	// free floating noun?
 			}
 		}
@@ -5774,7 +5778,7 @@ static bool ValidateSentence(bool &resolved)
 		{
 			if ((i-1) == lastSubjectComplement) 
 			{
-				if (trace & TRACE_POS  &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: Two subject complements in a row: %s %s\r\n",wordStarts[i-1],wordStarts[i]);
+				if (trace & TRACE_POS  &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: Two subject complements in a row: %s %s\r\n",wordStarts[i-1],wordStarts[i]);
 				break;	// free floating noun?
 			}
 			lastSubjectComplement = i;
@@ -5785,7 +5789,7 @@ static bool ValidateSentence(bool &resolved)
 			// we are allowed to omit a clause subject - but can we omit the verb
 			if (clauseVerb && roles[currentClause] != OMITTED_SUBJECT_VERB) 
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: ending a clause not fulfilled\r\n");
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: ending a clause not fulfilled\r\n");
 				break;	// didnt fulfill these
 			}
 			currentClause = 0;
@@ -5799,7 +5803,7 @@ static bool ValidateSentence(bool &resolved)
 		{
 			if (currentClause && clauseVerb)// we are allowed to omit a clause subject but not verb
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: changing from a clause not fulfilled\r\n");
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: changing from a clause not fulfilled\r\n");
 				break; // failed to complete earlier clause
 			}
 			clauseSubject = clauseVerb = true; 
@@ -5828,13 +5832,13 @@ static bool ValidateSentence(bool &resolved)
 		{
 			if (adjective && !(roles[adjective] & POSTNOMINAL_ADJECTIVE)) 
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: adj %s (%d) not fulfilled on seeing prep %s\r\n",wordStarts[adjective],adjective,wordStarts[i]);
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: adj %s (%d) not fulfilled on seeing prep %s\r\n",wordStarts[adjective],adjective,wordStarts[i]);
 				preposition = adjective = 0;
 				break;
 			}
 			if (preposition && stricmp(wordStarts[preposition],(char*)"from")) // "from under the bed" is legal" - from is an unusual prep 
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: prep not fulfilled on seeing prep %s\r\n",wordStarts[preposition],preposition,wordStarts[i]);
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: prep not fulfilled on seeing prep %s\r\n",wordStarts[preposition],preposition,wordStarts[i]);
 				preposition = adjective = 0;
 				break;
 			}
@@ -5845,7 +5849,7 @@ static bool ValidateSentence(bool &resolved)
 		{
 			if (adjective || preposition) // adjective or preposition requires NOUN closure
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) 
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) 
 				{
 					if (adjective) Log(STDTRACELOG,(char*)"badparse: adj %s not fulfilled on seeing verb %s\r\n",wordStarts[adjective],wordStarts[i]);
 					else  Log(STDTRACELOG,(char*)"badparse: prep %s not fulfilled on seeing verb %s\r\n",wordStarts[preposition],wordStarts[i]);
@@ -5854,12 +5858,12 @@ static bool ValidateSentence(bool &resolved)
 			}
 			if (!roles[i] && !verbals[i]) // if verbal, might be adverb verbal
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: verb with no known role\r\n");
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: verb with no known role\r\n");
 				break;	// we dont know what it is doing
 			}
 			if (roles[i] & MAINVERB && !subjectStack[MAINLEVEL] && posValues[i] != VERB_INFINITIVE)// imperative failure
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: non-imperative main verb %s has no subject \r\n,wordStarts[i]");
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: non-imperative main verb %s has no subject \r\n,wordStarts[i]");
 				break;
 			}
 		}
@@ -5867,7 +5871,7 @@ static bool ValidateSentence(bool &resolved)
 		{
 			if (preposition && stricmp(wordStarts[preposition],(char*)"from") && !(posValues[NextPos(i)] & (ADVERB|ADJECTIVE_BITS|DETERMINER_BITS|NOUN_BITS|PRONOUN_BITS))) // "from under the bed" is legal" - from is an unusual prep 
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: prep not fulfilled on seeing adverb %s\r\n",wordStarts[preposition],preposition,wordStarts[i]);
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: prep not fulfilled on seeing adverb %s\r\n",wordStarts[preposition],preposition,wordStarts[i]);
 				preposition = adjective = 0;
 				break;
 			}
@@ -5876,7 +5880,7 @@ static bool ValidateSentence(bool &resolved)
 		{
 			if (adjective) // cannot describe a noun infinitive
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: unfinished adjective %s at noun infinitive %s\r\n",wordStarts[adjective],wordStarts[i]);
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: unfinished adjective %s at noun infinitive %s\r\n",wordStarts[adjective],wordStarts[i]);
 				break;
 			}
 			// its marked on to infinitve
@@ -5892,7 +5896,7 @@ static bool ValidateSentence(bool &resolved)
 			adjective = false;
 			if (!roles[i]) 	// we dont know what it is doing
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: unknown role for noun %s\r\n",wordStarts[i]);
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: unknown role for noun %s\r\n",wordStarts[i]);
 				break;
 			}
 		}
@@ -5901,7 +5905,7 @@ static bool ValidateSentence(bool &resolved)
 			adjective = false; // if we had adjectives before "the blue one" or the "blue you", this closes it
 			if (!roles[i]) 	// we dont know what it is doing
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: unknown role for pronoun %s\r\n",wordStarts[i]);
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse: unknown role for pronoun %s\r\n",wordStarts[i]);
 				break;
 			}
 		}
@@ -5909,7 +5913,7 @@ static bool ValidateSentence(bool &resolved)
 		{
 			if (adjective || preposition) // adjective or prep requires NOUN closure
 			{
-				if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) 
+				if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) 
 				{
 					if (adjective) Log(STDTRACELOG,(char*)"badparse: adj %s not fulfilled on seeing verb %s\r\n",wordStarts[adjective],wordStarts[i]);
 					else  Log(STDTRACELOG,(char*)"badparse: prep %s not fulfilled on seeing verb %s\r\n",wordStarts[preposition],wordStarts[i]);
@@ -5925,7 +5929,7 @@ static bool ValidateSentence(bool &resolved)
 				if (posValues[endSentence] == PREPOSITION && roles[startSentence] & OBJECT2){;} // wrapped prep to start as question
 				else
 				{
-					if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse:  unfinished prep or clause at end of sentence\r\n");
+					if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse:  unfinished prep or clause at end of sentence\r\n");
 					break; 
 				}
 			}
@@ -5933,14 +5937,14 @@ static bool ValidateSentence(bool &resolved)
 			{
 				if (canonicalLower[verbStack[MAINLEVEL]] && !(canSysFlags[verbStack[MAINLEVEL]] & VERB_TAKES_ADJECTIVE) && !(roles[adjective-1] & MAINOBJECT))
 				{
-					if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse:  unfinished adjective %s at end of sentence\r\n",wordStarts[adjective]);
+					if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) Log(STDTRACELOG,(char*)"badparse:  unfinished adjective %s at end of sentence\r\n",wordStarts[adjective]);
 					break; // not a be sentence -- bug need to do seem as well
 				}
 			}		
 		}
 		if (roles[i] & SUBJECT2 && !clauses[i] && !(roles[i] & ABSOLUTE_PHRASE))
 		{
-			if (trace & TRACE_POS &&  (prepareMode && prepareMode != POSVERIFY_MODE)) 
+			if (trace & TRACE_POS &&  (prepareMode != NO_MODE && prepareMode != POSVERIFY_MODE)) 
 			{
 				Log(STDTRACELOG,(char*)"badparse:  Subject2 %s not in clause\r\n",wordStarts[i]);
 				break; 
@@ -7433,7 +7437,7 @@ static unsigned int GuessAmbiguousDeterminer(int i, bool & changed) // and prede
 	}
 	
 	// possible determiner  "*what will is this"
-	if (i == startSentence && posValues[i] & PRONOUN_BITS && posValues[i] & DETERMINER_BITS && posValues[NextPos(i)] & NOUN_BITS  &&  posValues[NextPos(i)] & (VERB_BITS & AUX_VERB) )
+	if (i == startSentence && posValues[i] & PRONOUN_BITS && posValues[i] & DETERMINER_BITS && posValues[NextPos(i)] & NOUN_BITS  &&  posValues[NextPos(i+1)] & (VERB_BITS | AUX_VERB) )
 	{
 		if (LimitValues(i,DETERMINER,(char*)"resolving pronoun/determiner to determiner since followed by potential noun and verb",changed)) return GUESS_RETRY; // might not be real
 	}
@@ -8208,7 +8212,7 @@ static void StartImpliedClause( int i,bool & changed)
 			while (at < endSentence)
 			{
 				if (posValues[at] & (PRONOUN_SUBJECT|NORMAL_NOUN_BITS))
-				{
+				{ // BUG
 					if (posValues[at] & (PRONOUN_SUBJECT|NORMAL_NOUN_BITS)) break; // not "do you know what *game harry likes"
 					if (allOriginalWordBits[at+1] & (QWORD|CONJUNCTION_SUBORDINATE)) break;
 					if (allOriginalWordBits[at+2] & (QWORD|CONJUNCTION_SUBORDINATE)) break;
@@ -9580,13 +9584,13 @@ typedef struct {
   const char **resulttag;/* array of pointers to the resulting tags */
   const char **lemma;    /* array of pointers to the lemmas */
 } TAGGER_STRUCT;
-void __declspec( dllimport )  init_treetagger(char *param_file_name);
+void __declspec( dllimport )  init_treetagger(char *param_file_name,AllocatePtr allocator);
 double __declspec( dllimport )  tag_sentence( TAGGER_STRUCT *ts );
 void __declspec(dllimport)  write_treetagger();
 int Ignore_Prefix=0; /* should be 0 - used by library*/
 
 TAGGER_STRUCT ts;  /* tagger interface data structure */
-  
+
 static void TreeTagger()
 {	
 	int i;
@@ -9649,8 +9653,7 @@ void InitTreeTagger(char* params) // tags=xxxx - just triggers this thing
 	char langfile[MAX_WORD_SIZE];
 	sprintf(langfile, "treetagger/%s.par",language);
 	MakeLowerCase(langfile);
-	//write_treetagger();
-	init_treetagger(langfile);  /* Initialization of the tagger with the language parameter file */
+	init_treetagger(langfile,AllocateHeap);  /* Initialization of the tagger with the language parameter file */
 	externalPostagger = TreeTagger;
 
 	/* Memory allocation (the maximal input sentence length is here 1000) */

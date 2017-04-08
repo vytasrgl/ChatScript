@@ -1,8 +1,6 @@
 # ChatScript JSON Manual
-
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
-
-> Revision 3/4/2017 cs7.3
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 4/8/2017 cs7.31
 
 # Real World JSON
 
@@ -269,7 +267,11 @@ using dotted notation. This can be a fixed static fieldname you give or a variab
 
 Dotted notation is cleaner and faster than `^jsonpath` and `jsonobjectinsert` and for get, has
 the advantage that it never fails, it only returns null if it can't find the field. 
-On the other hand, assignment fails if the path does not contain a json object at some level.
+If the path does not contain a json object at a level below the top, one will automatically 
+be created on assignment, and have the same transient/permanent property as the immediately containing object.
+If the top level variable is not currently an object, assignment will fail. CS will 
+not create an object for you because it doesn't know if it should be transient or permanent.
+
 ```
 $x = $$obj.name.value.data.side 
 $$obj.name.value.data.side = 7

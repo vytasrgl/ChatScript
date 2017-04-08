@@ -21,6 +21,7 @@ extern ExternalTaggerFunction externalPostagger;
 extern char respondLevel;
 extern char unmarked[MAX_SENTENCE_LENGTH];
 extern bool showMark;
+extern int uppercaseFind;
 extern int concepts[MAX_SENTENCE_LENGTH]; 
 extern int topics[MAX_SENTENCE_LENGTH]; 
 extern int upperCount, lowerCount;

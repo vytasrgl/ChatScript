@@ -1,6 +1,6 @@
 # ChatScript Advanced User's Manual
-© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com 
-<br>Revision 2/09/2017 cs7.2
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 4/8/2017 cs7.31
 <br><br>
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
@@ -311,6 +311,7 @@ if (pattern practical?~adjective)
 ```
 will fail given that deciding practical is an adjective (it could also be a noun) hasn't been performed by pos-tagging.
 
+All internal concepts are members of the concept `~internal_concepts`.
 
 # ADVANCED TOPICS
 
@@ -1051,7 +1052,7 @@ of finding things and to the speed of matching.
 
 
 # ADVANCED OUTPUT
-
+## Committed Output
 Simple output puts words into the output stream, a magical place that queues up each
 word you write in a rule output. What I didn't tell you before was that if the rule fails
 along the way, an incomplete stream is canceled and says nothing to the user.
@@ -1086,7 +1087,7 @@ u: (some test) I like fruit and vegetables. ^reuse(COMMON) And so do you.
 ```
 
 What happens is this- when the system detects the transfer of control (the `^reuse` call), if
-there is output pending it is finished off and packaged for the user. The current stream is
+there is output pending it is finished off (committed) and packaged for the user. The current stream is
 cleared, and the rule is erased (if allowed to be). Then the `^reuse()` happens. Even if it
 fails, this rule has produced output and been erased. 
 
@@ -1099,6 +1100,24 @@ The rule is erased because it has output in the stream when it ends
 So, output does two things. It queues up tokens to send to the user, which may be
 discarded if the rule ultimately fails. And it can call out to various functions. 
 Things those functions may do are permanent, not undone if the rule later fails.
+
+There is a system variable `%response` which will tell you the number of committed responses.
+Some code (like Harry's control script) do something like this:
+```
+$_response = %response
+...
+if ($_response == %response) {...}
+```
+which is intented to mean if no response has been generated so far, try the code in the ^if.
+But you have to be wary of the pending buffer. Calling some code, even if it fails, may commit
+the pending buffer. If there is a chance you will have pending output, the correct and safe way to code this is:
+```
+^flushoutput()
+$_response = %response
+...
+if ($_response == %response) {...}
+```
+^flushoutput will commit pending output.
 
 ## Output cannot have rules in it
 Output script cannot emed another rule inside it. Output is executed during the current volley whereas rules 
@@ -1816,6 +1835,18 @@ is a way to dynamically add facts and user variables into the base system common
 users. And returned output will go to the console and if a server, into the server log
 Note that when a user alters a system `$variable`, it will be refreshed back to its original
 value for each user.
+
+```
+outputmacro: ^CS_REBOOT()
+```
+This function, if defined by you, will be executed on every volley prior to loading user data.
+It is executed as a user-level program which means when it has completed all newly created facts and Variables
+just disappear. It is used in conjunction with a call to the system function ^reboot() to replace data from
+a ^CSBOOT. Typically you would have the `^CS_REBOOT` function test some condition (results of a version stamp)
+and if the version currently loaded in the boot layer is current, it simply returns having done 
+nothing. If the boot layer is not current, then you call ^REBOOT() which erases the current
+boot data and treats the remainder of the script as refilling the boot layer with new facts and
+variables.
 
 ```
 outputmacro: ^CSSHUTDOWN()

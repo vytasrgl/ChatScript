@@ -42,25 +42,17 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define VALIDUTF8 6
 
 #define UNINIT -1
-typedef struct NUMBERDECODE
-{
-    const char* word;		//   word of a number
-    int value;				//   value of word
-	unsigned int length;	//   length of word
-	int realNumber;			// the type, one two are real, third is fraction
-} NUMBERDECODE;
-#define REALNUMBER 1
 
 #define SHOUT 1
 #define ABBREVIATION 2
 
 #define NOT_A_NUMBER 2147483646
-
-#define DIGIT_NUMBER 1
+#define DIGIT_NUMBER 1 // composed entirely of number characters same as realnumber
 #define CURRENCY_NUMBER 2
 #define PLACETYPE_NUMBER 3
 #define ROMAN_NUMBER 4
-#define WORD_NUMBER 5
+#define WORD_NUMBER 5 // a word that implies a number
+#define REAL_NUMBER WORD_NUMBER // a word that IS a number
 #define FRACTION_NUMBER 6
 
 #define LETTERMAX 40
@@ -120,6 +112,7 @@ extern int docVolleyStartTime;
 #define IsComparison(c) (isComparatorData[(unsigned char)c])
 WORDP BUILDCONCEPT(char* word) ;
 void RemoveTilde(char* output);
+float Convert2Float(char* original);
 char* RemoveEscapesWeAdded(char* at);
 void ConvertNL(char* ptr);
 void ComputeWordData(char* word, WORDINFO* info);
@@ -174,6 +167,7 @@ void ChangeSpecial(char* buffer);
 
 // startup
 void InitTextUtilities();
+void InitTextUtilities1();
 bool ReadDocument(char* inBuffer,FILE* sourceFile);
 
 // reading functions

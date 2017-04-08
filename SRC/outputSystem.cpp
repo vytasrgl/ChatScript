@@ -1017,7 +1017,7 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			else if (*word == '"' && word[1] == '^') allow = false; // format string handles its own spacing so
 			else if (*word == '\\' && word[1] == ')') allow = false; // dont space before )
 			else if (*word == '\\' && word[1] == '"' && (controls & OUTPUT_DQUOTE_FLIP) ) allow = false;	// closing dq
-			else if ((*word == '.' && !word[1]) || (*word == '?' && !word[1]) || (*word == '!' && !word[1])|| (*word == ',' && !word[1])|| (*word == ':' && !word[1]) || (*word == ';' && !word[1]) || (*word == '.' && !word[1])) allow = false;
+			else if ((*word == '.' && !word[1]) || (*word == '?' && !word[1]) || (*word == '!' && !word[1])|| (*word == ',' && !word[1])|| (*word == ':' && !word[1]) || (*word == ';' && !word[1])) allow = false;
 			else if (*word == '\'' && (!word[1] || word[1] == 's' )) allow = false;
 			if (allow) // add space separator
 			{

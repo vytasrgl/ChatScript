@@ -17,8 +17,6 @@ The marker fact is normally bypassed by all accesses to the items of a json obje
 query or count or whatever) except when specially accessed by the above routines.
 #endif
 
-#ifndef DISCARDJSON // ---------------------------- CURL/JSON related code donated by anonymous user and revised by wilcox  ---------------------
-
 // GENERAL JSON SUPPORT
 
 #include "jsmn.h"
@@ -165,7 +163,6 @@ int factsJsonHelper(char *jsontext, jsmntok_t *tokens, int tokenlimit, int sizel
 	int size = curr.end - curr.start;
 	switch (curr.type) {
 	case JSMN_PRIMITIVE: { //  true  false, numbers, null
-		char* limit;
 		char str[1000];
 		if (size >= 1000)
 		{
@@ -302,43 +299,11 @@ MEANING factsPreBuildFromJson(char *jsontext, jsmntok_t *tokens,int limit,int si
 	return retMeaning;
 }
 
-#ifdef WIN32
-#include "curl.h"
-	#ifdef DEBUG
-		#pragma comment(lib, "../SRC/curl/libcurld.lib")#else
-	#else
-		#pragma comment(lib, "../SRC/curl/libcurl.lib")
-	#endif
-#else
-	#include <curl/curl.h>
-#endif
-
-
 // Define our struct for accepting LCs output
 struct CurlBufferStruct {
 	char * buffer;
 	size_t size;
 };
-
-// This is the function we pass to LC, which writes the output to a BufferStruct
-static size_t CurlWriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data) {
-	size_t realsize = size * nmemb;
-	static char* currentLoc;
-	static char* limit; // where we can allocate to
-	struct CurlBufferStruct* mem = (struct CurlBufferStruct*) data;
-	if (!curlBufferBase) 
-	{
-		curlBufferBase = InfiniteStack(limit,"CurlWriteMemoryCallback"); // can only be released from JSONOpenCode
-		currentLoc = curlBufferBase;
-		mem->buffer = curlBufferBase;
-	}
-	mem->size += realsize;
-	if ((int)mem->size > (int)(limit - curlBufferBase)) ReportBug("FATAL: out of curlmemory"); // out of memory
-	memcpy(currentLoc, ptr, realsize); // add to buffer
-	currentLoc[realsize] = 0;
-	currentLoc += realsize;
-	return realsize;
-}
 
 static void dump(const char *text, FILE *stream, unsigned char *ptr, size_t size) // libcurl  callback when verbose is on
 {
@@ -363,39 +328,6 @@ static void dump(const char *text, FILE *stream, unsigned char *ptr, size_t size
   }
 }
  
-static int my_trace(CURL *handle, curl_infotype type, char *data, size_t size, void *userp)
-{
-  const char *text;
-  (void)handle; /* prevent compiler warning */
- 
-  switch (type) {
-  case CURLINFO_TEXT:
-    printf( "== Info: %s", data);
-  default: /* in case a new one is introduced to shock us */
-    return 0;
-  case CURLINFO_HEADER_OUT:
-    text = "=> Send header";
-    break;
-  case CURLINFO_DATA_OUT:
-    text = "=> Send data";
-    break;
-  case CURLINFO_SSL_DATA_OUT:
-    text = "=> Send SSL data";
-    break;
-  case CURLINFO_HEADER_IN:
-    text = "<= Recv header";
-    break;
-  case CURLINFO_DATA_IN:
-    text = "<= Recv data";
-    break;
-  case CURLINFO_SSL_DATA_IN:
-    text = "<= Recv SSL data";
-    break;
-  }
-  dump(text, stderr, (unsigned char *)data, size);
-  return 0;
-}
-
 /*
 ----------------------
 FUNCTION: JSONOpenCode
@@ -465,6 +397,71 @@ static int EncodingValue(char* name, char* field, int value)
 	if (at[2] != '=' || at[3] != '0') return 2;  // gzip;q=1
 	if (at[4] == '.') return 2; // gzip;q=0.5
 	return 1;
+}
+
+#ifndef DISCARDJSONOPEN
+
+#ifdef WIN32
+#include "curl.h"
+#ifdef DEBUG
+#pragma comment(lib, "../SRC/curl/libcurld.lib")#else
+#else
+#pragma comment(lib, "../SRC/curl/libcurl.lib")
+#endif
+#else
+#include <curl/curl.h>
+#endif
+static int my_trace(CURL *handle, curl_infotype type, char *data, size_t size, void *userp)
+{
+	const char *text;
+	(void)handle; /* prevent compiler warning */
+
+	switch (type) {
+	case CURLINFO_TEXT:
+		printf("== Info: %s", data);
+	default: /* in case a new one is introduced to shock us */
+		return 0;
+	case CURLINFO_HEADER_OUT:
+		text = "=> Send header";
+		break;
+	case CURLINFO_DATA_OUT:
+		text = "=> Send data";
+		break;
+	case CURLINFO_SSL_DATA_OUT:
+		text = "=> Send SSL data";
+		break;
+	case CURLINFO_HEADER_IN:
+		text = "<= Recv header";
+		break;
+	case CURLINFO_DATA_IN:
+		text = "<= Recv data";
+		break;
+	case CURLINFO_SSL_DATA_IN:
+		text = "<= Recv SSL data";
+		break;
+	}
+	dump(text, stderr, (unsigned char *)data, size);
+	return 0;
+}
+
+// This is the function we pass to LC, which writes the output to a BufferStruct
+static size_t CurlWriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data) {
+	size_t realsize = size * nmemb;
+	static char* currentLoc;
+	static char* limit; // where we can allocate to
+	struct CurlBufferStruct* mem = (struct CurlBufferStruct*) data;
+	if (!curlBufferBase)
+	{
+		curlBufferBase = InfiniteStack(limit, "CurlWriteMemoryCallback"); // can only be released from JSONOpenCode
+		currentLoc = curlBufferBase;
+		mem->buffer = curlBufferBase;
+	}
+	mem->size += realsize;
+	if ((int)mem->size > (int)(limit - curlBufferBase)) ReportBug("FATAL: out of curlmemory"); // out of memory
+	memcpy(currentLoc, ptr, realsize); // add to buffer
+	currentLoc[realsize] = 0;
+	currentLoc += realsize;
+	return realsize;
 }
 
 void CurlShutdown()
@@ -590,8 +587,8 @@ FunctionResult JSONOpenCode(char* buffer)
 		if (kind == 'P' || kind == 'U') 
 		{
 			Log(STDTRACELOG,(char*)"\r\n");
-			size_t len = strlen(arg);
-			if (len < (logsize - SAFE_BUFFER_MARGIN)) Log(STDTRACETABLOG,(char*)"Json  data %d bytes: %s\r\n ",len,arg);
+			len = strlen(arg);
+			if (len < (size_t)(logsize - SAFE_BUFFER_MARGIN)) Log(STDTRACETABLOG,(char*)"Json  data %d bytes: %s\r\n ",len,arg);
 			else Log(STDTRACETABLOG,(char*)"Json  data %d bytes\r\n ",len);
 			Log(STDTRACETABLOG,(char*)"");
 		}
@@ -813,12 +810,14 @@ FunctionResult JSONOpenCode(char* buffer)
 	{
 		Log(STDTRACELOG,(char*)"\r\n");
 		Log(STDTRACETABLOG,(char*)"\r\nJSON response: %d size: %d - ",http_response,output.size);
-		if (output.size < (logsize - SAFE_BUFFER_MARGIN)) Log(STDTRACELOG,(char*)"%s\r\n",output.buffer);
+		if (output.size < (size_t)(logsize - SAFE_BUFFER_MARGIN)) Log(STDTRACELOG,(char*)"%s\r\n",output.buffer);
 		Log(STDTRACETABLOG,(char*)"");
 	}
 	if (curlBufferBase) ReleaseStack(curlBufferBase);
 	return result;
 }
+
+#endif
 
 FunctionResult ParseJson(char* buffer, char* message, size_t size, bool nofail)
 {
@@ -1715,9 +1714,6 @@ FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectkey objec
 	WORDP D = FindWord(objectname);
 	if (!D) return FAILRULE_BIT;
 
-	FACT* F = GetSubjectNondeadHead(D,false); // see if we have marker fact of empty object
-	if (F && F->subject == F->verb) F->flags |= FACTDEAD;
-
 	char* keyname = ARGUMENT(index++);
 	if (*keyname == '"') 
 	{
@@ -1732,15 +1728,14 @@ FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectkey objec
 	MEANING object = MakeMeaning(D);
 
 	// remove old value if it exists, do not allow multiple values UNLESS jsonDuplicate is set
-	F = GetSubjectNondeadHead(D);
+	FACT* F = GetSubjectNondeadHead(D);
 	if (jsonDuplicate) F = NULL; // allow multiple values - if not allowing multiple values, remove all
 	while (F)	// already there, delete it, 
 	{
 		FACT* G = GetSubjectNondeadNext(F);
 		if (F->verb == key)
 		{
-			WORDP object = Meaning2Word(F->object);
-			FACT* H = GetObjectNondeadHead(object);
+			FACT* H = GetObjectNondeadHead(Meaning2Word(F->object));
 			bool jsonkill = false;
 			if (safeJsonParse) jsonkill = false; // dont destroy (assumed stored on global var)
 			else if (!H) jsonkill = true; // should never be true, since this fact counts
@@ -1759,45 +1754,39 @@ FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectkey objec
 	return NOPROBLEM_BIT;
 }
 
-static void MakeEmptyUnit(WORDP D)
-{
-	if (D->word[3] == 't' || true) return; // transient can stay empty
-	MEANING M = MakeMeaning(D);
-	int flags = (D->word[1] == 'a') ? JSON_ARRAY_VALUE : JSON_OBJECT_VALUE;
-	CreateFact(M,M,MakeMeaning(StoreWord("json")),flags);	// reserve an empty marker
-	currentFact = NULL;
-}
-
 FunctionResult JSONVariableAssign(char* word,char* value)
 {
-	char variable[MAX_WORD_SIZE];
+	char fullpath[MAX_WORD_SIZE];
 	// get the object referred to
-	char* separator = strchr(word+1,'.'); // find first level - we MUST find a dot because we dont allow direct array ops
+	char* separator = strchr(word+1,'.'); // find first level - we MUST find a dot somewhere because we dont allow direct array ops
 	if (!separator) return FAILRULE_BIT;
+
 	char* bracket = strchr(word+1,'['); 
 	if (bracket && bracket < separator) separator = bracket;
 	char c = *separator;
 	*separator = 0;
 
 	char* val = GetUserVariable(word); // gets the initial variable
-	if (*separator == '.' && strnicmp(val,"jo-",3)) 
+	if (c == '.' && strnicmp(val,"jo-",3))
     { 
         if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "AssignFail Object: %s->%s\r\n", word, val);
 		return FAILRULE_BIT;	// not a json object
     }
-    else if (*separator == '[' && strnicmp(val, "ja-", 3))
+    else if (c == '[' && strnicmp(val, "ja-", 3))
     {
         if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "AssignFail Array: %s->%s\r\n", word, val);
         return FAILRULE_BIT;	// not a json array
     }
-    strcpy(variable, val);
-	WORDP objectname = FindWord(val);
-    if (!objectname)
+    if (trace) strcpy(fullpath, val);
+	WORDP leftside = FindWord(val);
+    if (!leftside)
     {
         if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "AssignFail key: %s\r\n", word);
         return FAILRULE_BIT;	// doesnt exist?
     }
     WORDP base = FindWord(word);
+
+	// leftside is the left side of a . or [] operator
 	
 #ifndef DISCARDTESTING
 	CheckAssignment(word,value);  // all changes to the base json
@@ -1807,18 +1796,18 @@ LOOP: // now we look at $x.key or $x[0]
 	*separator = c; // are we about to do .key or [array]
 
 	// is there a followon after this or is it final
-	char* separator1 = strchr(separator+1,'.');
+	char* follonOnSeparator = strchr(separator+1,'.');
 	char* bracket1 = strchr(separator+1,'[');
-	if (separator1 && bracket1 && bracket1 < separator1) separator1 = bracket1;
-	else if (!separator1 && bracket1) separator1 = bracket1;
-	if (separator1) // the current level is not the end, there will be more
+	if (follonOnSeparator && bracket1 && bracket1 < follonOnSeparator) follonOnSeparator = bracket1;
+	else if (!follonOnSeparator && bracket1) follonOnSeparator = bracket1;
+	if (follonOnSeparator) // the current level is not the end, there will be more
 	{
-		if (*(separator1-1) == ']') --separator1;	// true end of key token if we have $x[5][$t]
-		c = *separator1;
-		*separator1 = 0; // end of current key name
+		if (*(follonOnSeparator -1) == ']') --follonOnSeparator;	// true end of key token if we have $x[5][$t]
+		c = *follonOnSeparator;
+		*follonOnSeparator = 0; // end of current key name
 	}
 
-	// get final key to use
+	// what is the key or [index]?
 	WORDP keyname;
 	char keyx[MAX_WORD_SIZE];
 	strcpy(keyx,separator+1);
@@ -1828,40 +1817,74 @@ LOOP: // now we look at $x.key or $x[0]
 		strcpy(keyx,answer);
 		if (*keyx == '$') 
 		{
-			if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVarStillVar: %s.%s\r\n",variable,keyx);
+			if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVarStillVar: %s.%s\r\n",fullpath,keyx);
 			return FAILRULE_BIT;	// cannot be indirection
 		}
 	}
 	// now we have retrieved the key/index
-	if (separator1) keyname = FindWord(keyx);// its a key along the way
+	if (follonOnSeparator) keyname = FindWord(keyx);// its a key along the way, not a final key
 	else keyname =  StoreWord(keyx,AS_IS); // its a terminal key, create it (not needed for arrays because we dont allow blind assignment)
 	if (!keyname) 
 	{
-		if (trace &  TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar NoKey: %s\r\n",variable);
+		if (trace &  TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar NoKey: %s\r\n", fullpath);
 		return FAILRULE_BIT;	// unable to find key or index
 	}
-	if (*separator == '.') strcat(variable,".");
-	else strcat(variable,".[");
-	strcat(variable,keyx);
-	if (*separator == '[') strcat(variable,"]");
-	if (separator1) 
+	// keyname is the Word of the key
+
+	// show the path for tracing
+	if (trace)
 	{
-		*separator1 = c; // restore normal values
+		if (*separator == '.') strcat(fullpath, ".");
+		else strcat(fullpath, ".[");
+		strcat(fullpath, keyx);
+		if (*separator == '[') strcat(fullpath, "]");
+	}
+
+	if (follonOnSeparator) // goto next piece
+	{
+		*follonOnSeparator = c; // restore normal values
 
 		// we must find this and keep going if there is something later
-		FACT* F = GetSubjectNondeadHead(objectname);
+		FACT* F = GetSubjectNondeadHead(leftside);
+		WORDP priorLeftside = leftside;
 		while (F)
 		{
 			if (F->verb == MakeMeaning(keyname)) break;
 			F = GetSubjectNondeadNext(F);
 		}
-        if (!F)
+	    if (!F) // key is not found so no value exists either
         {
-            if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "JsonAssignFail: %s.%s\r\n", objectname, keyname);
-            return FAILRULE_BIT;
+			// for . format continued, force it to exist as object
+			if (c == '.')
+			{
+				char loc[100];
+
+				// perform internal call to function
+				unsigned int oldArgumentBase = callArgumentBase;
+				unsigned int oldArgumentIndex = callArgumentIndex;
+				callArgumentBases[callIndex++] = callArgumentIndex - 1; // call stack
+				ARGUMENT(1) = (priorLeftside->word[3] == 't') ? (char*)"transient" : (char*)"permanent";
+				ARGUMENT(2) = "object";
+				JSONCreateCode(loc); // get new object name
+				--callIndex;
+				callArgumentIndex = oldArgumentIndex;
+				callArgumentBase = oldArgumentBase;
+
+				leftside = FindWord(loc);
+				unsigned int flags = JSON_OBJECT_FACT;
+				if (loc[3] == 't') flags |= FACTTRANSIENT;
+				MEANING valx = jsonValue(leftside->word, flags);
+				F = CreateFact(MakeMeaning(priorLeftside), MakeMeaning(keyname), valx, flags);
+			}
+			else
+			{
+				if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "JsonAssignFail: %s.%s\r\n", leftside->word, keyname);
+				return FAILRULE_BIT;
+			}
         }
-		objectname = Meaning2Word(F->object);
-		separator = separator1;
+		else leftside = Meaning2Word(F->object);
+
+		separator = follonOnSeparator;
 		if (*separator == ']') ++separator;
 		c = *separator;
 		goto LOOP;
@@ -1869,26 +1892,25 @@ LOOP: // now we look at $x.key or $x[0]
 
 	// now at final resting place
 	unsigned int flags = JSON_OBJECT_FACT;
-	if (objectname->word[3] == 't') flags |= FACTTRANSIENT; // like jo-t34
+	if (leftside->word[3] == 't') flags |= FACTTRANSIENT; // like jo-t34
 
-	MEANING object = MakeMeaning(objectname);
+	MEANING object = MakeMeaning(leftside);
 	MEANING key = MakeMeaning(keyname);
 
 	// remove old value if it exists, do not allow multiple values
-	FACT* F = GetSubjectNondeadHead(objectname);
+	FACT* F = GetSubjectNondeadHead(leftside);
 	while (F)	// already there, delete it if not referenced elsewhere
 	{
 		if (F->verb == key)
 		{
-			WORDP object = Meaning2Word(F->object);
-			FACT* G = GetObjectNondeadHead(object);
+			FACT* G = GetObjectNondeadHead(Meaning2Word(F->object));
 			bool jsonkill = false;
 			if (!G) jsonkill = true; // should never be true, since this fact counts
 			else if (!GetObjectNondeadNext(G)) jsonkill = true;
 			if (trace & TRACE_VARIABLESET) 
 			{
 				char* recurse = (jsonkill) ? (char*)"recurse" : (char*)"once";
-				Log(STDTRACETABLOG,(char*)"JsonVar kill: %s %s ",variable,recurse);
+				Log(STDTRACETABLOG,(char*)"JsonVar kill: %s %s ", fullpath,recurse);
 				TraceFact(F,true);
 			}
 			KillFact(F,jsonkill);
@@ -1901,15 +1923,10 @@ LOOP: // now we look at $x.key or $x[0]
 
 	if (stricmp(value,"null")) // not deleting using json literal   ^"" or "" would be the literal null in json
 	{
-		if (F && F->subject == F->verb) F->flags = FACTDEAD; // delete marker upon add
 		MEANING valx = jsonValue(value,flags);
 		CreateFact(object, key,valx, flags);
 	}
-	else // if last value, need to respawn empty
-	{
-		if (!F) MakeEmptyUnit(objectname); 
-	}
-	if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s -> %s\r\n",variable,value);
+	if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s -> %s\r\n", fullpath,value);
 	
 	if (base->internalBits & MACRO_TRACE) 
 	{
@@ -1919,7 +1936,6 @@ LOOP: // now we look at $x.key or $x[0]
 		Log(ECHOSTDTRACELOG,"%s -> %s at %s.%d.%d %s %s\r\n",word,value, GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID),label,pattern);
 	}
 
-	
 	currentFact = NULL;	 // used up by putting into json
 	return NOPROBLEM_BIT;
 }
@@ -1939,7 +1955,7 @@ FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index
 	MakeLowerCase(arg1);
 
 	// check mode of use 
-	bool all = false;
+	bool deleteAll = false;
 	bool safe = false;
 	if (strstr(arg1,"index")) index = atoi(ARGUMENT(3)); 
 	else if (strstr(arg1,"value"))
@@ -1951,7 +1967,7 @@ FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index
 		useIndex = false;
 	}
 	else return FAILRULE_BIT; 
-	if (strstr(arg1,"all")) all = true; // default is one but can do ALL
+	if (strstr(arg1,"all")) deleteAll = true; // default is one but can do ALL
 	if (strstr(arg1,"safe")) safe = true; // default is delete
 
 	// get array and prove it legal
@@ -1987,12 +2003,7 @@ DOALL:
 	else if (!G) jsonkill = true; // should never be true, since this fact counts
 	else if (!GetObjectNondeadNext(G)) jsonkill = true;
 	KillFact(F,jsonkill,true);		// delete it, not recursive json structure, just array element
-	if (all) goto DOALL; // keep trying
-
-
-	// if empty, fill it with holding pattern
-	F = GetSubjectNondeadHead(O); 
-	if (!F)  MakeEmptyUnit(O);
+	if (deleteAll) goto DOALL; // keep trying
 
 	return NOPROBLEM_BIT;
 }
@@ -2066,7 +2077,6 @@ FunctionResult JSONCreateCode(char* buffer)
 	else return FAILRULE_BIT;
 	WORDP D = Meaning2Word(M);
 	sprintf(buffer, "%s", D->word);
-	MakeEmptyUnit(D); 
 	return NOPROBLEM_BIT;
 }
 
@@ -2134,7 +2144,6 @@ FunctionResult JSONDeleteCode(char* buffer)
 	// now confirm we have nothing left
 	F = GetSubjectNondeadHead(D); // should all be dead now
 	if (F && !(F->flags & JSON_FLAGS)) return FAILRULE_BIT;
-	if (!F)  MakeEmptyUnit(D);
 	return NOPROBLEM_BIT;
 }
 
@@ -2163,7 +2172,6 @@ FunctionResult JSONReadCSVCode(char* buffer)
 		arrayName = GetUniqueJsonComposite((char*)"ja-") ;
 		WORDP D = Meaning2Word(arrayName);
 		sprintf(buffer, "%s", D->word);
-		MakeEmptyUnit(D); 
 	}
     FunctionResult result = NOPROBLEM_BIT;
 	while (ReadALine(readBuffer,in,maxBufferSize,false,false) >= 0) // create json facts from csv
@@ -2173,7 +2181,6 @@ FunctionResult JSONReadCSVCode(char* buffer)
 		{
 			object = GetUniqueJsonComposite((char*)"jo-");
 			WORDP E = Meaning2Word(object);
-			MakeEmptyUnit(E); 
 			CreateFact(arrayName,MakeMeaning(StoreWord(arrayIndex++)),object,arrayflags); // WATCH OUT FOR EMPTY SET!!!
 		}
 		int field = 0;
@@ -2199,9 +2206,9 @@ FunctionResult JSONReadCSVCode(char* buffer)
 			
 			if (!fnname) // not passing to a routine, building json structure
 			{
-				char index[400];
-				sprintf(index,"%d",field++);
-				MEANING key = MakeMeaning(StoreWord(index));
+				char indexval[400];
+				sprintf(indexval,"%d",field++);
+				MEANING key = MakeMeaning(StoreWord(indexval));
 				if (*data)
 				{
 					MEANING valx = jsonValue(data,flags);
@@ -2234,5 +2241,3 @@ FunctionResult JSONReadCSVCode(char* buffer)
 	currentFact = NULL;
 	return result;
 }
-
-#endif // ---------------------------- END  : CURL/JSON related code ---------------------

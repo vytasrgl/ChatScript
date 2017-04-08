@@ -61,8 +61,6 @@ static bool UnacceptableFact(FACT* F,bool jsonavoid)
 	if (!F || F->flags & FACTDEAD) return true;
 	// if ownership flags exist (layer0 or layer1) and we have different ownership.
 	if (!compiling && F->botBits && !(F->botBits & myBot)) return true;
-	// json empty unit fact
-	if (jsonavoid && F->flags & (JSON_ARRAY_VALUE|JSON_OBJECT_VALUE) && F->subject == F->verb) return true;
 	return false;
 }
 
@@ -474,7 +472,7 @@ void KillFact(FACT* F,bool jsonrecurse, bool autoreviseArray)
 {
 	if (!F || F->flags & FACTDEAD) return; // already dead
 	
-	if (F <= factsPreBuild[2]) 
+	if (F <= factsPreBuild[LAYER_USER]) 
 		return;	 // may not kill off facts built into world
 
 	F->flags |= FACTDEAD;
@@ -491,7 +489,6 @@ void KillFact(FACT* F,bool jsonrecurse, bool autoreviseArray)
 		if (F->flags & FACTOBJECT) AutoKillFact(F->object);
 	}
 
-#ifndef DISCARDJSON
 	// recurse on JSON datastructures below if they are being deleted on right side
 	if (F->flags & (JSON_ARRAY_VALUE | JSON_OBJECT_VALUE) && jsonrecurse)
 	{
@@ -502,7 +499,6 @@ void KillFact(FACT* F,bool jsonrecurse, bool autoreviseArray)
 		if (!H) jkillfact(jsonarray);
 	}
 	if (autoreviseArray && F->flags & JSON_ARRAY_FACT) JsonRenumber(F);// have to renumber this array
-#endif
 
 	if (planning) SpecialFact(Fact2Index(F),0,0); // save to restore
 
@@ -1525,7 +1521,7 @@ void SortFacts(char* set, int alpha, int setpass) //   sort low to high ^sort(@1
 		else if (kind == 'v') word = Meaning2Word(F->verb)->word; 
 		else word = Meaning2Word(F->object)->word;
 		if (alpha == 1) wordValues[i] = word;
-		else if (alpha == 0) floatValues[i] = (float) atof(word);
+		else if (alpha == 0) floatValues[i] = Convert2Float(word);
     }
 
 	// do bubble sort 

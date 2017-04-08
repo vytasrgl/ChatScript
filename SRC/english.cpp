@@ -597,7 +597,12 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		if (kind == PLACETYPE_NUMBER)
 		{
 			entry = StoreWord(original,properties);
-			sprintf(number,(char*)"%d",(int)Convert2Integer(original));
+			if (at > 1 && start != at && IsNumber(wordStarts[at-1])) // fraction not place
+			{
+				float val = 1.0 / Convert2Integer(original);
+				sprintf(number, (char*)"%1.2f", val);
+			}
+			else sprintf(number,(char*)"%d",(int)Convert2Integer(original));
 			sysflags |= ORDINAL;
 			properties = ADVERB|ADJECTIVE|ADJECTIVE_NUMBER|NOUN|NOUN_NUMBER| (baseflags & TAG_TEST); // place numbers all all potential adverbs:  "*first, he wept"  but not in front of an adjective or noun, only as verb effect
 		}
@@ -639,9 +644,12 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 		else if (kind == CURRENCY_NUMBER) // money
 		{
-			GetCurrency((unsigned char*) original,value);
+			char copy[MAX_WORD_SIZE];
+			strcpy(copy, original);
+			unsigned char* currency = GetCurrency((unsigned char*)copy,value);
+			if (currency > (unsigned char*)value) *currency = 0; // remove trailing currency
 			int64 n = Convert2Integer(value);
-			float fn = (float)atof(value);
+			float fn = Convert2Float(value);
 			if ((float)n == fn) 
 			{
 #ifdef WIN32
@@ -668,20 +676,23 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			sprintf(number,(char*)"%f",val1);
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER | (baseflags & (PREDETERMINER|DETERMINER));
 		}
-		else
+		else // ordinary int, float and percent
 		{
-			if (strchr(original,'.')) 
+			len = strlen(original);
+			bool percent = original[len - 1] == '%';
+			if (percent) original[len - 1] = 0;
+
+			if (strchr(original,'.')) // floating
 			{
-				float val = (float) atof(original);
-				if (IsDigitWithNumberSuffix(original)) // 10K  10M 10B
-				{
-					len = strlen(original);
-					char d = original[len-1];
-					if (d == 'k' || d == 'K') val *= 1000;
-					else if (d == 'm' || d == 'M') val *= 1000000;
-					else if (d == 'B' || d == 'b' || d == 'G' || d == 'g') val *= 1000000000;
-				}
+				float val = Convert2Float(original);
+				if (percent) val /= 100;
 				sprintf(number,(char*)"%1.2f",val);
+			}
+			else if (percent)
+			{
+				int64 val = Convert2Integer(original);
+				float val1 = ((float)val) / 100.0;
+				sprintf(number, (char*)"%1.2f", val1);
 			}
 			else 
 			{
@@ -699,7 +710,6 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 					sprintf(number,(char*)"%lld",val);	
 #endif
 				}
-			
 			}
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER | (baseflags & (PREDETERMINER|DETERMINER));
 		}

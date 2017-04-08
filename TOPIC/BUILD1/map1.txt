@@ -135,7 +135,6 @@ file: C:/ChatScript/RAWDATA/HARRY/simplecontrol.top 0
           line: 9 131
           Complexity of ^harry: 1
           line: 12 0
-          Complexity of tbl:defaultbot: 1
     topic: ~control 16
         rule: ~control.0.0 u:  19
           line: 20 0
@@ -218,8 +217,10 @@ file: C:/ChatScript/RAWDATA/HARRY/simplecontrol.top 0
           line: 126 104
           line: 127 114
           line: 129 155
-          line: 130 161
-          Complexity of rule ~xpostprocess.0.0- t: 2
+          line: 131 214
+          line: 133 261
+          line: 134 267
+          Complexity of rule ~xpostprocess.0.0- t: 3
 file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_because.top 0
     topic: ~quibble_because 1
         rule: ~quibble_because.0.0 s:  2

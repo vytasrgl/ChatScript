@@ -16,7 +16,7 @@ char* ReadCompiledWordOrCall(char* ptr, char* word,bool noquote = false,bool var
 #define INPUT_BUFFER_SIZE   80000
 #define MAX_BUFFER_SIZE		80000
 
-#define NUMBER_OF_LAYERS 3
+#define NUMBER_OF_LAYERS 4
 
 typedef unsigned int MEANING;					//   a flagged indexed dict ptr
 #define MAX_DICTIONARY	 0x001fffff				//   2M word vocabulary limit 

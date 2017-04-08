@@ -1,6 +1,6 @@
 # Foreign Language Support
-© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com<br>
-Revision 3/4/2017 cs7.3
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 4/8/2017 cs7.31
 
 # Foreign Language Overview
 
@@ -43,6 +43,8 @@ want to.
 
 The dictionary file can be just a list of words of the language, one per line. You must list all conjugations
 of a word because there is no in-built support to figure that out. You may also add english equivalent pos tags (see examples in existing foreign language dictionaries) if you want to use existing keywords tied to pos-tags.
+
+In addition to normal words, there is a file  LIVEDATA/.../numbers.txt that for a language describes a number word and what it's implied number meaning is.
 
 # POS-TAGS AND LEMMAS
 

@@ -84,6 +84,7 @@ extern char language[40];
 extern char livedata[500];
 extern char languageFolder[500];
 extern char systemFolder[500];
+extern bool rebooting;
 extern int responseIndex;
 extern bool documentMode;
 extern bool assignedLogin;

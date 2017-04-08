@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-advanced-users-manual">ChatScript Advanced User's Manual</h1>
-<p>© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 2/09/2017 cs7.2 <br><br></p>
+<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/8/2017 cs7.31 <br><br></p>
 <ul>
 <li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#advanced-concepts">Advanced Concepts</a></li>
@@ -120,6 +120,7 @@ has 6 members</code></pre>
 <p>will fail. Even</p>
 <pre><code>if (pattern practical?~adjective)</code></pre>
 <p>will fail given that deciding practical is an adjective (it could also be a noun) hasn't been performed by pos-tagging.</p>
+<p>All internal concepts are members of the concept <code>~internal_concepts</code>.</p>
 <h1 id="advanced-topics">ADVANCED TOPICS</h1>
 <p>There are several things to know about advanced topics.</p>
 <h2 id="topic-execution">Topic Execution</h2>
@@ -455,6 +456,7 @@ u: (I love you today when)</code></pre>
 <p>The system is allowed to backtrack and see if the first match can be made later. So it will try to find the later than position one. It would succeed in relocating it to position 4. It would then try to find the word bear afterwards, and succeed at position 5. It would then try to find the word ate after that and fail. It would retry trying to reset the pattern to find the after position 4 and fail. The match fails.</p>
 <p>You can fix this ordering problem by making a concept set of the contents of the <code>[ ]</code>, and replacing the <code>[ ]</code> with the name of the concept set. A concept set being matched in a pattern will always find the earliest matching word. The number of elements in a concept set is immaterial both to the order of finding things and to the speed of matching.</p>
 <h1 id="advanced-output">ADVANCED OUTPUT</h1>
+<h2 id="committed-output">Committed Output</h2>
 <p>Simple output puts words into the output stream, a magical place that queues up each word you write in a rule output. What I didn't tell you before was that if the rule fails along the way, an incomplete stream is canceled and says nothing to the user. For example,</p>
 <pre><code>t: I love this rule. ^fail(RULE)</code></pre>
 <p>Processing the above gambits successively puts the words <em>I</em>, <em>love</em>, <em>this</em>, <em>rule</em>, <em>.</em> into the output stream of that rule.</p>
@@ -463,9 +465,19 @@ u: (I love you today when)</code></pre>
 <p>I also didn't tell you that the system monitors what it says, and won't repeat itself (even if from a different rule) within the last 20 outputs. So if, when converting the output stream into a response to go in the responses list, the system finds it already had such a response sent to the user in some recently earlier volley, the output is also discarded and the rule &quot;fails&quot;.</p>
 <p>Actually, it's a bit more complicated than that. Let's imagine a stream is being built up. And then suddenly the rule calls another rule (<code>^reuse</code>, <code>^gambit</code>, <code>^repond</code>). What happens? E.g.</p>
 <pre><code>u: (some test) I like fruit and vegetables. ^reuse(COMMON) And so do you.</code></pre>
-<p>What happens is this- when the system detects the transfer of control (the <code>^reuse</code> call), if there is output pending it is finished off and packaged for the user. The current stream is cleared, and the rule is erased (if allowed to be). Then the <code>^reuse()</code> happens. Even if it fails, this rule has produced output and been erased.</p>
+<p>What happens is this- when the system detects the transfer of control (the <code>^reuse</code> call), if there is output pending it is finished off (committed) and packaged for the user. The current stream is cleared, and the rule is erased (if allowed to be). Then the <code>^reuse()</code> happens. Even if it fails, this rule has produced output and been erased.</p>
 <p>Assuming the reuse doesn't fail, it will have sent whatever it wants into the stream and been packaged up for the user. The rest of the message for this rule now goes into the output stream <em>and so do you</em> and then that too is finished off and packaged for the user. The rule is erased because it has output in the stream when it ends (but it was already erased so it doesn't matter).</p>
 <p>So, output does two things. It queues up tokens to send to the user, which may be discarded if the rule ultimately fails. And it can call out to various functions. Things those functions may do are permanent, not undone if the rule later fails.</p>
+<p>There is a system variable <code>%response</code> which will tell you the number of committed responses. Some code (like Harry's control script) do something like this:</p>
+<pre><code>$_response = %response
+...
+if ($_response == %response) {...}</code></pre>
+<p>which is intented to mean if no response has been generated so far, try the code in the ^if. But you have to be wary of the pending buffer. Calling some code, even if it fails, may commit the pending buffer. If there is a chance you will have pending output, the correct and safe way to code this is:</p>
+<pre><code>^flushoutput()
+$_response = %response
+...
+if ($_response == %response) {...}</code></pre>
+<p>^flushoutput will commit pending output.</p>
 <h2 id="output-cannot-have-rules-in-it">Output cannot have rules in it</h2>
 <p>Output script cannot emed another rule inside it. Output is executed during the current volley whereas rules (like rejoinder rules) may be executed in a different volley. Therefore this is illegal:</p>
 <pre><code>u: GREETING (~emohello)
@@ -767,6 +779,8 @@ u: () ^&quot;[oob data] Here is user message</code></pre>
 <h1 id="system-callback-functions">System callback functions</h1>
 <pre><code>outputmacro: ^CSBOOT()</code></pre>
 <p>This function, if defined by you, will be executed on startup of the ChatScript system. It is a way to dynamically add facts and user variables into the base system common to all users. And returned output will go to the console and if a server, into the server log Note that when a user alters a system <code>$variable</code>, it will be refreshed back to its original value for each user.</p>
+<pre><code>outputmacro: ^CS_REBOOT()</code></pre>
+<p>This function, if defined by you, will be executed on every volley prior to loading user data. It is executed as a user-level program which means when it has completed all newly created facts and Variables just disappear. It is used in conjunction with a call to the system function ^reboot() to replace data from a ^CSBOOT. Typically you would have the <code>^CS_REBOOT</code> function test some condition (results of a version stamp) and if the version currently loaded in the boot layer is current, it simply returns having done nothing. If the boot layer is not current, then you call ^REBOOT() which erases the current boot data and treats the remainder of the script as refilling the boot layer with new facts and variables.</p>
 <pre><code>outputmacro: ^CSSHUTDOWN()</code></pre>
 <p>This function, if defined by you, will be executed on shutdown or restart of the ChatScript system.</p>
 <pre><code>outputmacro: ^cs_topic_enter(^topic ^mode)</code></pre>

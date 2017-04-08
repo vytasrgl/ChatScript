@@ -156,6 +156,7 @@ void ClearVolleyWordMaps()
 	savedSentences = 0;
 	ClearWhereInSentence();
 	freeTriedList = 0;
+	userVariableThreadList = 0;
 }
 
 void ClearWordMaps() // both static for whole dictionary and dynamic per volley
@@ -232,18 +233,14 @@ unsigned char* GetWhereInSentence(WORDP D) // [0] is the meanings bits,  the res
 
 unsigned int* AllocateWhereInSentence(WORDP D)
 {
-	unsigned int* data = NULL;
 	if (documentMode && freeTriedList) // reuse memory
 	{
 		MEANING* d = (MEANING*) Index2Heap(freeTriedList);
 		freeTriedList = *d;
 	}
-	size_t len =  ((sizeof(uint64) + maxRefSentence)+3)/4;
-	if (!data) 
-	{
-		//  64bit tried by meaning field (aligned) + sentencerefs (2 bytes each) + a byte for uppercase
-		data = (unsigned int*) AllocateHeap(NULL,len,4,false); // 64 bits (2 words) + 32 bytes (8 words) = 11 words  
-	}
+	size_t len =  (sizeof(uint64) + maxRefSentence + 3)/4;
+	//  64bit tried by meaning field (aligned) + sentencerefs (2 bytes each + a byte for uppercase or not)
+	unsigned int* data = (unsigned int*) AllocateHeap(NULL,len,4,false); // 64 bits (2 words) + 48 bytes (12 words)  = 14 words  
 	if (!data) return NULL;
 	memset((char*)data,0xff,len*4); // clears sentence xref start/end bits and casing byte
 	*data = 0; // clears the tried meanings list
@@ -376,7 +373,7 @@ MEANING Mburst;
 MEANING Mpending;
 MEANING Mkeywordtopics;
 MEANING Mconceptlist;
-MEANING Mmoney,Musd,Meur,Mgbp,Myen,Mcny,Minr;
+MEANING Mmoney,Musd,Meur,Mgbp,Myen,Mcny,Minr,Mrup;
 MEANING Mintersect;
 MEANING MgambitTopics;
 MEANING MadjectiveNoun;
@@ -477,7 +474,7 @@ bool ReadForeignPosTags(char* fname)
 			uint64 val = FindValueByName(flag);
 			flags |= val;
 		}
-		StoreWord(word,flags);
+		StoreWord(word,flags); // _foreignpos gets bits
 	}
 	fclose(in);
 	return true;
@@ -507,7 +504,7 @@ static void EraseFile(char* file)
 	FClose(out);
 }
 
-static void ClearDictionaryFiles()
+void ClearDictionaryFiles()
 {
 	char buffer[MAX_WORD_SIZE];
 	EraseFile((char*)"other.txt"); //   create but empty file
@@ -634,8 +631,8 @@ void InitDictionary()
 	dictionaryFree =  dictionaryBase + maxHashBuckets + HASH_EXTRA ;		//   prededicate hash space within the dictionary itself
 	//   The bucket list is threaded thru WORDP nodes, and consists of indexes, not addresses.
 
-	dictionaryPreBuild[0] = dictionaryPreBuild[1] = dictionaryPreBuild[2] = 0;	// in initial dictionary
-	factsPreBuild[0] = factsPreBuild[1] = factsPreBuild[2] = factFree;	// last fact in dictionary 
+	dictionaryPreBuild[LAYER_0] = dictionaryPreBuild[LAYER_1] = dictionaryPreBuild[LAYER_BOOT] = 0;	// in initial dictionary
+	factsPreBuild[LAYER_0] = factsPreBuild[LAYER_1] = factsPreBuild[LAYER_BOOT] = factFree;	// last fact in dictionary 
 	propertyRedefines = flagsRedefines = 0;
 }
 
@@ -984,7 +981,7 @@ WORDP StoreWord(char* word, uint64 properties)
     //   not found, add entry 
 	char* wordx = AllocateHeap(word,len); // storeword
     if (!wordx) return StoreWord((char*)"x.x",properties|AS_IS); // fake it
-	if (base->word == 0 && !dictionaryPreBuild[0]) D = base; // add into hash zone initial dictionary entries (nothing allocated here yet) if and only if loading the base system
+	if (base->word == 0 && !dictionaryPreBuild[LAYER_0]) D = base; // add into hash zone initial dictionary entries (nothing allocated here yet) if and only if loading the base system
 	else  
 	{
 		D = AllocateEntry();
@@ -1181,7 +1178,8 @@ static void ReadDictDetailsBeforeLayer(int layer)
 
 void WordnetLockDictionary() // dictionary and facts before build0 layer 
 {
-	LockLayer(-1,false); // memorize dictionary values for backup to pre build locations :build0 operations (reseting word to dictionary state)
+	currentBeforeLayer = -1;
+	LockLayer(false); // memorize dictionary values for backup to pre build locations :build0 operations (reseting word to dictionary state)
 }
 
 void ReturnDictionaryToWordNet() // drop all memory allocated after the wordnet freeze
@@ -1191,24 +1189,26 @@ void ReturnDictionaryToWordNet() // drop all memory allocated after the wordnet 
 
 void LockLevel()
 {
+	currentBeforeLayer++;
 	dictionaryLocked = dictionaryFree;		
 	stringLocked = heapFree;		
 	factLocked = factFree; // factFree is a fact in use (increment before use) so factlocked is a fact in use
 }
 
-void UnlockLevel()
+void UnlockLayer(int layer)
 {
 	dictionaryLocked = NULL;		
 	stringLocked = NULL;		
 	factLocked = NULL; 
+	currentBeforeLayer = layer;
 }
 
-void LockLayer(int layer,bool boot)
+void LockLayer(bool boot)
 {
 	// stores the results of the layer as the starting point of the next layers (hence size of arrays are +1)
-	for (int i = layer+1; i < NUMBER_OF_LAYERS; ++i)
+	for (int i = currentBeforeLayer+1; i < NUMBER_OF_LAYERS; ++i)
 	{
-		numberOfTopicsInLayer[i] = (layer == -1) ? 0 : numberOfTopicsInLayer[layer];
+		numberOfTopicsInLayer[i] = (currentBeforeLayer == -1) ? 0 : numberOfTopicsInLayer[currentBeforeLayer];
 		dictionaryPreBuild[i] = dictionaryFree;		
 		stringsPreBuild[i] = heapFree;	
 		factsPreBuild[i] = factFree; 
@@ -1218,7 +1218,7 @@ void LockLayer(int layer,bool boot)
 	}    
 
 	#ifndef DISCARDSCRIPTCOMPILER
-	if (!boot) WriteDictDetailsBeforeLayer(layer+1);
+	if (!boot) WriteDictDetailsBeforeLayer(currentBeforeLayer +1);
 	#endif
 
 	LockLevel();
@@ -1226,12 +1226,12 @@ void LockLayer(int layer,bool boot)
 
 void ReturnToAfterLayer(int layer, bool unlocked) 
 {
-	if (layer == 1)
+	if (layer == LAYER_BOOT) // 2 is boot layer, 3 is user layer
 	{
 		ClearUserVariables();
 
-		// unwind any layer2 protection
-		UnwindLayer2Protect();
+		// unwind any user layer protection
+		UnwindUserLayerProtect();
 	}
 	while (factFree > factsPreBuild[layer+1]) FreeFact(factFree--); //   restore back to facts alone
 	DictionaryRelease(dictionaryPreBuild[layer+1],stringsPreBuild[layer+1]);
@@ -1239,22 +1239,22 @@ void ReturnToAfterLayer(int layer, bool unlocked)
 #ifndef DISCARDSCRIPTCOMPILER
 	if (!server ) 
 	{
-		if (layer != 1 || dictionaryBitsChanged)
+		if (layer < 1 || dictionaryBitsChanged)
 			ReadDictDetailsBeforeLayer(layer+1);// on server we assume scripts will not damage level0 or earlier data of dictionary but user doing :trace might
 	}
 #endif
 	dictionaryBitsChanged = false;
-	LockLayer(layer,true);	// dont write data to file
+	LockLayer(true);	// dont write data to file
 	numberOfTopics = numberOfTopicsInLayer[layer];
 
 	// canonical map in layer 1 is now garbage- 
-	if (unlocked) UnlockLevel();
+	if (unlocked) UnlockLayer(layer);
 }
 
 void ReturnBeforeLayer(int layer, bool unlocked) 
 {
 	ClearUserVariables();
-	UnwindLayer2Protect();
+	UnwindUserLayerProtect();
 	while (factFree > factsPreBuild[layer]) FreeFact(factFree--); //   restore back to facts alone
 	DictionaryRelease(dictionaryPreBuild[layer],stringsPreBuild[layer]);
 
@@ -1262,11 +1262,11 @@ void ReturnBeforeLayer(int layer, bool unlocked)
 	if (!server ) ReadDictDetailsBeforeLayer(layer);// on server we assume scripts will not damage level0 or earlier data of dictionary but user doing :trace might
 #endif
 	dictionaryBitsChanged = false;
-	LockLayer(layer,true);	// dont write data to file
+	LockLayer(true);	// dont write data to file
 	numberOfTopics = (layer) ? numberOfTopicsInLayer[layer] : 0;
-
+	currentBeforeLayer = layer;
 	// canonical map in layer 1 is now garbage- 
-	if (unlocked) UnlockLevel();
+	if (unlocked) UnlockLayer(layer);
 }
 
 void CloseDictionary()
@@ -1813,7 +1813,7 @@ void WriteDictionary(WORDP D,uint64 data)
 	char c = *word; 
 	char name[40];
 	if (IsDigit(c)) sprintf(name,(char*)"%c.txt",c); //   main real dictionary
-    else if (!IsLowerCase(c)) sprintf(name,(char*)"%s",(char*)"other.txt"); //   main real dictionary
+    else if (!IsLowerCase(c) || c > 127) sprintf(name,(char*)"%s",(char*)"other.txt"); //   main real dictionary
     else sprintf(name,(char*)"%c.txt",c);//   main real dictionary
     FILE* out = FopenUTF8WriteAppend(UseDictionaryFile(name));
 	if (!out) 
@@ -2173,6 +2173,7 @@ bool ReadDictionary(char* file)
 			if (!strcmp(word,(char*)"conjugate")) { SetTense(D,MakeMeaning(StoreWord(equal)));}
 			else if (!strcmp(word,(char*)"plural")) {SetPlural(D,MakeMeaning(StoreWord(equal)));}
 			else if (!strcmp(word,(char*)"comparative")) { SetComparison(D,MakeMeaning(StoreWord(equal)));}
+			else if (!strcmp(word, (char*)"lemma")) { SetCanonical(D, MakeMeaning(StoreWord(equal))); }
 		}
 
 		//   directly create meanings, since we know the size-- no meanings may be added after this
@@ -2389,8 +2390,19 @@ void ReadSubstitutes(const char* name,unsigned int build,const char* layer, unsi
 		}
 		
         if (original[0] == 0 || original[0] == '#') continue;
+		
 		//   replacement can be multiple words joined by + and treated as a single entry.  
 		ptr = ReadCompiledWord(ptr,replacement);    //   replacement phrase
+		if (*replacement == '"')
+		{
+			size_t len = strlen(replacement);
+			replacement[len - 1] = 0;
+			memmove(replacement, replacement + 1, len);
+			char* at = replacement;
+			while ((at = strchr(at, ' '))) *at = '+';	// change spaces to plus
+		}
+
+
 		WORDP D = FindWord(original,0, LOWERCASE_LOOKUP);	//   do we know original already?
 		if (D && D->internalBits & HAS_SUBSTITUTE)
 		{
@@ -2770,7 +2782,7 @@ static void ReadPosPatterns(char* file)
 				val = FindValueByName(word);
 				if (val == 0) val = FindParseValueByName(word);
 				if (val == 0) val = FindMiscValueByName(word);
-				if (val == 0 || val > LASTCONTROL || val > 63)
+				if (val == 0 || val > LASTCONTROL)
 				{
 					printf((char*)"Bad control word %s rule: %d comment: %s at line %d in %s\r\n", word, tagRuleCount, comment, currentFileLine, currentFilename);
 					FClose(in);
@@ -2790,11 +2802,18 @@ static void ReadPosPatterns(char* file)
 				// read flags for this field
 				bool subtract = false;
 				bool once = false;
+				uint64 baseval = flags >> OP_SHIFT;
+				bool foundarg = false;
 				while (ALWAYS)
 				{
 					ptr = ReadCompiledWord(ptr, word);
+					if (baseval == ISCANONICAL || baseval == ISORIGINAL || baseval == PRIORCANONICAL || baseval == PRIORORIGINAL || baseval == POSTORIGINAL)
+					{
+						if ((!*word || *word == '#') && !foundarg) // missing argument
+							printf((char*)"Missing word argument for %s rule: %d %s at line %d in %s?\r\n", word, tagRuleCount, comment, currentFileLine, currentFilename);
+						foundarg = true;
+					}
 					if (!*word || *word == '#') break;	// end of flags
-					uint64 baseval = flags >> OP_SHIFT;
 					if (baseval == ISCANONICAL || baseval == ISORIGINAL || baseval == PRIORCANONICAL || baseval == PRIORORIGINAL || baseval == POSTORIGINAL)
 					{
 						if ((FindValueByName(word) || FindParseValueByName(word)) && stricmp(word, (char*)"not") && !once)
@@ -3273,6 +3292,7 @@ void ExtendDictionary()
 	Meur = MakeMeaning(BUILDCONCEPT((char*)"~eur"));
 	Minr = MakeMeaning(BUILDCONCEPT((char*)"~inr"));
 	Mgbp = MakeMeaning(BUILDCONCEPT((char*)"~gbp"));
+	Mrup = MakeMeaning(BUILDCONCEPT((char*)"~rup"));
 	Mnumber = MakeMeaning(BUILDCONCEPT((char*)"~number"));
 	MakeMeaning(BUILDCONCEPT((char*)"~float"));
 	MakeMeaning(BUILDCONCEPT((char*)"~positiveinteger"));
@@ -3328,11 +3348,11 @@ char* FindCanonical(char* word, int i,bool notNew)
         if (strchr(word,'.') || strlen(word) > 9)  //   big numbers need float
         {
             float y;
-			if (*word == '$') y = (float)atof(word+1);
-			else y = (float)atof(word);
+			if (*word == '$') y = Convert2Float(word+1);
+			else y = Convert2Float(word);
             int x = (int)y;
             if (((float) x) == y) sprintf(word1,(char*)"%d",x); //   use int where you can
-            else sprintf(word1,(char*)"%1.2f",atof(word)); 
+            else sprintf(word1,(char*)"%1.2f", Convert2Float(word));
         }
 		else if (GetCurrency((unsigned char*) word,number)) sprintf(word1,(char*)"%d",atoi(number));
 #ifdef WIN32
@@ -3368,7 +3388,7 @@ char* FindCanonical(char* word, int i,bool notNew)
 	if (noun) return noun;
     
 	//   ADJECTIVE
-    char* adjective = GetAdjectiveBase(word,(noun) ? false : notNew);
+    char* adjective = GetAdjectiveBase(word,notNew);
     if (adjective) 
     {
         WORDP A = FindWord(adjective,0,controls);
@@ -3377,7 +3397,7 @@ char* FindCanonical(char* word, int i,bool notNew)
 	if (adjective) return adjective;
  
 	//   ADVERB
-    char* adverb = GetAdverbBase(word,(noun) ? false : notNew);
+    char* adverb = GetAdverbBase(word,notNew);
     if (adverb) 
     {
         WORDP A = FindWord(adverb,0,controls);
@@ -3423,7 +3443,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	WORDP D = Meaning2Word(M);
 	if (D && IS_NEW_WORD(D) && (*D->word == '~' || *D->word == USERVAR_PREFIX   || *D->word == '^')) D = 0;	// debugging may have forced this to store, its not in base system
 	if (limit == 0) limit = 5; // default
-	char* old = (D <= dictionaryPreBuild[0]) ? (char*) "old" : (char*) "";
+	char* old = (D <= dictionaryPreBuild[LAYER_0]) ? (char*) "old" : (char*) "";
 	if (D) 	Log(STDTRACELOG,(char*)"\r\n%s (%d): %s\r\n  Properties: ",name,Word2Index(D),old);
 	else Log(STDTRACELOG,(char*)"\r\n%s (unknown word):\r\n  Properties: ",name);
 	uint64 properties = (D) ? D->properties : 0;
@@ -3565,7 +3585,7 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 		else if ((D->internalBits & FUNCTION_BITS) ==  (IS_PATTERN_MACRO | IS_OUTPUT_MACRO)) kind = (char*) "dual";
 		if (D->x.codeIndex && (D->internalBits & FUNCTION_BITS) !=  IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"systemfunction %d (%d arguments) ", D->x.codeIndex,info->argumentCount);
 		else if (D->x.codeIndex && (D->internalBits & FUNCTION_BITS) ==  IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"plan (%d arguments)", D->w.planArgCount);
-		else Log(STDTRACELOG,(char*)"user %s macro (%d arguments)\r\n  %s \r\n",kind,MACRO_ARGUMENT_COUNT(D->w.fndefinition),D->w.fndefinition+1); // 1st byte is argument count
+		else Log(STDTRACELOG,(char*)"user %s macro (%d arguments)\r\n  %s \r\n",kind,MACRO_ARGUMENT_COUNT(GetDefinition(D)), GetDefinition(D)); 
 		if (D->internalBits & VARIABLE_ARGS_TABLE) Log(STDTRACELOG,(char*)"variableArgs");
 	}
 
@@ -6190,8 +6210,7 @@ static void readWordByAge(char* file, uint64 grade)
 		AddSystemFlag(D, grade);
 
 		char* item = FindCanonical(D->word, 2);
-		WORDP X;
-		if (item) X = FindWord(item, 0, PRIMARY_CASE_ALLOWED);
+		WORDP X = (item) ? FindWord(item, 0, PRIMARY_CASE_ALLOWED) : NULL;
 		if (!X) continue;
 
 		// propogate to all related forms
@@ -6955,7 +6974,7 @@ static void MoveSetsToBase(WORDP D, uint64 junk)
 	if (D->internalBits & CONCEPT) RemoveInternalFlag(D, BUILD0 | BUILD1);	// move concept to base (allow user redefine but build in)
 }
 
-static void ReadForeign()
+void ReadForeign()
 {
 	// first get the mapping between foreign pos and english.
 	char name[MAX_WORD_SIZE];
@@ -6974,12 +6993,14 @@ static void ReadForeign()
 		char word[MAX_WORD_SIZE];
 		char* ptr = ReadCompiledWord(readBuffer, word); // the base word
 		uint64 flag = 0;
+		char junk[MAX_WORD_SIZE];
+		ptr = ReadCompiledWord(ptr, junk);
 		while (*ptr)
 		{
-			ptr = ReadCompiledWord(ptr, pos + 1);
+			ptr = ReadCompiledWord(ptr, pos + 1); // foreign pos
 			if (!*pos) break;
 			WORDP P = FindWord(pos);
-			if (P) flag |= P->properties;
+			if (P) flag |= P->properties; // english pos equivalent
 		}
 		StoreWord(word, flag);
 	}
@@ -7263,7 +7284,6 @@ void LoadRawDictionary(int mini) // 6 == foreign
 	AddInternalFlag(Dqword, CONCEPT);
 
 	if (mini != 6) ReadEnglish(mini);
-	else ReadForeign();
 
 	// By now, the full NORMAL dictionary has been created.
 
@@ -7393,10 +7413,10 @@ void SortSubstitions(char* file)
 	char* tolist[30000];
 	char* linelist[30000];
 	unsigned int index = 0;
-	FILE* out = fopen("new_substitutes.txt", "wb");
-	char word[MAX_WORD_SIZE];
 	FILE* in = fopen(file, "rb");
 	if (!in) return;
+	FILE* out = fopen("new_substitutes.txt", "wb");
+	char word[MAX_WORD_SIZE];
 
 	while (ReadALine(readBuffer, in) >= 0)
 	{

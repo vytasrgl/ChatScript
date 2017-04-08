@@ -391,6 +391,7 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 
 static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool nomodify, bool oobStart, bool oobJson)
 {
+	char* start = ptr;
  	char c = *ptr; 
 	unsigned char kind = IsPunctuation(c);
 	char* end  = NULL;
@@ -417,7 +418,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 				if (*(ptr-1) != '\\') --level;
 				if (level == 0) 
 				{
-#ifndef DISCARDJSON
 					if (tokenControl & JSON_DIRECT_FROM_OOB) // allow full json no tokenlimit
 					{
 						ARGUMENT(1) = "TRANSIENT SAFE";
@@ -428,7 +428,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 						if (result == NOPROBLEM_BIT) words[count] = AllocateHeap(word); // insert json object
 						else words[count] = AllocateHeap((char*)"bad json");
 					}
-#endif
 					return ptr + 1;
 				}
 			}
@@ -553,7 +552,11 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 			return ptr + 3;
 		return ptr+1;
 	}
-	else if (*ptr == ',') return ptr+1; 
+	else if (*ptr == ',')
+	{
+		if (IsDigit(ptr[1]) && IsDigit(ptr[2]) && IsDigit(ptr[3]) && ptr != start && IsDigit(ptr[-1])) { ; } // 1,000  is legal
+		else return ptr + 1;
+	}
  	else if (kind & (ENDERS|PUNCTUATIONS) && ((unsigned char)IsPunctuation(ptr[1]) == SPACES || ptr[1] == 0)) return ptr+1; 
 	
 	// read an emoticon
@@ -577,7 +580,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		return at;
 	}
 
-	if (comma && IsDigit(*(comma-1)) && !IsDigit(ptr[1])) return comma; // $7, 99
+	if (comma && IsDigit(*(comma-1)) && !IsDigit(comma[1])) return comma; // $7 99
 	if (comma && IsDigit(comma[1]) && IsDigit(comma[2]) && IsDigit(comma[3]) && IsDigit(comma[4])) return comma; // 25,2019 
 	if (comma && IsDigit(comma[1]) && !IsDigit(comma[2]) ) return comma; // 25,2
 	if (comma && IsDigit(comma[1]) && IsDigit(comma[2]) && !IsDigit(comma[3]) ) return comma; // 25,20 
@@ -612,7 +615,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		if (*end == ';' && !fullstopper) fullstopper = end; // alternate possible end  (e.g. 8.4-ounce)
 		if (end[0] == '.' && end[1] == '.' && end[2] == '.') break; // ...
 	}
-	if (comma && end > comma) end = comma;
+	if (comma && end > comma && (!IsDigit(comma[1]) ||!IsDigit(comma[-1]))) end = comma;
 
 	if (end == ptr) ++end;	// must shift at least 1
 	WORDP X = FindWord(ptr,end-ptr,PRIMARY_CASE_ALLOWED);
@@ -690,7 +693,6 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		else if (*stopper && IsDigit(stopper[1]) && IsDigit(*(stopper-1))) W = NULL; // if , separating digits, DONT break at it  4,000 even though we recognize subpiece
 		if (W && (W->properties & PART_OF_SPEECH || W->systemFlags & PATTERN_WORD))  return stopper; // recognize word at more splits
 	}
-	char* start = ptr;
 	int lsize = strlen(token);
 	while (IsPunctuation(token[lsize-1])) token[--lsize] = 0; // remove trailing punctuation
 	char* after = start + lsize;
