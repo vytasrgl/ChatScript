@@ -111,7 +111,8 @@ bool TraceHierarchyTest(int x)
 MEANING GetMeaning(WORDP D, int index)
 {
 	MEANING* meanings = GetMeanings(D);
-	return (meanings) ? meanings[index] : NULL;
+	if (meanings) return meanings[index];
+	else return MakeMeaning(D); // switch to generic non null meaning
 }
 
 void RemoveConceptTopic(int list[256], WORDP D,int index)
