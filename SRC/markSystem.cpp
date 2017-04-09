@@ -284,6 +284,7 @@ static int MarkSetPath(bool ucase,MEANING M, int start, int end, unsigned int de
 			}
 			else if (!index && Meaning2Index(F->subject)) // we are all meanings (limited by pos use) and he is a specific meaning
 			{
+				TraceFact(F);
 				unsigned int which = Meaning2Index(F->subject);
 				WORDP H = Meaning2Word(F->subject);
 				MEANING M = GetMeaning(H,which);

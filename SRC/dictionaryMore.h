@@ -138,7 +138,7 @@
 #define Index2Word(n) (dictionaryBase+n)
 #define Word2Index(D) ((uint64) (D-dictionaryBase))
 #define GetMeanings(D) ((MEANING*) Index2Heap(D->meanings))
-#define GetMeaning(D,k) GetMeanings(D)[k]
+MEANING GetMeaning(WORDP D, int index);
 #define GetMeaningsFromMeaning(T) (GetMeanings(Meaning2Word(T)))
 #define Meaning2Index(x) ((int)((x & INDEX_BITS) >> (int)INDEX_OFFSET)) //   which dict entry meaning
 

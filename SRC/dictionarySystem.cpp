@@ -108,6 +108,12 @@ bool TraceHierarchyTest(int x)
 	return x == 0; // must exactly have been trace hierarchy
 }
 
+MEANING GetMeaning(WORDP D, int index)
+{
+	MEANING* meanings = GetMeanings(D);
+	return (meanings) ? meanings[index] : NULL;
+}
+
 void RemoveConceptTopic(int list[256], WORDP D,int index)
 {
 	MEANING M = MakeMeaning(D);
@@ -1656,10 +1662,10 @@ static WORDP ReadBinaryEntry(FILE* in)
 		MEANING* meanings = (MEANING*) AllocateHeap(NULL,(c+1),sizeof(MEANING)); 
 		memset(meanings,0,(c+1) * sizeof(MEANING)); 
 		D->meanings =  Heap2Index((char*)meanings);
-		GetMeaning(D,0) = c;
+		GetMeanings(D)[0] = c;
 		for (unsigned int i = 1; i <= c; ++i)  
 		{
-			GetMeaning(D,i) = Read32(0);
+			GetMeanings(D)[i] = Read32(0);
 			if (GetMeaning(D,i) == 0)
 			{
 				ReportBug((char*)"FATAL: binary entry meaning is null %s",name)
@@ -1998,7 +2004,7 @@ MEANING AddMeaning(WORDP D,MEANING M)
 	{
 		meanings = (MEANING*) AllocateHeap(NULL,(count<<1),sizeof(MEANING)); 
 		memset(meanings,0,(count<<1) * sizeof(MEANING)); //   just to be purist
-		memcpy(meanings+1,&GetMeaning(D,1),oldCount * sizeof(MEANING));
+		memcpy(meanings+1,&GetMeanings(D)[1],oldCount * sizeof(MEANING));
 		D->meanings =  Heap2Index((char*)meanings);
 	}
 	meanings[0] = count;
@@ -2047,7 +2053,7 @@ void RemoveMeaning(MEANING M, MEANING M1)
 	{
 		if ((GetMeaning(D,i) & STDMEANING) == M1) // he points to ourself
 		{
-			GetMeaning(D,i) = 0;
+			GetMeanings(D)[i]= 0;
 			unsigned int g = GetGlossIndex(D,i);
 			if (g) D->w.glosses[g] = 0; // kill the gloss also if any
 		}
@@ -2195,7 +2201,7 @@ bool ReadDictionary(char* file)
 			{
 				ReadALine(readBuffer,in);
 				char* p = ReadCompiledWord(readBuffer,junk);
-				GetMeaning(D,i) = ReadMeaning(junk,true,true);
+				GetMeanings(D)[i] = ReadMeaning(junk,true,true);
 				if (*p == '(') p = strchr(p,')') + 2; // point after the )
 				if (glossCount && *p && GetMeaning(D,i) & SYNSET_MARKER)
 					D->w.glosses[++glossIndex] =  Heap2Index(AllocateHeap(p)) + (i << 24);
@@ -3798,7 +3804,7 @@ static void FixSynsets(WORDP D, uint64 data)
 	{
 		MEANING M = GetMeaning(D, k);
 		M |= (unsigned int)(D->properties & BASIC_POS);
-		GetMeaning(D, k) = M;		// type flagged for consistency
+		GetMeanings(D)[k] = M;		// type flagged for consistency
 		WORDP m = Meaning2Word(M);
 		int64 age = m->systemFlags & AGE_LEARNED;
 		if (age > bestage || (age == bestage && m->length > Meaning2Word(name)->length)) //   is this more common or longer?
@@ -3810,8 +3816,8 @@ static void FixSynsets(WORDP D, uint64 data)
 	}
 	if (best != -1)
 	{
-		GetMeaning(D, best) = GetMeaning(D, 1);
-		GetMeaning(D, 1) = name;
+		GetMeanings(D)[best] = GetMeaning(D, 1);
+		GetMeanings(D)[1] = name;
 		WORDP X = Meaning2Word(name);
 		int xx = 0;
 	}
@@ -3859,10 +3865,10 @@ static void ExtractSynsets(WORDP D, uint64 data) // now rearrange to get synsets
 				Meaning2Word(GetMeaning(referent, offset))->word, Meaning2Index(GetMeaning(referent, offset)));
 			myexit(0);
 		}
-		GetMeaning(referent, offset) = oldmeaning; // change his synset ptr to be our new master
+		GetMeanings(referent)[offset] = oldmeaning; // change his synset ptr to be our new master
 		oldmeaning = M;
 	}
-	GetMeaning(E, index) = oldmeaning | SYNSET_MARKER; // circular loop complete and stamp
+	GetMeanings(E)[index] = oldmeaning | SYNSET_MARKER; // circular loop complete and stamp
 	if (D->w.glosses)
 	{
 		char* gloss = Index2Heap(D->w.glosses[1] & 0x00ffffff);
@@ -3963,7 +3969,7 @@ static void PurgeDictionary(WORDP D, uint64 data)
 		if (M && !(Meaning2Word(M)->internalBits & WORDNET_ID) && Meaning2Word(M) != D) //invalid link
 		{
 			ReportBug("bad xlink %s %s", D->word, Meaning2Word(M)->word)
-				GetMeaning(D, i) = 0;
+				GetMeanings(D)[i] = 0;
 			M = 0;
 		}
 		if (!M) // was deleted 
@@ -4004,7 +4010,7 @@ static void PurgeDictionary(WORDP D, uint64 data)
 	{
 		MEANING newMeaning = remap[j]; // a self ptr to the NEW slot of self
 		if (newMeaning == GetMeaning(D, j) || !newMeaning) continue;	 // unchanged or already killed off
-		GetMeaning(D, j) = newMeaning;
+		GetMeanings(D)[j] = newMeaning;
 
 		// update facts pointing to the OLD self to new self ptr
 		FACT* F = GetSubjectHead(D);
@@ -4037,8 +4043,8 @@ static void PurgeDictionary(WORDP D, uint64 data)
 
 		if (!master) // remove defunct meaning
 		{
-			memmove(&GetMeaning(D, i), &GetMeaning(D, i + 1), sizeof(MEANING) * (GetMeaningCount(D) - i));
-			--GetMeaning(D, 0);
+			memmove(&GetMeanings(D)[i], &GetMeanings(D)[i + 1], sizeof(MEANING) * (GetMeaningCount(D) - i));
+			--GetMeanings(D)[0];
 			--i;
 		}
 		else if (master != D) AddMeaning(master, MakeMeaning(D, i) | (M & TYPE_RESTRICTION)); // we now link synset head back to word
@@ -4235,8 +4241,8 @@ static void readIndex(char* file, uint64 prior)
 					if (j != actual) // occurs later or earlier, must move it here by swap
 					{
 						MEANING M = GetMeaning(D, actual);
-						GetMeaning(D, actual) = masterMeaning;
-						GetMeaning(D, j) = M;
+						GetMeanings(D)[actual] = masterMeaning;
+						GetMeanings(D)[j] = M;
 					}
 					++actual;
 					break;
@@ -6847,12 +6853,12 @@ static void CleanDead(WORDP D, uint64 junk) // insure all synonym circulars poin
 			}
 			if (X == D) M = MakeMeaning(X, index) | (M & TYPE_RESTRICTION) | SYNSET_MARKER; // we completed the loop, everyone else is dead, make us generic
 			if (seenMarker) M |= SYNSET_MARKER; // replace synset header with us or found unit since synset head is dead
-			GetMeaning(D, i) = M; // use this marker unchanged or changed
+			GetMeanings(D)[i] = M; // use this marker unchanged or changed
 		}
 
 		// seenmarker will be true if we are the synset head that results. our uppath will need to change perhaps. synhead will have been the original head
 
-		if (GetMeaning(D, i) & SYNSET_MARKER) // we are the synset head, adjust our links upward to be dead or not
+		if (GetMeanings(D)[i] & SYNSET_MARKER) // we are the synset head, adjust our links upward to be dead or not
 		{
 			MEANING M = MakeMeaning(D, i); // correct ptr to use for uplink has no flags on it
 			MEANING base = M;
