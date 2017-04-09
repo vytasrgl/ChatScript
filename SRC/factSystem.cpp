@@ -1509,7 +1509,7 @@ void SortFacts(char* set, int alpha, int setpass) //   sort low to high ^sort(@1
 	if (!kind) kind = 's';
     int i;
 	int size = FACTSET_COUNT(n);
-	float floatValues[MAX_FIND+1];
+	double floatValues[MAX_FIND+1];
 	char* wordValues[MAX_FIND+1];
 
 	// load the actual array to compare
@@ -1532,7 +1532,7 @@ void SortFacts(char* set, int alpha, int setpass) //   sort low to high ^sort(@1
         for (i = 1; i <= size-1; ++i) 
         {
 			char* word = wordValues[i];
-            float tmp = floatValues[i];
+            double tmp = floatValues[i];
 			if (alpha == 1 && strcmp(word,wordValues[i+1]) > 0) {;}
 			else if (alpha == 2 && (char*)factSet[n] > (char*)factSet[n+1]) {;}
 			else if (alpha == 0 && tmp > floatValues[i+1]) {;}

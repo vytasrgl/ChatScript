@@ -712,7 +712,7 @@ void MarkAllImpliedWords()
 			if (IsDigit(*wordStarts[i]) && IsDigit(wordStarts[i][1])  && IsDigit(wordStarts[i][2]) && IsDigit(wordStarts[i][3])  && !wordStarts[i][4]) MarkFacts(ucase,MakeMeaning(FindWord((char*)"~yearnumber")),i,i);
 		}
 
-		if (IsDigit(*wordStarts[i]))
+		if (IsNumber(wordStarts[i]))
 		{
 			if (!wordCanonical[i][1] || !wordCanonical[i][2]) // 2 digit or 1 digit
 			{
@@ -720,13 +720,18 @@ void MarkAllImpliedWords()
 				if (n > 0 && n < 32 && *wordStarts[i] != '$') MarkFacts(ucase, MakeMeaning(FindWord((char*)"~daynumber")), i, i);
 			}
 
-		}
-
-		if (IsDigit(wordCanonical[i][0])) // cannot trust postag of ADJECTIVE_NUMBER or NOUN_NUMBER
-		{
 			if (IsDigit(*wordStarts[i]) && IsDigit(wordStarts[i][1])  && IsDigit(wordStarts[i][2]) && IsDigit(wordStarts[i][3])  && !wordStarts[i][4]) MarkFacts(ucase,MakeMeaning(FindWord((char*)"~yearnumber")),i,i);
 	
 			MarkFacts(ucase,Mnumber,i,i); 
+
+			// let's mark kind of number also
+			if (strchr(wordCanonical[i], '.')) MarkFacts(ucase, MakeMeaning(StoreWord("~float")), i, i, true);
+			else
+			{
+				MarkFacts(ucase, MakeMeaning(StoreWord("~integer")), i, i, true);
+				if (*wordStarts[i] != '-') MarkFacts(ucase, MakeMeaning(StoreWord("~positiveInteger")), i, i, true);
+				else MarkFacts(ucase, MakeMeaning(StoreWord("~negativeinteger")), i, i, true);
+			}
 
 			//   handle finding fractions as 3 token sequence  mark as placenumber 
 			if (i < wordCount && *wordStarts[i+1] == '/' && wordStarts[i+1][1] == 0 && IsDigitWord(wordStarts[i+2]) )
@@ -734,7 +739,7 @@ void MarkAllImpliedWords()
 				MarkFacts(ucase,MakeMeaning(Dplacenumber),i,i);  
 				if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)"=%s/%s \r\n",wordStarts[i],wordStarts[i+2]);
 			}
-			else if (IsDigit(*wordStarts[i]) && IsPlaceNumber(wordStarts[i])) // finalPosValues[i] & (NOUN_NUMBER | ADJECTIVE_NUMBER) 
+			else if (IsPlaceNumber(wordStarts[i])) // finalPosValues[i] & (NOUN_NUMBER | ADJECTIVE_NUMBER) 
 			{
 				MarkFacts(ucase,MakeMeaning(Dplacenumber),i,i);  
 			}
@@ -846,20 +851,6 @@ void MarkAllImpliedWords()
  		
 		// mark upper case canonical 
 		StdMark(MakeTypedMeaning(CU,0, NOUN), i, i,true);
-
-		// canonical word is a number (maybe we didn't register original right) eg. "how much is 24 and *seven"
-		if ((IsDigit(*wordCanonical[i]) || *wordCanonical[i] == '-') && IsNumber(wordCanonical[i])) 
-		{
-			MarkFacts(ucase,Mnumber,i,i,true);  
-			// let's mark kind of number also
-			if (strchr(wordStarts[i],'.')) MarkFacts(ucase,MakeMeaning(StoreWord("~float")),i,i,true); 
-			else  
-			{
-				MarkFacts(ucase,MakeMeaning(StoreWord("~integer")),i,i,true);
-				if (*wordStarts[i] != '-') MarkFacts(ucase,MakeMeaning(StoreWord("~positiveInteger")),i,i,true);
-				else MarkFacts(ucase,MakeMeaning(StoreWord("~negativeinteger")),i,i,true);
-			}
-		}
 
 		if (trace & TRACE_PREPARE || prepareMode == PREPARE_MODE) Log(STDTRACELOG,(char*)" "); //   close canonical form uppercase
 		markLength = 0;

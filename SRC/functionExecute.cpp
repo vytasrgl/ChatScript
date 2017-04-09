@@ -3089,9 +3089,9 @@ static FunctionResult ComputeCode(char* buffer)
 
 	{
 	FLOAT:
-		float fvalue = (float) NOT_A_NUMBER;
-		float number1 = (strchr(arg1,'.')) ? Convert2Float(arg1) : (float)Convert2Integer(arg1);
-		float number2 = (strchr(arg2,'.')) ? Convert2Float(arg2) :  (float)Convert2Integer(arg2);
+		double fvalue = (double) NOT_A_NUMBER;
+		double number1 = (strchr(arg1,'.')) ? Convert2Float(arg1) : (double)Convert2Integer(arg1);
+		double number2 = (strchr(arg2,'.')) ? Convert2Float(arg2) :  (double)Convert2Integer(arg2);
 		//   we must test case insenstive because arg2 might be capitalized (like add and ADD for attention deficit disorder)
 		if (*op == '+' || !stricmp(op,(char*)"plus") || !stricmp(op,(char*)"add")|| !stricmp(op,(char*)"and")) fvalue = number1 + number2; 
 		else if (!stricmp(op,(char*)"minus") || !stricmp(op,(char*)"subtract")|| !stricmp(op,(char*)"deduct")|| !stricmp(op,(char*)"take away") || *op == '-' ) fvalue = number1 - number2;
@@ -3115,7 +3115,7 @@ static FunctionResult ComputeCode(char* buffer)
 			ReportBug((char*)"illegal random op in float")
   			return FAILRULE_BIT;
 		}
-        else if (!stricmp(op,(char*)"root") || !stricmp(op,(char*)"square_root") ) fvalue = (float) sqrt(number1);  
+        else if (!stricmp(op,(char*)"root") || !stricmp(op,(char*)"square_root") ) fvalue = (double) sqrt(number1);  
         else if (!stricmp(op,(char*)"^") || !stricmp(op,(char*)"^^") ||!stricmp(op,(char*)"power") || !stricmp(op,(char*)"exponent")) 
         {
 			int power = (int)Convert2Integer(arg2);
@@ -3131,7 +3131,7 @@ static FunctionResult ComputeCode(char* buffer)
 		{
 			long x = (long) fvalue;
 
-			if ((float)x == fvalue) 
+			if ((double)x == fvalue) 
 			{
 #ifdef WIN32
 				sprintf(buffer,(char*)"%I64d",(long long int) x); 
@@ -5453,11 +5453,11 @@ static FunctionResult POSCode(char* buffer)
 		char* period = strchr(arg2,'.');
 		if (period)
 		{
-			float val = Convert2Float(arg2);
+			double val = Convert2Float(arg2);
 			*period = 0;
 			int64 vali;
 			ReadInt64(arg2,vali);
-			if ((float) vali == val) strcpy(buffer,arg2);
+			if ((double) vali == val) strcpy(buffer,arg2);
 		}
 		return NOPROBLEM_BIT;
 	}
@@ -8268,7 +8268,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^wordAtIndex",WordAtIndexCode,2,SAMELINE,(char*)"1st arg original canonical, Get word at index" },
 	{ (char*)"\r\n---- Numbers",0,0,0,(char*)""},
 	{ (char*)"^compute",ComputeCode,3,SAMELINE,(char*)"perform a numerical computation"}, 
-	{ (char*)"^isnumber",IsNumberCode,1,SAMELINE,(char*)"is this an integer or float number or currency"}, 
+	{ (char*)"^isnumber",IsNumberCode,1,SAMELINE,(char*)"is this an integer or double number or currency"}, 
 	{ (char*)"^timefromseconds",TimeFromSecondsCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"given time/date in seconds, return the timeinfo string corresponding to it"}, 
 	{ (char*)"^timeinfofromseconds",TimeInfoFromSecondsCode,1,SAMELINE,(char*)"given time/date in seconds, returning a sequence of 6 matchvariables (sec min hr date mo yr)"}, 
 	{ (char*)"^timetoseconds",TimeToSecondsCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"given time/date a series of 6 values (sec min hr date mo yr), return the timeinfo string corresponding to it"}, 

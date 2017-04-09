@@ -5187,7 +5187,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		char file[SMALL_WORD_SIZE];
         if (*buildfiles)
         {
-            sprintf(file, (char*)"%s/%s", name,buildfiles); // 2nd default is rawdata itself
+            sprintf(file, (char*)"%s/%s", buildfiles, name); // 2nd default is rawdata itself
             in = FopenReadNormal(file);
         }
         if (!in)

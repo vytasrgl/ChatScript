@@ -112,7 +112,7 @@ extern int docVolleyStartTime;
 #define IsComparison(c) (isComparatorData[(unsigned char)c])
 WORDP BUILDCONCEPT(char* word) ;
 void RemoveTilde(char* output);
-float Convert2Float(char* original);
+double Convert2Float(char* original);
 char* RemoveEscapesWeAdded(char* at);
 void ConvertNL(char* ptr);
 void ComputeWordData(char* word, WORDINFO* info);

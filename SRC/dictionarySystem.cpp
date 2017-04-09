@@ -1102,8 +1102,8 @@ void ShowStats(bool reset)
 
 		unsigned int diff = (unsigned int) (ElapsedMilliseconds() - volleyStartTime);
 		unsigned int mspl = (inputSentenceCount) ? (diff/inputSentenceCount) : 0;
-		float fract = (float)(diff/1000.0); // part of seccond
-		float time = (float)(tokenCount/fract);
+		double fract = (double)(diff/1000.0); // part of seccond
+		double time = (double)(tokenCount/fract);
 		Log(ECHOSTDTRACELOG,(char*)"\r\nRead: %d sentences (%d tokens) in %d ms = %d ms/l or %f token/s\r\n",inputSentenceCount,tokenCount, diff,mspl,time);
 
 		Log(ECHOSTDTRACELOG,(char*)"used: rules=%d dict=%d fact=%d text=%d mark=%d\r\n",ruleCount,dictUsed,factUsed,textUsed,xrefCount);
@@ -3347,11 +3347,11 @@ char* FindCanonical(char* word, int i,bool notNew)
         char word1[MAX_WORD_SIZE];
         if (strchr(word,'.') || strlen(word) > 9)  //   big numbers need float
         {
-            float y;
+            double y;
 			if (*word == '$') y = Convert2Float(word+1);
 			else y = Convert2Float(word);
             int x = (int)y;
-            if (((float) x) == y) sprintf(word1,(char*)"%d",x); //   use int where you can
+            if (((double) x) == y) sprintf(word1,(char*)"%d",x); //   use int where you can
             else sprintf(word1,(char*)"%1.2f", Convert2Float(word));
         }
 		else if (GetCurrency((unsigned char*) word,number)) sprintf(word1,(char*)"%d",atoi(number));

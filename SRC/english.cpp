@@ -567,7 +567,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			{
 				int x = atoi(number);
 				int y = atoi(fraction+1);
-				float val = (float)((float)x / (float)y);
+				double val = (double)((double)x / (double)y);
 				val += basenumber;
 				sprintf(number,(char*)"%1.2f",val);
 				properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
@@ -599,7 +599,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			entry = StoreWord(original,properties);
 			if (at > 1 && start != at && IsNumber(wordStarts[at-1])) // fraction not place
 			{
-				float val = 1.0 / Convert2Integer(original);
+				double val = 1.0 / Convert2Integer(original);
 				sprintf(number, (char*)"%1.2f", val);
 			}
 			else sprintf(number,(char*)"%d",(int)Convert2Integer(original));
@@ -609,7 +609,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		else if (kind == FRACTION_NUMBER && strchr(original,'%'))
 		{
 			int64 val1 = atoi(original);
-			float val = (float)(val1 / 100.0);
+			double val = (double)(val1 / 100.0);
 			sprintf(number,(char*)"%1.2f",val );
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
 			entry = StoreWord(original,properties);
@@ -625,13 +625,13 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			*br = 0;
 			int64 val1 = Convert2Integer(original);
 			int64 val2 = Convert2Integer(br+1);
-			float val;
+			double val;
 			if (IsNumber(original) == FRACTION_NUMBER) // half-dozen
 			{
-				val = (float)(1.0 / (float) val1);
-				val *=  (float)val2; // one-half
+				val = (double)(1.0 / (double) val1);
+				val *=  (double)val2; // one-half
 			}
-			else val = (float)((float)val1 / (float)val2); // one-half
+			else val = (double)((double)val1 / (double)val2); // one-half
 			sprintf(number,(char*)"%1.2f",val );
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
 			*br = c;
@@ -649,8 +649,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			unsigned char* currency = GetCurrency((unsigned char*)copy,value);
 			if (currency > (unsigned char*)value) *currency = 0; // remove trailing currency
 			int64 n = Convert2Integer(value);
-			float fn = Convert2Float(value);
-			if ((float)n == fn) 
+			double fn = Convert2Float(value);
+			if ((double)n == fn) 
 			{
 #ifdef WIN32
 				sprintf(number,(char*)"%I64d",n); 
@@ -672,11 +672,11 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		else if (kind == FRACTION_NUMBER)
 		{
 			int64 val = Convert2Integer(original);
-			float val1 = (float)1.0 / (float)val;
+			double val1 = (double)1.0 / (double)val;
 			sprintf(number,(char*)"%f",val1);
 			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER | (baseflags & (PREDETERMINER|DETERMINER));
 		}
-		else // ordinary int, float and percent
+		else // ordinary int, double and percent
 		{
 			len = strlen(original);
 			bool percent = original[len - 1] == '%';
@@ -684,14 +684,14 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 
 			if (strchr(original,'.')) // floating
 			{
-				float val = Convert2Float(original);
+				double val = Convert2Float(original);
 				if (percent) val /= 100;
 				sprintf(number,(char*)"%1.2f",val);
 			}
 			else if (percent)
 			{
 				int64 val = Convert2Integer(original);
-				float val1 = ((float)val) / 100.0;
+				double val1 = ((double)val) / 100.0;
 				sprintf(number, (char*)"%1.2f", val1);
 			}
 			else 

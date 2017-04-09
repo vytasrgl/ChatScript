@@ -433,7 +433,7 @@ char* StdIntOutput(int n)
 	return answer;
 }
 
-char* StdFloatOutput(float n)
+char* StdFloatOutput(double n)
 {
 	char buffer[50];
 	static char answer[50];

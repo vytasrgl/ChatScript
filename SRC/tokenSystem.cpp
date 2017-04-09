@@ -141,7 +141,7 @@ int ValidPeriodToken(char* start, char* end, char next,char next2) // token with
 		char* next = SkipWhitespace(start + 2);
 		if (IsUpperCase(*next) || !*next) return TOKEN_INCLUSIVE;	// Letter period like E. before a name
 	}
-	if (IsWhiteSpace(next) && IsDigit(*start)) return TOKEN_EXCLUSIVE;	// assume no one uses float period without a digit after it.
+	if (IsWhiteSpace(next) && IsDigit(*start)) return TOKEN_EXCLUSIVE;	// assume no one uses double period without a digit after it.
 	if (FindWord(start,len)) return TOKEN_INCLUSIVE;	// nov.  recognized by system for later use
 	if (IsMadeOfInitials(start,end) == ABBREVIATION) return TOKEN_INCLUSIVE; //   word of initials is ok
 	if (IsUrl(start,end)) 
@@ -544,7 +544,7 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		return ptr+1;  // separate operators from number
 	}
 	//   normal punctuation separation
-	else if (c == '.' && IsDigit(ptr[1]));	// float start like .24
+	else if (c == '.' && IsDigit(ptr[1]));	// double start like .24
 	else if (c == '.' && (ptr[1] == '"' || ptr[1] == '\'')) return ptr + 1;	// let it end after closing quote
 	if (c == '.' && ptr[1] == '.' && ptr[2] == '.')  // stop at .. or ...   stand alone punctuation 
 	{

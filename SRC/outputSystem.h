@@ -27,7 +27,7 @@ extern unsigned int maxOutputUsed;
 
 // styles of output
 char* StdIntOutput(int n);
-char* StdFloatOutput(float n);
+char* StdFloatOutput(double n);
 void ReformatString(char starter,char* word,char*& buffer,FunctionResult& result,unsigned int controls = 0,char* space = NULL);
 
 // output buffer management

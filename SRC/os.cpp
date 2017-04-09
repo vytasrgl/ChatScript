@@ -1664,7 +1664,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
             else if (*ptr == 'p') sprintf(at,(char*)"%p",va_arg(ap,char*)); // ptr
             else if (*ptr == 'f') 
 			{
-				float f = (float)va_arg(ap,double);
+				double f = (double)va_arg(ap,double);
 				sprintf(at,(char*)"%f",f); // float
 			}
             else if (*ptr == 's') // string

@@ -466,13 +466,13 @@ char* AddEscapes(char* to, char* from, bool normal,int limit) // normal true mea
 	return to; // return where we ended
 }
 
-float Convert2Float(char* original)
+double Convert2Float(char* original)
 {
 	char num[MAX_WORD_SIZE];
 	strcpy(num, original);
 	char* comma;
 	while ((comma = strchr(num, ','))) memmove(comma, comma + 1, strlen(comma));
-	float val = (float)atof(num);
+	double val = atof(num);
 	if (IsDigitWithNumberSuffix(num)) // 10K  10M 10B
 	{
 		size_t len = strlen(num);
@@ -1080,7 +1080,7 @@ unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or wor
 	if (IsRomanNumeral(word,valx)) return ROMAN_NUMBER;
 	if (IsDigitWithNumberSuffix(word)) return WORD_NUMBER;
 	// word fraction numbers
-	if (!strcmp(word,(char*)"half") ) return FRACTION_NUMBER;
+	if (!strcmp(word,(char*)"half") || !strcmp(word, (char*)"halves") ) return FRACTION_NUMBER;
 	// NOT third as fraction, third as placenumber else if (!strcmp(word,(char*)"third") ) return FRACTION_NUMBER;
 	else if (!strcmp(word,(char*)"thirds") ) return FRACTION_NUMBER;
 	else if ( !strcmp(word,(char*)"quarter") ) return FRACTION_NUMBER;

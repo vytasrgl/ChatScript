@@ -948,8 +948,8 @@ static void ReadNextDocument(char* name,uint64 value) // ReadDocument(inBuffer,s
 
 		unsigned int diff = (unsigned int) (ElapsedMilliseconds() - docVolleyStartTime);
 		unsigned int mspl = diff/inputSentenceCount;
-		float fract = (float)(diff/1000.0); // part of seccond
-		float time = (float)(tokenCount/fract);
+		double fract = (double)(diff/1000.0); // part of seccond
+		double time = (double)(tokenCount/fract);
 	
 		unsigned int seconds = (diff/1000);
 		diff -= (seconds * diff);
@@ -2712,13 +2712,13 @@ retry:
 		goto reloop;
 	}
 
-	float percent = ((float)right * 100) /total;
+	double percent = ((double)right * 100) /total;
 	int val = (int)percent;
-	percent = ((float)parseBad * 100) /sentences;
+	percent = ((double)parseBad * 100) /sentences;
 	int val1 = (int)percent;
-	percent = ((float)ambigItems * 100) /ambiguousWords;
+	percent = ((double)ambigItems * 100) /ambiguousWords;
 	int val2 = (int) percent;
-	percent = ((float)ambiguousWords * 100) /total;
+	percent = ((double)ambiguousWords * 100) /total;
 	int val3 = (int) percent;
 
 	unsigned long timediff =  (unsigned long)( ElapsedMilliseconds() - startTime); 
@@ -2934,7 +2934,7 @@ static void C_TimePos(char* file) // how many wps for pos tagging
 	}
 
 	FClose(in);
-	float wps = (float)words / ((float)posTiming/(float)1000.0);
+	double wps = (double)words / ((double)posTiming/(double)1000.0);
 	Log(STDTRACELOG,(char*)"%d words tagged in %d ms wps: %d.\r\n",words,posTiming, (unsigned int) wps);
 	tokenControl = oldtokencontrol;
 	prepareMode = NO_MODE; 

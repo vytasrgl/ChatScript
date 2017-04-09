@@ -506,8 +506,8 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 
     if (floating)
     {
-        float newval = Convert2Float(oldValue);
-		float more = Convert2Float(moreValue);
+        double newval = Convert2Float(oldValue);
+		double more = Convert2Float(moreValue);
         if (minusflag == '-') newval -= more;
         else if (minusflag == '*') newval *= more;
         else if (minusflag == '/') {
@@ -519,7 +519,7 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 			if (more == 0) return;
 			int64 ivalue = (int64) newval;
 			int64 morval = (int64) more;
-			newval = (float) (ivalue % morval);
+			newval = (double) (ivalue % morval);
 		}
         else newval += more;
         sprintf(result,(char*)"%1.2f",newval);
