@@ -1,6 +1,6 @@
 # ChatScript System Functions Manual
-© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com<br>
-Revision 3/4/2017 cs7.3
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 4/8/2017 cs7.31
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -520,6 +520,7 @@ with "chatoutput" as the verb.
 Note that the stream is considered a single sentence. If you want to supply multiple sentences, you need to
 call `^tokenize` and then loop on the facts created.
 
+Note that `^analyze` does not call any prepass topic you may have, but you can invoke that topic directly aterwards yourself.
 
 ### `^tokenize ( {WORD SENTENCE} stream )`
 
@@ -1865,7 +1866,26 @@ which allows you to disable a word/phrase substitution. Use as word the full tex
 Remove this property bit from this word. This effect lasts until the system is reloaded. Value should be all upper case.
 Value is normally a system flag value or a property value from `dictionarysystem.h` which does not need a hash in front of it (system will look up the name).
 
-_word_ can be in doublequotes. And there are two internal bits that are also allowed to be removed:  `CONCEPT` and `HAS_SUBSITUTE`.  You can use `HAS_SUBSTITUTE` to disable some standard substitution in LIVEDATA, but you can't apply this at build time because the system won't remember. Instead call it from `^csboot` during startup.
+_word_ can be in doublequotes. And there are two internal bits that are also allowed to be removed:  `CONCEPT` and `HAS_SUBSITUTE`.  
+
+You can use `HAS_SUBSTITUTE` to disable some standard substitution in LIVEDATA, but you can't apply this at build time because the system won't remember. Instead call it from `^csboot` during startup.
+Instead call it from `^csboot` during startup. For example, in LIVEDATA interjections file, there is an entry:
+```
+ <surprise ~emosurprise
+ ```
+ But if you didn't want surpise at the start of a sentence declared the interjection ~emosurprise, you could do
+ ```
+ ^removeproperty("<surprise" HAS_SUBSTITUTE)
+ ```
+
+ And the dictionary has some words which are composites, like `iced_coffee` and it will
+ automatically convert the two words into a single token. If you wanted to stop this behavior,
+ you could disable this composite word via 
+ ```
+ ^removeproperty(iced_coffee NOUN)
+ ```
+ since it is declared as a NOUN (you can see with `:word iced_coffee`). You can do this 
+ to nouns, adjectives, adverbs.
 
 
 ### `^walkdictionary ( 'function )` 
@@ -1888,6 +1908,11 @@ loop () # unload every resource on board
    }
 ```
 
+### `^wordAtIndex ( ({original, canonical} n))` 
+
+`^wordAtIndex`  retrieves the word from the current sentence at the index 
+given, as either the original word  or as a 
+canonical word (as a match variable sees it)
 
 # Multipurpose Functions
 
@@ -2168,6 +2193,12 @@ discarded across inputs. You can force a set to be saved by saying:
     ^save(@9 true) # force set to save thereafter
     ^save(@9 false) # turn off saving thereafter
 
+### `^makereal ( {set , factid} )`
+
+If you give this a factset, it will convert any transient facts in that set into permanent.
+If you give this a factid, it will convert all transient facts created after that id into permanent. This
+might allow you, for example, to call `^jsonopen and get back a transient JSON structure and after inspection
+you could convert it to permanent if you wanted to. 
 
 ### `^addproperty ( set flag )`
 

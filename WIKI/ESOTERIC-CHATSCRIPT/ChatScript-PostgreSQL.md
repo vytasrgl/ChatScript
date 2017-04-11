@@ -1,9 +1,7 @@
 # ChatScript PostgreSQL
 
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
-
-
-> Revision 10/23/2016 cs6.86
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 4/8/2017 cs7.31
 
 ChatScript ships with code and WINDOWS libraries for accessing PostgreSQL but you need a database
 somewhere. All builds with the postgres client are `ChatScriptpg` in naming as opposed to
@@ -31,7 +29,7 @@ If you need one installed on your machine, see the end for how to install one.
 Aside from using Postgres to store data for a chatbot to look up, one can also use Postgres as a
 replacement for the local file system of the USERS directory. This allows you to scale CS horizontally
 by having multiple CS servers all connecting to a common Postgres DB machine so a user can be
-routed to any server. To do this, on the command line use:
+routed to any server. To do this, on the ChatScript command line use:
 ```
 pguser="hostaddr = 129.22.22.24 port = 5432 user = postgres password = somepassword "
 ```

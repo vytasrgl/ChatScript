@@ -439,7 +439,7 @@ KEEP
 
 # end of sentence there will be adverb  "I got *there rapidly"
 0	INCLUDE * ADVERB
-	STAY ISCANONICAL 
+	STAY ISCANONICAL  there
 	IS ADVERB
 	STAY END
 KEEP

@@ -33,14 +33,12 @@ extern unsigned int wildcardPosition[MAX_WILDCARDS+1]; //   spot it started and 
 extern int impliedSet;
 extern int impliedWild;
 extern char impliedOp;
-extern unsigned int userVariableIndex;
 extern unsigned int tracedFunctionsIndex;
-extern unsigned int botVariableIndex;
-extern WORDP userVariableList[MAX_USER_VARS];
 extern WORDP tracedFunctionsList[MAX_TRACED_FUNCTIONS];
-extern WORDP botVariableList[MAX_USER_VARS];
 extern char wildcardSeparator[2];
-
+extern unsigned int userVariableThreadList;
+extern unsigned int botVariableThreadList;
+extern unsigned int kernelVariableThreadList;
 // wildcard accessors
 char* GetwildcardText(unsigned int i, bool canon);
 void SetWildCard(char* value,char* canonicalVale,const char* index,unsigned int position);

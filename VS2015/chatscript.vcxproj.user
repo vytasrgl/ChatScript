@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Postgres|Win32'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)..\BINARIES</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(SolutionDir)..\BINARIES\chatscript.exe </LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(SolutionDir)..\BINARIES\chatscriptpg.exe </LocalDebuggerCommand>
     <LocalDebuggerCommandArguments />
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>

@@ -9,10 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-system-variables-and-engine-defined-concepts">ChatScript System Variables and Engine-defined Concepts</h1>
-<p>© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com</p>
-<blockquote>
-<p>Revision 3/4/2017 cs7.3</p>
-</blockquote>
+<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/8/2017 cs7.31</p>
 <ul>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#engine-defined-concepts">Engine-defined Concepts</a></li>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#system-variables">System Variables</a></li>
@@ -415,7 +412,7 @@
 </tr>
 <tr class="odd">
 <td><code>%response</code></td>
-<td>number of responses that have been generated for this sentence</td>
+<td>number of committed responses that have been generated for this sentence (see Advanced User- Advanced Output: Committed Responses</td>
 </tr>
 </tbody>
 </table>
@@ -762,7 +759,8 @@ s: (name is _*)
             #DO_SPELLCHECK | 
             #DO_PARSE | 
             #DO_PRIVATE</code></pre>
-<p>The left side of the substitution pair is case insensitive (matches either case on input) and can be placed in double-quotes (which converts spaces to underscorers).</p>
+<p>The left side of the substitution pair is case insensitive (matches either case on input) and can be placed in double-quotes (which converts spaces to underscores internally).</p>
+<p>The right side of the substitution pair is case sensitive and can be placed in double-quotes (which converts spaces to plus signs internally).</p>
 <p>Similarly while canonical values of words can be defined in <code>LIVEDATA/SYSTEM/canonical.txt</code>, you can define private canonical values for your bots by using the scripting language. You can say:</p>
 <pre><code>canon: oh 0 faster fast</code></pre>
 <p>which defines new canonical values for things and creates a file canon0.txt or canon1.txt in your TOPIC folder. If you want to set a canonical pair from a table during compilation, you can use a function to do the same thing (but only 1 pair at a time).</p>

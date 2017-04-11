@@ -1,3 +1,9 @@
 ﻿$cs_trace=0
 #`end variables
+( child member ~childhood x100000 )
+( childhood member ~childhood x100000 )
+( kid member ~childhood x100000 )
+( little member ~childhood x100000 )
+( memory member ~childhood x100000 )
+( young member ~childhood x100000 )
 ( harry defaultbot defaultbot )

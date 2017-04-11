@@ -483,7 +483,7 @@ static void MemorizeRegress(char* input)
 	else  
 	{
 		FILE* out = NULL;
-		if (*outputfile) FopenUTF8Write(outputfile);
+		if (*outputfile) out = FopenUTF8Write(outputfile);
 		if (!out)
 		{
 			strcpy(outputfile,(char*)"TMP/regress.txt");
@@ -948,8 +948,8 @@ static void ReadNextDocument(char* name,uint64 value) // ReadDocument(inBuffer,s
 
 		unsigned int diff = (unsigned int) (ElapsedMilliseconds() - docVolleyStartTime);
 		unsigned int mspl = diff/inputSentenceCount;
-		float fract = (float)(diff/1000.0); // part of seccond
-		float time = (float)(tokenCount/fract);
+		double fract = (double)(diff/1000.0); // part of seccond
+		double time = (double)(tokenCount/fract);
 	
 		unsigned int seconds = (diff/1000);
 		diff -= (seconds * diff);
@@ -2107,7 +2107,7 @@ reloop:
 	unsigned int parseBad = 0;
 	unsigned int ambigSentences = 0;
 
-	ReturnToAfterLayer(1,true);
+	ReturnToAfterLayer(LAYER_1,true);
 	StoreWord((char*)"NN");
 	StoreWord((char*)"NNS");
 	StoreWord((char*)"NNP");
@@ -2140,7 +2140,7 @@ reloop:
 	StoreWord((char*)"CD");
 	StoreWord((char*)"EX");
 	StoreWord((char*)"FW");
-	LockLayer(1,false);
+	LockLayer(false);
 	ambiguousWords = 0;
 
 	FILE* oldin = NULL;
@@ -2253,7 +2253,7 @@ reloop:
 		char* answer1;
 		tokenControl = STRICT_CASING | DO_ESSENTIALS | DO_POSTAG | DO_CONTRACTIONS | NO_HYPHEN_END | NO_COLON_END | NO_SEMICOLON_END | TOKEN_AS_IS;
 		if (!raw && !ambig && !showUsed) tokenControl |= DO_PARSE;
-		ReturnToAfterLayer(1,false);
+		ReturnToAfterLayer(LAYER_1,false);
 		PrepareSentence(buffer,true,true);	
 		if (sentenceLengthLimit && (int)wordCount != sentenceLengthLimit) continue; // looking for easy sentences to fix
 		int actualLen = len;
@@ -2712,13 +2712,13 @@ retry:
 		goto reloop;
 	}
 
-	float percent = ((float)right * 100) /total;
+	double percent = ((double)right * 100) /total;
 	int val = (int)percent;
-	percent = ((float)parseBad * 100) /sentences;
+	percent = ((double)parseBad * 100) /sentences;
 	int val1 = (int)percent;
-	percent = ((float)ambigItems * 100) /ambiguousWords;
+	percent = ((double)ambigItems * 100) /ambiguousWords;
 	int val2 = (int) percent;
-	percent = ((float)ambiguousWords * 100) /total;
+	percent = ((double)ambiguousWords * 100) /total;
 	int val3 = (int) percent;
 
 	unsigned long timediff =  (unsigned long)( ElapsedMilliseconds() - startTime); 
@@ -2850,7 +2850,7 @@ static void C_VerifyPos(char* file)
 			DoCommand(ptr,output);
 			continue;
 		}
-		ReturnToAfterLayer(1,false); // dont let dictionary tamper affect this. A problem with ANY multiple sentence input...
+		ReturnToAfterLayer(LAYER_1,false); // dont let dictionary tamper affect this. A problem with ANY multiple sentence input...
 	
 		++count;
 		strcpy(sentence,ptr);
@@ -2934,7 +2934,7 @@ static void C_TimePos(char* file) // how many wps for pos tagging
 	}
 
 	FClose(in);
-	float wps = (float)words / ((float)posTiming/(float)1000.0);
+	double wps = (double)words / ((double)posTiming/(double)1000.0);
 	Log(STDTRACELOG,(char*)"%d words tagged in %d ms wps: %d.\r\n",words,posTiming, (unsigned int) wps);
 	tokenControl = oldtokencontrol;
 	prepareMode = NO_MODE; 
@@ -4140,7 +4140,7 @@ static void ShowArgs(char* name,bool in) // display current values of function c
 	unsigned int args = 0;
 	if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO)  args = D->w.planArgCount;
 	else if (!D->w.fndefinition) args = 0;
-	else args = MACRO_ARGUMENT_COUNT(D->w.fndefinition); // expected args
+	else args = MACRO_ARGUMENT_COUNT(GetDefinition(D)); // expected args
 	char* list = (currentFunctionDisplay) ? (currentFunctionDisplay + 2) : NULL;	// skip ( and space xxxx
 	char var[100];
 	*var = 0;
@@ -4536,7 +4536,7 @@ void CheckBreak(char* name,bool in,char* code,FunctionResult result) // ChangeDe
 		strcpy(copy,name);
 		char* dot = strchr(copy,'.');
 		if (dot) *dot = 0;	// for out when at top level of rules, leaving topic
-		if (result) DebugPrint("Step out of %s depth %d with %s\r\n",copy,globalDepth,ResultCode(result));
+		if (result != NOPROBLEM_BIT) DebugPrint("Step out of %s depth %d with %s\r\n",copy,globalDepth,ResultCode(result));
 		else DebugPrint("Step out of %s depth %d\r\n",copy,globalDepth);
 		if (*name == '^') stepOut[globalDepth-2] = 1; // set for break at code above, clearing the "" dummy layer
 		return;
@@ -4558,7 +4558,7 @@ void CheckBreak(char* name,bool in,char* code,FunctionResult result) // ChangeDe
 			}
 			else if (strnicmp(breakAt[i]+len,"@i",2) && !rule) // no break exiting a rule
 			{
-				if (result) DebugPrint("Break exiting %s depth %d with %s\r\n",name,globalDepth,ResultCode(result));
+				if (result == NOPROBLEM_BIT) DebugPrint("Break exiting %s depth %d with %s\r\n",name,globalDepth,ResultCode(result));
 				else DebugPrint("Break exiting %s depth %d\r\n",name,globalDepth);
 			}
 			if (*name == '^') ShowArgs(name,in); // show arguments
@@ -4890,7 +4890,6 @@ int Debugger(char* x) // process debugger commands until go
 				ptr = ReadCompiledWord(ptr,word);
 			}
 		}
-#ifndef DISCARDJSON
 		else if (!strnicmp(word,"jo-",3) || !strnicmp(word,"ja-",3))
 		{
 			AllocateOutputBuffer();
@@ -4905,7 +4904,6 @@ int Debugger(char* x) // process debugger commands until go
 			}
 			FreeOutputBuffer();
 		}
-#endif
 		else if (*word == '^' || *word == '~')
 		{
 			int at = 0;
@@ -5573,25 +5571,25 @@ static void C_MixedCase(char* input)
 		if (!D->word) continue;
 		if (D->internalBits & HAS_SUBSTITUTE) continue; // not real
 		char* apos = strchr(D->word,'\'');
-		if (apos && !(strchr(D->word,'_') || strchr(D->word,' ')) && D > dictionaryPreBuild[0] ) 
+		if (apos && !(strchr(D->word,'_') || strchr(D->word,' ')) && D > dictionaryPreBuild[LAYER_0] ) 
 		{
 			Log(ECHOSTDTRACELOG," has apostrophe %s\r\n",D->word);
 		}
 		if (D->word && D->internalBits & UPPERCASE_HASH)
 		{
 			WORDP E = FindWord(D->word,SECONDARY_CASE_ALLOWED);
-			if (E && (E > dictionaryPreBuild[0] || D > dictionaryPreBuild[0] ))
+			if (E && (E > dictionaryPreBuild[LAYER_0] || D > dictionaryPreBuild[LAYER_0] ))
 			{
 				if (E->internalBits & HAS_SUBSTITUTE) continue; // not real
 				Log(ECHOSTDTRACELOG,"%s",D->word);
 				char* loc;
-				if (D <= dictionaryPreBuild[0]) loc = "w";
+				if (D <= dictionaryPreBuild[LAYER_0]) loc = "w";
 				else if (D->internalBits & BUILD0) loc = "0";
 				else if (D->internalBits & BUILD1) loc = "1";
 				else loc = "?";
 				Log(ECHOSTDTRACELOG," (%s)",loc);
 				Log(ECHOSTDTRACELOG,"    %s",E->word);
-				if (E <= dictionaryPreBuild[0]) loc = "w";
+				if (E <= dictionaryPreBuild[LAYER_0]) loc = "w";
 				else if (E->internalBits & BUILD0) loc = "0";
 				else if (E->internalBits & BUILD1) loc = "1";
 				else loc = "?";
@@ -5789,8 +5787,8 @@ static void C_Definition(char* x)
 	if (!D || !(D->internalBits & FUNCTION_NAME)) Log(STDTRACELOG,(char*)"No such name\r\n");
 	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"Plan macro\r\n");
 	else if (D->x.codeIndex && (D->internalBits & FUNCTION_BITS) != IS_TABLE_MACRO) Log(STDTRACELOG,(char*)"Engine API function\r\n");
-	else if ((D->internalBits & FUNCTION_BITS) == IS_OUTPUT_MACRO) Log(STDTRACELOG,(char*)"output macro: %s\r\n",D->w.fndefinition+1); // skip arg count
-	else Log(STDTRACELOG,(char*)"pattern macro: %s\r\n",D->w.fndefinition+1); // skip arg count
+	else if ((D->internalBits & FUNCTION_BITS) == IS_OUTPUT_MACRO) Log(STDTRACELOG,(char*)"output macro: %s\r\n",GetDefinition(D)); 
+	else Log(STDTRACELOG,(char*)"pattern macro: %s\r\n",GetDefinition(D)); // skip arg count
 }
 
 static void DumpMatchVariables()
@@ -5832,10 +5830,10 @@ static void ShowMacro(WORDP D,uint64 junk)
 	if (!(D->internalBits & FUNCTION_NAME)) {;} // not a function or plan
 	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"plan: %s (%d)\r\n",D->word,D->w.planArgCount);
 	else if (D->x.codeIndex) {;} //is system function (when not plan)
-	else if (D->internalBits & IS_PATTERN_MACRO && D->internalBits & IS_OUTPUT_MACRO) Log(STDTRACELOG,(char*)"dualmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D->w.fndefinition));
-	else if (D->internalBits & IS_PATTERN_MACRO) Log(STDTRACELOG,(char*)"patternmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D->w.fndefinition));
-	else if (D->internalBits & IS_OUTPUT_MACRO) 	Log(STDTRACELOG,(char*)"outputmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D->w.fndefinition));
-	else if (D->internalBits & IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"tablemacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(D->w.fndefinition));
+	else if (D->internalBits & IS_PATTERN_MACRO && D->internalBits & IS_OUTPUT_MACRO) Log(STDTRACELOG,(char*)"dualmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(GetDefinition(D)));
+	else if (D->internalBits & IS_PATTERN_MACRO) Log(STDTRACELOG,(char*)"patternmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(GetDefinition(D)));
+	else if (D->internalBits & IS_OUTPUT_MACRO) 	Log(STDTRACELOG,(char*)"outputmacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(GetDefinition(D)));
+	else if (D->internalBits & IS_PLAN_MACRO) Log(STDTRACELOG,(char*)"tablemacro: %s (%d)\r\n",D->word,MACRO_ARGUMENT_COUNT(GetDefinition(D)));
 }
 
 static void C_Macros(char* input)
@@ -6103,7 +6101,7 @@ TestMode Command(char* input,char* output,bool scripted)
 		(*info->fn)(data);
 		testOutput = NULL;
 		FreeBuffer();
-		if (strcmp(info->word,(char*)":echo") && !prepareMode) echo = oldecho;
+		if (strcmp(info->word,(char*)":echo") && prepareMode == NO_MODE) echo = oldecho;
 		if (scripted && strcmp(info->word,(char*)":echo")) echo = oldecho;
 		return wasCommand;
 	}
@@ -7004,7 +7002,7 @@ static void C_UserFacts(char* input)
 	char* buffer = AllocateBuffer();
 	for (unsigned int i = 0; i <= MAX_FIND_SETS; ++i) 
     {
-		if (!(setControl & (uint64) (1 << i))) continue; // purely transient stuff
+		if (!(setControl &  (1ULL << i))) continue; // purely transient stuff
 		unsigned int count = FACTSET_COUNT(i);
 		if (!count) continue;
 		// save this set
@@ -7973,7 +7971,11 @@ static void CleanIt(char* word,uint64 junk) // remove cr from source lines for L
 	fseek (in, 0, SEEK_SET);
 	unsigned int val = (unsigned int) fread(buf,1,size,in);
 	FClose(in);
-	if ( val != size) return;
+	if (val != size)
+	{
+		free(buf);
+		return;
+	}
 	buf[size] = 0;	// force an end
 
 	// now overwrite file with proper trimming
@@ -8031,14 +8033,16 @@ static void SortConcept(WORDP D,uint64 junk)
 		Sortit(D->word,(int)junk); // 1 will be for 1line, otherwise take multiline as needed
 }
 
-char* UrlEncode(char* input);
 
 static void Translate(char* msg,char* to, char* apikey)
 {
-#ifndef DISCARDJSON
 	char* url = AllocateBuffer();
 	size_t len = strlen(msg);
+#ifndef DISCARDJSONOPEN
 	char* tranurl = UrlEncode(msg); // transient stack
+#else
+	char* tranurl = "";
+#endif
 	len = strlen(tranurl);
 	sprintf(url,"https://translation.googleapis.com/language/translate/v2?q=%s&target=%s&format=text&source=en&key=%s",
 		tranurl,to,apikey);
@@ -8050,9 +8054,13 @@ static void Translate(char* msg,char* to, char* apikey)
 	ARGUMENT(5) = header;
 	ARGUMENT(6) = "";
 	*msg = 0;
+#ifndef DISCARDJSONOPEN
 	JSONOpenCode(msg);
-	FreeBuffer();
+#else
+	http_response = 500;
 #endif
+	FreeBuffer();
+
 	char* at = strstr(msg,"translatedText");
 	if (http_response != 200 || !at)  ReportBug("FATAL: translate failure %s\r\n",msg);
 	at += 4 + 14; // start of answer past the quote
@@ -8126,7 +8134,7 @@ static void C_TranslateConcept(char* input) // give the language & filename to w
 		Sortit(X->word, 1); /// 1 will be for 1line, otherwise take multiline as needed
 		input = ReadCompiledWord(input, language);
 		source = "cset.txt";
-		if (!language) return; // just sort it. no translate
+		if (!*language) return; // just sort it. no translate
 	}
 
 	MakeUpperCase(language);
@@ -8342,8 +8350,7 @@ static void C_SortConcept(char* input)
 	char which[100];
 	int64 flags;
 	input = ReadCompiledWord(input, which);
-	if (*which == '~')  input = ReadInt64(input, flags);
-	else input = ReadInt64(input,flags);
+	input = ReadInt64(input, flags);
 	if (*which != '~') // do all concepts and tie to dummy
 	{
 		WalkDictionary(BuildDummyConcept, 0); // stores names of concepts on dummy concept, to lock position in dictionary. later not, will be read in
@@ -9041,11 +9048,7 @@ static void C_ShowCoverage(char* input)
 	FILE* in = FopenReadOnly((char*)"TMP/coverage.txt");
 	if (!in) return;
 	FILE* out = FopenUTF8Write((char*)"TMP/coverageresult.txt");
-	if (!out)
-	{
-		fclose(out);
-		return;
-	}
+	if (!out) return;
 	maxFileLine = currentFileLine = 0;
 	ReadALine(readBuffer,in); // get a data
 	char topictag[MAX_WORD_SIZE];
@@ -9307,7 +9310,7 @@ static void BuildForeign(char* input)
 	input = ReadCompiledWord(input,language);
 	MakeUpperCase(language);
 	char name[MAX_WORD_SIZE];
-	sprintf(name,"treetagger/treetagger%s.txt",language);
+	sprintf(name,"treetagger/%s_rawwords.txt",language);
 	FILE* in = fopen(name,"rb");
 	if (!in)
 	{
@@ -9316,26 +9319,42 @@ static void BuildForeign(char* input)
 	}
 	sprintf(name,"DICT/%s",language);
 	MakeDirectory(name);
+	ClearDictionaryFiles();
+
+	char lemma[MAX_WORD_SIZE];
+	char junk[MAX_WORD_SIZE];
+	ReadForeign();
+
 	while (ReadALine(readBuffer,in) >= 0)
 	{
-		ReadCompiledWord(readBuffer,word);
+		char* ptr = ReadCompiledWord(readBuffer,word);
 		if (!*word) continue;
 		if ((unsigned char) word[0] ==  0xEF && (unsigned char) word[1] == 0xBB && (unsigned char) word[2] == 0xBF) continue; // UTF8 BOM
-		
-		// choose appropriate subfile
-		char c = GetLowercaseData(*word); 
-		char subname[40];
-		if (IsDigit(c)) sprintf(subname,(char*)"%c.txt",c); //   main real dictionary
-		else if (!IsLowerCase(c)) sprintf(subname,(char*)"%s",(char*)"other.txt"); //   main real dictionary
-		else sprintf(subname,(char*)"%c.txt",c);//   main real dictionary
-		sprintf(name,"DICT/%s/%s",language,subname);
-		
-		FILE* out = FopenUTF8WriteAppend(name);
-		if (!out)  myexit((char*)"Dict write failed");
-		fprintf(out,(char*)" %s\r\n",word);
-		fclose(out);
+		size_t len = strlen(word);
+		word[len - 1] = 0;	// remove "
+		memmove(word, word + 1, len); // remove "
+		if (!*word) continue;
+
+		char* close = strchr(ptr, ')');
+		*close = 0;
+		strcpy(lemma, ptr + 1);
+		*close = ')';
+
+		char pos[MAX_WORD_SIZE];
+		unsigned int flags = 0;
+		pos[0] = '_';
+		char* p = close + 1;
+		while (1)
+		{
+			p = ReadCompiledWord(p, pos+1);
+			if (!pos[1]) break;
+			WORDP D = FindWord(pos);
+			if (D) flags |= D->properties;
+		}
+		StoreWord(word, flags);
 	}
 	fclose(in);
+	WalkDictionary(WriteDictionary);
 }
 
 static void TrimIt(char* name,uint64 flag) 

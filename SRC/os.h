@@ -61,13 +61,15 @@ extern int loglimit;
 
 char* Index2Heap(unsigned int offset);
 inline unsigned int Heap2Index(char* str) {return (!str) ? 0 : (unsigned int)(heapBase - str);}
+inline unsigned int Stack2Index(char* str) { return (!str) ? 0 : (unsigned int)(str - stackStart); }
+inline char* Index2Stack(unsigned int ptr) { return (!ptr) ? 0 : (stackStart + ptr); }
 
 // MEMORY SYSTEM
 void ResetBuffers();
 char* AllocateBuffer(char*name = "");
 void FreeBuffer(char*name = "");
 void CloseBuffers();
-char* AllocateStack(char* word, size_t len = 0, bool localvar = false);
+char* AllocateStack(char* word, size_t len = 0, bool localvar = false, bool align4 = false);
 void ReleaseInfiniteStack();
 void ReleaseStack(char* word);
 char* InfiniteStack(char*& limit,char* caller);
@@ -129,6 +131,8 @@ typedef int (*UserFileSize)(FILE* file, char* buffer, size_t allowedSize);
 typedef void (*UserFileDelete)(const char* name);
 typedef size_t (*UserFileDecrypt)(void* buffer,size_t size, size_t count, FILE* file,char* filekind);
 typedef size_t (*UserFileEncrypt)(const void* buffer,size_t size, size_t count, FILE* file,char* filekind);
+
+typedef char*(*AllocatePtr)(char* word, size_t len, int bytes, bool clear, bool purelocal);
 
 typedef struct USERFILESYSTEM //  how to access user topic data
 {

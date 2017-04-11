@@ -3,8 +3,9 @@
 #define MAX_NO_ERASE 300
 #define MAX_REPEATABLE 300
 #define TOPIC_LIMIT 10000			
-
 #define PATTERN_UNWIND 1
+
+int currentBeforeLayer = 0;
 
 // functions that manage topic execution (hence displays) are: PerformTopic (gambit, responder), 
 // Reusecode, RefineCode, Rejoinder, Plan
@@ -15,7 +16,7 @@ int numberOfTopics = 0;
 int numberOfTopicsInLayer[NUMBER_OF_LAYERS+1];
 topicBlock* topicBlockPtrs[NUMBER_OF_LAYERS+1];
 bool norejoinder = false;
-char* unwindLayer2 = NULL;
+char* unwindUserLayer = NULL;
 
 // current operating data
 bool shared = false;
@@ -1769,17 +1770,17 @@ bool ReadUserTopics()
 		ptr += 3;	// skip dy
 		ptr = ReadCompiledWord(ptr,word);
 		int lev0topics = atoi(word);
-		if (lev0topics != numberOfTopicsInLayer[0]) {} // things have changed. after :build there are a different number of topics.
+		if (lev0topics != numberOfTopicsInLayer[LAYER_0]) {} // things have changed. after :build there are a different number of topics.
 		ptr = ReadCompiledWord(ptr,word);
 		int lev1topics = atoi(word);
 		ReadCompiledWord(ptr,word);
-		if (lev1topics != numberOfTopicsInLayer[1]) {} // things have changed. after :build there are a different number of topics.
+		if (lev1topics != numberOfTopicsInLayer[LAYER_1]) {} // things have changed. after :build there are a different number of topics.
 		ptr = ReadCompiledWord(ptr,word);
 		int lev2topics = atoi(word);
 		ReadCompiledWord(ptr,word);
 		ptr = ReadCompiledWord(ptr,word);
-		if (*word != '0' || word[1]) LoadLayer(2,word,BUILD2); // resume existing layer 2
-		if (lev2topics != numberOfTopicsInLayer[2]) {}  // things have changed. after :build there are a different number of topics.
+		if (*word != '0' || word[1]) LoadLayer(LAYER_BOOT,word,BUILD2); // resume existing layer 2
+		if (lev2topics != numberOfTopicsInLayer[LAYER_BOOT]) {}  // things have changed. after :build there are a different number of topics.
 	}
 
     //   pending stack
@@ -1814,7 +1815,7 @@ bool ReadUserTopics()
 		if (!D || !(D->internalBits & TOPIC)) continue; // should never fail unless topic disappears from a refresh
 		int id = D->x.topicIndex;
 		if (!id) continue;	//   no longer exists
-		if (id > numberOfTopicsInLayer[1] && badLayer1) continue;	// not paged in?
+		if (id > numberOfTopicsInLayer[LAYER_1] && badLayer1) continue;	// not paged in?
 
 		topicBlock* block = TI(id);
 		at = ReadCompiledWord(at,word); //   blocked status (+ ok - blocked) and maybe safe topic status
@@ -2139,10 +2140,6 @@ static void LoadTopicData(const char* fname,const char* layerid,unsigned int bui
 				printf((char*)"%s",(char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 1 again.\r\n\r\n");
 				EraseTopicFiles(BUILD1,(char*)"1");
 			}
-			else if (build == BUILD2) 
-			{
-				printf((char*)"%s",(char*)"\r\n>>> TOPICS directory bad. Build1 Contents erased. :build 2 again.\r\n\r\n");
-			}
 
 			char file[SMALL_WORD_SIZE];
 			sprintf(file,(char*)"%s/missingLabel.txt",topic);
@@ -2249,18 +2246,18 @@ static void ReadPatternData(const char* fname,const char* layer,unsigned int bui
 		if (old)
 		{
 			int* protect = (int*) AllocateHeap(NULL,3,4); // link + entry to refresh back to NOT pattern word
-			protect[0] = Heap2Index(unwindLayer2);
+			protect[0] = Heap2Index(unwindUserLayer);
 			protect[1] = Word2Index(old);
 			protect[2] = PATTERN_UNWIND;
-			unwindLayer2 = (char*) protect;
+			unwindUserLayer = (char*) protect;
 		}
     }
     FClose(in);
 }
 
-void UnwindLayer2Protect()
+void UnwindUserLayerProtect()
 {
-	int* protect = (int*)unwindLayer2;
+	int* protect = (int*)unwindUserLayer;
 	while (protect)
 	{
 		if (protect[2] == PATTERN_UNWIND)
@@ -2270,7 +2267,7 @@ void UnwindLayer2Protect()
 			protect = (int*) Index2Heap(protect[0]);
 		}
 	}
-	unwindLayer2 = NULL;
+	unwindUserLayer = NULL;
 }
 
 static void AddRecursiveProperty(WORDP D,uint64 type,bool buildDictionary,unsigned int build)
@@ -2610,7 +2607,7 @@ static void InitMacros(const char* name,const char* layer,unsigned int build)
 	maxFileLine = currentFileLine = 0;
 	while (ReadALine(readBuffer, in)>= 0) //   ^showfavorite O 2 _0 = ^0 _1 = ^1 ^reuse (~xfave FAVE ) 
 	{
-		// eg "%s T a %d %d%s\r\n",macroName,mybot,D->x.macroFlags,data);
+		// eg "%s t %d %d%s\r\n"    name lctype mybot, macroflags, data
 		
 		if (!*readBuffer) continue;
 		char* ptr = ReadCompiledWord(readBuffer,tmpWord); //   the name
@@ -2619,35 +2616,24 @@ static void InitMacros(const char* name,const char* layer,unsigned int build)
 		AddInternalFlag(D,(unsigned int)(FUNCTION_NAME|build)); // must be in same build if multiple
 		D->x.codeIndex = 0;	//   if one redefines a system macro, that macro is lost.
 		ptr = ReadCompiledWord(ptr,tmpWord);
-		if (*tmpWord == 'T') AddInternalFlag(D,IS_TABLE_MACRO);  // table macro
-		else if (*tmpWord == 'O') AddInternalFlag(D,IS_OUTPUT_MACRO); 
-		else if (*tmpWord == 'P') 
-			AddInternalFlag(D,IS_PATTERN_MACRO); 
-		else if (*tmpWord == 'D') AddInternalFlag(D,IS_PATTERN_MACRO|IS_OUTPUT_MACRO);
-		ptr = ReadCompiledWord(ptr,tmpWord); // either is "a" (new format) or is the integer bit descriptor (old format) of the arguments
-		char botId[MAX_WORD_SIZE];
-		char* next = ReadCompiledWord(ptr,botId); // skip over mybot or old-style redundant arg count data
-		int val;
-		if (*tmpWord == 'a') val = atoi(next); // new format - main fndefn has bit mask at front
-		else ReadInt(tmpWord,val);  // old format
-		D->x.macroFlags = (unsigned short) val; // controls on text string as KEEP_QUOTE or not - redundant somewhat 
-		
-		if (D->w.fndefinition) // need to join old definition to new one
+		if (*tmpWord == 't') AddInternalFlag(D,IS_TABLE_MACRO);  // table macro
+		else if (*tmpWord == 'o') AddInternalFlag(D,IS_OUTPUT_MACRO); 
+		else if (*tmpWord == 'p') AddInternalFlag(D,IS_PATTERN_MACRO); 
+		else if (*tmpWord == 'd') AddInternalFlag(D,IS_PATTERN_MACRO|IS_OUTPUT_MACRO);
+		else ReportBug("FATAL: Old style function compile. Recompile your script")
+		size_t len = strlen(ptr) + 4;
+		ptr -= 4; // add continuation index at front
+		ptr[0] = ptr[1] = ptr[2] = ptr[3] = 0; // jump index
+
+		if (D->w.fndefinition) // need to link old definition to new one
 		{
-			int heapIndex = Heap2Index((char*)D->w.fndefinition);
-			char* at = strchr(ptr,'`'); // find end of define
-			*++at = ' ';
-			sprintf(++at,"%d",heapIndex); // chained on.
+			unsigned int heapIndex = Heap2Index((char*)D->w.fndefinition);
+			ptr[0] = (heapIndex >> 24) & 0xff;
+			ptr[1] = (heapIndex >> 16) & 0xff;
+			ptr[2] = (heapIndex >> 8) & 0xff;
+			ptr[3] = heapIndex & 0xff;
 		}
-		else if (*tmpWord != 'a') ptr = next; // old style define
-		if (D->internalBits & IS_PATTERN_MACRO)
-		{
-			ptr = ReadCompiledWord(ptr, tmpWord);
-			char* x = strchr(ptr, '`');
-			if (x) *x = 0; // not allowed for now
-			while (IsDigit(*ptr)) ++ptr;
-		}
-		D->w.fndefinition = (unsigned char*) AllocateHeap(ptr); // new style has int (mybot) at start of fndefn and may chain
+		D->w.fndefinition = (unsigned char*) AllocateHeap(ptr,len); 
 	}
 	FClose(in);
 }
@@ -2814,13 +2800,13 @@ topicBlock* TI(int topicid)
 	if (topicid <= numberOfTopicsInLayer[0]) return topicBlockPtrs[0]+topicid;
 	if (topicid <= numberOfTopicsInLayer[1]) return topicBlockPtrs[1]+topicid;
 	if (topicid <= numberOfTopicsInLayer[2]) return topicBlockPtrs[2]+topicid;
+	if (topicid <= numberOfTopicsInLayer[2]) return topicBlockPtrs[3] + topicid;
 	return NULL;
 }
 	
 FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 {
-	UnlockLevel();
-	//  if (layer == 2) ReturnToAfterLayer(1,false); // Warning - erases user facts and variables, etc. 
+	UnlockLayer(layer);
 	int originalTopicCount = numberOfTopics;
 	char filename[SMALL_WORD_SIZE];
 	InitLayerMemory(name,layer);
@@ -2846,7 +2832,7 @@ FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 	ReadCanonicals(filename,name);
 	WalkDictionary(IndirectMembers,build); // having read in all concepts, handled delayed word marks
 	
-	if (layer != 2)
+	if (layer != LAYER_BOOT)
 	{
 		char data[MAX_WORD_SIZE];
 		sprintf(data,(char*)"Build%s:  dict=%ld  fact=%ld  heap=%ld Compiled:%s by version %s \"%s\"\r\n",name,
@@ -2858,7 +2844,7 @@ FunctionResult LoadLayer(int layer,const char* name,unsigned int build)
 		printf((char*)"%s",data);
 	}
 	
-	LockLayer(layer,false);
+	LockLayer(false);
 	return NOPROBLEM_BIT;
 }
 
@@ -2880,11 +2866,11 @@ void LoadTopicSystem() // reload all topic data
 	
 	printf((char*)"WordNet: dict=%ld  fact=%ld  heap=%ld %s\r\n",(long int)(dictionaryFree-dictionaryBase),(long int)(factFree-factBase),(long int)(heapBase-heapFree),dictionaryTimeStamp);
 
-	LoadLayer(0,(char*)"0",BUILD0);
-	UnlockLevel();
+	LoadLayer(LAYER_0,(char*)"0",BUILD0);
+	UnlockLayer(LAYER_1);
 	ReadLivePosData(); // any needed concepts must have been defined by now in level 0 (assumed). Not done in level1
-	LockLayer(0,false); // rewrite prebuild file because we augmented level 0
-	LoadLayer(1,(char*)"1",BUILD1);
+	LockLayer(false); // rewrite prebuild file because we augmented level 0
+	LoadLayer(LAYER_1,(char*)"1",BUILD1);
 }
 
 
@@ -3022,7 +3008,7 @@ int PushTopic(int topicid) // -1 = failed  0 = unneeded  1 = pushed
 	}
 	else if (!topicid)
 	{
-		ReportBug((char*)"PushTopic topic missing")
+		Bug();
 		return -1;
 	}
 

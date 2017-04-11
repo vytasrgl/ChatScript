@@ -1,6 +1,6 @@
 # ChatScript Debugger Manual
 © Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 1/7/2017 cs7.1
+<br>Revision 4/8/2017 cs7.31
 
 # Debugging in and out
 

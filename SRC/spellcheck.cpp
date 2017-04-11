@@ -77,9 +77,6 @@ static SUFFIX stems_french[] =
 	{0},
 };
 
-
-
-
 bool multichoice = false;
 
 void InitSpellCheck()
@@ -97,6 +94,12 @@ void InitSpellCheck()
 			lengthLists[wordData.charlen] = MakeMeaning(D);
 		}
 	}
+}
+
+static bool SameUTF(char* word, char* utfstring)
+{
+	size_t len = strlen(utfstring);
+	return (!strncmp(word, utfstring, len));
 }
 
 static int SplitWord(char* word)
@@ -130,8 +133,8 @@ static int SplitWord(char* word)
 	size_t len = strlen(word);
     for (unsigned int k = 1; k < len-1; ++k)
     {
-        if (!stricmp(language,"english") && k == 1 &&*word != 'a' &&*word != 'A' &&*word != 'i' &&*word != 'I') continue; //   only a and i are allowed single-letter words
-        else if (!stricmp(language,"french") && k == 1 &&*word != 'y' &&*word != 'a' &&*word != 'A' &&*word != 'à' &&*word != 'À' &&*word != 'ô' &&*word != 'Ô') continue; //   in french only y, a and ô are allowed single-letter words
+        if (!stricmp(language,"english") && k == 1 && *word != 'a' && *word != 'A' && *word != 'i' && *word != 'I') continue; //   only a and i are allowed single-letter words
+        else if (!stricmp(language,"french") && k == 1 && *word != 'y' && *word != 'a' && *word != 'A' && !SameUTF(word,"à") && !SameUTF(word, "À") && !SameUTF(word, "ô") && !SameUTF(word,"Ô")) continue; //   in french only y, a and ô are allowed single-letter words
 		WORDP D1 = FindWord(word,k,PRIMARY_CASE_ALLOWED);
         if (!D1) continue;
 		good = (D1->properties & (PART_OF_SPEECH|FOREIGN_WORD)) != 0 || (D1->internalBits & HAS_SUBSTITUTE) != 0; 
@@ -236,7 +239,7 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
-		if (D <= dictionaryPreBuild[0]) return D->word; // in dictionary
+		if (D <= dictionaryPreBuild[LAYER_0]) return D->word; // in dictionary
 		if (stricmp(language,"English") && !IS_NEW_WORD(D)) return D->word; // foreign word we know
 		if (IsConceptMember(D)) return D->word;
 		// are there facts using this word? -- issue with facts because on seeing input second time, having made facts of original, we see original
@@ -252,7 +255,7 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
-		if (D <= dictionaryPreBuild[0]) return D->word; // in dictionary
+		if (D <= dictionaryPreBuild[LAYER_0]) return D->word; // in dictionary
 		if (stricmp(language,"English") && !IS_NEW_WORD(D)) return D->word; // foreign word we know
 		if (IsConceptMember(D)) return D->word;
 
@@ -269,7 +272,7 @@ char* ProbableKnownWord(char* word)
 	{
 		if (D->properties & FOREIGN_WORD || *D->word == '~' || D->systemFlags & PATTERN_WORD) return D->word;	// we know this word clearly or its a concept set ref emotion
 		if (D->properties & PART_OF_SPEECH && !IS_NEW_WORD(D)) return D->word; // old word we know
-		if (D <= dictionaryPreBuild[0]) return D->word; // in dictionary
+		if (D <= dictionaryPreBuild[LAYER_0]) return D->word; // in dictionary
 		if (stricmp(language,"English") && !IS_NEW_WORD(D)) return D->word; // foreign word we know
 		if (IsConceptMember(D)) return D->word;
 
@@ -313,8 +316,8 @@ bool SpellCheckSentence()
 	fixedSpell = false;
 	bool lowercase = false;
 	
-	// check for all uppercase
-	for (int i = FindOOBEnd(1) + 1; i <= wordCount; ++i) // skip start of sentence
+	// check for all uppercase (capslock)
+	for (int i = FindOOBEnd(1); i <= wordCount; ++i) // skip start of sentence
 	{
 		char* word = wordStarts[i];
 		size_t len = strlen(word);
@@ -327,12 +330,19 @@ bool SpellCheckSentence()
 			}
 		}
 	}
-	if (!lowercase && wordCount > 2) // must have several words in uppercase
+	if (!lowercase && wordCount > 2) // must have multiple words all in uppercase
 	{
 		for (int i = FindOOBEnd(1); i <= wordCount; ++i)
 		{
 			char* word = wordStarts[i];
-			MakeLowerCase(word);
+			char myword[MAX_WORD_SIZE];
+			MakeLowerCopy(myword,word);
+			if (strcmp(word, myword))
+			{
+				char* tokens[2];
+				tokens[1] = myword;
+				ReplaceWords("caplocWord", i, 1, 1, tokens);
+			}
 		}
 	}
 
@@ -340,6 +350,22 @@ bool SpellCheckSentence()
 	for (int i = startWord; i <= wordCount; ++i)
 	{
 		char* word = wordStarts[i];
+		if (*word == '\'' && !word[1] && i != startWord && IsDigit(*wordStarts[i - 1]) && !stricmp(language, "english")) // fails if not digit bug
+		{
+			char* tokens[2];
+			tokens[1] = (char*)"foot";
+			ReplaceWords("' as feet", i, 1, 1, tokens);
+			fixedSpell = true;
+			continue;
+		}
+		if (*word == '"' && !word[1] && i != startWord && IsDigit(*wordStarts[i - 1]) && !stricmp(language, "english")) // fails if not digit bug
+		{
+			char* tokens[2];
+			tokens[1] = (char*)"inch";
+			ReplaceWords("' as feet", i, 1, 1, tokens);
+			fixedSpell = true;
+			continue;
+		}
 		if (!word || !word[1] || *word == '"' ) continue; // illegal or single char or quoted thingy 
 		size_t len = strlen(word);
 
@@ -356,6 +382,19 @@ bool SpellCheckSentence()
 
 		// nor fractions
 		if (IsFraction(word))  continue; // fraction?
+
+		char* number;
+		if (GetCurrency((unsigned char*)word, number)) continue; // currency
+
+		if (!stricmp(word, (char*)"am") && i != startWord && 
+			(IsDigit(*wordStarts[i-1]) || IsNumber(wordStarts[i-1]) ==REAL_NUMBER) && !stricmp(language,"english")) // fails if not digit bug
+		{
+			char* tokens[2];
+			tokens[1] = (char*)"a.m.";
+			ReplaceWords("am as time", i, 1, 1, tokens);
+			fixedSpell = true;
+			continue;
+		}
 
 		char* known = ProbableKnownWord(word);
 		if (known && !strcmp(known,word)) continue;	 // we know it
@@ -893,44 +932,44 @@ static int EditDistance(WORDINFO& dictWordData, WORDINFO& realWordData,int min)
         // french common bad spellings
         if (!stricmp(language, "french"))
         {
-            if (*currentCharReal == 'a' && *currentCharDict == 'â')
+            if (*currentCharReal == 'a' && SameUTF(currentCharDict,"â"))
             {
-            	val += 1;
+            		val += 1;
                 dictinfo = resumeDict;
                 realinfo = resumeReal;
                 continue;
             }
-            if (*currentCharReal == 'e' && *currentCharDict == 'ê')
+            if (*currentCharReal == 'e' && SameUTF(currentCharDict,"ê"))
             {
-            	val += 10;
+				val += 10;
                 dictinfo = resumeDict;
                 realinfo = resumeReal;
                 continue;
             }
-            if (*currentCharReal == 'è' && *currentCharDict == 'ê')
+            if (*currentCharReal == 0xc3 && currentCharReal[1] == 0xa8 && SameUTF(currentCharDict,"ê"))
             {
             	val += 5;
                 dictinfo = resumeDict;
                 realinfo = resumeReal;
                 continue;
             }
-            if (*currentCharReal == 'i' && *currentCharDict == 'î')
+            if (*currentCharReal == 'i' && SameUTF(currentCharDict,"î"))
             {
-            	val += 1;
+				val += 1;
                 dictinfo = resumeDict;
                 realinfo = resumeReal;
                 continue;
             }
-            if (*currentCharReal == 'o' && *currentCharDict == 'ô')
+            if (*currentCharReal == 'o' && SameUTF(currentCharDict, "ô"))
             {
-            	val += 1;
+					val += 1;
                 dictinfo = resumeDict;
                 realinfo = resumeReal;
                 continue;
             }
-            if (*currentCharReal == 'u' && *currentCharDict == 'û')
+            if (*currentCharReal == 'u' && SameUTF(currentCharDict, "û"))
             {
-            	val += 5;
+			 	val += 5;
                 dictinfo = resumeDict;
                 realinfo = resumeReal;
                 continue;
@@ -963,16 +1002,16 @@ static int EditDistance(WORDINFO& dictWordData, WORDINFO& realWordData,int min)
                 realinfo = resumeReal;
                 continue;
             }
-            if (*currentCharReal == 's' && *currentCharDict == 'ç')
+            if (*currentCharReal == 's' && SameUTF(currentCharDict, "ç"))
             {
-            	val += 5;
+            		val += 5;
                 dictinfo = resumeDict;
                 realinfo = resumeReal;
                 continue;
             }
-            if (*currentCharReal == 'c' && *currentCharDict == 'ç')
+            if (*currentCharReal == 'c' && SameUTF(currentCharDict, "ç"))
             {
-            	val += 5;
+				val += 5;
                 dictinfo = resumeDict;
                 realinfo = resumeReal;
                 continue;
@@ -1231,14 +1270,6 @@ char* SpellFix(char* originalWord,int start,uint64 posflags)
 		if (stem) 
 		{
             WORDP X = StoreWord(stem,flags); 
-			for (unsigned int j = 0; j < index; ++j) 
-			{
-				if (choices[j] == X) // already in our list
-				{
-					X = NULL; 
-					break;
-				}
-			}
 			if (X) choices[index++] = X;
 		}
 	}

@@ -41,7 +41,7 @@ resume:
 			else id = Log(STDTRACETABLOG,(char*)"%c%s ",(invert) ? '!' : ' ',word1);
 		}
 		ptr = ReadCompiledWord(ptr,op); // find out what happens next after function call
-		if (!result && IsComparison(*op)) // didnt fail and followed by a relationship op, move output as though it was the variable
+		if (result == NOPROBLEM_BIT && IsComparison(*op)) // didnt fail and followed by a relationship op, move output as though it was the variable
 		{
 			 strcpy(word1,buffer); 
 			 call = false;	// proceed normally
@@ -438,14 +438,14 @@ FunctionResult HandleRelation(char* word1,char* op, char* word2,bool output,int&
 			else if (*op == '<') result = (stricmp(arg1, arg2) < 0) ? NOPROBLEM_BIT : FAILRULE_BIT;
 			else result = FAILRULE_BIT;
 		}
-		//   handle float ops
+		//   handle double ops
 		else if ((strchr(val1,'.') && val1[1]) || (strchr(val2,'.') && val2[1])) // at least one arg is float
 		{
 			char* comma = 0; 
 			while ((comma = strchr(val1,',')))  memmove(comma,comma+1,strlen(comma+1)); // remove embedded commas
 			while ((comma = strchr(val2,',')))  memmove(comma,comma+1,strlen(comma+1)); // remove embedded commas
-			float v1f = (float) atof(val1);
-			float v2f = (float) atof(val2);
+			double v1f = Convert2Float(val1);
+			double v2f = Convert2Float(val2);
 			if (*op == '=') result = (v1f == v2f) ? NOPROBLEM_BIT : FAILRULE_BIT;
 			else if (*op == '<') 
 			{

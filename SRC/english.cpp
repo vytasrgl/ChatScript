@@ -278,8 +278,301 @@ EndingInfo adjective1[] =
 	{0},
 };
 
+static int64 ProcessNumber(int at, char* original, WORDP& revise, WORDP &entry, WORDP &canonical, uint64& sysflags, uint64 &cansysflags, bool firstTry, bool nogenerate, int start, int kind) // case sensitive, may add word to dictionary, will not augment flags of existing words
+{
+	size_t len = strlen(original);
+	char* hyphen = strchr(original, '-');
+	int64 properties = 0;
+	if ((IsDigit(*original) || IsDigit(original[1]) || *original == '\'') && (kind || hyphen))
+	{
+		// DATE IN 2 DIGIT OR 4 DIGIT NOTATION
+		char word[MAX_WORD_SIZE];
+		*word = 0;
+		// 4digit year 1990 and year range 1950s and 1950's
+		if (IsDigit(*original) && IsDigit(original[1]) && IsDigit(original[2]) && IsDigit(original[3]) &&
+			(!original[4] || (original[4] == 's' && !original[5]) || (original[4] == '\'' && original[5] == 's' && !original[6]))) sprintf(word, (char*)"%d", atoi(original));
+		//  2digit year and range '40 and '40s
+		if (*original == '\'' && IsDigit(original[1]) && IsDigit(original[2]) &&
+			(!original[3] || (original[3] == 's' && !original[4]) || (original[3] == '\'' && original[4] == 's' && !original[5]))) sprintf(word, (char*)"19%d", atoi(original + 1));
+		if (*word)
+		{
+			properties = NOUN | NOUN_NUMBER | ADJECTIVE | ADJECTIVE_NUMBER;
+			entry = StoreWord(original, properties, TIMEWORD);
+			canonical = StoreWord(word, properties, TIMEWORD);
+			sysflags = entry->systemFlags | TIMEWORD;
+			cansysflags = canonical->systemFlags | TIMEWORD;
+			return properties;
+		}
+
+		// handle time like 4:30
+		if (len > 3 && len < 6 && IsDigit(original[len - 1]) && (original[1] == ':' || original[2] == ':')) // 18:32
+		{
+			properties = NOUN | NOUN_NUMBER | ADJECTIVE | ADJECTIVE_NUMBER;
+			entry = canonical = StoreWord(original, properties); // 18:32
+			sysflags = entry->systemFlags | TIMEWORD;
+			cansysflags = canonical->systemFlags | TIMEWORD;
+			return properties;
+		}
+
+		// handle number range data like 120:129 
+		char* at = original;
+		int colon = 0;
+		while (*++at && (IsDigit(*at) || *at == ':'))
+		{
+			if (*at == ':') ++colon;
+		}
+		if (!*at && colon == 1) // was completely digits and a single colon
+		{
+			properties = NOUN | NOUN_NUMBER | ADJECTIVE | ADJECTIVE_NUMBER;
+			entry = canonical = StoreWord(original, properties);
+			return properties;
+		}
+
+		// handle date range like 1920-22 or 1920-1955  or any number range
+		if (hyphen && hyphen != original)
+		{
+			char* at = original - 1;
+			while (*++at)
+			{
+				if (IsDigit(*at)) continue;
+				if (*at == '-' && at == hyphen) continue;
+				break;
+			}
+			if (!*at)
+			{
+				properties = NOUN | NOUN_NUMBER | ADJECTIVE | ADJECTIVE_NUMBER;
+				entry = canonical = StoreWord(original, properties);
+				if ((hyphen - original) == 4)
+				{
+					sysflags = entry->systemFlags | TIMEWORD;
+					cansysflags = canonical->systemFlags | TIMEWORD;
+				}
+				return properties;
+			}
+		}
+
+		// mark numeric fractions
+		char* fraction = strchr(original, '/');
+		if (fraction)
+		{
+			long basenumber = 0;
+			// if we have piece before fraction
+			if (hyphen) // we have prepart composite number like 3-1/2
+			{
+				*hyphen = 0;
+				basenumber = atoi(original); // part before the - 
+				*hyphen = '-';
+				original = hyphen + 1; // piece before fraction
+			}
+			char number[MAX_WORD_SIZE];
+			strcpy(number, original); // the number before the -
+			if (IsNumber(number) && IsNumber(fraction + 1))
+			{
+				int x = atoi(number);
+				int y = atoi(fraction + 1);
+				double val = (double)((double)x / (double)y);
+				val += basenumber;
+				sprintf(number, (char*)"%1.2f", val);
+				properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
+				if (!entry) entry = StoreWord(original, properties);
+				canonical = FindWord(number, 0, PRIMARY_CASE_ALLOWED);
+				if (canonical) properties |= canonical->properties;
+				else canonical = StoreWord(number, properties);
+				sysflags = entry->systemFlags;
+				cansysflags = entry->systemFlags;
+				return properties;
+			}
+		}
+	}
+
+	// cannot be a text number if upper case not at start
+	// penn numbers as words do not go to change their entry value -- DO NOT TREAT "once" as a number, though canonical can be 1
+		if (kind != ROMAN_NUMBER) MakeLowerCase(original);
+		entry = StoreWord(original);
+		char number[MAX_WORD_SIZE];
+		char* value;
+		uint64 baseflags = (entry) ? entry->properties : 0;
+		if (kind == ROMAN_NUMBER) baseflags = 0; // ignore other meanings
+		char* br = hyphen;
+		if (!br) br = strchr(original, '_');
+
+		if (kind == PLACETYPE_NUMBER)
+		{
+			entry = StoreWord(original, properties);
+			if (at > 1 && start != at && IsNumber(wordStarts[at - 1])) // fraction not place
+			{
+				double val = 1.0 / Convert2Integer(original);
+				sprintf(number, (char*)"%1.2f", val);
+			}
+			else sprintf(number, (char*)"%d", (int)Convert2Integer(original));
+			sysflags |= ORDINAL;
+			properties = ADVERB | ADJECTIVE | ADJECTIVE_NUMBER | NOUN | NOUN_NUMBER | (baseflags & TAG_TEST); // place numbers all all potential adverbs:  "*first, he wept"  but not in front of an adjective or noun, only as verb effect
+		}
+		else if (kind == FRACTION_NUMBER && strchr(original, '%'))
+		{
+			int64 val1 = atoi(original);
+			double val = (double)(val1 / 100.0);
+			sprintf(number, (char*)"%1.2f", val);
+			properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
+			entry = StoreWord(original, properties);
+			canonical = StoreWord(number, properties);
+			properties |= canonical->properties;
+			sysflags = entry->systemFlags;
+			cansysflags = canonical->systemFlags;
+			return properties;
+		}
+		else if (kind == FRACTION_NUMBER && br) // word fraction
+		{
+			char c = *br;
+			*br = 0;
+			int64 val1 = Convert2Integer(original);
+			int64 val2 = Convert2Integer(br + 1);
+			double val;
+			if (IsNumber(original) == FRACTION_NUMBER) // half-dozen
+			{
+				val = (double)(1.0 / (double)val1);
+				val *= (double)val2; // one-half
+			}
+			else val = (double)((double)val1 / (double)val2); // one-half
+			sprintf(number, (char*)"%1.2f", val);
+			properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
+			*br = c;
+			entry = StoreWord(original, properties);
+			canonical = StoreWord(number, properties);
+			properties |= canonical->properties;
+			sysflags = entry->systemFlags;
+			cansysflags = canonical->systemFlags;
+			return properties;
+		}
+		else if (kind == CURRENCY_NUMBER) // money
+		{
+			char copy[MAX_WORD_SIZE];
+			strcpy(copy, original);
+			unsigned char* currency = GetCurrency((unsigned char*)copy, value);
+			if (currency > (unsigned char*)value) *currency = 0; // remove trailing currency
+			int64 n = Convert2Integer(value);
+			double fn = Convert2Float(value);
+			if ((double)n == fn)
+			{
+#ifdef WIN32
+				sprintf(number, (char*)"%I64d", n);
+#else
+				sprintf(number, (char*)"%lld", n);
+#endif
+			}
+			else if (strchr(value, '.')) sprintf(number, (char*)"%1.2f", fn);
+			else
+			{
+#ifdef WIN32
+				sprintf(number, (char*)"%I64d", n);
+#else
+				sprintf(number, (char*)"%lld", n);
+#endif
+			}
+			properties = NOUN | NOUN_NUMBER;
+		}
+		else if (kind == FRACTION_NUMBER)
+		{
+			int64 val = Convert2Integer(original);
+			double val1 = (double)1.0 / (double)val;
+			sprintf(number, (char*)"%f", val1);
+			properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER | (baseflags & (PREDETERMINER | DETERMINER));
+		}
+		else // ordinary int, double and percent
+		{
+			len = strlen(original);
+			bool percent = original[len - 1] == '%';
+			if (percent) original[len - 1] = 0;
+
+			if (strchr(original, '.')) // floating
+			{
+				double val = Convert2Float(original);
+				if (percent) val /= 100;
+				sprintf(number, (char*)"%1.2f", val);
+			}
+			else if (percent)
+			{
+				int64 val = Convert2Integer(original);
+				double val1 = ((double)val) / 100.0;
+				sprintf(number, (char*)"%1.2f", val1);
+			}
+			else
+			{
+				int64 val = Convert2Integer(original);
+#ifdef WIN32
+				sprintf(number, (char*)"%I64d", val);
+#else
+				sprintf(number, (char*)"%lld", val);
+#endif
+			}
+			properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER | (baseflags & (PREDETERMINER | DETERMINER));
+			if (percent) original[len - 1] = '%';
+		}
+		canonical = StoreWord(number, properties, sysflags);
+		cansysflags |= sysflags;
+
+		// other data already existing on the number
+
+		if (entry->properties & PART_OF_SPEECH)
+		{
+			uint64 val = entry->properties; // numbers we "know" in some form should be as we know them. like "once" is adverb and adjective, not cardinal noun
+			if (entry->properties & NOUN && !(entry->properties & NOUN_BITS)) // we dont know its typing other than as noun... figure it out
+			{
+				if (IsUpperCase(*entry->word)) val |= NOUN_PROPER_SINGULAR;
+				else val |= NOUN_SINGULAR;
+			}
+			if (val & ADJECTIVE_NORMAL) // change over to known number
+			{
+				properties ^= ADJECTIVE_NORMAL;
+				properties |= ADJECTIVE_NUMBER | ADJECTIVE;
+			}
+			if (val & NOUN_SINGULAR) // change over to known number
+			{
+				properties ^= NOUN_SINGULAR;
+				properties |= NOUN_NUMBER | NOUN;
+				if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
+			}
+			if (val & ADVERB)
+			{
+				properties |= entry->properties & (ADVERB);
+				if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
+			}
+			if (val & PREPOSITION)
+			{
+				properties |= PREPOSITION; // like "once"
+				if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
+			}
+			if (val & PRONOUN_BITS)  // in Penntags this is CD always but "no one is" is NN or PRP
+			{
+				properties |= entry->properties & PRONOUN_BITS;
+				//if (at > 1 && !stricmp(wordStarts[at-1],(char*)"no"))
+				//{
+				//properties |= val & PRONOUN_BITS; // like "one"
+				if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
+				//}
+			}
+			if (val & VERB)
+			{
+				properties |= entry->properties & (VERB_BITS | VERB); // like "once"
+				if (tokenControl & TOKEN_AS_IS && !canonical) canonical = FindWord(GetInfinitive(original, false), 0, LOWERCASE_LOOKUP);
+			}
+			if (val & POSSESSIVE && tokenControl & TOKEN_AS_IS && !stricmp(original, (char*)"'s") && at > start) // internal expand of "it 's" and "What 's" and capitalization failures that contractions.txt wouldn't have handled 
+			{
+				properties |= AUX_BE | POSSESSIVE | VERB_PRESENT_3PS | VERB;
+				entry = FindWord((char*)"'s", 0, PRIMARY_CASE_ALLOWED);
+			}
+		}
+		entry = StoreWord(original, properties, sysflags);
+		sysflags |= entry->systemFlags;
+		cansysflags |= canonical->systemFlags;
+		return properties;
+}
+
 uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &canonical,uint64& sysflags,uint64 &cansysflags,bool firstTry,bool nogenerate, int start) // case sensitive, may add word to dictionary, will not augment flags of existing words
 { // this is not allowed to write properties/systemflags/internalbits if the word is preexisting
+	uint64 properties = 0;
+	sysflags = cansysflags = 0;
+	canonical = 0;
 	if (start == 0) start = 1;
 	if (revise) revise = NULL;
 	if (*original == 0) // null string
@@ -306,6 +599,19 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			return 0;
 		}
 	}
+
+	// number processing has happened
+	unsigned int kind = IsNumber(original);
+	if (firstTry && kind) 
+		properties = ProcessNumber(at, original, revise, entry, canonical, sysflags, cansysflags, firstTry, nogenerate, start,kind); // case sensitive, may add word to dictionary, will not augment flags of existing wordskind);
+	if (canonical && IsDigit(*canonical->word)) return properties;
+
+	if (externalTagger || stricmp(language, "english"))
+	{
+		entry = canonical = StoreWord(original);
+		return 0; // remote pos tagging or none
+	}
+
 	if (*original == '~' || (*original == USERVAR_PREFIX && !IsDigit(original[1])) || *original == '^' || (*original == SYSVAR_PREFIX && original[1]))
 	{
 		char copy[MAX_WORD_SIZE];
@@ -322,9 +628,6 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		if (x > 0 && wordStarts[x] && *wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
 	}
 	if (wordStarts[start] && (*wordStarts[start] == '"' || *wordStarts[start] == '(')) ++start; // skip over any quotes or paren starter -- consider next thing a starter
-	uint64 properties = 0;
-	sysflags = cansysflags = 0;
-	canonical = 0;
 	if (at == 0) at = 1; //but leave <0 alone, means dont look at neighbors
 	if (at > 0 && !wordStarts[at-1]) wordStarts[at-1] = AllocateHeap((char*)""); // protection
 	if (at > 0 && !wordStarts[at+1]) wordStarts[at+1] = AllocateHeap((char*)"");	// protection
@@ -419,7 +722,6 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		if (revise) revise = entry;
 	}
 	size_t len = strlen(original);
-	unsigned int kind =  IsNumber(original);
 
 	if (IsUpperCase(*original) && firstTry && kind != ROMAN_NUMBER) // someone capitalized things we think of as ordinary.
 	{
@@ -479,290 +781,6 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 	}
 
-	if ((IsDigit(*original) || IsDigit(original[1]) || *original == '\'') && (kind || hyphen))
-	{
-		// DATE IN 2 DIGIT OR 4 DIGIT NOTATION
-		char word[MAX_WORD_SIZE];
-		*word = 0;
-		// 4digit year 1990 and year range 1950s and 1950's
-		if (IsDigit(*original) && IsDigit(original[1])   && IsDigit(original[2]) && IsDigit(original[3])  &&
-			(!original[4] || (original[4] == 's' && !original[5]) || (original[4] == '\'' && original[5] == 's' && !original[6] ))) sprintf(word,(char*)"%d",atoi(original));
-		//  2digit year and range '40 and '40s
-		if (*original == '\'' && IsDigit(original[1]) && IsDigit(original[2]) &&
-			(!original[3] || (original[3] == 's' && !original[4]) || (original[3] == '\'' && original[4] == 's' && !original[5] ))) sprintf(word,(char*)"19%d",atoi(original+1));
-		if (*word)
-		{
-			properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-			entry = StoreWord(original,properties,TIMEWORD);
-			canonical = StoreWord(word,properties,TIMEWORD);
-			sysflags = entry->systemFlags | TIMEWORD;
-			cansysflags = canonical->systemFlags | TIMEWORD;
-			return properties;
-		}
-	
-		// handle time like 4:30
-		if (len > 3 && len < 6 && IsDigit(original[len-1]) && (original[1] == ':' || original[2] == ':')) // 18:32
-		{
-			properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-			entry = canonical = StoreWord(original,properties); // 18:32
-			sysflags = entry->systemFlags | TIMEWORD;
-			cansysflags = canonical->systemFlags | TIMEWORD;
-			return properties;
-		}
-
-		// handle number range data like 120:129 
-		char* at = original;
-		int colon = 0;
-		while (*++at && (IsDigit(*at)|| *at == ':')) 
-		{
-			if (*at == ':') ++colon;
-		}
-		if (!*at && colon == 1) // was completely digits and a single colon
-		{
-			properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-			entry = canonical = StoreWord(original,properties); 
-			return properties;
-		}
-
-		// handle date range like 1920-22 or 1920-1955  or any number range
-		if (hyphen && hyphen != original)
-		{
-			char* at = original-1;
-			while (*++at)
-			{
-				if (IsDigit(*at)) continue;
-				if (*at == '-' && at == hyphen) continue;
-				break;
-			}
-			if (!*at)
-			{
-				properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-				entry = canonical = StoreWord(original,properties); 
-				if ((hyphen-original) == 4)
-				{
-					sysflags = entry->systemFlags | TIMEWORD;
-					cansysflags = canonical->systemFlags | TIMEWORD;
-				}
-				return properties;
-			}
-		}
-
-		// mark numeric fractions
-		char* fraction = strchr(original,'/');
-		if (fraction)
-		{
-			long basenumber = 0;
-			// if we have piece before fraction
-			char* hyphen = strchr(original,'-');
-			if (hyphen) // we have prepart composite number like 3-1/2
-			{
-				*hyphen = 0;
-				basenumber = atoi(original); // part before the - 
-				*hyphen = '-';
-				original = hyphen + 1; // piece before fraction
-			}
-			char number[MAX_WORD_SIZE];
-			strcpy(number,original); // the number before the -
-			if (IsNumber(number) && IsNumber(fraction+1))
-			{
-				int x = atoi(number);
-				int y = atoi(fraction+1);
-				float val = (float)((float)x / (float)y);
-				val += basenumber;
-				sprintf(number,(char*)"%1.2f",val);
-				properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
-				if (!entry) entry = StoreWord(original,properties);
-				canonical = FindWord(number,0,PRIMARY_CASE_ALLOWED);
-				if (canonical) properties |= canonical->properties;
-				else canonical = StoreWord(number,properties);
-				sysflags = entry->systemFlags;
-				cansysflags = entry->systemFlags;
-				return properties;
-			}
-		}
-	}
-
-	// cannot be a text number if upper case not at start
-	if (kind) // penn numbers as words do not go to change their entry value -- DO NOT TREAT "once" as a number, though canonical can be 1
-	{
-		if (kind != ROMAN_NUMBER) MakeLowerCase(original);
-		entry = StoreWord(original);
-		char number[MAX_WORD_SIZE];
-		char* value;
-		uint64 baseflags = (entry) ? entry->properties : 0;
-		if (kind == ROMAN_NUMBER) baseflags = 0; // ignore other meanings
-		char* br = hyphen;
-		if (!br) br = strchr(original,'_');
-
-		if (kind == PLACETYPE_NUMBER)
-		{
-			entry = StoreWord(original,properties);
-			sprintf(number,(char*)"%d",(int)Convert2Integer(original));
-			sysflags |= ORDINAL;
-			properties = ADVERB|ADJECTIVE|ADJECTIVE_NUMBER|NOUN|NOUN_NUMBER| (baseflags & TAG_TEST); // place numbers all all potential adverbs:  "*first, he wept"  but not in front of an adjective or noun, only as verb effect
-		}
-		else if (kind == FRACTION_NUMBER && strchr(original,'%'))
-		{
-			int64 val1 = atoi(original);
-			float val = (float)(val1 / 100.0);
-			sprintf(number,(char*)"%1.2f",val );
-			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
-			entry = StoreWord(original,properties);
-			canonical = StoreWord(number,properties);
-			properties |= canonical->properties;
-			sysflags = entry->systemFlags;
-			cansysflags = canonical->systemFlags;
-			return properties;
-		}
-		else if (kind == FRACTION_NUMBER && br) // word fraction
-		{
-			char c = *br;
-			*br = 0;
-			int64 val1 = Convert2Integer(original);
-			int64 val2 = Convert2Integer(br+1);
-			float val;
-			if (IsNumber(original) == FRACTION_NUMBER) // half-dozen
-			{
-				val = (float)(1.0 / (float) val1);
-				val *=  (float)val2; // one-half
-			}
-			else val = (float)((float)val1 / (float)val2); // one-half
-			sprintf(number,(char*)"%1.2f",val );
-			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
-			*br = c;
-			entry = StoreWord(original,properties);
-			canonical = StoreWord(number,properties);
-			properties |= canonical->properties;
-			sysflags = entry->systemFlags;
-			cansysflags = canonical->systemFlags;
-			return properties;
-		}
-		else if (kind == CURRENCY_NUMBER) // money
-		{
-			GetCurrency((unsigned char*) original,value);
-			int64 n = Convert2Integer(value);
-			float fn = (float)atof(value);
-			if ((float)n == fn) 
-			{
-#ifdef WIN32
-				sprintf(number,(char*)"%I64d",n); 
-#else
-				sprintf(number,(char*)"%lld",n); 
-#endif
-			}
-			else if (strchr(value,'.')) sprintf(number,(char*)"%1.2f",fn);
-			else 
-			{
-#ifdef WIN32
-				sprintf(number,(char*)"%I64d",n); 
-#else
-				sprintf(number,(char*)"%lld",n); 
-#endif
-			}
-			properties = NOUN|NOUN_NUMBER;
-		}
-		else if (kind == FRACTION_NUMBER)
-		{
-			int64 val = Convert2Integer(original);
-			float val1 = (float)1.0 / (float)val;
-			sprintf(number,(char*)"%f",val1);
-			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER | (baseflags & (PREDETERMINER|DETERMINER));
-		}
-		else
-		{
-			if (strchr(original,'.')) 
-			{
-				float val = (float) atof(original);
-				if (IsDigitWithNumberSuffix(original)) // 10K  10M 10B
-				{
-					len = strlen(original);
-					char d = original[len-1];
-					if (d == 'k' || d == 'K') val *= 1000;
-					else if (d == 'm' || d == 'M') val *= 1000000;
-					else if (d == 'B' || d == 'b' || d == 'G' || d == 'g') val *= 1000000000;
-				}
-				sprintf(number,(char*)"%1.2f",val);
-			}
-			else 
-			{
-				int64 val = Convert2Integer(original);
-				if (val < 1000000000 && val >  -1000000000)
-				{
-					int smallval = (int) val;
-					sprintf(number,(char*)"%d",smallval);
-				}
-				else
-				{
-#ifdef WIN32
-					sprintf(number,(char*)"%I64d",val);	
-#else
-					sprintf(number,(char*)"%lld",val);	
-#endif
-				}
-			
-			}
-			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER | (baseflags & (PREDETERMINER|DETERMINER));
-		}
-		canonical = StoreWord(number,properties,sysflags);
-		cansysflags |= sysflags;
-
-		// other data already existing on the number
-
-		if (entry->properties & PART_OF_SPEECH) 
-		{
-			uint64 val = entry->properties; // numbers we "know" in some form should be as we know them. like "once" is adverb and adjective, not cardinal noun
-			if (entry->properties & NOUN && !(entry->properties & NOUN_BITS)) // we dont know its typing other than as noun... figure it out
-			{
-				if (IsUpperCase(*entry->word)) val |= NOUN_PROPER_SINGULAR;
-				else val |= NOUN_SINGULAR;
-			}
-			if (val & ADJECTIVE_NORMAL) // change over to known number
-			{
-				properties ^= ADJECTIVE_NORMAL;
-				properties |= ADJECTIVE_NUMBER|ADJECTIVE;
-			}
-			if (val & NOUN_SINGULAR) // change over to known number
-			{
-				properties ^= NOUN_SINGULAR;
-				properties |= NOUN_NUMBER|NOUN;
-				if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
-			}
-			if (val & ADVERB) 
-			{
-				properties |= entry->properties & (ADVERB);
-				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = entry;
-			}
-			if (val & PREPOSITION) 
-			{
-				properties |= PREPOSITION; // like "once"
-				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = entry;
-			}
-			if (val & PRONOUN_BITS)  // in Penntags this is CD always but "no one is" is NN or PRP
-			{
-				properties |= entry->properties & PRONOUN_BITS;
-				//if (at > 1 && !stricmp(wordStarts[at-1],(char*)"no"))
-				//{
-					//properties |= val & PRONOUN_BITS; // like "one"
-					if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = entry;
-				//}
-			}
-			if (val & VERB) 
-			{
-				properties |= entry->properties & ( VERB_BITS | VERB); // like "once"
-				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = FindWord(GetInfinitive(original,false),0,LOWERCASE_LOOKUP);
-			}
-			if (val & POSSESSIVE && tokenControl & TOKEN_AS_IS && !stricmp(original,(char*)"'s") && at > start) // internal expand of "it 's" and "What 's" and capitalization failures that contractions.txt wouldn't have handled 
-			{
-				properties |= AUX_BE | POSSESSIVE | VERB_PRESENT_3PS | VERB;
-				entry = FindWord((char*)"'s",0,PRIMARY_CASE_ALLOWED);
-			}
-		}
-		entry = StoreWord(original,properties,sysflags);
-		sysflags |= entry->systemFlags;
-		cansysflags |= canonical->systemFlags;
-		return properties;
-	}
-		
 	// use forced canonical?
 	if (!canonical && entry)
 	{

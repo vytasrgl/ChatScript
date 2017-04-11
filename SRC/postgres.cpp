@@ -343,7 +343,15 @@ FunctionResult DBExecuteCode(char* buffer)
 
 	unsigned int argflags = 0;
 	WORDP FN = (*function) ? FindWord(function) : NULL;
-	if (FN) argflags = FN->x.macroFlags;
+	if (FN)
+	{
+		unsigned char* defn = GetDefinition(FN);
+		char junk[MAX_WORD_SIZE];
+		defn = (unsigned char*) ReadCompiledWord((char*)defn, junk); // skip over botid
+		int flags;
+		ReadInt((char*)defn, flags);
+		argflags = flags;
+	}
 
 	if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG, "DBExecute command %s\r\n", query);
     res = PQexec(conn, query);

@@ -433,7 +433,7 @@ char* StdIntOutput(int n)
 	return answer;
 }
 
-char* StdFloatOutput(float n)
+char* StdFloatOutput(double n)
 {
 	char buffer[50];
 	static char answer[50];
@@ -963,6 +963,12 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 
 		char* priorPtr = ptr;
         ptr = ReadCompiledWord(ptr,word,false,true);  // stop when $var %var _var @nvar end normally- insure no ) ] } lingers on word in case it wasnt compiled
+		if (*word == '$' && *ptr == '[' && ptr[1] == ']') // merge $word[]
+		{
+			strcat(word, "[]");
+			ptr += 2;
+		}
+		
 		char* startptr = ptr;
 		ptr = SkipWhitespace(ptr);		// find next token to tes for assignment and  the like
 
@@ -1017,7 +1023,7 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 			else if (*word == '"' && word[1] == '^') allow = false; // format string handles its own spacing so
 			else if (*word == '\\' && word[1] == ')') allow = false; // dont space before )
 			else if (*word == '\\' && word[1] == '"' && (controls & OUTPUT_DQUOTE_FLIP) ) allow = false;	// closing dq
-			else if ((*word == '.' && !word[1]) || (*word == '?' && !word[1]) || (*word == '!' && !word[1])|| (*word == ',' && !word[1])|| (*word == ':' && !word[1]) || (*word == ';' && !word[1]) || (*word == '.' && !word[1])) allow = false;
+			else if ((*word == '.' && !word[1]) || (*word == '?' && !word[1]) || (*word == '!' && !word[1])|| (*word == ',' && !word[1])|| (*word == ':' && !word[1]) || (*word == ';' && !word[1])) allow = false;
 			else if (*word == '\'' && (!word[1] || word[1] == 's' )) allow = false;
 			if (allow) // add space separator
 			{

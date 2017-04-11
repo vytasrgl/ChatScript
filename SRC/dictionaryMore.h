@@ -53,7 +53,8 @@
 #define BUILD0					0x00100000		// comes from build0 data (marker on functions, concepts, topics)
 #define BUILD1					0x00200000		// comes from build1 data
 #define HAS_EXCLUDE				0x00400000		// concept/topic has keywords to exclude
-#define BUILD2					0x00800000		// comes from dynamic build2 data
+#define JSON_REFERENCE			HAS_EXCLUDE	// json struct is referred to by user variable
+#define BUILD2					0x00800000		// comes from dynamic build layer data
 #define FUNCTION_NAME			0x01000000 	//   name of a ^function  (has non-zero ->x.codeIndex if system, else is user but can be patternmacro,outputmacro, or plan) only applicable to ^ words
 #define CONCEPT					0x02000000	// topic or concept has been read via a definition
 #define TOPIC					0x04000000	//  this is a ~xxxx topic name in the system - only applicable to ~ words
@@ -138,7 +139,7 @@
 #define Index2Word(n) (dictionaryBase+n)
 #define Word2Index(D) ((uint64) (D-dictionaryBase))
 #define GetMeanings(D) ((MEANING*) Index2Heap(D->meanings))
-#define GetMeaning(D,k) GetMeanings(D)[k]
+MEANING GetMeaning(WORDP D, int index);
 #define GetMeaningsFromMeaning(T) (GetMeanings(Meaning2Word(T)))
 #define Meaning2Index(x) ((int)((x & INDEX_BITS) >> (int)INDEX_OFFSET)) //   which dict entry meaning
 
@@ -147,7 +148,7 @@ unsigned char* GetWhereInSentence(WORDP D); // always skips the linking field at
 #define OOB_START '['
 #define OOB_END ']'
 void LockLevel();
-void UnlockLevel();
+void UnlockLayer(int layer);
 
 WORDP GetPlural(WORDP D);
 void SetPlural(WORDP D,MEANING M);
@@ -246,6 +247,7 @@ void ClearWordWhere(WORDP D,int at);
 void RemoveConceptTopic(int list[256],WORDP D, int at);
 char* UseDictionaryFile(char* name);
 void ClearWhereInSentence();
+void ClearDictionaryFiles();
 inline unsigned int GlossIndex(MEANING M) { return M >> 24;}
 void ReadAbbreviations(char* file);
 void ReadLiveData();
@@ -268,7 +270,7 @@ WORDP ReadDWord(FILE* in);
 void AddCircularEntry(WORDP base, unsigned int field,WORDP entry);
 void SetWordValue(WORDP D, int x);
 int GetWordValue(WORDP D);
-
+void ReadForeign();
 inline int GetMeaningCount(WORDP D) { return (D->meanings) ? GetMeaning(D,0) : 0;}
 inline int GetGlossCount(WORDP D) 
 {
@@ -285,7 +287,7 @@ void LoadDictionary();
 void ExtendDictionary();
 void WordnetLockDictionary();
 void ReturnDictionaryToWordNet();
-void LockLayer(int layer,bool boot);
+void LockLayer(bool boot);
 void ReturnToAfterLayer(int layer,bool unlocked);
 void ReturnBeforeLayer(int layer, bool unlocked);
 void DeleteDictionaryEntry(WORDP D);

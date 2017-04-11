@@ -8,6 +8,7 @@ static char* outputStart = NULL;
 static char* lineStart = NULL;
 static bool globalBotScope = false;
 static char* newBuffer = NULL;
+static char* oldBuffer = NULL;
 static char display[MAX_DISPLAY][100];
 static int displayIndex = 0;
 static char* incomingPtrSys = 0;			// cache AFTER token find ptr when peeking.
@@ -771,7 +772,7 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
 		if (D && D->internalBits & RENAMED) 
 		{
 			if (c) sprintf(word+2,(char*)"%d%c",(unsigned int)D->properties,c); // remap @set in string
-			sprintf(word + 2, (char*)"%d", (unsigned int)D->properties); // remap @set in string
+			else sprintf(word + 2, (char*)"%d", (unsigned int)D->properties); // remap @set in string
 		}
 		else if (!renameInProgress)  WARNSCRIPT((char*)"%s is not a recognized @rename. Is it intended to be?\r\n",word)
 	}
@@ -1824,8 +1825,9 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	}
 	else // std macro (input, output table)
 	{
-		if (D->w.fndefinition && argumentCount != MACRO_ARGUMENT_COUNT(D->w.fndefinition) && !(D->internalBits & VARIABLE_ARGS_TABLE)) 
-			BADSCRIPT((char*)"CALL-60 Incorrect argument count to macro %s- given %d instead of required %d",name,argumentCount,MACRO_ARGUMENT_COUNT(D->w.fndefinition))
+		unsigned char* defn = GetDefinition(D);
+		if (defn && argumentCount != MACRO_ARGUMENT_COUNT(defn) && !(D->internalBits & VARIABLE_ARGS_TABLE)) 
+			BADSCRIPT((char*)"CALL-60 Incorrect argument count to macro %s- given %d instead of required %d",name,argumentCount,MACRO_ARGUMENT_COUNT(GetDefinition(D)))
 	}
 
 	// handle crosscheck of labels
@@ -1999,6 +2001,7 @@ static char* ReadDescribe(char* ptr, FILE* in,unsigned int build)
 
 void StartScriptCompiler()
 {
+	oldBuffer = newBuffer;
 	newBuffer = AllocateStack(NULL,MAX_BUFFER_SIZE);
 }
 
@@ -2007,7 +2010,7 @@ void EndScriptCompiler()
 	if (newBuffer)
 	{
 		ReleaseStack(newBuffer);
-		newBuffer = NULL;
+		newBuffer = oldBuffer;
 	}
 }
 
@@ -3521,6 +3524,7 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	char data[MAX_BUFFER_SIZE];
 	*data = 0;
 	char* pack = data;
+	int macroFlags = 0;
 	int parenLevel = 0;
 	WORDP D = NULL;
 	bool gettingArguments = true;
@@ -3530,16 +3534,15 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	{
 		ptr = ReadNextSystemToken(in,ptr,word,false);
 		if (!*word) break; //   end of file
-
 		if (!*macroName) //   get the macro name
 		{
-			if (*word == '^') memmove(word,word+1,strlen(word)); //   remove his ^
+			if (*word == '^' || *word == '~') memmove(word,word+1,strlen(word)); //   remove his ^
 			MakeLowerCase(word);
 			if (!table && !IsAlphaUTF8(*word) ) BADSCRIPT((char*)"MACRO-1 Macro name must start alpha %s",word)
 			if (table)
 			{
-				strcpy(macroName,(char*)"tbl:");
-				strcpy(macroName+4,word);
+				strcpy(macroName,(char*)"^tbl:");
+				strcat(macroName,word);
 				Log(STDTRACELOG,(char*)"Reading table %s\r\n",macroName);
 			}
 			else
@@ -3551,10 +3554,10 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 				AddMap((char*)"    macro", macroName);
 			}
 			D = StoreWord(macroName);
-			if (D->internalBits & FUNCTION_NAME && !table) // must be different BOT ID
+			if (D->w.fndefinition && D->internalBits & FUNCTION_NAME && !table) // must be different BOT ID
 			{
 				int64 bid;
-				ReadInt64((char*)D->w.fndefinition,bid); 
+				ReadInt64((char*)GetDefinition(D),bid); 
 				if (bid == (int64)myBot)BADSCRIPT((char*)"MACRO-3 macro %s already defined",macroName)
 			}
 			continue;
@@ -3594,13 +3597,13 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 				restrict = strchr(word,'.');
 				if (restrict)
 				{
-					if (!stricmp(restrict+1,(char*)"KEEP_QUOTES") && (typeFlags == IS_TABLE_MACRO || typeFlags == IS_OUTPUT_MACRO))	D->x.macroFlags |= 1 << functionArgumentCount; // a normal string where spaces are kept instead of _ (format string)
+					if (!stricmp(restrict+1,(char*)"KEEP_QUOTES") && (typeFlags == IS_TABLE_MACRO || typeFlags == IS_OUTPUT_MACRO))	macroFlags |= 1 << functionArgumentCount; // a normal string where spaces are kept instead of _ (format string)
 					else if (!stricmp(restrict+1,(char*)"HANDLE_QUOTES"))	
 					{
 						if (typeFlags != IS_OUTPUT_MACRO) BADSCRIPT((char*)"MACRO-? HANDLE_QUOTES only valid with OUTPUTMACRO or DUALMACRO - %s ",word)
-						D->x.macroFlags |= 1 << functionArgumentCount; // outputmacros
+						macroFlags |= 1 << functionArgumentCount; // outputmacros
 					}
-					else if (!stricmp(restrict+1,(char*)"COMPILE") && typeFlags == IS_TABLE_MACRO) D->x.macroFlags |= (1 << 16) << functionArgumentCount; // a compile string " " becomes "^:"
+					else if (!stricmp(restrict+1,(char*)"COMPILE") && typeFlags == IS_TABLE_MACRO) macroFlags |= (1 << 16) << functionArgumentCount; // a compile string " " becomes "^:"
 					else if (!stricmp(restrict+1,(char*)"UNDERSCORE") && typeFlags == IS_TABLE_MACRO) {;} // default for quoted strings is _ 
 					else if (typeFlags != IS_TABLE_MACRO && typeFlags != IS_OUTPUT_MACRO) BADSCRIPT((char*)"Argument restrictions only available on Table Macros or OutputMacros  - %s ",word)
 					else  BADSCRIPT((char*)"MACRO-? Table/Tablemacro argument restriction must be KEEP_QUOTES OR COMPILE or UNDERSCORE - %s ",word)
@@ -3671,36 +3674,47 @@ static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build)
 	*pack = 0;
 
 	//   record that it is a macro, with appropriate validation information
+	char botid[MAX_WORD_SIZE];
+#ifdef WIN32
+	sprintf(botid, (char*)"%I64d", (int64)myBot);
+#else
+	sprintf(botid, (char*)"%lld", (int64)myBot);
+#endif
+	char* revised = AllocateBuffer();
+	revised[0] = revised[1] = revised[2] = revised[3] = 0;
+	revised += 4;
+	sprintf(revised, "%s %d ", botid, macroFlags);
+	strcat(revised, data);
+	size_t len = strlen(revised) + 4;
+
+	if (table && D->w.fndefinition) // need to link old definition to new one
+	{
+		unsigned int heapIndex = Heap2Index((char*)D->w.fndefinition);
+		revised[0] = (heapIndex >> 24) & 0xff;
+		revised[1] = (heapIndex >> 16) & 0xff;
+		revised[2] = (heapIndex >> 8) & 0xff;
+		revised[3] = heapIndex & 0xff;
+	}
+
+	D->w.fndefinition = (unsigned char*)AllocateHeap(revised - 4, strlen(revised) + 4);
+	FreeBuffer();
 
 	if (!table) // tables are not real macros, they are temporary
 	{
-	
 		char filename[SMALL_WORD_SIZE];
 		sprintf(filename,(char*)"%s/BUILD%s/macros%s.txt",topic,baseName,baseName);
 		//   write out definition -- this is the real save of the data
 		FILE* out = FopenUTF8WriteAppend(filename);
-		char botid[MAX_WORD_SIZE]; 
-#ifdef WIN32
-		sprintf(botid,(char*)"%I64d",(int64) myBot); 
-#else
-		sprintf(botid,(char*)"%lld",(int64) myBot);
-#endif
-		char* revised = AllocateBuffer();
-		sprintf(revised,"%s %d",botid,D->x.macroFlags);
-		strcat(revised,data);
-		D->w.fndefinition = (unsigned char*) AllocateHeap(revised);
-		FreeBuffer();
 
-		if ((D->internalBits & FUNCTION_BITS) ==  IS_TABLE_MACRO) fprintf(out,(char*)"%s T a %s\r\n",macroName,D->w.fndefinition);
-		else if ((D->internalBits & FUNCTION_BITS) == (IS_OUTPUT_MACRO|IS_PATTERN_MACRO))  fprintf(out,(char*)"%s D a %s\r\n",macroName,D->w.fndefinition);
-		else fprintf(out,(char*)"%s %c a %s\r\n",macroName,((D->internalBits & FUNCTION_BITS) == IS_OUTPUT_MACRO) ? 'O' : 'P',D->w.fndefinition);
+		if ((D->internalBits & FUNCTION_BITS) ==  IS_TABLE_MACRO) fprintf(out,(char*)"%s t %s\r\n",macroName,GetDefinition(D));
+		else if ((D->internalBits & FUNCTION_BITS) == (IS_OUTPUT_MACRO|IS_PATTERN_MACRO))  fprintf(out,(char*)"%s d %s\r\n",macroName,GetDefinition(D));
+		else fprintf(out,(char*)"%s %c %s\r\n",macroName,((D->internalBits & FUNCTION_BITS) == IS_OUTPUT_MACRO) ? 'o' : 'p',GetDefinition(D));
 		fclose(out); // dont use Fclose
-	}
-	else 	D->w.fndefinition = (unsigned char*) AllocateHeap(data);
 
-	char complex[MAX_WORD_SIZE];
-	sprintf(complex,"          Complexity of %s: %d", macroName,complexity);
-	AddMap(NULL, complex);
+		char complex[MAX_WORD_SIZE];
+		sprintf(complex, "          Complexity of %s: %d", macroName, complexity);
+		AddMap(NULL, complex);
+	}
 
 	return ptr;
 }
@@ -3716,7 +3730,13 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 	char* pre = NULL;
 	ptr = SkipWhitespace(ptr);
 	ReadNextSystemToken(in,ptr,name,false,true); 
-	if (*name != '^')  // add function marker if it lacks one
+	if (*name == '~')
+	{
+		*name = '^';
+		char* at = strchr(ptr, '~');
+		*at = '^';
+	}
+	else if (*name != '^')  // add function marker if it lacks one
 	{
 		memmove(name+1,name,strlen(name)+1);
 		*name = '^';
@@ -3727,7 +3747,6 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 	if (!currentFunctionDefinition) // go define a temporary tablemacro function since this is a spontaneous table  Table:
 	{
 		if (fromtopic) BADSCRIPT((char*)"datum: from topic must use predefined table %s",name)
-		memmove(word,name+1,strlen(name));
 		ptr = ReadMacro(ptr,in,(char*)"table:",build); //   defines the name,argumentList, and script
 		ptr = ReadNextSystemToken(in,ptr,word,false,false); //   the DATA: separator
 		if (stricmp(word,(char*)"DATA:")) 	BADSCRIPT((char*)"TABLE-1 missing DATA: separator for table - %s",word)
@@ -3749,7 +3768,12 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 		}
 		sharedArgs = indexArg;
 	}
-	quoteProcessing = currentFunctionDefinition->x.macroFlags; // values of KEEP_QUOTES for each argument
+	unsigned char* defn = GetDefinition(currentFunctionDefinition);
+	char junk[MAX_WORD_SIZE];
+	defn = (unsigned char*) ReadCompiledWord((char*)defn, junk); // read bot id
+	int flags;
+	ReadInt((char*)defn, flags);
+	quoteProcessing = (short int) flags; // values of KEEP_QUOTES for each argument
 
 	// now we have the function definition and any shared arguments. We need to read the real arguments per table line now and execute.
 
@@ -3883,7 +3907,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 				if (IsUpperCase(*word)) CreateFact(MakeMeaning(StoreWord(word,NOUN|NOUN_PROPER_SINGULAR)),Mmember,base); 
 				else CreateFact(MakeMeaning(StoreWord(word,NOUN|NOUN_SINGULAR)),Mmember,base);
 			}
-			if ((MACRO_ARGUMENT_COUNT(currentFunctionDefinition->w.fndefinition) - sharedArgs) == 1)
+			if ((MACRO_ARGUMENT_COUNT(GetDefinition(currentFunctionDefinition)) - sharedArgs) == 1)
 			{
 				memmove(readBuffer,ptr,strlen(ptr)+1);	
 				ptr = readBuffer;
@@ -3891,7 +3915,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 			}
 		}
 
-		while ( argCount < MACRO_ARGUMENT_COUNT(currentFunctionDefinition->w.fndefinition) && (!stricmp(word,(char*)"...") || currentFunctionDefinition->internalBits & VARIABLE_ARGS_TABLE))
+		while ( argCount < MACRO_ARGUMENT_COUNT(GetDefinition(currentFunctionDefinition)) && (!stricmp(word,(char*)"...") || currentFunctionDefinition->internalBits & VARIABLE_ARGS_TABLE))
 		{
 			strcpy(systemArgumentList,(char*)"*");
 			systemArgumentList += strlen(systemArgumentList);
@@ -3903,7 +3927,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 		if (choiceArg) strcpy(post,pre); // save argumentList after the multiple choices
 
 		//   now we have one map of the argumentList row
-		if (argCount && argCount != MACRO_ARGUMENT_COUNT(currentFunctionDefinition->w.fndefinition)) 
+		if (argCount && argCount != MACRO_ARGUMENT_COUNT(GetDefinition(currentFunctionDefinition))) 
 			BADSCRIPT((char*)"TABLE-9 Bad table %s in table %s, want %d arguments and have %d",original,currentFunctionDefinition->word,MACRO_ARGUMENT_COUNT(currentFunctionDefinition->w.fndefinition),argCount)
 
 		//   table line is read, now execute rules on it, perhaps multiple times, after stuffing in the choice if one
@@ -4281,15 +4305,16 @@ static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
 	char filename[SMALL_WORD_SIZE];
 	sprintf(filename,(char*)"%s/BUILD%s/script%s.txt",topic,baseName,baseName);
 	FILE* out = FopenUTF8WriteAppend(filename);
-	
-	// write out topic data
-	char* restriction = (topicName->w.botNames) ? topicName->w.botNames : (char*)"all";
-	unsigned int len1 = (unsigned int)strlen(restriction);
-	fprintf(out,(char*)"TOPIC: %s 0x%x %d %d %d %d %s\r\n",currentTopicName,(unsigned int) flags,(unsigned int) checksum,(unsigned int) toplevelrules,(unsigned int) gambits,(unsigned int)(len + len1 + 7),currentFilename); 
-	fprintf(out,(char*)"\" %s \" ",restriction);
-	fprintf(out,(char*)"%s\r\n",data);
-	fclose(out); // dont use FClose
-	
+	if (out)
+	{
+		// write out topic data
+		char* restriction = (topicName->w.botNames) ? topicName->w.botNames : (char*)"all";
+		unsigned int len1 = (unsigned int)strlen(restriction);
+		fprintf(out, (char*)"TOPIC: %s 0x%x %d %d %d %d %s\r\n", currentTopicName, (unsigned int)flags, (unsigned int)checksum, (unsigned int)toplevelrules, (unsigned int)gambits, (unsigned int)(len + len1 + 7), currentFilename);
+		fprintf(out, (char*)"\" %s \" ", restriction);
+		fprintf(out, (char*)"%s\r\n", data);
+		fclose(out); // dont use FClose
+	}
 	free(data);
 	
 	return ptr;
@@ -4642,7 +4667,7 @@ static char* ReadConcept(char* ptr, FILE* in,unsigned int build)
 			while (*ptr && *ptr != '(' && *ptr != '[' && *ptr != '"') // not started and no concept comment given (concept comments come after all control flags
 			{
 				ptr = ReadCompiledWord(ptr,word);
-				size_t len = strlen(word);
+				len = strlen(word);
 				if (word[len-1] == '(') 
 				{
 					word[len-1] = 0;
@@ -4964,11 +4989,6 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 		in = FopenReadWritten((char*)"TMP/prebuild1.bin");
 		layer = 1;
 	}
-	else if ( build == BUILD2) 
-	{
-		in = FopenReadWritten((char*)"TMP/prebuild2.bin");
-		layer = 2;
-	}
 	if (!in)  
 	{
 		ReportBug((char*)"prebuild bin not found")
@@ -5026,9 +5046,9 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 			uint64 sys1 = flags;
 			sys1 &= -1LL ^ oldflags;
 			sys1 &= -1LL ^ (NO_EXTENDED_WRITE_FLAGS); // we dont need these- concepts will come from keywords file
-			if ( (build == BUILD0 && D < dictionaryPreBuild[0] ) ||
-				(build == BUILD1 && D < dictionaryPreBuild[1]) ||
-				(build == BUILD2 && D < dictionaryPreBuild[2]))
+			if ( (build == BUILD0 && D < dictionaryPreBuild[LAYER_0] ) ||
+				(build == BUILD1 && D < dictionaryPreBuild[LAYER_1]) ||
+				(build == BUILD2 && D < dictionaryPreBuild[LAYER_BOOT]))
 			{
 				if (!prop1 && !sys1) continue;	// no need to write out, its in the prior world (though flags might be wrong)
 			}
@@ -5047,7 +5067,7 @@ static void WriteDictionaryChange(FILE* dictout, unsigned int build)
 		D->systemFlags &= -1 ^  oldflags; // remove the old flags
 
 		// if the ONLY change is an existing word got made into a concept, dont write it out anymore
-		if (!D->properties && !D->systemFlags && D->internalBits & CONCEPT && D <= dictionaryPreBuild[0] ) {;}  // preexisting word a concept
+		if (!D->properties && !D->systemFlags && D->internalBits & CONCEPT && D <= dictionaryPreBuild[LAYER_0] ) {;}  // preexisting word a concept
 		else if (D->properties || D->systemFlags || notPrior ||  ((*D->word == '_' || *D->word == '@' || *D->word == '#') && D->internalBits & RENAMED))  // there were changes
 		{
 			fprintf(dictout,(char*)"+ %s ",D->word);
@@ -5088,9 +5108,9 @@ static void WriteExtendedFacts(FILE* factout,FILE* dictout,unsigned int build)
 	FreeBuffer();
 
 	WriteDictionaryChange(dictout,build);
-	if (build == BUILD0) WriteFacts(factout,factsPreBuild[0]);
-	else if (build == BUILD1) WriteFacts(factout,factsPreBuild[1]);
-	else if (build == BUILD2) WriteFacts(factout,factsPreBuild[2],FACTBUILD2);
+	if (build == BUILD0) WriteFacts(factout,factsPreBuild[LAYER_0]);
+	else if (build == BUILD1) WriteFacts(factout,factsPreBuild[LAYER_1]);
+	//else if (build == BUILD2) WriteFacts(factout,factsPreBuild[LAYER_BOOT],FACTBUILD2);
 	// factout closed by Writefacts
 }
 
@@ -5167,7 +5187,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 		char file[SMALL_WORD_SIZE];
         if (*buildfiles)
         {
-            sprintf(file, (char*)"%s/%s", name,buildfiles); // 2nd default is rawdata itself
+            sprintf(file, (char*)"%s/%s", buildfiles, name); // 2nd default is rawdata itself
             in = FopenReadNormal(file);
         }
         if (!in)
@@ -5199,9 +5219,9 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	missingFiles = 0;
 	spellCheck = spell;			// what spell checking to perform
 
-
 	//   erase facts and dictionary to appropriate level
-	if (build == BUILD2) ReturnToAfterLayer(1,false); // rip dictionary back to start of build (but props and systemflags can be wrong)
+	ClearUserVariables();
+	if (build == BUILD2) ReturnToAfterLayer(2, false); // layer 2 is boot layer before a user 2 layer. rip dictionary back to start of build (but props and systemflags can be wrong)
 	else if (build == BUILD1) ReturnToAfterLayer(0,true); // rip dictionary back to start of build (but props and systemflags can be wrong)
 	else  ReturnDictionaryToWordNet();
 	WalkDictionary(ClearTopicConcept,build);				// remove concept/topic flags from prior defined by this build
@@ -5214,7 +5234,6 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 
 	WalkDirectory((char*)"VERIFY",EmptyVerify,0); // clear verification of this level
 
-	ClearUserVariables();
 	compiling = true;
 	errorIndex = warnIndex = hasWarnings = hasErrors =  0;
 	substitutes = cases = functionCall = badword = 0;

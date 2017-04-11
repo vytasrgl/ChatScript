@@ -1,7 +1,6 @@
 # ChatScript Basic User Manual
-© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
-<br>Revision 2/09/2017 cs7.2
-<br>
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 4/8/2017 cs7.31
 
 * [Overview](ChatScript-Basic-User-Manual.md#overview)
 * [Simple Topics](ChatScript-Basic-User-Manual.md#simple-topics)
@@ -98,8 +97,8 @@ There are special documentation comments that start with `#!` described elsewher
 
 A topic or function must contain only alpha-numeric characters, underscores, hyphens, and periods. 
 They must begin with `~` and then continue with a starting alphabetic character. 
-Variables must start with `$` or `$$`, 
-then begin with a starting alphabetic character and continue with alpha-numerics, underscores, or hyphens. 
+Variables must start with `$` or `$$` or `$_`, 
+then continue with a starting alphabetic character and then continue with alpha-numerics, underscores, or hyphens. 
 
 
 # Hello Word Demo

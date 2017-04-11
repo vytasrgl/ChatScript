@@ -1,4 +1,4 @@
-﻿file: C:/ChatScript/RAWDATA/ONTOLOGY/adjectivehierarchy.top 0
+﻿file: c:/ChatScript/RAWDATA/ONTOLOGY/adjectivehierarchy.top 0
     concept: ~timeadjmodifier 0
     concept: ~pretimeadjmodifier 1
     concept: ~color_adjectives 4
@@ -85,7 +85,7 @@
     concept: ~transition_adjectives 147
     concept: ~weather_adjectives 148
     concept: ~when_adjectives 149
-file: C:/ChatScript/RAWDATA/ONTOLOGY/adverbhierarchy.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/adverbhierarchy.top 0
     concept: ~modifyabletimenoun 0
     concept: ~timeadvmodifier 1
     concept: ~modifyabledistancenoun 3
@@ -121,12 +121,12 @@ file: C:/ChatScript/RAWDATA/ONTOLOGY/adverbhierarchy.top 0
     concept: ~viewpoint_adverbs 41
     concept: ~when_adverbs 42
     concept: ~negative_adverb_starter 43
-file: C:/ChatScript/RAWDATA/ONTOLOGY/affect.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/affect.top 0
     concept: ~badness 1
     concept: ~weakbadness 119
     concept: ~strongbadness 132
     concept: ~goodness 179
-file: C:/ChatScript/RAWDATA/ONTOLOGY/concepts.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/concepts.top 0
     concept: ~cartoon_character 0
     concept: ~architect 1
     concept: ~athlete 2
@@ -1192,22 +1192,22 @@ file: C:/ChatScript/RAWDATA/ONTOLOGY/concepts.top 0
     concept: ~yellow_other 2068
     concept: ~yesanswer 2069
     concept: ~noanswer 2070
-file: C:/ChatScript/RAWDATA/ONTOLOGY/german_adjectives.top 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/german_adverbs.top 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/german_affect.top 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/german_concepts.top 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/german_opposite.tbl 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/german_prepositions.top 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/german_verbs.top 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/opposite.tbl 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/german_adjectives.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/german_adverbs.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/german_affect.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/german_concepts.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/german_opposite.tbl 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/german_prepositions.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/german_verbs.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/internalconcepts.top 0
+    concept: ~internal_concepts 1
+file: c:/ChatScript/RAWDATA/ONTOLOGY/opposite.tbl 0
     concept: ~numberoperator 2
           line: 4 0
           line: 5 42
-          Complexity of tbl:~numberoperator: 1
           line: 18 0
           line: 19 33
-          Complexity of tbl:~opposites: 1
-file: C:/ChatScript/RAWDATA/ONTOLOGY/prepositionhierarchy.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/prepositionhierarchy.top 0
     concept: ~directionplacepreposition 1
     concept: ~directionon 3
     concept: ~directionunder 4
@@ -1225,7 +1225,7 @@ file: C:/ChatScript/RAWDATA/ONTOLOGY/prepositionhierarchy.top 0
     concept: ~relationpreposition 23
     concept: ~timepreposition 38
     concept: ~prepositionlist 39
-file: C:/ChatScript/RAWDATA/ONTOLOGY/verbhierarchy.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/verbhierarchy.top 0
     concept: ~determinerlist 0
     concept: ~qwords 1
     concept: ~static_verbs 3
@@ -1590,37 +1590,33 @@ file: C:/ChatScript/RAWDATA/ONTOLOGY/verbhierarchy.top 0
     concept: ~comment 489
     concept: ~ask 490
     concept: ~post 491
-file: C:/ChatScript/RAWDATA/ONTOLOGY/PARSER/german_parsedata.top 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/PARSER/german_timewords.top 0
-file: C:/ChatScript/RAWDATA/ONTOLOGY/PARSER/parsedata.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/PARSER/german_parsedata.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/PARSER/german_timewords.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/PARSER/parsedata.top 0
     concept: ~misc_parsedata 4
     concept: ~causal_to_infinitive_verbs 8
     concept: ~verbs_of_perception 34
     concept: ~completeness_adjectives 36
     concept: ~quotableverbs 44
     concept: ~restrictive_adverbs 54
-file: C:/ChatScript/RAWDATA/ONTOLOGY/PARSER/timewords.top 0
+file: c:/ChatScript/RAWDATA/ONTOLOGY/PARSER/timewords.top 0
     concept: ~timewords 2
-file: C:/ChatScript/RAWDATA/WORLDDATA/animals.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/animals.tbl 0
           line: 2 0
           line: 3 28
           line: 4 67
-          Complexity of tbl:~adultchild: 1
           line: 36 0
           line: 37 25
-          Complexity of tbl:~lcthings1: 1
     concept: ~animal_homes 102
           line: 105 0
           line: 106 40
           line: 107 70
           line: 108 109
-          Complexity of tbl:~lcthings1: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/basicbooks.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/basicbooks.tbl 0
           line: 3 0
           line: 4 29
           line: 5 82
           line: 6 140
-          Complexity of tbl:~men: 3
           line: 30 0
           line: 31 37
           line: 32 71
@@ -1630,7 +1626,6 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/basicbooks.tbl 0
           line: 36 190
           line: 38 218
           line: 39 276
-          Complexity of tbl:~femalebooks: 4
           line: 46 0
           line: 47 35
           line: 48 69
@@ -1640,43 +1635,36 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/basicbooks.tbl 0
           line: 52 188
           line: 54 216
           line: 55 274
-          Complexity of tbl:~malebooks: 4
-file: C:/ChatScript/RAWDATA/WORLDDATA/basicgeography.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/basicgeography.tbl 0
           line: 4 0
           line: 5 46
           line: 7 92
           line: 8 129
-          Complexity of tbl:~languages: 1
           line: 17 0
           line: 18 37
           line: 19 68
           line: 20 103
           line: 21 149
-          Complexity of tbl:~geofact: 1
           line: 150 0
           line: 151 35
           line: 152 76
           line: 153 110
-          Complexity of tbl:~country: 1
           line: 163 0
           line: 164 34
           line: 165 75
           line: 166 109
-          Complexity of tbl:~planet: 1
     concept: ~countryadjective 172
           line: 175 0
           line: 176 44
           line: 177 91
           line: 178 137
           line: 179 169
-          Complexity of tbl:~countryof: 1
     concept: ~capital 201
           line: 205 0
           line: 206 59
           line: 207 86
           line: 208 121
           line: 209 153
-          Complexity of tbl:~capital: 1
     concept: ~state_region 471
           line: 474 0
           line: 475 71
@@ -1684,82 +1672,62 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/basicgeography.tbl 0
           line: 477 122
           line: 478 208
           line: 479 233
-          Complexity of tbl:~geography: 2
     concept: ~currency 1005
           line: 1009 0
           line: 1010 36
           line: 1011 67
           line: 1012 98
           line: 1013 134
-          Complexity of tbl:~currencies: 1
           line: 1226 0
           line: 1227 84
           line: 1228 168
-          Complexity of tbl:~geography: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/basicmovies_tv.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/basicmovies_tv.tbl 0
           line: 2 0
           line: 3 35
-          Complexity of tbl:~tv_show: 1
           line: 215 0
           line: 216 33
-          Complexity of tbl:~actor: 1
           line: 225 0
           line: 226 29
-          Complexity of tbl:~women: 1
           line: 251 0
           line: 252 29
-          Complexity of tbl:~men: 1
           line: 278 0
           line: 279 35
-          Complexity of tbl:~actress: 1
           line: 285 0
           line: 287 48
           line: 288 79
-          Complexity of tbl:~directed: 2
           line: 311 0
           line: 313 48
           line: 314 85
-          Complexity of tbl:~tv: 2
           line: 321 0
           line: 323 48
           line: 324 83
-          Complexity of tbl:~movie: 2
-file: C:/ChatScript/RAWDATA/WORLDDATA/color.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/color.tbl 0
           line: 3 0
           line: 4 28
-          Complexity of tbl:~colorof: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/container.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/container.tbl 0
           line: 3 0
-          Complexity of tbl:expectedcontains: 1
           line: 44 0
           line: 45 44
-          Complexity of tbl:~solidcontainer: 1
           line: 168 0
           line: 169 45
-          Complexity of tbl:~liquidcontainer: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/femalepeople.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/femalepeople.tbl 0
     concept: ~designer 1
           line: 4 0
           line: 5 29
-          Complexity of tbl:~women: 1
     concept: ~career 55
           line: 58 0
           line: 59 29
           line: 60 58
           line: 61 89
-          Complexity of tbl:~women: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/geography.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/geography.tbl 0
           line: 5 0
           line: 6 25
-          Complexity of tbl:~geofact: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/lifespan.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/lifespan.tbl 0
           line: 4 0
           line: 5 31
-          Complexity of tbl:~xlifespan: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/literature.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/literature.tbl 0
           line: 2 0
           line: 3 33
-          Complexity of tbl:~plays: 1
           line: 10 0
           line: 11 35
           line: 12 69
@@ -1769,7 +1737,6 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/literature.tbl 0
           line: 16 188
           line: 18 216
           line: 19 274
-          Complexity of tbl:~malebooks: 4
           line: 1038 0
           line: 1039 37
           line: 1040 68
@@ -1777,116 +1744,89 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/literature.tbl 0
           line: 1042 134
           line: 1043 162
           line: 1044 214
-          Complexity of tbl:~femalebooks: 3
           line: 1226 0
           line: 1227 29
-          Complexity of tbl:~women: 1
           line: 1232 0
           line: 1233 29
           line: 1234 58
           line: 1235 86
-          Complexity of tbl:~women: 1
           line: 1243 0
           line: 1245 48
           line: 1246 81
           line: 1247 115
           line: 1248 147
-          Complexity of tbl:~malebooks: 2
-file: C:/ChatScript/RAWDATA/WORLDDATA/malepeople.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/malepeople.tbl 0
           line: 4 0
           line: 5 29
-          Complexity of tbl:~moremen: 1
           line: 42 0
           line: 43 29
           line: 44 94
           line: 45 155
-          Complexity of tbl:~mostman: 3
           line: 219 0
           line: 220 29
-          Complexity of tbl:~men: 1
           line: 336 0
           line: 337 45
-          Complexity of tbl:~males: 1
           line: 453 0
           line: 454 29
-          Complexity of tbl:~man: 1
           line: 504 0
           line: 505 29
           line: 506 82
           line: 507 143
-          Complexity of tbl:~men: 3
-file: C:/ChatScript/RAWDATA/WORLDDATA/material.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/material.tbl 0
           line: 4 0
           line: 5 34
           line: 6 73
-          Complexity of tbl:madeof: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/movies_tv.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/movies_tv.tbl 0
           line: 7 0
           line: 9 48
           line: 10 77
           line: 12 125
           line: 14 158
-          Complexity of tbl:~roles: 3
           line: 25118 0
-          Complexity of tbl:~characters: 1
           line: 25141 0
           line: 25143 48
           line: 25144 83
-          Complexity of tbl:~movie: 2
           line: 36127 0
           line: 36128 35
-          Complexity of tbl:~actress: 1
           line: 36739 0
           line: 36740 33
-          Complexity of tbl:~actor: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/music.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/music.tbl 0
     concept: ~song 1
     concept: ~celebrity 3
           line: 6 0
           line: 7 57
-          Complexity of tbl:celebtable: 1
           line: 43 0
           line: 44 35
-          Complexity of tbl:celebtable: 1
           line: 167 0
           line: 168 37
-          Complexity of tbl:celebtable: 1
           line: 285 0
           line: 286 29
           line: 287 82
           line: 288 139
-          Complexity of tbl:~men: 3
           line: 318 0
           line: 319 29
           line: 320 58
           line: 321 85
-          Complexity of tbl:~women: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/musicbasic.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/musicbasic.tbl 0
           line: 3 0
           line: 4 62
           line: 5 94
           line: 6 121
-          Complexity of tbl:~albums: 2
           line: 12 0
           line: 13 62
           line: 14 123
           line: 15 159
           line: 16 191
-          Complexity of tbl:~bandleader: 1
           line: 135 0
           line: 136 62
           line: 137 89
-          Complexity of tbl:~bands: 1
           line: 192 0
           line: 193 62
-          Complexity of tbl:~bands1: 1
           line: 239 0
           line: 240 29
-          Complexity of tbl:~men: 1
           line: 269 0
           line: 270 29
-          Complexity of tbl:~women: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/peoplegroups.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/peoplegroups.tbl 0
     concept: ~nfc-west_football_team 2
     concept: ~nfc-east_football_team 3
     concept: ~afc-west_football_team 4
@@ -1898,59 +1838,46 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/peoplegroups.tbl 0
     concept: ~football_teams 10
           line: 14 0
           line: 15 62
-          Complexity of tbl:~groups: 1
           line: 32 0
           line: 33 31
           line: 34 66
           line: 35 97
           line: 36 132
           line: 37 171
-          Complexity of tbl:nickname: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/speed.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/speed.tbl 0
           line: 3 0
           line: 4 28
-          Complexity of tbl:~xspeed: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/things.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/things.tbl 0
     concept: ~electronics_store 1
     concept: ~grocery 2
           line: 5 0
           line: 7 38
           line: 8 81
-          Complexity of tbl:~storeinfo: 1
     concept: ~hot_things 32
     concept: ~cold_things 33
           line: 35 0
           line: 36 34
-          Complexity of tbl:temperature: 1
     concept: ~wherefrom 42
     concept: ~produces 43
           line: 46 0
           line: 47 29
           line: 48 66
-          Complexity of tbl:~source: 1
           line: 73 0
-          Complexity of tbl:~shapeof: 1
           line: 111 0
-          Complexity of tbl:~sellers: 1
     concept: ~soundmaker 129
     concept: ~animalsoundsissued 130
           line: 133 0
           line: 134 38
           line: 135 66
-          Complexity of tbl:~soundmaker: 1
           line: 146 0
-          Complexity of tbl:~beings: 1
     concept: ~newspaper 155
     concept: ~airline 156
           line: 159 0
-          Complexity of tbl:~manmade: 1
           line: 184 0
           line: 185 29
-          Complexity of tbl:~items: 2
           line: 261 0
           line: 262 35
           line: 263 81
-          Complexity of tbl:~companies: 2
     concept: ~use_power 400
     concept: ~use_flight 401
     concept: ~use_swim 402
@@ -1960,8 +1887,7 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/things.tbl 0
     concept: ~blowing 406
     concept: ~interrogate 407
           line: 411 0
-          Complexity of tbl:~usable: 1
-file: C:/ChatScript/RAWDATA/WORLDDATA/tools.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/tools.tbl 0
           line: 14 0
           line: 15 32
           line: 16 68
@@ -1974,8 +1900,7 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/tools.tbl 0
           line: 23 383
           line: 24 441
           line: 25 497
-          Complexity of tbl:~tool: 7
-file: C:/ChatScript/RAWDATA/WORLDDATA/videogames.tbl 0
+file: c:/ChatScript/RAWDATA/WORLDDATA/videogames.tbl 0
           line: 3 0
           line: 5 22
           line: 6 55
@@ -1984,4 +1909,3 @@ file: C:/ChatScript/RAWDATA/WORLDDATA/videogames.tbl 0
           line: 9 149
           line: 11 177
           line: 12 225
-          Complexity of tbl:~videogames: 4

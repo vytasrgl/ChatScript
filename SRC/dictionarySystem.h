@@ -720,7 +720,6 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
           unsigned short topicIndex;	//   for a ~topic or %systemVariable or plan, this is its id
 		  unsigned short codeIndex;		//   for a system function, its the table index for it
 		  unsigned short debugIndex;	//   for a :test function, its the table index for it
-		  unsigned short macroFlags;	//	 for a table, these bits signify special handling of its arguments (1 bit per argument for 16 argument limit)
     }x;
     unsigned short length;		//  length of the word
 	

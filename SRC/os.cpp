@@ -288,7 +288,7 @@ void FreeStackHeap()
 	}
 }
 
-char* AllocateStack(char* word, size_t len,bool localvar) // call with (0,len) to get a buffer
+char* AllocateStack(char* word, size_t len,bool localvar,bool align4) // call with (0,len) to get a buffer
 {
 	if (infiniteStack) ReportBug("Allocating stack while InfiniteStack in progress from %s\r\n",infiniteCaller);
 	if (len == 0)
@@ -296,6 +296,14 @@ char* AllocateStack(char* word, size_t len,bool localvar) // call with (0,len) t
 		if (!word ) return NULL;
 		len = strlen(word);
 	}
+	if (align4)
+	{
+		stackFree += 3;
+		uint64 x = (uint64)stackFree;
+		x &= 0xfffffffffffffffc;
+		stackFree = (char*)x;
+	}
+
 	if ((stackFree + len + 1) >= heapFree - 30000000) // dont get close
 	{
 		int xx = 0;
@@ -562,9 +570,6 @@ void InitUserFiles()
 	filesystemOverride = NORMALFILES;
 }
 
-#ifndef DISCARDJSON 
-FunctionResult JSONOpenCode(char* buffer);
-
 static size_t CleanupCryption(char* buffer,bool decrypt,char* filekind)
 {
 	// clean up answer data: {"datavalues": {"USER": xxxx }} 
@@ -690,14 +695,10 @@ static int JsonOpenCryption(char* buffer, size_t size, char* xserver, bool decry
 	callArgumentList[callArgumentIndex++] =    (char*) buffer;
 	callArgumentList[callArgumentIndex++] =    header;
 	callArgumentList[callArgumentIndex++] =    ""; // timer override
-
-	// do it
-	//trace = (unsigned int)-1;
-	//echo = true;
-	FunctionResult result = JSONOpenCode((char*) buffer); 
-	//trace = (unsigned int)0;
-	//echo = false;
-
+	FunctionResult result = FAILRULE_BIT;
+#ifndef DISCARDJSONOPEN
+	result = JSONOpenCode((char*) buffer); 
+#endif
 	callArgumentIndex = oldArgumentIndex;	 
 	callArgumentBase = oldArgumentBase;
 	if (http_response != 200 || result != NOPROBLEM_BIT) 
@@ -717,15 +718,12 @@ static size_t Encrypt(const void* buffer, size_t size, size_t count, FILE* file,
 {
 	return JsonOpenCryption((char*) buffer, size * count,encryptServer,false,filekind);
 }
-#endif
 
 void EncryptInit(char* params) // required
 {
 	*encryptServer = 0;
 	if (*params) strcpy(encryptServer,params);
-#ifndef DISCARDJSON 
 	if (*encryptServer) userFileSystem.userEncrypt = Encrypt;
-#endif
 }
 
 void ResetEncryptTags()
@@ -738,17 +736,13 @@ void DecryptInit(char* params) // required
 {
 	*decryptServer = 0;
 	if (*params)  strcpy(decryptServer,params);
-#ifndef DISCARDJSON 
 	if (*decryptServer) userFileSystem.userDecrypt = Decrypt;
-#endif
 }
 
 void EncryptRestart() // required
 {
-#ifndef DISCARDJSON
 	if (*encryptServer) userFileSystem.userEncrypt = Encrypt; // reestablish encrypt/decrypt bindings
 	if (*decryptServer) userFileSystem.userDecrypt = Decrypt; // reestablish encrypt/decrypt bindings
-#endif
 }
 
 size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt,char* filekind)
@@ -1670,7 +1664,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
             else if (*ptr == 'p') sprintf(at,(char*)"%p",va_arg(ap,char*)); // ptr
             else if (*ptr == 'f') 
 			{
-				float f = (float)va_arg(ap,double);
+				double f = (double)va_arg(ap,double);
 				sprintf(at,(char*)"%f",f); // float
 			}
             else if (*ptr == 's') // string

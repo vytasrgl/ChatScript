@@ -396,7 +396,7 @@ void DumpSentence(int start,int end)
 	else if (!stricmp(wordStarts[start],(char*)"what") && subject != 1 && object != 1) strcat(buffer,(char*)"(:what) ");
 	else if (!stricmp(wordStarts[start],(char*)"how")) strcat(buffer,(char*)"(:how) ");
 
-	if (tokenFlags & QUESTIONMARK)  strcat(buffer,(char*)"? (char*)");
+	if (tokenFlags & QUESTIONMARK)  strcat(buffer,(char*)"? ");
 
 	if (tokenFlags & PAST) strcat(buffer,(char*)" PAST ");
 	else if (tokenFlags & FUTURE) strcat(buffer,(char*)" FUTURE ");

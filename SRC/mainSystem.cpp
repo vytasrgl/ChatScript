@@ -1,6 +1,6 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.3";
+char* version = "7.31";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
@@ -13,6 +13,7 @@ char systemFolder[500];		// where is the livedata system folder
 bool noboot = false;
 bool pendingRestart = false;
 bool pendingUserReset = false;
+bool rebooting = false;
 bool assignedLogin = false;
 char apikey[100];
 DEBUGAPI debugInput = NULL;
@@ -156,6 +157,7 @@ unsigned char responseOrder[MAX_RESPONSE_SENTENCES+1];
 int responseIndex;
 
 int inputSentenceCount;				// which sentence of volley is this
+static void HandleBoot(WORDP boot,bool reboot);
 
 ///////////////////////////////////////////////
 /// SYSTEM STARTUP AND SHUTDOWN
@@ -172,21 +174,61 @@ void InitStandalone()
 #endif
 }
 
-static void SetBotVarible(char* word)
+static void SetBotVariable(char* word)
 {
     char* eq = strchr(word, '=');
     if (eq)
     {
-
-        *eq = 0;
-        ReturnToAfterLayer(1, true);
+        *eq = 0; 
+        ReturnToAfterLayer(currentBeforeLayer-1, true);
         *word = USERVAR_PREFIX;
         SetUserVariable(word, eq + 1);
         if (server) Log(SERVERLOG, (char*)"botvariable: %s = %s\r\n", word, eq + 1);
         else printf((char*)"botvariable: %s = %s\r\n", word, eq + 1);
-        NoteBotVariables();
-        LockLayer(1, false);
+        NoteBotVariables(); // these go into level 1
+        LockLayer(false);
     }
+}
+
+static void HandleBoot(WORDP boot, bool reboot)
+{
+	if (reboot) rebooting = true;
+	if (boot && !noboot) // run script on startup of system. data it generates will also be layer 1 data
+	{
+		int oldtrace = trace;
+		if (*bootcmd)
+		{
+			char* at = bootcmd;
+			if (*bootcmd == '"')
+			{
+				++at;
+				if (at[strlen(at) - 1] == '"')  at[strlen(at) - 1] = 0;
+			}
+			DoCommand(at, NULL, false);
+		}
+		if (!reboot) UnlockLayer(LAYER_BOOT); // unlock it to add stuff
+		FACT* F = factFree;
+		Callback(boot, (char*)"()", true, true); // do before world is locked
+		*ourMainOutputBuffer = 0; // remove any boot message
+		myBot = 0;	// restore fact owner to generic all
+		if (!rebooting)
+		{	
+			while (++F <= factFree)
+			{
+				if (F->flags & FACTTRANSIENT) F->flags |= FACTDEAD;
+				else F->flags |= FACTBUILD1; // convert these to level 1
+			}
+			NoteBotVariables(); // convert user variables read into bot variables in boot layer
+			LockLayer(false); // rewrite level 2 start data with augmented from script data
+		}
+		else
+		{
+			ReturnToAfterLayer(2, false);  // dict/fact/strings reverted and any extra topic loaded info  (but CSBoot process NOT lost)
+		}
+		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
+		stackFree = stackStart; // drop any possible stack used
+	}
+	rebooting = false;
 }
 
 void CreateSystem()
@@ -266,7 +308,7 @@ void CreateSystem()
         while (ReadALine(buffer, in, MAX_WORD_SIZE) >= 0)
         {
             ReadCompiledWord(buffer, word);
-            if (*word == 'V') SetBotVarible(word);
+            if (*word == 'V') SetBotVariable(word); // these are level 1 values
         }
         fclose(in);
     }
@@ -279,42 +321,17 @@ void CreateSystem()
 			size_t len = strlen(word);
 			if (word[len-1] == '"') word[len-1] = 0;
 		}
-        if (*word == 'V') SetBotVarible(word); // predefined bot variable
+        if (*word == 'V') SetBotVariable(word); // predefined bot variable in level 1
 	}
 #ifndef DISCARDTESTING
 	if (debugEntry) Debugger("");
 #endif
 
-	WORDP boot = FindWord((char*)"^csboot");
-	if (boot && !noboot) // run script on startup of system. data it generates will also be layer 1 data
-	{
-		int oldtrace = trace;
-		if (*bootcmd) 	
-		{
-			char* at = bootcmd;
-			if (*bootcmd == '"') 
-			{
-				++at;
-				if (at[strlen(at)-1] == '"')  at[strlen(at)-1]  = 0;
-			}
-			DoCommand(at,NULL,false);
-		}
-		UnlockLevel(); // unlock it to add stuff
-		FACT* F = factFree;
-		Callback(boot,(char*)"()",true,true); // do before world is locked
-		*ourMainOutputBuffer = 0; // remove any boot message
-		myBot = 0;	// restore fact owner to generic all
-		while (++F <= factFree) 
-		{
-			if (F->flags & FACTTRANSIENT) 
-				F->flags |= FACTDEAD;
-			else F->flags |= FACTBUILD1; // convert these to level 1
-		}
-		NoteBotVariables(); // convert user variables read into bot variables
-		LockLayer(1,false); // rewrite level 2 start data with augmented from script data
-		trace = (modifiedTrace) ? modifiedTraceVal : oldtrace;
-		stackFree = stackStart; // drop any possible stack used
-	}
+	kernelVariableThreadList = botVariableThreadList;
+	botVariableThreadList = 0;
+	UnlockLayer(LAYER_BOOT); // unlock it to add stuff
+	HandleBoot(FindWord((char*)"^csboot"),false);// run script on startup of system. data it generates will also be layer 1 data
+	LockLayer(true);
 	InitSpellCheck(); // after boot vocabulary added
 
 	unsigned int factUsedMemKB = ( factFree-factBase) * sizeof(FACT) / 1000;
@@ -329,6 +346,7 @@ void CreateSystem()
 	unsigned int used =  factUsedMemKB + dictUsedMemKB + textUsedMemKB + bufferMemKB;
 	used +=  (userTopicStoreSize + userTableSize) /1000;
 	unsigned int free = factFreeMemKB + textFreeMemKB;
+	char route[MAX_WORD_SIZE];
 
 	unsigned int bytes = (tagRuleCount * MAX_TAG_FIELDS * sizeof(uint64)) / 1000;
 	used += bytes;
@@ -405,23 +423,22 @@ void CreateSystem()
 		Log(SERVERLOG,(char*)"    *** Server WIDE OPEN to :command use.\r\n");
 	}
 #endif
-#ifdef DISCARDJSON
-	printf((char*)"%s",(char*)"    JSON access disabled.\r\n");
+#ifdef DISCARDJSONOPEN
+	printf((char*)"%s",(char*)"    JSONOpen access disabled.\r\n");
 #endif
 #ifdef TREETAGGER
 	printf((char*)"    TreeTagger access enabled: %s\r\n",language);
-#endif
-	char route[MAX_WORD_SIZE];
-#ifndef DISCARDPOSTGRES
-	if (*postgresparams) sprintf(route,"    Postgres enabled. FileSystem routed to %s\r\n",postgresparams);
-	else sprintf(route,"    Postgres enabled.\r\n"); 
-	if (server) Log(SERVERLOG,route);
-	else printf(route);
 #endif
 #ifndef DISCARDMONGO
 	if (*mongodbparams) sprintf(route,"    Mongo enabled. FileSystem routed to %s\r\n",mongodbparams);
 	else sprintf(route,"    Mongo enabled.\r\n"); 
 	if (server) Log(SERVERLOG,route);
+	else printf(route);
+#endif
+#ifndef DISCARDPOSTGRES
+	if (*postgresparams) sprintf(route, "    Postgres enabled. FileSystem routed to %s\r\n", postgresparams);
+	else sprintf(route, "    Postgres enabled.\r\n");
+	if (server) Log(SERVERLOG, route);
 	else printf(route);
 #endif
 	printf((char*)"%s",(char*)"\r\n");
@@ -455,6 +472,7 @@ void ReloadSystem()
 	sprintf(name,(char*)"%s/%s/systemfacts.txt",livedata,language);
 	ReadFacts(name,NULL,0); // part of wordnet, not level 0 build 
 	ReadLiveData();  // considered part of basic system before a build
+	InitTextUtilities1(); // also part of basic system before a build
 	WordnetLockDictionary();
 }
 
@@ -798,8 +816,6 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 
 	InitStandalone();
 
-	UnlockLevel(); // unlock it to add stuff
-
 #ifndef DISCARDPOSTGRES
 #ifndef EVSERVER
 	if (*postgresparams)  PGUserFilesCode(); // unforked process can hook directly. Forked must hook AFTER forking
@@ -819,7 +835,6 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 	EncryptInit(encryptParams);
 	DecryptInit(decryptParams);
 	ResetEncryptTags();
-	LockLayer(1, false);
 	return 0;
 }
 
@@ -863,7 +878,7 @@ void CloseSystem()
 #ifdef PRIVATE_CODE
 	PrivateShutdown();  // must come last after any mongo/postgress 
 #endif
-#ifndef DISCARDJSON
+#ifndef DISCARDJSONOPEN
 	CurlShutdown();
 #endif
 	if (logmainbuffer) free(logmainbuffer);
@@ -1009,6 +1024,32 @@ bool ProcessInputDelays(char* buffer,bool hitkey)
 	return false;
 }
 
+char* ReviseOutput(char* out)
+{
+	char prefix[MAX_WORD_SIZE];
+	strcpy(prefix, out);
+	char* at = prefix;
+	while ((at = strchr(at, '\\')))
+	{
+		if (at[1] == 'n')
+		{
+			memmove(at, at + 1, strlen(at));
+			*at = '\n';
+		}
+		else if (at[1] == 'r')
+		{
+			memmove(at, at + 1, strlen(at));
+			*at = '\r';
+		}
+		else if (at[1] == 't')
+		{
+			memmove(at, at + 1, strlen(at));
+			*at = '\t';
+		}
+	}
+	return prefix;
+}
+
 void ProcessInputFile()
 {
 	int turn = 0;
@@ -1031,7 +1072,7 @@ void ProcessInputFile()
 			if ((!documentMode || *ourMainOutputBuffer)  && !silent) // if not in doc mode OR we had some output to say - silent when no response
 			{
 				// output bot response
-				if (*botPrefix) printf((char*)"%s ",botPrefix);
+				if (*botPrefix) printf((char*)"%s ",ReviseOutput(botPrefix));
 			}
 			if (showTopic)
 			{
@@ -1050,7 +1091,7 @@ void ProcessInputFile()
 
 			//output user prompt
 			if (documentMode || silent) {;} // no prompt in document mode
-			else if (*userPrefix) printf((char*)"%s ",userPrefix);
+			else if (*userPrefix) printf((char*)"%s ", ReviseOutput(userPrefix));
 			else printf((char*)"%s",(char*)"   >");
 			
 			*ourMainInputBuffer = ' '; // leave space at start to confirm NOT a null init message, even if user does only a cr
@@ -1147,13 +1188,13 @@ void ResetToPreUser() // prepare for multiple sentences being processed - data l
 	ResetTokenSystem();
 
 	//  Revert to pre user-loaded state, fresh for a new user
-	ReturnToAfterLayer(1,false);  // dict/fact/strings reverted and any extra topic loaded info  (but CSBoot process NOT lost)
+	ReturnToAfterLayer(LAYER_BOOT,false);  // dict/fact/strings reverted and any extra topic loaded info  (but CSBoot process NOT lost)
 	ReestablishBotVariables(); // any changes user made to a variable will be reset
 	ResetTopicSystem(false);
 	ResetUserChat();
 	ResetFunctionSystem();
 	ResetTopicReply();
-
+	currentBeforeLayer = LAYER_USER;
  	//   ordinary locals
 	inputSentenceCount = 0;
 }
@@ -1376,7 +1417,7 @@ void FinishVolley(char* incoming,char* output,char* postvalue,int limit)
 			char* sep = output+1;
 			while ((sep = strchr(sep,ENDUNIT))) 
 			{
-				if (*(sep-1) == ' ') memmove(sep,sep+1,strlen(sep)); // since prior had space, we can just omit our separator.
+				if (*(sep-1) == ' ' || *(sep-1) == '\n') memmove(sep,sep+1,strlen(sep)); // since prior had space, we can just omit our separator.
 				else if (!sep[1]) *sep = 0; // show nothing extra on last separator
 				else if (sep[1] == ' ' && !sep[2]) *sep = 0; // show nothing extra on last separator w blank after
 				else *sep = ' ';
@@ -1414,20 +1455,19 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	modifiedTrace = false;
 	myBot = 0;
 	if (!documentMode) tokenCount = 0;
-#ifndef DISCARDJSON
 	InitJSONNames(); // reset indices for this volley
-#endif
 	ClearVolleyWordMaps();
 	ResetEncryptTags();
+
+	HandleBoot(FindWord("^cs_reboot"),true);
+
 	mainInputBuffer = incoming;
 	mainOutputBuffer = output;
 	size_t len = strlen(incoming);
 	if (len >= INPUT_BUFFER_SIZE) incoming[INPUT_BUFFER_SIZE-1] = 0; // chop to legal safe limit
 	// now validate that token size MAX_WORD_SIZE is not invalidated and block all control chars to spaces
     char* at = mainInputBuffer;
-#ifndef DISCARDJSON
 	if (tokenControl & JSON_DIRECT_FROM_OOB) at = SkipOOB(mainInputBuffer);
-#endif
 	char* startx = at;
     bool quote = false;
 	while (*++at)
