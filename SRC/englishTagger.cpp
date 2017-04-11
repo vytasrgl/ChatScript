@@ -519,6 +519,7 @@ static void PerformPosTag(int start, int end)
 	// DO NOT FORCE STRICT CASING WHEN uppercase given
 
 	if (oobExists) noPosTagging = true; // no out-of-band parsetagging
+	else if (stricmp(language,"english")) noPosTagging = true;
 	else if (prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == POSVERIFY_MODE){;} // told to try regardless
 	else if (tokenControl & DO_PARSE ) {;} // pos tag at a minimum
 	else noPosTagging = true; 
@@ -534,38 +535,14 @@ static void PerformPosTag(int start, int end)
 		if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original)  && (*original != 'I' || original[1])) 
 			MakeLowerCase(original);
 		
-/* SHOULD BE CONTROLLABLE AND ONLY UNDER THE PROPER NAME MERGING CODE
-	// consider proper name merging as an idiom
-		if (capState[i] && tokenControl & STRICT_CASING && i != start && i != end && capState[i+1]) // require at least 2 caps in a row at start to be a title 
+		WORDP D = StoreWord(original);
+		if (D->internalBits & UPPERCASE_HASH)
 		{
-			// merge in
-			--i;
-			while (++i < end && capState[i])
-			{
-				if (!capState[i+1]) // end of the line? // National Institute of Child Development
-				{
-					if (stricmp(wordStarts[i+1],(char*)"of") || !capState[i+2]) break; // not title? dont break on of
-				}
-				posValues[i] = allOriginalWordBits[i] = IDIOM;
-				WORDP entry = StoreWord(wordStarts[i]);
-				canonicalUpper[i] = originalUpper[i] = entry;
-				canSysFlags[i] = 0;
-				if (!stricmp(wordStarts[i+1],(char*)"of")) // continue past it
-				{
-					++i; 
-					posValues[i] = allOriginalWordBits[i] = IDIOM;
-				}
-			}
-			// final word of the idiom
-			posValues[i] = allOriginalWordBits[i] = NOUN_PROPER_SINGULAR;
-			WORDP entry = StoreWord(wordStarts[i]);
-			canonicalUpper[i] = originalUpper[i] = entry;
-			canonicalLower[] = originalLower[i] = NULL;
-			canSysFlags[i] = entry->systemFlags;
-			continue;
+			originalLower[i] = (D->internalBits & UPPERCASE_HASH) ? NULL : D;
+			canonicalLower[i] = NULL;
+			originalUpper[i] = (D->internalBits & UPPERCASE_HASH) ? D : NULL;
+			canonicalUpper[i] = NULL;
 		}
-*/
-		if (externalTagger || stricmp(language,"english")) continue; // remote pos tagging or none
 
 		WORDP entry = NULL;
 		WORDP canonical = NULL;
@@ -9617,12 +9594,14 @@ static void TreeTagger()
 		if (IsUpperCase(lemma[0]))
 		{
 			originalUpper[i] = FindWord(wordStarts[i]);
-			canonicalUpper[i] = StoreWord(lemma,0);
+			if (canonicalLower[i] && IsDigit(*canonicalLower[i]->word) {;} // keep number value
+			else canonicalUpper[i] = StoreWord(lemma, 0);
 		}
 		else
 		{
 			originalLower[i] = FindWord(wordStarts[i]);
-			canonicalLower[i] = StoreWord(lemma,0);
+			if (canonicalLower[i] && IsDigit(*canonicalLower[i]->word) { ; } // keep number value
+			else canonicalLower[i] = StoreWord(lemma,0);
 		}
 		char newtag[MAX_WORD_SIZE];
 		*newtag = '~';	// concept from the tag

@@ -350,6 +350,22 @@ bool SpellCheckSentence()
 	for (int i = startWord; i <= wordCount; ++i)
 	{
 		char* word = wordStarts[i];
+		if (*word == '\'' && !word[1] && i != startWord && IsDigit(*wordStarts[i - 1]) && !stricmp(language, "english")) // fails if not digit bug
+		{
+			char* tokens[2];
+			tokens[1] = (char*)"foot";
+			ReplaceWords("' as feet", i, 1, 1, tokens);
+			fixedSpell = true;
+			continue;
+		}
+		if (*word == '"' && !word[1] && i != startWord && IsDigit(*wordStarts[i - 1]) && !stricmp(language, "english")) // fails if not digit bug
+		{
+			char* tokens[2];
+			tokens[1] = (char*)"inch";
+			ReplaceWords("' as feet", i, 1, 1, tokens);
+			fixedSpell = true;
+			continue;
+		}
 		if (!word || !word[1] || *word == '"' ) continue; // illegal or single char or quoted thingy 
 		size_t len = strlen(word);
 
@@ -369,6 +385,16 @@ bool SpellCheckSentence()
 
 		char* number;
 		if (GetCurrency((unsigned char*)word, number)) continue; // currency
+
+		if (!stricmp(word, (char*)"am") && i != startWord && 
+			(IsDigit(*wordStarts[i-1]) || IsNumber(wordStarts[i-1]) ==REAL_NUMBER) && !stricmp(language,"english")) // fails if not digit bug
+		{
+			char* tokens[2];
+			tokens[1] = (char*)"a.m.";
+			ReplaceWords("am as time", i, 1, 1, tokens);
+			fixedSpell = true;
+			continue;
+		}
 
 		char* known = ProbableKnownWord(word);
 		if (known && !strcmp(known,word)) continue;	 // we know it

@@ -658,9 +658,9 @@ void RemoveInternalFlag(WORDP D,unsigned int flag)
 	D->internalBits &= -1 ^ flag;
 }
 
-static void PreserveFlags(WORDP D)
+static void PreserveSystemFlags(WORDP D)
 {			
-	unsigned int* at = (unsigned int*) AllocateHeap (NULL,2, sizeof(uint64),false); // PreserveFlags
+	unsigned int* at = (unsigned int*) AllocateHeap (NULL,2, sizeof(uint64),false); // PreserveSystemFlags
 	*at = flagsRedefines;
 	at[1] = Word2Index(D);
 	flagsRedefines = Heap2Index((char*)at);
@@ -672,7 +672,7 @@ void AddSystemFlag(WORDP D, uint64 flag)
 	if (flag & NOCONCEPTLIST && *D->word != '~') flag ^= NOCONCEPTLIST; // not allowed to mark anything but concepts with this
 	if (flag && flag != D->systemFlags) // prove there is a change - dont use & because if some bits are set is not enough
 	{
-		if (D < dictionaryLocked) PreserveFlags(D);
+		if (D < dictionaryLocked) PreserveSystemFlags(D);
 		D->systemFlags |= flag;
 	}
 }
@@ -691,7 +691,7 @@ void RemoveSystemFlag(WORDP D, uint64 flags)
 {
 	if (D->systemFlags & flags)
 	{
-		if (D < dictionaryLocked) PreserveFlags(D);
+		if (D < dictionaryLocked) PreserveSystemFlags(D);
 		D->systemFlags &= -1LL ^ flags;
 	}
 }

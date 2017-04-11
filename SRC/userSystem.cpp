@@ -9,6 +9,7 @@ bool serverRetryOK = false;
 bool stopUserWrite = false;
 static bool verifyUserFacts = true;
 static char* backupMessages = NULL;
+static int jsonptrThreadList;
 
 #define MAX_USER_MESSAGES MAX_USED
 
@@ -385,7 +386,6 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 	bool traceseen = false;
 
 	if (modifiedTrace) trace = modifiedTraceVal; // script set the value
-	varthread = userVariableThreadList;
 	while (varthread)
 	{
 		unsigned int* cell = (unsigned int*)Index2Heap(varthread);
@@ -393,10 +393,21 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 		WORDP D = Index2Word(cell[1]);
 		if (shared && !sharefile && !strnicmp(D->word,(char*)"$share_",7)) continue;
   		else if (shared && sharefile && strnicmp(D->word,(char*)"$share_",7)) continue;
-		else if ( (D->word[1] != LOCALVAR_PREFIX && D->word[1] !=  TRANSIENTVAR_PREFIX) && (D->w.userValue || (D->internalBits & MACRO_TRACE))) // transients not dumped, nor are NULL values
+		else if ( D->word[1] !=  TRANSIENTVAR_PREFIX && (D->w.userValue || (D->internalBits & MACRO_TRACE))) // transients not dumped, nor are NULL values
 		{
 			char word[100];
 			char* val = D->w.userValue;
+			// track json structures referred to
+//			if (val[0] == 'j' && (val[1] == 'o' || val[1] == 'a') && val[2] == '-' && val[3] != 't')
+	//		{ 
+	//			char* data = AllocateHeap(0, 2, 4); // word  aligned
+	//			((unsigned int*)data)[0] = jsonptrThreadList;
+	//			WORDP X = FindWord(val);
+	//			((unsigned int*)data)[1] = Word2Index(X);
+	//			jsonptrThreadList = Heap2Index(data);
+	//			X->internalBits |= JSON_REFERENCE;
+	//		}
+
 			if (!stricmp(D->word,"$cs_trace")) 
 			{
 				traceseen = true;
@@ -495,6 +506,8 @@ static bool ReadUserVariables()
 	return true;
 }
 
+// unreferenced json MIGHT be referenced from factset
+
 // user data never contains control characters (except what we add as line separators here).
 
 static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
@@ -520,12 +533,24 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 		ReportBug("User file topic data too big %s",loginID)
 		return NULL;
 	}
+	jsonptrThreadList = 0;
 	ptr = WriteUserVariables(ptr,sharefile,false);  // json safe
 	if (!ptr)
 	{
 		ReportBug("User file variable data too big %s",loginID)
 		return NULL;
 	}
+
+	// unmark json structs
+//	int varthread = jsonptrThreadList;
+//	while (varthread)
+//	{
+//		unsigned int* cell = (unsigned int*)Index2Heap(varthread);
+//		varthread = cell[0];
+//		WORDP D = Index2Word(cell[1]);
+//		D->internalBits ^= JSON_REFERENCE;
+//	}
+
 	trace = 0;
 	echo = false;
 	if (verifyUserFacts) CheckUserFacts();	// verify they are good for now

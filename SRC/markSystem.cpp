@@ -606,13 +606,13 @@ void MarkAllImpliedWords()
 	int i;
 	for (i = 1; i <= wordCount; ++i)  capState[i] = IsUpperCase(*wordStarts[i]); // note cap state
 
+	TagIt(); // pos tag and maybe parse
 	if (externalPostagger)
 	{
 		(*externalPostagger)();
 		startSentence = 1; // default when you dont know any better
 		endSentence = wordCount;
 	}
-	else TagIt(); // pos tag and maybe parse
 
 	if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) 
 	{

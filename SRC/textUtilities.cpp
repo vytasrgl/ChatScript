@@ -1079,12 +1079,6 @@ unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or wor
 	uint64 valx;
 	if (IsRomanNumeral(word,valx)) return ROMAN_NUMBER;
 	if (IsDigitWithNumberSuffix(word)) return WORD_NUMBER;
-	// word fraction numbers
-	if (!strcmp(word,(char*)"half") || !strcmp(word, (char*)"halves") ) return FRACTION_NUMBER;
-	// NOT third as fraction, third as placenumber else if (!strcmp(word,(char*)"third") ) return FRACTION_NUMBER;
-	else if (!strcmp(word,(char*)"thirds") ) return FRACTION_NUMBER;
-	else if ( !strcmp(word,(char*)"quarter") ) return FRACTION_NUMBER;
-	else if ( !strcmp(word,(char*)"quarters") ) return FRACTION_NUMBER;
 	WORDP D;
 	char* ptr;
     if (placeAllowed && IsPlaceNumber(word)) return PLACETYPE_NUMBER; // th or first or second etc. but dont call if came from there
@@ -1138,13 +1132,15 @@ bool IsPlaceNumber(char* word) // place number and fraction numbers
 	if (len < 3) return false; // min is 1st
 	
 	// word place numbers
-	if (len > 4 && !strcmp(word+len-5,(char*)"first") ) return true;
+	if (stricmp(language, "english")) {;}
+	else if (len > 4 && !strcmp(word+len-5,(char*)"first") ) return true;
 	else if (len > 5 && !strcmp(word+len-6,(char*)"second") ) return true;
 	else if (len > 4 && !strcmp(word+len-5,(char*)"third") ) return true;
 	else if (len > 4 && !strcmp(word+len-5,(char*)"fifth") ) return true;
 
 	// does it have proper endings?
-	if (word[len-2] == 's' && word[len-1] == 't') {;}  // 1st
+	if (stricmp(language, "english")) { ; }
+	else if (word[len-2] == 's' && word[len-1] == 't') {;}  // 1st
 	else if (word[len-2] == 'n' && word[len-1] == 'd') // 2nd
 	{
 		if (!stricmp(word,(char*)"thousand")) return false;	// 2nd but not thousand
@@ -1156,7 +1152,7 @@ bool IsPlaceNumber(char* word) // place number and fraction numbers
 	else if (word[len-2] == 't' && word[len-1] == 'h') {;} // 4th
 	else if (word[len-3] == 't' && word[len-2] == 'h' && word[len-1] == 's') {;} // 4ths
 	else return false;	// no place suffix
-	if (strchr(word,'_')) return false;	 // cannot be place number
+	if (strchr(word, '_')) return false;	 // cannot be place number
 
 	// separator?
 	if (word[len-3] == '\'' || word[len-3] == '-') {;}// 24'th or 24-th

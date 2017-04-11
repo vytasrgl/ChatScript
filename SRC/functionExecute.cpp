@@ -4297,10 +4297,42 @@ FunctionResult MemoryFreeCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+int MoveListToStack(int list)
+{
+	// save property lists
+	int tmplist = 0;
+	while (list)
+	{
+		unsigned int* from = (unsigned int*)Index2Heap(list);
+		unsigned int* at = (unsigned int*)AllocateStack(NULL, 2 * sizeof(uint64), false, true); //  PreserveProperty
+		*at = tmplist; // linked list thread
+		at[1] = from[1]; // index of D (word)
+		tmplist = Stack2Index((char*)at);
+		*((uint64*)(at + 2)) = *((uint64*)(from + 2)); // int64 data of word
+	}
+	return tmplist;
+}
+
+int MoveListToHeap(int list)
+{
+	int tmplist = 0;
+	while (list)
+	{
+		unsigned int* from = (unsigned int*)Index2Stack(list);
+		unsigned int* at = (unsigned int*)AllocateHeap(NULL, 2, sizeof(uint64), false, false); //  PreserveProperty
+		*at = tmplist;
+		at[1] = from[1];
+		tmplist = Heap2Index((char*)at);
+		*((uint64*)(at + 2)) = *((uint64*)(from + 2));
+	}
+	return tmplist;
+}
+
 FunctionResult MemoryGCCode(char* buffer)
 {
+	if (currentBeforeLayer < LAYER_USER) return FAILRULE_BIT;
 	// validate no facts are facts of facts for now
-	FACT* F = factsPreBuild[LAYER_BOOT];
+	FACT* F = factsPreBuild[LAYER_USER];
 	while (++F <= factFree)
 	{
 		if (F->flags & (FACTSUBJECT|FACTVERB|FACTOBJECT)) return FAILRULE_BIT;
@@ -4308,22 +4340,23 @@ FunctionResult MemoryGCCode(char* buffer)
 
 	char* stackbase = AllocateStack(NULL, 1);
 
-	// clear sentence data references
+	// clear sentence data references, analyze is no longer possible
 	savedSentences = 0;
 	ResetTokenSystem();
-	ClearWhereInSentence();
+	ClearWhereInSentence(); // clears lists concepts and topics.
 	propertyRedefines = 0;	// property changes on locked dictionary entries
 	flagsRedefines = 0; // system flag changes on locked dictionary entries
 	for (unsigned int i = 0; i <= MAX_FIND_SETS; ++i) SET_FACTSET_COUNT(i, 0); // empty all factsets
-	
+	// userVariableThreadList   botVariableThreadList(cannot be wrong unless done during boot)
 	// we ASSUME no facts are referred to by index on variables. 
 	MigrateUserVariables(); 
-
+	// dont have to account for locals, they are already in stack space
 	// remove connections from facts to words.
 	// If new word is only referred to by a dead fact, kill its text reference
-	RipFacts(factsPreBuild[LAYER_BOOT], dictionaryPreBuild[LAYER_BOOT]); // unweave all facts back to marker
+	RipFacts(factsPreBuild[LAYER_USER], dictionaryPreBuild[LAYER_USER]); // unweave all facts back to marker
 
-	F = factsPreBuild[LAYER_BOOT];
+	// compress living facts
+	F = factsPreBuild[LAYER_USER];
 	FACT* openSlot = NULL;
 	while (++F <= factFree)
 	{
@@ -4343,7 +4376,7 @@ FunctionResult MemoryGCCode(char* buffer)
 
 	// erase dictionary living marks
 	WORDP at = dictionaryFree;
-	while (--at > dictionaryPreBuild[LAYER_BOOT])
+	while (--at > dictionaryPreBuild[LAYER_USER])
 	{
 		at->internalBits &= -1 ^ BEEN_HERE;
 		if (InHeap(at->word)) // true unless we erased it or it doesnt have a name
@@ -4356,16 +4389,24 @@ FunctionResult MemoryGCCode(char* buffer)
 		}
 	}
 	
-	WeaveFacts(factsPreBuild[LAYER_BOOT]); // weave them back from marker
+	WeaveFacts(factsPreBuild[LAYER_USER]); // weave them back from marker
 	
+	// save property and systemflags lists
+	int tmppropertylist = MoveListToStack(propertyRedefines);
+	int tmpsystemflagslist = MoveListToStack(flagsRedefines);
+
 	FlipResponses(); // save messages to user
-	heapFree = stringsPreBuild[LAYER_BOOT]; // chop back heap
+	heapFree = stringsPreBuild[LAYER_USER]; // chop back heap
 	FlipResponses(); // restore messages to user
+
+	// restore property and systemflags lists
+	propertyRedefines = MoveListToStack(tmppropertylist );
+	flagsRedefines = MoveListToStack(tmpsystemflagslist );
 
 	// migrate stack dictionary words back to heap
 	at = dictionaryFree;
 	RecoverUserVariables(); // restore vars back to heap
-	while (--at > dictionaryPreBuild[LAYER_BOOT])
+	while (--at > dictionaryPreBuild[LAYER_USER])
 	{
 		at->internalBits &= -1 ^ BEEN_HERE;
 		if (InStack(at->word)) // true unless we erased it or it doesnt have a name

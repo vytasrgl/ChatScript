@@ -386,7 +386,11 @@ void ShowChangedVariables()
 
 void PrepareVariableChange(WORDP D,char* word,bool init)
 {
-	if (!(D->internalBits & VAR_CHANGED))	// not changed already this volley
+	if (D->word[1] == '_') // tmp var
+	{
+		if (init) D->w.userValue = NULL;
+	}
+	else if (!(D->internalBits & VAR_CHANGED))	// not changed already this volley
     {
 		char* data = AllocateHeap(0, 2, 4); // word  aligned
 		((unsigned int*)data)[0] = userVariableThreadList;
@@ -617,7 +621,7 @@ void NoteBotVariables() // system defined variables
 		unsigned int* cell = (unsigned int*)Index2Heap(varthread);
 		varthread = cell[0];
 		WORDP D = Index2Word(cell[1]);
-		if (D->word[1] != TRANSIENTVAR_PREFIX && D->word[1] != LOCALVAR_PREFIX) // not a transient var
+		if (D->word[1] != LOCALVAR_PREFIX) // not a transient var
 		{
 			if (!strnicmp(D->word,"$cs_",4)) continue; // dont force these, they are for user
 			int* data = (int*)AllocateHeap(NULL, 3, 4);
@@ -633,7 +637,7 @@ void NoteBotVariables() // system defined variables
 
 void MigrateUserVariables()
 {
-	unsigned int varthread = userVariableThreadList;
+	unsigned int varthread = userVariableThreadList; // does not include $_ locals
 	userVariableThreadList = 0;
 	while (varthread)
 	{
@@ -721,8 +725,7 @@ void DumpUserVariables()
 	{
 		unsigned int* cell = (unsigned int*)Index2Heap(varthread);
 		varthread = cell[0];
-		WORDP D = Index2Word(cell[1]);
-		if (D->word[1] != '_') ++counter;
+		++counter;
 	}
 
 	// Show the user variables in alphabetically sorted order.
@@ -735,8 +738,7 @@ void DumpUserVariables()
 	{
 		unsigned int* cell = (unsigned int*)Index2Heap(varthread);
 		varthread = cell[0];
-		WORDP D = Index2Word(cell[1]);
-		if (D->word[1] != '_') arySortVariablesHelper[i++] = D;
+		arySortVariablesHelper[i++] = Index2Word(cell[1]);
 	}
 
 	// Sort it.
@@ -979,6 +981,7 @@ char* PerformAssignment(char* word,char* ptr,char* buffer,FunctionResult &result
 	{
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG,(char*)"%s = %s(%s)\r\n",word,originalWord1,buffer);
 		char* dot = strchr(word,'.');
+		if (!dot) dot = strstr(word, "[]"); // array assign?
 		if (!dot || nojson) SetUserVariable(word,buffer,true);
 		else result = JSONVariableAssign(word,buffer);// json object insert
 	}

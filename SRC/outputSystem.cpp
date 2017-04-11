@@ -963,6 +963,12 @@ char* Output(char* ptr,char* buffer,FunctionResult &result,int controls)
 
 		char* priorPtr = ptr;
         ptr = ReadCompiledWord(ptr,word,false,true);  // stop when $var %var _var @nvar end normally- insure no ) ] } lingers on word in case it wasnt compiled
+		if (*word == '$' && *ptr == '[' && ptr[1] == ']') // merge $word[]
+		{
+			strcat(word, "[]");
+			ptr += 2;
+		}
+		
 		char* startptr = ptr;
 		ptr = SkipWhitespace(ptr);		// find next token to tes for assignment and  the like
 

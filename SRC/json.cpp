@@ -1759,6 +1759,7 @@ FunctionResult JSONVariableAssign(char* word,char* value)
 	char fullpath[MAX_WORD_SIZE];
 	// get the object referred to
 	char* separator = strchr(word+1,'.'); // find first level - we MUST find a dot somewhere because we dont allow direct array ops
+	if (!separator) separator = strstr(word + 1, "[]"); // find first level - we MUST find a dot or [] somewhere 
 	if (!separator) return FAILRULE_BIT;
 
 	char* bracket = strchr(word+1,'['); 
@@ -1822,13 +1823,18 @@ LOOP: // now we look at $x.key or $x[0]
 		}
 	}
 	// now we have retrieved the key/index
-	if (follonOnSeparator) keyname = FindWord(keyx);// its a key along the way, not a final key
-	else keyname =  StoreWord(keyx,AS_IS); // its a terminal key, create it (not needed for arrays because we dont allow blind assignment)
-	if (!keyname) 
+	if (follonOnSeparator)
 	{
-		if (trace &  TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar NoKey: %s\r\n", fullpath);
-		return FAILRULE_BIT;	// unable to find key or index
+		keyname = FindWord(keyx);// its a key along the way, not a final key
+		if (!keyname)
+		{
+			if (trace &  TRACE_VARIABLESET) Log(STDTRACELOG, (char*)"JsonVar NoKey: %s\r\n", fullpath);
+			return FAILRULE_BIT;	// unable to find key or index
+		}
 	}
+	else if (*keyx == ']') keyname = NULL;
+	else keyname =  StoreWord(keyx,AS_IS); // its a terminal key, create it (not needed for arrays because we dont allow blind assignment)
+
 	// keyname is the Word of the key
 
 	// show the path for tracing
@@ -1850,9 +1856,10 @@ LOOP: // now we look at $x.key or $x[0]
 		while (F)
 		{
 			if (F->verb == MakeMeaning(keyname)) break;
+			if (F->flags & JSON_ARRAY_FACT) break; // it has array values
 			F = GetSubjectNondeadNext(F);
 		}
-	    if (!F) // key is not found so no value exists either
+	    if (!F) // key (array values) is not found so no value exists either
         {
 			// for . format continued, force it to exist as object
 			if (c == '.')
@@ -1878,8 +1885,25 @@ LOOP: // now we look at $x.key or $x[0]
 			}
 			else
 			{
-				if (trace & TRACE_VARIABLESET) Log(STDTRACELOG, "JsonAssignFail: %s.%s\r\n", leftside->word, keyname);
-				return FAILRULE_BIT;
+				char loc[100];
+
+				// perform internal call to function
+				unsigned int oldArgumentBase = callArgumentBase;
+				unsigned int oldArgumentIndex = callArgumentIndex;
+				callArgumentBases[callIndex++] = callArgumentIndex - 1; // call stack
+				ARGUMENT(1) = (priorLeftside->word[3] == 't') ? (char*)"transient" : (char*)"permanent";
+				ARGUMENT(2) = "array";
+				JSONCreateCode(loc); // get new array name
+		
+				leftside = FindWord(loc);
+				unsigned int flags = JSON_ARRAY_FACT;
+				if (loc[3] == 't') flags |= FACTTRANSIENT;
+				MEANING valx = jsonValue(leftside->word, flags);
+				F = CreateFact(MakeMeaning(priorLeftside), MakeMeaning(keyname), valx, flags);
+				
+				--callIndex;
+				callArgumentIndex = oldArgumentIndex;
+				callArgumentBase = oldArgumentBase;
 			}
         }
 		else leftside = Meaning2Word(F->object);
@@ -1919,12 +1943,25 @@ LOOP: // now we look at $x.key or $x[0]
 		F = GetSubjectNondeadNext(F);
 	}
 
-	F = GetSubjectNondeadHead(base,false); // see if we have marker fact of empty object
-
-	if (stricmp(value,"null")) // not deleting using json literal   ^"" or "" would be the literal null in json
+	if (key && stricmp(value,"null")) // not deleting using json literal   ^"" or "" would be the literal null in json
 	{
 		MEANING valx = jsonValue(value,flags);
 		CreateFact(object, key,valx, flags);
+	}
+	else if (!key) // was [] notation to insert to array
+	{		
+		// perform internal call to function
+		unsigned int oldArgumentBase = callArgumentBase;
+		unsigned int oldArgumentIndex = callArgumentIndex;
+		callArgumentBases[callIndex++] = callArgumentIndex - 1; // call stack
+		ARGUMENT(1) = (leftside->word[3] == 't') ? (char*)"transient" : (char*)"permanent";
+		ARGUMENT(2) = leftside->word;
+		ARGUMENT(3) = value;
+		char loc[100];
+		JSONArrayInsertCode(loc); // get new object name
+		--callIndex;
+		callArgumentIndex = oldArgumentIndex;
+		callArgumentBase = oldArgumentBase;
 	}
 	if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s -> %s\r\n", fullpath,value);
 	
@@ -2023,11 +2060,8 @@ FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectvalue  BEF
 	char* val = ARGUMENT(index);
 	MEANING value = jsonValue(val,flags);
 
-	FACT* F = GetSubjectNondeadHead(O,false); // see if we have marker fact
-	if (F && F->subject == F->object) F->flags |= FACTDEAD;
-	
 	// how many existing elements
-	F = GetSubjectNondeadHead(O);
+	FACT* F = GetSubjectNondeadHead(O);
 	int count = 0;
 	FACT* lastF = F;
 	while (F) 

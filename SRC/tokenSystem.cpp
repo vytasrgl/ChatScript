@@ -966,14 +966,6 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 		if (*priorToken == '(') ++paren;
 		else if (*priorToken && paren) --paren;
 
-		// adjust am and AM if used as a time reference and not the verb "am"
-		if (!stricmp(priorToken,(char*)"am") && count && IsDigit(words[count][0])) 
-		{
-			strcpy(priorToken,(char*)"a.m."); 
-			len = 4;
-			lastc = '.';
-		}
-
 		char startc = *priorToken;
 
 		//   reserve next word, unless we have too many
@@ -1113,6 +1105,7 @@ static WORDP MergeProperNoun(int& start, int end,bool upperStart)
 	uint64 gender = 0;
 	char buffer[MAX_WORD_SIZE];
 	*buffer = 0;
+
 	// build composite name
 	char* ptr = buffer;
 	bool uppercase = false;
