@@ -608,7 +608,9 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 
 	if (externalTagger || stricmp(language, "english"))
 	{
-		entry = canonical = StoreWord(original);
+		entry  = StoreWord(original);
+		canonical = FindWord(GetCanonical(entry));
+		if (!canonical) canonical = entry;
 		return 0; // remote pos tagging or none
 	}
 

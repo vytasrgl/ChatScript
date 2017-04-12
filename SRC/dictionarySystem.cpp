@@ -306,7 +306,8 @@ char* GetCanonical(WORDP D)
 {
 	std::map<WORDP,WORDP>::iterator it;
 	it = canonicalWords.find(D);
-	return (it != canonicalWords.end())	? it->second->word  : NULL;
+	if (it == canonicalWords.end()) return NULL;
+	return it->second->word;
 }
 
 WORDP GetTense(WORDP D)
@@ -1853,6 +1854,7 @@ void WriteDictionary(WORDP D,uint64 data)
 	WriteDictionaryReference((char*)"conjugate",GetTense(D),out);
 	WriteDictionaryReference((char*)"plural",GetPlural(D),out);
 	WriteDictionaryReference((char*)"comparative",GetComparison(D),out);
+	if (GetCanonical(D)) WriteDictionaryReference((char*)"lemma", FindWord(GetCanonical(D)), out);
 
 	//   show the meanings, with illustrative gloss
 		

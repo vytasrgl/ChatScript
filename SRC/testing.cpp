@@ -9317,6 +9317,13 @@ static void BuildForeign(char* input)
 		printf("file not found");
 		return;
 	}
+
+	UseDictionaryFile(NULL);
+	InitFacts();
+	InitDictionary();
+	InitStackHeap();
+	InitCache();
+
 	sprintf(name,"DICT/%s",language);
 	MakeDirectory(name);
 	ClearDictionaryFiles();
@@ -9339,6 +9346,7 @@ static void BuildForeign(char* input)
 		*close = 0;
 		strcpy(lemma, ptr + 1);
 		*close = ')';
+		if (!strcmp(lemma, word)) *lemma = 0; // cancel same lemma
 
 		char pos[MAX_WORD_SIZE];
 		unsigned int flags = 0;
@@ -9351,10 +9359,12 @@ static void BuildForeign(char* input)
 			WORDP D = FindWord(pos);
 			if (D) flags |= D->properties;
 		}
-		StoreWord(word, flags);
+		WORDP D = StoreWord(word, flags);
+		if (*lemma) SetCanonical(D, MakeMeaning(StoreWord(lemma)));
 	}
 	fclose(in);
 	WalkDictionary(WriteDictionary);
+	myexit("end foreign build");
 }
 
 static void TrimIt(char* name,uint64 flag) 

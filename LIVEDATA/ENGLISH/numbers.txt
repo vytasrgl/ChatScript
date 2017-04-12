@@ -15,6 +15,7 @@ couple 2 WORD_NUMBER
 deuce 2  WORD_NUMBER  
 pair 2  WORD_NUMBER  
 half 2 FRACTION_NUMBER  
+halves 2 FRACTION_NUMBER  
 three 3  REAL_NUMBER 
 third 3 WORD_NUMBER 
 triple 3  WORD_NUMBER 
