@@ -1,2872 +1,2872 @@
-﻿ unknown-word ( ) 
- Udine ( NOUN NOUN_PROPER_SINGULAR ) 
- Uefa ( NOUN NOUN_PROPER_SINGULAR ) 
- Ucraina ( NOUN NOUN_PROPER_SINGULAR ) 
- United ( NOUN NOUN_PROPER_SINGULAR ) 
- Uruguay ( NOUN NOUN_PROPER_SINGULAR ) 
- Urbani ( NOUN NOUN_PROPER_SINGULAR ) 
- Unione ( NOUN NOUN_PROPER_SINGULAR ) 
- Usl ( NOUN NOUN_PROPER_SINGULAR ) 
- Ucciardone ( NOUN NOUN_PROPER_SINGULAR ) 
- Ulisse ( NOUN NOUN_PROPER_SINGULAR ) 
- Ue ( NOUN NOUN_PROPER_SINGULAR ) 
- Uck ( NOUN NOUN_PROPER_SINGULAR ) 
- Unipol ( NOUN NOUN_PROPER_SINGULAR ) 
- Umbria ( NOUN NOUN_PROPER_SINGULAR ) 
- Ungheria ( NOUN NOUN_PROPER_SINGULAR ) 
- Unicredito ( NOUN NOUN_PROPER_SINGULAR ) 
- U. ( NOUN NOUN_PROPER_SINGULAR ) 
- Ugo ( NOUN NOUN_PROPER_SINGULAR ) 
- Uilm ( NOUN NOUN_PROPER_SINGULAR ) 
- Umberto ( NOUN NOUN_PROPER_SINGULAR ) 
- U2 ( NOUN NOUN_PROPER_SINGULAR ) 
- Uil ( NOUN NOUN_PROPER_SINGULAR ) 
- Udinese ( NOUN NOUN_PROPER_SINGULAR ) 
- Udr ( NOUN NOUN_PROPER_SINGULAR ) 
- Ueo ( NOUN NOUN_PROPER_SINGULAR ) 
- Uffizi ( NOUN NOUN_PROPER_SINGULAR ) 
- Ulster ( NOUN NOUN_PROPER_SINGULAR ) 
- Under ( NOUN NOUN_PROPER_SINGULAR ) 
- Unicef ( NOUN NOUN_PROPER_SINGULAR ) 
- Union ( NOUN NOUN_PROPER_SINGULAR ) 
- Unite ( NOUN NOUN_PROPER_SINGULAR ) 
- University ( NOUN NOUN_PROPER_SINGULAR ) 
- Urso ( NOUN NOUN_PROPER_SINGULAR ) 
- Urss ( NOUN NOUN_PROPER_SINGULAR ) 
- Usa ( NOUN NOUN_PROPER_SINGULAR ) 
- Ustica ( NOUN NOUN_PROPER_SINGULAR ) 
- Utri ( NOUN NOUN_PROPER_SINGULAR ) 
+﻿ U. ( ) 
+ U2 ( ) 
+ Ucciardone ( ) 
+ Uck ( ) 
+ Ucraina ( ) 
+ Udine ( ) 
+ Udinese ( ) 
+ Udr ( ) 
+ Ue ( ) 
+ Uefa ( ) 
+ Ueo ( ) 
+ Uffizi ( ) 
+ Ugo ( ) 
+ Uil ( ) 
+ Uilm ( ) 
+ Ulisse ( ) 
+ Ulster ( ) 
+ Umberto ( ) 
+ Umbria ( ) 
+ Under ( ) 
+ Ungheria ( ) 
+ Unicef ( ) 
+ Unicredito ( ) 
+ Union ( ) 
+ Unione_Sovietica ( ) lemma=Unione_Sovietica 
+ Unipol ( ) 
+ Unite ( ) 
+ United ( ) 
+ University ( ) 
+ Urbani ( ) 
+ Urso ( ) 
+ Urss ( ) 
+ Uruguay ( ) 
+ Usa ( ) 
+ Usl ( ) 
+ Ustica ( ) 
+ Utri ( ) 
+ uscire ( ) 
+ udire ( ) 
  uauuhh ( ) 
- ubbia ( NOUN NOUN_SINGULAR ) 
- ubbidendo ( NOUN NOUN_GERUND ) 
- ubbidente ( VERB_PRESENT_PARTICIPLE VERB ) 
- ubbidenti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ubbidi' ( VERB ) 
- ubbidiamo ( VERB ) 
- ubbidiate ( VERB ) 
- ubbidiente ( ADJECTIVE ) 
- ubbidienti ( ADJECTIVE ) 
- ubbidientissima ( ADJECTIVE ) 
- ubbidientissime ( ADJECTIVE ) 
- ubbidientissimi ( ADJECTIVE ) 
- ubbidientissimo ( ADJECTIVE ) 
- ubbidii ( VERB ) 
- ubbidimmo ( VERB ) 
- ubbidir ( VERB_INFINITIVE VERB ) 
- ubbidira' ( VERB ) 
- ubbidirai ( VERB ) 
- ubbidiran ( VERB ) 
- ubbidiranno ( VERB ) 
- ubbidirci ( VERB_INFINITIVE VERB ) 
- ubbidire ( VERB_INFINITIVE VERB ) 
- ubbidirebbe ( VERB ) 
- ubbidirebber ( VERB ) 
- ubbidirebbero ( VERB ) 
- ubbidirei ( VERB ) 
- ubbidiremmo ( VERB ) 
- ubbidiremo ( VERB ) 
- ubbidireste ( VERB ) 
- ubbidiresti ( VERB ) 
- ubbidirete ( VERB ) 
- ubbidiro' ( VERB ) 
- ubbidiron ( VERB ) 
- ubbidirono ( VERB ) 
- ubbidirà ( VERB ) 
- ubbidirò ( VERB ) 
- ubbidisca ( VERB ) 
- ubbidiscan ( VERB ) 
- ubbidiscano ( VERB ) 
- ubbidisce ( VERB ) 
- ubbidisci ( VERB ) 
- ubbidisco ( VERB ) 
- ubbidiscon ( VERB ) 
- ubbidiscono ( VERB ) 
- ubbidisse ( VERB ) 
- ubbidisser ( VERB ) 
- ubbidissero ( VERB ) 
- ubbidissi ( VERB ) 
- ubbidissimo ( VERB ) 
- ubbidiste ( VERB ) 
- ubbidisti ( VERB ) 
- ubbidita ( VERB_PAST_PARTICIPLE VERB ) 
- ubbidite ( VERB_PAST_PARTICIPLE VERB ) 
- ubbiditi ( VERB_PAST_PARTICIPLE VERB ) 
- ubbidito ( VERB_PAST_PARTICIPLE VERB ) 
- ubbidiva ( VERB ) 
- ubbidivamo ( VERB ) 
- ubbidivan ( VERB ) 
- ubbidivano ( VERB ) 
- ubbidivate ( VERB ) 
- ubbidivi ( VERB ) 
- ubbidivo ( VERB ) 
- ubbidì ( VERB ) 
- ubbie ( NOUN NOUN_SINGULAR ) 
- ubertosa ( ADJECTIVE ) 
- ubertose ( ADJECTIVE ) 
- ubertosi ( ADJECTIVE ) 
- ubertosissima ( ADJECTIVE ) 
- ubertosissime ( ADJECTIVE ) 
- ubertosissimi ( ADJECTIVE ) 
- ubertosissimo ( ADJECTIVE ) 
- ubertoso ( ADJECTIVE ) 
- ubica ( VERB ) 
- ubicai ( VERB ) 
- ubicammo ( VERB ) 
- ubican ( VERB ) 
- ubicando ( NOUN NOUN_GERUND ) 
- ubicano ( VERB ) 
- ubicante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ubicanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ubicar ( VERB_INFINITIVE VERB ) 
- ubicare ( VERB_INFINITIVE VERB ) 
- ubicaron ( VERB ) 
- ubicarono ( VERB ) 
- ubicasse ( VERB ) 
- ubicasser ( VERB ) 
- ubicassero ( VERB ) 
- ubicassi ( VERB ) 
- ubicassimo ( VERB ) 
- ubicaste ( VERB ) 
- ubicasti ( VERB ) 
- ubicata ( VERB_PAST_PARTICIPLE VERB ) 
- ubicate ( VERB_PAST_PARTICIPLE VERB ) 
- ubicati ( VERB_PAST_PARTICIPLE VERB ) 
- ubicato ( VERB_PAST_PARTICIPLE VERB ) 
- ubicava ( VERB ) 
- ubicavamo ( VERB ) 
- ubicavan ( VERB ) 
- ubicavano ( VERB ) 
- ubicavate ( VERB ) 
- ubicavi ( VERB ) 
- ubicavo ( VERB ) 
- ubicazione ( NOUN NOUN_SINGULAR ) 
- ubicazioni ( NOUN NOUN_SINGULAR ) 
- ubichera' ( VERB ) 
- ubicherai ( VERB ) 
- ubicheran ( VERB ) 
- ubicheranno ( VERB ) 
- ubicherebbe ( VERB ) 
- ubicherebber ( VERB ) 
- ubicherebbero ( VERB ) 
- ubicherei ( VERB ) 
- ubicheremmo ( VERB ) 
- ubicheremo ( VERB ) 
- ubichereste ( VERB ) 
- ubicheresti ( VERB ) 
- ubicherete ( VERB ) 
- ubichero' ( VERB ) 
- ubicherà ( VERB ) 
- ubicherò ( VERB ) 
- ubichi ( VERB ) 
- ubichiamo ( VERB ) 
- ubichiate ( VERB ) 
- ubichin ( VERB ) 
- ubichino ( VERB ) 
- ubico ( VERB ) 
- ubico' ( VERB ) 
- ubicò ( VERB ) 
- ubiqua ( ADJECTIVE ) 
- ubique ( ADJECTIVE ) 
- ubiqui ( ADJECTIVE ) 
- ubiquissima ( ADJECTIVE ) 
- ubiquissime ( ADJECTIVE ) 
- ubiquissimi ( ADJECTIVE ) 
- ubiquissimo ( ADJECTIVE ) 
- ubiquo ( ADJECTIVE ) 
- ubriaca ( VERB ADJECTIVE ) 
- ubriacai ( VERB ) 
- ubriacami ( VERB ) 
- ubriacammo ( VERB ) 
- ubriacan ( VERB ) 
- ubriacando ( NOUN NOUN_GERUND ) 
- ubriacano ( VERB ) 
- ubriacante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ubriacanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ubriacar ( VERB_INFINITIVE VERB ) 
- ubriacare ( VERB_INFINITIVE VERB ) 
- ubriacaron ( VERB ) 
- ubriacarono ( VERB ) 
- ubriacarsi ( VERB_INFINITIVE VERB ) 
- ubriacarvi ( VERB_INFINITIVE VERB ) 
- ubriacasse ( VERB ) 
- ubriacasser ( VERB ) 
- ubriacassero ( VERB ) 
- ubriacassi ( VERB ) 
- ubriacassimo ( VERB ) 
- ubriacaste ( VERB ) 
- ubriacasti ( VERB ) 
- ubriacata ( VERB_PAST_PARTICIPLE VERB ) 
- ubriacate ( VERB_PAST_PARTICIPLE VERB ) 
- ubriacati ( VERB_PAST_PARTICIPLE VERB ) 
- ubriacato ( VERB_PAST_PARTICIPLE VERB ) 
- ubriacatura ( NOUN NOUN_SINGULAR ) 
- ubriacature ( NOUN NOUN_SINGULAR ) 
- ubriacava ( VERB ) 
- ubriacavamo ( VERB ) 
- ubriacavan ( VERB ) 
- ubriacavano ( VERB ) 
- ubriacavate ( VERB ) 
- ubriacavi ( VERB ) 
- ubriacavo ( VERB ) 
- ubriache ( ADJECTIVE ) 
- ubriachera' ( VERB ) 
- ubriacherai ( VERB ) 
- ubriacheran ( VERB ) 
- ubriacheranno ( VERB ) 
- ubriacherebbe ( VERB ) 
- ubriacherebber ( VERB ) 
- ubriacherebbero ( VERB ) 
- ubriacherei ( VERB ) 
- ubriacheremmo ( VERB ) 
- ubriacheremo ( VERB ) 
- ubriachereste ( VERB ) 
- ubriacheresti ( VERB ) 
- ubriacherete ( VERB ) 
- ubriachero' ( VERB ) 
- ubriacherà ( VERB ) 
- ubriacherò ( VERB ) 
- ubriachi ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- ubriachiamo ( VERB ) 
- ubriachiate ( VERB ) 
- ubriachin ( VERB ) 
- ubriachino ( VERB ) 
- ubriachissima ( ADJECTIVE ) 
- ubriachissime ( ADJECTIVE ) 
- ubriachissimi ( ADJECTIVE ) 
- ubriachissimo ( ADJECTIVE ) 
- ubriaco ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- ubriaco' ( VERB ) 
- ubriacone ( NOUN NOUN_SINGULAR ) 
- ubriaconi ( NOUN NOUN_SINGULAR ) 
- ubriacò ( VERB ) 
- ubych ( ADJECTIVE ) 
- uccella ( VERB ) 
- uccellacci ( NOUN NOUN_SINGULAR ) 
- uccellaccio ( NOUN NOUN_SINGULAR ) 
- uccellai ( VERB ) 
- uccellammo ( VERB ) 
- uccellan ( VERB ) 
- uccellando ( NOUN NOUN_GERUND ) 
- uccellano ( VERB ) 
- uccellante ( VERB_PRESENT_PARTICIPLE VERB ) 
- uccellanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- uccellar ( VERB_INFINITIVE VERB ) 
- uccellare ( VERB_INFINITIVE VERB ) 
- uccellaron ( VERB ) 
- uccellarono ( VERB ) 
- uccellasse ( VERB ) 
- uccellasser ( VERB ) 
- uccellassero ( VERB ) 
- uccellassi ( VERB ) 
- uccellassimo ( VERB ) 
- uccellaste ( VERB ) 
- uccellasti ( VERB ) 
- uccellata ( VERB_PAST_PARTICIPLE VERB ) 
- uccellate ( VERB_PAST_PARTICIPLE VERB ) 
- uccellati ( VERB_PAST_PARTICIPLE VERB ) 
- uccellato ( VERB_PAST_PARTICIPLE VERB ) 
- uccellava ( VERB ) 
- uccellavamo ( VERB ) 
- uccellavan ( VERB ) 
- uccellavano ( VERB ) 
- uccellavate ( VERB ) 
- uccellavi ( VERB ) 
- uccellavo ( VERB ) 
- uccellera' ( VERB ) 
- uccellerai ( VERB ) 
- uccelleran ( VERB ) 
- uccelleranno ( VERB ) 
- uccellerebbe ( VERB ) 
- uccellerebber ( VERB ) 
- uccellerebbero ( VERB ) 
- uccellerei ( VERB ) 
- uccelleremmo ( VERB ) 
- uccelleremo ( VERB ) 
- uccellereste ( VERB ) 
- uccelleresti ( VERB ) 
- uccellerete ( VERB ) 
- uccellero' ( VERB ) 
- uccellerà ( VERB ) 
- uccellerò ( VERB ) 
- uccelli ( NOUN VERB NOUN_SINGULAR ) 
- uccelliamo ( VERB ) 
- uccelliate ( VERB ) 
- uccellin ( VERB ) 
- uccellini ( NOUN NOUN_SINGULAR ) 
- uccellino ( NOUN VERB NOUN_SINGULAR ) 
- uccello ( NOUN VERB NOUN_SINGULAR ) 
- uccello' ( VERB ) 
- uccellò ( VERB ) 
- uccida ( VERB ) 
- uccidan ( VERB ) 
- uccidano ( VERB ) 
- uccide ( VERB ) 
- uccidemmo ( VERB ) 
- uccidendo ( NOUN NOUN_GERUND ) 
- uccidendola ( NOUN NOUN_GERUND ) 
- uccidendoli ( NOUN NOUN_GERUND ) 
- uccidendolo ( NOUN NOUN_GERUND ) 
- uccidendone ( NOUN NOUN_GERUND ) 
- uccidente ( VERB_PRESENT_PARTICIPLE VERB ) 
- uccidenti ( VERB_PRESENT_PARTICIPLE VERB ) 
- uccider ( VERB_INFINITIVE VERB ) 
- uccidera' ( VERB ) 
- ucciderai ( VERB ) 
- uccideran ( VERB ) 
- uccideranno ( VERB ) 
- ucciderci ( VERB_INFINITIVE VERB ) 
- uccidere ( VERB_INFINITIVE VERB ) 
- ucciderebbe ( VERB ) 
- ucciderebber ( VERB ) 
- ucciderebbero ( VERB ) 
- ucciderei ( VERB ) 
- uccideremmo ( VERB ) 
- uccideremo ( VERB ) 
- uccidereste ( VERB ) 
- uccideresti ( VERB ) 
- ucciderete ( VERB ) 
- uccidergli ( VERB_INFINITIVE VERB ) 
- ucciderla ( VERB_INFINITIVE VERB ) 
- ucciderle ( VERB_INFINITIVE VERB ) 
- ucciderli ( VERB_INFINITIVE VERB ) 
- ucciderlo ( VERB_INFINITIVE VERB ) 
- uccidermi ( VERB_INFINITIVE VERB ) 
- uccidero' ( VERB ) 
- uccidersi ( VERB_INFINITIVE VERB ) 
- ucciderti ( VERB_INFINITIVE VERB ) 
- uccidervi ( VERB_INFINITIVE VERB ) 
- ucciderà ( VERB ) 
- ucciderò ( VERB ) 
- uccidesse ( VERB ) 
- uccidesser ( VERB ) 
- uccidessero ( VERB ) 
- uccidessi ( VERB ) 
- uccidessimo ( VERB ) 
- uccideste ( VERB ) 
- uccidesti ( VERB ) 
- uccidete ( VERB ) 
- uccidetemi ( VERB ) 
- uccideva ( VERB ) 
- uccidevamo ( VERB ) 
- uccidevan ( VERB ) 
- uccidevano ( VERB ) 
- uccidevate ( VERB ) 
- uccidevi ( VERB ) 
- uccidevo ( VERB ) 
- uccidi ( VERB ) 
- uccidiamo ( VERB ) 
- uccidiamolo ( VERB ) 
- uccidiate ( VERB ) 
- uccido ( VERB ) 
- uccidon ( VERB ) 
- uccidono ( VERB ) 
- uccisa ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- uccise ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- ucciser ( VERB ) 
- uccisero ( VERB ) 
- uccisi ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- uccisione ( NOUN NOUN_SINGULAR ) 
- uccisioni ( NOUN NOUN_SINGULAR ) 
- uccisissima ( ADJECTIVE ) 
- uccisissime ( ADJECTIVE ) 
- uccisissimi ( ADJECTIVE ) 
- uccisissimo ( ADJECTIVE ) 
- ucciso ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- uccisore ( NOUN NOUN_SINGULAR ) 
- uccisori ( NOUN NOUN_SINGULAR ) 
- ucraina ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ucraine ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ucraini ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ucrainissima ( ADJECTIVE ) 
- ucrainissime ( ADJECTIVE ) 
- ucrainissimi ( ADJECTIVE ) 
- ucrainissimo ( ADJECTIVE ) 
- ucraino ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- udendo ( NOUN NOUN_GERUND ) 
- udente ( VERB_PRESENT_PARTICIPLE VERB ) 
- udenti ( VERB_PRESENT_PARTICIPLE VERB ) 
- udi' ( VERB ) 
- udiamo ( VERB ) 
- udiate ( VERB ) 
- udibile ( ADJECTIVE ) 
- udibili ( ADJECTIVE ) 
- udibilissima ( ADJECTIVE ) 
- udibilissime ( ADJECTIVE ) 
- udibilissimi ( ADJECTIVE ) 
- udibilissimo ( ADJECTIVE ) 
- udienza ( NOUN NOUN_SINGULAR ) 
- udienze ( NOUN NOUN_SINGULAR ) 
- udii ( VERB ) 
- udimmo ( VERB ) 
- udinese ( NOUN NOUN_SINGULAR ) 
- udinesi ( NOUN NOUN_SINGULAR ) 
- udir ( VERB_INFINITIVE VERB ) 
- udira' ( VERB ) 
- udirai ( VERB ) 
- udiran ( VERB ) 
- udiranno ( VERB ) 
- udire ( VERB_INFINITIVE VERB ) 
- udirebbe ( VERB ) 
- udirebber ( VERB ) 
- udirebbero ( VERB ) 
- udirei ( VERB ) 
- udiremmo ( VERB ) 
- udiremo ( VERB ) 
- udireste ( VERB ) 
- udiresti ( VERB ) 
- udirete ( VERB ) 
- udirlo ( VERB_INFINITIVE VERB ) 
- udirmi ( VERB_INFINITIVE VERB ) 
- udiro' ( VERB ) 
- udiron ( VERB ) 
- udirono ( VERB ) 
- udirà ( VERB ) 
- udirò ( VERB ) 
- udisse ( VERB ) 
- udisser ( VERB ) 
- udissero ( VERB ) 
- udissi ( VERB ) 
- udissimo ( VERB ) 
- udiste ( VERB ) 
- udisti ( VERB ) 
- udita ( VERB_PAST_PARTICIPLE VERB ) 
- udite ( VERB_PAST_PARTICIPLE VERB ) 
- uditi ( VERB_PAST_PARTICIPLE VERB ) 
- uditiva ( ADJECTIVE ) 
- uditive ( ADJECTIVE ) 
- uditivi ( ADJECTIVE ) 
- uditivissima ( ADJECTIVE ) 
- uditivissime ( ADJECTIVE ) 
- uditivissimi ( ADJECTIVE ) 
- uditivissimo ( ADJECTIVE ) 
- uditivo ( ADJECTIVE ) 
- udito ( VERB_PAST_PARTICIPLE VERB ) 
- uditore ( NOUN NOUN_SINGULAR ) 
- uditori ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- uditoria ( ADJECTIVE ) 
- uditorie ( ADJECTIVE ) 
- uditorio ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- uditrice ( NOUN NOUN_SINGULAR ) 
- uditrici ( NOUN NOUN_SINGULAR ) 
- udiva ( VERB ) 
- udivamo ( VERB ) 
- udivan ( VERB ) 
- udivano ( VERB ) 
- udivate ( VERB ) 
- udivi ( VERB ) 
- udivo ( VERB ) 
- udì ( VERB ) 
+ ubbia ( ) 
+ ubbidendo ( ) lemma=ubbidire 
+ ubbidire ( ) 
+ ubbidente ( ) lemma=ubbidire 
+ ubbidenti ( ) lemma=ubbidire 
+ ubbidi' ( ) lemma=ubbidire 
+ ubbidiamo ( ) lemma=ubbidire 
+ ubbidiate ( ) lemma=ubbidire 
+ ubbidiente ( ) 
+ ubbidienti ( ) lemma=ubbidiente 
+ ubbidientissima ( ) lemma=ubbidiente 
+ ubbidientissime ( ) lemma=ubbidiente 
+ ubbidientissimi ( ) lemma=ubbidiente 
+ ubbidientissimo ( ) lemma=ubbidiente 
+ ubbidii ( ) lemma=ubbidire 
+ ubbidimmo ( ) lemma=ubbidire 
+ ubbidir ( ) lemma=ubbidire 
+ ubbidira' ( ) lemma=ubbidire 
+ ubbidirai ( ) lemma=ubbidire 
+ ubbidiran ( ) lemma=ubbidire 
+ ubbidiranno ( ) lemma=ubbidire 
+ ubbidirci ( ) lemma=ubbidire 
+ ubbidirebbe ( ) lemma=ubbidire 
+ ubbidirebber ( ) lemma=ubbidire 
+ ubbidirebbero ( ) lemma=ubbidire 
+ ubbidirei ( ) lemma=ubbidire 
+ ubbidiremmo ( ) lemma=ubbidire 
+ ubbidiremo ( ) lemma=ubbidire 
+ ubbidireste ( ) lemma=ubbidire 
+ ubbidiresti ( ) lemma=ubbidire 
+ ubbidirete ( ) lemma=ubbidire 
+ ubbidiro' ( ) lemma=ubbidire 
+ ubbidiron ( ) lemma=ubbidire 
+ ubbidirono ( ) lemma=ubbidire 
+ ubbidirà ( ) lemma=ubbidire 
+ ubbidirò ( ) lemma=ubbidire 
+ ubbidisca ( ) lemma=ubbidire 
+ ubbidiscan ( ) lemma=ubbidire 
+ ubbidiscano ( ) lemma=ubbidire 
+ ubbidisce ( ) lemma=ubbidire 
+ ubbidisci ( ) lemma=ubbidire 
+ ubbidisco ( ) lemma=ubbidire 
+ ubbidiscon ( ) lemma=ubbidire 
+ ubbidiscono ( ) lemma=ubbidire 
+ ubbidisse ( ) lemma=ubbidire 
+ ubbidisser ( ) lemma=ubbidire 
+ ubbidissero ( ) lemma=ubbidire 
+ ubbidissi ( ) lemma=ubbidire 
+ ubbidissimo ( ) lemma=ubbidire 
+ ubbidiste ( ) lemma=ubbidire 
+ ubbidisti ( ) lemma=ubbidire 
+ ubbidita ( ) lemma=ubbidire 
+ ubbidite ( ) lemma=ubbidire 
+ ubbiditi ( ) lemma=ubbidire 
+ ubbidito ( ) lemma=ubbidire 
+ ubbidiva ( ) lemma=ubbidire 
+ ubbidivamo ( ) lemma=ubbidire 
+ ubbidivan ( ) lemma=ubbidire 
+ ubbidivano ( ) lemma=ubbidire 
+ ubbidivate ( ) lemma=ubbidire 
+ ubbidivi ( ) lemma=ubbidire 
+ ubbidivo ( ) lemma=ubbidire 
+ ubbidì ( ) lemma=ubbidire 
+ ubbie ( ) lemma=ubbia 
+ ubertosa ( ) lemma=ubertoso 
+ ubertoso ( ) 
+ ubertose ( ) lemma=ubertoso 
+ ubertosi ( ) lemma=ubertoso 
+ ubertosissima ( ) lemma=ubertoso 
+ ubertosissime ( ) lemma=ubertoso 
+ ubertosissimi ( ) lemma=ubertoso 
+ ubertosissimo ( ) lemma=ubertoso 
+ ubica ( ) lemma=ubicare 
+ ubicare ( ) 
+ ubicai ( ) lemma=ubicare 
+ ubicammo ( ) lemma=ubicare 
+ ubican ( ) lemma=ubicare 
+ ubicando ( ) lemma=ubicare 
+ ubicano ( ) lemma=ubicare 
+ ubicante ( ) lemma=ubicare 
+ ubicanti ( ) lemma=ubicare 
+ ubicar ( ) lemma=ubicare 
+ ubicaron ( ) lemma=ubicare 
+ ubicarono ( ) lemma=ubicare 
+ ubicasse ( ) lemma=ubicare 
+ ubicasser ( ) lemma=ubicare 
+ ubicassero ( ) lemma=ubicare 
+ ubicassi ( ) lemma=ubicare 
+ ubicassimo ( ) lemma=ubicare 
+ ubicaste ( ) lemma=ubicare 
+ ubicasti ( ) lemma=ubicare 
+ ubicata ( ) lemma=ubicare 
+ ubicate ( ) lemma=ubicare 
+ ubicati ( ) lemma=ubicare 
+ ubicato ( ) lemma=ubicare 
+ ubicava ( ) lemma=ubicare 
+ ubicavamo ( ) lemma=ubicare 
+ ubicavan ( ) lemma=ubicare 
+ ubicavano ( ) lemma=ubicare 
+ ubicavate ( ) lemma=ubicare 
+ ubicavi ( ) lemma=ubicare 
+ ubicavo ( ) lemma=ubicare 
+ ubicazione ( ) 
+ ubicazioni ( ) lemma=ubicazione 
+ ubichera' ( ) lemma=ubicare 
+ ubicherai ( ) lemma=ubicare 
+ ubicheran ( ) lemma=ubicare 
+ ubicheranno ( ) lemma=ubicare 
+ ubicherebbe ( ) lemma=ubicare 
+ ubicherebber ( ) lemma=ubicare 
+ ubicherebbero ( ) lemma=ubicare 
+ ubicherei ( ) lemma=ubicare 
+ ubicheremmo ( ) lemma=ubicare 
+ ubicheremo ( ) lemma=ubicare 
+ ubichereste ( ) lemma=ubicare 
+ ubicheresti ( ) lemma=ubicare 
+ ubicherete ( ) lemma=ubicare 
+ ubichero' ( ) lemma=ubicare 
+ ubicherà ( ) lemma=ubicare 
+ ubicherò ( ) lemma=ubicare 
+ ubichi ( ) lemma=ubicare 
+ ubichiamo ( ) lemma=ubicare 
+ ubichiate ( ) lemma=ubicare 
+ ubichin ( ) lemma=ubicare 
+ ubichino ( ) lemma=ubicare 
+ ubico ( ) lemma=ubicare 
+ ubico' ( ) lemma=ubicare 
+ ubicò ( ) lemma=ubicare 
+ ubiqua ( ) lemma=ubiquo 
+ ubiquo ( ) 
+ ubique ( ) lemma=ubiquo 
+ ubiqui ( ) lemma=ubiquo 
+ ubiquissima ( ) lemma=ubiquo 
+ ubiquissime ( ) lemma=ubiquo 
+ ubiquissimi ( ) lemma=ubiquo 
+ ubiquissimo ( ) lemma=ubiquo 
+ ubriaca ( ) lemma=ubriaco 
+ ubriaco ( ) 
+ ubriacai ( ) lemma=ubriacare 
+ ubriacare ( ) 
+ ubriacami ( ) lemma=ubriacare 
+ ubriacammo ( ) lemma=ubriacare 
+ ubriacan ( ) lemma=ubriacare 
+ ubriacando ( ) lemma=ubriacare 
+ ubriacano ( ) lemma=ubriacare 
+ ubriacante ( ) lemma=ubriacare 
+ ubriacanti ( ) lemma=ubriacare 
+ ubriacar ( ) lemma=ubriacare 
+ ubriacaron ( ) lemma=ubriacare 
+ ubriacarono ( ) lemma=ubriacare 
+ ubriacarsi ( ) lemma=ubriacare 
+ ubriacarvi ( ) lemma=ubriacare 
+ ubriacasse ( ) lemma=ubriacare 
+ ubriacasser ( ) lemma=ubriacare 
+ ubriacassero ( ) lemma=ubriacare 
+ ubriacassi ( ) lemma=ubriacare 
+ ubriacassimo ( ) lemma=ubriacare 
+ ubriacaste ( ) lemma=ubriacare 
+ ubriacasti ( ) lemma=ubriacare 
+ ubriacata ( ) lemma=ubriacare 
+ ubriacate ( ) lemma=ubriacare 
+ ubriacati ( ) lemma=ubriacare 
+ ubriacato ( ) lemma=ubriacare 
+ ubriacatura ( ) 
+ ubriacature ( ) lemma=ubriacatura 
+ ubriacava ( ) lemma=ubriacare 
+ ubriacavamo ( ) lemma=ubriacare 
+ ubriacavan ( ) lemma=ubriacare 
+ ubriacavano ( ) lemma=ubriacare 
+ ubriacavate ( ) lemma=ubriacare 
+ ubriacavi ( ) lemma=ubriacare 
+ ubriacavo ( ) lemma=ubriacare 
+ ubriache ( ) lemma=ubriaco 
+ ubriachera' ( ) lemma=ubriacare 
+ ubriacherai ( ) lemma=ubriacare 
+ ubriacheran ( ) lemma=ubriacare 
+ ubriacheranno ( ) lemma=ubriacare 
+ ubriacherebbe ( ) lemma=ubriacare 
+ ubriacherebber ( ) lemma=ubriacare 
+ ubriacherebbero ( ) lemma=ubriacare 
+ ubriacherei ( ) lemma=ubriacare 
+ ubriacheremmo ( ) lemma=ubriacare 
+ ubriacheremo ( ) lemma=ubriacare 
+ ubriachereste ( ) lemma=ubriacare 
+ ubriacheresti ( ) lemma=ubriacare 
+ ubriacherete ( ) lemma=ubriacare 
+ ubriachero' ( ) lemma=ubriacare 
+ ubriacherà ( ) lemma=ubriacare 
+ ubriacherò ( ) lemma=ubriacare 
+ ubriachi ( ) lemma=ubriaco 
+ ubriachiamo ( ) lemma=ubriacare 
+ ubriachiate ( ) lemma=ubriacare 
+ ubriachin ( ) lemma=ubriacare 
+ ubriachino ( ) lemma=ubriacare 
+ ubriachissima ( ) lemma=ubriaco 
+ ubriachissime ( ) lemma=ubriaco 
+ ubriachissimi ( ) lemma=ubriaco 
+ ubriachissimo ( ) lemma=ubriaco 
+ ubriaco' ( ) lemma=ubriacare 
+ ubriacone ( ) 
+ ubriaconi ( ) lemma=ubriacone 
+ ubriacò ( ) lemma=ubriacare 
+ ubych ( ) 
+ uccella ( ) lemma=uccellare 
+ uccellare ( ) 
+ uccellacci ( ) lemma=uccellaccio 
+ uccellaccio ( ) 
+ uccellai ( ) lemma=uccellare 
+ uccellammo ( ) lemma=uccellare 
+ uccellan ( ) lemma=uccellare 
+ uccellando ( ) lemma=uccellare 
+ uccellano ( ) lemma=uccellare 
+ uccellante ( ) lemma=uccellare 
+ uccellanti ( ) lemma=uccellare 
+ uccellar ( ) lemma=uccellare 
+ uccellaron ( ) lemma=uccellare 
+ uccellarono ( ) lemma=uccellare 
+ uccellasse ( ) lemma=uccellare 
+ uccellasser ( ) lemma=uccellare 
+ uccellassero ( ) lemma=uccellare 
+ uccellassi ( ) lemma=uccellare 
+ uccellassimo ( ) lemma=uccellare 
+ uccellaste ( ) lemma=uccellare 
+ uccellasti ( ) lemma=uccellare 
+ uccellata ( ) lemma=uccellare 
+ uccellate ( ) lemma=uccellare 
+ uccellati ( ) lemma=uccellare 
+ uccellato ( ) lemma=uccellare 
+ uccellava ( ) lemma=uccellare 
+ uccellavamo ( ) lemma=uccellare 
+ uccellavan ( ) lemma=uccellare 
+ uccellavano ( ) lemma=uccellare 
+ uccellavate ( ) lemma=uccellare 
+ uccellavi ( ) lemma=uccellare 
+ uccellavo ( ) lemma=uccellare 
+ uccellera' ( ) lemma=uccellare 
+ uccellerai ( ) lemma=uccellare 
+ uccelleran ( ) lemma=uccellare 
+ uccelleranno ( ) lemma=uccellare 
+ uccellerebbe ( ) lemma=uccellare 
+ uccellerebber ( ) lemma=uccellare 
+ uccellerebbero ( ) lemma=uccellare 
+ uccellerei ( ) lemma=uccellare 
+ uccelleremmo ( ) lemma=uccellare 
+ uccelleremo ( ) lemma=uccellare 
+ uccellereste ( ) lemma=uccellare 
+ uccelleresti ( ) lemma=uccellare 
+ uccellerete ( ) lemma=uccellare 
+ uccellero' ( ) lemma=uccellare 
+ uccellerà ( ) lemma=uccellare 
+ uccellerò ( ) lemma=uccellare 
+ uccelli ( ) lemma=uccello 
+ uccello ( ) 
+ uccelliamo ( ) lemma=uccellare 
+ uccelliate ( ) lemma=uccellare 
+ uccellin ( ) lemma=uccellare 
+ uccellini ( ) lemma=uccellino 
+ uccellino ( ) 
+ uccello' ( ) lemma=uccellare 
+ uccellò ( ) lemma=uccellare 
+ uccida ( ) lemma=uccidere 
+ uccidere ( ) 
+ uccidan ( ) lemma=uccidere 
+ uccidano ( ) lemma=uccidere 
+ uccide ( ) lemma=uccidere 
+ uccidemmo ( ) lemma=uccidere 
+ uccidendo ( ) lemma=uccidere 
+ uccidendola ( ) lemma=uccidere 
+ uccidendoli ( ) lemma=uccidere 
+ uccidendolo ( ) lemma=uccidere 
+ uccidendone ( ) lemma=uccidere 
+ uccidente ( ) lemma=uccidere 
+ uccidenti ( ) lemma=uccidere 
+ uccider ( ) lemma=uccidere 
+ uccidera' ( ) lemma=uccidere 
+ ucciderai ( ) lemma=uccidere 
+ uccideran ( ) lemma=uccidere 
+ uccideranno ( ) lemma=uccidere 
+ ucciderci ( ) lemma=uccidere 
+ ucciderebbe ( ) lemma=uccidere 
+ ucciderebber ( ) lemma=uccidere 
+ ucciderebbero ( ) lemma=uccidere 
+ ucciderei ( ) lemma=uccidere 
+ uccideremmo ( ) lemma=uccidere 
+ uccideremo ( ) lemma=uccidere 
+ uccidereste ( ) lemma=uccidere 
+ uccideresti ( ) lemma=uccidere 
+ ucciderete ( ) lemma=uccidere 
+ uccidergli ( ) lemma=uccidere 
+ ucciderla ( ) lemma=uccidere 
+ ucciderle ( ) lemma=uccidere 
+ ucciderli ( ) lemma=uccidere 
+ ucciderlo ( ) lemma=uccidere 
+ uccidermi ( ) lemma=uccidere 
+ uccidero' ( ) lemma=uccidere 
+ uccidersi ( ) lemma=uccidere 
+ ucciderti ( ) lemma=uccidere 
+ uccidervi ( ) lemma=uccidere 
+ ucciderà ( ) lemma=uccidere 
+ ucciderò ( ) lemma=uccidere 
+ uccidesse ( ) lemma=uccidere 
+ uccidesser ( ) lemma=uccidere 
+ uccidessero ( ) lemma=uccidere 
+ uccidessi ( ) lemma=uccidere 
+ uccidessimo ( ) lemma=uccidere 
+ uccideste ( ) lemma=uccidere 
+ uccidesti ( ) lemma=uccidere 
+ uccidete ( ) lemma=uccidere 
+ uccidetemi ( ) lemma=uccidere 
+ uccideva ( ) lemma=uccidere 
+ uccidevamo ( ) lemma=uccidere 
+ uccidevan ( ) lemma=uccidere 
+ uccidevano ( ) lemma=uccidere 
+ uccidevate ( ) lemma=uccidere 
+ uccidevi ( ) lemma=uccidere 
+ uccidevo ( ) lemma=uccidere 
+ uccidi ( ) lemma=uccidere 
+ uccidiamo ( ) lemma=uccidere 
+ uccidiamolo ( ) lemma=uccidere 
+ uccidiate ( ) lemma=uccidere 
+ uccido ( ) lemma=uccidere 
+ uccidon ( ) lemma=uccidere 
+ uccidono ( ) lemma=uccidere 
+ uccisa ( ) lemma=ucciso 
+ ucciso ( ) 
+ uccise ( ) lemma=ucciso 
+ ucciser ( ) lemma=uccidere 
+ uccisero ( ) lemma=uccidere 
+ uccisi ( ) lemma=ucciso 
+ uccisione ( ) 
+ uccisioni ( ) lemma=uccisione 
+ uccisissima ( ) lemma=ucciso 
+ uccisissime ( ) lemma=ucciso 
+ uccisissimi ( ) lemma=ucciso 
+ uccisissimo ( ) lemma=ucciso 
+ uccisore ( ) 
+ uccisori ( ) lemma=uccisore 
+ ucraina ( ) lemma=ucraino 
+ ucraino ( ) 
+ ucraine ( ) lemma=ucraino 
+ ucraini ( ) lemma=ucraino 
+ ucrainissima ( ) lemma=ucraino 
+ ucrainissime ( ) lemma=ucraino 
+ ucrainissimi ( ) lemma=ucraino 
+ ucrainissimo ( ) lemma=ucraino 
+ udendo ( ) lemma=udire 
+ udente ( ) lemma=udire 
+ udenti ( ) lemma=udire 
+ udi' ( ) lemma=udire 
+ udiamo ( ) lemma=udire 
+ udiate ( ) lemma=udire 
+ udibile ( ) 
+ udibili ( ) lemma=udibile 
+ udibilissima ( ) lemma=udibile 
+ udibilissime ( ) lemma=udibile 
+ udibilissimi ( ) lemma=udibile 
+ udibilissimo ( ) lemma=udibile 
+ udienza ( ) 
+ udienze ( ) lemma=udienza 
+ udii ( ) lemma=udire 
+ udimmo ( ) lemma=udire 
+ udinese ( ) 
+ udinesi ( ) lemma=udinese 
+ udir ( ) lemma=udire 
+ udira' ( ) lemma=udire 
+ udirai ( ) lemma=udire 
+ udiran ( ) lemma=udire 
+ udiranno ( ) lemma=udire 
+ udirebbe ( ) lemma=udire 
+ udirebber ( ) lemma=udire 
+ udirebbero ( ) lemma=udire 
+ udirei ( ) lemma=udire 
+ udiremmo ( ) lemma=udire 
+ udiremo ( ) lemma=udire 
+ udireste ( ) lemma=udire 
+ udiresti ( ) lemma=udire 
+ udirete ( ) lemma=udire 
+ udirlo ( ) lemma=udire 
+ udirmi ( ) lemma=udire 
+ udiro' ( ) lemma=udire 
+ udiron ( ) lemma=udire 
+ udirono ( ) lemma=udire 
+ udirà ( ) lemma=udire 
+ udirò ( ) lemma=udire 
+ udisse ( ) lemma=udire 
+ udisser ( ) lemma=udire 
+ udissero ( ) lemma=udire 
+ udissi ( ) lemma=udire 
+ udissimo ( ) lemma=udire 
+ udiste ( ) lemma=udire 
+ udisti ( ) lemma=udire 
+ udita ( ) lemma=udire 
+ udite ( ) lemma=udire 
+ uditi ( ) lemma=udire 
+ uditiva ( ) lemma=uditivo 
+ uditivo ( ) 
+ uditive ( ) lemma=uditivo 
+ uditivi ( ) lemma=uditivo 
+ uditivissima ( ) lemma=uditivo 
+ uditivissime ( ) lemma=uditivo 
+ uditivissimi ( ) lemma=uditivo 
+ uditivissimo ( ) lemma=uditivo 
+ udito ( ) lemma=udire 
+ uditore ( ) 
+ uditori ( ) lemma=uditorio 
+ uditorio ( ) 
+ uditoria ( ) lemma=uditorio 
+ uditorie ( ) lemma=uditorio 
+ uditrice ( ) lemma=uditore 
+ uditrici ( ) lemma=uditore 
+ udiva ( ) lemma=udire 
+ udivamo ( ) lemma=udire 
+ udivan ( ) lemma=udire 
+ udivano ( ) lemma=udire 
+ udivate ( ) lemma=udire 
+ udivi ( ) lemma=udire 
+ udivo ( ) lemma=udire 
+ udì ( ) lemma=udire 
  ueh ( ) 
- ufficera' ( VERB ) 
- ufficerai ( VERB ) 
- ufficeran ( VERB ) 
- ufficeranno ( VERB ) 
- ufficerebbe ( VERB ) 
- ufficerebber ( VERB ) 
- ufficerebbero ( VERB ) 
- ufficerei ( VERB ) 
- ufficeremmo ( VERB ) 
- ufficeremo ( VERB ) 
- ufficereste ( VERB ) 
- ufficeresti ( VERB ) 
- ufficerete ( VERB ) 
- ufficero' ( VERB ) 
- ufficerà ( VERB ) 
- ufficerò ( VERB ) 
- ufficetti ( NOUN NOUN_SINGULAR ) 
- ufficetto ( NOUN NOUN_SINGULAR ) 
- uffici ( NOUN VERB NOUN_SINGULAR ) 
- ufficia ( VERB ) 
- ufficiai ( VERB ) 
- ufficiale ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ufficialetti ( NOUN NOUN_SINGULAR ) 
- ufficialetto ( NOUN NOUN_SINGULAR ) 
- ufficiali ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ufficialissima ( ADJECTIVE ) 
- ufficialissime ( ADJECTIVE ) 
- ufficialissimi ( ADJECTIVE ) 
- ufficialissimo ( ADJECTIVE ) 
- ufficialita' ( NOUN NOUN_SINGULAR ) 
- ufficialità ( NOUN NOUN_SINGULAR ) 
- ufficializza ( VERB ) 
- ufficializzai ( VERB ) 
- ufficializzammo ( VERB ) 
- ufficializzan ( VERB ) 
- ufficializzando ( NOUN NOUN_GERUND ) 
- ufficializzano ( VERB ) 
- ufficializzante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ufficializzanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ufficializzar ( VERB_INFINITIVE VERB ) 
- ufficializzare ( VERB_INFINITIVE VERB ) 
- ufficializzarla ( VERB_INFINITIVE VERB ) 
- ufficializzaron ( VERB ) 
- ufficializzarono ( VERB ) 
- ufficializzasse ( VERB ) 
- ufficializzasser ( VERB ) 
- ufficializzassero ( VERB ) 
- ufficializzassi ( VERB ) 
- ufficializzassimo ( VERB ) 
- ufficializzaste ( VERB ) 
- ufficializzasti ( VERB ) 
- ufficializzata ( VERB_PAST_PARTICIPLE VERB ) 
- ufficializzate ( VERB_PAST_PARTICIPLE VERB ) 
- ufficializzati ( VERB_PAST_PARTICIPLE VERB ) 
- ufficializzato ( VERB_PAST_PARTICIPLE VERB ) 
- ufficializzava ( VERB ) 
- ufficializzavamo ( VERB ) 
- ufficializzavan ( VERB ) 
- ufficializzavano ( VERB ) 
- ufficializzavate ( VERB ) 
- ufficializzavi ( VERB ) 
- ufficializzavo ( VERB ) 
- ufficializzazione ( NOUN NOUN_SINGULAR ) 
- ufficializzazioni ( NOUN NOUN_SINGULAR ) 
- ufficializzera' ( VERB ) 
- ufficializzerai ( VERB ) 
- ufficializzeran ( VERB ) 
- ufficializzeranno ( VERB ) 
- ufficializzerebbe ( VERB ) 
- ufficializzerebber ( VERB ) 
- ufficializzerebbero ( VERB ) 
- ufficializzerei ( VERB ) 
- ufficializzeremmo ( VERB ) 
- ufficializzeremo ( VERB ) 
- ufficializzereste ( VERB ) 
- ufficializzeresti ( VERB ) 
- ufficializzerete ( VERB ) 
- ufficializzero' ( VERB ) 
- ufficializzerà ( VERB ) 
- ufficializzerò ( VERB ) 
- ufficializzi ( VERB ) 
- ufficializziamo ( VERB ) 
- ufficializziate ( VERB ) 
- ufficializzin ( VERB ) 
- ufficializzino ( VERB ) 
- ufficializzo ( VERB ) 
- ufficializzo' ( VERB ) 
- ufficializzò ( VERB ) 
- ufficialmente ( ADVERB ) 
- ufficiammo ( VERB ) 
- ufficiamo ( VERB ) 
- uffician ( VERB ) 
- ufficiando ( NOUN NOUN_GERUND ) 
- ufficiano ( VERB ) 
- ufficiante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ufficianti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ufficiar ( VERB_INFINITIVE VERB ) 
- ufficiare ( VERB_INFINITIVE VERB ) 
- ufficiaron ( VERB ) 
- ufficiarono ( VERB ) 
- ufficiasse ( VERB ) 
- ufficiasser ( VERB ) 
- ufficiassero ( VERB ) 
- ufficiassi ( VERB ) 
- ufficiassimo ( VERB ) 
- ufficiaste ( VERB ) 
- ufficiasti ( VERB ) 
- ufficiata ( VERB_PAST_PARTICIPLE VERB ) 
- ufficiate ( VERB_PAST_PARTICIPLE VERB ) 
- ufficiati ( VERB_PAST_PARTICIPLE VERB ) 
- ufficiato ( VERB_PAST_PARTICIPLE VERB ) 
- ufficiava ( VERB ) 
- ufficiavamo ( VERB ) 
- ufficiavan ( VERB ) 
- ufficiavano ( VERB ) 
- ufficiavate ( VERB ) 
- ufficiavi ( VERB ) 
- ufficiavo ( VERB ) 
- ufficin ( VERB ) 
- ufficino ( VERB ) 
- ufficio ( NOUN VERB NOUN_SINGULAR ) 
- ufficio' ( VERB ) 
- ufficiosa ( ADJECTIVE ) 
- ufficiose ( ADJECTIVE ) 
- ufficiosi ( ADJECTIVE ) 
- ufficiosissima ( ADJECTIVE ) 
- ufficiosissime ( ADJECTIVE ) 
- ufficiosissimi ( ADJECTIVE ) 
- ufficiosissimo ( ADJECTIVE ) 
- ufficioso ( ADJECTIVE ) 
- ufficiò ( VERB ) 
- uggiola ( VERB ) 
- uggiolai ( VERB ) 
- uggiolammo ( VERB ) 
- uggiolan ( VERB ) 
- uggiolando ( NOUN NOUN_GERUND ) 
- uggiolano ( VERB ) 
- uggiolante ( VERB_PRESENT_PARTICIPLE VERB ) 
- uggiolanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- uggiolar ( VERB_INFINITIVE VERB ) 
- uggiolare ( VERB_INFINITIVE VERB ) 
- uggiolaron ( VERB ) 
- uggiolarono ( VERB ) 
- uggiolasse ( VERB ) 
- uggiolasser ( VERB ) 
- uggiolassero ( VERB ) 
- uggiolassi ( VERB ) 
- uggiolassimo ( VERB ) 
- uggiolaste ( VERB ) 
- uggiolasti ( VERB ) 
- uggiolata ( VERB_PAST_PARTICIPLE VERB ) 
- uggiolate ( VERB_PAST_PARTICIPLE VERB ) 
- uggiolati ( VERB_PAST_PARTICIPLE VERB ) 
- uggiolato ( VERB_PAST_PARTICIPLE VERB ) 
- uggiolava ( VERB ) 
- uggiolavamo ( VERB ) 
- uggiolavan ( VERB ) 
- uggiolavano ( VERB ) 
- uggiolavate ( VERB ) 
- uggiolavi ( VERB ) 
- uggiolavo ( VERB ) 
- uggiolera' ( VERB ) 
- uggiolerai ( VERB ) 
- uggioleran ( VERB ) 
- uggioleranno ( VERB ) 
- uggiolerebbe ( VERB ) 
- uggiolerebber ( VERB ) 
- uggiolerebbero ( VERB ) 
- uggiolerei ( VERB ) 
- uggioleremmo ( VERB ) 
- uggioleremo ( VERB ) 
- uggiolereste ( VERB ) 
- uggioleresti ( VERB ) 
- uggiolerete ( VERB ) 
- uggiolero' ( VERB ) 
- uggiolerà ( VERB ) 
- uggiolerò ( VERB ) 
- uggioli ( VERB ) 
- uggioliamo ( VERB ) 
- uggioliate ( VERB ) 
- uggiolin ( VERB ) 
- uggiolino ( VERB ) 
- uggiolo ( VERB ) 
- uggiolo' ( VERB ) 
- uggiolò ( VERB ) 
- uggiosa ( ADJECTIVE ) 
- uggiose ( ADJECTIVE ) 
- uggiosi ( ADJECTIVE ) 
- uggiosissima ( ADJECTIVE ) 
- uggiosissime ( ADJECTIVE ) 
- uggiosissimi ( ADJECTIVE ) 
- uggiosissimo ( ADJECTIVE ) 
- uggioso ( ADJECTIVE ) 
+ ufficera' ( ) lemma=ufficiare 
+ ufficiare ( ) 
+ ufficerai ( ) lemma=ufficiare 
+ ufficeran ( ) lemma=ufficiare 
+ ufficeranno ( ) lemma=ufficiare 
+ ufficerebbe ( ) lemma=ufficiare 
+ ufficerebber ( ) lemma=ufficiare 
+ ufficerebbero ( ) lemma=ufficiare 
+ ufficerei ( ) lemma=ufficiare 
+ ufficeremmo ( ) lemma=ufficiare 
+ ufficeremo ( ) lemma=ufficiare 
+ ufficereste ( ) lemma=ufficiare 
+ ufficeresti ( ) lemma=ufficiare 
+ ufficerete ( ) lemma=ufficiare 
+ ufficero' ( ) lemma=ufficiare 
+ ufficerà ( ) lemma=ufficiare 
+ ufficerò ( ) lemma=ufficiare 
+ ufficetti ( ) lemma=ufficetto 
+ ufficetto ( ) 
+ uffici ( ) lemma=ufficio 
+ ufficio ( ) 
+ ufficia ( ) lemma=ufficiare 
+ ufficiai ( ) lemma=ufficiare 
+ ufficiale ( ) 
+ ufficialetti ( ) lemma=ufficialetto 
+ ufficialetto ( ) 
+ ufficiali ( ) lemma=ufficiale 
+ ufficialissima ( ) lemma=ufficiale 
+ ufficialissime ( ) lemma=ufficiale 
+ ufficialissimi ( ) lemma=ufficiale 
+ ufficialissimo ( ) lemma=ufficiale 
+ ufficialita' ( ) lemma=ufficialità 
+ ufficialità ( ) 
+ ufficializza ( ) lemma=ufficializzare 
+ ufficializzare ( ) 
+ ufficializzai ( ) lemma=ufficializzare 
+ ufficializzammo ( ) lemma=ufficializzare 
+ ufficializzan ( ) lemma=ufficializzare 
+ ufficializzando ( ) lemma=ufficializzare 
+ ufficializzano ( ) lemma=ufficializzare 
+ ufficializzante ( ) lemma=ufficializzare 
+ ufficializzanti ( ) lemma=ufficializzare 
+ ufficializzar ( ) lemma=ufficializzare 
+ ufficializzarla ( ) lemma=ufficializzare 
+ ufficializzaron ( ) lemma=ufficializzare 
+ ufficializzarono ( ) lemma=ufficializzare 
+ ufficializzasse ( ) lemma=ufficializzare 
+ ufficializzasser ( ) lemma=ufficializzare 
+ ufficializzassero ( ) lemma=ufficializzare 
+ ufficializzassi ( ) lemma=ufficializzare 
+ ufficializzassimo ( ) lemma=ufficializzare 
+ ufficializzaste ( ) lemma=ufficializzare 
+ ufficializzasti ( ) lemma=ufficializzare 
+ ufficializzata ( ) lemma=ufficializzare 
+ ufficializzate ( ) lemma=ufficializzare 
+ ufficializzati ( ) lemma=ufficializzare 
+ ufficializzato ( ) lemma=ufficializzare 
+ ufficializzava ( ) lemma=ufficializzare 
+ ufficializzavamo ( ) lemma=ufficializzare 
+ ufficializzavan ( ) lemma=ufficializzare 
+ ufficializzavano ( ) lemma=ufficializzare 
+ ufficializzavate ( ) lemma=ufficializzare 
+ ufficializzavi ( ) lemma=ufficializzare 
+ ufficializzavo ( ) lemma=ufficializzare 
+ ufficializzazione ( ) 
+ ufficializzazioni ( ) lemma=ufficializzazione 
+ ufficializzera' ( ) lemma=ufficializzare 
+ ufficializzerai ( ) lemma=ufficializzare 
+ ufficializzeran ( ) lemma=ufficializzare 
+ ufficializzeranno ( ) lemma=ufficializzare 
+ ufficializzerebbe ( ) lemma=ufficializzare 
+ ufficializzerebber ( ) lemma=ufficializzare 
+ ufficializzerebbero ( ) lemma=ufficializzare 
+ ufficializzerei ( ) lemma=ufficializzare 
+ ufficializzeremmo ( ) lemma=ufficializzare 
+ ufficializzeremo ( ) lemma=ufficializzare 
+ ufficializzereste ( ) lemma=ufficializzare 
+ ufficializzeresti ( ) lemma=ufficializzare 
+ ufficializzerete ( ) lemma=ufficializzare 
+ ufficializzero' ( ) lemma=ufficializzare 
+ ufficializzerà ( ) lemma=ufficializzare 
+ ufficializzerò ( ) lemma=ufficializzare 
+ ufficializzi ( ) lemma=ufficializzare 
+ ufficializziamo ( ) lemma=ufficializzare 
+ ufficializziate ( ) lemma=ufficializzare 
+ ufficializzin ( ) lemma=ufficializzare 
+ ufficializzino ( ) lemma=ufficializzare 
+ ufficializzo ( ) lemma=ufficializzare 
+ ufficializzo' ( ) lemma=ufficializzare 
+ ufficializzò ( ) lemma=ufficializzare 
+ ufficialmente ( ) 
+ ufficiammo ( ) lemma=ufficiare 
+ ufficiamo ( ) lemma=ufficiare 
+ uffician ( ) lemma=ufficiare 
+ ufficiando ( ) lemma=ufficiare 
+ ufficiano ( ) lemma=ufficiare 
+ ufficiante ( ) lemma=ufficiare 
+ ufficianti ( ) lemma=ufficiare 
+ ufficiar ( ) lemma=ufficiare 
+ ufficiaron ( ) lemma=ufficiare 
+ ufficiarono ( ) lemma=ufficiare 
+ ufficiasse ( ) lemma=ufficiare 
+ ufficiasser ( ) lemma=ufficiare 
+ ufficiassero ( ) lemma=ufficiare 
+ ufficiassi ( ) lemma=ufficiare 
+ ufficiassimo ( ) lemma=ufficiare 
+ ufficiaste ( ) lemma=ufficiare 
+ ufficiasti ( ) lemma=ufficiare 
+ ufficiata ( ) lemma=ufficiare 
+ ufficiate ( ) lemma=ufficiare 
+ ufficiati ( ) lemma=ufficiare 
+ ufficiato ( ) lemma=ufficiare 
+ ufficiava ( ) lemma=ufficiare 
+ ufficiavamo ( ) lemma=ufficiare 
+ ufficiavan ( ) lemma=ufficiare 
+ ufficiavano ( ) lemma=ufficiare 
+ ufficiavate ( ) lemma=ufficiare 
+ ufficiavi ( ) lemma=ufficiare 
+ ufficiavo ( ) lemma=ufficiare 
+ ufficin ( ) lemma=ufficiare 
+ ufficino ( ) lemma=ufficiare 
+ ufficio' ( ) lemma=ufficiare 
+ ufficiosa ( ) lemma=ufficioso 
+ ufficioso ( ) 
+ ufficiose ( ) lemma=ufficioso 
+ ufficiosi ( ) lemma=ufficioso 
+ ufficiosissima ( ) lemma=ufficioso 
+ ufficiosissime ( ) lemma=ufficioso 
+ ufficiosissimi ( ) lemma=ufficioso 
+ ufficiosissimo ( ) lemma=ufficioso 
+ ufficiò ( ) lemma=ufficiare 
+ uggiola ( ) lemma=uggiolare 
+ uggiolare ( ) 
+ uggiolai ( ) lemma=uggiolare 
+ uggiolammo ( ) lemma=uggiolare 
+ uggiolan ( ) lemma=uggiolare 
+ uggiolando ( ) lemma=uggiolare 
+ uggiolano ( ) lemma=uggiolare 
+ uggiolante ( ) lemma=uggiolare 
+ uggiolanti ( ) lemma=uggiolare 
+ uggiolar ( ) lemma=uggiolare 
+ uggiolaron ( ) lemma=uggiolare 
+ uggiolarono ( ) lemma=uggiolare 
+ uggiolasse ( ) lemma=uggiolare 
+ uggiolasser ( ) lemma=uggiolare 
+ uggiolassero ( ) lemma=uggiolare 
+ uggiolassi ( ) lemma=uggiolare 
+ uggiolassimo ( ) lemma=uggiolare 
+ uggiolaste ( ) lemma=uggiolare 
+ uggiolasti ( ) lemma=uggiolare 
+ uggiolata ( ) lemma=uggiolare 
+ uggiolate ( ) lemma=uggiolare 
+ uggiolati ( ) lemma=uggiolare 
+ uggiolato ( ) lemma=uggiolare 
+ uggiolava ( ) lemma=uggiolare 
+ uggiolavamo ( ) lemma=uggiolare 
+ uggiolavan ( ) lemma=uggiolare 
+ uggiolavano ( ) lemma=uggiolare 
+ uggiolavate ( ) lemma=uggiolare 
+ uggiolavi ( ) lemma=uggiolare 
+ uggiolavo ( ) lemma=uggiolare 
+ uggiolera' ( ) lemma=uggiolare 
+ uggiolerai ( ) lemma=uggiolare 
+ uggioleran ( ) lemma=uggiolare 
+ uggioleranno ( ) lemma=uggiolare 
+ uggiolerebbe ( ) lemma=uggiolare 
+ uggiolerebber ( ) lemma=uggiolare 
+ uggiolerebbero ( ) lemma=uggiolare 
+ uggiolerei ( ) lemma=uggiolare 
+ uggioleremmo ( ) lemma=uggiolare 
+ uggioleremo ( ) lemma=uggiolare 
+ uggiolereste ( ) lemma=uggiolare 
+ uggioleresti ( ) lemma=uggiolare 
+ uggiolerete ( ) lemma=uggiolare 
+ uggiolero' ( ) lemma=uggiolare 
+ uggiolerà ( ) lemma=uggiolare 
+ uggiolerò ( ) lemma=uggiolare 
+ uggioli ( ) lemma=uggiolare 
+ uggioliamo ( ) lemma=uggiolare 
+ uggioliate ( ) lemma=uggiolare 
+ uggiolin ( ) lemma=uggiolare 
+ uggiolino ( ) lemma=uggiolare 
+ uggiolo ( ) lemma=uggiolare 
+ uggiolo' ( ) lemma=uggiolare 
+ uggiolò ( ) lemma=uggiolare 
+ uggiosa ( ) lemma=uggioso 
+ uggioso ( ) 
+ uggiose ( ) lemma=uggioso 
+ uggiosi ( ) lemma=uggioso 
+ uggiosissima ( ) lemma=uggioso 
+ uggiosissime ( ) lemma=uggioso 
+ uggiosissimi ( ) lemma=uggioso 
+ uggiosissimo ( ) lemma=uggioso 
  ugh ( ) 
- ugola ( NOUN NOUN_SINGULAR ) 
- ugole ( NOUN NOUN_SINGULAR ) 
- ugonotta ( ADJECTIVE ) 
- ugonotte ( ADJECTIVE ) 
- ugonotti ( ADJECTIVE ) 
- ugonottissima ( ADJECTIVE ) 
- ugonottissime ( ADJECTIVE ) 
- ugonottissimi ( ADJECTIVE ) 
- ugonottissimo ( ADJECTIVE ) 
- ugonotto ( ADJECTIVE ) 
- uguagli ( VERB ) 
- uguaglia ( VERB ) 
- uguagliai ( VERB ) 
- uguagliammo ( VERB ) 
- uguagliamo ( VERB ) 
- uguaglian ( VERB ) 
- uguagliando ( NOUN NOUN_GERUND ) 
- uguagliano ( VERB ) 
- uguagliante ( VERB_PRESENT_PARTICIPLE VERB ) 
- uguaglianti ( VERB_PRESENT_PARTICIPLE VERB ) 
- uguaglianza ( NOUN NOUN_SINGULAR ) 
- uguaglianze ( NOUN NOUN_SINGULAR ) 
- uguagliar ( VERB_INFINITIVE VERB ) 
- uguagliare ( VERB_INFINITIVE VERB ) 
- uguagliaron ( VERB ) 
- uguagliarono ( VERB ) 
- uguagliarsi ( VERB_INFINITIVE VERB ) 
- uguagliasse ( VERB ) 
- uguagliasser ( VERB ) 
- uguagliassero ( VERB ) 
- uguagliassi ( VERB ) 
- uguagliassimo ( VERB ) 
- uguagliaste ( VERB ) 
- uguagliasti ( VERB ) 
- uguagliata ( VERB_PAST_PARTICIPLE VERB ) 
- uguagliate ( VERB_PAST_PARTICIPLE VERB ) 
- uguagliati ( VERB_PAST_PARTICIPLE VERB ) 
- uguagliato ( VERB_PAST_PARTICIPLE VERB ) 
- uguagliava ( VERB ) 
- uguagliavamo ( VERB ) 
- uguagliavan ( VERB ) 
- uguagliavano ( VERB ) 
- uguagliavate ( VERB ) 
- uguagliavi ( VERB ) 
- uguagliavo ( VERB ) 
- uguagliera' ( VERB ) 
- uguaglierai ( VERB ) 
- uguaglieran ( VERB ) 
- uguaglieranno ( VERB ) 
- uguaglierebbe ( VERB ) 
- uguaglierebber ( VERB ) 
- uguaglierebbero ( VERB ) 
- uguaglierei ( VERB ) 
- uguaglieremmo ( VERB ) 
- uguaglieremo ( VERB ) 
- uguagliereste ( VERB ) 
- uguaglieresti ( VERB ) 
- uguaglierete ( VERB ) 
- uguagliero' ( VERB ) 
- uguaglierà ( VERB ) 
- uguaglierò ( VERB ) 
- uguaglin ( VERB ) 
- uguaglino ( VERB ) 
- uguaglio ( VERB ) 
- uguaglio' ( VERB ) 
- uguagliò ( VERB ) 
- ugual ( ADJECTIVE ) 
- uguale ( ADJECTIVE ) 
- uguali ( ADJECTIVE ) 
- ugualissima ( ADJECTIVE ) 
- ugualissime ( ADJECTIVE ) 
- ugualissimi ( ADJECTIVE ) 
- ugualissimo ( ADJECTIVE ) 
- ugualitari ( ADJECTIVE ) 
- ugualitaria ( ADJECTIVE ) 
- ugualitarie ( ADJECTIVE ) 
- ugualitario ( ADJECTIVE ) 
- ugualitarissima ( ADJECTIVE ) 
- ugualitarissime ( ADJECTIVE ) 
- ugualitarissimi ( ADJECTIVE ) 
- ugualitarissimo ( ADJECTIVE ) 
- ugualmente ( ADVERB ) 
+ ugola ( ) 
+ ugole ( ) lemma=ugola 
+ ugonotta ( ) lemma=ugonotto 
+ ugonotto ( ) 
+ ugonotte ( ) lemma=ugonotto 
+ ugonotti ( ) lemma=ugonotto 
+ ugonottissima ( ) lemma=ugonotto 
+ ugonottissime ( ) lemma=ugonotto 
+ ugonottissimi ( ) lemma=ugonotto 
+ ugonottissimo ( ) lemma=ugonotto 
+ uguagli ( ) lemma=uguagliare 
+ uguagliare ( ) 
+ uguaglia ( ) lemma=uguagliare 
+ uguagliai ( ) lemma=uguagliare 
+ uguagliammo ( ) lemma=uguagliare 
+ uguagliamo ( ) lemma=uguagliare 
+ uguaglian ( ) lemma=uguagliare 
+ uguagliando ( ) lemma=uguagliare 
+ uguagliano ( ) lemma=uguagliare 
+ uguagliante ( ) lemma=uguagliare 
+ uguaglianti ( ) lemma=uguagliare 
+ uguaglianza ( ) 
+ uguaglianze ( ) lemma=uguaglianza 
+ uguagliar ( ) lemma=uguagliare 
+ uguagliaron ( ) lemma=uguagliare 
+ uguagliarono ( ) lemma=uguagliare 
+ uguagliarsi ( ) lemma=uguagliare 
+ uguagliasse ( ) lemma=uguagliare 
+ uguagliasser ( ) lemma=uguagliare 
+ uguagliassero ( ) lemma=uguagliare 
+ uguagliassi ( ) lemma=uguagliare 
+ uguagliassimo ( ) lemma=uguagliare 
+ uguagliaste ( ) lemma=uguagliare 
+ uguagliasti ( ) lemma=uguagliare 
+ uguagliata ( ) lemma=uguagliare 
+ uguagliate ( ) lemma=uguagliare 
+ uguagliati ( ) lemma=uguagliare 
+ uguagliato ( ) lemma=uguagliare 
+ uguagliava ( ) lemma=uguagliare 
+ uguagliavamo ( ) lemma=uguagliare 
+ uguagliavan ( ) lemma=uguagliare 
+ uguagliavano ( ) lemma=uguagliare 
+ uguagliavate ( ) lemma=uguagliare 
+ uguagliavi ( ) lemma=uguagliare 
+ uguagliavo ( ) lemma=uguagliare 
+ uguagliera' ( ) lemma=uguagliare 
+ uguaglierai ( ) lemma=uguagliare 
+ uguaglieran ( ) lemma=uguagliare 
+ uguaglieranno ( ) lemma=uguagliare 
+ uguaglierebbe ( ) lemma=uguagliare 
+ uguaglierebber ( ) lemma=uguagliare 
+ uguaglierebbero ( ) lemma=uguagliare 
+ uguaglierei ( ) lemma=uguagliare 
+ uguaglieremmo ( ) lemma=uguagliare 
+ uguaglieremo ( ) lemma=uguagliare 
+ uguagliereste ( ) lemma=uguagliare 
+ uguaglieresti ( ) lemma=uguagliare 
+ uguaglierete ( ) lemma=uguagliare 
+ uguagliero' ( ) lemma=uguagliare 
+ uguaglierà ( ) lemma=uguagliare 
+ uguaglierò ( ) lemma=uguagliare 
+ uguaglin ( ) lemma=uguagliare 
+ uguaglino ( ) lemma=uguagliare 
+ uguaglio ( ) lemma=uguagliare 
+ uguaglio' ( ) lemma=uguagliare 
+ uguagliò ( ) lemma=uguagliare 
+ ugual ( ) 
+ uguale ( ) 
+ uguali ( ) lemma=uguale 
+ ugualissima ( ) lemma=uguale 
+ ugualissime ( ) lemma=uguale 
+ ugualissimi ( ) lemma=uguale 
+ ugualissimo ( ) lemma=uguale 
+ ugualitari ( ) lemma=ugualitario 
+ ugualitario ( ) 
+ ugualitaria ( ) lemma=ugualitario 
+ ugualitarie ( ) lemma=ugualitario 
+ ugualitarissima ( ) lemma=ugualitario 
+ ugualitarissime ( ) lemma=ugualitario 
+ ugualitarissimi ( ) lemma=ugualitario 
+ ugualitarissimo ( ) lemma=ugualitario 
+ ugualmente ( ) 
  uh ( ) 
  uh-uh-uh ( ) 
- ulani ( NOUN NOUN_SINGULAR ) 
- ulano ( NOUN NOUN_SINGULAR ) 
- ulcera ( NOUN VERB NOUN_SINGULAR ) 
- ulcerai ( VERB ) 
- ulcerammo ( VERB ) 
- ulceran ( VERB ) 
- ulcerando ( NOUN NOUN_GERUND ) 
- ulcerano ( VERB ) 
- ulcerante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ulceranti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ulcerar ( VERB_INFINITIVE VERB ) 
- ulcerare ( VERB_INFINITIVE VERB ) 
- ulceraron ( VERB ) 
- ulcerarono ( VERB ) 
- ulcerasse ( VERB ) 
- ulcerasser ( VERB ) 
- ulcerassero ( VERB ) 
- ulcerassi ( VERB ) 
- ulcerassimo ( VERB ) 
- ulceraste ( VERB ) 
- ulcerasti ( VERB ) 
- ulcerata ( VERB_PAST_PARTICIPLE VERB ) 
- ulcerate ( VERB_PAST_PARTICIPLE VERB ) 
- ulcerati ( VERB_PAST_PARTICIPLE VERB ) 
- ulcerato ( VERB_PAST_PARTICIPLE VERB ) 
- ulcerava ( VERB ) 
- ulceravamo ( VERB ) 
- ulceravan ( VERB ) 
- ulceravano ( VERB ) 
- ulceravate ( VERB ) 
- ulceravi ( VERB ) 
- ulceravo ( VERB ) 
- ulcere ( NOUN NOUN_SINGULAR ) 
- ulcerera' ( VERB ) 
- ulcererai ( VERB ) 
- ulcereran ( VERB ) 
- ulcereranno ( VERB ) 
- ulcererebbe ( VERB ) 
- ulcererebber ( VERB ) 
- ulcererebbero ( VERB ) 
- ulcererei ( VERB ) 
- ulcereremmo ( VERB ) 
- ulcereremo ( VERB ) 
- ulcerereste ( VERB ) 
- ulcereresti ( VERB ) 
- ulcererete ( VERB ) 
- ulcerero' ( VERB ) 
- ulcererà ( VERB ) 
- ulcererò ( VERB ) 
- ulceri ( VERB ) 
- ulceriamo ( VERB ) 
- ulceriate ( VERB ) 
- ulcerin ( VERB ) 
- ulcerino ( VERB ) 
- ulcero ( VERB ) 
- ulcero' ( VERB ) 
- ulcerosa ( ADJECTIVE ) 
- ulcerose ( ADJECTIVE ) 
- ulcerosi ( ADJECTIVE ) 
- ulcerosissima ( ADJECTIVE ) 
- ulcerosissime ( ADJECTIVE ) 
- ulcerosissimi ( ADJECTIVE ) 
- ulcerosissimo ( ADJECTIVE ) 
- ulceroso ( ADJECTIVE ) 
- ulcerò ( VERB ) 
- ulema ( NOUN NOUN_SINGULAR ) 
- uliveti ( NOUN NOUN_SINGULAR ) 
- uliveto ( NOUN NOUN_SINGULAR ) 
- ulivi ( NOUN NOUN_SINGULAR ) 
- ulivista ( NOUN NOUN_SINGULAR ) 
- ulivisti ( NOUN NOUN_SINGULAR ) 
- ulivo ( NOUN NOUN_SINGULAR ) 
- ulta ( ADJECTIVE ) 
- ulte ( ADJECTIVE ) 
- ulteriore ( ADJECTIVE ) 
- ulteriori ( ADJECTIVE ) 
- ulteriorissima ( ADJECTIVE ) 
- ulteriorissime ( ADJECTIVE ) 
- ulteriorissimi ( ADJECTIVE ) 
- ulteriorissimo ( ADJECTIVE ) 
- ulteriormente ( ADVERB ) 
- ulti ( ADJECTIVE ) 
- ultim ( ADJECTIVE ) 
- ultima ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- ultimai ( VERB ) 
- ultimamente ( ADVERB ) 
- ultimammo ( VERB ) 
- ultiman ( VERB ) 
- ultimando ( NOUN NOUN_GERUND ) 
- ultimano ( VERB ) 
- ultimante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ultimanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ultimar ( VERB_INFINITIVE VERB ) 
- ultimare ( VERB_INFINITIVE VERB ) 
- ultimaron ( VERB ) 
- ultimarono ( VERB ) 
- ultimasse ( VERB ) 
- ultimasser ( VERB ) 
- ultimassero ( VERB ) 
- ultimassi ( VERB ) 
- ultimassimo ( VERB ) 
- ultimaste ( VERB ) 
- ultimasti ( VERB ) 
- ultimata ( VERB_PAST_PARTICIPLE VERB ) 
- ultimate ( VERB_PAST_PARTICIPLE VERB ) 
- ultimati ( VERB_PAST_PARTICIPLE VERB ) 
- ultimativa ( ADJECTIVE ) 
- ultimative ( ADJECTIVE ) 
- ultimativi ( ADJECTIVE ) 
- ultimativissima ( ADJECTIVE ) 
- ultimativissime ( ADJECTIVE ) 
- ultimativissimi ( ADJECTIVE ) 
- ultimativissimo ( ADJECTIVE ) 
- ultimativo ( ADJECTIVE ) 
- ultimato ( VERB_PAST_PARTICIPLE VERB ) 
- ultimatum ( NOUN NOUN_SINGULAR ) 
- ultimava ( VERB ) 
- ultimavamo ( VERB ) 
- ultimavan ( VERB ) 
- ultimavano ( VERB ) 
- ultimavate ( VERB ) 
- ultimavi ( VERB ) 
- ultimavo ( VERB ) 
- ultime ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ultimera' ( VERB ) 
- ultimerai ( VERB ) 
- ultimeran ( VERB ) 
- ultimeranno ( VERB ) 
- ultimerebbe ( VERB ) 
- ultimerebber ( VERB ) 
- ultimerebbero ( VERB ) 
- ultimerei ( VERB ) 
- ultimeremmo ( VERB ) 
- ultimeremo ( VERB ) 
- ultimereste ( VERB ) 
- ultimeresti ( VERB ) 
- ultimerete ( VERB ) 
- ultimero' ( VERB ) 
- ultimerà ( VERB ) 
- ultimerò ( VERB ) 
- ultimi ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- ultimiamo ( VERB ) 
- ultimiate ( VERB ) 
- ultimin ( VERB ) 
- ultimino ( VERB ) 
- ultimissima ( ADJECTIVE ) 
- ultimissime ( ADJECTIVE ) 
- ultimissimi ( ADJECTIVE ) 
- ultimissimo ( ADJECTIVE ) 
- ultimo ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- ultimo' ( VERB ) 
- ultimò ( VERB ) 
- ultissima ( ADJECTIVE ) 
- ultissime ( ADJECTIVE ) 
- ultissimi ( ADJECTIVE ) 
- ultissimo ( ADJECTIVE ) 
- ulto ( ADJECTIVE ) 
- ultra ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ultra' ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ultra-europeizzata ( ADJECTIVE ) 
- ultra-europeizzate ( ADJECTIVE ) 
- ultra-europeizzati ( ADJECTIVE ) 
- ultra-europeizzatissima ( ADJECTIVE ) 
- ultra-europeizzatissime ( ADJECTIVE ) 
- ultra-europeizzatissimi ( ADJECTIVE ) 
- ultra-europeizzatissimo ( ADJECTIVE ) 
- ultra-europeizzato ( ADJECTIVE ) 
- ultra-nazionalista ( ADJECTIVE ) 
- ultra-nazionaliste ( ADJECTIVE ) 
- ultra-nazionalisti ( ADJECTIVE ) 
- ultra-nazionalistissima ( ADJECTIVE ) 
- ultra-nazionalistissime ( ADJECTIVE ) 
- ultra-nazionalistissimi ( ADJECTIVE ) 
- ultra-nazionalistissimo ( ADJECTIVE ) 
- ultraconservatore ( NOUN NOUN_SINGULAR ) 
- ultraconservatori ( NOUN NOUN_SINGULAR ) 
- ultracorta ( ADJECTIVE ) 
- ultracorte ( ADJECTIVE ) 
- ultracorti ( ADJECTIVE ) 
- ultracortissima ( ADJECTIVE ) 
- ultracortissime ( ADJECTIVE ) 
- ultracortissimi ( ADJECTIVE ) 
- ultracortissimo ( ADJECTIVE ) 
- ultracorto ( ADJECTIVE ) 
- ultramoderna ( ADJECTIVE ) 
- ultramoderne ( ADJECTIVE ) 
- ultramoderni ( ADJECTIVE ) 
- ultramodernissima ( ADJECTIVE ) 
- ultramodernissime ( ADJECTIVE ) 
- ultramodernissimi ( ADJECTIVE ) 
- ultramodernissimo ( ADJECTIVE ) 
- ultramoderno ( ADJECTIVE ) 
- ultranazionalista ( NOUN NOUN_SINGULAR ) 
- ultranazionalisti ( NOUN NOUN_SINGULAR ) 
- ultraortodossi ( NOUN NOUN_SINGULAR ) 
- ultraortodosso ( NOUN NOUN_SINGULAR ) 
- ultrarapida ( ADJECTIVE ) 
- ultrarapide ( ADJECTIVE ) 
- ultrarapidi ( ADJECTIVE ) 
- ultrarapidissima ( ADJECTIVE ) 
- ultrarapidissime ( ADJECTIVE ) 
- ultrarapidissimi ( ADJECTIVE ) 
- ultrarapidissimo ( ADJECTIVE ) 
- ultrarapido ( ADJECTIVE ) 
- ultras ( NOUN NOUN_SINGULAR ) 
- ultrasensibile ( ADJECTIVE ) 
- ultrasensibili ( ADJECTIVE ) 
- ultrasensibilissima ( ADJECTIVE ) 
- ultrasensibilissime ( ADJECTIVE ) 
- ultrasensibilissimi ( ADJECTIVE ) 
- ultrasensibilissimo ( ADJECTIVE ) 
- ultrasuoni ( NOUN NOUN_SINGULAR ) 
- ultrasuono ( NOUN NOUN_SINGULAR ) 
- ultraterrena ( ADJECTIVE ) 
- ultraterrene ( ADJECTIVE ) 
- ultraterreni ( ADJECTIVE ) 
- ultraterrenissima ( ADJECTIVE ) 
- ultraterrenissime ( ADJECTIVE ) 
- ultraterrenissimi ( ADJECTIVE ) 
- ultraterrenissimo ( ADJECTIVE ) 
- ultraterreno ( ADJECTIVE ) 
- ultravioletta ( ADJECTIVE ) 
- ultraviolette ( ADJECTIVE ) 
- ultravioletti ( ADJECTIVE ) 
- ultraviolettissima ( ADJECTIVE ) 
- ultraviolettissime ( ADJECTIVE ) 
- ultraviolettissimi ( ADJECTIVE ) 
- ultraviolettissimo ( ADJECTIVE ) 
- ultravioletto ( ADJECTIVE ) 
- ultre ( ADJECTIVE ) 
- ultri ( ADJECTIVE ) 
- ultrissima ( ADJECTIVE ) 
- ultrissime ( ADJECTIVE ) 
- ultrissimi ( ADJECTIVE ) 
- ultrissimo ( ADJECTIVE ) 
- ultro ( ADJECTIVE ) 
- ultrà ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ulula ( VERB ) 
- ululai ( VERB ) 
- ululammo ( VERB ) 
- ululan ( VERB ) 
- ululando ( NOUN NOUN_GERUND ) 
- ululano ( VERB ) 
- ululante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ululanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ulular ( VERB_INFINITIVE VERB ) 
- ululare ( VERB_INFINITIVE VERB ) 
- ulularon ( VERB ) 
- ulularono ( VERB ) 
- ululasse ( VERB ) 
- ululasser ( VERB ) 
- ululassero ( VERB ) 
- ululassi ( VERB ) 
- ululassimo ( VERB ) 
- ululaste ( VERB ) 
- ululasti ( VERB ) 
- ululata ( VERB_PAST_PARTICIPLE VERB ) 
- ululate ( VERB_PAST_PARTICIPLE VERB ) 
- ululati ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- ululato ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- ululava ( VERB ) 
- ululavamo ( VERB ) 
- ululavan ( VERB ) 
- ululavano ( VERB ) 
- ululavate ( VERB ) 
- ululavi ( VERB ) 
- ululavo ( VERB ) 
- ululera' ( VERB ) 
- ululerai ( VERB ) 
- ululeran ( VERB ) 
- ululeranno ( VERB ) 
- ululerebbe ( VERB ) 
- ululerebber ( VERB ) 
- ululerebbero ( VERB ) 
- ululerei ( VERB ) 
- ululeremmo ( VERB ) 
- ululeremo ( VERB ) 
- ululereste ( VERB ) 
- ululeresti ( VERB ) 
- ululerete ( VERB ) 
- ululero' ( VERB ) 
- ululerà ( VERB ) 
- ululerò ( VERB ) 
- ululi ( VERB ) 
- ululiamo ( VERB ) 
- ululiate ( VERB ) 
- ululin ( VERB ) 
- ululino ( VERB ) 
- ululo ( VERB ) 
- ululo' ( VERB ) 
- ululò ( VERB ) 
- umana ( ADJECTIVE ) 
- umanamente ( ADVERB ) 
- umane ( ADJECTIVE ) 
- umanesimi ( NOUN NOUN_SINGULAR ) 
- umanesimo ( NOUN NOUN_SINGULAR ) 
- umani ( ADJECTIVE ) 
- umanissima ( ADJECTIVE ) 
- umanissime ( ADJECTIVE ) 
- umanissimi ( ADJECTIVE ) 
- umanissimo ( ADJECTIVE ) 
- umanista ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- umaniste ( ADJECTIVE ) 
- umanisti ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- umanistica ( ADJECTIVE ) 
- umanistiche ( ADJECTIVE ) 
- umanistici ( ADJECTIVE ) 
- umanisticissima ( ADJECTIVE ) 
- umanisticissime ( ADJECTIVE ) 
- umanisticissimi ( ADJECTIVE ) 
- umanisticissimo ( ADJECTIVE ) 
- umanistico ( ADJECTIVE ) 
- umanistissima ( ADJECTIVE ) 
- umanistissime ( ADJECTIVE ) 
- umanistissimi ( ADJECTIVE ) 
- umanistissimo ( ADJECTIVE ) 
- umanita' ( NOUN NOUN_SINGULAR ) 
- umanitari ( ADJECTIVE ) 
- umanitaria ( ADJECTIVE ) 
- umanitarie ( ADJECTIVE ) 
- umanitario ( ADJECTIVE ) 
- umanitarissima ( ADJECTIVE ) 
- umanitarissime ( ADJECTIVE ) 
- umanitarissimi ( ADJECTIVE ) 
- umanitarissimo ( ADJECTIVE ) 
- umanità ( NOUN NOUN_SINGULAR ) 
- umanizza ( VERB ) 
- umanizzai ( VERB ) 
- umanizzammo ( VERB ) 
- umanizzan ( VERB ) 
- umanizzando ( NOUN NOUN_GERUND ) 
- umanizzano ( VERB ) 
- umanizzante ( VERB_PRESENT_PARTICIPLE VERB ) 
- umanizzanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- umanizzar ( VERB_INFINITIVE VERB ) 
- umanizzare ( VERB_INFINITIVE VERB ) 
- umanizzaron ( VERB ) 
- umanizzarono ( VERB ) 
- umanizzasse ( VERB ) 
- umanizzasser ( VERB ) 
- umanizzassero ( VERB ) 
- umanizzassi ( VERB ) 
- umanizzassimo ( VERB ) 
- umanizzaste ( VERB ) 
- umanizzasti ( VERB ) 
- umanizzata ( VERB_PAST_PARTICIPLE VERB ) 
- umanizzate ( VERB_PAST_PARTICIPLE VERB ) 
- umanizzati ( VERB_PAST_PARTICIPLE VERB ) 
- umanizzato ( VERB_PAST_PARTICIPLE VERB ) 
- umanizzava ( VERB ) 
- umanizzavamo ( VERB ) 
- umanizzavan ( VERB ) 
- umanizzavano ( VERB ) 
- umanizzavate ( VERB ) 
- umanizzavi ( VERB ) 
- umanizzavo ( VERB ) 
- umanizzazione ( NOUN NOUN_SINGULAR ) 
- umanizzazioni ( NOUN NOUN_SINGULAR ) 
- umanizzera' ( VERB ) 
- umanizzerai ( VERB ) 
- umanizzeran ( VERB ) 
- umanizzeranno ( VERB ) 
- umanizzerebbe ( VERB ) 
- umanizzerebber ( VERB ) 
- umanizzerebbero ( VERB ) 
- umanizzerei ( VERB ) 
- umanizzeremmo ( VERB ) 
- umanizzeremo ( VERB ) 
- umanizzereste ( VERB ) 
- umanizzeresti ( VERB ) 
- umanizzerete ( VERB ) 
- umanizzero' ( VERB ) 
- umanizzerà ( VERB ) 
- umanizzerò ( VERB ) 
- umanizzi ( VERB ) 
- umanizziamo ( VERB ) 
- umanizziate ( VERB ) 
- umanizzin ( VERB ) 
- umanizzino ( VERB ) 
- umanizzo ( VERB ) 
- umanizzo' ( VERB ) 
- umanizzò ( VERB ) 
- umano ( ADJECTIVE ) 
- umanoide ( ADJECTIVE ) 
- umanoidi ( ADJECTIVE ) 
- umanoidissima ( ADJECTIVE ) 
- umanoidissime ( ADJECTIVE ) 
- umanoidissimi ( ADJECTIVE ) 
- umanoidissimo ( ADJECTIVE ) 
- umbertina ( ADJECTIVE ) 
- umbertine ( ADJECTIVE ) 
- umbertini ( ADJECTIVE ) 
- umbertinissima ( ADJECTIVE ) 
- umbertinissime ( ADJECTIVE ) 
- umbertinissimi ( ADJECTIVE ) 
- umbertinissimo ( ADJECTIVE ) 
- umbertino ( ADJECTIVE ) 
- umbra ( ADJECTIVE ) 
- umbratile ( ADJECTIVE ) 
- umbratili ( ADJECTIVE ) 
- umbratilissima ( ADJECTIVE ) 
- umbratilissime ( ADJECTIVE ) 
- umbratilissimi ( ADJECTIVE ) 
- umbratilissimo ( ADJECTIVE ) 
- umbre ( ADJECTIVE ) 
- umbri ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- umbrissima ( ADJECTIVE ) 
- umbrissime ( ADJECTIVE ) 
- umbrissimi ( ADJECTIVE ) 
- umbrissimo ( ADJECTIVE ) 
- umbro ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- umetta ( VERB ) 
- umettai ( VERB ) 
- umettammo ( VERB ) 
- umettan ( VERB ) 
- umettando ( NOUN NOUN_GERUND ) 
- umettano ( VERB ) 
- umettante ( VERB_PRESENT_PARTICIPLE VERB ) 
- umettanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- umettar ( VERB_INFINITIVE VERB ) 
- umettare ( VERB_INFINITIVE VERB ) 
- umettaron ( VERB ) 
- umettarono ( VERB ) 
- umettasse ( VERB ) 
- umettasser ( VERB ) 
- umettassero ( VERB ) 
- umettassi ( VERB ) 
- umettassimo ( VERB ) 
- umettaste ( VERB ) 
- umettasti ( VERB ) 
- umettata ( VERB_PAST_PARTICIPLE VERB ) 
- umettate ( VERB_PAST_PARTICIPLE VERB ) 
- umettati ( VERB_PAST_PARTICIPLE VERB ) 
- umettato ( VERB_PAST_PARTICIPLE VERB ) 
- umettava ( VERB ) 
- umettavamo ( VERB ) 
- umettavan ( VERB ) 
- umettavano ( VERB ) 
- umettavate ( VERB ) 
- umettavi ( VERB ) 
- umettavo ( VERB ) 
- umettera' ( VERB ) 
- umetterai ( VERB ) 
- umetteran ( VERB ) 
- umetteranno ( VERB ) 
- umetterebbe ( VERB ) 
- umetterebber ( VERB ) 
- umetterebbero ( VERB ) 
- umetterei ( VERB ) 
- umetteremmo ( VERB ) 
- umetteremo ( VERB ) 
- umettereste ( VERB ) 
- umetteresti ( VERB ) 
- umetterete ( VERB ) 
- umettero' ( VERB ) 
- umetterà ( VERB ) 
- umetterò ( VERB ) 
- umetti ( VERB ) 
- umettiamo ( VERB ) 
- umettiate ( VERB ) 
- umettin ( VERB ) 
- umettino ( VERB ) 
- umetto ( VERB ) 
- umetto' ( VERB ) 
- umettò ( VERB ) 
- umida ( ADJECTIVE ) 
- umide ( ADJECTIVE ) 
- umidi ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- umidicce ( ADJECTIVE ) 
- umidicchissima ( ADJECTIVE ) 
- umidicchissime ( ADJECTIVE ) 
- umidicchissimi ( ADJECTIVE ) 
- umidicchissimo ( ADJECTIVE ) 
- umidicci ( ADJECTIVE ) 
- umidiccia ( ADJECTIVE ) 
- umidiccio ( ADJECTIVE ) 
- umidifica ( VERB ) 
- umidificai ( VERB ) 
- umidificammo ( VERB ) 
- umidifican ( VERB ) 
- umidificando ( NOUN NOUN_GERUND ) 
- umidificano ( VERB ) 
- umidificante ( VERB_PRESENT_PARTICIPLE VERB ) 
- umidificanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- umidificar ( VERB_INFINITIVE VERB ) 
- umidificare ( VERB_INFINITIVE VERB ) 
- umidificaron ( VERB ) 
- umidificarono ( VERB ) 
- umidificasse ( VERB ) 
- umidificasser ( VERB ) 
- umidificassero ( VERB ) 
- umidificassi ( VERB ) 
- umidificassimo ( VERB ) 
- umidificaste ( VERB ) 
- umidificasti ( VERB ) 
- umidificata ( VERB_PAST_PARTICIPLE VERB ) 
- umidificate ( VERB_PAST_PARTICIPLE VERB ) 
- umidificati ( VERB_PAST_PARTICIPLE VERB ) 
- umidificato ( VERB_PAST_PARTICIPLE VERB ) 
- umidificava ( VERB ) 
- umidificavamo ( VERB ) 
- umidificavan ( VERB ) 
- umidificavano ( VERB ) 
- umidificavate ( VERB ) 
- umidificavi ( VERB ) 
- umidificavo ( VERB ) 
- umidifichera' ( VERB ) 
- umidificherai ( VERB ) 
- umidificheran ( VERB ) 
- umidificheranno ( VERB ) 
- umidificherebbe ( VERB ) 
- umidificherebber ( VERB ) 
- umidificherebbero ( VERB ) 
- umidificherei ( VERB ) 
- umidificheremmo ( VERB ) 
- umidificheremo ( VERB ) 
- umidifichereste ( VERB ) 
- umidificheresti ( VERB ) 
- umidificherete ( VERB ) 
- umidifichero' ( VERB ) 
- umidificherà ( VERB ) 
- umidificherò ( VERB ) 
- umidifichi ( VERB ) 
- umidifichiamo ( VERB ) 
- umidifichiate ( VERB ) 
- umidifichin ( VERB ) 
- umidifichino ( VERB ) 
- umidifico ( VERB ) 
- umidifico' ( VERB ) 
- umidificò ( VERB ) 
- umidissima ( ADJECTIVE ) 
- umidissime ( ADJECTIVE ) 
- umidissimi ( ADJECTIVE ) 
- umidissimo ( ADJECTIVE ) 
- umidita' ( NOUN NOUN_SINGULAR ) 
- umidità ( NOUN NOUN_SINGULAR ) 
- umido ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- umile ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- umili ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- umilia ( VERB ) 
- umiliai ( VERB ) 
- umiliammo ( VERB ) 
- umiliamo ( VERB ) 
- umilian ( VERB ) 
- umiliando ( NOUN NOUN_GERUND ) 
- umiliandolo ( NOUN NOUN_GERUND ) 
- umiliandone ( NOUN NOUN_GERUND ) 
- umiliano ( VERB ) 
- umiliante ( VERB_PRESENT_PARTICIPLE VERB ADJECTIVE ) 
- umilianti ( VERB_PRESENT_PARTICIPLE VERB ADJECTIVE ) 
- umiliantissima ( ADJECTIVE ) 
- umiliantissime ( ADJECTIVE ) 
- umiliantissimi ( ADJECTIVE ) 
- umiliantissimo ( ADJECTIVE ) 
- umiliar ( VERB_INFINITIVE VERB ) 
- umiliare ( VERB_INFINITIVE VERB ) 
- umiliarlo ( VERB_INFINITIVE VERB ) 
- umiliaron ( VERB ) 
- umiliarono ( VERB ) 
- umiliarsi ( VERB_INFINITIVE VERB ) 
- umiliasse ( VERB ) 
- umiliasser ( VERB ) 
- umiliassero ( VERB ) 
- umiliassi ( VERB ) 
- umiliassimo ( VERB ) 
- umiliaste ( VERB ) 
- umiliasti ( VERB ) 
- umiliata ( VERB_PAST_PARTICIPLE VERB ) 
- umiliate ( VERB_PAST_PARTICIPLE VERB ) 
- umiliati ( VERB_PAST_PARTICIPLE VERB ) 
- umiliato ( VERB_PAST_PARTICIPLE VERB ) 
- umiliava ( VERB ) 
- umiliavamo ( VERB ) 
- umiliavan ( VERB ) 
- umiliavano ( VERB ) 
- umiliavate ( VERB ) 
- umiliavi ( VERB ) 
- umiliavo ( VERB ) 
- umiliazione ( NOUN NOUN_SINGULAR ) 
- umiliazioni ( NOUN NOUN_SINGULAR ) 
- umiliera' ( VERB ) 
- umilierai ( VERB ) 
- umilieran ( VERB ) 
- umilieranno ( VERB ) 
- umilierebbe ( VERB ) 
- umilierebber ( VERB ) 
- umilierebbero ( VERB ) 
- umilierei ( VERB ) 
- umilieremmo ( VERB ) 
- umilieremo ( VERB ) 
- umiliereste ( VERB ) 
- umilieresti ( VERB ) 
- umilierete ( VERB ) 
- umiliero' ( VERB ) 
- umilierà ( VERB ) 
- umilierò ( VERB ) 
- umilin ( VERB ) 
- umilino ( VERB ) 
- umilio ( VERB ) 
- umilio' ( VERB ) 
- umilissima ( ADJECTIVE ) 
- umilissime ( ADJECTIVE ) 
- umilissimi ( ADJECTIVE ) 
- umilissimo ( ADJECTIVE ) 
- umiliò ( VERB ) 
- umilta' ( NOUN NOUN_SINGULAR ) 
- umiltà ( NOUN NOUN_SINGULAR ) 
- umoralita' ( NOUN NOUN_SINGULAR ) 
- umoralità ( NOUN NOUN_SINGULAR ) 
- umore ( NOUN NOUN_SINGULAR ) 
- umori ( NOUN NOUN_SINGULAR ) 
- umorismi ( NOUN NOUN_SINGULAR ) 
- umorismo ( NOUN NOUN_SINGULAR ) 
- umorista ( NOUN NOUN_SINGULAR ) 
- umoristi ( NOUN NOUN_SINGULAR ) 
- umoristica ( ADJECTIVE ) 
- umoristiche ( ADJECTIVE ) 
- umoristici ( ADJECTIVE ) 
- umoristicissima ( ADJECTIVE ) 
- umoristicissime ( ADJECTIVE ) 
- umoristicissimi ( ADJECTIVE ) 
- umoristicissimo ( ADJECTIVE ) 
- umoristico ( ADJECTIVE ) 
- un ( ADVERB DETERMINER ) 
- un' ( DETERMINER ) 
- una ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
- unanime ( ADJECTIVE ) 
- unanimemente ( ADVERB ) 
- unanimi ( ADJECTIVE ) 
- unanimismi ( NOUN NOUN_SINGULAR ) 
- unanimismo ( NOUN NOUN_SINGULAR ) 
- unanimissima ( ADJECTIVE ) 
- unanimissime ( ADJECTIVE ) 
- unanimissimi ( ADJECTIVE ) 
- unanimissimo ( ADJECTIVE ) 
- unanimita' ( NOUN NOUN_SINGULAR ) 
- unanimità ( NOUN NOUN_SINGULAR ) 
- uncina ( VERB ) 
- uncinai ( VERB ) 
- uncinammo ( VERB ) 
- uncinan ( VERB ) 
- uncinando ( NOUN NOUN_GERUND ) 
- uncinano ( VERB ) 
- uncinante ( VERB_PRESENT_PARTICIPLE VERB ) 
- uncinanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- uncinar ( VERB_INFINITIVE VERB ) 
- uncinare ( VERB_INFINITIVE VERB ) 
- uncinaron ( VERB ) 
- uncinarono ( VERB ) 
- uncinasse ( VERB ) 
- uncinasser ( VERB ) 
- uncinassero ( VERB ) 
- uncinassi ( VERB ) 
- uncinassimo ( VERB ) 
- uncinaste ( VERB ) 
- uncinasti ( VERB ) 
- uncinata ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- uncinate ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- uncinati ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- uncinatissima ( ADJECTIVE ) 
- uncinatissime ( ADJECTIVE ) 
- uncinatissimi ( ADJECTIVE ) 
- uncinatissimo ( ADJECTIVE ) 
- uncinato ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- uncinava ( VERB ) 
- uncinavamo ( VERB ) 
- uncinavan ( VERB ) 
- uncinavano ( VERB ) 
- uncinavate ( VERB ) 
- uncinavi ( VERB ) 
- uncinavo ( VERB ) 
- uncinera' ( VERB ) 
- uncinerai ( VERB ) 
- uncineran ( VERB ) 
- uncineranno ( VERB ) 
- uncinerebbe ( VERB ) 
- uncinerebber ( VERB ) 
- uncinerebbero ( VERB ) 
- uncinerei ( VERB ) 
- uncineremmo ( VERB ) 
- uncineremo ( VERB ) 
- uncinereste ( VERB ) 
- uncineresti ( VERB ) 
- uncinerete ( VERB ) 
- uncinero' ( VERB ) 
- uncinerà ( VERB ) 
- uncinerò ( VERB ) 
- uncini ( NOUN VERB NOUN_SINGULAR ) 
- unciniamo ( VERB ) 
- unciniate ( VERB ) 
- uncinin ( VERB ) 
- uncinino ( VERB ) 
- uncino ( NOUN VERB NOUN_SINGULAR ) 
- uncino' ( VERB ) 
- uncinò ( VERB ) 
- undecima ( ADJECTIVE ) 
- undecime ( ADJECTIVE ) 
- undecimi ( ADJECTIVE ) 
- undecimissima ( ADJECTIVE ) 
- undecimissime ( ADJECTIVE ) 
- undecimissimi ( ADJECTIVE ) 
- undecimissimo ( ADJECTIVE ) 
- undecimo ( ADJECTIVE ) 
- under ( ADJECTIVE ) 
- underground ( ADJECTIVE ) 
- undicenne ( ADJECTIVE ) 
- undicenni ( ADJECTIVE ) 
- undicennissima ( ADJECTIVE ) 
- undicennissime ( ADJECTIVE ) 
- undicennissimi ( ADJECTIVE ) 
- undicennissimo ( ADJECTIVE ) 
- undicesima ( ADJECTIVE ) 
- undicesime ( ADJECTIVE ) 
- undicesimi ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- undicesimissima ( ADJECTIVE ) 
- undicesimissime ( ADJECTIVE ) 
- undicesimissimi ( ADJECTIVE ) 
- undicesimissimo ( ADJECTIVE ) 
- undicesimo ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- undici ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
- undicimila ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
- undicimillesima ( ADJECTIVE ) 
- undicimillesime ( ADJECTIVE ) 
- undicimillesimi ( ADJECTIVE ) 
- undicimillesimo ( ADJECTIVE ) 
- unendo ( NOUN NOUN_GERUND ) 
- unendosi ( NOUN NOUN_GERUND ) 
- unendovi ( NOUN NOUN_GERUND ) 
- unente ( VERB_PRESENT_PARTICIPLE VERB ) 
- unenti ( VERB_PRESENT_PARTICIPLE VERB ) 
- unga ( VERB ) 
- ungano ( VERB ) 
- ungarettiana ( ADJECTIVE ) 
- ungarettiane ( ADJECTIVE ) 
- ungarettiani ( ADJECTIVE ) 
- ungarettianissima ( ADJECTIVE ) 
- ungarettianissime ( ADJECTIVE ) 
- ungarettianissimi ( ADJECTIVE ) 
- ungarettianissimo ( ADJECTIVE ) 
- ungarettiano ( ADJECTIVE ) 
- unge ( VERB ) 
- ungemmo ( VERB ) 
- ungendo ( NOUN NOUN_GERUND ) 
- ungente ( VERB_PRESENT_PARTICIPLE VERB ) 
- ungenti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ungera' ( VERB ) 
- ungerai ( VERB ) 
- ungeranno ( VERB ) 
- ungere ( VERB_INFINITIVE VERB ) 
- ungerebbe ( VERB ) 
- ungerebbero ( VERB ) 
- ungerei ( VERB ) 
- ungeremmo ( VERB ) 
- ungeremo ( VERB ) 
- ungereste ( VERB ) 
- ungeresti ( VERB ) 
- ungerete ( VERB ) 
- ungerà ( VERB ) 
- ungesse ( VERB ) 
- ungessero ( VERB ) 
- ungessi ( VERB ) 
- ungessimo ( VERB ) 
- ungeste ( VERB ) 
- ungesti ( VERB ) 
- ungete ( VERB ) 
- ungeva ( VERB ) 
- ungevamo ( VERB ) 
- ungevano ( VERB ) 
- ungevate ( VERB ) 
- ungevi ( VERB ) 
- ungevo ( VERB ) 
- ungherese ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ungheresi ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- ungheresissima ( ADJECTIVE ) 
- ungheresissime ( ADJECTIVE ) 
- ungheresissimi ( ADJECTIVE ) 
- ungheresissimo ( ADJECTIVE ) 
- unghia ( NOUN NOUN_SINGULAR ) 
- unghiata ( NOUN NOUN_SINGULAR ) 
- unghiate ( NOUN NOUN_SINGULAR ) 
- unghie ( NOUN NOUN_SINGULAR ) 
- ungi ( VERB ) 
- ungiamo ( VERB ) 
- ungiate ( VERB ) 
- ungo ( VERB ) 
- ungono ( VERB ) 
- unguenti ( NOUN NOUN_SINGULAR ) 
- unguento ( NOUN NOUN_SINGULAR ) 
- uni ( NOUN NOUN_SINGULAR ) 
- uni' ( VERB ) 
- uniamo ( VERB ) 
- uniamoci ( VERB ) 
- uniate ( VERB ) 
- unica ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unicamente ( ADVERB ) 
- unicamerale ( ADJECTIVE ) 
- unicamerali ( ADJECTIVE ) 
- unicameralissima ( ADJECTIVE ) 
- unicameralissime ( ADJECTIVE ) 
- unicameralissimi ( ADJECTIVE ) 
- unicameralissimo ( ADJECTIVE ) 
- unicellulare ( ADJECTIVE ) 
- unicellulari ( ADJECTIVE ) 
- unicellularissima ( ADJECTIVE ) 
- unicellularissime ( ADJECTIVE ) 
- unicellularissimi ( ADJECTIVE ) 
- unicellularissimo ( ADJECTIVE ) 
- uniche ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unici ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unicissima ( ADJECTIVE ) 
- unicissime ( ADJECTIVE ) 
- unicissimi ( ADJECTIVE ) 
- unicissimo ( ADJECTIVE ) 
- unicita' ( NOUN NOUN_SINGULAR ) 
- unicità ( NOUN NOUN_SINGULAR ) 
- unico ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unicum ( NOUN NOUN_SINGULAR ) 
- unidirezionale ( ADJECTIVE ) 
- unidirezionali ( ADJECTIVE ) 
- unidirezionalissima ( ADJECTIVE ) 
- unidirezionalissime ( ADJECTIVE ) 
- unidirezionalissimi ( ADJECTIVE ) 
- unidirezionalissimo ( ADJECTIVE ) 
- unifamiliare ( ADJECTIVE ) 
- unifamiliari ( ADJECTIVE ) 
- unifamiliarissima ( ADJECTIVE ) 
- unifamiliarissime ( ADJECTIVE ) 
- unifamiliarissimi ( ADJECTIVE ) 
- unifamiliarissimo ( ADJECTIVE ) 
- unifica ( VERB ) 
- unificai ( VERB ) 
- unificammo ( VERB ) 
- unifican ( VERB ) 
- unificando ( NOUN NOUN_GERUND ) 
- unificandolo ( NOUN NOUN_GERUND ) 
- unificandosi ( NOUN NOUN_GERUND ) 
- unificano ( VERB ) 
- unificante ( VERB_PRESENT_PARTICIPLE VERB ) 
- unificanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- unificar ( VERB_INFINITIVE VERB ) 
- unificare ( VERB_INFINITIVE VERB ) 
- unificarli ( VERB_INFINITIVE VERB ) 
- unificaron ( VERB ) 
- unificarono ( VERB ) 
- unificarsi ( VERB_INFINITIVE VERB ) 
- unificasse ( VERB ) 
- unificasser ( VERB ) 
- unificassero ( VERB ) 
- unificassi ( VERB ) 
- unificassimo ( VERB ) 
- unificaste ( VERB ) 
- unificasti ( VERB ) 
- unificata ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unificate ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unificati ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unificatissima ( ADJECTIVE ) 
- unificatissime ( ADJECTIVE ) 
- unificatissimi ( ADJECTIVE ) 
- unificatissimo ( ADJECTIVE ) 
- unificato ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unificatore ( ADJECTIVE ) 
- unificatori ( ADJECTIVE ) 
- unificatorissima ( ADJECTIVE ) 
- unificatorissime ( ADJECTIVE ) 
- unificatorissimi ( ADJECTIVE ) 
- unificatorissimo ( ADJECTIVE ) 
- unificatrice ( ADJECTIVE ) 
- unificatrici ( ADJECTIVE ) 
- unificava ( VERB ) 
- unificavamo ( VERB ) 
- unificavan ( VERB ) 
- unificavano ( VERB ) 
- unificavate ( VERB ) 
- unificavi ( VERB ) 
- unificavo ( VERB ) 
- unificazione ( NOUN NOUN_SINGULAR ) 
- unificazioni ( NOUN NOUN_SINGULAR ) 
- unifichera' ( VERB ) 
- unificherai ( VERB ) 
- unificheran ( VERB ) 
- unificheranno ( VERB ) 
- unificherebbe ( VERB ) 
- unificherebber ( VERB ) 
- unificherebbero ( VERB ) 
- unificherei ( VERB ) 
- unificheremmo ( VERB ) 
- unificheremo ( VERB ) 
- unifichereste ( VERB ) 
- unificheresti ( VERB ) 
- unificherete ( VERB ) 
- unifichero' ( VERB ) 
- unificherà ( VERB ) 
- unificherò ( VERB ) 
- unifichi ( VERB ) 
- unifichiamo ( VERB ) 
- unifichiate ( VERB ) 
- unifichin ( VERB ) 
- unifichino ( VERB ) 
- unifico ( VERB ) 
- unifico' ( VERB ) 
- unificò ( VERB ) 
- uniforma ( VERB ) 
- uniformai ( VERB ) 
- uniformammo ( VERB ) 
- uniforman ( VERB ) 
- uniformando ( NOUN NOUN_GERUND ) 
- uniformandosi ( NOUN NOUN_GERUND ) 
- uniformandovi ( NOUN NOUN_GERUND ) 
- uniformano ( VERB ) 
- uniformante ( VERB_PRESENT_PARTICIPLE VERB ) 
- uniformanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- uniformar ( VERB_INFINITIVE VERB ) 
- uniformare ( VERB_INFINITIVE VERB ) 
- uniformaron ( VERB ) 
- uniformarono ( VERB ) 
- uniformarsi ( VERB_INFINITIVE VERB ) 
- uniformasse ( VERB ) 
- uniformasser ( VERB ) 
- uniformassero ( VERB ) 
- uniformassi ( VERB ) 
- uniformassimo ( VERB ) 
- uniformaste ( VERB ) 
- uniformasti ( VERB ) 
- uniformata ( VERB_PAST_PARTICIPLE VERB ) 
- uniformate ( VERB_PAST_PARTICIPLE VERB ) 
- uniformati ( VERB_PAST_PARTICIPLE VERB ) 
- uniformato ( VERB_PAST_PARTICIPLE VERB ) 
- uniformava ( VERB ) 
- uniformavamo ( VERB ) 
- uniformavan ( VERB ) 
- uniformavano ( VERB ) 
- uniformavate ( VERB ) 
- uniformavi ( VERB ) 
- uniformavo ( VERB ) 
- uniforme ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- uniformemente ( ADVERB ) 
- uniformera' ( VERB ) 
- uniformerai ( VERB ) 
- uniformeran ( VERB ) 
- uniformeranno ( VERB ) 
- uniformerebbe ( VERB ) 
- uniformerebber ( VERB ) 
- uniformerebbero ( VERB ) 
- uniformerei ( VERB ) 
- uniformeremmo ( VERB ) 
- uniformeremo ( VERB ) 
- uniformereste ( VERB ) 
- uniformeresti ( VERB ) 
- uniformerete ( VERB ) 
- uniformero' ( VERB ) 
- uniformerà ( VERB ) 
- uniformerò ( VERB ) 
- uniformi ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- uniformiamo ( VERB ) 
- uniformiate ( VERB ) 
- uniformin ( VERB ) 
- uniformino ( VERB ) 
- uniformissima ( ADJECTIVE ) 
- uniformissime ( ADJECTIVE ) 
- uniformissimi ( ADJECTIVE ) 
- uniformissimo ( ADJECTIVE ) 
- uniformita' ( NOUN NOUN_SINGULAR ) 
- uniformità ( NOUN NOUN_SINGULAR ) 
- uniformo ( VERB ) 
- uniformo' ( VERB ) 
- uniformò ( VERB ) 
- unii ( VERB ) 
- unilaterale ( ADJECTIVE ) 
- unilaterali ( ADJECTIVE ) 
- unilateralissima ( ADJECTIVE ) 
- unilateralissime ( ADJECTIVE ) 
- unilateralissimi ( ADJECTIVE ) 
- unilateralissimo ( ADJECTIVE ) 
- unilateralmente ( ADVERB ) 
- unimmo ( VERB ) 
- uninominale ( ADJECTIVE ) 
- uninominali ( ADJECTIVE ) 
- uninominalissima ( ADJECTIVE ) 
- uninominalissime ( ADJECTIVE ) 
- uninominalissimi ( ADJECTIVE ) 
- uninominalissimo ( ADJECTIVE ) 
- unione ( NOUN NOUN_SINGULAR ) 
- unioni ( NOUN NOUN_SINGULAR ) 
- unionista ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unioniste ( ADJECTIVE ) 
- unionisti ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unionistissima ( ADJECTIVE ) 
- unionistissime ( ADJECTIVE ) 
- unionistissimi ( ADJECTIVE ) 
- unionistissimo ( ADJECTIVE ) 
- unir ( VERB_INFINITIVE VERB ) 
- unira' ( VERB ) 
- unirai ( VERB ) 
- uniran ( VERB ) 
- uniranno ( VERB ) 
- unirci ( VERB_INFINITIVE VERB ) 
- unire ( VERB_INFINITIVE VERB ) 
- unirebbe ( VERB ) 
- unirebber ( VERB ) 
- unirebbero ( VERB ) 
- unirei ( VERB ) 
- uniremmo ( VERB ) 
- uniremo ( VERB ) 
- unireste ( VERB ) 
- uniresti ( VERB ) 
- unirete ( VERB ) 
- unirlo ( VERB_INFINITIVE VERB ) 
- unirmi ( VERB_INFINITIVE VERB ) 
- uniro' ( VERB ) 
- uniron ( VERB ) 
- unirono ( VERB ) 
- unirsi ( VERB_INFINITIVE VERB ) 
- unirti ( VERB_INFINITIVE VERB ) 
- unirvi ( VERB_INFINITIVE VERB ) 
- unirà ( VERB ) 
- unirò ( VERB ) 
- unisca ( VERB ) 
- uniscan ( VERB ) 
- uniscano ( VERB ) 
- unisce ( VERB ) 
- unisci ( VERB ) 
- unisciti ( VERB ) 
- unisco ( VERB ) 
- uniscon ( VERB ) 
- uniscono ( VERB ) 
- unisona ( ADJECTIVE ) 
- unisone ( ADJECTIVE ) 
- unisoni ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unisonissima ( ADJECTIVE ) 
- unisonissime ( ADJECTIVE ) 
- unisonissimi ( ADJECTIVE ) 
- unisonissimo ( ADJECTIVE ) 
- unisono ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unisse ( VERB ) 
- unisser ( VERB ) 
- unissero ( VERB ) 
- unissi ( VERB ) 
- unissimo ( VERB ) 
- uniste ( VERB ) 
- unisti ( VERB ) 
- unita ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unita' ( NOUN NOUN_SINGULAR ) 
- unitamente ( ADVERB ) 
- unitari ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unitaria ( ADJECTIVE ) 
- unitariamente ( ADVERB ) 
- unitarie ( ADJECTIVE ) 
- unitarieta' ( NOUN NOUN_SINGULAR ) 
- unitarietà ( NOUN NOUN_SINGULAR ) 
- unitario ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- unitarissima ( ADJECTIVE ) 
- unitarissime ( ADJECTIVE ) 
- unitarissimi ( ADJECTIVE ) 
- unitarissimo ( ADJECTIVE ) 
- unite ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- uniteli ( VERB ) 
- unitevi ( VERB ) 
- uniti ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unitissima ( ADJECTIVE ) 
- unitissime ( ADJECTIVE ) 
- unitissimi ( ADJECTIVE ) 
- unitissimo ( ADJECTIVE ) 
- unito ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unità ( NOUN NOUN_SINGULAR ) 
- univa ( VERB ) 
- univamo ( VERB ) 
- univan ( VERB ) 
- univano ( VERB ) 
- univate ( VERB ) 
- universa ( ADJECTIVE ) 
- universale ( ADJECTIVE ) 
- universali ( ADJECTIVE ) 
- universalissima ( ADJECTIVE ) 
- universalissime ( ADJECTIVE ) 
- universalissimi ( ADJECTIVE ) 
- universalissimo ( ADJECTIVE ) 
- universalistica ( ADJECTIVE ) 
- universalistiche ( ADJECTIVE ) 
- universalistici ( ADJECTIVE ) 
- universalisticissima ( ADJECTIVE ) 
- universalisticissime ( ADJECTIVE ) 
- universalisticissimi ( ADJECTIVE ) 
- universalisticissimo ( ADJECTIVE ) 
- universalistico ( ADJECTIVE ) 
- universalita' ( NOUN NOUN_SINGULAR ) 
- universalità ( NOUN NOUN_SINGULAR ) 
- universalizza ( VERB ) 
- universalizzai ( VERB ) 
- universalizzammo ( VERB ) 
- universalizzan ( VERB ) 
- universalizzando ( NOUN NOUN_GERUND ) 
- universalizzano ( VERB ) 
- universalizzante ( VERB_PRESENT_PARTICIPLE VERB ) 
- universalizzanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- universalizzar ( VERB_INFINITIVE VERB ) 
- universalizzare ( VERB_INFINITIVE VERB ) 
- universalizzaron ( VERB ) 
- universalizzarono ( VERB ) 
- universalizzasse ( VERB ) 
- universalizzasser ( VERB ) 
- universalizzassero ( VERB ) 
- universalizzassi ( VERB ) 
- universalizzassimo ( VERB ) 
- universalizzaste ( VERB ) 
- universalizzasti ( VERB ) 
- universalizzata ( VERB_PAST_PARTICIPLE VERB ) 
- universalizzate ( VERB_PAST_PARTICIPLE VERB ) 
- universalizzati ( VERB_PAST_PARTICIPLE VERB ) 
- universalizzato ( VERB_PAST_PARTICIPLE VERB ) 
- universalizzava ( VERB ) 
- universalizzavamo ( VERB ) 
- universalizzavan ( VERB ) 
- universalizzavano ( VERB ) 
- universalizzavate ( VERB ) 
- universalizzavi ( VERB ) 
- universalizzavo ( VERB ) 
- universalizzera' ( VERB ) 
- universalizzerai ( VERB ) 
- universalizzeran ( VERB ) 
- universalizzeranno ( VERB ) 
- universalizzerebbe ( VERB ) 
- universalizzerebber ( VERB ) 
- universalizzerebbero ( VERB ) 
- universalizzerei ( VERB ) 
- universalizzeremmo ( VERB ) 
- universalizzeremo ( VERB ) 
- universalizzereste ( VERB ) 
- universalizzeresti ( VERB ) 
- universalizzerete ( VERB ) 
- universalizzero' ( VERB ) 
- universalizzerà ( VERB ) 
- universalizzerò ( VERB ) 
- universalizzi ( VERB ) 
- universalizziamo ( VERB ) 
- universalizziate ( VERB ) 
- universalizzin ( VERB ) 
- universalizzino ( VERB ) 
- universalizzo ( VERB ) 
- universalizzo' ( VERB ) 
- universalizzò ( VERB ) 
- universalmente ( ADVERB ) 
- universe ( ADJECTIVE ) 
- universi ( ADJECTIVE ) 
- universissima ( ADJECTIVE ) 
- universissime ( ADJECTIVE ) 
- universissimi ( ADJECTIVE ) 
- universissimo ( ADJECTIVE ) 
- universita' ( NOUN NOUN_SINGULAR ) 
- universitari ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- universitaria ( ADJECTIVE ) 
- universitarie ( ADJECTIVE ) 
- universitario ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- universitarissima ( ADJECTIVE ) 
- universitarissime ( ADJECTIVE ) 
- universitarissimi ( ADJECTIVE ) 
- universitarissimo ( ADJECTIVE ) 
- università ( NOUN NOUN_SINGULAR ) 
- universo ( ADJECTIVE ) 
- univi ( VERB ) 
- univo ( VERB ) 
- univoca ( ADJECTIVE ) 
- univocamente ( ADVERB ) 
- univoche ( ADJECTIVE ) 
- univoci ( ADJECTIVE ) 
- univocissima ( ADJECTIVE ) 
- univocissime ( ADJECTIVE ) 
- univocissimi ( ADJECTIVE ) 
- univocissimo ( ADJECTIVE ) 
- univoco ( ADJECTIVE ) 
- uno ( PRONOUN_SUBJECT PRONOUN_OBJECT NOUN DETERMINER NOUN_SINGULAR ) 
- unse ( VERB ) 
- unsero ( VERB ) 
- unsi ( VERB ) 
- unta ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unte ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unti ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- untissima ( ADJECTIVE ) 
- untissime ( ADJECTIVE ) 
- untissimi ( ADJECTIVE ) 
- untissimo ( ADJECTIVE ) 
- unto ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- untore ( NOUN NOUN_SINGULAR ) 
- untori ( NOUN NOUN_SINGULAR ) 
- untuosa ( ADJECTIVE ) 
- untuose ( ADJECTIVE ) 
- untuosi ( ADJECTIVE ) 
- untuosissima ( ADJECTIVE ) 
- untuosissime ( ADJECTIVE ) 
- untuosissimi ( ADJECTIVE ) 
- untuosissimo ( ADJECTIVE ) 
- untuoso ( ADJECTIVE ) 
- unzione ( NOUN NOUN_SINGULAR ) 
- unzioni ( NOUN NOUN_SINGULAR ) 
- unì ( VERB ) 
+ ulani ( ) lemma=ulano 
+ ulano ( ) 
+ ulcera ( ) 
+ ulcerai ( ) lemma=ulcerare 
+ ulcerare ( ) 
+ ulcerammo ( ) lemma=ulcerare 
+ ulceran ( ) lemma=ulcerare 
+ ulcerando ( ) lemma=ulcerare 
+ ulcerano ( ) lemma=ulcerare 
+ ulcerante ( ) lemma=ulcerare 
+ ulceranti ( ) lemma=ulcerare 
+ ulcerar ( ) lemma=ulcerare 
+ ulceraron ( ) lemma=ulcerare 
+ ulcerarono ( ) lemma=ulcerare 
+ ulcerasse ( ) lemma=ulcerare 
+ ulcerasser ( ) lemma=ulcerare 
+ ulcerassero ( ) lemma=ulcerare 
+ ulcerassi ( ) lemma=ulcerare 
+ ulcerassimo ( ) lemma=ulcerare 
+ ulceraste ( ) lemma=ulcerare 
+ ulcerasti ( ) lemma=ulcerare 
+ ulcerata ( ) lemma=ulcerare 
+ ulcerate ( ) lemma=ulcerare 
+ ulcerati ( ) lemma=ulcerare 
+ ulcerato ( ) lemma=ulcerare 
+ ulcerava ( ) lemma=ulcerare 
+ ulceravamo ( ) lemma=ulcerare 
+ ulceravan ( ) lemma=ulcerare 
+ ulceravano ( ) lemma=ulcerare 
+ ulceravate ( ) lemma=ulcerare 
+ ulceravi ( ) lemma=ulcerare 
+ ulceravo ( ) lemma=ulcerare 
+ ulcere ( ) lemma=ulcera 
+ ulcerera' ( ) lemma=ulcerare 
+ ulcererai ( ) lemma=ulcerare 
+ ulcereran ( ) lemma=ulcerare 
+ ulcereranno ( ) lemma=ulcerare 
+ ulcererebbe ( ) lemma=ulcerare 
+ ulcererebber ( ) lemma=ulcerare 
+ ulcererebbero ( ) lemma=ulcerare 
+ ulcererei ( ) lemma=ulcerare 
+ ulcereremmo ( ) lemma=ulcerare 
+ ulcereremo ( ) lemma=ulcerare 
+ ulcerereste ( ) lemma=ulcerare 
+ ulcereresti ( ) lemma=ulcerare 
+ ulcererete ( ) lemma=ulcerare 
+ ulcerero' ( ) lemma=ulcerare 
+ ulcererà ( ) lemma=ulcerare 
+ ulcererò ( ) lemma=ulcerare 
+ ulceri ( ) lemma=ulcerare 
+ ulceriamo ( ) lemma=ulcerare 
+ ulceriate ( ) lemma=ulcerare 
+ ulcerin ( ) lemma=ulcerare 
+ ulcerino ( ) lemma=ulcerare 
+ ulcero ( ) lemma=ulcerare 
+ ulcero' ( ) lemma=ulcerare 
+ ulcerosa ( ) lemma=ulceroso 
+ ulceroso ( ) 
+ ulcerose ( ) lemma=ulceroso 
+ ulcerosi ( ) lemma=ulceroso 
+ ulcerosissima ( ) lemma=ulceroso 
+ ulcerosissime ( ) lemma=ulceroso 
+ ulcerosissimi ( ) lemma=ulceroso 
+ ulcerosissimo ( ) lemma=ulceroso 
+ ulcerò ( ) lemma=ulcerare 
+ ulema ( ) 
+ uliveti ( ) lemma=uliveto 
+ uliveto ( ) 
+ ulivi ( ) lemma=ulivo 
+ ulivo ( ) 
+ ulivista ( ) 
+ ulivisti ( ) lemma=ulivista 
+ ulta ( ) lemma=ulto 
+ ulto ( ) 
+ ulte ( ) lemma=ulto 
+ ulteriore ( ) 
+ ulteriori ( ) lemma=ulteriore 
+ ulteriorissima ( ) lemma=ulteriore 
+ ulteriorissime ( ) lemma=ulteriore 
+ ulteriorissimi ( ) lemma=ulteriore 
+ ulteriorissimo ( ) lemma=ulteriore 
+ ulteriormente ( ) 
+ ulti ( ) lemma=ulto 
+ ultim ( ) 
+ ultima ( ) lemma=ultimo 
+ ultimo ( ) 
+ ultimai ( ) lemma=ultimare 
+ ultimare ( ) 
+ ultimamente ( ) 
+ ultimammo ( ) lemma=ultimare 
+ ultiman ( ) lemma=ultimare 
+ ultimando ( ) lemma=ultimare 
+ ultimano ( ) lemma=ultimare 
+ ultimante ( ) lemma=ultimare 
+ ultimanti ( ) lemma=ultimare 
+ ultimar ( ) lemma=ultimare 
+ ultimaron ( ) lemma=ultimare 
+ ultimarono ( ) lemma=ultimare 
+ ultimasse ( ) lemma=ultimare 
+ ultimasser ( ) lemma=ultimare 
+ ultimassero ( ) lemma=ultimare 
+ ultimassi ( ) lemma=ultimare 
+ ultimassimo ( ) lemma=ultimare 
+ ultimaste ( ) lemma=ultimare 
+ ultimasti ( ) lemma=ultimare 
+ ultimata ( ) lemma=ultimare 
+ ultimate ( ) lemma=ultimare 
+ ultimati ( ) lemma=ultimare 
+ ultimativa ( ) lemma=ultimativo 
+ ultimativo ( ) 
+ ultimative ( ) lemma=ultimativo 
+ ultimativi ( ) lemma=ultimativo 
+ ultimativissima ( ) lemma=ultimativo 
+ ultimativissime ( ) lemma=ultimativo 
+ ultimativissimi ( ) lemma=ultimativo 
+ ultimativissimo ( ) lemma=ultimativo 
+ ultimato ( ) lemma=ultimare 
+ ultimatum ( ) 
+ ultimava ( ) lemma=ultimare 
+ ultimavamo ( ) lemma=ultimare 
+ ultimavan ( ) lemma=ultimare 
+ ultimavano ( ) lemma=ultimare 
+ ultimavate ( ) lemma=ultimare 
+ ultimavi ( ) lemma=ultimare 
+ ultimavo ( ) lemma=ultimare 
+ ultime ( ) lemma=ultimo 
+ ultimera' ( ) lemma=ultimare 
+ ultimerai ( ) lemma=ultimare 
+ ultimeran ( ) lemma=ultimare 
+ ultimeranno ( ) lemma=ultimare 
+ ultimerebbe ( ) lemma=ultimare 
+ ultimerebber ( ) lemma=ultimare 
+ ultimerebbero ( ) lemma=ultimare 
+ ultimerei ( ) lemma=ultimare 
+ ultimeremmo ( ) lemma=ultimare 
+ ultimeremo ( ) lemma=ultimare 
+ ultimereste ( ) lemma=ultimare 
+ ultimeresti ( ) lemma=ultimare 
+ ultimerete ( ) lemma=ultimare 
+ ultimero' ( ) lemma=ultimare 
+ ultimerà ( ) lemma=ultimare 
+ ultimerò ( ) lemma=ultimare 
+ ultimi ( ) lemma=ultimo 
+ ultimiamo ( ) lemma=ultimare 
+ ultimiate ( ) lemma=ultimare 
+ ultimin ( ) lemma=ultimare 
+ ultimino ( ) lemma=ultimare 
+ ultimissima ( ) lemma=ultimo 
+ ultimissime ( ) lemma=ultimo 
+ ultimissimi ( ) lemma=ultimo 
+ ultimissimo ( ) lemma=ultimo 
+ ultimo' ( ) lemma=ultimare 
+ ultimò ( ) lemma=ultimare 
+ ultissima ( ) lemma=ulto 
+ ultissime ( ) lemma=ulto 
+ ultissimi ( ) lemma=ulto 
+ ultissimo ( ) lemma=ulto 
+ ultra ( ) 
+ ultra' ( ) lemma=ultrà 
+ ultrà ( ) 
+ ultra-europeizzata ( ) lemma=ultra-europeizzato 
+ ultra-europeizzato ( ) 
+ ultra-europeizzate ( ) lemma=ultra-europeizzato 
+ ultra-europeizzati ( ) lemma=ultra-europeizzato 
+ ultra-europeizzatissima ( ) lemma=ultra-europeizzato 
+ ultra-europeizzatissime ( ) lemma=ultra-europeizzato 
+ ultra-europeizzatissimi ( ) lemma=ultra-europeizzato 
+ ultra-europeizzatissimo ( ) lemma=ultra-europeizzato 
+ ultra-nazionalista ( ) 
+ ultra-nazionaliste ( ) lemma=ultra-nazionalista 
+ ultra-nazionalisti ( ) lemma=ultra-nazionalista 
+ ultra-nazionalistissima ( ) lemma=ultra-nazionalista 
+ ultra-nazionalistissime ( ) lemma=ultra-nazionalista 
+ ultra-nazionalistissimi ( ) lemma=ultra-nazionalista 
+ ultra-nazionalistissimo ( ) lemma=ultra-nazionalista 
+ ultraconservatore ( ) 
+ ultraconservatori ( ) lemma=ultraconservatore 
+ ultracorta ( ) lemma=ultracorto 
+ ultracorto ( ) 
+ ultracorte ( ) lemma=ultracorto 
+ ultracorti ( ) lemma=ultracorto 
+ ultracortissima ( ) lemma=ultracorto 
+ ultracortissime ( ) lemma=ultracorto 
+ ultracortissimi ( ) lemma=ultracorto 
+ ultracortissimo ( ) lemma=ultracorto 
+ ultramoderna ( ) lemma=ultramoderno 
+ ultramoderno ( ) 
+ ultramoderne ( ) lemma=ultramoderno 
+ ultramoderni ( ) lemma=ultramoderno 
+ ultramodernissima ( ) lemma=ultramoderno 
+ ultramodernissime ( ) lemma=ultramoderno 
+ ultramodernissimi ( ) lemma=ultramoderno 
+ ultramodernissimo ( ) lemma=ultramoderno 
+ ultranazionalista ( ) 
+ ultranazionalisti ( ) lemma=ultranazionalista 
+ ultraortodossi ( ) lemma=ultraortodosso 
+ ultraortodosso ( ) 
+ ultrarapida ( ) lemma=ultrarapido 
+ ultrarapido ( ) 
+ ultrarapide ( ) lemma=ultrarapido 
+ ultrarapidi ( ) lemma=ultrarapido 
+ ultrarapidissima ( ) lemma=ultrarapido 
+ ultrarapidissime ( ) lemma=ultrarapido 
+ ultrarapidissimi ( ) lemma=ultrarapido 
+ ultrarapidissimo ( ) lemma=ultrarapido 
+ ultras ( ) 
+ ultrasensibile ( ) 
+ ultrasensibili ( ) lemma=ultrasensibile 
+ ultrasensibilissima ( ) lemma=ultrasensibile 
+ ultrasensibilissime ( ) lemma=ultrasensibile 
+ ultrasensibilissimi ( ) lemma=ultrasensibile 
+ ultrasensibilissimo ( ) lemma=ultrasensibile 
+ ultrasuoni ( ) lemma=ultrasuono 
+ ultrasuono ( ) 
+ ultraterrena ( ) lemma=ultraterreno 
+ ultraterreno ( ) 
+ ultraterrene ( ) lemma=ultraterreno 
+ ultraterreni ( ) lemma=ultraterreno 
+ ultraterrenissima ( ) lemma=ultraterreno 
+ ultraterrenissime ( ) lemma=ultraterreno 
+ ultraterrenissimi ( ) lemma=ultraterreno 
+ ultraterrenissimo ( ) lemma=ultraterreno 
+ ultravioletta ( ) lemma=ultravioletto 
+ ultravioletto ( ) 
+ ultraviolette ( ) lemma=ultravioletto 
+ ultravioletti ( ) lemma=ultravioletto 
+ ultraviolettissima ( ) lemma=ultravioletto 
+ ultraviolettissime ( ) lemma=ultravioletto 
+ ultraviolettissimi ( ) lemma=ultravioletto 
+ ultraviolettissimo ( ) lemma=ultravioletto 
+ ultre ( ) lemma=ultro 
+ ultro ( ) 
+ ultri ( ) lemma=ultro 
+ ultrissima ( ) lemma=ultro 
+ ultrissime ( ) lemma=ultro 
+ ultrissimi ( ) lemma=ultro 
+ ultrissimo ( ) lemma=ultro 
+ ulula ( ) lemma=ululare 
+ ululare ( ) 
+ ululai ( ) lemma=ululare 
+ ululammo ( ) lemma=ululare 
+ ululan ( ) lemma=ululare 
+ ululando ( ) lemma=ululare 
+ ululano ( ) lemma=ululare 
+ ululante ( ) lemma=ululare 
+ ululanti ( ) lemma=ululare 
+ ulular ( ) lemma=ululare 
+ ulularon ( ) lemma=ululare 
+ ulularono ( ) lemma=ululare 
+ ululasse ( ) lemma=ululare 
+ ululasser ( ) lemma=ululare 
+ ululassero ( ) lemma=ululare 
+ ululassi ( ) lemma=ululare 
+ ululassimo ( ) lemma=ululare 
+ ululaste ( ) lemma=ululare 
+ ululasti ( ) lemma=ululare 
+ ululata ( ) lemma=ululare 
+ ululate ( ) lemma=ululare 
+ ululati ( ) lemma=ululato 
+ ululato ( ) 
+ ululava ( ) lemma=ululare 
+ ululavamo ( ) lemma=ululare 
+ ululavan ( ) lemma=ululare 
+ ululavano ( ) lemma=ululare 
+ ululavate ( ) lemma=ululare 
+ ululavi ( ) lemma=ululare 
+ ululavo ( ) lemma=ululare 
+ ululera' ( ) lemma=ululare 
+ ululerai ( ) lemma=ululare 
+ ululeran ( ) lemma=ululare 
+ ululeranno ( ) lemma=ululare 
+ ululerebbe ( ) lemma=ululare 
+ ululerebber ( ) lemma=ululare 
+ ululerebbero ( ) lemma=ululare 
+ ululerei ( ) lemma=ululare 
+ ululeremmo ( ) lemma=ululare 
+ ululeremo ( ) lemma=ululare 
+ ululereste ( ) lemma=ululare 
+ ululeresti ( ) lemma=ululare 
+ ululerete ( ) lemma=ululare 
+ ululero' ( ) lemma=ululare 
+ ululerà ( ) lemma=ululare 
+ ululerò ( ) lemma=ululare 
+ ululi ( ) lemma=ululare 
+ ululiamo ( ) lemma=ululare 
+ ululiate ( ) lemma=ululare 
+ ululin ( ) lemma=ululare 
+ ululino ( ) lemma=ululare 
+ ululo ( ) lemma=ululare 
+ ululo' ( ) lemma=ululare 
+ ululò ( ) lemma=ululare 
+ umana ( ) lemma=umano 
+ umano ( ) 
+ umanamente ( ) 
+ umane ( ) lemma=umano 
+ umanesimi ( ) lemma=umanesimo 
+ umanesimo ( ) 
+ umani ( ) lemma=umano 
+ umanissima ( ) lemma=umano 
+ umanissime ( ) lemma=umano 
+ umanissimi ( ) lemma=umano 
+ umanissimo ( ) lemma=umano 
+ umanista ( ) 
+ umaniste ( ) lemma=umanista 
+ umanisti ( ) lemma=umanista 
+ umanistica ( ) lemma=umanistico 
+ umanistico ( ) 
+ umanistiche ( ) lemma=umanistico 
+ umanistici ( ) lemma=umanistico 
+ umanisticissima ( ) lemma=umanistico 
+ umanisticissime ( ) lemma=umanistico 
+ umanisticissimi ( ) lemma=umanistico 
+ umanisticissimo ( ) lemma=umanistico 
+ umanistissima ( ) lemma=umanista 
+ umanistissime ( ) lemma=umanista 
+ umanistissimi ( ) lemma=umanista 
+ umanistissimo ( ) lemma=umanista 
+ umanita' ( ) lemma=umanità 
+ umanità ( ) 
+ umanitari ( ) lemma=umanitario 
+ umanitario ( ) 
+ umanitaria ( ) lemma=umanitario 
+ umanitarie ( ) lemma=umanitario 
+ umanitarissima ( ) lemma=umanitario 
+ umanitarissime ( ) lemma=umanitario 
+ umanitarissimi ( ) lemma=umanitario 
+ umanitarissimo ( ) lemma=umanitario 
+ umanizza ( ) lemma=umanizzare 
+ umanizzare ( ) 
+ umanizzai ( ) lemma=umanizzare 
+ umanizzammo ( ) lemma=umanizzare 
+ umanizzan ( ) lemma=umanizzare 
+ umanizzando ( ) lemma=umanizzare 
+ umanizzano ( ) lemma=umanizzare 
+ umanizzante ( ) lemma=umanizzare 
+ umanizzanti ( ) lemma=umanizzare 
+ umanizzar ( ) lemma=umanizzare 
+ umanizzaron ( ) lemma=umanizzare 
+ umanizzarono ( ) lemma=umanizzare 
+ umanizzasse ( ) lemma=umanizzare 
+ umanizzasser ( ) lemma=umanizzare 
+ umanizzassero ( ) lemma=umanizzare 
+ umanizzassi ( ) lemma=umanizzare 
+ umanizzassimo ( ) lemma=umanizzare 
+ umanizzaste ( ) lemma=umanizzare 
+ umanizzasti ( ) lemma=umanizzare 
+ umanizzata ( ) lemma=umanizzare 
+ umanizzate ( ) lemma=umanizzare 
+ umanizzati ( ) lemma=umanizzare 
+ umanizzato ( ) lemma=umanizzare 
+ umanizzava ( ) lemma=umanizzare 
+ umanizzavamo ( ) lemma=umanizzare 
+ umanizzavan ( ) lemma=umanizzare 
+ umanizzavano ( ) lemma=umanizzare 
+ umanizzavate ( ) lemma=umanizzare 
+ umanizzavi ( ) lemma=umanizzare 
+ umanizzavo ( ) lemma=umanizzare 
+ umanizzazione ( ) 
+ umanizzazioni ( ) lemma=umanizzazione 
+ umanizzera' ( ) lemma=umanizzare 
+ umanizzerai ( ) lemma=umanizzare 
+ umanizzeran ( ) lemma=umanizzare 
+ umanizzeranno ( ) lemma=umanizzare 
+ umanizzerebbe ( ) lemma=umanizzare 
+ umanizzerebber ( ) lemma=umanizzare 
+ umanizzerebbero ( ) lemma=umanizzare 
+ umanizzerei ( ) lemma=umanizzare 
+ umanizzeremmo ( ) lemma=umanizzare 
+ umanizzeremo ( ) lemma=umanizzare 
+ umanizzereste ( ) lemma=umanizzare 
+ umanizzeresti ( ) lemma=umanizzare 
+ umanizzerete ( ) lemma=umanizzare 
+ umanizzero' ( ) lemma=umanizzare 
+ umanizzerà ( ) lemma=umanizzare 
+ umanizzerò ( ) lemma=umanizzare 
+ umanizzi ( ) lemma=umanizzare 
+ umanizziamo ( ) lemma=umanizzare 
+ umanizziate ( ) lemma=umanizzare 
+ umanizzin ( ) lemma=umanizzare 
+ umanizzino ( ) lemma=umanizzare 
+ umanizzo ( ) lemma=umanizzare 
+ umanizzo' ( ) lemma=umanizzare 
+ umanizzò ( ) lemma=umanizzare 
+ umanoide ( ) 
+ umanoidi ( ) lemma=umanoide 
+ umanoidissima ( ) lemma=umanoide 
+ umanoidissime ( ) lemma=umanoide 
+ umanoidissimi ( ) lemma=umanoide 
+ umanoidissimo ( ) lemma=umanoide 
+ umbertina ( ) lemma=umbertino 
+ umbertino ( ) 
+ umbertine ( ) lemma=umbertino 
+ umbertini ( ) lemma=umbertino 
+ umbertinissima ( ) lemma=umbertino 
+ umbertinissime ( ) lemma=umbertino 
+ umbertinissimi ( ) lemma=umbertino 
+ umbertinissimo ( ) lemma=umbertino 
+ umbra ( ) lemma=umbro 
+ umbro ( ) 
+ umbratile ( ) 
+ umbratili ( ) lemma=umbratile 
+ umbratilissima ( ) lemma=umbratile 
+ umbratilissime ( ) lemma=umbratile 
+ umbratilissimi ( ) lemma=umbratile 
+ umbratilissimo ( ) lemma=umbratile 
+ umbre ( ) lemma=umbro 
+ umbri ( ) lemma=umbro 
+ umbrissima ( ) lemma=umbro 
+ umbrissime ( ) lemma=umbro 
+ umbrissimi ( ) lemma=umbro 
+ umbrissimo ( ) lemma=umbro 
+ umetta ( ) lemma=umettare 
+ umettare ( ) 
+ umettai ( ) lemma=umettare 
+ umettammo ( ) lemma=umettare 
+ umettan ( ) lemma=umettare 
+ umettando ( ) lemma=umettare 
+ umettano ( ) lemma=umettare 
+ umettante ( ) lemma=umettare 
+ umettanti ( ) lemma=umettare 
+ umettar ( ) lemma=umettare 
+ umettaron ( ) lemma=umettare 
+ umettarono ( ) lemma=umettare 
+ umettasse ( ) lemma=umettare 
+ umettasser ( ) lemma=umettare 
+ umettassero ( ) lemma=umettare 
+ umettassi ( ) lemma=umettare 
+ umettassimo ( ) lemma=umettare 
+ umettaste ( ) lemma=umettare 
+ umettasti ( ) lemma=umettare 
+ umettata ( ) lemma=umettare 
+ umettate ( ) lemma=umettare 
+ umettati ( ) lemma=umettare 
+ umettato ( ) lemma=umettare 
+ umettava ( ) lemma=umettare 
+ umettavamo ( ) lemma=umettare 
+ umettavan ( ) lemma=umettare 
+ umettavano ( ) lemma=umettare 
+ umettavate ( ) lemma=umettare 
+ umettavi ( ) lemma=umettare 
+ umettavo ( ) lemma=umettare 
+ umettera' ( ) lemma=umettare 
+ umetterai ( ) lemma=umettare 
+ umetteran ( ) lemma=umettare 
+ umetteranno ( ) lemma=umettare 
+ umetterebbe ( ) lemma=umettare 
+ umetterebber ( ) lemma=umettare 
+ umetterebbero ( ) lemma=umettare 
+ umetterei ( ) lemma=umettare 
+ umetteremmo ( ) lemma=umettare 
+ umetteremo ( ) lemma=umettare 
+ umettereste ( ) lemma=umettare 
+ umetteresti ( ) lemma=umettare 
+ umetterete ( ) lemma=umettare 
+ umettero' ( ) lemma=umettare 
+ umetterà ( ) lemma=umettare 
+ umetterò ( ) lemma=umettare 
+ umetti ( ) lemma=umettare 
+ umettiamo ( ) lemma=umettare 
+ umettiate ( ) lemma=umettare 
+ umettin ( ) lemma=umettare 
+ umettino ( ) lemma=umettare 
+ umetto ( ) lemma=umettare 
+ umetto' ( ) lemma=umettare 
+ umettò ( ) lemma=umettare 
+ umida ( ) lemma=umido 
+ umido ( ) 
+ umide ( ) lemma=umido 
+ umidi ( ) lemma=umido 
+ umidicce ( ) lemma=umidiccio 
+ umidiccio ( ) 
+ umidicchissima ( ) lemma=umidiccio 
+ umidicchissime ( ) lemma=umidiccio 
+ umidicchissimi ( ) lemma=umidiccio 
+ umidicchissimo ( ) lemma=umidiccio 
+ umidicci ( ) lemma=umidiccio 
+ umidiccia ( ) lemma=umidiccio 
+ umidifica ( ) lemma=umidificare 
+ umidificare ( ) 
+ umidificai ( ) lemma=umidificare 
+ umidificammo ( ) lemma=umidificare 
+ umidifican ( ) lemma=umidificare 
+ umidificando ( ) lemma=umidificare 
+ umidificano ( ) lemma=umidificare 
+ umidificante ( ) lemma=umidificare 
+ umidificanti ( ) lemma=umidificare 
+ umidificar ( ) lemma=umidificare 
+ umidificaron ( ) lemma=umidificare 
+ umidificarono ( ) lemma=umidificare 
+ umidificasse ( ) lemma=umidificare 
+ umidificasser ( ) lemma=umidificare 
+ umidificassero ( ) lemma=umidificare 
+ umidificassi ( ) lemma=umidificare 
+ umidificassimo ( ) lemma=umidificare 
+ umidificaste ( ) lemma=umidificare 
+ umidificasti ( ) lemma=umidificare 
+ umidificata ( ) lemma=umidificare 
+ umidificate ( ) lemma=umidificare 
+ umidificati ( ) lemma=umidificare 
+ umidificato ( ) lemma=umidificare 
+ umidificava ( ) lemma=umidificare 
+ umidificavamo ( ) lemma=umidificare 
+ umidificavan ( ) lemma=umidificare 
+ umidificavano ( ) lemma=umidificare 
+ umidificavate ( ) lemma=umidificare 
+ umidificavi ( ) lemma=umidificare 
+ umidificavo ( ) lemma=umidificare 
+ umidifichera' ( ) lemma=umidificare 
+ umidificherai ( ) lemma=umidificare 
+ umidificheran ( ) lemma=umidificare 
+ umidificheranno ( ) lemma=umidificare 
+ umidificherebbe ( ) lemma=umidificare 
+ umidificherebber ( ) lemma=umidificare 
+ umidificherebbero ( ) lemma=umidificare 
+ umidificherei ( ) lemma=umidificare 
+ umidificheremmo ( ) lemma=umidificare 
+ umidificheremo ( ) lemma=umidificare 
+ umidifichereste ( ) lemma=umidificare 
+ umidificheresti ( ) lemma=umidificare 
+ umidificherete ( ) lemma=umidificare 
+ umidifichero' ( ) lemma=umidificare 
+ umidificherà ( ) lemma=umidificare 
+ umidificherò ( ) lemma=umidificare 
+ umidifichi ( ) lemma=umidificare 
+ umidifichiamo ( ) lemma=umidificare 
+ umidifichiate ( ) lemma=umidificare 
+ umidifichin ( ) lemma=umidificare 
+ umidifichino ( ) lemma=umidificare 
+ umidifico ( ) lemma=umidificare 
+ umidifico' ( ) lemma=umidificare 
+ umidificò ( ) lemma=umidificare 
+ umidissima ( ) lemma=umido 
+ umidissime ( ) lemma=umido 
+ umidissimi ( ) lemma=umido 
+ umidissimo ( ) lemma=umido 
+ umidita' ( ) lemma=umidità 
+ umidità ( ) 
+ umile ( ) 
+ umili ( ) lemma=umile 
+ umilia ( ) lemma=umiliare 
+ umiliare ( ) 
+ umiliai ( ) lemma=umiliare 
+ umiliammo ( ) lemma=umiliare 
+ umiliamo ( ) lemma=umiliare 
+ umilian ( ) lemma=umiliare 
+ umiliando ( ) lemma=umiliare 
+ umiliandolo ( ) lemma=umiliare 
+ umiliandone ( ) lemma=umiliare 
+ umiliano ( ) lemma=umiliare 
+ umiliante ( ) 
+ umilianti ( ) lemma=umiliante 
+ umiliantissima ( ) lemma=umiliante 
+ umiliantissime ( ) lemma=umiliante 
+ umiliantissimi ( ) lemma=umiliante 
+ umiliantissimo ( ) lemma=umiliante 
+ umiliar ( ) lemma=umiliare 
+ umiliarlo ( ) lemma=umiliare 
+ umiliaron ( ) lemma=umiliare 
+ umiliarono ( ) lemma=umiliare 
+ umiliarsi ( ) lemma=umiliare 
+ umiliasse ( ) lemma=umiliare 
+ umiliasser ( ) lemma=umiliare 
+ umiliassero ( ) lemma=umiliare 
+ umiliassi ( ) lemma=umiliare 
+ umiliassimo ( ) lemma=umiliare 
+ umiliaste ( ) lemma=umiliare 
+ umiliasti ( ) lemma=umiliare 
+ umiliata ( ) lemma=umiliare 
+ umiliate ( ) lemma=umiliare 
+ umiliati ( ) lemma=umiliare 
+ umiliato ( ) lemma=umiliare 
+ umiliava ( ) lemma=umiliare 
+ umiliavamo ( ) lemma=umiliare 
+ umiliavan ( ) lemma=umiliare 
+ umiliavano ( ) lemma=umiliare 
+ umiliavate ( ) lemma=umiliare 
+ umiliavi ( ) lemma=umiliare 
+ umiliavo ( ) lemma=umiliare 
+ umiliazione ( ) 
+ umiliazioni ( ) lemma=umiliazione 
+ umiliera' ( ) lemma=umiliare 
+ umilierai ( ) lemma=umiliare 
+ umilieran ( ) lemma=umiliare 
+ umilieranno ( ) lemma=umiliare 
+ umilierebbe ( ) lemma=umiliare 
+ umilierebber ( ) lemma=umiliare 
+ umilierebbero ( ) lemma=umiliare 
+ umilierei ( ) lemma=umiliare 
+ umilieremmo ( ) lemma=umiliare 
+ umilieremo ( ) lemma=umiliare 
+ umiliereste ( ) lemma=umiliare 
+ umilieresti ( ) lemma=umiliare 
+ umilierete ( ) lemma=umiliare 
+ umiliero' ( ) lemma=umiliare 
+ umilierà ( ) lemma=umiliare 
+ umilierò ( ) lemma=umiliare 
+ umilin ( ) lemma=umiliare 
+ umilino ( ) lemma=umiliare 
+ umilio ( ) lemma=umiliare 
+ umilio' ( ) lemma=umiliare 
+ umilissima ( ) lemma=umile 
+ umilissime ( ) lemma=umile 
+ umilissimi ( ) lemma=umile 
+ umilissimo ( ) lemma=umile 
+ umiliò ( ) lemma=umiliare 
+ umilta' ( ) lemma=umiltà 
+ umiltà ( ) 
+ umoralita' ( ) lemma=umoralità 
+ umoralità ( ) 
+ umore ( ) 
+ umori ( ) lemma=umore 
+ umorismi ( ) lemma=umorismo 
+ umorismo ( ) 
+ umorista ( ) 
+ umoristi ( ) lemma=umorista 
+ umoristica ( ) lemma=umoristico 
+ umoristico ( ) 
+ umoristiche ( ) lemma=umoristico 
+ umoristici ( ) lemma=umoristico 
+ umoristicissima ( ) lemma=umoristico 
+ umoristicissime ( ) lemma=umoristico 
+ umoristicissimi ( ) lemma=umoristico 
+ umoristicissimo ( ) lemma=umoristico 
+ un ( ) 
+ un_pò ( ) lemma=un_pò 
+ un' ( ) 
+ una ( ) 
+ unanime ( ) 
+ unanimemente ( ) 
+ unanimi ( ) lemma=unanime 
+ unanimismi ( ) lemma=unanimismo 
+ unanimismo ( ) 
+ unanimissima ( ) lemma=unanime 
+ unanimissime ( ) lemma=unanime 
+ unanimissimi ( ) lemma=unanime 
+ unanimissimo ( ) lemma=unanime 
+ unanimita' ( ) lemma=unanimità 
+ unanimità ( ) 
+ uncina ( ) lemma=uncinare 
+ uncinare ( ) 
+ uncinai ( ) lemma=uncinare 
+ uncinammo ( ) lemma=uncinare 
+ uncinan ( ) lemma=uncinare 
+ uncinando ( ) lemma=uncinare 
+ uncinano ( ) lemma=uncinare 
+ uncinante ( ) lemma=uncinare 
+ uncinanti ( ) lemma=uncinare 
+ uncinar ( ) lemma=uncinare 
+ uncinaron ( ) lemma=uncinare 
+ uncinarono ( ) lemma=uncinare 
+ uncinasse ( ) lemma=uncinare 
+ uncinasser ( ) lemma=uncinare 
+ uncinassero ( ) lemma=uncinare 
+ uncinassi ( ) lemma=uncinare 
+ uncinassimo ( ) lemma=uncinare 
+ uncinaste ( ) lemma=uncinare 
+ uncinasti ( ) lemma=uncinare 
+ uncinata ( ) lemma=uncinato 
+ uncinato ( ) 
+ uncinate ( ) lemma=uncinato 
+ uncinati ( ) lemma=uncinato 
+ uncinatissima ( ) lemma=uncinato 
+ uncinatissime ( ) lemma=uncinato 
+ uncinatissimi ( ) lemma=uncinato 
+ uncinatissimo ( ) lemma=uncinato 
+ uncinava ( ) lemma=uncinare 
+ uncinavamo ( ) lemma=uncinare 
+ uncinavan ( ) lemma=uncinare 
+ uncinavano ( ) lemma=uncinare 
+ uncinavate ( ) lemma=uncinare 
+ uncinavi ( ) lemma=uncinare 
+ uncinavo ( ) lemma=uncinare 
+ uncinera' ( ) lemma=uncinare 
+ uncinerai ( ) lemma=uncinare 
+ uncineran ( ) lemma=uncinare 
+ uncineranno ( ) lemma=uncinare 
+ uncinerebbe ( ) lemma=uncinare 
+ uncinerebber ( ) lemma=uncinare 
+ uncinerebbero ( ) lemma=uncinare 
+ uncinerei ( ) lemma=uncinare 
+ uncineremmo ( ) lemma=uncinare 
+ uncineremo ( ) lemma=uncinare 
+ uncinereste ( ) lemma=uncinare 
+ uncineresti ( ) lemma=uncinare 
+ uncinerete ( ) lemma=uncinare 
+ uncinero' ( ) lemma=uncinare 
+ uncinerà ( ) lemma=uncinare 
+ uncinerò ( ) lemma=uncinare 
+ uncini ( ) lemma=uncino 
+ uncino ( ) 
+ unciniamo ( ) lemma=uncinare 
+ unciniate ( ) lemma=uncinare 
+ uncinin ( ) lemma=uncinare 
+ uncinino ( ) lemma=uncinare 
+ uncino' ( ) lemma=uncinare 
+ uncinò ( ) lemma=uncinare 
+ undecima ( ) lemma=undecimo 
+ undecimo ( ) 
+ undecime ( ) lemma=undecimo 
+ undecimi ( ) lemma=undecimo 
+ undecimissima ( ) lemma=undecimo 
+ undecimissime ( ) lemma=undecimo 
+ undecimissimi ( ) lemma=undecimo 
+ undecimissimo ( ) lemma=undecimo 
+ under ( ) 
+ underground ( ) 
+ undicenne ( ) 
+ undicenni ( ) lemma=undicenne 
+ undicennissima ( ) lemma=undicenne 
+ undicennissime ( ) lemma=undicenne 
+ undicennissimi ( ) lemma=undicenne 
+ undicennissimo ( ) lemma=undicenne 
+ undicesima ( ) lemma=undicesimo 
+ undicesimo ( ) 
+ undicesime ( ) lemma=undicesimo 
+ undicesimi ( ) lemma=undicesimo 
+ undicesimissima ( ) lemma=undicesimo 
+ undicesimissime ( ) lemma=undicesimo 
+ undicesimissimi ( ) lemma=undicesimo 
+ undicesimissimo ( ) lemma=undicesimo 
+ undici ( ) 
+ undicimila ( ) 
+ undicimillesima ( ) lemma=undicimillesimo 
+ undicimillesimo ( ) 
+ undicimillesime ( ) lemma=undicimillesimo 
+ undicimillesimi ( ) lemma=undicimillesimo 
+ unendo ( ) lemma=unire 
+ unire ( ) 
+ unendosi ( ) lemma=unire 
+ unendovi ( ) lemma=unire 
+ unente ( ) lemma=unire 
+ unenti ( ) lemma=unire 
+ unga ( ) lemma=ungere 
+ ungere ( ) 
+ ungano ( ) lemma=ungere 
+ ungarettiana ( ) lemma=ungarettiano 
+ ungarettiano ( ) 
+ ungarettiane ( ) lemma=ungarettiano 
+ ungarettiani ( ) lemma=ungarettiano 
+ ungarettianissima ( ) lemma=ungarettiano 
+ ungarettianissime ( ) lemma=ungarettiano 
+ ungarettianissimi ( ) lemma=ungarettiano 
+ ungarettianissimo ( ) lemma=ungarettiano 
+ unge ( ) lemma=ungere 
+ ungemmo ( ) lemma=ungere 
+ ungendo ( ) lemma=ungere 
+ ungente ( ) lemma=ungere 
+ ungenti ( ) lemma=ungere 
+ ungera' ( ) lemma=ungere 
+ ungerai ( ) lemma=ungere 
+ ungeranno ( ) lemma=ungere 
+ ungerebbe ( ) lemma=ungere 
+ ungerebbero ( ) lemma=ungere 
+ ungerei ( ) lemma=ungere 
+ ungeremmo ( ) lemma=ungere 
+ ungeremo ( ) lemma=ungere 
+ ungereste ( ) lemma=ungere 
+ ungeresti ( ) lemma=ungere 
+ ungerete ( ) lemma=ungere 
+ ungerà ( ) lemma=ungere 
+ ungesse ( ) lemma=ungere 
+ ungessero ( ) lemma=ungere 
+ ungessi ( ) lemma=ungere 
+ ungessimo ( ) lemma=ungere 
+ ungeste ( ) lemma=ungere 
+ ungesti ( ) lemma=ungere 
+ ungete ( ) lemma=ungere 
+ ungeva ( ) lemma=ungere 
+ ungevamo ( ) lemma=ungere 
+ ungevano ( ) lemma=ungere 
+ ungevate ( ) lemma=ungere 
+ ungevi ( ) lemma=ungere 
+ ungevo ( ) lemma=ungere 
+ ungherese ( ) 
+ ungheresi ( ) lemma=ungherese 
+ ungheresissima ( ) lemma=ungherese 
+ ungheresissime ( ) lemma=ungherese 
+ ungheresissimi ( ) lemma=ungherese 
+ ungheresissimo ( ) lemma=ungherese 
+ unghia ( ) 
+ unghiata ( ) 
+ unghiate ( ) lemma=unghiata 
+ unghie ( ) lemma=unghia 
+ ungi ( ) lemma=ungere 
+ ungiamo ( ) lemma=ungere 
+ ungiate ( ) lemma=ungere 
+ ungo ( ) lemma=ungere 
+ ungono ( ) lemma=ungere 
+ unguenti ( ) lemma=unguento 
+ unguento ( ) 
+ uni ( ) lemma=uno 
+ uno ( ) lemma=un 
+ uni' ( ) lemma=unire 
+ uniamo ( ) lemma=unire 
+ uniamoci ( ) lemma=unire 
+ uniate ( ) lemma=unire 
+ unica ( ) lemma=unico 
+ unico ( ) 
+ unicamente ( ) 
+ unicamerale ( ) 
+ unicamerali ( ) lemma=unicamerale 
+ unicameralissima ( ) lemma=unicamerale 
+ unicameralissime ( ) lemma=unicamerale 
+ unicameralissimi ( ) lemma=unicamerale 
+ unicameralissimo ( ) lemma=unicamerale 
+ unicellulare ( ) 
+ unicellulari ( ) lemma=unicellulare 
+ unicellularissima ( ) lemma=unicellulare 
+ unicellularissime ( ) lemma=unicellulare 
+ unicellularissimi ( ) lemma=unicellulare 
+ unicellularissimo ( ) lemma=unicellulare 
+ uniche ( ) lemma=unico 
+ unici ( ) lemma=unico 
+ unicissima ( ) lemma=unico 
+ unicissime ( ) lemma=unico 
+ unicissimi ( ) lemma=unico 
+ unicissimo ( ) lemma=unico 
+ unicita' ( ) lemma=unicità 
+ unicità ( ) 
+ unicum ( ) 
+ unidirezionale ( ) 
+ unidirezionali ( ) lemma=unidirezionale 
+ unidirezionalissima ( ) lemma=unidirezionale 
+ unidirezionalissime ( ) lemma=unidirezionale 
+ unidirezionalissimi ( ) lemma=unidirezionale 
+ unidirezionalissimo ( ) lemma=unidirezionale 
+ unifamiliare ( ) 
+ unifamiliari ( ) lemma=unifamiliare 
+ unifamiliarissima ( ) lemma=unifamiliare 
+ unifamiliarissime ( ) lemma=unifamiliare 
+ unifamiliarissimi ( ) lemma=unifamiliare 
+ unifamiliarissimo ( ) lemma=unifamiliare 
+ unifica ( ) lemma=unificare 
+ unificare ( ) 
+ unificai ( ) lemma=unificare 
+ unificammo ( ) lemma=unificare 
+ unifican ( ) lemma=unificare 
+ unificando ( ) lemma=unificare 
+ unificandolo ( ) lemma=unificare 
+ unificandosi ( ) lemma=unificare 
+ unificano ( ) lemma=unificare 
+ unificante ( ) lemma=unificare 
+ unificanti ( ) lemma=unificare 
+ unificar ( ) lemma=unificare 
+ unificarli ( ) lemma=unificare 
+ unificaron ( ) lemma=unificare 
+ unificarono ( ) lemma=unificare 
+ unificarsi ( ) lemma=unificare 
+ unificasse ( ) lemma=unificare 
+ unificasser ( ) lemma=unificare 
+ unificassero ( ) lemma=unificare 
+ unificassi ( ) lemma=unificare 
+ unificassimo ( ) lemma=unificare 
+ unificaste ( ) lemma=unificare 
+ unificasti ( ) lemma=unificare 
+ unificata ( ) lemma=unificato 
+ unificato ( ) 
+ unificate ( ) lemma=unificato 
+ unificati ( ) lemma=unificato 
+ unificatissima ( ) lemma=unificato 
+ unificatissime ( ) lemma=unificato 
+ unificatissimi ( ) lemma=unificato 
+ unificatissimo ( ) lemma=unificato 
+ unificatore ( ) 
+ unificatori ( ) lemma=unificatore 
+ unificatorissima ( ) lemma=unificatore 
+ unificatorissime ( ) lemma=unificatore 
+ unificatorissimi ( ) lemma=unificatore 
+ unificatorissimo ( ) lemma=unificatore 
+ unificatrice ( ) lemma=unificatore 
+ unificatrici ( ) lemma=unificatore 
+ unificava ( ) lemma=unificare 
+ unificavamo ( ) lemma=unificare 
+ unificavan ( ) lemma=unificare 
+ unificavano ( ) lemma=unificare 
+ unificavate ( ) lemma=unificare 
+ unificavi ( ) lemma=unificare 
+ unificavo ( ) lemma=unificare 
+ unificazione ( ) 
+ unificazioni ( ) lemma=unificazione 
+ unifichera' ( ) lemma=unificare 
+ unificherai ( ) lemma=unificare 
+ unificheran ( ) lemma=unificare 
+ unificheranno ( ) lemma=unificare 
+ unificherebbe ( ) lemma=unificare 
+ unificherebber ( ) lemma=unificare 
+ unificherebbero ( ) lemma=unificare 
+ unificherei ( ) lemma=unificare 
+ unificheremmo ( ) lemma=unificare 
+ unificheremo ( ) lemma=unificare 
+ unifichereste ( ) lemma=unificare 
+ unificheresti ( ) lemma=unificare 
+ unificherete ( ) lemma=unificare 
+ unifichero' ( ) lemma=unificare 
+ unificherà ( ) lemma=unificare 
+ unificherò ( ) lemma=unificare 
+ unifichi ( ) lemma=unificare 
+ unifichiamo ( ) lemma=unificare 
+ unifichiate ( ) lemma=unificare 
+ unifichin ( ) lemma=unificare 
+ unifichino ( ) lemma=unificare 
+ unifico ( ) lemma=unificare 
+ unifico' ( ) lemma=unificare 
+ unificò ( ) lemma=unificare 
+ uniforma ( ) lemma=uniformare 
+ uniformare ( ) 
+ uniformai ( ) lemma=uniformare 
+ uniformammo ( ) lemma=uniformare 
+ uniforman ( ) lemma=uniformare 
+ uniformando ( ) lemma=uniformare 
+ uniformandosi ( ) lemma=uniformare 
+ uniformandovi ( ) lemma=uniformare 
+ uniformano ( ) lemma=uniformare 
+ uniformante ( ) lemma=uniformare 
+ uniformanti ( ) lemma=uniformare 
+ uniformar ( ) lemma=uniformare 
+ uniformaron ( ) lemma=uniformare 
+ uniformarono ( ) lemma=uniformare 
+ uniformarsi ( ) lemma=uniformare 
+ uniformasse ( ) lemma=uniformare 
+ uniformasser ( ) lemma=uniformare 
+ uniformassero ( ) lemma=uniformare 
+ uniformassi ( ) lemma=uniformare 
+ uniformassimo ( ) lemma=uniformare 
+ uniformaste ( ) lemma=uniformare 
+ uniformasti ( ) lemma=uniformare 
+ uniformata ( ) lemma=uniformare 
+ uniformate ( ) lemma=uniformare 
+ uniformati ( ) lemma=uniformare 
+ uniformato ( ) lemma=uniformare 
+ uniformava ( ) lemma=uniformare 
+ uniformavamo ( ) lemma=uniformare 
+ uniformavan ( ) lemma=uniformare 
+ uniformavano ( ) lemma=uniformare 
+ uniformavate ( ) lemma=uniformare 
+ uniformavi ( ) lemma=uniformare 
+ uniformavo ( ) lemma=uniformare 
+ uniforme ( ) 
+ uniformemente ( ) 
+ uniformera' ( ) lemma=uniformare 
+ uniformerai ( ) lemma=uniformare 
+ uniformeran ( ) lemma=uniformare 
+ uniformeranno ( ) lemma=uniformare 
+ uniformerebbe ( ) lemma=uniformare 
+ uniformerebber ( ) lemma=uniformare 
+ uniformerebbero ( ) lemma=uniformare 
+ uniformerei ( ) lemma=uniformare 
+ uniformeremmo ( ) lemma=uniformare 
+ uniformeremo ( ) lemma=uniformare 
+ uniformereste ( ) lemma=uniformare 
+ uniformeresti ( ) lemma=uniformare 
+ uniformerete ( ) lemma=uniformare 
+ uniformero' ( ) lemma=uniformare 
+ uniformerà ( ) lemma=uniformare 
+ uniformerò ( ) lemma=uniformare 
+ uniformi ( ) lemma=uniforme 
+ uniformiamo ( ) lemma=uniformare 
+ uniformiate ( ) lemma=uniformare 
+ uniformin ( ) lemma=uniformare 
+ uniformino ( ) lemma=uniformare 
+ uniformissima ( ) lemma=uniforme 
+ uniformissime ( ) lemma=uniforme 
+ uniformissimi ( ) lemma=uniforme 
+ uniformissimo ( ) lemma=uniforme 
+ uniformita' ( ) lemma=uniformità 
+ uniformità ( ) 
+ uniformo ( ) lemma=uniformare 
+ uniformo' ( ) lemma=uniformare 
+ uniformò ( ) lemma=uniformare 
+ unii ( ) lemma=unire 
+ unilaterale ( ) 
+ unilaterali ( ) lemma=unilaterale 
+ unilateralissima ( ) lemma=unilaterale 
+ unilateralissime ( ) lemma=unilaterale 
+ unilateralissimi ( ) lemma=unilaterale 
+ unilateralissimo ( ) lemma=unilaterale 
+ unilateralmente ( ) 
+ unimmo ( ) lemma=unire 
+ uninominale ( ) 
+ uninominali ( ) lemma=uninominale 
+ uninominalissima ( ) lemma=uninominale 
+ uninominalissime ( ) lemma=uninominale 
+ uninominalissimi ( ) lemma=uninominale 
+ uninominalissimo ( ) lemma=uninominale 
+ unione ( ) 
+ unioni ( ) lemma=unione 
+ unionista ( ) 
+ unioniste ( ) lemma=unionista 
+ unionisti ( ) lemma=unionista 
+ unionistissima ( ) lemma=unionista 
+ unionistissime ( ) lemma=unionista 
+ unionistissimi ( ) lemma=unionista 
+ unionistissimo ( ) lemma=unionista 
+ unir ( ) lemma=unire 
+ unira' ( ) lemma=unire 
+ unirai ( ) lemma=unire 
+ uniran ( ) lemma=unire 
+ uniranno ( ) lemma=unire 
+ unirci ( ) lemma=unire 
+ unirebbe ( ) lemma=unire 
+ unirebber ( ) lemma=unire 
+ unirebbero ( ) lemma=unire 
+ unirei ( ) lemma=unire 
+ uniremmo ( ) lemma=unire 
+ uniremo ( ) lemma=unire 
+ unireste ( ) lemma=unire 
+ uniresti ( ) lemma=unire 
+ unirete ( ) lemma=unire 
+ unirlo ( ) lemma=unire 
+ unirmi ( ) lemma=unire 
+ uniro' ( ) lemma=unire 
+ uniron ( ) lemma=unire 
+ unirono ( ) lemma=unire 
+ unirsi ( ) lemma=unire 
+ unirti ( ) lemma=unire 
+ unirvi ( ) lemma=unire 
+ unirà ( ) lemma=unire 
+ unirò ( ) lemma=unire 
+ unisca ( ) lemma=unire 
+ uniscan ( ) lemma=unire 
+ uniscano ( ) lemma=unire 
+ unisce ( ) lemma=unire 
+ unisci ( ) lemma=unire 
+ unisciti ( ) lemma=unire 
+ unisco ( ) lemma=unire 
+ uniscon ( ) lemma=unire 
+ uniscono ( ) lemma=unire 
+ unisona ( ) lemma=unisono 
+ unisono ( ) 
+ unisone ( ) lemma=unisono 
+ unisoni ( ) lemma=unisono 
+ unisonissima ( ) lemma=unisono 
+ unisonissime ( ) lemma=unisono 
+ unisonissimi ( ) lemma=unisono 
+ unisonissimo ( ) lemma=unisono 
+ unisse ( ) lemma=unire 
+ unisser ( ) lemma=unire 
+ unissero ( ) lemma=unire 
+ unissi ( ) lemma=unire 
+ unissimo ( ) lemma=unire 
+ uniste ( ) lemma=unire 
+ unisti ( ) lemma=unire 
+ unita ( ) lemma=unito 
+ unito ( ) 
+ unita' ( ) lemma=unità 
+ unità ( ) 
+ unitamente ( ) 
+ unitari ( ) lemma=unitario 
+ unitario ( ) 
+ unitaria ( ) lemma=unitario 
+ unitariamente ( ) 
+ unitarie ( ) lemma=unitario 
+ unitarieta' ( ) lemma=unitarietà 
+ unitarietà ( ) 
+ unitarissima ( ) lemma=unitario 
+ unitarissime ( ) lemma=unitario 
+ unitarissimi ( ) lemma=unitario 
+ unitarissimo ( ) lemma=unitario 
+ unite ( ) lemma=unito 
+ uniteli ( ) lemma=unire 
+ unitevi ( ) lemma=unire 
+ uniti ( ) lemma=unito 
+ unitissima ( ) lemma=unito 
+ unitissime ( ) lemma=unito 
+ unitissimi ( ) lemma=unito 
+ unitissimo ( ) lemma=unito 
+ univa ( ) lemma=unire 
+ univamo ( ) lemma=unire 
+ univan ( ) lemma=unire 
+ univano ( ) lemma=unire 
+ univate ( ) lemma=unire 
+ universa ( ) lemma=universo 
+ universo ( ) 
+ universale ( ) 
+ universali ( ) lemma=universale 
+ universalissima ( ) lemma=universale 
+ universalissime ( ) lemma=universale 
+ universalissimi ( ) lemma=universale 
+ universalissimo ( ) lemma=universale 
+ universalistica ( ) lemma=universalistico 
+ universalistico ( ) 
+ universalistiche ( ) lemma=universalistico 
+ universalistici ( ) lemma=universalistico 
+ universalisticissima ( ) lemma=universalistico 
+ universalisticissime ( ) lemma=universalistico 
+ universalisticissimi ( ) lemma=universalistico 
+ universalisticissimo ( ) lemma=universalistico 
+ universalita' ( ) lemma=universalità 
+ universalità ( ) 
+ universalizza ( ) lemma=universalizzare 
+ universalizzare ( ) 
+ universalizzai ( ) lemma=universalizzare 
+ universalizzammo ( ) lemma=universalizzare 
+ universalizzan ( ) lemma=universalizzare 
+ universalizzando ( ) lemma=universalizzare 
+ universalizzano ( ) lemma=universalizzare 
+ universalizzante ( ) lemma=universalizzare 
+ universalizzanti ( ) lemma=universalizzare 
+ universalizzar ( ) lemma=universalizzare 
+ universalizzaron ( ) lemma=universalizzare 
+ universalizzarono ( ) lemma=universalizzare 
+ universalizzasse ( ) lemma=universalizzare 
+ universalizzasser ( ) lemma=universalizzare 
+ universalizzassero ( ) lemma=universalizzare 
+ universalizzassi ( ) lemma=universalizzare 
+ universalizzassimo ( ) lemma=universalizzare 
+ universalizzaste ( ) lemma=universalizzare 
+ universalizzasti ( ) lemma=universalizzare 
+ universalizzata ( ) lemma=universalizzare 
+ universalizzate ( ) lemma=universalizzare 
+ universalizzati ( ) lemma=universalizzare 
+ universalizzato ( ) lemma=universalizzare 
+ universalizzava ( ) lemma=universalizzare 
+ universalizzavamo ( ) lemma=universalizzare 
+ universalizzavan ( ) lemma=universalizzare 
+ universalizzavano ( ) lemma=universalizzare 
+ universalizzavate ( ) lemma=universalizzare 
+ universalizzavi ( ) lemma=universalizzare 
+ universalizzavo ( ) lemma=universalizzare 
+ universalizzera' ( ) lemma=universalizzare 
+ universalizzerai ( ) lemma=universalizzare 
+ universalizzeran ( ) lemma=universalizzare 
+ universalizzeranno ( ) lemma=universalizzare 
+ universalizzerebbe ( ) lemma=universalizzare 
+ universalizzerebber ( ) lemma=universalizzare 
+ universalizzerebbero ( ) lemma=universalizzare 
+ universalizzerei ( ) lemma=universalizzare 
+ universalizzeremmo ( ) lemma=universalizzare 
+ universalizzeremo ( ) lemma=universalizzare 
+ universalizzereste ( ) lemma=universalizzare 
+ universalizzeresti ( ) lemma=universalizzare 
+ universalizzerete ( ) lemma=universalizzare 
+ universalizzero' ( ) lemma=universalizzare 
+ universalizzerà ( ) lemma=universalizzare 
+ universalizzerò ( ) lemma=universalizzare 
+ universalizzi ( ) lemma=universalizzare 
+ universalizziamo ( ) lemma=universalizzare 
+ universalizziate ( ) lemma=universalizzare 
+ universalizzin ( ) lemma=universalizzare 
+ universalizzino ( ) lemma=universalizzare 
+ universalizzo ( ) lemma=universalizzare 
+ universalizzo' ( ) lemma=universalizzare 
+ universalizzò ( ) lemma=universalizzare 
+ universalmente ( ) 
+ universe ( ) lemma=universo 
+ universi ( ) lemma=universo 
+ universissima ( ) lemma=universo 
+ universissime ( ) lemma=universo 
+ universissimi ( ) lemma=universo 
+ universissimo ( ) lemma=universo 
+ universita' ( ) lemma=università 
+ università ( ) 
+ universitari ( ) lemma=universitario 
+ universitario ( ) 
+ universitaria ( ) lemma=universitario 
+ universitarie ( ) lemma=universitario 
+ universitarissima ( ) lemma=universitario 
+ universitarissime ( ) lemma=universitario 
+ universitarissimi ( ) lemma=universitario 
+ universitarissimo ( ) lemma=universitario 
+ univi ( ) lemma=unire 
+ univo ( ) lemma=unire 
+ univoca ( ) lemma=univoco 
+ univoco ( ) 
+ univocamente ( ) 
+ univoche ( ) lemma=univoco 
+ univoci ( ) lemma=univoco 
+ univocissima ( ) lemma=univoco 
+ univocissime ( ) lemma=univoco 
+ univocissimi ( ) lemma=univoco 
+ univocissimo ( ) lemma=univoco 
+ unse ( ) lemma=ungere 
+ unsero ( ) lemma=ungere 
+ unsi ( ) lemma=ungere 
+ unta ( ) lemma=unto 
+ unto ( ) 
+ unte ( ) lemma=unto 
+ unti ( ) lemma=unto 
+ untissima ( ) lemma=unto 
+ untissime ( ) lemma=unto 
+ untissimi ( ) lemma=unto 
+ untissimo ( ) lemma=unto 
+ untore ( ) 
+ untori ( ) lemma=untore 
+ untuosa ( ) lemma=untuoso 
+ untuoso ( ) 
+ untuose ( ) lemma=untuoso 
+ untuosi ( ) lemma=untuoso 
+ untuosissima ( ) lemma=untuoso 
+ untuosissime ( ) lemma=untuoso 
+ untuosissimi ( ) lemma=untuoso 
+ untuosissimo ( ) lemma=untuoso 
+ unzione ( ) 
+ unzioni ( ) lemma=unzione 
+ unì ( ) lemma=unire 
  uoh ( ) 
- uomini ( NOUN NOUN_SINGULAR ) 
- uomini-radar ( NOUN NOUN_SINGULAR ) 
- uomo ( NOUN NOUN_SINGULAR ) 
- uomo-radar ( NOUN NOUN_SINGULAR ) 
- uova ( NOUN NOUN_SINGULAR ) 
- uovo ( NOUN NOUN_SINGULAR ) 
- uragani ( NOUN NOUN_SINGULAR ) 
- uragano ( NOUN NOUN_SINGULAR ) 
- urbana ( ADJECTIVE ) 
- urbane ( ADJECTIVE ) 
- urbani ( ADJECTIVE ) 
- urbanissima ( ADJECTIVE ) 
- urbanissime ( ADJECTIVE ) 
- urbanissimi ( ADJECTIVE ) 
- urbanissimo ( ADJECTIVE ) 
- urbanista ( NOUN NOUN_SINGULAR ) 
- urbanisti ( NOUN NOUN_SINGULAR ) 
- urbanistica ( ADJECTIVE ) 
- urbanistiche ( ADJECTIVE ) 
- urbanistici ( ADJECTIVE ) 
- urbanisticissima ( ADJECTIVE ) 
- urbanisticissime ( ADJECTIVE ) 
- urbanisticissimi ( ADJECTIVE ) 
- urbanisticissimo ( ADJECTIVE ) 
- urbanistico ( ADJECTIVE ) 
- urbanizza ( VERB ) 
- urbanizzai ( VERB ) 
- urbanizzammo ( VERB ) 
- urbanizzan ( VERB ) 
- urbanizzando ( NOUN NOUN_GERUND ) 
- urbanizzano ( VERB ) 
- urbanizzante ( VERB_PRESENT_PARTICIPLE VERB ) 
- urbanizzanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- urbanizzar ( VERB_INFINITIVE VERB ) 
- urbanizzare ( VERB_INFINITIVE VERB ) 
- urbanizzaron ( VERB ) 
- urbanizzarono ( VERB ) 
- urbanizzasse ( VERB ) 
- urbanizzasser ( VERB ) 
- urbanizzassero ( VERB ) 
- urbanizzassi ( VERB ) 
- urbanizzassimo ( VERB ) 
- urbanizzaste ( VERB ) 
- urbanizzasti ( VERB ) 
- urbanizzata ( VERB_PAST_PARTICIPLE VERB ) 
- urbanizzate ( VERB_PAST_PARTICIPLE VERB ) 
- urbanizzati ( VERB_PAST_PARTICIPLE VERB ) 
- urbanizzato ( VERB_PAST_PARTICIPLE VERB ) 
- urbanizzava ( VERB ) 
- urbanizzavamo ( VERB ) 
- urbanizzavan ( VERB ) 
- urbanizzavano ( VERB ) 
- urbanizzavate ( VERB ) 
- urbanizzavi ( VERB ) 
- urbanizzavo ( VERB ) 
- urbanizzazione ( NOUN NOUN_SINGULAR ) 
- urbanizzazioni ( NOUN NOUN_SINGULAR ) 
- urbanizzera' ( VERB ) 
- urbanizzerai ( VERB ) 
- urbanizzeran ( VERB ) 
- urbanizzeranno ( VERB ) 
- urbanizzerebbe ( VERB ) 
- urbanizzerebber ( VERB ) 
- urbanizzerebbero ( VERB ) 
- urbanizzerei ( VERB ) 
- urbanizzeremmo ( VERB ) 
- urbanizzeremo ( VERB ) 
- urbanizzereste ( VERB ) 
- urbanizzeresti ( VERB ) 
- urbanizzerete ( VERB ) 
- urbanizzero' ( VERB ) 
- urbanizzerà ( VERB ) 
- urbanizzerò ( VERB ) 
- urbanizzi ( VERB ) 
- urbanizziamo ( VERB ) 
- urbanizziate ( VERB ) 
- urbanizzin ( VERB ) 
- urbanizzino ( VERB ) 
- urbanizzo ( VERB ) 
- urbanizzo' ( VERB ) 
- urbanizzò ( VERB ) 
- urbano ( ADJECTIVE ) 
- urga ( VERB ) 
- urgan ( VERB ) 
- urgano ( VERB ) 
- urge ( VERB ) 
- urgemmo ( VERB ) 
- urgendo ( NOUN NOUN_GERUND ) 
- urgente ( VERB_PRESENT_PARTICIPLE VERB ADJECTIVE ) 
- urgentemente ( ADVERB ) 
- urgenti ( VERB_PRESENT_PARTICIPLE VERB ADJECTIVE ) 
- urgentissima ( ADJECTIVE ) 
- urgentissime ( ADJECTIVE ) 
- urgentissimi ( ADJECTIVE ) 
- urgentissimo ( ADJECTIVE ) 
- urgenza ( NOUN NOUN_SINGULAR ) 
- urgenze ( NOUN NOUN_SINGULAR ) 
- urger ( VERB_INFINITIVE VERB ) 
- urgera' ( VERB ) 
- urgerai ( VERB ) 
- urgeran ( VERB ) 
- urgeranno ( VERB ) 
- urgere ( VERB_INFINITIVE VERB ) 
- urgerebbe ( VERB ) 
- urgerebber ( VERB ) 
- urgerebbero ( VERB ) 
- urgerei ( VERB ) 
- urgeremmo ( VERB ) 
- urgeremo ( VERB ) 
- urgereste ( VERB ) 
- urgeresti ( VERB ) 
- urgerete ( VERB ) 
- urgero' ( VERB ) 
- urgerà ( VERB ) 
- urgerò ( VERB ) 
- urgesse ( VERB ) 
- urgesser ( VERB ) 
- urgessero ( VERB ) 
- urgessi ( VERB ) 
- urgessimo ( VERB ) 
- urgeste ( VERB ) 
- urgesti ( VERB ) 
- urgete ( VERB ) 
- urgeva ( VERB ) 
- urgevamo ( VERB ) 
- urgevan ( VERB ) 
- urgevano ( VERB ) 
- urgevate ( VERB ) 
- urgevi ( VERB ) 
- urgevo ( VERB ) 
- urgi ( VERB ) 
- urgiamo ( VERB ) 
- urgiate ( VERB ) 
- urgo ( VERB ) 
- urgon ( VERB ) 
- urgono ( VERB ) 
- urica ( ADJECTIVE ) 
- uriche ( ADJECTIVE ) 
- urici ( ADJECTIVE ) 
- uricissima ( ADJECTIVE ) 
- uricissime ( ADJECTIVE ) 
- uricissimi ( ADJECTIVE ) 
- uricissimo ( ADJECTIVE ) 
- urico ( ADJECTIVE ) 
- urina ( NOUN VERB NOUN_SINGULAR ) 
- urinai ( VERB ) 
- urinammo ( VERB ) 
- urinan ( VERB ) 
- urinando ( NOUN NOUN_GERUND ) 
- urinano ( VERB ) 
- urinante ( VERB_PRESENT_PARTICIPLE VERB ) 
- urinanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- urinar ( VERB_INFINITIVE VERB ) 
- urinare ( VERB_INFINITIVE VERB ) 
- urinari ( ADJECTIVE ) 
- urinaria ( ADJECTIVE ) 
- urinarie ( ADJECTIVE ) 
- urinario ( ADJECTIVE ) 
- urinarissima ( ADJECTIVE ) 
- urinarissime ( ADJECTIVE ) 
- urinarissimi ( ADJECTIVE ) 
- urinarissimo ( ADJECTIVE ) 
- urinaron ( VERB ) 
- urinarono ( VERB ) 
- urinasse ( VERB ) 
- urinasser ( VERB ) 
- urinassero ( VERB ) 
- urinassi ( VERB ) 
- urinassimo ( VERB ) 
- urinaste ( VERB ) 
- urinasti ( VERB ) 
- urinata ( VERB_PAST_PARTICIPLE VERB ) 
- urinate ( VERB_PAST_PARTICIPLE VERB ) 
- urinati ( VERB_PAST_PARTICIPLE VERB ) 
- urinato ( VERB_PAST_PARTICIPLE VERB ) 
- urinava ( VERB ) 
- urinavamo ( VERB ) 
- urinavan ( VERB ) 
- urinavano ( VERB ) 
- urinavate ( VERB ) 
- urinavi ( VERB ) 
- urinavo ( VERB ) 
- urine ( NOUN NOUN_SINGULAR ) 
- urinera' ( VERB ) 
- urinerai ( VERB ) 
- urineran ( VERB ) 
- urineranno ( VERB ) 
- urinerebbe ( VERB ) 
- urinerebber ( VERB ) 
- urinerebbero ( VERB ) 
- urinerei ( VERB ) 
- urineremmo ( VERB ) 
- urineremo ( VERB ) 
- urinereste ( VERB ) 
- urineresti ( VERB ) 
- urinerete ( VERB ) 
- urinero' ( VERB ) 
- urinerà ( VERB ) 
- urinerò ( VERB ) 
- urini ( VERB ) 
- uriniamo ( VERB ) 
- uriniate ( VERB ) 
- urinin ( VERB ) 
- urinino ( VERB ) 
- urino ( VERB ) 
- urino' ( VERB ) 
- urinò ( VERB ) 
- urla ( NOUN VERB NOUN_SINGULAR ) 
- urlacci ( NOUN NOUN_SINGULAR ) 
- urlaccio ( NOUN NOUN_SINGULAR ) 
- urlai ( VERB ) 
- urlammo ( VERB ) 
- urlan ( VERB ) 
- urlando ( NOUN NOUN_GERUND ) 
- urlandogli ( NOUN NOUN_GERUND ) 
- urlano ( VERB ) 
- urlante ( VERB_PRESENT_PARTICIPLE VERB ) 
- urlanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- urlar ( VERB_INFINITIVE VERB ) 
- urlare ( VERB_INFINITIVE VERB ) 
- urlargli ( VERB_INFINITIVE VERB ) 
- urlarla ( VERB_INFINITIVE VERB ) 
- urlarle ( VERB_INFINITIVE VERB ) 
- urlarlo ( VERB_INFINITIVE VERB ) 
- urlarmi ( VERB_INFINITIVE VERB ) 
- urlaron ( VERB ) 
- urlarono ( VERB ) 
- urlasse ( VERB ) 
- urlasser ( VERB ) 
- urlassero ( VERB ) 
- urlassi ( VERB ) 
- urlassimo ( VERB ) 
- urlaste ( VERB ) 
- urlasti ( VERB ) 
- urlata ( VERB_PAST_PARTICIPLE VERB ) 
- urlate ( VERB_PAST_PARTICIPLE VERB ) 
- urlati ( VERB_PAST_PARTICIPLE VERB ) 
- urlato ( VERB_PAST_PARTICIPLE VERB ) 
- urlatore ( ADJECTIVE ) 
- urlatori ( ADJECTIVE ) 
- urlatorissima ( ADJECTIVE ) 
- urlatorissime ( ADJECTIVE ) 
- urlatorissimi ( ADJECTIVE ) 
- urlatorissimo ( ADJECTIVE ) 
- urlatrice ( ADJECTIVE ) 
- urlatrici ( ADJECTIVE ) 
- urlava ( VERB ) 
- urlavamo ( VERB ) 
- urlavan ( VERB ) 
- urlavano ( VERB ) 
- urlavate ( VERB ) 
- urlavi ( VERB ) 
- urlavo ( VERB ) 
- urlera' ( VERB ) 
- urlerai ( VERB ) 
- urleran ( VERB ) 
- urleranno ( VERB ) 
- urlerebbe ( VERB ) 
- urlerebber ( VERB ) 
- urlerebbero ( VERB ) 
- urlerei ( VERB ) 
- urleremmo ( VERB ) 
- urleremo ( VERB ) 
- urlereste ( VERB ) 
- urleresti ( VERB ) 
- urlerete ( VERB ) 
- urlero' ( VERB ) 
- urlerà ( VERB ) 
- urlerò ( VERB ) 
- urletti ( NOUN NOUN_SINGULAR ) 
- urletto ( NOUN NOUN_SINGULAR ) 
- urli ( VERB ) 
- urliamo ( VERB ) 
- urliate ( VERB ) 
- urlin ( VERB ) 
- urlino ( VERB ) 
- urlo ( NOUN VERB NOUN_SINGULAR ) 
- urlo' ( VERB ) 
- urlò ( VERB ) 
- urna ( NOUN NOUN_SINGULAR ) 
- urne ( NOUN NOUN_SINGULAR ) 
- urogenitale ( ADJECTIVE ) 
- urogenitali ( ADJECTIVE ) 
- urogenitalissima ( ADJECTIVE ) 
- urogenitalissime ( ADJECTIVE ) 
- urogenitalissimi ( ADJECTIVE ) 
- urogenitalissimo ( ADJECTIVE ) 
- urologi ( NOUN NOUN_SINGULAR ) 
- urologica ( ADJECTIVE ) 
- urologiche ( ADJECTIVE ) 
- urologici ( ADJECTIVE ) 
- urologicissima ( ADJECTIVE ) 
- urologicissime ( ADJECTIVE ) 
- urologicissimi ( ADJECTIVE ) 
- urologicissimo ( ADJECTIVE ) 
- urologico ( ADJECTIVE ) 
- urologo ( NOUN NOUN_SINGULAR ) 
+ uomini ( ) lemma=uomo 
+ uomo ( ) 
+ uomini-radar ( ) lemma=uomo-radar 
+ uomo-radar ( ) 
+ uova ( ) lemma=uovo 
+ uovo ( ) 
+ uragani ( ) lemma=uragano 
+ uragano ( ) 
+ urbana ( ) lemma=urbano 
+ urbano ( ) 
+ urbane ( ) lemma=urbano 
+ urbani ( ) lemma=urbano 
+ urbanissima ( ) lemma=urbano 
+ urbanissime ( ) lemma=urbano 
+ urbanissimi ( ) lemma=urbano 
+ urbanissimo ( ) lemma=urbano 
+ urbanista ( ) 
+ urbanisti ( ) lemma=urbanista 
+ urbanistica ( ) lemma=urbanistico 
+ urbanistico ( ) 
+ urbanistiche ( ) lemma=urbanistico 
+ urbanistici ( ) lemma=urbanistico 
+ urbanisticissima ( ) lemma=urbanistico 
+ urbanisticissime ( ) lemma=urbanistico 
+ urbanisticissimi ( ) lemma=urbanistico 
+ urbanisticissimo ( ) lemma=urbanistico 
+ urbanizza ( ) lemma=urbanizzare 
+ urbanizzare ( ) 
+ urbanizzai ( ) lemma=urbanizzare 
+ urbanizzammo ( ) lemma=urbanizzare 
+ urbanizzan ( ) lemma=urbanizzare 
+ urbanizzando ( ) lemma=urbanizzare 
+ urbanizzano ( ) lemma=urbanizzare 
+ urbanizzante ( ) lemma=urbanizzare 
+ urbanizzanti ( ) lemma=urbanizzare 
+ urbanizzar ( ) lemma=urbanizzare 
+ urbanizzaron ( ) lemma=urbanizzare 
+ urbanizzarono ( ) lemma=urbanizzare 
+ urbanizzasse ( ) lemma=urbanizzare 
+ urbanizzasser ( ) lemma=urbanizzare 
+ urbanizzassero ( ) lemma=urbanizzare 
+ urbanizzassi ( ) lemma=urbanizzare 
+ urbanizzassimo ( ) lemma=urbanizzare 
+ urbanizzaste ( ) lemma=urbanizzare 
+ urbanizzasti ( ) lemma=urbanizzare 
+ urbanizzata ( ) lemma=urbanizzare 
+ urbanizzate ( ) lemma=urbanizzare 
+ urbanizzati ( ) lemma=urbanizzare 
+ urbanizzato ( ) lemma=urbanizzare 
+ urbanizzava ( ) lemma=urbanizzare 
+ urbanizzavamo ( ) lemma=urbanizzare 
+ urbanizzavan ( ) lemma=urbanizzare 
+ urbanizzavano ( ) lemma=urbanizzare 
+ urbanizzavate ( ) lemma=urbanizzare 
+ urbanizzavi ( ) lemma=urbanizzare 
+ urbanizzavo ( ) lemma=urbanizzare 
+ urbanizzazione ( ) 
+ urbanizzazioni ( ) lemma=urbanizzazione 
+ urbanizzera' ( ) lemma=urbanizzare 
+ urbanizzerai ( ) lemma=urbanizzare 
+ urbanizzeran ( ) lemma=urbanizzare 
+ urbanizzeranno ( ) lemma=urbanizzare 
+ urbanizzerebbe ( ) lemma=urbanizzare 
+ urbanizzerebber ( ) lemma=urbanizzare 
+ urbanizzerebbero ( ) lemma=urbanizzare 
+ urbanizzerei ( ) lemma=urbanizzare 
+ urbanizzeremmo ( ) lemma=urbanizzare 
+ urbanizzeremo ( ) lemma=urbanizzare 
+ urbanizzereste ( ) lemma=urbanizzare 
+ urbanizzeresti ( ) lemma=urbanizzare 
+ urbanizzerete ( ) lemma=urbanizzare 
+ urbanizzero' ( ) lemma=urbanizzare 
+ urbanizzerà ( ) lemma=urbanizzare 
+ urbanizzerò ( ) lemma=urbanizzare 
+ urbanizzi ( ) lemma=urbanizzare 
+ urbanizziamo ( ) lemma=urbanizzare 
+ urbanizziate ( ) lemma=urbanizzare 
+ urbanizzin ( ) lemma=urbanizzare 
+ urbanizzino ( ) lemma=urbanizzare 
+ urbanizzo ( ) lemma=urbanizzare 
+ urbanizzo' ( ) lemma=urbanizzare 
+ urbanizzò ( ) lemma=urbanizzare 
+ urga ( ) lemma=urgere 
+ urgere ( ) 
+ urgan ( ) lemma=urgere 
+ urgano ( ) lemma=urgere 
+ urge ( ) lemma=urgere 
+ urgemmo ( ) lemma=urgere 
+ urgendo ( ) lemma=urgere 
+ urgente ( ) 
+ urgentemente ( ) 
+ urgenti ( ) lemma=urgente 
+ urgentissima ( ) lemma=urgente 
+ urgentissime ( ) lemma=urgente 
+ urgentissimi ( ) lemma=urgente 
+ urgentissimo ( ) lemma=urgente 
+ urgenza ( ) 
+ urgenze ( ) lemma=urgenza 
+ urger ( ) lemma=urgere 
+ urgera' ( ) lemma=urgere 
+ urgerai ( ) lemma=urgere 
+ urgeran ( ) lemma=urgere 
+ urgeranno ( ) lemma=urgere 
+ urgerebbe ( ) lemma=urgere 
+ urgerebber ( ) lemma=urgere 
+ urgerebbero ( ) lemma=urgere 
+ urgerei ( ) lemma=urgere 
+ urgeremmo ( ) lemma=urgere 
+ urgeremo ( ) lemma=urgere 
+ urgereste ( ) lemma=urgere 
+ urgeresti ( ) lemma=urgere 
+ urgerete ( ) lemma=urgere 
+ urgero' ( ) lemma=urgere 
+ urgerà ( ) lemma=urgere 
+ urgerò ( ) lemma=urgere 
+ urgesse ( ) lemma=urgere 
+ urgesser ( ) lemma=urgere 
+ urgessero ( ) lemma=urgere 
+ urgessi ( ) lemma=urgere 
+ urgessimo ( ) lemma=urgere 
+ urgeste ( ) lemma=urgere 
+ urgesti ( ) lemma=urgere 
+ urgete ( ) lemma=urgere 
+ urgeva ( ) lemma=urgere 
+ urgevamo ( ) lemma=urgere 
+ urgevan ( ) lemma=urgere 
+ urgevano ( ) lemma=urgere 
+ urgevate ( ) lemma=urgere 
+ urgevi ( ) lemma=urgere 
+ urgevo ( ) lemma=urgere 
+ urgi ( ) lemma=urgere 
+ urgiamo ( ) lemma=urgere 
+ urgiate ( ) lemma=urgere 
+ urgo ( ) lemma=urgere 
+ urgon ( ) lemma=urgere 
+ urgono ( ) lemma=urgere 
+ urica ( ) lemma=urico 
+ urico ( ) 
+ uriche ( ) lemma=urico 
+ urici ( ) lemma=urico 
+ uricissima ( ) lemma=urico 
+ uricissime ( ) lemma=urico 
+ uricissimi ( ) lemma=urico 
+ uricissimo ( ) lemma=urico 
+ urina ( ) 
+ urinai ( ) lemma=urinare 
+ urinare ( ) 
+ urinammo ( ) lemma=urinare 
+ urinan ( ) lemma=urinare 
+ urinando ( ) lemma=urinare 
+ urinano ( ) lemma=urinare 
+ urinante ( ) lemma=urinare 
+ urinanti ( ) lemma=urinare 
+ urinar ( ) lemma=urinare 
+ urinari ( ) lemma=urinario 
+ urinario ( ) 
+ urinaria ( ) lemma=urinario 
+ urinarie ( ) lemma=urinario 
+ urinarissima ( ) lemma=urinario 
+ urinarissime ( ) lemma=urinario 
+ urinarissimi ( ) lemma=urinario 
+ urinarissimo ( ) lemma=urinario 
+ urinaron ( ) lemma=urinare 
+ urinarono ( ) lemma=urinare 
+ urinasse ( ) lemma=urinare 
+ urinasser ( ) lemma=urinare 
+ urinassero ( ) lemma=urinare 
+ urinassi ( ) lemma=urinare 
+ urinassimo ( ) lemma=urinare 
+ urinaste ( ) lemma=urinare 
+ urinasti ( ) lemma=urinare 
+ urinata ( ) lemma=urinare 
+ urinate ( ) lemma=urinare 
+ urinati ( ) lemma=urinare 
+ urinato ( ) lemma=urinare 
+ urinava ( ) lemma=urinare 
+ urinavamo ( ) lemma=urinare 
+ urinavan ( ) lemma=urinare 
+ urinavano ( ) lemma=urinare 
+ urinavate ( ) lemma=urinare 
+ urinavi ( ) lemma=urinare 
+ urinavo ( ) lemma=urinare 
+ urine ( ) lemma=urina 
+ urinera' ( ) lemma=urinare 
+ urinerai ( ) lemma=urinare 
+ urineran ( ) lemma=urinare 
+ urineranno ( ) lemma=urinare 
+ urinerebbe ( ) lemma=urinare 
+ urinerebber ( ) lemma=urinare 
+ urinerebbero ( ) lemma=urinare 
+ urinerei ( ) lemma=urinare 
+ urineremmo ( ) lemma=urinare 
+ urineremo ( ) lemma=urinare 
+ urinereste ( ) lemma=urinare 
+ urineresti ( ) lemma=urinare 
+ urinerete ( ) lemma=urinare 
+ urinero' ( ) lemma=urinare 
+ urinerà ( ) lemma=urinare 
+ urinerò ( ) lemma=urinare 
+ urini ( ) lemma=urinare 
+ uriniamo ( ) lemma=urinare 
+ uriniate ( ) lemma=urinare 
+ urinin ( ) lemma=urinare 
+ urinino ( ) lemma=urinare 
+ urino ( ) lemma=urinare 
+ urino' ( ) lemma=urinare 
+ urinò ( ) lemma=urinare 
+ urla ( ) lemma=urlo 
+ urlo ( ) 
+ urlacci ( ) lemma=urlaccio 
+ urlaccio ( ) 
+ urlai ( ) lemma=urlare 
+ urlare ( ) 
+ urlammo ( ) lemma=urlare 
+ urlan ( ) lemma=urlare 
+ urlando ( ) lemma=urlare 
+ urlandogli ( ) lemma=urlare 
+ urlano ( ) lemma=urlare 
+ urlante ( ) lemma=urlare 
+ urlanti ( ) lemma=urlare 
+ urlar ( ) lemma=urlare 
+ urlargli ( ) lemma=urlare 
+ urlarla ( ) lemma=urlare 
+ urlarle ( ) lemma=urlare 
+ urlarlo ( ) lemma=urlare 
+ urlarmi ( ) lemma=urlare 
+ urlaron ( ) lemma=urlare 
+ urlarono ( ) lemma=urlare 
+ urlasse ( ) lemma=urlare 
+ urlasser ( ) lemma=urlare 
+ urlassero ( ) lemma=urlare 
+ urlassi ( ) lemma=urlare 
+ urlassimo ( ) lemma=urlare 
+ urlaste ( ) lemma=urlare 
+ urlasti ( ) lemma=urlare 
+ urlata ( ) lemma=urlare 
+ urlate ( ) lemma=urlare 
+ urlati ( ) lemma=urlare 
+ urlato ( ) lemma=urlare 
+ urlatore ( ) 
+ urlatori ( ) lemma=urlatore 
+ urlatorissima ( ) lemma=urlatore 
+ urlatorissime ( ) lemma=urlatore 
+ urlatorissimi ( ) lemma=urlatore 
+ urlatorissimo ( ) lemma=urlatore 
+ urlatrice ( ) lemma=urlatore 
+ urlatrici ( ) lemma=urlatore 
+ urlava ( ) lemma=urlare 
+ urlavamo ( ) lemma=urlare 
+ urlavan ( ) lemma=urlare 
+ urlavano ( ) lemma=urlare 
+ urlavate ( ) lemma=urlare 
+ urlavi ( ) lemma=urlare 
+ urlavo ( ) lemma=urlare 
+ urlera' ( ) lemma=urlare 
+ urlerai ( ) lemma=urlare 
+ urleran ( ) lemma=urlare 
+ urleranno ( ) lemma=urlare 
+ urlerebbe ( ) lemma=urlare 
+ urlerebber ( ) lemma=urlare 
+ urlerebbero ( ) lemma=urlare 
+ urlerei ( ) lemma=urlare 
+ urleremmo ( ) lemma=urlare 
+ urleremo ( ) lemma=urlare 
+ urlereste ( ) lemma=urlare 
+ urleresti ( ) lemma=urlare 
+ urlerete ( ) lemma=urlare 
+ urlero' ( ) lemma=urlare 
+ urlerà ( ) lemma=urlare 
+ urlerò ( ) lemma=urlare 
+ urletti ( ) lemma=urletto 
+ urletto ( ) 
+ urli ( ) lemma=urlare 
+ urliamo ( ) lemma=urlare 
+ urliate ( ) lemma=urlare 
+ urlin ( ) lemma=urlare 
+ urlino ( ) lemma=urlare 
+ urlo' ( ) lemma=urlare 
+ urlò ( ) lemma=urlare 
+ urna ( ) 
+ urne ( ) lemma=urna 
+ urogenitale ( ) 
+ urogenitali ( ) lemma=urogenitale 
+ urogenitalissima ( ) lemma=urogenitale 
+ urogenitalissime ( ) lemma=urogenitale 
+ urogenitalissimi ( ) lemma=urogenitale 
+ urogenitalissimo ( ) lemma=urogenitale 
+ urologi ( ) lemma=urologo 
+ urologo ( ) 
+ urologica ( ) lemma=urologico 
+ urologico ( ) 
+ urologiche ( ) lemma=urologico 
+ urologici ( ) lemma=urologico 
+ urologicissima ( ) lemma=urologico 
+ urologicissime ( ) lemma=urologico 
+ urologicissimi ( ) lemma=urologico 
+ urologicissimo ( ) lemma=urologico 
  urrah ( ) 
- urse' ( VERB ) 
- urser ( VERB ) 
- ursero ( VERB ) 
- ursi ( VERB ) 
- ursè ( VERB ) 
- urta ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- urtai ( VERB ) 
- urtammo ( VERB ) 
- urtan ( VERB ) 
- urtando ( NOUN NOUN_GERUND ) 
- urtandosi ( NOUN NOUN_GERUND ) 
- urtano ( VERB ) 
- urtante ( VERB_PRESENT_PARTICIPLE VERB ADJECTIVE ) 
- urtanti ( VERB_PRESENT_PARTICIPLE VERB ADJECTIVE ) 
- urtantissima ( ADJECTIVE ) 
- urtantissime ( ADJECTIVE ) 
- urtantissimi ( ADJECTIVE ) 
- urtantissimo ( ADJECTIVE ) 
- urtar ( VERB_INFINITIVE VERB ) 
- urtare ( VERB_INFINITIVE VERB ) 
- urtarne ( VERB_INFINITIVE VERB ) 
- urtaron ( VERB ) 
- urtarono ( VERB ) 
- urtarsi ( VERB_INFINITIVE VERB ) 
- urtasse ( VERB ) 
- urtasser ( VERB ) 
- urtassero ( VERB ) 
- urtassi ( VERB ) 
- urtassimo ( VERB ) 
- urtaste ( VERB ) 
- urtasti ( VERB ) 
- urtata ( VERB_PAST_PARTICIPLE VERB ) 
- urtate ( VERB_PAST_PARTICIPLE VERB ) 
- urtati ( VERB_PAST_PARTICIPLE VERB ) 
- urtato ( VERB_PAST_PARTICIPLE VERB ) 
- urtava ( VERB ) 
- urtavamo ( VERB ) 
- urtavan ( VERB ) 
- urtavano ( VERB ) 
- urtavate ( VERB ) 
- urtavi ( VERB ) 
- urtavo ( VERB ) 
- urte ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- urtera' ( VERB ) 
- urterai ( VERB ) 
- urteran ( VERB ) 
- urteranno ( VERB ) 
- urterebbe ( VERB ) 
- urterebber ( VERB ) 
- urterebbero ( VERB ) 
- urterei ( VERB ) 
- urteremmo ( VERB ) 
- urteremo ( VERB ) 
- urtereste ( VERB ) 
- urteresti ( VERB ) 
- urterete ( VERB ) 
- urtero' ( VERB ) 
- urterà ( VERB ) 
- urterò ( VERB ) 
- urti ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- urtiamo ( VERB ) 
- urtiate ( VERB ) 
- urtin ( VERB ) 
- urtino ( VERB ) 
- urtissima ( ADJECTIVE ) 
- urtissime ( ADJECTIVE ) 
- urtissimi ( ADJECTIVE ) 
- urtissimo ( ADJECTIVE ) 
- urto ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- urto' ( VERB ) 
- urtò ( VERB ) 
- uruguagi ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- uruguagia ( ADJECTIVE ) 
- uruguagie ( ADJECTIVE ) 
- uruguagio ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- uruguagissima ( ADJECTIVE ) 
- uruguagissime ( ADJECTIVE ) 
- uruguagissimi ( ADJECTIVE ) 
- uruguagissimo ( ADJECTIVE ) 
- uruguayana ( ADJECTIVE ) 
- uruguayane ( ADJECTIVE ) 
- uruguayani ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- uruguayanissima ( ADJECTIVE ) 
- uruguayanissime ( ADJECTIVE ) 
- uruguayanissimi ( ADJECTIVE ) 
- uruguayanissimo ( ADJECTIVE ) 
- uruguayano ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- usa ( VERB ADJECTIVE ) 
- usa-e-getta ( ADJECTIVE ) 
- usaci ( VERB ) 
- usai ( VERB ) 
- usali ( VERB ) 
- usalo ( VERB ) 
- usammo ( VERB ) 
- usan ( VERB ) 
- usando ( NOUN NOUN_GERUND ) 
- usandola ( NOUN NOUN_GERUND ) 
- usandole ( NOUN NOUN_GERUND ) 
- usandoli ( NOUN NOUN_GERUND ) 
- usandolo ( NOUN NOUN_GERUND ) 
- usandone ( NOUN NOUN_GERUND ) 
- usandosi ( NOUN NOUN_GERUND ) 
- usane ( VERB ) 
- usano ( VERB ) 
- usante ( VERB_PRESENT_PARTICIPLE VERB ) 
- usanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- usanza ( NOUN NOUN_SINGULAR ) 
- usanze ( NOUN NOUN_SINGULAR ) 
- usar ( VERB_INFINITIVE VERB ) 
- usarci ( VERB_INFINITIVE VERB ) 
- usare ( VERB_INFINITIVE VERB ) 
- usarla ( VERB_INFINITIVE VERB ) 
- usarle ( VERB_INFINITIVE VERB ) 
- usarli ( VERB_INFINITIVE VERB ) 
- usarlo ( VERB_INFINITIVE VERB ) 
- usarne ( VERB_INFINITIVE VERB ) 
- usaron ( VERB ) 
- usarono ( VERB ) 
- usarsi ( VERB_INFINITIVE VERB ) 
- usarti ( VERB_INFINITIVE VERB ) 
- usasse ( VERB ) 
- usasser ( VERB ) 
- usassero ( VERB ) 
- usassi ( VERB ) 
- usassimo ( VERB ) 
- usaste ( VERB ) 
- usasti ( VERB ) 
- usata ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- usate ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- usatela ( VERB ) 
- usatelo ( VERB ) 
- usati ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- usatissima ( ADJECTIVE ) 
- usatissime ( ADJECTIVE ) 
- usatissimi ( ADJECTIVE ) 
- usatissimo ( ADJECTIVE ) 
- usato ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- usava ( VERB ) 
- usavamo ( VERB ) 
- usavan ( VERB ) 
- usavano ( VERB ) 
- usavate ( VERB ) 
- usavi ( VERB ) 
- usavo ( VERB ) 
- uscendo ( NOUN NOUN_GERUND ) 
- uscendone ( NOUN NOUN_GERUND ) 
- uscente ( VERB_PRESENT_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- uscenti ( VERB_PRESENT_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- uscentissima ( ADJECTIVE ) 
- uscentissime ( ADJECTIVE ) 
- uscentissimi ( ADJECTIVE ) 
- uscentissimo ( ADJECTIVE ) 
- usci ( NOUN NOUN_SINGULAR ) 
- usci' ( VERB ) 
- usciamo ( VERB ) 
- usciate ( VERB ) 
- usciere ( NOUN NOUN_SINGULAR ) 
- uscieri ( NOUN NOUN_SINGULAR ) 
- uscii ( VERB ) 
- uscimmo ( VERB ) 
- uscio ( NOUN NOUN_SINGULAR ) 
- uscir ( VERB_INFINITIVE VERB ) 
- uscira' ( VERB ) 
- uscirai ( VERB ) 
- usciran ( VERB ) 
- usciranno ( VERB ) 
- uscire ( VERB_INFINITIVE VERB ) 
- uscirebbe ( VERB ) 
- uscirebber ( VERB ) 
- uscirebbero ( VERB ) 
- uscirei ( VERB ) 
- usciremmo ( VERB ) 
- usciremo ( VERB ) 
- uscireste ( VERB ) 
- usciresti ( VERB ) 
- uscirete ( VERB ) 
- uscirmene ( VERB_INFINITIVE VERB ) 
- uscirne ( VERB_INFINITIVE VERB ) 
- usciro' ( VERB ) 
- usciron ( VERB ) 
- uscirono ( VERB ) 
- uscirsene ( VERB_INFINITIVE VERB ) 
- uscirà ( VERB ) 
- uscirò ( VERB ) 
- uscisse ( VERB ) 
- uscisser ( VERB ) 
- uscissero ( VERB ) 
- uscissi ( VERB ) 
- uscissimo ( VERB ) 
- usciste ( VERB ) 
- uscisti ( VERB ) 
- uscita ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- uscite ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- usciti ( VERB_PAST_PARTICIPLE VERB ) 
- uscito ( VERB_PAST_PARTICIPLE VERB ) 
- usciva ( VERB ) 
- uscivamo ( VERB ) 
- uscivan ( VERB ) 
- uscivano ( VERB ) 
- uscivate ( VERB ) 
- uscivi ( VERB ) 
- uscivo ( VERB ) 
- uscì ( VERB ) 
- use ( ADJECTIVE ) 
- usera' ( VERB ) 
- userai ( VERB ) 
- useran ( VERB ) 
- useranno ( VERB ) 
- userebbe ( VERB ) 
- userebber ( VERB ) 
- userebbero ( VERB ) 
- userei ( VERB ) 
- useremmo ( VERB ) 
- useremo ( VERB ) 
- usereste ( VERB ) 
- useresti ( VERB ) 
- userete ( VERB ) 
- usero' ( VERB ) 
- userà ( VERB ) 
- userò ( VERB ) 
- usi ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- usiamo ( VERB ) 
- usiamola ( VERB ) 
- usiate ( VERB ) 
- usignoli ( NOUN NOUN_SINGULAR ) 
- usignolo ( NOUN NOUN_SINGULAR ) 
- usin ( VERB ) 
- usino ( VERB ) 
- usissima ( ADJECTIVE ) 
- usissime ( ADJECTIVE ) 
- usissimi ( ADJECTIVE ) 
- usissimo ( ADJECTIVE ) 
- usl ( NOUN NOUN_SINGULAR ) 
- uso ( NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- uso' ( VERB ) 
- ussari ( NOUN NOUN_SINGULAR ) 
- ussaro ( NOUN NOUN_SINGULAR ) 
- usta ( ADJECTIVE ) 
- ustascia ( NOUN NOUN_SINGULAR ) 
- uste ( ADJECTIVE ) 
- usti ( ADJECTIVE ) 
- ustiona ( VERB ) 
- ustionai ( VERB ) 
- ustionammo ( VERB ) 
- ustionan ( VERB ) 
- ustionando ( NOUN NOUN_GERUND ) 
- ustionandoti ( NOUN NOUN_GERUND ) 
- ustionano ( VERB ) 
- ustionante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ustionanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- ustionar ( VERB_INFINITIVE VERB ) 
- ustionare ( VERB_INFINITIVE VERB ) 
- ustionaron ( VERB ) 
- ustionarono ( VERB ) 
- ustionarti ( VERB_INFINITIVE VERB ) 
- ustionasse ( VERB ) 
- ustionasser ( VERB ) 
- ustionassero ( VERB ) 
- ustionassi ( VERB ) 
- ustionassimo ( VERB ) 
- ustionaste ( VERB ) 
- ustionasti ( VERB ) 
- ustionata ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- ustionate ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- ustionati ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- ustionatissima ( ADJECTIVE ) 
- ustionatissime ( ADJECTIVE ) 
- ustionatissimi ( ADJECTIVE ) 
- ustionatissimo ( ADJECTIVE ) 
- ustionato ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- ustionava ( VERB ) 
- ustionavamo ( VERB ) 
- ustionavan ( VERB ) 
- ustionavano ( VERB ) 
- ustionavate ( VERB ) 
- ustionavi ( VERB ) 
- ustionavo ( VERB ) 
- ustione ( NOUN NOUN_SINGULAR ) 
- ustionera' ( VERB ) 
- ustionerai ( VERB ) 
- ustioneran ( VERB ) 
- ustioneranno ( VERB ) 
- ustionerebbe ( VERB ) 
- ustionerebber ( VERB ) 
- ustionerebbero ( VERB ) 
- ustionerei ( VERB ) 
- ustioneremmo ( VERB ) 
- ustioneremo ( VERB ) 
- ustionereste ( VERB ) 
- ustioneresti ( VERB ) 
- ustionerete ( VERB ) 
- ustionero' ( VERB ) 
- ustionerà ( VERB ) 
- ustionerò ( VERB ) 
- ustioni ( NOUN VERB NOUN_SINGULAR ) 
- ustioniamo ( VERB ) 
- ustioniate ( VERB ) 
- ustionin ( VERB ) 
- ustionino ( VERB ) 
- ustiono ( VERB ) 
- ustiono' ( VERB ) 
- ustionò ( VERB ) 
- ustissima ( ADJECTIVE ) 
- ustissime ( ADJECTIVE ) 
- ustissimi ( ADJECTIVE ) 
- ustissimo ( ADJECTIVE ) 
- usto ( ADJECTIVE ) 
- usuale ( ADJECTIVE ) 
- usuali ( ADJECTIVE ) 
- usualissima ( ADJECTIVE ) 
- usualissime ( ADJECTIVE ) 
- usualissimi ( ADJECTIVE ) 
- usualissimo ( ADJECTIVE ) 
- usualmente ( ADVERB ) 
- usufruendo ( NOUN NOUN_GERUND ) 
- usufruente ( VERB_PRESENT_PARTICIPLE VERB ) 
- usufruenti ( VERB_PRESENT_PARTICIPLE VERB ) 
- usufrui' ( VERB ) 
- usufruiamo ( VERB ) 
- usufruiate ( VERB ) 
- usufruii ( VERB ) 
- usufruimmo ( VERB ) 
- usufruir ( VERB_INFINITIVE VERB ) 
- usufruira' ( VERB ) 
- usufruirai ( VERB ) 
- usufruiran ( VERB ) 
- usufruiranno ( VERB ) 
- usufruire ( VERB_INFINITIVE VERB ) 
- usufruirebbe ( VERB ) 
- usufruirebber ( VERB ) 
- usufruirebbero ( VERB ) 
- usufruirei ( VERB ) 
- usufruiremmo ( VERB ) 
- usufruiremo ( VERB ) 
- usufruireste ( VERB ) 
- usufruiresti ( VERB ) 
- usufruirete ( VERB ) 
- usufruirne ( VERB_INFINITIVE VERB ) 
- usufruiro' ( VERB ) 
- usufruiron ( VERB ) 
- usufruirono ( VERB ) 
- usufruirà ( VERB ) 
- usufruirò ( VERB ) 
- usufruisca ( VERB ) 
- usufruiscan ( VERB ) 
- usufruiscano ( VERB ) 
- usufruisce ( VERB ) 
- usufruisci ( VERB ) 
- usufruisco ( VERB ) 
- usufruiscon ( VERB ) 
- usufruiscono ( VERB ) 
- usufruisse ( VERB ) 
- usufruisser ( VERB ) 
- usufruissero ( VERB ) 
- usufruissi ( VERB ) 
- usufruissimo ( VERB ) 
- usufruiste ( VERB ) 
- usufruisti ( VERB ) 
- usufruita ( VERB_PAST_PARTICIPLE VERB ) 
- usufruite ( VERB_PAST_PARTICIPLE VERB ) 
- usufruiti ( VERB_PAST_PARTICIPLE VERB ) 
- usufruito ( VERB_PAST_PARTICIPLE VERB ) 
- usufruiva ( VERB ) 
- usufruivamo ( VERB ) 
- usufruivan ( VERB ) 
- usufruivano ( VERB ) 
- usufruivate ( VERB ) 
- usufruivi ( VERB ) 
- usufruivo ( VERB ) 
- usufruì ( VERB ) 
- usura ( NOUN VERB NOUN_SINGULAR ) 
- usurai ( NOUN VERB NOUN_SINGULAR ) 
- usuraio ( NOUN NOUN_SINGULAR ) 
- usurammo ( VERB ) 
- usuran ( VERB ) 
- usurando ( NOUN NOUN_GERUND ) 
- usurano ( VERB ) 
- usurante ( VERB_PRESENT_PARTICIPLE VERB ) 
- usuranti ( VERB_PRESENT_PARTICIPLE VERB ) 
- usurar ( VERB_INFINITIVE VERB ) 
- usurare ( VERB_INFINITIVE VERB ) 
- usuraron ( VERB ) 
- usurarono ( VERB ) 
- usurarsi ( VERB_INFINITIVE VERB ) 
- usurasse ( VERB ) 
- usurasser ( VERB ) 
- usurassero ( VERB ) 
- usurassi ( VERB ) 
- usurassimo ( VERB ) 
- usuraste ( VERB ) 
- usurasti ( VERB ) 
- usurata ( VERB_PAST_PARTICIPLE VERB ) 
- usurate ( VERB_PAST_PARTICIPLE VERB ) 
- usurati ( VERB_PAST_PARTICIPLE VERB ) 
- usurato ( VERB_PAST_PARTICIPLE VERB ) 
- usurava ( VERB ) 
- usuravamo ( VERB ) 
- usuravan ( VERB ) 
- usuravano ( VERB ) 
- usuravate ( VERB ) 
- usuravi ( VERB ) 
- usuravo ( VERB ) 
- usure ( NOUN NOUN_SINGULAR ) 
- usurera' ( VERB ) 
- usurerai ( VERB ) 
- usureran ( VERB ) 
- usureranno ( VERB ) 
- usurerebbe ( VERB ) 
- usurerebber ( VERB ) 
- usurerebbero ( VERB ) 
- usurerei ( VERB ) 
- usureremmo ( VERB ) 
- usureremo ( VERB ) 
- usurereste ( VERB ) 
- usureresti ( VERB ) 
- usurerete ( VERB ) 
- usurero' ( VERB ) 
- usurerà ( VERB ) 
- usurerò ( VERB ) 
- usuri ( VERB ) 
- usuriamo ( VERB ) 
- usuriate ( VERB ) 
- usurin ( VERB ) 
- usurino ( VERB ) 
- usuro ( VERB ) 
- usuro' ( VERB ) 
- usurpa ( VERB ) 
- usurpai ( VERB ) 
- usurpammo ( VERB ) 
- usurpan ( VERB ) 
- usurpando ( NOUN NOUN_GERUND ) 
- usurpano ( VERB ) 
- usurpante ( VERB_PRESENT_PARTICIPLE VERB ) 
- usurpanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- usurpar ( VERB_INFINITIVE VERB ) 
- usurpare ( VERB_INFINITIVE VERB ) 
- usurparon ( VERB ) 
- usurparono ( VERB ) 
- usurpasse ( VERB ) 
- usurpasser ( VERB ) 
- usurpassero ( VERB ) 
- usurpassi ( VERB ) 
- usurpassimo ( VERB ) 
- usurpaste ( VERB ) 
- usurpasti ( VERB ) 
- usurpata ( VERB_PAST_PARTICIPLE VERB ) 
- usurpate ( VERB_PAST_PARTICIPLE VERB ) 
- usurpati ( VERB_PAST_PARTICIPLE VERB ) 
- usurpato ( VERB_PAST_PARTICIPLE VERB ) 
- usurpatore ( NOUN NOUN_SINGULAR ) 
- usurpatori ( NOUN NOUN_SINGULAR ) 
- usurpatoria ( ADJECTIVE ) 
- usurpatorie ( ADJECTIVE ) 
- usurpatorii ( ADJECTIVE ) 
- usurpatorio ( ADJECTIVE ) 
- usurpatrice ( NOUN NOUN_SINGULAR ) 
- usurpatrici ( NOUN NOUN_SINGULAR ) 
- usurpava ( VERB ) 
- usurpavamo ( VERB ) 
- usurpavan ( VERB ) 
- usurpavano ( VERB ) 
- usurpavate ( VERB ) 
- usurpavi ( VERB ) 
- usurpavo ( VERB ) 
- usurpazione ( NOUN NOUN_SINGULAR ) 
- usurpazioni ( NOUN NOUN_SINGULAR ) 
- usurpera' ( VERB ) 
- usurperai ( VERB ) 
- usurperan ( VERB ) 
- usurperanno ( VERB ) 
- usurperebbe ( VERB ) 
- usurperebber ( VERB ) 
- usurperebbero ( VERB ) 
- usurperei ( VERB ) 
- usurperemmo ( VERB ) 
- usurperemo ( VERB ) 
- usurpereste ( VERB ) 
- usurperesti ( VERB ) 
- usurperete ( VERB ) 
- usurpero' ( VERB ) 
- usurperà ( VERB ) 
- usurperò ( VERB ) 
- usurpi ( VERB ) 
- usurpiamo ( VERB ) 
- usurpiate ( VERB ) 
- usurpin ( VERB ) 
- usurpino ( VERB ) 
- usurpo ( VERB ) 
- usurpo' ( VERB ) 
- usurpò ( VERB ) 
- usurò ( VERB ) 
- usò ( VERB ) 
- utensile ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- utensili ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- utensilissima ( ADJECTIVE ) 
- utensilissime ( ADJECTIVE ) 
- utensilissimi ( ADJECTIVE ) 
- utensilissimo ( ADJECTIVE ) 
- utente ( NOUN NOUN_SINGULAR ) 
- utenti ( NOUN NOUN_SINGULAR ) 
- utenza ( NOUN NOUN_SINGULAR ) 
- utenze ( NOUN NOUN_SINGULAR ) 
- uteri ( NOUN NOUN_SINGULAR ) 
- utero ( NOUN NOUN_SINGULAR ) 
- utile ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- utili ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- utilissima ( ADJECTIVE ) 
- utilissime ( ADJECTIVE ) 
- utilissimi ( ADJECTIVE ) 
- utilissimo ( ADJECTIVE ) 
- utilita' ( NOUN NOUN_SINGULAR ) 
- utilitari ( ADJECTIVE ) 
- utilitaria ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- utilitarie ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- utilitario ( ADJECTIVE ) 
- utilitarissima ( ADJECTIVE ) 
- utilitarissime ( ADJECTIVE ) 
- utilitarissimi ( ADJECTIVE ) 
- utilitarissimo ( ADJECTIVE ) 
- utilitaristica ( ADJECTIVE ) 
- utilitaristiche ( ADJECTIVE ) 
- utilitaristici ( ADJECTIVE ) 
- utilitaristicissima ( ADJECTIVE ) 
- utilitaristicissime ( ADJECTIVE ) 
- utilitaristicissimi ( ADJECTIVE ) 
- utilitaristicissimo ( ADJECTIVE ) 
- utilitaristico ( ADJECTIVE ) 
- utilità ( NOUN NOUN_SINGULAR ) 
- utilizza ( VERB ) 
- utilizzabile ( ADJECTIVE ) 
- utilizzabili ( ADJECTIVE ) 
- utilizzabilissima ( ADJECTIVE ) 
- utilizzabilissime ( ADJECTIVE ) 
- utilizzabilissimi ( ADJECTIVE ) 
- utilizzabilissimo ( ADJECTIVE ) 
- utilizzai ( VERB ) 
- utilizzali ( VERB ) 
- utilizzalo ( VERB ) 
- utilizzammo ( VERB ) 
- utilizzan ( VERB ) 
- utilizzando ( NOUN NOUN_GERUND ) 
- utilizzandole ( NOUN NOUN_GERUND ) 
- utilizzandoli ( NOUN NOUN_GERUND ) 
- utilizzandolo ( NOUN NOUN_GERUND ) 
- utilizzano ( VERB ) 
- utilizzante ( VERB_PRESENT_PARTICIPLE VERB ) 
- utilizzanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- utilizzar ( VERB_INFINITIVE VERB ) 
- utilizzarci ( VERB_INFINITIVE VERB ) 
- utilizzare ( VERB_INFINITIVE VERB ) 
- utilizzarla ( VERB_INFINITIVE VERB ) 
- utilizzarle ( VERB_INFINITIVE VERB ) 
- utilizzarli ( VERB_INFINITIVE VERB ) 
- utilizzarlo ( VERB_INFINITIVE VERB ) 
- utilizzarmi ( VERB_INFINITIVE VERB ) 
- utilizzarne ( VERB_INFINITIVE VERB ) 
- utilizzaron ( VERB ) 
- utilizzarono ( VERB ) 
- utilizzarsi ( VERB_INFINITIVE VERB ) 
- utilizzasse ( VERB ) 
- utilizzasser ( VERB ) 
- utilizzassero ( VERB ) 
- utilizzassi ( VERB ) 
- utilizzassimo ( VERB ) 
- utilizzaste ( VERB ) 
- utilizzasti ( VERB ) 
- utilizzata ( VERB_PAST_PARTICIPLE VERB ) 
- utilizzate ( VERB_PAST_PARTICIPLE VERB ) 
- utilizzati ( VERB_PAST_PARTICIPLE VERB ) 
- utilizzato ( VERB_PAST_PARTICIPLE VERB ) 
- utilizzatore ( NOUN NOUN_SINGULAR ) 
- utilizzatori ( NOUN NOUN_SINGULAR ) 
- utilizzava ( VERB ) 
- utilizzavamo ( VERB ) 
- utilizzavan ( VERB ) 
- utilizzavano ( VERB ) 
- utilizzavate ( VERB ) 
- utilizzavi ( VERB ) 
- utilizzavo ( VERB ) 
- utilizzazione ( NOUN NOUN_SINGULAR ) 
- utilizzazioni ( NOUN NOUN_SINGULAR ) 
- utilizzera' ( VERB ) 
- utilizzerai ( VERB ) 
- utilizzeran ( VERB ) 
- utilizzeranno ( VERB ) 
- utilizzerebbe ( VERB ) 
- utilizzerebber ( VERB ) 
- utilizzerebbero ( VERB ) 
- utilizzerei ( VERB ) 
- utilizzeremmo ( VERB ) 
- utilizzeremo ( VERB ) 
- utilizzereste ( VERB ) 
- utilizzeresti ( VERB ) 
- utilizzerete ( VERB ) 
- utilizzero' ( VERB ) 
- utilizzerà ( VERB ) 
- utilizzerò ( VERB ) 
- utilizzi ( NOUN VERB NOUN_SINGULAR ) 
- utilizziamo ( VERB ) 
- utilizziamole ( VERB ) 
- utilizziate ( VERB ) 
- utilizzin ( VERB ) 
- utilizzino ( VERB ) 
- utilizzo ( NOUN VERB NOUN_SINGULAR ) 
- utilizzo' ( VERB ) 
- utilizzò ( VERB ) 
- utilmente ( ADVERB ) 
- utopia ( NOUN NOUN_SINGULAR ) 
- utopica ( ADJECTIVE ) 
- utopiche ( ADJECTIVE ) 
- utopici ( ADJECTIVE ) 
- utopicissima ( ADJECTIVE ) 
- utopicissime ( ADJECTIVE ) 
- utopicissimi ( ADJECTIVE ) 
- utopicissimo ( ADJECTIVE ) 
- utopico ( ADJECTIVE ) 
- utopie ( NOUN NOUN_SINGULAR ) 
- utopista ( NOUN NOUN_SINGULAR ) 
- utopisti ( NOUN NOUN_SINGULAR ) 
- utopistica ( ADJECTIVE ) 
- utopistiche ( ADJECTIVE ) 
- utopistici ( ADJECTIVE ) 
- utopisticissima ( ADJECTIVE ) 
- utopisticissime ( ADJECTIVE ) 
- utopisticissimi ( ADJECTIVE ) 
- utopisticissimo ( ADJECTIVE ) 
- utopistico ( ADJECTIVE ) 
- utracentenari ( ADJECTIVE ) 
- utracentenaria ( ADJECTIVE ) 
- utracentenarie ( ADJECTIVE ) 
- utracentenario ( ADJECTIVE ) 
- utracentenarissima ( ADJECTIVE ) 
- utracentenarissime ( ADJECTIVE ) 
- utracentenarissimi ( ADJECTIVE ) 
- utracentenarissimo ( ADJECTIVE ) 
+ urse' ( ) lemma=urgere 
+ urser ( ) lemma=urgere 
+ ursero ( ) lemma=urgere 
+ ursi ( ) lemma=urgere 
+ ursè ( ) lemma=urgere 
+ urta ( ) lemma=urto 
+ urto ( ) 
+ urtai ( ) lemma=urtare 
+ urtare ( ) 
+ urtammo ( ) lemma=urtare 
+ urtan ( ) lemma=urtare 
+ urtando ( ) lemma=urtare 
+ urtandosi ( ) lemma=urtare 
+ urtano ( ) lemma=urtare 
+ urtante ( ) 
+ urtanti ( ) lemma=urtante 
+ urtantissima ( ) lemma=urtante 
+ urtantissime ( ) lemma=urtante 
+ urtantissimi ( ) lemma=urtante 
+ urtantissimo ( ) lemma=urtante 
+ urtar ( ) lemma=urtare 
+ urtarne ( ) lemma=urtare 
+ urtaron ( ) lemma=urtare 
+ urtarono ( ) lemma=urtare 
+ urtarsi ( ) lemma=urtare 
+ urtasse ( ) lemma=urtare 
+ urtasser ( ) lemma=urtare 
+ urtassero ( ) lemma=urtare 
+ urtassi ( ) lemma=urtare 
+ urtassimo ( ) lemma=urtare 
+ urtaste ( ) lemma=urtare 
+ urtasti ( ) lemma=urtare 
+ urtata ( ) lemma=urtare 
+ urtate ( ) lemma=urtare 
+ urtati ( ) lemma=urtare 
+ urtato ( ) lemma=urtare 
+ urtava ( ) lemma=urtare 
+ urtavamo ( ) lemma=urtare 
+ urtavan ( ) lemma=urtare 
+ urtavano ( ) lemma=urtare 
+ urtavate ( ) lemma=urtare 
+ urtavi ( ) lemma=urtare 
+ urtavo ( ) lemma=urtare 
+ urte ( ) lemma=urto 
+ urtera' ( ) lemma=urtare 
+ urterai ( ) lemma=urtare 
+ urteran ( ) lemma=urtare 
+ urteranno ( ) lemma=urtare 
+ urterebbe ( ) lemma=urtare 
+ urterebber ( ) lemma=urtare 
+ urterebbero ( ) lemma=urtare 
+ urterei ( ) lemma=urtare 
+ urteremmo ( ) lemma=urtare 
+ urteremo ( ) lemma=urtare 
+ urtereste ( ) lemma=urtare 
+ urteresti ( ) lemma=urtare 
+ urterete ( ) lemma=urtare 
+ urtero' ( ) lemma=urtare 
+ urterà ( ) lemma=urtare 
+ urterò ( ) lemma=urtare 
+ urti ( ) lemma=urto 
+ urtiamo ( ) lemma=urtare 
+ urtiate ( ) lemma=urtare 
+ urtin ( ) lemma=urtare 
+ urtino ( ) lemma=urtare 
+ urtissima ( ) lemma=urto 
+ urtissime ( ) lemma=urto 
+ urtissimi ( ) lemma=urto 
+ urtissimo ( ) lemma=urto 
+ urto' ( ) lemma=urtare 
+ urtò ( ) lemma=urtare 
+ uruguagi ( ) lemma=uruguagio 
+ uruguagio ( ) 
+ uruguagia ( ) lemma=uruguagio 
+ uruguagie ( ) lemma=uruguagio 
+ uruguagissima ( ) lemma=uruguagio 
+ uruguagissime ( ) lemma=uruguagio 
+ uruguagissimi ( ) lemma=uruguagio 
+ uruguagissimo ( ) lemma=uruguagio 
+ uruguayana ( ) lemma=uruguayano 
+ uruguayano ( ) 
+ uruguayane ( ) lemma=uruguayano 
+ uruguayani ( ) lemma=uruguayano 
+ uruguayanissima ( ) lemma=uruguayano 
+ uruguayanissime ( ) lemma=uruguayano 
+ uruguayanissimi ( ) lemma=uruguayano 
+ uruguayanissimo ( ) lemma=uruguayano 
+ usa ( ) lemma=uso 
+ uso ( ) 
+ usa-e-getta ( ) 
+ usaci ( ) lemma=usare 
+ usare ( ) 
+ usai ( ) lemma=usare 
+ usali ( ) lemma=usare 
+ usalo ( ) lemma=usare 
+ usammo ( ) lemma=usare 
+ usan ( ) lemma=usare 
+ usando ( ) lemma=usare 
+ usandola ( ) lemma=usare 
+ usandole ( ) lemma=usare 
+ usandoli ( ) lemma=usare 
+ usandolo ( ) lemma=usare 
+ usandone ( ) lemma=usare 
+ usandosi ( ) lemma=usare 
+ usane ( ) lemma=usare 
+ usano ( ) lemma=usare 
+ usante ( ) lemma=usare 
+ usanti ( ) lemma=usare 
+ usanza ( ) 
+ usanze ( ) lemma=usanza 
+ usar ( ) lemma=usare 
+ usarci ( ) lemma=usare 
+ usarla ( ) lemma=usare 
+ usarle ( ) lemma=usare 
+ usarli ( ) lemma=usare 
+ usarlo ( ) lemma=usare 
+ usarne ( ) lemma=usare 
+ usaron ( ) lemma=usare 
+ usarono ( ) lemma=usare 
+ usarsi ( ) lemma=usare 
+ usarti ( ) lemma=usare 
+ usasse ( ) lemma=usare 
+ usasser ( ) lemma=usare 
+ usassero ( ) lemma=usare 
+ usassi ( ) lemma=usare 
+ usassimo ( ) lemma=usare 
+ usaste ( ) lemma=usare 
+ usasti ( ) lemma=usare 
+ usata ( ) lemma=usato 
+ usato ( ) 
+ usate ( ) lemma=usato 
+ usatela ( ) lemma=usare 
+ usatelo ( ) lemma=usare 
+ usati ( ) lemma=usato 
+ usatissima ( ) lemma=usato 
+ usatissime ( ) lemma=usato 
+ usatissimi ( ) lemma=usato 
+ usatissimo ( ) lemma=usato 
+ usava ( ) lemma=usare 
+ usavamo ( ) lemma=usare 
+ usavan ( ) lemma=usare 
+ usavano ( ) lemma=usare 
+ usavate ( ) lemma=usare 
+ usavi ( ) lemma=usare 
+ usavo ( ) lemma=usare 
+ uscendo ( ) lemma=uscire 
+ uscendone ( ) lemma=uscire 
+ uscente ( ) 
+ uscenti ( ) lemma=uscente 
+ uscentissima ( ) lemma=uscente 
+ uscentissime ( ) lemma=uscente 
+ uscentissimi ( ) lemma=uscente 
+ uscentissimo ( ) lemma=uscente 
+ usci ( ) lemma=uscio 
+ uscio ( ) 
+ usci' ( ) lemma=uscire 
+ usciamo ( ) lemma=uscire 
+ usciate ( ) lemma=uscire 
+ usciere ( ) 
+ uscieri ( ) lemma=usciere 
+ uscii ( ) lemma=uscire 
+ uscimmo ( ) lemma=uscire 
+ uscir ( ) lemma=uscire 
+ uscira' ( ) lemma=uscire 
+ uscirai ( ) lemma=uscire 
+ usciran ( ) lemma=uscire 
+ usciranno ( ) lemma=uscire 
+ uscirebbe ( ) lemma=uscire 
+ uscirebber ( ) lemma=uscire 
+ uscirebbero ( ) lemma=uscire 
+ uscirei ( ) lemma=uscire 
+ usciremmo ( ) lemma=uscire 
+ usciremo ( ) lemma=uscire 
+ uscireste ( ) lemma=uscire 
+ usciresti ( ) lemma=uscire 
+ uscirete ( ) lemma=uscire 
+ uscirmene ( ) lemma=uscire 
+ uscirne ( ) lemma=uscire 
+ usciro' ( ) lemma=uscire 
+ usciron ( ) lemma=uscire 
+ uscirono ( ) lemma=uscire 
+ uscirsene ( ) lemma=uscire 
+ uscirà ( ) lemma=uscire 
+ uscirò ( ) lemma=uscire 
+ uscisse ( ) lemma=uscire 
+ uscisser ( ) lemma=uscire 
+ uscissero ( ) lemma=uscire 
+ uscissi ( ) lemma=uscire 
+ uscissimo ( ) lemma=uscire 
+ usciste ( ) lemma=uscire 
+ uscisti ( ) lemma=uscire 
+ uscita ( ) 
+ uscite ( ) lemma=uscita 
+ usciti ( ) lemma=uscire 
+ uscito ( ) lemma=uscire 
+ usciva ( ) lemma=uscire 
+ uscivamo ( ) lemma=uscire 
+ uscivan ( ) lemma=uscire 
+ uscivano ( ) lemma=uscire 
+ uscivate ( ) lemma=uscire 
+ uscivi ( ) lemma=uscire 
+ uscivo ( ) lemma=uscire 
+ uscì ( ) lemma=uscire 
+ use ( ) lemma=uso 
+ usera' ( ) lemma=usare 
+ userai ( ) lemma=usare 
+ useran ( ) lemma=usare 
+ useranno ( ) lemma=usare 
+ userebbe ( ) lemma=usare 
+ userebber ( ) lemma=usare 
+ userebbero ( ) lemma=usare 
+ userei ( ) lemma=usare 
+ useremmo ( ) lemma=usare 
+ useremo ( ) lemma=usare 
+ usereste ( ) lemma=usare 
+ useresti ( ) lemma=usare 
+ userete ( ) lemma=usare 
+ usero' ( ) lemma=usare 
+ userà ( ) lemma=usare 
+ userò ( ) lemma=usare 
+ usi ( ) lemma=uso 
+ usiamo ( ) lemma=usare 
+ usiamola ( ) lemma=usare 
+ usiate ( ) lemma=usare 
+ usignoli ( ) lemma=usignolo 
+ usignolo ( ) 
+ usin ( ) lemma=usare 
+ usino ( ) lemma=usare 
+ usissima ( ) lemma=uso 
+ usissime ( ) lemma=uso 
+ usissimi ( ) lemma=uso 
+ usissimo ( ) lemma=uso 
+ usl ( ) 
+ uso' ( ) lemma=usare 
+ ussari ( ) lemma=ussaro 
+ ussaro ( ) 
+ usta ( ) lemma=usto 
+ usto ( ) 
+ ustascia ( ) 
+ uste ( ) lemma=usto 
+ usti ( ) lemma=usto 
+ ustiona ( ) lemma=ustionare 
+ ustionare ( ) 
+ ustionai ( ) lemma=ustionare 
+ ustionammo ( ) lemma=ustionare 
+ ustionan ( ) lemma=ustionare 
+ ustionando ( ) lemma=ustionare 
+ ustionandoti ( ) lemma=ustionare 
+ ustionano ( ) lemma=ustionare 
+ ustionante ( ) lemma=ustionare 
+ ustionanti ( ) lemma=ustionare 
+ ustionar ( ) lemma=ustionare 
+ ustionaron ( ) lemma=ustionare 
+ ustionarono ( ) lemma=ustionare 
+ ustionarti ( ) lemma=ustionare 
+ ustionasse ( ) lemma=ustionare 
+ ustionasser ( ) lemma=ustionare 
+ ustionassero ( ) lemma=ustionare 
+ ustionassi ( ) lemma=ustionare 
+ ustionassimo ( ) lemma=ustionare 
+ ustionaste ( ) lemma=ustionare 
+ ustionasti ( ) lemma=ustionare 
+ ustionata ( ) lemma=ustionato 
+ ustionato ( ) 
+ ustionate ( ) lemma=ustionato 
+ ustionati ( ) lemma=ustionato 
+ ustionatissima ( ) lemma=ustionato 
+ ustionatissime ( ) lemma=ustionato 
+ ustionatissimi ( ) lemma=ustionato 
+ ustionatissimo ( ) lemma=ustionato 
+ ustionava ( ) lemma=ustionare 
+ ustionavamo ( ) lemma=ustionare 
+ ustionavan ( ) lemma=ustionare 
+ ustionavano ( ) lemma=ustionare 
+ ustionavate ( ) lemma=ustionare 
+ ustionavi ( ) lemma=ustionare 
+ ustionavo ( ) lemma=ustionare 
+ ustione ( ) 
+ ustionera' ( ) lemma=ustionare 
+ ustionerai ( ) lemma=ustionare 
+ ustioneran ( ) lemma=ustionare 
+ ustioneranno ( ) lemma=ustionare 
+ ustionerebbe ( ) lemma=ustionare 
+ ustionerebber ( ) lemma=ustionare 
+ ustionerebbero ( ) lemma=ustionare 
+ ustionerei ( ) lemma=ustionare 
+ ustioneremmo ( ) lemma=ustionare 
+ ustioneremo ( ) lemma=ustionare 
+ ustionereste ( ) lemma=ustionare 
+ ustioneresti ( ) lemma=ustionare 
+ ustionerete ( ) lemma=ustionare 
+ ustionero' ( ) lemma=ustionare 
+ ustionerà ( ) lemma=ustionare 
+ ustionerò ( ) lemma=ustionare 
+ ustioni ( ) lemma=ustione 
+ ustioniamo ( ) lemma=ustionare 
+ ustioniate ( ) lemma=ustionare 
+ ustionin ( ) lemma=ustionare 
+ ustionino ( ) lemma=ustionare 
+ ustiono ( ) lemma=ustionare 
+ ustiono' ( ) lemma=ustionare 
+ ustionò ( ) lemma=ustionare 
+ ustissima ( ) lemma=usto 
+ ustissime ( ) lemma=usto 
+ ustissimi ( ) lemma=usto 
+ ustissimo ( ) lemma=usto 
+ usuale ( ) 
+ usuali ( ) lemma=usuale 
+ usualissima ( ) lemma=usuale 
+ usualissime ( ) lemma=usuale 
+ usualissimi ( ) lemma=usuale 
+ usualissimo ( ) lemma=usuale 
+ usualmente ( ) 
+ usufruendo ( ) lemma=usufruire 
+ usufruire ( ) 
+ usufruente ( ) lemma=usufruire 
+ usufruenti ( ) lemma=usufruire 
+ usufrui' ( ) lemma=usufruire 
+ usufruiamo ( ) lemma=usufruire 
+ usufruiate ( ) lemma=usufruire 
+ usufruii ( ) lemma=usufruire 
+ usufruimmo ( ) lemma=usufruire 
+ usufruir ( ) lemma=usufruire 
+ usufruira' ( ) lemma=usufruire 
+ usufruirai ( ) lemma=usufruire 
+ usufruiran ( ) lemma=usufruire 
+ usufruiranno ( ) lemma=usufruire 
+ usufruirebbe ( ) lemma=usufruire 
+ usufruirebber ( ) lemma=usufruire 
+ usufruirebbero ( ) lemma=usufruire 
+ usufruirei ( ) lemma=usufruire 
+ usufruiremmo ( ) lemma=usufruire 
+ usufruiremo ( ) lemma=usufruire 
+ usufruireste ( ) lemma=usufruire 
+ usufruiresti ( ) lemma=usufruire 
+ usufruirete ( ) lemma=usufruire 
+ usufruirne ( ) lemma=usufruire 
+ usufruiro' ( ) lemma=usufruire 
+ usufruiron ( ) lemma=usufruire 
+ usufruirono ( ) lemma=usufruire 
+ usufruirà ( ) lemma=usufruire 
+ usufruirò ( ) lemma=usufruire 
+ usufruisca ( ) lemma=usufruire 
+ usufruiscan ( ) lemma=usufruire 
+ usufruiscano ( ) lemma=usufruire 
+ usufruisce ( ) lemma=usufruire 
+ usufruisci ( ) lemma=usufruire 
+ usufruisco ( ) lemma=usufruire 
+ usufruiscon ( ) lemma=usufruire 
+ usufruiscono ( ) lemma=usufruire 
+ usufruisse ( ) lemma=usufruire 
+ usufruisser ( ) lemma=usufruire 
+ usufruissero ( ) lemma=usufruire 
+ usufruissi ( ) lemma=usufruire 
+ usufruissimo ( ) lemma=usufruire 
+ usufruiste ( ) lemma=usufruire 
+ usufruisti ( ) lemma=usufruire 
+ usufruita ( ) lemma=usufruire 
+ usufruite ( ) lemma=usufruire 
+ usufruiti ( ) lemma=usufruire 
+ usufruito ( ) lemma=usufruire 
+ usufruiva ( ) lemma=usufruire 
+ usufruivamo ( ) lemma=usufruire 
+ usufruivan ( ) lemma=usufruire 
+ usufruivano ( ) lemma=usufruire 
+ usufruivate ( ) lemma=usufruire 
+ usufruivi ( ) lemma=usufruire 
+ usufruivo ( ) lemma=usufruire 
+ usufruì ( ) lemma=usufruire 
+ usura ( ) 
+ usurai ( ) lemma=usuraio 
+ usuraio ( ) 
+ usurammo ( ) lemma=usurare 
+ usurare ( ) 
+ usuran ( ) lemma=usurare 
+ usurando ( ) lemma=usurare 
+ usurano ( ) lemma=usurare 
+ usurante ( ) lemma=usurare 
+ usuranti ( ) lemma=usurare 
+ usurar ( ) lemma=usurare 
+ usuraron ( ) lemma=usurare 
+ usurarono ( ) lemma=usurare 
+ usurarsi ( ) lemma=usurare 
+ usurasse ( ) lemma=usurare 
+ usurasser ( ) lemma=usurare 
+ usurassero ( ) lemma=usurare 
+ usurassi ( ) lemma=usurare 
+ usurassimo ( ) lemma=usurare 
+ usuraste ( ) lemma=usurare 
+ usurasti ( ) lemma=usurare 
+ usurata ( ) lemma=usurare 
+ usurate ( ) lemma=usurare 
+ usurati ( ) lemma=usurare 
+ usurato ( ) lemma=usurare 
+ usurava ( ) lemma=usurare 
+ usuravamo ( ) lemma=usurare 
+ usuravan ( ) lemma=usurare 
+ usuravano ( ) lemma=usurare 
+ usuravate ( ) lemma=usurare 
+ usuravi ( ) lemma=usurare 
+ usuravo ( ) lemma=usurare 
+ usure ( ) lemma=usura 
+ usurera' ( ) lemma=usurare 
+ usurerai ( ) lemma=usurare 
+ usureran ( ) lemma=usurare 
+ usureranno ( ) lemma=usurare 
+ usurerebbe ( ) lemma=usurare 
+ usurerebber ( ) lemma=usurare 
+ usurerebbero ( ) lemma=usurare 
+ usurerei ( ) lemma=usurare 
+ usureremmo ( ) lemma=usurare 
+ usureremo ( ) lemma=usurare 
+ usurereste ( ) lemma=usurare 
+ usureresti ( ) lemma=usurare 
+ usurerete ( ) lemma=usurare 
+ usurero' ( ) lemma=usurare 
+ usurerà ( ) lemma=usurare 
+ usurerò ( ) lemma=usurare 
+ usuri ( ) lemma=usurare 
+ usuriamo ( ) lemma=usurare 
+ usuriate ( ) lemma=usurare 
+ usurin ( ) lemma=usurare 
+ usurino ( ) lemma=usurare 
+ usuro ( ) lemma=usurare 
+ usuro' ( ) lemma=usurare 
+ usurpa ( ) lemma=usurpare 
+ usurpare ( ) 
+ usurpai ( ) lemma=usurpare 
+ usurpammo ( ) lemma=usurpare 
+ usurpan ( ) lemma=usurpare 
+ usurpando ( ) lemma=usurpare 
+ usurpano ( ) lemma=usurpare 
+ usurpante ( ) lemma=usurpare 
+ usurpanti ( ) lemma=usurpare 
+ usurpar ( ) lemma=usurpare 
+ usurparon ( ) lemma=usurpare 
+ usurparono ( ) lemma=usurpare 
+ usurpasse ( ) lemma=usurpare 
+ usurpasser ( ) lemma=usurpare 
+ usurpassero ( ) lemma=usurpare 
+ usurpassi ( ) lemma=usurpare 
+ usurpassimo ( ) lemma=usurpare 
+ usurpaste ( ) lemma=usurpare 
+ usurpasti ( ) lemma=usurpare 
+ usurpata ( ) lemma=usurpare 
+ usurpate ( ) lemma=usurpare 
+ usurpati ( ) lemma=usurpare 
+ usurpato ( ) lemma=usurpare 
+ usurpatore ( ) 
+ usurpatori ( ) lemma=usurpatore 
+ usurpatoria ( ) lemma=usurpatorio 
+ usurpatorio ( ) 
+ usurpatorie ( ) lemma=usurpatorio 
+ usurpatorii ( ) lemma=usurpatorio 
+ usurpatrice ( ) lemma=usurpatore 
+ usurpatrici ( ) lemma=usurpatore 
+ usurpava ( ) lemma=usurpare 
+ usurpavamo ( ) lemma=usurpare 
+ usurpavan ( ) lemma=usurpare 
+ usurpavano ( ) lemma=usurpare 
+ usurpavate ( ) lemma=usurpare 
+ usurpavi ( ) lemma=usurpare 
+ usurpavo ( ) lemma=usurpare 
+ usurpazione ( ) 
+ usurpazioni ( ) lemma=usurpazione 
+ usurpera' ( ) lemma=usurpare 
+ usurperai ( ) lemma=usurpare 
+ usurperan ( ) lemma=usurpare 
+ usurperanno ( ) lemma=usurpare 
+ usurperebbe ( ) lemma=usurpare 
+ usurperebber ( ) lemma=usurpare 
+ usurperebbero ( ) lemma=usurpare 
+ usurperei ( ) lemma=usurpare 
+ usurperemmo ( ) lemma=usurpare 
+ usurperemo ( ) lemma=usurpare 
+ usurpereste ( ) lemma=usurpare 
+ usurperesti ( ) lemma=usurpare 
+ usurperete ( ) lemma=usurpare 
+ usurpero' ( ) lemma=usurpare 
+ usurperà ( ) lemma=usurpare 
+ usurperò ( ) lemma=usurpare 
+ usurpi ( ) lemma=usurpare 
+ usurpiamo ( ) lemma=usurpare 
+ usurpiate ( ) lemma=usurpare 
+ usurpin ( ) lemma=usurpare 
+ usurpino ( ) lemma=usurpare 
+ usurpo ( ) lemma=usurpare 
+ usurpo' ( ) lemma=usurpare 
+ usurpò ( ) lemma=usurpare 
+ usurò ( ) lemma=usurare 
+ usò ( ) lemma=usare 
+ utensile ( ) 
+ utensili ( ) lemma=utensile 
+ utensilissima ( ) lemma=utensile 
+ utensilissime ( ) lemma=utensile 
+ utensilissimi ( ) lemma=utensile 
+ utensilissimo ( ) lemma=utensile 
+ utente ( ) 
+ utenti ( ) lemma=utente 
+ utenza ( ) 
+ utenze ( ) lemma=utenza 
+ uteri ( ) lemma=utero 
+ utero ( ) 
+ utile ( ) 
+ utili ( ) lemma=utile 
+ utilissima ( ) lemma=utile 
+ utilissime ( ) lemma=utile 
+ utilissimi ( ) lemma=utile 
+ utilissimo ( ) lemma=utile 
+ utilita' ( ) lemma=utilità 
+ utilità ( ) 
+ utilitari ( ) lemma=utilitario 
+ utilitario ( ) 
+ utilitaria ( ) lemma=utilitario 
+ utilitarie ( ) lemma=utilitario 
+ utilitarissima ( ) lemma=utilitario 
+ utilitarissime ( ) lemma=utilitario 
+ utilitarissimi ( ) lemma=utilitario 
+ utilitarissimo ( ) lemma=utilitario 
+ utilitaristica ( ) lemma=utilitaristico 
+ utilitaristico ( ) 
+ utilitaristiche ( ) lemma=utilitaristico 
+ utilitaristici ( ) lemma=utilitaristico 
+ utilitaristicissima ( ) lemma=utilitaristico 
+ utilitaristicissime ( ) lemma=utilitaristico 
+ utilitaristicissimi ( ) lemma=utilitaristico 
+ utilitaristicissimo ( ) lemma=utilitaristico 
+ utilizza ( ) lemma=utilizzare 
+ utilizzare ( ) 
+ utilizzabile ( ) 
+ utilizzabili ( ) lemma=utilizzabile 
+ utilizzabilissima ( ) lemma=utilizzabile 
+ utilizzabilissime ( ) lemma=utilizzabile 
+ utilizzabilissimi ( ) lemma=utilizzabile 
+ utilizzabilissimo ( ) lemma=utilizzabile 
+ utilizzai ( ) lemma=utilizzare 
+ utilizzali ( ) lemma=utilizzare 
+ utilizzalo ( ) lemma=utilizzare 
+ utilizzammo ( ) lemma=utilizzare 
+ utilizzan ( ) lemma=utilizzare 
+ utilizzando ( ) lemma=utilizzare 
+ utilizzandole ( ) lemma=utilizzare 
+ utilizzandoli ( ) lemma=utilizzare 
+ utilizzandolo ( ) lemma=utilizzare 
+ utilizzano ( ) lemma=utilizzare 
+ utilizzante ( ) lemma=utilizzare 
+ utilizzanti ( ) lemma=utilizzare 
+ utilizzar ( ) lemma=utilizzare 
+ utilizzarci ( ) lemma=utilizzare 
+ utilizzarla ( ) lemma=utilizzare 
+ utilizzarle ( ) lemma=utilizzare 
+ utilizzarli ( ) lemma=utilizzare 
+ utilizzarlo ( ) lemma=utilizzare 
+ utilizzarmi ( ) lemma=utilizzare 
+ utilizzarne ( ) lemma=utilizzare 
+ utilizzaron ( ) lemma=utilizzare 
+ utilizzarono ( ) lemma=utilizzare 
+ utilizzarsi ( ) lemma=utilizzare 
+ utilizzasse ( ) lemma=utilizzare 
+ utilizzasser ( ) lemma=utilizzare 
+ utilizzassero ( ) lemma=utilizzare 
+ utilizzassi ( ) lemma=utilizzare 
+ utilizzassimo ( ) lemma=utilizzare 
+ utilizzaste ( ) lemma=utilizzare 
+ utilizzasti ( ) lemma=utilizzare 
+ utilizzata ( ) lemma=utilizzare 
+ utilizzate ( ) lemma=utilizzare 
+ utilizzati ( ) lemma=utilizzare 
+ utilizzato ( ) lemma=utilizzare 
+ utilizzatore ( ) 
+ utilizzatori ( ) lemma=utilizzatore 
+ utilizzava ( ) lemma=utilizzare 
+ utilizzavamo ( ) lemma=utilizzare 
+ utilizzavan ( ) lemma=utilizzare 
+ utilizzavano ( ) lemma=utilizzare 
+ utilizzavate ( ) lemma=utilizzare 
+ utilizzavi ( ) lemma=utilizzare 
+ utilizzavo ( ) lemma=utilizzare 
+ utilizzazione ( ) 
+ utilizzazioni ( ) lemma=utilizzazione 
+ utilizzera' ( ) lemma=utilizzare 
+ utilizzerai ( ) lemma=utilizzare 
+ utilizzeran ( ) lemma=utilizzare 
+ utilizzeranno ( ) lemma=utilizzare 
+ utilizzerebbe ( ) lemma=utilizzare 
+ utilizzerebber ( ) lemma=utilizzare 
+ utilizzerebbero ( ) lemma=utilizzare 
+ utilizzerei ( ) lemma=utilizzare 
+ utilizzeremmo ( ) lemma=utilizzare 
+ utilizzeremo ( ) lemma=utilizzare 
+ utilizzereste ( ) lemma=utilizzare 
+ utilizzeresti ( ) lemma=utilizzare 
+ utilizzerete ( ) lemma=utilizzare 
+ utilizzero' ( ) lemma=utilizzare 
+ utilizzerà ( ) lemma=utilizzare 
+ utilizzerò ( ) lemma=utilizzare 
+ utilizzi ( ) lemma=utilizzo 
+ utilizzo ( ) 
+ utilizziamo ( ) lemma=utilizzare 
+ utilizziamole ( ) lemma=utilizzare 
+ utilizziate ( ) lemma=utilizzare 
+ utilizzin ( ) lemma=utilizzare 
+ utilizzino ( ) lemma=utilizzare 
+ utilizzo' ( ) lemma=utilizzare 
+ utilizzò ( ) lemma=utilizzare 
+ utilmente ( ) 
+ utopia ( ) 
+ utopica ( ) lemma=utopico 
+ utopico ( ) 
+ utopiche ( ) lemma=utopico 
+ utopici ( ) lemma=utopico 
+ utopicissima ( ) lemma=utopico 
+ utopicissime ( ) lemma=utopico 
+ utopicissimi ( ) lemma=utopico 
+ utopicissimo ( ) lemma=utopico 
+ utopie ( ) lemma=utopia 
+ utopista ( ) 
+ utopisti ( ) lemma=utopista 
+ utopistica ( ) lemma=utopistico 
+ utopistico ( ) 
+ utopistiche ( ) lemma=utopistico 
+ utopistici ( ) lemma=utopistico 
+ utopisticissima ( ) lemma=utopistico 
+ utopisticissime ( ) lemma=utopistico 
+ utopisticissimi ( ) lemma=utopistico 
+ utopisticissimo ( ) lemma=utopistico 
+ utracentenari ( ) lemma=utracentenario 
+ utracentenario ( ) 
+ utracentenaria ( ) lemma=utracentenario 
+ utracentenarie ( ) lemma=utracentenario 
+ utracentenarissima ( ) lemma=utracentenario 
+ utracentenarissime ( ) lemma=utracentenario 
+ utracentenarissimi ( ) lemma=utracentenario 
+ utracentenarissimo ( ) lemma=utracentenario 
  uuh ( ) 
  uuuuh ( ) 
- uva ( NOUN NOUN_SINGULAR ) 
- uve ( NOUN NOUN_SINGULAR ) 
- uzbeki ( NOUN NOUN_SINGULAR ) 
- uzbeko ( NOUN NOUN_SINGULAR ) 
+ uva ( ) 
+ uve ( ) lemma=uva 
+ uzbeki ( ) lemma=uzbeko 
+ uzbeko ( ) 
  uèh ( ) 

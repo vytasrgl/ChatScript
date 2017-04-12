@@ -1,620 +1,635 @@
 ﻿ U ( ) 
- USV ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U12 ( ) 
- ULT ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Umm ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.11 ( ) 
- U£ ( ) 
- Urechis ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UT ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- unknown-word ( ) 
- Ucrania ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UATLXP ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.201 ( ) 
- U11 ( ) 
- Una ( CONJUNCTION_SUBORDINATE ) 
- U.20 ( ) 
- U.63 ( ) 
- U19 ( ) 
- U.2 ( ) 
- UDST ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UNESCO ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Unilever ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Unidos ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Universo ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.24 ( ) 
- UA ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Ultraizquierda ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.23 ( ) 
- UND ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Unisys ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.61 ( ) 
- Uretrografía ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U8 ( ) 
- U7 ( ) 
- UNBIND ( ) 
- U10 ( ) 
- US ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U15 ( ) 
- UAEF ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UIV ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.15 ( ) 
- Unión ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Ureaplasma ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.30 ( ) 
- U.7 ( ) 
- U.8 ( ) 
- Utilisateur ( ) 
- UTC ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UATLX ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U6 ( ) 
- Utah ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.60 ( ) 
- Ule ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Urgel ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U1 ( ) 
- Uniplán ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Underwood ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Urgell ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Unidas ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U2 ( ) 
- Umesono ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.70 ( ) 
- Uribe ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- U.3 ( ) 
- U.45 ( ) 
- UCS ( ) 
  U.1 ( ) 
  U.10 ( ) 
+ U.11 ( ) 
  U.12 ( ) 
  U.140 ( ) 
+ U.15 ( ) 
+ U.2 ( ) 
+ U.20 ( ) 
+ U.201 ( ) 
  U.202 ( ) 
  U.204 ( ) 
  U.21 ( ) 
  U.22 ( ) 
+ U.23 ( ) 
+ U.24 ( ) 
  U.25 ( ) 
+ U.3 ( ) 
+ U.30 ( ) 
  U.31 ( ) 
  U.4 ( ) 
  U.40 ( ) 
  U.41 ( ) 
  U.43 ( ) 
  U.44 ( ) 
- U.44. ( ) 
+ U.44. ( ) lemma=U.44 
+ U.45 ( ) 
  U.5 ( ) 
  U.6 ( ) 
+ U.60 ( ) 
+ U.61 ( ) 
  U.62 ( ) 
+ U.63 ( ) 
+ U.7 ( ) 
+ U.70 ( ) 
  U.74 ( ) 
  U.75 ( ) 
+ U.8 ( ) 
  U.80 ( ) 
  U.81 ( ) 
  U.82 ( ) 
- U.R.S.S ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ U.R.S.S ( ) 
  U0 ( ) 
+ U1 ( ) 
+ U10 ( ) 
+ U11 ( ) 
+ U12 ( ) 
+ U15 ( ) 
  U17 ( ) 
+ U19 ( ) 
+ U2 ( ) 
  U25 ( ) 
  U3 ( ) 
  U4 ( ) 
+ U6 ( ) 
+ U7 ( ) 
+ U8 ( ) 
  U9 ( ) 
- UAR ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UATLM ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UATTXP ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UC ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UDP ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UDPAT ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UDPR ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UDPS ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UDPT ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ UA ( ) 
+ UAEF ( ) 
+ UAR ( ) 
+ UATLM ( ) 
+ UATLX ( ) 
+ UATLXP ( ) 
+ UATTXP ( ) 
+ UC ( ) 
+ UCS ( ) 
+ UDP ( ) 
+ UDPAT ( ) 
+ UDPR ( ) 
+ UDPS ( ) 
+ UDPT ( ) 
+ UDST ( ) 
  UE ( ) 
  UI ( ) 
- UIT ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UITLM ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UNIX ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- UPDT ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- USA ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Uganda ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ UIT ( ) 
+ UITLM ( ) 
+ UIV ( ) 
+ ULT ( ) 
+ UNBIND ( ) 
+ UND ( ) 
+ UNESCO ( ) 
+ UNIX ( ) 
+ UPDT ( ) 
+ US ( ) 
+ USA ( ) 
+ USV ( ) 
+ UT ( ) 
+ UTC ( ) 
+ Ucrania ( ) 
+ Uganda ( ) 
+ Ule ( ) 
+ Ultraizquierda ( ) 
  Um ( ) 
- Und ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Unesco ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Unger ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Ungermann-Bass ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Units ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ Umesono ( ) 
+ Umm_al_Qaiwain ( ) lemma=Umm~al~Qaiwain 
+ Umm~al~Qaiwain ( ) 
+ Una_vez_que ( ) lemma=una~vez~que 
+ una~vez~que ( ) 
+ Und ( ) 
+ Underwood ( ) 
+ Unesco ( ) 
+ Unger ( ) 
+ Ungermann-Bass ( ) 
+ Unidas ( ) 
+ Unidos ( ) 
+ Unilever ( ) 
+ Uniplán ( ) 
+ Unisys ( ) 
+ Units ( ) 
  Univers ( ) 
- Unix ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Urano ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Urbanismo ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Urquiza ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Uruguay ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Userda ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Usher ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Uzawa ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Uztáriz ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- u ( CONJUNCTION_COORDINATE ) 
- ubica ( VERB ) 
- ubicaba ( VERB ) 
- ubicaban ( VERB ) 
- ubicaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ubicación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ubicada ( VERB_PAST_PARTICIPLE VERB ) 
- ubicadas ( VERB_PAST_PARTICIPLE VERB ) 
- ubicado ( VERB_PAST_PARTICIPLE VERB ) 
- ubicados ( VERB_PAST_PARTICIPLE VERB ) 
- ubican ( VERB ) 
- ubicando ( NOUN NOUN_GERUND ) 
- ubicar ( VERB ) 
- ubicara ( VERB ) 
- ubicarlo ( VERB_INFINITIVE VERB ) 
- ubicaron ( VERB ) 
- ubicarse ( VERB_INFINITIVE VERB ) 
- ubicará ( VERB ) 
- ubicarán ( VERB ) 
- ubicaré ( VERB ) 
- ubicaría ( VERB ) 
- ubico ( VERB ) 
- ubicuas ( ADJECTIVE ) 
- ubicándose ( VERB_PAST_PARTICIPLE VERB ) 
- ubicársela ( VERB ) 
- ubicó ( VERB ) 
- ubique ( VERB ) 
- ubiquen ( VERB ) 
- ubiquinona ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ubícalo ( ) 
- ucraniana ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- ucranianas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- ucraniano ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- ucranianos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- uda ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- udc ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- udn ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- udp-glucosa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uf ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- ufano ( ADJECTIVE ) 
- uff ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- uh ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- ulceraciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ulceración ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ulcerada ( VERB_PAST_PARTICIPLE VERB ) 
- ulceradas ( VERB_PAST_PARTICIPLE VERB ) 
- ulcerosa ( ADJECTIVE ) 
- ulerior ( ADJECTIVE ) 
- ulterior ( ADJECTIVE ) 
- ulteriores ( ADJECTIVE ) 
- ulteriormente ( ADVERB ) 
- ultima ( VERB ) 
- ultimada ( VERB_PAST_PARTICIPLE VERB ) 
- ultimadas ( VERB_PAST_PARTICIPLE VERB ) 
- ultimado ( VERB_PAST_PARTICIPLE VERB ) 
- ultimados ( VERB_PAST_PARTICIPLE VERB ) 
- ultiman ( VERB ) 
- ultimando ( NOUN NOUN_GERUND ) 
- ultimar ( VERB ) 
- ultimara ( VERB ) 
- ultimaron ( VERB ) 
- ultimarán ( VERB ) 
- ultimas ( VERB ) 
- ultime ( VERB ) 
- ultimemos ( VERB ) 
- ultimo ( VERB ADJECTIVE ) 
- ultimátum ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ultimó ( VERB ) 
- ultra ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- ultracelulare ( ADJECTIVE ) 
- ultraestructural ( ADJECTIVE ) 
- ultraestructuralmente ( ADVERB ) 
- ultrafiltración ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ultrafiltrado ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ultraja ( VERB ) 
- ultrajada ( VERB_PAST_PARTICIPLE VERB ) 
- ultrajadas ( VERB_PAST_PARTICIPLE VERB ) 
- ultrajado ( VERB_PAST_PARTICIPLE VERB ) 
- ultrajan ( VERB ) 
- ultrajara ( VERB ) 
- ultraje ( VERB ) 
- ultrajes ( VERB ) 
- ultramar ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ultramarinos ( ADJECTIVE ) 
- ultraoligotrofia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ultraperiférico ( ADJECTIVE ) 
- ultrarrefractario ( ADJECTIVE ) 
- ultras ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- ultrasonido ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ultrasonidos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ultrasonografía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ultrasonográfico ( ADJECTIVE ) 
- ultrasónicas ( ADJECTIVE ) 
- ultravioleta ( ADJECTIVE ) 
- ultravioletas ( ADJECTIVE ) 
- umbilical ( ADJECTIVE ) 
- umbilicales ( ADJECTIVE ) 
- umbral ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- umbrales ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- umbrosos ( ADJECTIVE ) 
- umlaut ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- un ( DETERMINER ) 
- una ( CONJUNCTION_SUBORDINATE DETERMINER ) 
- unamos ( VERB ) 
- unan ( VERB ) 
- unanimidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- unaria ( ADJECTIVE ) 
- unarios ( ADJECTIVE ) 
- unas ( DETERMINER ) 
+ Universo ( ) 
+ Unix ( ) 
+ Unión_de_Repúblicas_Socialistas_Soviéticas ( ) lemma=Unión~de~Repúblicas~Socialistas~Soviéticas 
+ Unión~de~Repúblicas~Socialistas~Soviéticas ( ) 
+ Urano ( ) 
+ Urbanismo ( ) 
+ Ureaplasma ( ) 
+ Urechis ( ) 
+ Uretrografía ( ) 
+ Urgel ( ) 
+ Urgell ( ) 
+ Uribe ( ) 
+ Urquiza ( ) 
+ Uruguay ( ) 
+ Userda ( ) 
+ Usher ( ) 
+ Utah ( ) 
+ Utilisateur ( ) 
+ Uzawa ( ) 
+ Uztáriz ( ) 
+ U£ ( ) 
+ u ( ) 
+ ubica ( ) lemma=ubicar 
+ ubicar ( ) 
+ ubicaba ( ) lemma=ubicar 
+ ubicaban ( ) lemma=ubicar 
+ ubicaciones ( ) lemma=ubicación 
+ ubicación ( ) 
+ ubicada ( ) lemma=ubicar 
+ ubicadas ( ) lemma=ubicar 
+ ubicado ( ) lemma=ubicar 
+ ubicados ( ) lemma=ubicar 
+ ubican ( ) lemma=ubicar 
+ ubicando ( ) lemma=ubicar 
+ ubicara ( ) lemma=ubicar 
+ ubicarlo ( ) lemma=ubicar 
+ ubicaron ( ) lemma=ubicar 
+ ubicarse ( ) 
+ ubicará ( ) lemma=ubicar 
+ ubicarán ( ) lemma=ubicar 
+ ubicaré ( ) lemma=ubicar 
+ ubicaría ( ) lemma=ubicar 
+ ubico ( ) lemma=ubicar 
+ ubicuas ( ) lemma=ubicuo 
+ ubicuo ( ) 
+ ubicándose ( ) lemma=ubicar 
+ ubicársela ( ) lemma=ubicar 
+ ubicó ( ) lemma=ubicar 
+ ubique ( ) lemma=ubicar 
+ ubiquen ( ) lemma=ubicar 
+ ubiquinona ( ) 
+ ubícalo ( ) lemma=ubicar 
+ ucraniana ( ) lemma=ucraniano 
+ ucraniano ( ) 
+ ucranianas ( ) lemma=ucraniano 
+ ucranianos ( ) lemma=ucraniano 
+ uda ( ) 
+ udc ( ) 
+ udn ( ) 
+ udp-glucosa ( ) 
+ uf ( ) 
+ ufano ( ) 
+ uff ( ) 
+ uh ( ) 
+ ulceraciones ( ) lemma=ulceración 
+ ulceración ( ) 
+ ulcerada ( ) lemma=ulcerar 
+ ulcerar ( ) 
+ ulceradas ( ) lemma=ulcerar 
+ ulcerosa ( ) lemma=ulceroso 
+ ulceroso ( ) 
+ ulerior ( ) 
+ ulterior ( ) 
+ ulteriores ( ) lemma=ulterior 
+ ulteriormente ( ) lemma=ulterior 
+ ultima ( ) lemma=ultimar 
+ ultimar ( ) 
+ ultimada ( ) lemma=ultimar 
+ ultimadas ( ) lemma=ultimar 
+ ultimado ( ) lemma=ultimar 
+ ultimados ( ) lemma=ultimar 
+ ultiman ( ) lemma=ultimar 
+ ultimando ( ) lemma=ultimar 
+ ultimara ( ) lemma=ultimar 
+ ultimaron ( ) lemma=ultimar 
+ ultimarán ( ) lemma=ultimar 
+ ultimas ( ) lemma=ultimar 
+ ultime ( ) lemma=ultimar 
+ ultimemos ( ) lemma=ultimar 
+ ultimo ( ) lemma=último 
+ ultimátum ( ) 
+ ultimó ( ) lemma=ultimar 
+ ultra ( ) 
+ ultracelulare ( ) 
+ ultraestructural ( ) 
+ ultraestructuralmente ( ) 
+ ultrafiltración ( ) 
+ ultrafiltrado ( ) 
+ ultraja ( ) lemma=ultrajar 
+ ultrajar ( ) 
+ ultrajada ( ) lemma=ultrajar 
+ ultrajadas ( ) lemma=ultrajar 
+ ultrajado ( ) lemma=ultrajar 
+ ultrajan ( ) lemma=ultrajar 
+ ultrajara ( ) lemma=ultrajar 
+ ultraje ( ) lemma=ultrajar 
+ ultrajes ( ) lemma=ultrajar 
+ ultramar ( ) 
+ ultramarinos ( ) lemma=ultramarino 
+ ultramarino ( ) 
+ ultraoligotrofia ( ) 
+ ultraperiférico ( ) 
+ ultrarrefractario ( ) 
+ ultras ( ) lemma=ultra 
+ ultrasonido ( ) 
+ ultrasonidos ( ) lemma=ultrasonido 
+ ultrasonografía ( ) 
+ ultrasonográfico ( ) 
+ ultrasónicas ( ) lemma=ultrasónico 
+ ultrasónico ( ) 
+ ultravioleta ( ) 
+ ultravioletas ( ) lemma=ultravioleta 
+ umbilical ( ) 
+ umbilicales ( ) lemma=umbilical 
+ umbral ( ) 
+ umbrales ( ) lemma=umbral 
+ umbrosos ( ) lemma=umbroso 
+ umbroso ( ) 
+ umlaut ( ) 
+ un ( ) 
+ una ( ) lemma=un 
+ una_vez_que ( ) lemma=una~vez~que 
+ unamos ( ) lemma=unir 
+ unir ( ) 
+ unan ( ) lemma=unir 
+ unanimidad ( ) 
+ unaria ( ) lemma=unario 
+ unario ( ) 
+ unarios ( ) lemma=unario 
+ unas ( ) lemma=un 
  unavailable ( ) 
- unción ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- underdiagnosis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- undécima ( ADJECTIVE ) 
- undécimo ( ADJECTIVE ) 
- undécimos ( ADJECTIVE ) 
- une ( VERB ) 
- unen ( VERB ) 
- ungido ( VERB_PAST_PARTICIPLE VERB ) 
- ungieran ( VERB ) 
- ungueal ( ADJECTIVE ) 
- unicatenaria ( ADJECTIVE ) 
- unicatenario ( ADJECTIVE ) 
- unicatenarios ( ADJECTIVE ) 
- unicausal ( ADJECTIVE ) 
- unicelular ( ADJECTIVE ) 
- unicelulares ( ADJECTIVE ) 
- unicidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- unida ( VERB_PAST_PARTICIPLE VERB ) 
- unidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- unidades ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- unidas ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unidimensional ( ADJECTIVE ) 
- unidimensionales ( ADJECTIVE ) 
- unidimensionalmente ( ADVERB ) 
- unidireccional ( ADJECTIVE ) 
- unidireccionales ( ADJECTIVE ) 
- unidireccionalmente ( ADVERB ) 
+ unción ( ) 
+ underdiagnosis ( ) 
+ undécima ( ) lemma=undécimo 
+ undécimo ( ) 
+ undécimos ( ) lemma=undécimo 
+ une ( ) 
+ unen ( ) lemma=unir 
+ ungido ( ) lemma=ungir 
+ ungir ( ) 
+ ungieran ( ) lemma=ungir 
+ ungueal ( ) 
+ unicatenaria ( ) lemma=unicatenario 
+ unicatenario ( ) 
+ unicatenarios ( ) lemma=unicatenario 
+ unicausal ( ) 
+ unicelular ( ) 
+ unicelulares ( ) lemma=unicelular 
+ unicidad ( ) 
+ unida ( ) lemma=unir 
+ unidad ( ) 
+ unidades ( ) lemma=unidad 
+ unidas ( ) lemma=unido 
+ unido ( ) 
+ unidimensional ( ) 
+ unidimensionales ( ) lemma=unidimensional 
+ unidimensionalmente ( ) lemma=unidimensional 
+ unidireccional ( ) 
+ unidireccionales ( ) lemma=unidireccional 
+ unidireccionalmente ( ) lemma=unidireccional 
  unidirectional ( ) 
  unidirectionnel ( ) 
- unido ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- unidos ( VERB_PAST_PARTICIPLE VERB ) 
- uniendo ( NOUN NOUN_GERUND ) 
- uniera ( VERB ) 
- unieran ( VERB ) 
- unieron ( VERB ) 
- uniese ( VERB ) 
- uniesen ( VERB ) 
- uniespecífico ( ADJECTIVE ) 
- unifica ( VERB ) 
- unificaba ( VERB ) 
- unificación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- unificada ( VERB_PAST_PARTICIPLE VERB ) 
- unificadas ( VERB_PAST_PARTICIPLE VERB ) 
- unificado ( VERB_PAST_PARTICIPLE VERB ) 
- unificados ( VERB_PAST_PARTICIPLE VERB ) 
- unifican ( VERB ) 
- unificando ( NOUN NOUN_GERUND ) 
- unificar ( VERB ) 
- unificara ( VERB ) 
- unificaron ( VERB ) 
- unificarían ( VERB ) 
- unificó ( VERB ) 
- unifique ( VERB ) 
- unifiquen ( VERB ) 
- uniformada ( VERB_PAST_PARTICIPLE VERB ) 
- uniformado ( VERB_PAST_PARTICIPLE VERB ) 
- uniformados ( VERB_PAST_PARTICIPLE VERB ) 
- uniformamos ( VERB ) 
- uniformar ( VERB ) 
- uniformaran ( VERB ) 
- uniforme ( NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- uniformemente ( ADVERB ) 
- uniformes ( ADJECTIVE ) 
- uniformice ( VERB ) 
- uniformidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uniformiza ( VERB ) 
- uniformización ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uniformizada ( VERB_PAST_PARTICIPLE VERB ) 
- uniformizado ( VERB_PAST_PARTICIPLE VERB ) 
- uniformizan ( VERB ) 
- uniformizar ( VERB ) 
- unilateral ( ADJECTIVE ) 
- unilaterales ( ADJECTIVE ) 
- unilateralmente ( ADVERB ) 
+ unidos ( ) lemma=unir 
+ uniendo ( ) lemma=unir 
+ uniera ( ) lemma=unir 
+ unieran ( ) lemma=unir 
+ unieron ( ) lemma=unir 
+ uniese ( ) lemma=unir 
+ uniesen ( ) lemma=unir 
+ uniespecífico ( ) 
+ unifica ( ) lemma=unificar 
+ unificar ( ) 
+ unificaba ( ) lemma=unificar 
+ unificación ( ) 
+ unificada ( ) lemma=unificar 
+ unificadas ( ) lemma=unificar 
+ unificado ( ) lemma=unificar 
+ unificados ( ) lemma=unificar 
+ unifican ( ) lemma=unificar 
+ unificando ( ) lemma=unificar 
+ unificara ( ) lemma=unificar 
+ unificaron ( ) lemma=unificar 
+ unificarían ( ) lemma=unificar 
+ unificó ( ) lemma=unificar 
+ unifique ( ) lemma=unificar 
+ unifiquen ( ) lemma=unificar 
+ uniformada ( ) lemma=uniformar 
+ uniformar ( ) 
+ uniformado ( ) lemma=uniformar 
+ uniformados ( ) lemma=uniformar 
+ uniformamos ( ) lemma=uniformar 
+ uniformaran ( ) lemma=uniformar 
+ uniforme ( ) 
+ uniformemente ( ) lemma=uniforme 
+ uniformes ( ) lemma=uniforme 
+ uniformice ( ) lemma=uniformizar 
+ uniformizar ( ) 
+ uniformidad ( ) 
+ uniformiza ( ) lemma=uniformizar 
+ uniformización ( ) 
+ uniformizada ( ) lemma=uniformizar 
+ uniformizado ( ) lemma=uniformizar 
+ uniformizan ( ) lemma=uniformizar 
+ unilateral ( ) 
+ unilaterales ( ) lemma=unilateral 
+ unilateralmente ( ) lemma=unilateral 
  unilatéral ( ) 
- unimos ( VERB ) 
- uninefrectomizar ( VERB_PAST_PARTICIPLE VERB ) 
- uniones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- unionista ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- unionistas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- uniparental ( ADJECTIVE ) 
- unipersonales ( ADJECTIVE ) 
- unipolar ( ADJECTIVE ) 
- uniprovinciale ( ADJECTIVE ) 
+ unimos ( ) lemma=unir 
+ uninefrectomizar ( ) 
+ uniones ( ) lemma=unión 
+ unión ( ) 
+ unionista ( ) lemma=unionisto 
+ unionisto ( ) 
+ unionistas ( ) lemma=unionisto 
+ uniparental ( ) 
+ unipersonales ( ) lemma=unipersonal 
+ unipersonal ( ) 
+ unipolar ( ) 
+ uniprovinciale ( ) 
  unique ( ) 
- unir ( VERB ) 
- uniremos ( VERB ) 
- unirla ( VERB_INFINITIVE VERB ) 
- unirlo ( VERB_INFINITIVE VERB ) 
- unirlos ( VERB_INFINITIVE VERB ) 
- unirme ( VERB_INFINITIVE VERB ) 
- unirnos ( VERB_INFINITIVE VERB ) 
- uniros ( VERB_INFINITIVE VERB ) 
- unirse ( VERB_INFINITIVE VERB ) 
- unirá ( VERB ) 
- unirán ( VERB ) 
- uniré ( VERB ) 
- uniría ( VERB ) 
- unirían ( VERB ) 
- unispecífico ( ADJECTIVE ) 
- unit ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ uniremos ( ) lemma=unir 
+ unirla ( ) lemma=unir 
+ unirlo ( ) lemma=unir 
+ unirlos ( ) lemma=unir 
+ unirme ( ) lemma=unir 
+ unirnos ( ) lemma=unir 
+ uniros ( ) lemma=unir 
+ unirse ( ) 
+ unirá ( ) lemma=unir 
+ unirán ( ) lemma=unir 
+ uniré ( ) lemma=unir 
+ uniría ( ) lemma=unir 
+ unirían ( ) lemma=unir 
+ unispecífico ( ) 
+ unit ( ) 
  unitaire ( ) 
  unitaires ( ) 
- unitaria ( ADJECTIVE ) 
- unitariamente ( ADVERB ) 
- unitarias ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- unitario ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- unitarios ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
+ unitaria ( ) lemma=unitario 
+ unitario ( ) 
+ unitariamente ( ) lemma=unitario 
+ unitarias ( ) lemma=unitario 
+ unitarios ( ) lemma=unitario 
  units ( ) 
  unité ( ) 
  unités ( ) 
- univalente ( ADJECTIVE ) 
- univariar ( VERB_PAST_PARTICIPLE VERB ) 
- universal ( ADJECTIVE ) 
- universales ( ADJECTIVE ) 
- universalidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- universalista ( ADJECTIVE ) 
- universalmente ( ADVERB ) 
- universidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- universidades ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- universitaria ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- universitarias ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- universitario ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- universitarios ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- universo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- universos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ univalente ( ) 
+ univariar ( ) 
+ universal ( ) 
+ universales ( ) lemma=universal 
+ universalidad ( ) 
+ universalista ( ) 
+ universalmente ( ) lemma=universal 
+ universidad ( ) 
+ universidades ( ) lemma=universidad 
+ universitaria ( ) lemma=universitario 
+ universitario ( ) 
+ universitarias ( ) lemma=universitario 
+ universitarios ( ) lemma=universitario 
+ universo ( ) 
+ universos ( ) lemma=universo 
  univocal ( ) 
- uniéndome ( NOUN NOUN_GERUND ) 
- uniéndose ( VERB_PAST_PARTICIPLE VERB ) 
- uniéramos ( VERB ) 
- unió ( VERB ) 
- unión ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uno ( ADJECTIVE_NUMBER NOUN_NUMBER ) 
- unoordo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- unos ( DETERMINER ) 
+ uniéndome ( ) lemma=unir 
+ uniéndose ( ) lemma=unir 
+ uniéramos ( ) lemma=unir 
+ unió ( ) lemma=unir 
+ uno ( ) 
+ unoordo ( ) 
+ unos ( ) lemma=un 
  unreasonable ( ) 
  unsuccessful ( ) 
- untaba ( VERB ) 
- untando ( NOUN NOUN_GERUND ) 
- untar ( VERB ) 
- unánime ( ADJECTIVE ) 
- unánimemente ( ADVERB ) 
- unánimes ( ADJECTIVE ) 
- uní ( VERB ) 
- unía ( VERB ) 
- unían ( VERB ) 
- unírsenos ( VERB_INFINITIVE VERB ) 
- unívoca ( ADJECTIVE ) 
- unívocamente ( ADVERB ) 
- unívocas ( ADJECTIVE ) 
- unívoco ( ADJECTIVE ) 
- unívocos ( ADJECTIVE ) 
+ untaba ( ) lemma=untar 
+ untar ( ) 
+ untando ( ) lemma=untar 
+ unánime ( ) 
+ unánimemente ( ) lemma=unánime 
+ unánimes ( ) lemma=unánime 
+ uní ( ) lemma=unir 
+ unía ( ) lemma=unir 
+ unían ( ) lemma=unir 
+ unírsenos ( ) lemma=unirse 
+ unívoca ( ) lemma=unívoco 
+ unívoco ( ) 
+ unívocamente ( ) lemma=unívoco 
+ unívocas ( ) lemma=unívoco 
+ unívocos ( ) lemma=unívoco 
  up ( ) 
- uracilo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uranilo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uranio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urato ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ uracilo ( ) 
+ uranilo ( ) 
+ uranio ( ) 
+ urato ( ) 
  urbain ( ) 
- urbana ( ADJECTIVE ) 
- urbanamente ( ADVERB ) 
- urbanas ( ADJECTIVE ) 
- urbanidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urbanismo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urbanitas ( ADJECTIVE ) 
- urbanizable ( ADJECTIVE ) 
- urbanizaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urbanización ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urbanizadas ( VERB_PAST_PARTICIPLE VERB ) 
- urbanizado ( VERB_PAST_PARTICIPLE VERB ) 
- urbanizados ( VERB_PAST_PARTICIPLE VERB ) 
- urbanizando ( NOUN NOUN_GERUND ) 
- urbanizar ( VERB ) 
- urbano ( ADJECTIVE ) 
- urbano-marginale ( ADJECTIVE ) 
- urbanos ( ADJECTIVE ) 
- urbanística ( ADJECTIVE ) 
- urbanísticas ( ADJECTIVE ) 
- urbanístico ( ADJECTIVE ) 
- urbe ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urbes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urdida ( ADJECTIVE ) 
- urdido ( ADJECTIVE ) 
- urdimbre ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urdir ( VERB ) 
- urea ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ureido ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uremia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ureteral ( ADJECTIVE ) 
- uretra ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uretritis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uretrografía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urge ( VERB ) 
- urgen ( VERB ) 
- urgencia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urgencias ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urgente ( ADJECTIVE ) 
- urgentemente ( ADVERB ) 
- urgentes ( ADJECTIVE ) 
- urgentísima ( ADJECTIVE ) 
- urgentísimas ( ADJECTIVE ) 
- urgentísimo ( ADJECTIVE ) 
- urgentísimos ( ADJECTIVE ) 
- urgida ( VERB_PAST_PARTICIPLE VERB ) 
- urgido ( VERB_PAST_PARTICIPLE VERB ) 
- urgidos ( VERB_PAST_PARTICIPLE VERB ) 
- urgiendo ( NOUN NOUN_GERUND ) 
- urgieron ( VERB ) 
- urgimos ( VERB ) 
- urgir ( VERB ) 
- urgió ( VERB ) 
- urgía ( VERB ) 
- urgían ( VERB ) 
- uricodepresor ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uridina ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urinaria ( ADJECTIVE ) 
- urinarias ( ADJECTIVE ) 
- urinario ( ADJECTIVE ) 
- urinarios ( ADJECTIVE ) 
- urja ( VERB ) 
- urjo ( VERB ) 
- url ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urna ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urnas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urobilinógeno ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urodelo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urodelos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urogallo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urogenital ( ADJECTIVE ) 
- urogenitales ( ADJECTIVE ) 
- urografía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urológicas ( ADJECTIVE ) 
- urológicos ( ADJECTIVE ) 
- uroporfirina ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urotelio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urticaria ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urticariforme ( ADJECTIVE ) 
- uruguaya ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- uruguayas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- uruguayo ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- uruguayos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- urémico ( ADJECTIVE ) 
- urémicos ( ADJECTIVE ) 
- uréter ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uréteres ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- urólogo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usa ( VERB ) 
- usaba ( VERB ) 
- usaban ( VERB ) 
- usada ( VERB_PAST_PARTICIPLE VERB ) 
- usadas ( VERB_PAST_PARTICIPLE VERB ) 
- usado ( VERB_PAST_PARTICIPLE VERB ) 
- usados ( VERB_PAST_PARTICIPLE VERB ) 
+ urbana ( ) lemma=urbano 
+ urbano ( ) 
+ urbanamente ( ) lemma=urbano 
+ urbanas ( ) lemma=urbano 
+ urbanidad ( ) 
+ urbanismo ( ) 
+ urbanitas ( ) lemma=urbano 
+ urbanizable ( ) 
+ urbanizaciones ( ) lemma=urbanización 
+ urbanización ( ) 
+ urbanizadas ( ) lemma=urbanizar 
+ urbanizar ( ) 
+ urbanizado ( ) lemma=urbanizar 
+ urbanizados ( ) lemma=urbanizar 
+ urbanizando ( ) lemma=urbanizar 
+ urbano-marginale ( ) 
+ urbanos ( ) lemma=urbano 
+ urbanística ( ) lemma=urbanístico 
+ urbanístico ( ) 
+ urbanísticas ( ) lemma=urbanístico 
+ urbe ( ) 
+ urbes ( ) lemma=urbe 
+ urdida ( ) lemma=urdido 
+ urdido ( ) 
+ urdimbre ( ) 
+ urdir ( ) 
+ urea ( ) 
+ ureido ( ) 
+ uremia ( ) 
+ ureteral ( ) 
+ uretra ( ) 
+ uretritis ( ) 
+ uretrografía ( ) 
+ urge ( ) lemma=urgir 
+ urgir ( ) 
+ urgen ( ) lemma=urgir 
+ urgencia ( ) 
+ urgencias ( ) lemma=urgencia 
+ urgente ( ) 
+ urgentemente ( ) lemma=urgente 
+ urgentes ( ) lemma=urgente 
+ urgentísima ( ) lemma=urgente 
+ urgentísimas ( ) lemma=urgente 
+ urgentísimo ( ) lemma=urgente 
+ urgentísimos ( ) lemma=urgente 
+ urgida ( ) lemma=urgir 
+ urgido ( ) lemma=urgir 
+ urgidos ( ) lemma=urgir 
+ urgiendo ( ) lemma=urgir 
+ urgieron ( ) lemma=urgir 
+ urgimos ( ) lemma=urgir 
+ urgió ( ) lemma=urgir 
+ urgía ( ) lemma=urgir 
+ urgían ( ) lemma=urgir 
+ uricodepresor ( ) 
+ uridina ( ) 
+ urinaria ( ) lemma=urinario 
+ urinario ( ) 
+ urinarias ( ) lemma=urinario 
+ urinarios ( ) lemma=urinario 
+ urja ( ) lemma=urgir 
+ urjo ( ) lemma=urgir 
+ url ( ) 
+ urna ( ) 
+ urnas ( ) lemma=urna 
+ urobilinógeno ( ) 
+ urodelo ( ) 
+ urodelos ( ) lemma=urodelo 
+ urogallo ( ) 
+ urogenital ( ) 
+ urogenitales ( ) lemma=urogenital 
+ urografía ( ) 
+ urológicas ( ) lemma=urológico 
+ urológico ( ) 
+ urológicos ( ) lemma=urológico 
+ uroporfirina ( ) 
+ urotelio ( ) 
+ urticaria ( ) 
+ urticariforme ( ) 
+ uruguaya ( ) lemma=uruguayo 
+ uruguayo ( ) 
+ uruguayas ( ) lemma=uruguayo 
+ uruguayos ( ) lemma=uruguayo 
+ urémico ( ) 
+ urémicos ( ) lemma=urémico 
+ uréter ( ) 
+ uréteres ( ) lemma=uréter 
+ urólogo ( ) 
+ usa ( ) lemma=usar 
+ usar ( ) 
+ usaba ( ) lemma=usar 
+ usaban ( ) lemma=usar 
+ usada ( ) lemma=usar 
+ usadas ( ) lemma=usar 
+ usado ( ) lemma=usar 
+ usados ( ) lemma=usar 
  usager ( ) 
- usamos ( VERB ) 
- usan ( VERB ) 
- usando ( NOUN NOUN_GERUND ) 
- usar ( VERB ) 
- usara ( VERB ) 
- usaran ( VERB ) 
- usaremos ( VERB ) 
- usarla ( VERB_INFINITIVE VERB ) 
- usarlo ( VERB_INFINITIVE VERB ) 
- usaron ( VERB ) 
- usarse ( VERB_INFINITIVE VERB ) 
- usará ( VERB ) 
- usarán ( VERB ) 
- usaré ( VERB ) 
- usaría ( VERB ) 
- usas ( VERB ) 
- use ( VERB ) 
- usemos ( VERB ) 
- usen ( VERB ) 
- usenet ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ usamos ( ) lemma=usar 
+ usan ( ) lemma=usar 
+ usando ( ) lemma=usar 
+ usara ( ) lemma=usar 
+ usaran ( ) lemma=usar 
+ usaremos ( ) lemma=usar 
+ usarla ( ) lemma=usar 
+ usarlo ( ) lemma=usar 
+ usaron ( ) lemma=usar 
+ usarse ( ) 
+ usará ( ) lemma=usar 
+ usarán ( ) lemma=usar 
+ usaré ( ) lemma=usar 
+ usaría ( ) lemma=usar 
+ usas ( ) lemma=usar 
+ use ( ) 
+ usemos ( ) lemma=usar 
+ usen ( ) lemma=usar 
+ usenet ( ) 
  user ( ) 
- usher ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uso ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ust ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usted ( PRONOUN_SUBJECT PRONOUN_OBJECT ) 
- ustedes ( PRONOUN_SUBJECT PRONOUN_OBJECT ) 
- usual ( ADJECTIVE ) 
- usuales ( ADJECTIVE ) 
- usualmente ( ADVERB ) 
- usuaria ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usuarias ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- usuario ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usuariocliente ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usuarios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usufructo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- usá ( VERB ) 
- usábamos ( VERB ) 
- usándolo ( NOUN NOUN_GERUND ) 
- usándolos ( NOUN NOUN_GERUND ) 
- usándose ( NOUN NOUN_GERUND ) 
- usó ( VERB ) 
- ute ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- utensilio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utensilios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uterina ( ADJECTIVE ) 
- uterinas ( ADJECTIVE ) 
- uterino ( ADJECTIVE ) 
- uterorrectal ( ADJECTIVE ) 
+ usher ( ) 
+ uso ( ) 
+ usos ( ) lemma=uso 
+ ust ( ) 
+ usted ( ) 
+ ustedes ( ) 
+ usual ( ) 
+ usuales ( ) lemma=usual 
+ usualmente ( ) lemma=usual 
+ usuaria ( ) 
+ usuarias ( ) lemma=usuario 
+ usuario ( ) 
+ usuariocliente ( ) 
+ usuarios ( ) lemma=usuario 
+ usufructo ( ) 
+ usura ( ) 
+ usá ( ) lemma=usar 
+ usábamos ( ) lemma=usar 
+ usándolo ( ) lemma=usar 
+ usándolos ( ) lemma=usar 
+ usándose ( ) 
+ usó ( ) lemma=usar 
+ ute ( ) 
+ utensilio ( ) 
+ utensilios ( ) lemma=utensilio 
+ uterina ( ) lemma=uterino 
+ uterino ( ) 
+ uterinas ( ) lemma=uterino 
+ uterorrectal ( ) 
  utile ( ) 
- utilero ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utilice ( VERB ) 
- utilicemos ( VERB ) 
- utilicen ( VERB ) 
- utilicé ( VERB ) 
- utilicémoslas ( VERB ) 
- utilidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utilidades ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utilitaria ( ADJECTIVE ) 
- utilitario ( ADJECTIVE ) 
- utilitarios ( ADJECTIVE ) 
- utiliza ( VERB ) 
- utilizaba ( VERB ) 
- utilizaban ( VERB ) 
- utilizabas ( VERB ) 
- utilizable ( ADJECTIVE ) 
- utilizables ( ADJECTIVE ) 
- utilizaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utilización ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utilizada ( VERB_PAST_PARTICIPLE VERB ) 
- utilizadas ( VERB_PAST_PARTICIPLE VERB ) 
- utilizado ( VERB_PAST_PARTICIPLE VERB ) 
- utilizador ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utilizadores ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utilizados ( VERB_PAST_PARTICIPLE VERB ) 
- utilizamos ( VERB ) 
- utilizan ( VERB ) 
- utilizando ( NOUN NOUN_GERUND ) 
- utilizar ( VERB ) 
- utilizara ( VERB ) 
- utilizaran ( VERB ) 
- utilizaremos ( VERB ) 
- utilizarla ( VERB_INFINITIVE VERB ) 
- utilizarlas ( VERB_INFINITIVE VERB ) 
- utilizarlo ( VERB_INFINITIVE VERB ) 
- utilizarlos ( VERB_INFINITIVE VERB ) 
- utilizaron ( VERB ) 
- utilizarse ( VERB_INFINITIVE VERB ) 
- utilizará ( VERB ) 
- utilizarán ( VERB ) 
- utilizaré ( VERB ) 
- utilizaría ( VERB ) 
- utilizarían ( VERB ) 
- utilizas ( VERB ) 
- utilizase ( VERB ) 
- utilizasen ( VERB ) 
- utilizo ( VERB ) 
- utilizándola ( VERB_PAST_PARTICIPLE VERB ) 
- utilizándolas ( NOUN NOUN_GERUND ) 
- utilizándolo ( NOUN NOUN_GERUND ) 
- utilizándolos ( VERB_PAST_PARTICIPLE VERB ) 
- utilizándose ( NOUN NOUN_GERUND ) 
- utilizáramos ( VERB ) 
- utilizásemos ( VERB ) 
- utilizó ( VERB ) 
- utillaje ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utillajes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utilícenos ( VERB ) 
- utilícese ( ) 
- utilísima ( ADJECTIVE ) 
- utilísimas ( ADJECTIVE ) 
- utilísimo ( ADJECTIVE ) 
- utopismo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utopía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utopías ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utrículo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- utópico ( ADJECTIVE ) 
- uva ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uvas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uveítis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- uy ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- uyuyuy ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ utilero ( ) 
+ utilice ( ) lemma=utilizar 
+ utilizar ( ) 
+ utilicemos ( ) lemma=utilizar 
+ utilicen ( ) lemma=utilizar 
+ utilicé ( ) lemma=utilizar 
+ utilicémoslas ( ) lemma=utilizar 
+ utilidad ( ) 
+ utilidades ( ) lemma=utilidad 
+ utilitaria ( ) lemma=utilitario 
+ utilitario ( ) 
+ utilitarios ( ) lemma=utilitario 
+ utiliza ( ) lemma=utilizar 
+ utilizaba ( ) lemma=utilizar 
+ utilizaban ( ) lemma=utilizar 
+ utilizabas ( ) lemma=utilizar 
+ utilizable ( ) 
+ utilizables ( ) lemma=utilizable 
+ utilizaciones ( ) lemma=utilización 
+ utilización ( ) 
+ utilizada ( ) lemma=utilizar 
+ utilizadas ( ) lemma=utilizar 
+ utilizado ( ) lemma=utilizar 
+ utilizador ( ) 
+ utilizadores ( ) lemma=utilizador 
+ utilizados ( ) lemma=utilizar 
+ utilizamos ( ) lemma=utilizar 
+ utilizan ( ) lemma=utilizar 
+ utilizando ( ) lemma=utilizar 
+ utilizara ( ) lemma=utilizar 
+ utilizaran ( ) lemma=utilizar 
+ utilizaremos ( ) lemma=utilizar 
+ utilizarla ( ) lemma=utilizar 
+ utilizarlas ( ) lemma=utilizar 
+ utilizarlo ( ) lemma=utilizar 
+ utilizarlos ( ) lemma=utilizar 
+ utilizaron ( ) lemma=utilizar 
+ utilizarse ( ) 
+ utilizará ( ) lemma=utilizar 
+ utilizarán ( ) lemma=utilizar 
+ utilizaré ( ) lemma=utilizar 
+ utilizaría ( ) lemma=utilizar 
+ utilizarían ( ) lemma=utilizar 
+ utilizas ( ) lemma=utilizar 
+ utilizase ( ) lemma=utilizar 
+ utilizasen ( ) lemma=utilizar 
+ utilizo ( ) lemma=utilizar 
+ utilizándola ( ) lemma=utilizar 
+ utilizándolas ( ) lemma=utilizar 
+ utilizándolo ( ) lemma=utilizar 
+ utilizándolos ( ) lemma=utilizar 
+ utilizándose ( ) 
+ utilizáramos ( ) lemma=utilizar 
+ utilizásemos ( ) lemma=utilizar 
+ utilizó ( ) lemma=utilizar 
+ utillaje ( ) 
+ utillajes ( ) lemma=utillaje 
+ utilícenos ( ) lemma=utilizar 
+ utilícese ( ) lemma=utilizarse 
+ utilísima ( ) lemma=útil 
+ utilísimas ( ) lemma=útil 
+ utilísimo ( ) lemma=útil 
+ utopismo ( ) 
+ utopía ( ) 
+ utopías ( ) lemma=utopía 
+ utrículo ( ) 
+ utópico ( ) 
+ uva ( ) 
+ uvas ( ) lemma=uva 
+ uveítis ( ) 
+ uy ( ) 
+ uyuyuy ( ) 
  u£ ( ) 
- uña ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- uñas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- uñillas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ uña ( ) 
+ uñas ( ) lemma=uña 
+ uñillas ( ) lemma=uña 

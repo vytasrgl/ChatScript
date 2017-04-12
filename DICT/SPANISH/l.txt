@@ -1,2333 +1,2404 @@
-﻿ LG29 ( ) 
- Libia ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- legado ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- LY01 ( ) 
- Loja ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU19 ( ) 
- LE44 ( ) 
- Lincoln ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU11 ( ) 
- Lily ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LE17 ( ) 
- LazY ( ) 
- LU17 ( ) 
- LTG ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LA24 ( ) 
- Lerio ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LI01 ( ) 
- LCT ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Latinoamérica ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LO01 ( ) 
- LTC ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Littlestone ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LA44 ( ) 
- LG23 ( ) 
- LI43 ( ) 
- LN61 ( ) 
- Landsteiner ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- logró ( VERB ) 
- Levame ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LS22 ( ) 
- LG30 ( ) 
- liado ( VERB_PAST_PARTICIPLE VERB ) 
- LU25 ( ) 
- Laparoscopia ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LE18 ( ) 
- Licha ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LR41 ( ) 
- LS21 ( ) 
- LS01 ( ) 
- LU02 ( ) 
- LH01 ( ) 
- Localnet ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LA31 ( ) 
- LU15 ( ) 
- LD21 ( ) 
- Lito ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Liverpool ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Langmuir ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lindsey ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LN41 ( ) 
- LG15 ( ) 
- LZ02 ( ) 
- LGRC ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Laubry ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- L2 ( ) 
- LA23 ( ) 
- Lula ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LF02 ( ) 
- LU24 ( ) 
- LC12 ( ) 
- LO02 ( ) 
- Luisa ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU26 ( ) 
- LH02 ( ) 
- LC15 ( ) 
- laurel ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- LE14 ( ) 
- LM02 ( ) 
- Linde ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LO62 ( ) 
- LT63 ( ) 
- LAPSA ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LW16 ( ) 
- LN11 ( ) 
- LY11 ( ) 
- lasitud ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- Langenbeck ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LAPX ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LL41 ( ) 
- LT64 ( ) 
- L2es ( ) 
- Landsret ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lagrange ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LW15 ( ) 
- Lorena ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LR12 ( ) 
- LH62 ( ) 
- Loren ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Larrañaga ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU13 ( ) 
- Lys-156 ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LL61 ( ) 
- LE29 ( ) 
- LH15 ( ) 
- Lituania ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LT61 ( ) 
- LK42 ( ) 
- LA11 ( ) 
- LE16 ( ) 
- LU16 ( ) 
- LF ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LR02 ( ) 
- LED ( ) 
- LN42 ( ) 
- LV02 ( ) 
- LR11 ( ) 
- LIC ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU23 ( ) 
- LI52 ( ) 
- LF01 ( ) 
- LO52 ( ) 
- LU44 ( ) 
- LA51 ( ) 
- LAPB ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LO19 ( ) 
- Limites ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU28 ( ) 
- LN02 ( ) 
- LN20 ( ) 
- Leonor ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LC30 ( ) 
- Larios ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lambini ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LE22 ( ) 
- Liux ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lisboa ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Laos ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LA32 ( ) 
- LN22 ( ) 
- LE12 ( ) 
- Leber ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- La ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lieberkühn ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LW01 ( ) 
- LO15 ( ) 
- LS16 ( ) 
- Lumpenproletariat ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Líbano ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LE02 ( ) 
- Lolita ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LZ11 ( ) 
- LL62 ( ) 
- Lima ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LC29 ( ) 
- LZ30 ( ) 
- LO18 ( ) 
- LL01 ( ) 
- LT01 ( ) 
- Luxemburgo ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lucía ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LOC ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- leerle ( VERB_INFINITIVE VERB ) 
- LI44 ( ) 
- Leni ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lucy ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LO12 ( ) 
- Lencha ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lancet ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LO17 ( ) 
- LL42 ( ) 
- LLLL ( ) 
- L1es ( ) 
- LD61 ( ) 
- LC02 ( ) 
- LO13 ( ) 
- Leopoldo ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lauren ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LA17 ( ) 
- Lica ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LJ02 ( ) 
- LT02 ( ) 
- Lx ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Langer ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LA19 ( ) 
- LG11 ( ) 
- LZ21 ( ) 
- Leopold ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LX01 ( ) 
- LI13 ( ) 
- Lugo ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Liquidadores ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lanza ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LI30 ( ) 
- LC21 ( ) 
- LS ( ) 
- Lola ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LI31 ( ) 
- Luquina ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU32 ( ) 
- León ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU27 ( ) 
- LC01 ( ) 
- LA01 ( ) 
- Long ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lyphomed ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LG42 ( ) 
- LRNE ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LG02 ( ) 
- Liras ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LU12 ( ) 
- LS61 ( ) 
- LH61 ( ) 
- Lam ( ) 
- Laplace ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LI ( ) 
- LE ( ) 
- LI14 ( ) 
- LS41 ( ) 
- Lesotho ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lara ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LI51 ( ) 
- LDE ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Luke's-Roosevelt ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LL21 ( ) 
- LO14 ( ) 
- Liddy ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LC11 ( ) 
- Ligandos ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- luminosidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- Laris ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Leiomiosarcoma ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Llobregat ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LD62 ( ) 
- LTL ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LE30 ( ) 
- LNa ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LI20 ( ) 
- LZ12 ( ) 
- LL22 ( ) 
- LD02 ( ) 
- Lérida ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LG16 ( ) 
- Ltd ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LE01 ( ) 
- Londres ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lisener ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LD22 ( ) 
- LO51 ( ) 
- LR22 ( ) 
- LN01 ( ) 
- LD01 ( ) 
- Leontieff ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+﻿ L ( ) 
  L1 ( ) 
- LO11 ( ) 
- LE31 ( ) 
- LL64 ( ) 
- lícitas ( ADJECTIVE ) 
- LI17 ( ) 
- Likert ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LE13 ( ) 
- LN12 ( ) 
- LQ02 ( ) 
- LK02 ( ) 
- LR01 ( ) 
- LE11 ( ) 
- LZ22 ( ) 
- LA12 ( ) 
- LA15 ( ) 
- LECTURE ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LY17 ( ) 
- Letrado-Asesor ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lepra ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- LB01 ( ) 
- L ( ) 
+ L1es ( ) 
+ L2 ( ) 
+ L2es ( ) 
+ LA01 ( ) 
  LA02 ( ) 
+ LA11 ( ) 
+ LA12 ( ) 
  LA13 ( ) 
  LA14 ( ) 
+ LA15 ( ) 
  LA16 ( ) 
+ LA17 ( ) 
  LA18 ( ) 
+ LA19 ( ) 
  LA20 ( ) 
+ LA23 ( ) 
+ LA24 ( ) 
  LA27 ( ) 
  LA28 ( ) 
+ LA31 ( ) 
+ LA32 ( ) 
  LA43 ( ) 
+ LA44 ( ) 
+ LA51 ( ) 
  LA52 ( ) 
- LAPD ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ LAPB ( ) 
+ LAPD ( ) 
+ LAPSA ( ) 
+ LAPX ( ) 
+ LB01 ( ) 
  LB02 ( ) 
+ LC01 ( ) 
+ LC02 ( ) 
+ LC11 ( ) 
+ LC12 ( ) 
+ LC15 ( ) 
  LC16 ( ) 
+ LC21 ( ) 
  LC22 ( ) 
+ LC29 ( ) 
+ LC30 ( ) 
  LC41 ( ) 
  LC42 ( ) 
+ LCT ( ) 
+ LD01 ( ) 
+ LD02 ( ) 
+ LD21 ( ) 
+ LD22 ( ) 
+ LD61 ( ) 
+ LD62 ( ) 
  LD63 ( ) 
+ LDE ( ) 
+ LE ( ) 
+ LE01 ( ) 
+ LE02 ( ) 
+ LE11 ( ) 
+ LE12 ( ) 
+ LE13 ( ) 
+ LE14 ( ) 
  LE15 ( ) 
+ LE16 ( ) 
+ LE17 ( ) 
+ LE18 ( ) 
  LE21 ( ) 
+ LE22 ( ) 
+ LE29 ( ) 
+ LE30 ( ) 
+ LE31 ( ) 
  LE32 ( ) 
  LE43 ( ) 
+ LE44 ( ) 
+ LECTURE ( ) 
+ LED ( ) 
+ LF ( ) 
+ LF01 ( ) 
+ LF02 ( ) 
  LG01 ( ) 
+ LG02 ( ) 
+ LG11 ( ) 
+ LG15 ( ) 
+ LG16 ( ) 
+ LG23 ( ) 
  LG24 ( ) 
+ LG29 ( ) 
+ LG30 ( ) 
+ LG42 ( ) 
+ LGRC ( ) 
+ LH01 ( ) 
+ LH02 ( ) 
+ LH15 ( ) 
  LH16 ( ) 
+ LH61 ( ) 
+ LH62 ( ) 
+ LI ( ) 
+ LI01 ( ) 
  LI02 ( ) 
  LI11 ( ) 
  LI12 ( ) 
+ LI13 ( ) 
+ LI14 ( ) 
  LI15 ( ) 
  LI16 ( ) 
+ LI17 ( ) 
  LI18 ( ) 
  LI19 ( ) 
+ LI20 ( ) 
+ LI30 ( ) 
+ LI31 ( ) 
  LI32 ( ) 
+ LI43 ( ) 
+ LI44 ( ) 
+ LI51 ( ) 
+ LI52 ( ) 
  LI61 ( ) 
+ LIC ( ) 
  LJ01 ( ) 
+ LJ02 ( ) 
  LJ15 ( ) 
  LJ16 ( ) 
  LK01 ( ) 
+ LK02 ( ) 
  LK41 ( ) 
+ LK42 ( ) 
  LK61 ( ) 
+ LL01 ( ) 
  LL02 ( ) 
  LL11 ( ) 
  LL12 ( ) 
+ LL21 ( ) 
+ LL22 ( ) 
+ LL41 ( ) 
+ LL42 ( ) 
+ LL61 ( ) 
+ LL62 ( ) 
  LL63 ( ) 
+ LL64 ( ) 
+ LLLL ( ) 
  LM01 ( ) 
+ LM02 ( ) 
+ LN01 ( ) 
+ LN02 ( ) 
+ LN11 ( ) 
+ LN12 ( ) 
  LN19 ( ) 
+ LN20 ( ) 
  LN21 ( ) 
+ LN22 ( ) 
+ LN41 ( ) 
+ LN42 ( ) 
+ LN61 ( ) 
  LN62 ( ) 
  LN63 ( ) 
+ LNa ( ) 
+ LO01 ( ) 
+ LO02 ( ) 
+ LO11 ( ) 
+ LO12 ( ) 
+ LO13 ( ) 
+ LO14 ( ) 
+ LO15 ( ) 
  LO16 ( ) 
+ LO17 ( ) 
+ LO18 ( ) 
+ LO19 ( ) 
  LO20 ( ) 
  LO25 ( ) 
  LO26 ( ) 
  LO31 ( ) 
  LO32 ( ) 
+ LO51 ( ) 
+ LO52 ( ) 
  LO61 ( ) 
+ LO62 ( ) 
+ LOC ( ) 
  LOOP ( ) 
  LP01 ( ) 
  LP02 ( ) 
  LQ01 ( ) 
+ LQ02 ( ) 
  LR ( ) 
+ LR01 ( ) 
+ LR02 ( ) 
+ LR11 ( ) 
+ LR12 ( ) 
  LR21 ( ) 
+ LR22 ( ) 
+ LR41 ( ) 
  LR42 ( ) 
+ LRNE ( ) 
+ LS ( ) 
+ LS01 ( ) 
  LS02 ( ) 
  LS11 ( ) 
  LS12 ( ) 
  LS15 ( ) 
+ LS16 ( ) 
+ LS21 ( ) 
+ LS22 ( ) 
+ LS41 ( ) 
  LS42 ( ) 
+ LS61 ( ) 
  LSTR ( ) 
- LT ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ LT ( ) 
+ LT01 ( ) 
+ LT02 ( ) 
  LT21 ( ) 
  LT22 ( ) 
  LT41 ( ) 
  LT42 ( ) 
+ LT61 ( ) 
  LT62 ( ) 
+ LT63 ( ) 
+ LT64 ( ) 
+ LTC ( ) 
+ LTG ( ) 
+ LTL ( ) 
  LU01 ( ) 
+ LU02 ( ) 
+ LU11 ( ) 
+ LU12 ( ) 
+ LU13 ( ) 
  LU14 ( ) 
+ LU15 ( ) 
+ LU16 ( ) 
+ LU17 ( ) 
  LU18 ( ) 
+ LU19 ( ) 
  LU20 ( ) 
+ LU23 ( ) 
+ LU24 ( ) 
+ LU25 ( ) 
+ LU26 ( ) 
+ LU27 ( ) 
+ LU28 ( ) 
  LU31 ( ) 
+ LU32 ( ) 
  LU43 ( ) 
- LUL ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ LU44 ( ) 
+ LUL ( ) 
  LV01 ( ) 
+ LV02 ( ) 
+ LW01 ( ) 
  LW02 ( ) 
+ LW15 ( ) 
+ LW16 ( ) 
+ LX01 ( ) 
  LX02 ( ) 
  LXY ( ) 
+ LY01 ( ) 
  LY02 ( ) 
+ LY11 ( ) 
  LY12 ( ) 
  LY15 ( ) 
  LY16 ( ) 
+ LY17 ( ) 
  LY18 ( ) 
  LZ01 ( ) 
+ LZ02 ( ) 
+ LZ11 ( ) 
+ LZ12 ( ) 
+ LZ21 ( ) 
+ LZ22 ( ) 
  LZ29 ( ) 
- Laca ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lagunaje ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lan ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lange ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Langerhans ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lao ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lardizola ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Larry ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Laura ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Laurent ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Leah ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Leishmania ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lejeune ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lemi ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lempira ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Leonardo ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Leoncio ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Letelier ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Leticia ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Letonia ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Levante ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Levys ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- Liberia ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Liechtenstein ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Linares ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lionel ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lipbury ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lister ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lloyd's ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Logic ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Logroño ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lopecito ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lopez-Casillas ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lorca ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lorenzo ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Louis ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lucas ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lucey ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lucho ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Luciano ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Luigi ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Luis ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Luisito ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lulito ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lumbostatos ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Luria ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Luria-Delbruck ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Luscher ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lustig-Curtis ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lynx ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
- Lyon ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ LZ30 ( ) 
+ La ( ) 
+ Laca ( ) 
+ Lagrange ( ) 
+ Lagunaje ( ) 
+ Lam ( ) 
+ Lambini ( ) 
+ Lan ( ) 
+ Lancet ( ) 
+ Landsret ( ) 
+ Landsteiner ( ) 
+ Lange ( ) 
+ Langenbeck ( ) 
+ Langer ( ) 
+ Langerhans ( ) 
+ Langmuir ( ) 
+ Lanza ( ) 
+ Lao ( ) 
+ Laos ( ) 
+ Laparoscopia ( ) 
+ Laplace ( ) 
+ Lara ( ) 
+ Lardizola ( ) 
+ Larios ( ) 
+ Laris ( ) 
+ Larrañaga ( ) 
+ Larry ( ) 
+ Latinoamérica ( ) 
+ Laubry ( ) 
+ Laura ( ) 
+ Lauren ( ) 
+ Laurent ( ) 
+ LazY ( ) 
+ Leah ( ) 
+ Leber ( ) 
+ Leiomiosarcoma ( ) 
+ Leishmania ( ) 
+ Lejeune ( ) 
+ Lemi ( ) 
+ Lempira ( ) 
+ Lencha ( ) 
+ Leni ( ) 
+ Leonardo ( ) 
+ Leoncio ( ) 
+ Leonor ( ) 
+ Leontieff ( ) 
+ Leopold ( ) 
+ Leopoldo ( ) 
+ Lepra ( ) 
+ Lerio ( ) 
+ Lesotho ( ) 
+ Letelier ( ) 
+ Leticia ( ) 
+ Letonia ( ) 
+ Letrado-Asesor ( ) 
+ Levame ( ) 
+ Levante ( ) 
+ Levys ( ) lemma=Levy 
+ Levy ( ) 
+ León ( ) 
+ Liberia ( ) 
+ Libia ( ) 
+ Lica ( ) 
+ Licha ( ) 
+ Liddy ( ) 
+ Lieberkühn ( ) 
+ Liechtenstein ( ) 
+ Ligandos ( ) 
+ Likert ( ) 
+ Lily ( ) 
+ Lima ( ) 
+ Limites ( ) 
+ Linares ( ) 
+ Lincoln ( ) 
+ Linde ( ) 
+ Lindsey ( ) 
+ Lionel ( ) 
+ Lipbury ( ) 
+ Liquidadores ( ) 
+ Liras ( ) 
+ Lisboa ( ) 
+ Lisener ( ) 
+ Lister ( ) 
+ Lito ( ) 
+ Littlestone ( ) 
+ Lituania ( ) 
+ Liux ( ) 
+ Liverpool ( ) 
+ Llobregat ( ) 
+ Lloyd's ( ) 
+ Localnet ( ) 
+ Logic ( ) 
+ Logroño ( ) 
+ Loja ( ) 
+ Lola ( ) lemma=Dolores 
+ Lolita ( ) lemma=Dolores 
+ Londres ( ) 
+ Long ( ) 
+ Lopecito ( ) 
+ Lopez-Casillas ( ) 
+ Lorca ( ) 
+ Loren ( ) 
+ Lorena ( ) 
+ Lorenzo ( ) 
+ Louis ( ) 
+ Ltd ( ) 
+ Lucas ( ) 
+ Lucey ( ) 
+ Lucho ( ) 
+ Luciano ( ) 
+ Lucy ( ) 
+ Lucía ( ) lemma=Lucia 
+ Lucia ( ) 
+ Lugo ( ) 
+ Luigi ( ) 
+ Luis ( ) 
+ Luisa ( ) 
+ Luisito ( ) lemma=Luis 
+ Luke's-Roosevelt ( ) 
+ Lula ( ) 
+ Lulito ( ) 
+ Lumbostatos ( ) 
+ Lumpenproletariat ( ) 
+ Luquina ( ) 
+ Luria ( ) 
+ Luria-Delbruck ( ) 
+ Luscher ( ) 
+ Lustig-Curtis ( ) 
+ Luxemburgo ( ) 
+ Lx ( ) 
+ Lynx ( ) 
+ Lyon ( ) 
+ Lyphomed ( ) 
+ Lys-156 ( ) 
  Légendes ( ) 
- López ( NOUN NOUN_PROPER_SINGULAR NOUN_PROPER_PLURAL ) 
+ Lérida ( ) 
+ Líbano ( ) 
+ López ( ) 
  l ( ) 
- l'hospitalet ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- la ( PRONOUN_SUBJECT PRONOUN_OBJECT NOUN DETERMINER NOUN_SINGULAR NOUN_PLURAL ) 
- laberinto ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laberintos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- labia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- labiales ( ADJECTIVE ) 
- labilidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- labio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- labios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- labor ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- labora ( VERB ) 
- laboraba ( VERB ) 
- laboraban ( VERB ) 
- laborado ( VERB_PAST_PARTICIPLE VERB ) 
- laboral ( ADJECTIVE ) 
- laborales ( ADJECTIVE ) 
- laboralmente ( ADVERB ) 
- laboran ( VERB ) 
- laborando ( NOUN NOUN_GERUND ) 
- laborar ( VERB ) 
- laboraron ( VERB ) 
- laboratorio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laboratorios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laborear ( VERB ) 
- laboreo ( VERB ) 
- labores ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- laboriosa ( ADJECTIVE ) 
- laboriosamente ( ADVERB ) 
- laboriosas ( ADJECTIVE ) 
- laboriosidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laborioso ( ADJECTIVE ) 
- laboriosos ( ADJECTIVE ) 
- laborista ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- laboristas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- laboró ( VERB ) 
- labra ( VERB ) 
- labrada ( VERB_PAST_PARTICIPLE VERB ) 
- labrado ( VERB_PAST_PARTICIPLE VERB ) 
- labrador ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- labradores ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- labrando ( NOUN NOUN_GERUND ) 
- labrar ( VERB ) 
- labrara ( VERB ) 
- labraseis ( VERB ) 
- labriegos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- labró ( VERB ) 
- labura ( VERB ) 
- laburando ( NOUN NOUN_GERUND ) 
- laburar ( VERB ) 
- laburo ( VERB ) 
- laburos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lac ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laca ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lacayo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lacayos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lacias ( ADJECTIVE ) 
- lacito ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lacra ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lacras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lacrimógeno ( ADJECTIVE ) 
- lacrimógenos ( ADJECTIVE ) 
- lactacidemia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactancia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactante ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactantes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactasa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactato ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactoperoxidasa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactosa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lactotropa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lacunar ( ADJECTIVE ) 
- lacónica ( ADJECTIVE ) 
- lacónicamente ( ADVERB ) 
- lacónicas ( ADJECTIVE ) 
- lacónico ( ADJECTIVE ) 
- ladeada ( VERB_PAST_PARTICIPLE VERB ) 
- ladeadas ( VERB_PAST_PARTICIPLE VERB ) 
- ladera ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laderas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ladino ( ADJECTIVE ) 
- ladito ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lado ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lados ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ladra ( VERB ) 
- ladraba ( VERB ) 
- ladrado ( VERB_PAST_PARTICIPLE VERB ) 
- ladran ( VERB ) 
- ladrando ( NOUN NOUN_GERUND ) 
- ladrar ( VERB ) 
- ladrillitos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ladrillo ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- ladrillos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ladrones ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- ladrón ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lady ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagartijas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagarto ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagartos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lago ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagrangiano ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagrimación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagrimales ( ADJECTIVE ) 
- lagrimas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagrimeo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagrimita ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laguna ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagunaje ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagunas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lagunera ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lagunero ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- laguneros ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lagunita ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laica ( ADJECTIVE ) 
- laico ( ADJECTIVE ) 
- laicos ( ADJECTIVE ) 
- lama ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lamas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lambda ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lamelibranquio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lamenta ( VERB ) 
- lamentaba ( VERB ) 
- lamentaban ( VERB ) 
- lamentabilísima ( ADJECTIVE ) 
- lamentabilísimo ( ADJECTIVE ) 
- lamentable ( ADJECTIVE ) 
- lamentablemente ( ADVERB ) 
- lamentables ( ADJECTIVE ) 
- lamentaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lamentación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lamentada ( VERB_PAST_PARTICIPLE VERB ) 
- lamentadas ( VERB_PAST_PARTICIPLE VERB ) 
- lamentado ( VERB_PAST_PARTICIPLE VERB ) 
- lamentamos ( VERB ) 
- lamentan ( VERB ) 
- lamentando ( NOUN NOUN_GERUND ) 
- lamentar ( VERB ) 
- lamentaremos ( VERB ) 
- lamentaron ( VERB ) 
- lamentarse ( VERB_INFINITIVE VERB ) 
- lamentará ( VERB ) 
- lamentarán ( VERB ) 
- lamentaré ( VERB ) 
- lamentaría ( VERB ) 
- lamentaríamos ( VERB ) 
- lamentarían ( VERB ) 
- lamente ( VERB ) 
- lamentemos ( VERB ) 
- lamenten ( VERB ) 
- lamento ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lamentos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lamentáramos ( VERB ) 
- lamenté ( VERB ) 
- lamentó ( VERB ) 
- lamina ( VERB ) 
- laminado ( VERB_PAST_PARTICIPLE VERB ) 
- laminados ( VERB_PAST_PARTICIPLE VERB ) 
- laminar ( VERB ) 
- laminares ( ADJECTIVE ) 
- laminó ( VERB ) 
- lamparillas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lamparita ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lamáis ( VERB ) 
- lan ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lana ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lanas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lance ( VERB ) 
- lancemos ( VERB ) 
- lancen ( VERB ) 
- lances ( VERB ) 
- lancha ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lanchas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lancé ( VERB ) 
- langosta ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- langostas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- langostino ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- langostinos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lanza ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lanzaba ( VERB ) 
- lanzaban ( VERB ) 
- lanzacohetes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lanzada ( VERB_PAST_PARTICIPLE VERB ) 
- lanzadas ( VERB_PAST_PARTICIPLE VERB ) 
- lanzado ( VERB_PAST_PARTICIPLE VERB ) 
- lanzador ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lanzadora ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lanzadoras ( ADJECTIVE ) 
- lanzadores ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lanzados ( VERB_PAST_PARTICIPLE VERB ) 
- lanzamiento ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lanzamientos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lanzamos ( VERB ) 
- lanzan ( VERB ) 
- lanzando ( NOUN NOUN_GERUND ) 
- lanzar ( VERB ) 
- lanzara ( VERB ) 
- lanzaran ( VERB ) 
- lanzaremos ( VERB ) 
- lanzarlas ( VERB_INFINITIVE VERB ) 
- lanzarle ( VERB_INFINITIVE VERB ) 
- lanzarlo ( VERB_INFINITIVE VERB ) 
- lanzarme ( VERB_INFINITIVE VERB ) 
- lanzarnos ( VERB_INFINITIVE VERB ) 
- lanzaron ( VERB ) 
- lanzarse ( VERB_INFINITIVE VERB ) 
- lanzará ( VERB ) 
- lanzarán ( VERB ) 
- lanzaría ( VERB ) 
- lanzarían ( VERB ) 
- lanzas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lanzaseis ( VERB ) 
- lanzo ( VERB ) 
- lanzándose ( VERB_PAST_PARTICIPLE VERB ) 
- lanzáramos ( VERB ) 
- lanzó ( VERB ) 
- laparoscopia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laparoscópico ( ADJECTIVE ) 
- laparotomía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lapicera ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lapona ( ADJECTIVE ) 
- lapones ( ADJECTIVE ) 
- lapso ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lapsos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lapsus ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laptop ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- larga ( NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- largaba ( VERB ) 
- largada ( VERB_PAST_PARTICIPLE VERB ) 
- largamente ( ADVERB ) 
- largamos ( VERB ) 
- largan ( VERB ) 
- largar ( VERB ) 
- largarnos ( VERB_INFINITIVE VERB ) 
- largarse ( VERB_INFINITIVE VERB ) 
- largará ( VERB ) 
- largas ( ADJECTIVE ) 
- largo ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- largometraje ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- largometrajes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- largos ( ADJECTIVE ) 
- largotas ( ADJECTIVE ) 
- larguita ( ADJECTIVE ) 
- larguitas ( ADJECTIVE ) 
- larguito ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- larguísima ( ADJECTIVE ) 
- larguísimas ( ADJECTIVE ) 
- larguísimo ( ADJECTIVE ) 
- larguísimos ( ADJECTIVE ) 
- largábamos ( VERB ) 
- largó ( VERB ) 
- largón ( ADJECTIVE ) 
- laringe ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laringitis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- larva ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- larvaria ( ADJECTIVE ) 
- larvas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- larváceo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laríngea ( ADJECTIVE ) 
- laríngeo ( ADJECTIVE ) 
- las ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
- lastima ( VERB ) 
- lastimada ( VERB_PAST_PARTICIPLE VERB ) 
- lastimadas ( ADJECTIVE ) 
- lastimado ( VERB_PAST_PARTICIPLE VERB ) 
- lastimando ( NOUN NOUN_GERUND ) 
- lastimar ( VERB ) 
- lastimarse ( VERB_INFINITIVE VERB ) 
- lastimosa ( ADJECTIVE ) 
- lastimosamente ( ADVERB ) 
- lastimosas ( ADJECTIVE ) 
- lastimoso ( ADJECTIVE ) 
- lastimó ( VERB ) 
- lastra ( VERB ) 
- lastrada ( VERB_PAST_PARTICIPLE VERB ) 
- lastrado ( VERB_PAST_PARTICIPLE VERB ) 
- lastran ( VERB ) 
- lastrando ( NOUN NOUN_GERUND ) 
- lastraron ( VERB ) 
- lastras ( VERB ) 
- lastre ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lastres ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lata ( NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- latas ( NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- late ( VERB ) 
- latear ( VERB ) 
- latente ( ADJECTIVE ) 
- latentes ( ADJECTIVE ) 
- lateral ( ADJECTIVE ) 
- laterales ( ADJECTIVE ) 
- lateralmente ( ADVERB ) 
- latido ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- latidos ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- latiendo ( NOUN NOUN_GERUND ) 
- latiguillo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- latina ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- latinas ( ADJECTIVE ) 
- latino ( ADJECTIVE ) 
- latinoamericana ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- latinoamericanas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- latinoamericano ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- latinoamericanos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- latinos ( ADJECTIVE ) 
- latir ( VERB ) 
- latita ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- latitas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- latitud ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- latitudes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- latitudinales ( ADJECTIVE ) 
- lato ( VERB ADJECTIVE ) 
- latos ( ADJECTIVE ) 
- latía ( VERB ) 
- latín ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laudo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laudos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- laureada ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- laureado ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- laureados ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- laureles ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lava ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lavaba ( VERB ) 
- lavaban ( VERB ) 
- lavabas ( VERB ) 
- lavabo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lavabos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lavada ( VERB_PAST_PARTICIPLE VERB ) 
- lavadas ( VERB_PAST_PARTICIPLE VERB ) 
- lavadero ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lavado ( VERB_PAST_PARTICIPLE VERB ) 
- lavadora ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lavadoras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lavados ( VERB_PAST_PARTICIPLE VERB ) 
- lavan ( VERB ) 
- lavandería ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lavanderías ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lavando ( NOUN NOUN_GERUND ) 
- lavaplatos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lavar ( VERB ) 
- lavaran ( VERB ) 
- lavarla ( VERB_INFINITIVE VERB ) 
- lavarnos ( VERB_INFINITIVE VERB ) 
- lavaron ( VERB ) 
- lavarse ( VERB_INFINITIVE VERB ) 
- lavará ( VERB ) 
- lavas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lave ( VERB ) 
- laven ( VERB ) 
- laves ( VERB ) 
- lavo ( VERB ) 
- lavándose ( NOUN NOUN_GERUND ) 
- lavé ( VERB ) 
+ l'hospitalet ( ) 
+ la ( ) lemma=el 
+ laberinto ( ) 
+ laberintos ( ) lemma=laberinto 
+ labia ( ) 
+ labiales ( ) lemma=labial 
+ labial ( ) 
+ labilidad ( ) 
+ labio ( ) 
+ labios ( ) lemma=labio 
+ labor ( ) 
+ labora ( ) lemma=laborar 
+ laborar ( ) 
+ laboraba ( ) lemma=laborar 
+ laboraban ( ) lemma=laborar 
+ laborado ( ) lemma=laborar 
+ laboral ( ) 
+ laborales ( ) lemma=laboral 
+ laboralmente ( ) lemma=laboral 
+ laboran ( ) lemma=laborar 
+ laborando ( ) lemma=laborar 
+ laboraron ( ) lemma=laborar 
+ laboratorio ( ) 
+ laboratorios ( ) lemma=laboratorio 
+ laborear ( ) 
+ laboreo ( ) lemma=laborear 
+ labores ( ) lemma=labor 
+ laboriosa ( ) lemma=laborioso 
+ laborioso ( ) 
+ laboriosamente ( ) lemma=laborioso 
+ laboriosas ( ) lemma=laborioso 
+ laboriosidad ( ) 
+ laboriosos ( ) lemma=laborioso 
+ laborista ( ) 
+ laboristas ( ) lemma=laborista 
+ laboró ( ) lemma=laborar 
+ labra ( ) lemma=labrar 
+ labrar ( ) 
+ labrada ( ) lemma=labrar 
+ labrado ( ) lemma=labrar 
+ labrador ( ) 
+ labradores ( ) lemma=labrador 
+ labrando ( ) lemma=labrar 
+ labrara ( ) lemma=labrar 
+ labraseis ( ) lemma=labrar 
+ labriegos ( ) lemma=labriego 
+ labriego ( ) 
+ labró ( ) lemma=labrar 
+ labura ( ) lemma=laburar 
+ laburar ( ) 
+ laburando ( ) lemma=laburar 
+ laburo ( ) lemma=laburar 
+ laburos ( ) lemma=laburo 
+ lac ( ) 
+ laca ( ) 
+ lacayo ( ) 
+ lacayos ( ) lemma=lacayo 
+ lacias ( ) lemma=lacio 
+ lacio ( ) 
+ lacito ( ) lemma=lazo 
+ lazo ( ) 
+ lacra ( ) 
+ lacras ( ) lemma=lacra 
+ lacrimógeno ( ) 
+ lacrimógenos ( ) lemma=lacrimógeno 
+ lactacidemia ( ) 
+ lactación ( ) 
+ lactancia ( ) 
+ lactante ( ) 
+ lactantes ( ) lemma=lactante 
+ lactasa ( ) 
+ lactato ( ) 
+ lactoperoxidasa ( ) 
+ lactosa ( ) 
+ lactotropa ( ) 
+ lacunar ( ) 
+ lacónica ( ) lemma=lacónico 
+ lacónico ( ) 
+ lacónicamente ( ) lemma=lacónico 
+ lacónicas ( ) lemma=lacónico 
+ ladeada ( ) lemma=ladear 
+ ladear ( ) 
+ ladeadas ( ) lemma=ladear 
+ ladera ( ) 
+ laderas ( ) lemma=ladera 
+ ladino ( ) 
+ ladito ( ) lemma=lado 
+ lado ( ) 
+ lados ( ) lemma=lado 
+ ladra ( ) lemma=ladrar 
+ ladrar ( ) 
+ ladraba ( ) lemma=ladrar 
+ ladrado ( ) lemma=ladrar 
+ ladran ( ) lemma=ladrar 
+ ladrando ( ) lemma=ladrar 
+ ladrillitos ( ) lemma=ladrillo 
+ ladrillo ( ) 
+ ladrillos ( ) lemma=ladrillo 
+ ladrones ( ) lemma=ladrón 
+ ladrón ( ) 
+ lady ( ) 
+ lagartijas ( ) lemma=lagartija 
+ lagartija ( ) 
+ lagarto ( ) 
+ lagartos ( ) lemma=lagarto 
+ lago ( ) 
+ lagos ( ) lemma=lago 
+ lagrangiano ( ) 
+ lagrimación ( ) 
+ lagrimales ( ) lemma=lagrimal 
+ lagrimal ( ) 
+ lagrimas ( ) lemma=lágrima 
+ lágrima ( ) 
+ lagrimeo ( ) 
+ lagrimita ( ) lemma=lágrima 
+ laguna ( ) 
+ lagunaje ( ) 
+ lagunas ( ) lemma=laguna 
+ lagunera ( ) lemma=lagunero 
+ lagunero ( ) 
+ laguneros ( ) lemma=lagunero 
+ lagunita ( ) lemma=laguna 
+ laica ( ) lemma=laico 
+ laico ( ) 
+ laicos ( ) lemma=laico 
+ lama ( ) 
+ lamas ( ) lemma=lama 
+ lambda ( ) 
+ lamelibranquio ( ) 
+ lamenta ( ) lemma=lamentar 
+ lamentar ( ) 
+ lamentaba ( ) lemma=lamentar 
+ lamentaban ( ) lemma=lamentar 
+ lamentabilísima ( ) lemma=lamentable 
+ lamentable ( ) 
+ lamentabilísimo ( ) lemma=lamentable 
+ lamentablemente ( ) lemma=lamentable 
+ lamentables ( ) lemma=lamentable 
+ lamentaciones ( ) lemma=lamentación 
+ lamentación ( ) 
+ lamentada ( ) lemma=lamentar 
+ lamentadas ( ) lemma=lamentar 
+ lamentado ( ) lemma=lamentar 
+ lamentamos ( ) lemma=lamentar 
+ lamentan ( ) lemma=lamentar 
+ lamentando ( ) lemma=lamentar 
+ lamentaremos ( ) lemma=lamentar 
+ lamentaron ( ) lemma=lamentar 
+ lamentarse ( ) 
+ lamentará ( ) lemma=lamentar 
+ lamentarán ( ) lemma=lamentar 
+ lamentaré ( ) lemma=lamentar 
+ lamentaría ( ) lemma=lamentar 
+ lamentaríamos ( ) lemma=lamentar 
+ lamentarían ( ) lemma=lamentar 
+ lamente ( ) lemma=lamentar 
+ lamentemos ( ) lemma=lamentar 
+ lamenten ( ) lemma=lamentar 
+ lamento ( ) 
+ lamentos ( ) lemma=lamento 
+ lamentáramos ( ) lemma=lamentar 
+ lamenté ( ) lemma=lamentar 
+ lamentó ( ) lemma=lamentar 
+ lamina ( ) lemma=laminar 
+ laminar ( ) 
+ laminado ( ) lemma=laminar 
+ laminados ( ) lemma=laminar 
+ laminares ( ) lemma=laminar 
+ laminó ( ) lemma=laminar 
+ lamparillas ( ) lemma=lámpara 
+ lámpara ( ) 
+ lamparita ( ) 
+ lamáis ( ) lemma=lamer 
+ lamer ( ) 
+ lan ( ) 
+ lana ( ) 
+ lanas ( ) lemma=lana 
+ lance ( ) lemma=lanzar 
+ lanzar ( ) 
+ lancemos ( ) lemma=lanzar 
+ lancen ( ) lemma=lanzar 
+ lances ( ) lemma=lanzar 
+ lancha ( ) 
+ lanchas ( ) lemma=lancha 
+ lancé ( ) lemma=lanzar 
+ langosta ( ) 
+ langostas ( ) lemma=langosta 
+ langostino ( ) 
+ langostinos ( ) lemma=langostino 
+ lanza ( ) 
+ lanzaba ( ) lemma=lanzar 
+ lanzaban ( ) lemma=lanzar 
+ lanzacohetes ( ) 
+ lanzada ( ) lemma=lanzar 
+ lanzadas ( ) lemma=lanzar 
+ lanzado ( ) lemma=lanzar 
+ lanzador ( ) 
+ lanzadora ( ) lemma=lanzador 
+ lanzadoras ( ) lemma=lanzador 
+ lanzadores ( ) lemma=lanzador 
+ lanzados ( ) lemma=lanzar 
+ lanzamiento ( ) 
+ lanzamientos ( ) lemma=lanzamiento 
+ lanzamos ( ) lemma=lanzar 
+ lanzan ( ) lemma=lanzar 
+ lanzando ( ) lemma=lanzar 
+ lanzara ( ) lemma=lanzar 
+ lanzaran ( ) lemma=lanzar 
+ lanzaremos ( ) lemma=lanzar 
+ lanzarlas ( ) lemma=lanzar 
+ lanzarle ( ) lemma=lanzar 
+ lanzarlo ( ) lemma=lanzar 
+ lanzarme ( ) lemma=lanzar 
+ lanzarnos ( ) lemma=lanzar 
+ lanzaron ( ) lemma=lanzar 
+ lanzarse ( ) 
+ lanzará ( ) lemma=lanzar 
+ lanzarán ( ) lemma=lanzar 
+ lanzaría ( ) lemma=lanzar 
+ lanzarían ( ) lemma=lanzar 
+ lanzas ( ) lemma=lanza 
+ lanzaseis ( ) lemma=lanzar 
+ lanzo ( ) lemma=lanzar 
+ lanzándose ( ) lemma=lanzar 
+ lanzáramos ( ) lemma=lanzar 
+ lanzó ( ) lemma=lanzar 
+ laparoscopia ( ) 
+ laparoscópico ( ) 
+ laparotomía ( ) 
+ lapicera ( ) lemma=lapicero 
+ lapicero ( ) 
+ lapona ( ) lemma=lapón 
+ lapón ( ) 
+ lapones ( ) lemma=lapón 
+ lapso ( ) 
+ lapsos ( ) lemma=lapso 
+ lapsus ( ) 
+ laptop ( ) 
+ larga ( ) lemma=largo 
+ largo ( ) 
+ largaba ( ) lemma=largar 
+ largar ( ) 
+ largada ( ) lemma=largar 
+ largamente ( ) lemma=largo 
+ largamos ( ) lemma=largar 
+ largan ( ) lemma=largar 
+ largarnos ( ) lemma=largar 
+ largarse ( ) 
+ largará ( ) lemma=largar 
+ largas ( ) lemma=largo 
+ largometraje ( ) 
+ largometrajes ( ) lemma=largometraje 
+ largos ( ) lemma=largo 
+ largotas ( ) lemma=largo 
+ larguita ( ) lemma=largo 
+ larguitas ( ) lemma=largo 
+ larguito ( ) lemma=largo 
+ larguísima ( ) lemma=largo 
+ larguísimas ( ) lemma=largo 
+ larguísimo ( ) lemma=largo 
+ larguísimos ( ) lemma=largo 
+ largábamos ( ) lemma=largar 
+ largó ( ) lemma=largar 
+ largón ( ) lemma=largo 
+ laringe ( ) 
+ laringitis ( ) 
+ larva ( ) 
+ larvaria ( ) lemma=larvario 
+ larvario ( ) 
+ larvas ( ) lemma=larva 
+ larváceo ( ) 
+ laríngea ( ) lemma=laríngeo 
+ laríngeo ( ) 
+ las ( ) lemma=el 
+ lasitud ( ) 
+ lastima ( ) lemma=lastimar 
+ lastimar ( ) 
+ lastimada ( ) lemma=lastimar 
+ lastimadas ( ) lemma=lastimado 
+ lastimado ( ) lemma=lastimar 
+ lastimando ( ) lemma=lastimar 
+ lastimarse ( ) 
+ lastimosa ( ) lemma=lastimoso 
+ lastimoso ( ) 
+ lastimosamente ( ) lemma=lastimoso 
+ lastimosas ( ) lemma=lastimoso 
+ lastimó ( ) lemma=lastimar 
+ lastra ( ) lemma=lastrar 
+ lastrar ( ) 
+ lastrada ( ) lemma=lastrar 
+ lastrado ( ) lemma=lastrar 
+ lastran ( ) lemma=lastrar 
+ lastrando ( ) lemma=lastrar 
+ lastraron ( ) lemma=lastrar 
+ lastras ( ) lemma=lastrar 
+ lastre ( ) 
+ lastres ( ) lemma=lastre 
+ lata ( ) lemma=lato 
+ lato ( ) 
+ latas ( ) lemma=lato 
+ late ( ) lemma=latir 
+ latir ( ) 
+ latear ( ) 
+ latente ( ) 
+ latentes ( ) lemma=latente 
+ lateral ( ) 
+ laterales ( ) lemma=lateral 
+ lateralmente ( ) lemma=lateral 
+ latido ( ) 
+ latidos ( ) lemma=latido 
+ latiendo ( ) lemma=latir 
+ latiguillo ( ) lemma=látigo 
+ látigo ( ) 
+ latina ( ) lemma=latino 
+ latino ( ) 
+ latinas ( ) lemma=latino 
+ latinoamericana ( ) lemma=latinoamericano 
+ latinoamericano ( ) 
+ latinoamericanas ( ) lemma=latinoamericano 
+ latinoamericanos ( ) lemma=latinoamericano 
+ latinos ( ) lemma=latino 
+ latita ( ) lemma=lata 
+ latitas ( ) lemma=lata 
+ latitud ( ) 
+ latitudes ( ) lemma=latitud 
+ latitudinales ( ) lemma=latitudinal 
+ latitudinal ( ) 
+ latos ( ) lemma=lato 
+ latía ( ) lemma=latir 
+ latín ( ) 
+ laudo ( ) 
+ laudos ( ) lemma=laudo 
+ laureada ( ) lemma=laureado 
+ laureado ( ) 
+ laureados ( ) lemma=laureado 
+ laurel ( ) 
+ laureles ( ) lemma=laurel 
+ lava ( ) 
+ lavaba ( ) lemma=lavar 
+ lavar ( ) 
+ lavaban ( ) lemma=lavar 
+ lavabas ( ) lemma=lavar 
+ lavabo ( ) 
+ lavabos ( ) lemma=lavabo 
+ lavada ( ) lemma=lavar 
+ lavadas ( ) lemma=lavar 
+ lavadero ( ) 
+ lavado ( ) lemma=lavar 
+ lavadora ( ) 
+ lavadoras ( ) lemma=lavadora 
+ lavados ( ) lemma=lavar 
+ lavan ( ) lemma=lavar 
+ lavandería ( ) 
+ lavanderías ( ) lemma=lavandería 
+ lavando ( ) lemma=lavar 
+ lavaplatos ( ) 
+ lavaran ( ) lemma=lavar 
+ lavarla ( ) lemma=lavar 
+ lavarnos ( ) lemma=lavar 
+ lavaron ( ) lemma=lavar 
+ lavarse ( ) 
+ lavará ( ) lemma=lavar 
+ lavas ( ) lemma=lava 
+ lave ( ) lemma=lavar 
+ laven ( ) lemma=lavar 
+ laves ( ) lemma=lavar 
+ lavo ( ) lemma=lavar 
+ lavándose ( ) lemma=lavarse 
+ lavé ( ) lemma=lavar 
  law ( ) 
- laxa ( VERB ) 
- laxas ( VERB ) 
- laxo ( VERB ) 
- lazara ( VERB ) 
- lazo ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lazos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ laxa ( ) lemma=laxar 
+ laxar ( ) 
+ laxas ( ) lemma=laxar 
+ laxo ( ) lemma=laxar 
+ lazara ( ) lemma=lazar 
+ lazar ( ) 
+ lazos ( ) lemma=lazo 
  lazy ( ) 
- lazó ( VERB ) 
- laúd ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- le ( PRONOUN_SUBJECT PRONOUN_OBJECT ) 
- lea ( VERB ) 
- leal ( ADJECTIVE ) 
- leales ( ADJECTIVE ) 
- lealmente ( ADVERB ) 
- lealtad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lealtades ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leamos ( VERB ) 
- lean ( VERB ) 
- leas ( VERB ) 
- lecciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lección ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lechada ( VERB_PAST_PARTICIPLE VERB ) 
- lechadas ( VERB_PAST_PARTICIPLE VERB ) 
- lechazo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leche ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lechero ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lecheros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leches ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lecho ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lechos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lechosa ( ADJECTIVE ) 
- lechuga ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lechugas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ lazó ( ) lemma=lazar 
+ laúd ( ) 
+ le ( ) 
+ lea ( ) lemma=leer 
+ leer ( ) 
+ leal ( ) 
+ leales ( ) lemma=leal 
+ lealmente ( ) lemma=leal 
+ lealtad ( ) 
+ lealtades ( ) lemma=lealtad 
+ leamos ( ) lemma=leer 
+ lean ( ) lemma=leer 
+ leas ( ) lemma=leer 
+ lecciones ( ) lemma=lección 
+ lección ( ) 
+ lechada ( ) lemma=lechar 
+ lechar ( ) 
+ lechadas ( ) lemma=lechar 
+ lechazo ( ) 
+ leche ( ) 
+ lechero ( ) 
+ lecheros ( ) lemma=lechero 
+ leches ( ) lemma=leche 
+ lecho ( ) 
+ lechos ( ) lemma=lecho 
+ lechosa ( ) lemma=lechoso 
+ lechoso ( ) 
+ lechuga ( ) 
+ lechugas ( ) lemma=lechuga 
  lecteur ( ) 
- lectinas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lector ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lector-grabador ( ADJECTIVE ) 
- lectora ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lectoras ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lectores ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lectura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lecturaescritura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lecturas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ lectinas ( ) lemma=lectina 
+ lectina ( ) 
+ lector ( ) 
+ lector-grabador ( ) 
+ lectora ( ) lemma=lector 
+ lectoras ( ) lemma=lector 
+ lectores ( ) lemma=lector 
+ lectura ( ) 
+ lecturaescritura ( ) 
+ lecturas ( ) lemma=lectura 
  lecture ( ) 
- ledo ( ADJECTIVE ) 
- lee ( VERB ) 
- leemos ( VERB ) 
- leen ( VERB ) 
- leer ( VERB ) 
- leeremos ( VERB ) 
- leerla ( VERB_INFINITIVE VERB ) 
- leerles ( VERB_INFINITIVE VERB ) 
- leerlo ( VERB_INFINITIVE VERB ) 
- leerlos ( VERB_INFINITIVE VERB ) 
- leernos ( VERB_INFINITIVE VERB ) 
- leerse ( VERB_INFINITIVE VERB ) 
- leerte ( VERB_INFINITIVE VERB ) 
- leerá ( VERB ) 
- leerán ( VERB ) 
- leeré ( VERB ) 
- leería ( VERB ) 
- leeríamos ( VERB ) 
- lees ( VERB ) 
- left ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legada ( VERB_PAST_PARTICIPLE VERB ) 
- legados ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- legajo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legajos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legal ( ADJECTIVE ) 
- legales ( ADJECTIVE ) 
- legalice ( VERB ) 
- legalicemos ( VERB ) 
- legalicen ( VERB ) 
- legalidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legaliza ( VERB ) 
- legalizaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legalización ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legalizada ( VERB_PAST_PARTICIPLE VERB ) 
- legalizadas ( VERB_PAST_PARTICIPLE VERB ) 
- legalizado ( VERB_PAST_PARTICIPLE VERB ) 
- legalizados ( VERB_PAST_PARTICIPLE VERB ) 
- legalizamos ( VERB ) 
- legalizan ( VERB ) 
- legalizando ( NOUN NOUN_GERUND ) 
- legalizar ( VERB ) 
- legalizara ( VERB ) 
- legalizaran ( VERB ) 
- legalizaremos ( VERB ) 
- legalizarlos ( VERB ) 
- legalizó ( VERB ) 
- legalmente ( ADVERB ) 
- legar ( VERB ) 
- legaron ( VERB ) 
- legará ( VERB ) 
- legatario ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legatarios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legendaria ( ADJECTIVE ) 
- legendarias ( ADJECTIVE ) 
- legendario ( ADJECTIVE ) 
- legendarios ( ADJECTIVE ) 
- legibilidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legible ( ADJECTIVE ) 
- legibles ( ADJECTIVE ) 
- legionario ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- legionarios ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- legiones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legisla ( VERB ) 
- legislaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legislación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legislado ( VERB_PAST_PARTICIPLE VERB ) 
- legislador ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- legisladora ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- legisladores ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- legislados ( VERB_PAST_PARTICIPLE VERB ) 
- legislamos ( VERB ) 
- legislan ( VERB ) 
- legislando ( NOUN NOUN_GERUND ) 
- legislar ( VERB ) 
- legislara ( VERB ) 
- legislará ( VERB ) 
- legislativa ( ADJECTIVE ) 
- legislativamente ( ADVERB ) 
- legislativas ( ADJECTIVE ) 
- legislativo ( ADJECTIVE ) 
- legislativos ( ADJECTIVE ) 
- legislatura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legislaturas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legisle ( VERB ) 
- legislemos ( VERB ) 
- legislen ( VERB ) 
- legisló ( VERB ) 
- legitima ( VERB ) 
- legitimación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legitimada ( VERB_PAST_PARTICIPLE VERB ) 
- legitimadas ( VERB_PAST_PARTICIPLE VERB ) 
- legitimado ( VERB_PAST_PARTICIPLE VERB ) 
- legitimados ( VERB_PAST_PARTICIPLE VERB ) 
- legitimando ( NOUN NOUN_GERUND ) 
- legitimar ( VERB ) 
- legitimaremos ( VERB ) 
- legitimarios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legitimaron ( VERB ) 
- legitimaría ( VERB ) 
- legitime ( VERB ) 
- legitimen ( VERB ) 
- legitimidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legitimidades ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legitimo ( VERB ) 
- legión ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lego ( VERB ) 
- legua ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leguas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legumbre ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- legumbres ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leguminosas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leguminoso ( ADJECTIVE ) 
- legítima ( ADJECTIVE ) 
- legítimamente ( ADVERB ) 
- legítimas ( ADJECTIVE ) 
- legítimo ( ADJECTIVE ) 
- legítimos ( ADJECTIVE ) 
- lei ( VERB ) 
- leiomioma ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leishmaniasis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lejana ( ADJECTIVE ) 
- lejanamente ( ADVERB ) 
- lejanas ( ADJECTIVE ) 
- lejano ( ADJECTIVE ) 
- lejanos ( ADJECTIVE ) 
- lejanía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lejanías ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lejos ( ADVERB ) 
- lejía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lejísimo ( ADJECTIVE ) 
- lejísimos ( ADVERB ) 
- lema ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lemas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ ledo ( ) 
+ lee ( ) lemma=leer 
+ leemos ( ) lemma=leer 
+ leen ( ) lemma=leer 
+ leeremos ( ) lemma=leer 
+ leerla ( ) lemma=leer 
+ leerle ( ) lemma=leer 
+ leerles ( ) lemma=leer 
+ leerlo ( ) lemma=leer 
+ leerlos ( ) lemma=leer 
+ leernos ( ) lemma=leer 
+ leerse ( ) 
+ leerte ( ) lemma=leer 
+ leerá ( ) lemma=leer 
+ leerán ( ) lemma=leer 
+ leeré ( ) lemma=leer 
+ leería ( ) lemma=leer 
+ leeríamos ( ) lemma=leer 
+ lees ( ) lemma=leer 
+ left ( ) 
+ legada ( ) lemma=legar 
+ legar ( ) 
+ legado ( ) 
+ legados ( ) lemma=legado 
+ legajo ( ) 
+ legajos ( ) lemma=legajo 
+ legal ( ) 
+ legales ( ) lemma=legal 
+ legalice ( ) lemma=legalizar 
+ legalizar ( ) 
+ legalicemos ( ) lemma=legalizar 
+ legalicen ( ) lemma=legalizar 
+ legalidad ( ) 
+ legaliza ( ) lemma=legalizar 
+ legalizaciones ( ) lemma=legalización 
+ legalización ( ) 
+ legalizada ( ) lemma=legalizar 
+ legalizadas ( ) lemma=legalizar 
+ legalizado ( ) lemma=legalizar 
+ legalizados ( ) lemma=legalizar 
+ legalizamos ( ) lemma=legalizar 
+ legalizan ( ) lemma=legalizar 
+ legalizando ( ) lemma=legalizar 
+ legalizara ( ) lemma=legalizar 
+ legalizaran ( ) lemma=legalizar 
+ legalizaremos ( ) lemma=legalizar 
+ legalizarlos ( ) lemma=legalizar 
+ legalizó ( ) lemma=legalizar 
+ legalmente ( ) lemma=legal 
+ legaron ( ) lemma=legar 
+ legará ( ) lemma=legar 
+ legatario ( ) 
+ legatarios ( ) lemma=legatario 
+ legendaria ( ) lemma=legendario 
+ legendario ( ) 
+ legendarias ( ) lemma=legendario 
+ legendarios ( ) lemma=legendario 
+ legibilidad ( ) 
+ legible ( ) 
+ legibles ( ) lemma=legible 
+ legionario ( ) 
+ legionarios ( ) lemma=legionario 
+ legiones ( ) lemma=legión 
+ legión ( ) 
+ legisla ( ) lemma=legislar 
+ legislar ( ) 
+ legislaciones ( ) lemma=legislación 
+ legislación ( ) 
+ legislado ( ) lemma=legislar 
+ legislador ( ) 
+ legisladora ( ) lemma=legislador 
+ legisladores ( ) lemma=legislador 
+ legislados ( ) lemma=legislar 
+ legislamos ( ) lemma=legislar 
+ legislan ( ) lemma=legislar 
+ legislando ( ) lemma=legislar 
+ legislara ( ) lemma=legislar 
+ legislará ( ) lemma=legislar 
+ legislativa ( ) lemma=legislativo 
+ legislativo ( ) 
+ legislativamente ( ) lemma=legislativo 
+ legislativas ( ) lemma=legislativo 
+ legislativos ( ) lemma=legislativo 
+ legislatura ( ) 
+ legislaturas ( ) lemma=legislatura 
+ legisle ( ) lemma=legislar 
+ legislemos ( ) lemma=legislar 
+ legislen ( ) lemma=legislar 
+ legisló ( ) lemma=legislar 
+ legitima ( ) lemma=legitimar 
+ legitimar ( ) 
+ legitimación ( ) 
+ legitimada ( ) lemma=legitimar 
+ legitimadas ( ) lemma=legitimar 
+ legitimado ( ) lemma=legitimar 
+ legitimados ( ) lemma=legitimar 
+ legitimando ( ) lemma=legitimar 
+ legitimaremos ( ) lemma=legitimar 
+ legitimarios ( ) lemma=legitimario 
+ legitimario ( ) 
+ legitimaron ( ) lemma=legitimar 
+ legitimaría ( ) lemma=legitimar 
+ legitime ( ) lemma=legitimar 
+ legitimen ( ) lemma=legitimar 
+ legitimidad ( ) 
+ legitimidades ( ) lemma=legitimidad 
+ legitimo ( ) lemma=legitimar 
+ lego ( ) lemma=legar 
+ legua ( ) 
+ leguas ( ) lemma=legua 
+ legumbre ( ) 
+ legumbres ( ) lemma=legumbre 
+ leguminosas ( ) lemma=leguminosa 
+ leguminosa ( ) 
+ leguminoso ( ) 
+ legítima ( ) lemma=legítimo 
+ legítimo ( ) 
+ legítimamente ( ) lemma=legítimo 
+ legítimas ( ) lemma=legítimo 
+ legítimos ( ) lemma=legítimo 
+ lei ( ) lemma=leer 
+ leiomioma ( ) 
+ leishmaniasis ( ) 
+ lejana ( ) lemma=lejano 
+ lejano ( ) 
+ lejanamente ( ) lemma=lejano 
+ lejanas ( ) lemma=lejano 
+ lejanos ( ) lemma=lejano 
+ lejanía ( ) 
+ lejanías ( ) lemma=lejanía 
+ lejos ( ) 
+ lejía ( ) 
+ lejísimo ( ) 
+ lejísimos ( ) lemma=lejos 
+ lema ( ) 
+ lemas ( ) lemma=lema 
  length ( ) 
- lengua ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lenguage ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lenguaje ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lenguajes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lenguas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lengüeta ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lengüetas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lenta ( ADJECTIVE ) 
- lentamente ( ADVERB ) 
- lentas ( ADJECTIVE ) 
- lente ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lentejas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lentejuelas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lentes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lentillas ( ADJECTIVE ) 
- lentitud ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lentitudes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lento ( ADJECTIVE ) 
- lentos ( ADJECTIVE ) 
- lentísimo ( ADJECTIVE ) 
- lentísimos ( ADJECTIVE ) 
- leo ( VERB ) 
- leona ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leonas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leonesa ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- leoneses ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- leonés ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- leopardo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lepidópteros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leporino ( ADJECTIVE ) 
- lepra ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leprosos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- leptina ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leptospirósico ( ADJECTIVE ) 
- les ( PRONOUN_SUBJECT PRONOUN_OBJECT ) 
- lesa ( ADJECTIVE ) 
- lesbiana ( ADJECTIVE ) 
- lesbianas ( ADJECTIVE ) 
- lesiona ( VERB ) 
- lesionaban ( VERB ) 
- lesionada ( VERB_PAST_PARTICIPLE VERB ) 
- lesionadas ( VERB_PAST_PARTICIPLE VERB ) 
- lesionado ( VERB_PAST_PARTICIPLE VERB ) 
- lesionados ( VERB_PAST_PARTICIPLE VERB ) 
- lesional ( ADJECTIVE ) 
- lesionan ( VERB ) 
- lesionando ( NOUN NOUN_GERUND ) 
- lesionar ( VERB ) 
- lesionarse ( VERB_INFINITIVE VERB ) 
- lesionaría ( VERB ) 
- lesionas ( VERB ) 
- lesione ( VERB ) 
- lesionen ( VERB ) 
- lesiones ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lesioné ( VERB ) 
- lesionó ( VERB ) 
- lesivas ( ADJECTIVE ) 
- lesión ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leso ( ADJECTIVE ) 
- letal ( ADJECTIVE ) 
- letales ( ADJECTIVE ) 
- letalidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- letalmente ( ADVERB ) 
- letanía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- letanías ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- letargo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- letra ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- letrada ( ADJECTIVE ) 
- letrado ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- letrados ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- letras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- letrero ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- letreros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- letritas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ lengua ( ) 
+ lenguage ( ) 
+ lenguaje ( ) 
+ lenguajes ( ) lemma=lenguaje 
+ lenguas ( ) lemma=lengua 
+ lengüeta ( ) 
+ lengüetas ( ) lemma=lengüeta 
+ lenta ( ) lemma=lento 
+ lento ( ) 
+ lentamente ( ) lemma=lento 
+ lentas ( ) lemma=lento 
+ lente ( ) 
+ lentejas ( ) lemma=lenteja 
+ lenteja ( ) 
+ lentejuelas ( ) lemma=lentejuela 
+ lentejuela ( ) 
+ lentes ( ) lemma=lente 
+ lentillas ( ) lemma=lento 
+ lentitud ( ) 
+ lentitudes ( ) lemma=lentitud 
+ lentos ( ) lemma=lento 
+ lentísimo ( ) lemma=lento 
+ lentísimos ( ) lemma=lento 
+ leo ( ) lemma=leer 
+ leona ( ) lemma=león 
+ león ( ) 
+ leonas ( ) lemma=león 
+ leones ( ) lemma=león 
+ leonesa ( ) lemma=leonés 
+ leonés ( ) 
+ leoneses ( ) lemma=leonés 
+ leopardo ( ) 
+ lepidópteros ( ) lemma=lepidóptero 
+ lepidóptero ( ) 
+ leporino ( ) 
+ lepra ( ) 
+ leprosos ( ) lemma=leproso 
+ leproso ( ) 
+ leptina ( ) 
+ leptospirósico ( ) 
+ les ( ) 
+ lesa ( ) lemma=leso 
+ leso ( ) 
+ lesbiana ( ) lemma=lesbiano 
+ lesbiano ( ) 
+ lesbianas ( ) lemma=lesbiano 
+ lesiona ( ) lemma=lesionar 
+ lesionar ( ) 
+ lesionaban ( ) lemma=lesionar 
+ lesionada ( ) lemma=lesionar 
+ lesionadas ( ) lemma=lesionar 
+ lesionado ( ) lemma=lesionar 
+ lesionados ( ) lemma=lesionar 
+ lesional ( ) 
+ lesionan ( ) lemma=lesionar 
+ lesionando ( ) lemma=lesionar 
+ lesionarse ( ) 
+ lesionaría ( ) lemma=lesionar 
+ lesionas ( ) lemma=lesionar 
+ lesione ( ) lemma=lesionar 
+ lesionen ( ) lemma=lesionar 
+ lesiones ( ) lemma=lesión 
+ lesión ( ) 
+ lesioné ( ) lemma=lesionar 
+ lesionó ( ) lemma=lesionar 
+ lesivas ( ) lemma=lesivo 
+ lesivo ( ) 
+ letal ( ) 
+ letales ( ) lemma=letal 
+ letalidad ( ) 
+ letalmente ( ) lemma=letal 
+ letanía ( ) 
+ letanías ( ) lemma=letanía 
+ letargo ( ) 
+ letra ( ) 
+ letrada ( ) lemma=letrado 
+ letrado ( ) 
+ letrados ( ) lemma=letrado 
+ letras ( ) lemma=letra 
+ letrero ( ) 
+ letreros ( ) lemma=letrero 
+ letritas ( ) lemma=letra 
  letter ( ) 
  letters ( ) 
  lettres ( ) 
- letárgica ( ADJECTIVE ) 
- letárgicas ( ADJECTIVE ) 
- letárgico ( ADJECTIVE ) 
- leu ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucemia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucemias ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucina ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucinas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucocitaria ( ADJECTIVE ) 
- leucocitario ( ADJECTIVE ) 
- leucocitarios ( ADJECTIVE ) 
- leucocito ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucocitos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucocitosis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucocíticos ( ADJECTIVE ) 
- leucograma ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucomielitis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucopenia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leucémicas ( ADJECTIVE ) 
- leucémicos ( ADJECTIVE ) 
- levadas ( VERB_PAST_PARTICIPLE VERB ) 
- levadura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- levaduras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- levanta ( VERB ) 
- levantaba ( VERB ) 
- levantaban ( VERB ) 
- levantad ( VERB ) 
- levantada ( VERB_PAST_PARTICIPLE VERB ) 
- levantadas ( VERB_PAST_PARTICIPLE VERB ) 
- levantado ( VERB_PAST_PARTICIPLE VERB ) 
- levantados ( VERB_PAST_PARTICIPLE VERB ) 
- levantamiento ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- levantamientos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- levantamos ( VERB ) 
- levantan ( VERB ) 
- levantando ( NOUN NOUN_GERUND ) 
- levantandose ( NOUN NOUN_GERUND ) 
- levantar ( VERB ) 
- levantara ( VERB ) 
- levantaran ( VERB ) 
- levantaremos ( VERB ) 
- levantarla ( VERB_INFINITIVE VERB ) 
- levantarlo ( VERB_INFINITIVE VERB ) 
- levantarme ( VERB_INFINITIVE VERB ) 
- levantarnos ( VERB_INFINITIVE VERB ) 
- levantaron ( VERB ) 
- levantaros ( VERB ) 
- levantarse ( VERB_INFINITIVE VERB ) 
- levantarte ( VERB_INFINITIVE VERB ) 
- levantará ( VERB ) 
- levantarán ( VERB ) 
- levantaré ( VERB ) 
- levantaría ( VERB ) 
- levantas ( VERB ) 
- levantase ( VERB ) 
- levante ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- levantemos ( VERB ) 
- levanten ( VERB ) 
- levantes ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- levanto ( VERB ) 
- levantásemos ( VERB ) 
- levanté ( VERB ) 
- levantó ( VERB ) 
- levar ( VERB ) 
- levas ( VERB ) 
- leve ( VERB ADJECTIVE ) 
+ letárgica ( ) lemma=letárgico 
+ letárgico ( ) 
+ letárgicas ( ) lemma=letárgico 
+ leu ( ) 
+ leucemia ( ) 
+ leucemias ( ) lemma=leucemia 
+ leucina ( ) 
+ leucinas ( ) lemma=leucina 
+ leucocitaria ( ) lemma=leucocitario 
+ leucocitario ( ) 
+ leucocitarios ( ) lemma=leucocitario 
+ leucocito ( ) 
+ leucocitos ( ) lemma=leucocito 
+ leucocitosis ( ) 
+ leucocíticos ( ) lemma=leucocítico 
+ leucocítico ( ) 
+ leucograma ( ) 
+ leucomielitis ( ) 
+ leucopenia ( ) 
+ leucémicas ( ) lemma=leucémico 
+ leucémico ( ) 
+ leucémicos ( ) lemma=leucémico 
+ levadas ( ) lemma=levar 
+ levar ( ) 
+ levadura ( ) 
+ levaduras ( ) lemma=levadura 
+ levanta ( ) lemma=levantar 
+ levantar ( ) 
+ levantaba ( ) lemma=levantar 
+ levantaban ( ) lemma=levantar 
+ levantad ( ) lemma=levantar 
+ levantada ( ) lemma=levantar 
+ levantadas ( ) lemma=levantar 
+ levantado ( ) lemma=levantar 
+ levantados ( ) lemma=levantar 
+ levantamiento ( ) 
+ levantamientos ( ) lemma=levantamiento 
+ levantamos ( ) lemma=levantar 
+ levantan ( ) lemma=levantar 
+ levantando ( ) lemma=levantar 
+ levantandose ( ) lemma=levantar 
+ levantara ( ) lemma=levantar 
+ levantaran ( ) lemma=levantar 
+ levantaremos ( ) lemma=levantar 
+ levantarla ( ) lemma=levantar 
+ levantarlo ( ) lemma=levantar 
+ levantarme ( ) lemma=levantar 
+ levantarnos ( ) lemma=levantar 
+ levantaron ( ) lemma=levantar 
+ levantaros ( ) lemma=levantar 
+ levantarse ( ) 
+ levantarte ( ) lemma=levantar 
+ levantará ( ) lemma=levantar 
+ levantarán ( ) lemma=levantar 
+ levantaré ( ) lemma=levantar 
+ levantaría ( ) lemma=levantar 
+ levantas ( ) lemma=levantar 
+ levantase ( ) lemma=levantar 
+ levante ( ) 
+ levantemos ( ) lemma=levantar 
+ levanten ( ) lemma=levantar 
+ levantes ( ) lemma=levante 
+ levanto ( ) lemma=levantar 
+ levantásemos ( ) lemma=levantar 
+ levanté ( ) lemma=levantar 
+ levantó ( ) lemma=levantar 
+ levas ( ) lemma=levar 
+ leve ( ) 
  level ( ) 
- levemente ( ADVERB ) 
- leves ( VERB ADJECTIVE ) 
+ levemente ( ) lemma=leve 
+ leves ( ) lemma=leve 
  levres ( ) 
- levántate ( ) 
- levántatelas ( ) 
- levántense ( VERB ) 
- levísima ( ADJECTIVE ) 
- lexa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lexema ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lexemas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lexicones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lexicógrafos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lexicón ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lexo ( ADJECTIVE ) 
- ley ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leyenda ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leyendas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leyendo ( VERB_PAST_PARTICIPLE VERB ) 
- leyera ( VERB ) 
- leyeran ( VERB ) 
- leyeron ( VERB ) 
- leyes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leyese ( VERB ) 
- leyesen ( VERB ) 
- leyéndole ( VERB_PAST_PARTICIPLE VERB ) 
- leyéndolos ( NOUN NOUN_GERUND ) 
- leyéndome ( VERB_PAST_PARTICIPLE VERB ) 
- leyéramos ( VERB ) 
- leyésemos ( VERB ) 
- leyó ( VERB ) 
- lezda ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leáis ( VERB ) 
- leéis ( VERB ) 
- leérsela ( VERB_INFINITIVE VERB ) 
- leérselo ( VERB_INFINITIVE VERB ) 
- leí ( VERB ) 
- leía ( VERB ) 
- leíais ( VERB ) 
- leíamos ( VERB ) 
- leían ( VERB ) 
- leída ( VERB_PAST_PARTICIPLE VERB ) 
- leídas ( VERB_PAST_PARTICIPLE VERB ) 
- leído ( VERB_PAST_PARTICIPLE VERB ) 
- leídos ( VERB_PAST_PARTICIPLE VERB ) 
- leímos ( VERB ) 
- leíste ( VERB ) 
- leña ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- leñador ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leñadores ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- leñas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- leño ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- leñosas ( ADJECTIVE ) 
- león ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liaba ( VERB ) 
- liada ( VERB_PAST_PARTICIPLE VERB ) 
+ levántate ( ) lemma=levantar 
+ levántatelas ( ) lemma=levantar 
+ levántense ( ) lemma=levantar 
+ levísima ( ) lemma=leve 
+ lexa ( ) 
+ lexema ( ) 
+ lexemas ( ) lemma=lexema 
+ lexicones ( ) lemma=lexicón 
+ lexicón ( ) 
+ lexicógrafos ( ) lemma=lexicógrafo 
+ lexicógrafo ( ) 
+ lexo ( ) 
+ ley ( ) 
+ leyenda ( ) 
+ leyendas ( ) lemma=leyenda 
+ leyendo ( ) lemma=leer 
+ leyera ( ) lemma=leer 
+ leyeran ( ) lemma=leer 
+ leyeron ( ) lemma=leer 
+ leyes ( ) lemma=ley 
+ leyese ( ) lemma=leer 
+ leyesen ( ) lemma=leer 
+ leyéndole ( ) lemma=leer 
+ leyéndolos ( ) lemma=leer 
+ leyéndome ( ) lemma=leer 
+ leyéramos ( ) lemma=leer 
+ leyésemos ( ) lemma=leer 
+ leyó ( ) lemma=leer 
+ lezda ( ) 
+ leáis ( ) lemma=leer 
+ leéis ( ) lemma=leer 
+ leérsela ( ) lemma=leerse 
+ leérselo ( ) lemma=leerse 
+ leí ( ) lemma=leer 
+ leía ( ) lemma=leer 
+ leíais ( ) lemma=leer 
+ leíamos ( ) lemma=leer 
+ leían ( ) lemma=leer 
+ leída ( ) lemma=leer 
+ leídas ( ) lemma=leer 
+ leído ( ) lemma=leer 
+ leídos ( ) lemma=leer 
+ leímos ( ) lemma=leer 
+ leíste ( ) lemma=leer 
+ leña ( ) 
+ leñador ( ) 
+ leñadores ( ) lemma=leñador 
+ leñas ( ) lemma=leña 
+ leño ( ) 
+ leñosas ( ) lemma=leñoso 
+ leñoso ( ) 
+ liaba ( ) lemma=liar 
+ liar ( ) 
+ liada ( ) lemma=liar 
+ liado ( ) lemma=liar 
  liaison ( ) 
  liaisons ( ) 
- liando ( NOUN NOUN_GERUND ) 
- liar ( VERB ) 
- libanesa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libanesas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- libaneses ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- libanés ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- libc ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libelo ( VERB ) 
- libera ( VERB ) 
- liberaba ( VERB ) 
- liberaban ( VERB ) 
- liberaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liberacióm ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liberación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liberada ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- liberadas ( VERB_PAST_PARTICIPLE VERB ) 
- liberado ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- liberador ( ADJECTIVE ) 
- liberadora ( ADJECTIVE ) 
- liberadores ( ADJECTIVE ) 
- liberados ( VERB_PAST_PARTICIPLE VERB ) 
- liberal ( ADJECTIVE ) 
- liberales ( ADJECTIVE ) 
- liberalice ( VERB ) 
- liberalicen ( VERB ) 
- liberalidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liberalidades ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liberalismo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liberaliza ( VERB ) 
- liberalizaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liberalización ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liberalizada ( VERB_PAST_PARTICIPLE VERB ) 
- liberalizadas ( VERB_PAST_PARTICIPLE VERB ) 
- liberalizado ( VERB_PAST_PARTICIPLE VERB ) 
- liberalizadoras ( ADJECTIVE ) 
- liberalizados ( VERB_PAST_PARTICIPLE VERB ) 
- liberalizamos ( VERB ) 
- liberalizan ( VERB ) 
- liberalizando ( NOUN NOUN_GERUND ) 
- liberalizar ( VERB ) 
- liberalizara ( VERB ) 
- liberalizará ( VERB ) 
- liberalizarán ( VERB ) 
- liberalizó ( VERB ) 
- liberamos ( VERB ) 
- liberan ( VERB ) 
- liberando ( NOUN NOUN_GERUND ) 
- liberar ( VERB ) 
- liberara ( VERB ) 
- liberaran ( VERB ) 
- liberaremos ( VERB ) 
- liberarla ( VERB ) 
- liberarlas ( VERB_INFINITIVE VERB ) 
- liberarle ( VERB_INFINITIVE VERB ) 
- liberarlo ( VERB_INFINITIVE VERB ) 
- liberarme ( VERB_INFINITIVE VERB ) 
- liberarnos ( VERB_INFINITIVE VERB ) 
- liberaron ( VERB ) 
- liberarse ( VERB_INFINITIVE VERB ) 
- liberará ( VERB ) 
- liberarán ( VERB ) 
- liberaré ( VERB ) 
- liberaría ( VERB ) 
- liberarían ( VERB ) 
- libere ( VERB ) 
- liberemos ( VERB ) 
- liberen ( VERB ) 
- liberiana ( ADJECTIVE ) 
- liberiano ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- liberianos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- libero ( VERB ) 
- libertad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libertades ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libertador ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- libertadores ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- libertaria ( ADJECTIVE ) 
- libertario ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- libertarios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libertino ( ADJECTIVE ) 
- liberándolos ( NOUN NOUN_GERUND ) 
- liberándose ( NOUN NOUN_GERUND ) 
- liberó ( VERB ) 
- libido ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libra ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libraba ( VERB ) 
- libraban ( VERB ) 
- librada ( VERB_PAST_PARTICIPLE VERB ) 
- libradas ( VERB_PAST_PARTICIPLE VERB ) 
- librado ( VERB_PAST_PARTICIPLE VERB ) 
- librador ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- librados ( VERB_PAST_PARTICIPLE VERB ) 
- libramos ( VERB ) 
- libran ( VERB ) 
- librando ( NOUN NOUN_GERUND ) 
- librar ( VERB ) 
- librara ( VERB ) 
- libraran ( VERB ) 
- libraremos ( VERB ) 
- libraron ( VERB ) 
- librarse ( VERB_INFINITIVE VERB ) 
- librarán ( VERB ) 
- libraría ( VERB ) 
- libraríamos ( VERB ) 
- librarían ( VERB ) 
- libras ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- libre ( ADJECTIVE ) 
- libreas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- librecambio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libremente ( ADVERB ) 
- libren ( VERB ) 
- librería ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- librerías ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libres ( ADJECTIVE ) 
- libreta ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libretas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libreto ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- librillo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- librito ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libro ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- libro-registro ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- libráramos ( VERB ) 
- libré ( VERB ) 
- libró ( VERB ) 
+ liando ( ) lemma=liar 
+ libanesa ( ) 
+ libanesas ( ) lemma=libanés 
+ libanés ( ) 
+ libaneses ( ) lemma=libanés 
+ libc ( ) 
+ libelo ( ) lemma=libelar 
+ libelar ( ) 
+ libera ( ) lemma=liberar 
+ liberar ( ) 
+ liberaba ( ) lemma=liberar 
+ liberaban ( ) lemma=liberar 
+ liberaciones ( ) lemma=liberación 
+ liberación ( ) 
+ liberacióm ( ) 
+ liberada ( ) lemma=liberado 
+ liberado ( ) 
+ liberadas ( ) lemma=liberar 
+ liberador ( ) 
+ liberadora ( ) lemma=liberador 
+ liberadores ( ) lemma=liberador 
+ liberados ( ) lemma=liberar 
+ liberal ( ) 
+ liberales ( ) lemma=liberal 
+ liberalice ( ) lemma=liberalizar 
+ liberalizar ( ) 
+ liberalicen ( ) lemma=liberalizar 
+ liberalidad ( ) 
+ liberalidades ( ) lemma=liberalidad 
+ liberalismo ( ) 
+ liberaliza ( ) lemma=liberalizar 
+ liberalizaciones ( ) lemma=liberalización 
+ liberalización ( ) 
+ liberalizada ( ) lemma=liberalizar 
+ liberalizadas ( ) lemma=liberalizar 
+ liberalizado ( ) lemma=liberalizar 
+ liberalizadoras ( ) lemma=liberalizador 
+ liberalizador ( ) 
+ liberalizados ( ) lemma=liberalizar 
+ liberalizamos ( ) lemma=liberalizar 
+ liberalizan ( ) lemma=liberalizar 
+ liberalizando ( ) lemma=liberalizar 
+ liberalizara ( ) lemma=liberalizar 
+ liberalizará ( ) lemma=liberalizar 
+ liberalizarán ( ) lemma=liberalizar 
+ liberalizó ( ) lemma=liberalizar 
+ liberamos ( ) lemma=liberar 
+ liberan ( ) lemma=liberar 
+ liberando ( ) lemma=liberar 
+ liberara ( ) lemma=liberar 
+ liberaran ( ) lemma=liberar 
+ liberaremos ( ) lemma=liberar 
+ liberarla ( ) lemma=liberar 
+ liberarlas ( ) lemma=liberar 
+ liberarle ( ) lemma=liberar 
+ liberarlo ( ) lemma=liberar 
+ liberarme ( ) lemma=liberar 
+ liberarnos ( ) lemma=liberar 
+ liberaron ( ) lemma=liberar 
+ liberarse ( ) 
+ liberará ( ) lemma=liberar 
+ liberarán ( ) lemma=liberar 
+ liberaré ( ) lemma=liberar 
+ liberaría ( ) lemma=liberar 
+ liberarían ( ) lemma=liberar 
+ libere ( ) lemma=liberar 
+ liberemos ( ) lemma=liberar 
+ liberen ( ) lemma=liberar 
+ liberiana ( ) lemma=liberiano 
+ liberiano ( ) 
+ liberianos ( ) lemma=liberiano 
+ libero ( ) lemma=liberar 
+ libertad ( ) 
+ libertades ( ) lemma=libertad 
+ libertador ( ) 
+ libertadores ( ) lemma=libertador 
+ libertaria ( ) lemma=libertario 
+ libertario ( ) 
+ libertarios ( ) lemma=libertario 
+ libertino ( ) 
+ liberándolos ( ) lemma=liberar 
+ liberándose ( ) 
+ liberó ( ) lemma=liberar 
+ libido ( ) 
+ libra ( ) 
+ libraba ( ) lemma=librar 
+ librar ( ) 
+ libraban ( ) lemma=librar 
+ librada ( ) lemma=librar 
+ libradas ( ) lemma=librar 
+ librado ( ) lemma=librar 
+ librador ( ) 
+ librados ( ) lemma=librar 
+ libramos ( ) lemma=librar 
+ libran ( ) lemma=librar 
+ librando ( ) lemma=librar 
+ librara ( ) lemma=librar 
+ libraran ( ) lemma=librar 
+ libraremos ( ) lemma=librar 
+ libraron ( ) lemma=librar 
+ librarse ( ) 
+ librarán ( ) lemma=librar 
+ libraría ( ) lemma=librar 
+ libraríamos ( ) lemma=librar 
+ librarían ( ) lemma=librar 
+ libras ( ) lemma=libra 
+ libre ( ) 
+ libreas ( ) lemma=librea 
+ librea ( ) 
+ librecambio ( ) 
+ libremente ( ) lemma=libre 
+ libren ( ) lemma=librar 
+ librería ( ) 
+ librerías ( ) lemma=librería 
+ libres ( ) lemma=libre 
+ libreta ( ) 
+ libretas ( ) lemma=libreta 
+ libreto ( ) 
+ librillo ( ) lemma=libro 
+ libro ( ) 
+ librito ( ) lemma=libro 
+ libro-registro ( ) 
+ libros ( ) lemma=libro 
+ libráramos ( ) lemma=librar 
+ libré ( ) lemma=librar 
+ libró ( ) lemma=librar 
  libération ( ) 
- libérese ( ) 
- licencia ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- licenciada ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- licenciadas ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- licenciado ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- licenciados ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- licenciar ( VERB ) 
- licencias ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- licenciatura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licenciaturas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licencie ( VERB ) 
- licenció ( VERB ) 
- liceo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liceos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licitaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licitación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licitadores ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licitar ( VERB ) 
- licitud ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licor ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licores ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- licuado ( VERB_PAST_PARTICIPLE VERB ) 
- licuados ( VERB_PAST_PARTICIPLE VERB ) 
- licuefacción ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ libérese ( ) lemma=liberarse 
+ licencia ( ) 
+ licenciada ( ) lemma=licenciado 
+ licenciado ( ) 
+ licenciadas ( ) lemma=licenciado 
+ licenciados ( ) lemma=licenciado 
+ licenciar ( ) 
+ licencias ( ) lemma=licencia 
+ licenciatura ( ) 
+ licenciaturas ( ) lemma=licenciatura 
+ licencie ( ) lemma=licenciar 
+ licenció ( ) lemma=licenciar 
+ liceo ( ) 
+ liceos ( ) lemma=liceo 
+ licitaciones ( ) lemma=licitación 
+ licitación ( ) 
+ licitadores ( ) lemma=licitador 
+ licitador ( ) 
+ licitar ( ) 
+ licitud ( ) 
+ licor ( ) 
+ licores ( ) lemma=licor 
+ licuado ( ) lemma=licuar 
+ licuar ( ) 
+ licuados ( ) lemma=licuar 
+ licuefacción ( ) 
  lid ( ) 
- lidera ( VERB ) 
- lideraba ( VERB ) 
- liderada ( VERB_PAST_PARTICIPLE VERB ) 
- lideradas ( VERB_PAST_PARTICIPLE VERB ) 
- liderado ( VERB_PAST_PARTICIPLE VERB ) 
- liderados ( VERB_PAST_PARTICIPLE VERB ) 
- lideran ( VERB ) 
- liderar ( VERB ) 
- liderase ( VERB ) 
- liderato ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liderazgo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liderazgos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lidere ( VERB ) 
- lideres ( VERB ) 
- lideró ( VERB ) 
- lidia ( VERB ) 
- lidiada ( VERB_PAST_PARTICIPLE VERB ) 
- lidiadas ( VERB_PAST_PARTICIPLE VERB ) 
- lidiado ( VERB_PAST_PARTICIPLE VERB ) 
- lidian ( VERB ) 
- lidiar ( VERB ) 
- lidiaron ( VERB ) 
- lidiará ( VERB ) 
- lidiarán ( VERB ) 
- lidió ( VERB ) 
- lidocaíno ( ADJECTIVE ) 
- liebre ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liebres ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lientería ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lienzo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lienzos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liga ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- ligación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligada ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- ligadas ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- ligado ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- ligados ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- ligadura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligaduras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligamen ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligamento ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligamentos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligamentoso ( ADJECTIVE ) 
- ligamiento ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligamos ( VERB ) 
- ligan ( VERB ) 
- ligando ( NOUN NOUN_GERUND ) 
- ligandos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligante ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligar ( VERB ) 
- ligaron ( VERB ) 
- ligas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- ligasa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligera ( ADJECTIVE ) 
- ligeramente ( ADVERB ) 
- ligeras ( ADJECTIVE ) 
- ligereza ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligerito ( ADJECTIVE ) 
- ligero ( ADJECTIVE ) 
- ligeros ( ADJECTIVE ) 
- ligerísima ( ADJECTIVE ) 
- ligerísimo ( ADJECTIVE ) 
- ligerísimos ( ADJECTIVE ) 
+ lidera ( ) lemma=liderar 
+ liderar ( ) 
+ lideraba ( ) lemma=liderar 
+ liderada ( ) lemma=liderar 
+ lideradas ( ) lemma=liderar 
+ liderado ( ) lemma=liderar 
+ liderados ( ) lemma=liderar 
+ lideran ( ) lemma=liderar 
+ liderase ( ) lemma=liderar 
+ liderato ( ) 
+ liderazgo ( ) 
+ liderazgos ( ) lemma=liderazgo 
+ lidere ( ) lemma=liderar 
+ lideres ( ) lemma=liderar 
+ lideró ( ) lemma=liderar 
+ lidia ( ) lemma=lidiar 
+ lidiar ( ) 
+ lidiada ( ) lemma=lidiar 
+ lidiadas ( ) lemma=lidiar 
+ lidiado ( ) lemma=lidiar 
+ lidian ( ) lemma=lidiar 
+ lidiaron ( ) lemma=lidiar 
+ lidiará ( ) lemma=lidiar 
+ lidiarán ( ) lemma=lidiar 
+ lidió ( ) lemma=lidiar 
+ lidocaíno ( ) 
+ liebre ( ) 
+ liebres ( ) lemma=liebre 
+ lientería ( ) 
+ lienzo ( ) 
+ lienzos ( ) lemma=lienzo 
+ liga ( ) 
+ ligación ( ) 
+ ligada ( ) lemma=ligado 
+ ligado ( ) 
+ ligadas ( ) lemma=ligado 
+ ligados ( ) lemma=ligado 
+ ligadura ( ) 
+ ligaduras ( ) lemma=ligadura 
+ ligamen ( ) 
+ ligamento ( ) 
+ ligamentos ( ) lemma=ligamento 
+ ligamentoso ( ) 
+ ligamiento ( ) 
+ ligamos ( ) lemma=ligar 
+ ligar ( ) 
+ ligan ( ) lemma=ligar 
+ ligando ( ) lemma=ligar 
+ ligandos ( ) lemma=ligando 
+ ligante ( ) 
+ ligaron ( ) lemma=ligar 
+ ligas ( ) lemma=liga 
+ ligasa ( ) 
+ ligera ( ) lemma=ligero 
+ ligero ( ) 
+ ligeramente ( ) lemma=ligero 
+ ligeras ( ) lemma=ligero 
+ ligereza ( ) 
+ ligerito ( ) lemma=ligero 
+ ligeros ( ) lemma=ligero 
+ ligerísima ( ) lemma=ligero 
+ ligerísimo ( ) lemma=ligero 
+ ligerísimos ( ) lemma=ligero 
  ligne ( ) 
  lignes ( ) 
- ligo ( VERB ) 
- ligue ( VERB ) 
- ligues ( VERB ) 
- liguilla ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- ligó ( VERB ) 
- lijarse ( VERB ) 
- lila ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lima ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- limadas ( VERB_PAST_PARTICIPLE VERB ) 
- limado ( VERB_PAST_PARTICIPLE VERB ) 
- limanda ( NOUN NOUN_GERUND ) 
- limando ( NOUN NOUN_GERUND ) 
- limar ( VERB ) 
- limaría ( VERB ) 
- limbo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limeña ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- limeñas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- limeño ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- limeños ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- limita ( VERB ) 
- limitaba ( VERB ) 
- limitaban ( VERB ) 
- limitaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limitación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limitada ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- limitadamente ( ADVERB ) 
- limitadas ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- limitado ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- limitados ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- limitadísima ( ADJECTIVE ) 
- limitadísimas ( ADJECTIVE ) 
- limitadísimo ( ADJECTIVE ) 
- limitadísimos ( ADJECTIVE ) 
- limitamos ( VERB ) 
- limitan ( VERB ) 
- limitando ( NOUN NOUN_GERUND ) 
- limitante ( ADJECTIVE ) 
- limitar ( VERB ) 
- limitara ( VERB ) 
- limitaran ( VERB ) 
- limitaremos ( VERB ) 
- limitarnos ( VERB ) 
- limitaron ( VERB ) 
- limitarse ( VERB_INFINITIVE VERB ) 
- limitará ( VERB ) 
- limitarán ( VERB ) 
- limitaré ( VERB ) 
- limitaría ( VERB ) 
- limitaríamos ( VERB ) 
- limitarían ( VERB ) 
- limitase ( VERB ) 
- limitasen ( VERB ) 
- limitativos ( ADJECTIVE ) 
- limite ( VERB ) 
- limitemos ( VERB ) 
- limiten ( VERB ) 
- limites ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- limito ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- limitábamos ( VERB ) 
- limitándose ( VERB_PAST_PARTICIPLE VERB ) 
- limitáramos ( VERB ) 
- limitásemos ( VERB ) 
- limité ( VERB ) 
- limitémonos ( VERB ) 
- limitó ( VERB ) 
- limnológico ( ADJECTIVE ) 
- limo ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- limones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limosna ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limosnas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limpia ( VERB ADJECTIVE ) 
- limpiaba ( VERB ) 
- limpiaban ( VERB ) 
- limpiado ( VERB_PAST_PARTICIPLE VERB ) 
- limpiador ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- limpiadores ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- limpiados ( VERB_PAST_PARTICIPLE VERB ) 
- limpiamente ( ADVERB ) 
- limpian ( VERB ) 
- limpiando ( NOUN NOUN_GERUND ) 
- limpiaparabrisas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limpiar ( VERB ) 
- limpiarlo ( VERB_INFINITIVE VERB ) 
- limpiarlos ( VERB_INFINITIVE VERB ) 
- limpiaron ( VERB ) 
- limpiarse ( VERB_INFINITIVE VERB ) 
- limpiará ( VERB ) 
- limpias ( VERB ADJECTIVE ) 
- limpiase ( VERB ) 
- limpie ( VERB ) 
- limpien ( VERB ) 
- limpieza ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limpiezas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- limpio ( VERB ADJECTIVE ) 
- limpios ( ADJECTIVE ) 
- limpito ( ADJECTIVE ) 
- limpiáis ( VERB ) 
- limpiándolo ( NOUN NOUN_GERUND ) 
- limpiándose ( NOUN NOUN_GERUND ) 
- limpió ( VERB ) 
- limpísima ( ADJECTIVE ) 
- limítese ( VERB ) 
- limítrofe ( ADJECTIVE ) 
- limítrofes ( ADJECTIVE ) 
- limó ( VERB ) 
- limón ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linaje ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linajes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linarense ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lince ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linces ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lincha ( VERB ) 
- linchado ( VERB_PAST_PARTICIPLE VERB ) 
- linchamiento ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linchamientos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linchar ( VERB ) 
- lincharon ( VERB ) 
- linchó ( VERB ) 
- linda ( VERB ADJECTIVE ) 
- lindan ( VERB ) 
- lindante ( ADJECTIVE ) 
- lindas ( VERB ADJECTIVE ) 
- linde ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lindero ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linderos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lindo ( VERB ADJECTIVE ) 
- lindos ( ADJECTIVE ) 
- lindísima ( ADJECTIVE ) 
- lindísimo ( ADJECTIVE ) 
+ ligo ( ) lemma=ligar 
+ ligue ( ) lemma=ligar 
+ ligues ( ) lemma=ligar 
+ liguilla ( ) lemma=liga 
+ ligura ( ) 
+ ligó ( ) lemma=ligar 
+ lijarse ( ) lemma=lijar 
+ lijar ( ) 
+ lila ( ) 
+ lima ( ) 
+ limadas ( ) lemma=limar 
+ limar ( ) 
+ limado ( ) lemma=limar 
+ limanda ( ) lemma=limar 
+ limando ( ) lemma=limar 
+ limaría ( ) lemma=limar 
+ limbo ( ) 
+ limeña ( ) lemma=limeño 
+ limeño ( ) 
+ limeñas ( ) lemma=limeño 
+ limeños ( ) lemma=limeño 
+ limita ( ) lemma=limitar 
+ limitar ( ) 
+ limitaba ( ) lemma=limitar 
+ limitaban ( ) lemma=limitar 
+ limitaciones ( ) lemma=limitación 
+ limitación ( ) 
+ limitada ( ) lemma=limitado 
+ limitado ( ) 
+ limitadamente ( ) lemma=limitado 
+ limitadas ( ) lemma=limitado 
+ limitados ( ) lemma=limitado 
+ limitadísima ( ) lemma=limitado 
+ limitadísimas ( ) lemma=limitado 
+ limitadísimo ( ) 
+ limitadísimos ( ) lemma=limitado 
+ limitamos ( ) lemma=limitar 
+ limitan ( ) lemma=limitar 
+ limitando ( ) lemma=limitar 
+ limitante ( ) 
+ limitara ( ) lemma=limitar 
+ limitaran ( ) lemma=limitar 
+ limitaremos ( ) lemma=limitar 
+ limitarnos ( ) lemma=limitar 
+ limitaron ( ) lemma=limitar 
+ limitarse ( ) 
+ limitará ( ) lemma=limitar 
+ limitarán ( ) lemma=limitar 
+ limitaré ( ) lemma=limitar 
+ limitaría ( ) lemma=limitar 
+ limitaríamos ( ) lemma=limitar 
+ limitarían ( ) lemma=limitar 
+ limitase ( ) lemma=limitar 
+ limitasen ( ) lemma=limitar 
+ limitativos ( ) lemma=limitativo 
+ limitativo ( ) 
+ limite ( ) lemma=limitar 
+ limitemos ( ) lemma=limitar 
+ limiten ( ) lemma=limitar 
+ limites ( ) lemma=límite 
+ límite ( ) 
+ limito ( ) lemma=limo 
+ limo ( ) 
+ limitábamos ( ) lemma=limitar 
+ limitándose ( ) lemma=limitar 
+ limitáramos ( ) lemma=limitar 
+ limitásemos ( ) lemma=limitar 
+ limité ( ) lemma=limitar 
+ limitémonos ( ) lemma=limitar 
+ limitó ( ) lemma=limitar 
+ limnológico ( ) 
+ limones ( ) lemma=limón 
+ limón ( ) 
+ limosna ( ) 
+ limosnas ( ) lemma=limosna 
+ limpia ( ) lemma=limpio 
+ limpio ( ) 
+ limpiaba ( ) lemma=limpiar 
+ limpiar ( ) 
+ limpiaban ( ) lemma=limpiar 
+ limpiado ( ) lemma=limpiar 
+ limpiador ( ) 
+ limpiadores ( ) lemma=limpiador 
+ limpiados ( ) lemma=limpiar 
+ limpiamente ( ) lemma=limpio 
+ limpian ( ) lemma=limpiar 
+ limpiando ( ) lemma=limpiar 
+ limpiaparabrisas ( ) 
+ limpiarlo ( ) lemma=limpiar 
+ limpiarlos ( ) lemma=limpiar 
+ limpiaron ( ) lemma=limpiar 
+ limpiarse ( ) 
+ limpiará ( ) lemma=limpiar 
+ limpias ( ) lemma=limpio 
+ limpiase ( ) lemma=limpiar 
+ limpie ( ) lemma=limpiar 
+ limpien ( ) lemma=limpiar 
+ limpieza ( ) 
+ limpiezas ( ) lemma=limpieza 
+ limpios ( ) lemma=limpio 
+ limpito ( ) 
+ limpiáis ( ) lemma=limpiar 
+ limpiándolo ( ) lemma=limpiar 
+ limpiándose ( ) lemma=limpiar 
+ limpió ( ) lemma=limpiar 
+ limpísima ( ) lemma=limpio 
+ limítese ( ) lemma=limitar 
+ limítrofe ( ) 
+ limítrofes ( ) lemma=limítrofe 
+ limó ( ) lemma=limar 
+ linaje ( ) 
+ linajes ( ) lemma=linaje 
+ linarense ( ) 
+ lince ( ) 
+ linces ( ) lemma=lince 
+ lincha ( ) lemma=linchar 
+ linchar ( ) 
+ linchado ( ) lemma=linchar 
+ linchamiento ( ) 
+ linchamientos ( ) lemma=linchamiento 
+ lincharon ( ) lemma=linchar 
+ linchó ( ) lemma=linchar 
+ linda ( ) lemma=linda|lindo 
+ linda|lindo ( ) 
+ lindan ( ) lemma=lindar 
+ lindar ( ) 
+ lindante ( ) 
+ lindas ( ) lemma=lindo 
+ lindo ( ) 
+ linde ( ) 
+ lindero ( ) 
+ linderos ( ) lemma=lindero 
+ lindos ( ) lemma=lindo 
+ lindísima ( ) lemma=lindo 
+ lindísimo ( ) lemma=lindo 
  line ( ) 
- linea ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lineal ( ADJECTIVE ) 
- lineales ( ADJECTIVE ) 
- linealidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linealmente ( ADVERB ) 
- lineamientos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linear ( VERB ) 
- lineares ( VERB ) 
- lineas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- linfa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfadenopatía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfangitis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfoblástica ( ADJECTIVE ) 
- linfocitaria ( ADJECTIVE ) 
- linfocitarias ( ADJECTIVE ) 
- linfocitario ( ADJECTIVE ) 
- linfocito ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfocitos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfocitosis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfocitotóxico ( ADJECTIVE ) 
- linfoide ( ADJECTIVE ) 
- linfoideo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfoides ( ADJECTIVE ) 
- linfoma ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfomas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfomatosa ( ADJECTIVE ) 
- linfopenia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfoquinas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linfática ( ADJECTIVE ) 
- linfáticas ( ADJECTIVE ) 
- linfático ( ADJECTIVE ) 
- linfáticos ( ADJECTIVE ) 
- lingote ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lingotes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lingüista ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lingüistas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lingüística ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lingüísticamente ( ADVERB ) 
- lingüísticas ( ADJECTIVE ) 
- lingüístico ( ADJECTIVE ) 
- lingüísticos ( ADJECTIVE ) 
- liniers ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linitas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ linea ( ) lemma=línea 
+ línea ( ) 
+ lineal ( ) 
+ lineales ( ) lemma=lineal 
+ linealidad ( ) 
+ linealmente ( ) lemma=lineal 
+ lineamientos ( ) lemma=lineamiento 
+ lineamiento ( ) 
+ linear ( ) 
+ lineares ( ) lemma=linear 
+ lineas ( ) lemma=línea 
+ linfa ( ) 
+ linfadenopatía ( ) 
+ linfangitis ( ) 
+ linfoblástica ( ) lemma=linfoblástico 
+ linfoblástico ( ) 
+ linfocitaria ( ) lemma=linfocitario 
+ linfocitario ( ) 
+ linfocitarias ( ) lemma=linfocitario 
+ linfocito ( ) 
+ linfocitos ( ) lemma=linfocito 
+ linfocitosis ( ) 
+ linfocitotóxico ( ) 
+ linfoide ( ) 
+ linfoideo ( ) 
+ linfoides ( ) lemma=linfoide 
+ linfoma ( ) 
+ linfomas ( ) lemma=linfoma 
+ linfomatosa ( ) lemma=linfomatoso 
+ linfomatoso ( ) 
+ linfopenia ( ) 
+ linfoquinas ( ) lemma=linfoquina 
+ linfoquina ( ) 
+ linfática ( ) lemma=linfático 
+ linfático ( ) 
+ linfáticas ( ) lemma=linfático 
+ linfáticos ( ) lemma=linfático 
+ lingote ( ) 
+ lingotes ( ) lemma=lingote 
+ lingüista ( ) 
+ lingüistas ( ) lemma=lingüista 
+ lingüística ( ) lemma=lingüístico 
+ lingüístico ( ) 
+ lingüísticamente ( ) lemma=lingüístico 
+ lingüísticas ( ) lemma=lingüístico 
+ lingüísticos ( ) lemma=lingüístico 
+ liniers ( ) lemma=linier 
+ linier ( ) 
+ linitas ( ) lemma=linea 
  link ( ) 
- lino ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linoleico ( ADJECTIVE ) 
- linolénico ( ADJECTIVE ) 
- linterna ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- linternas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liofilizados ( VERB_PAST_PARTICIPLE VERB ) 
+ lino ( ) 
+ linoleico ( ) 
+ linolénico ( ) 
+ linterna ( ) 
+ linternas ( ) lemma=linterna 
+ liofilizados ( ) lemma=liofilizar 
+ liofilizar ( ) 
  lip ( ) 
- lipasa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipasas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipidograma ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipodistrofia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipodistrofias ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipofílicas ( ADJECTIVE ) 
- lipoma ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipoplejo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipoproteico ( ADJECTIVE ) 
- lipoproteína ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipoproteínas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liposolubilidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liposoluble ( ADJECTIVE ) 
- liposoma ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liposomas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liposucción ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipotimia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lipídica ( ADJECTIVE ) 
- lipídicas ( ADJECTIVE ) 
- lipídico ( ADJECTIVE ) 
- lipídicos ( ADJECTIVE ) 
- lipólisis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liquen ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liquida ( VERB ) 
- liquidable ( ADJECTIVE ) 
- liquidaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liquidación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liquidada ( VERB_PAST_PARTICIPLE VERB ) 
- liquidadas ( VERB_PAST_PARTICIPLE VERB ) 
- liquidado ( VERB_PAST_PARTICIPLE VERB ) 
- liquidadores ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liquidados ( VERB_PAST_PARTICIPLE VERB ) 
- liquidan ( VERB ) 
- liquidando ( NOUN NOUN_GERUND ) 
- liquidar ( VERB ) 
- liquidaron ( VERB ) 
- liquide ( VERB ) 
- liquidez ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liquido ( VERB ) 
- liquidó ( VERB ) 
- lira ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lirio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lirios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lirismo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lisa ( ADJECTIVE ) 
- lisar ( VERB ) 
- lisas ( ADJECTIVE ) 
- lisiada ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lisiados ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lisina ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lisinas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lisis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liso ( ADJECTIVE ) 
- lisofosfolípido ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lisos ( ADJECTIVE ) 
- lisosomale ( ADJECTIVE ) 
- lisosomas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lisosómicas ( ADJECTIVE ) 
- lisp ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lista ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- listaba ( VERB ) 
- listadas ( VERB_PAST_PARTICIPLE VERB ) 
- listado ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- listados ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- listan ( VERB ) 
- listar ( VERB ) 
- listará ( VERB ) 
- listas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ lipasa ( ) 
+ lipasas ( ) lemma=lipasa 
+ lipidograma ( ) 
+ lipodistrofia ( ) 
+ lipodistrofias ( ) lemma=lipodistrofia 
+ lipofílicas ( ) lemma=lipofílico 
+ lipofílico ( ) 
+ lipoma ( ) 
+ lipoplejo ( ) 
+ lipoproteico ( ) 
+ lipoproteína ( ) 
+ lipoproteínas ( ) lemma=lipoproteína 
+ liposolubilidad ( ) 
+ liposoluble ( ) 
+ liposoma ( ) 
+ liposomas ( ) lemma=liposoma 
+ liposucción ( ) 
+ lipotimia ( ) 
+ lipídica ( ) lemma=lipídico 
+ lipídico ( ) 
+ lipídicas ( ) lemma=lipídico 
+ lipídicos ( ) lemma=lipídico 
+ lipólisis ( ) 
+ liquen ( ) 
+ liquida ( ) lemma=liquidar 
+ liquidar ( ) 
+ liquidable ( ) 
+ liquidaciones ( ) lemma=liquidación 
+ liquidación ( ) 
+ liquidada ( ) lemma=liquidar 
+ liquidadas ( ) lemma=liquidar 
+ liquidado ( ) lemma=liquidar 
+ liquidadores ( ) lemma=liquidador 
+ liquidador ( ) 
+ liquidados ( ) lemma=liquidar 
+ liquidan ( ) lemma=liquidar 
+ liquidando ( ) lemma=liquidar 
+ liquidaron ( ) lemma=liquidar 
+ liquide ( ) lemma=liquidar 
+ liquidez ( ) 
+ liquido ( ) lemma=liquidar 
+ liquidó ( ) lemma=liquidar 
+ lira ( ) 
+ liras ( ) lemma=lira 
+ lirio ( ) 
+ lirios ( ) lemma=lirio 
+ lirismo ( ) 
+ lisa ( ) lemma=liso 
+ liso ( ) 
+ lisar ( ) 
+ lisas ( ) lemma=liso 
+ lisiada ( ) lemma=lisiado 
+ lisiado ( ) 
+ lisiados ( ) lemma=lisiado 
+ lisina ( ) 
+ lisinas ( ) lemma=lisina 
+ lisis ( ) 
+ lisofosfolípido ( ) 
+ lisos ( ) lemma=liso 
+ lisosomale ( ) 
+ lisosomas ( ) lemma=lisosoma 
+ lisosoma ( ) 
+ lisosómicas ( ) lemma=lisosómico 
+ lisosómico ( ) 
+ lisp ( ) 
+ lista ( ) lemma=listo 
+ listo ( ) 
+ listaba ( ) lemma=listar 
+ listar ( ) 
+ listadas ( ) lemma=listar 
+ listado ( ) 
+ listados ( ) lemma=listado 
+ listan ( ) lemma=listar 
+ listará ( ) lemma=listar 
+ listas ( ) lemma=lista 
  listener ( ) 
- listita ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- listo ( ADJECTIVE ) 
- listones ( VERB ) 
- listos ( ADJECTIVE ) 
- listísimos ( ADJECTIVE ) 
- lite ( VERB ) 
- litera ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- literal ( ADJECTIVE ) 
- literales ( ADJECTIVE ) 
- literalmente ( ADVERB ) 
- literaria ( ADJECTIVE ) 
- literariamente ( ADVERB ) 
- literarias ( ADJECTIVE ) 
- literario ( ADJECTIVE ) 
- literarios ( ADJECTIVE ) 
- literato ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- literatos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- literatura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- literaturas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litiasis ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litigantes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litigio ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litigios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litografía ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- litológica ( ADJECTIVE ) 
- litológico ( ADJECTIVE ) 
- litoral ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litorales ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litro ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liturgia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- liturgias ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- litúrgica ( ADJECTIVE ) 
- litúrgico ( ADJECTIVE ) 
- litúrgicos ( ADJECTIVE ) 
- liviana ( ADJECTIVE ) 
- livianas ( ADJECTIVE ) 
- liviano ( ADJECTIVE ) 
- livianos ( ADJECTIVE ) 
- liza ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lié ( VERB ) 
- liéis ( VERB ) 
- lió ( VERB ) 
- llaga ( VERB ) 
- llagar ( VERB ) 
- llagas ( VERB ) 
- llama ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- llamaba ( VERB ) 
- llamaban ( VERB ) 
- llamabas ( VERB ) 
- llamada ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- llamadas ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- llamadita ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llamaditas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llamado ( VERB_PAST_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- llamados ( VERB_PAST_PARTICIPLE VERB ) 
- llamai ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- llamamiento ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llamamientos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llamamos ( VERB ) 
- llaman ( VERB ) 
- llamando ( NOUN NOUN_GERUND ) 
- llamante ( VERB_PAST_PARTICIPLE VERB ) 
- llamantes ( VERB_PAST_PARTICIPLE VERB ) 
- llamar ( VERB ) 
- llamara ( VERB ) 
- llamaradas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llamaran ( VERB ) 
- llamaremos ( VERB ) 
- llamarla ( VERB_INFINITIVE VERB ) 
- llamarlas ( VERB_INFINITIVE VERB ) 
- llamarle ( VERB_INFINITIVE VERB ) 
- llamarles ( VERB_INFINITIVE VERB ) 
- llamarlo ( VERB_INFINITIVE VERB ) 
- llamarlos ( VERB_INFINITIVE VERB ) 
- llamarme ( VERB_INFINITIVE VERB ) 
- llamarnos ( VERB_INFINITIVE VERB ) 
- llamaron ( VERB ) 
- llamaros ( VERB ) 
- llamarse ( VERB_INFINITIVE VERB ) 
- llamarte ( VERB_INFINITIVE VERB ) 
- llamará ( VERB ) 
- llamarán ( VERB ) 
- llamarás ( VERB ) 
- llamaré ( VERB ) 
- llamaría ( VERB ) 
- llamaríamos ( VERB ) 
- llamarían ( VERB ) 
- llamas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- llamase ( VERB ) 
- llamaste ( VERB ) 
- llamativa ( ADJECTIVE ) 
- llamativamente ( ADVERB ) 
- llamativas ( ADJECTIVE ) 
- llamativo ( ADJECTIVE ) 
- llamativos ( ADJECTIVE ) 
- llame ( VERB ) 
- llamemos ( VERB ) 
- llamen ( VERB ) 
- llames ( VERB ) 
- llamo ( VERB ) 
- llamábamos ( VERB ) 
- llamáis ( VERB ) 
- llamándola ( VERB_PAST_PARTICIPLE VERB ) 
- llamándole ( VERB_PAST_PARTICIPLE VERB ) 
- llamándolo ( NOUN NOUN_GERUND ) 
- llamándome ( NOUN NOUN_GERUND ) 
- llamándonos ( VERB_PAST_PARTICIPLE VERB ) 
- llamándose ( VERB_PAST_PARTICIPLE VERB ) 
- llamándote ( VERB_PAST_PARTICIPLE VERB ) 
- llamársele ( VERB_INFINITIVE VERB ) 
- llamárseles ( VERB_INFINITIVE VERB ) 
- llamé ( VERB ) 
- llaméis ( VERB ) 
- llamémosla ( VERB ) 
- llamémoslas ( ) 
- llamémosle ( ) 
- llamémosles ( VERB ) 
- llamémoslo ( ) 
- llamémoslos ( ) 
- llamó ( VERB ) 
- llana ( ADJECTIVE ) 
- llanamente ( ADVERB ) 
- llanas ( ADJECTIVE ) 
- llano ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- llanos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- llanta ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- llantas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- llanto ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llantos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llanura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llanuras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llave ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llavecita ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llaveros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llaves ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llega ( VERB ) 
- llegaba ( VERB ) 
- llegaban ( VERB ) 
- llegabas ( VERB ) 
- llegada ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- llegadas ( VERB_PAST_PARTICIPLE VERB ) 
- llegado ( VERB_PAST_PARTICIPLE VERB ) 
- llegados ( VERB_PAST_PARTICIPLE VERB ) 
- llegamos ( VERB ) 
- llegan ( VERB ) 
- llegando ( NOUN NOUN_GERUND ) 
- llegar ( VERB ) 
- llegara ( VERB ) 
- llegaran ( VERB ) 
- llegaras ( VERB ) 
- llegaremos ( VERB ) 
- llegarme ( VERB_INFINITIVE VERB ) 
- llegaron ( VERB ) 
- llegarse ( VERB_INFINITIVE VERB ) 
- llegará ( VERB ) 
- llegarán ( VERB ) 
- llegaré ( VERB ) 
- llegaréis ( VERB ) 
- llegaría ( VERB ) 
- llegaríamos ( VERB ) 
- llegarían ( VERB ) 
- llegas ( VERB ) 
- llegase ( VERB ) 
- llegasen ( VERB ) 
- llegaste ( VERB ) 
- llegasteis ( VERB ) 
- llego ( VERB ) 
- llegue ( VERB ) 
- lleguemos ( VERB ) 
- lleguen ( VERB ) 
- llegues ( VERB ) 
- llegué ( VERB ) 
- lleguéis ( VERB ) 
- llegábamos ( VERB ) 
- llegándose ( NOUN NOUN_GERUND ) 
- llegáramos ( VERB ) 
- llegás ( VERB ) 
- llegásemos ( VERB ) 
- llegó ( VERB ) 
- llena ( VERB ADJECTIVE ) 
- llenaba ( VERB ) 
- llenaban ( VERB ) 
- llenabas ( VERB ) 
- llenad ( VERB ) 
- llenado ( VERB_PAST_PARTICIPLE VERB ) 
- llenamos ( VERB ) 
- llenan ( VERB ) 
- llenando ( NOUN NOUN_GERUND ) 
- llenar ( VERB ) 
- llenaran ( VERB ) 
- llenaremos ( VERB ) 
- llenarle ( VERB_INFINITIVE VERB ) 
- llenarles ( VERB_INFINITIVE VERB ) 
- llenarme ( VERB_INFINITIVE VERB ) 
- llenarnos ( VERB_INFINITIVE VERB ) 
- llenaron ( VERB ) 
- llenarse ( VERB_INFINITIVE VERB ) 
- llenará ( VERB ) 
- llenarán ( VERB ) 
- llenarías ( VERB ) 
- llenas ( ADJECTIVE ) 
- llene ( VERB ) 
- llenes ( VERB ) 
- llenita ( ADJECTIVE ) 
- lleno ( VERB ADJECTIVE ) 
- llenos ( ADJECTIVE ) 
- llenábamos ( VERB ) 
- llenáis ( VERB ) 
- llenándose ( VERB_PAST_PARTICIPLE VERB ) 
- llené ( VERB ) 
- llenísimo ( ADJECTIVE ) 
- llenó ( VERB ) 
- lleva ( VERB ) 
- llevaba ( VERB ) 
- llevabais ( VERB ) 
- llevabamos ( VERB ) 
- llevaban ( VERB ) 
- llevabas ( VERB ) 
- llevable ( ADJECTIVE ) 
- llevada ( VERB_PAST_PARTICIPLE VERB ) 
- llevadas ( VERB_PAST_PARTICIPLE VERB ) 
- llevadera ( ADJECTIVE ) 
- llevaderas ( ADJECTIVE ) 
- llevadero ( ADJECTIVE ) 
- llevaderos ( ADJECTIVE ) 
- llevado ( VERB_PAST_PARTICIPLE VERB ) 
- llevados ( VERB_PAST_PARTICIPLE VERB ) 
- llevamos ( VERB ) 
- llevan ( VERB ) 
- llevando ( NOUN NOUN_GERUND ) 
- llevanzar ( VERB ) 
- llevar ( VERB ) 
- llevara ( VERB ) 
- llevaran ( VERB ) 
- llevaremos ( VERB ) 
- llevarla ( VERB_INFINITIVE VERB ) 
- llevarle ( VERB_INFINITIVE VERB ) 
- llevarles ( VERB_INFINITIVE VERB ) 
- llevarlo ( VERB_INFINITIVE VERB ) 
- llevarlos ( VERB ) 
- llevarme ( VERB_INFINITIVE VERB ) 
- llevarnos ( VERB_INFINITIVE VERB ) 
- llevaron ( VERB ) 
- llevarse ( VERB_INFINITIVE VERB ) 
- llevarte ( VERB_INFINITIVE VERB ) 
- llevará ( VERB ) 
- llevarán ( VERB ) 
- llevarás ( VERB ) 
- llevaré ( VERB ) 
- llevaréis ( VERB ) 
- llevaría ( VERB ) 
- llevaríamos ( VERB ) 
- llevarían ( VERB ) 
- llevas ( VERB ) 
- llevase ( VERB ) 
- llevasen ( VERB ) 
- llevaste ( VERB ) 
- llevasteis ( VERB ) 
- lleve ( VERB ) 
- llevemos ( VERB ) 
- lleven ( VERB ) 
- lleves ( VERB ) 
- llevo ( VERB ) 
- llevábamos ( VERB ) 
- lleváis ( VERB ) 
- llevándola ( NOUN NOUN_GERUND ) 
- llevándole ( VERB_PAST_PARTICIPLE VERB ) 
- llevándolo ( VERB_PAST_PARTICIPLE VERB ) 
- llevándose ( VERB_PAST_PARTICIPLE VERB ) 
- llevándoselo ( VERB_PAST_PARTICIPLE VERB ) 
- lleváramos ( VERB ) 
- llevármelo ( VERB_INFINITIVE VERB ) 
- llevárnoslo ( VERB_INFINITIVE VERB ) 
- llevársela ( VERB ) 
- llevárselo ( VERB_INFINITIVE VERB ) 
- llevártelo ( VERB_INFINITIVE VERB ) 
- llevásemos ( VERB ) 
- llevé ( VERB ) 
- llevéis ( VERB ) 
- llevó ( VERB ) 
- llobregat ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- llora ( VERB ) 
- lloraba ( VERB ) 
- lloraban ( VERB ) 
- llorado ( VERB_PAST_PARTICIPLE VERB ) 
- lloramos ( VERB ) 
- lloran ( VERB ) 
- llorando ( NOUN NOUN_GERUND ) 
- llorar ( VERB ) 
- llorara ( VERB ) 
- lloraron ( VERB ) 
- lloraría ( VERB ) 
- lloremos ( VERB ) 
- lloren ( VERB ) 
- llores ( VERB ) 
- lloro ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lloros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lloroso ( ADJECTIVE ) 
- llorosos ( ADJECTIVE ) 
- lloré ( VERB ) 
- lloró ( VERB ) 
- llorón ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- llover ( VERB ) 
- llovido ( VERB_PAST_PARTICIPLE VERB ) 
- lloviendo ( NOUN NOUN_GERUND ) 
- lloviera ( VERB ) 
- llovizna ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lloviznando ( NOUN NOUN_GERUND ) 
- llovió ( VERB ) 
- llovía ( VERB ) 
- llovían ( VERB ) 
- llueva ( VERB ) 
- llueve ( VERB ) 
- lluvia ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lluvias ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lluviosa ( ADJECTIVE ) 
- lluvioso ( ADJECTIVE ) 
- llámala ( ) 
- llámale ( ) 
- llámalo ( ) 
- llámalos ( ) 
- llámame ( ) 
- llámele ( ) 
- llámeme ( ) 
- llámenme ( ) 
- llámennos ( ) 
- llámese ( ) 
- llámeselo ( VERB ) 
- llévala ( ) 
- llévalo ( ) 
- llévame ( ) 
- llévasela ( ) 
- llévate ( ) 
- llévatela ( ) 
- llévatelas ( ) 
- llévela ( ) 
- lo ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
- loa ( VERB ) 
- loable ( ADJECTIVE ) 
- loablemente ( ADVERB ) 
- loables ( ADJECTIVE ) 
- load ( VERB ) 
- loadas ( VERB_PAST_PARTICIPLE VERB ) 
+ listita ( ) lemma=listo 
+ listones ( ) lemma=listonar 
+ listonar ( ) 
+ listos ( ) lemma=listo 
+ listísimos ( ) lemma=listo 
+ lite ( ) lemma=litar 
+ litar ( ) 
+ litera ( ) 
+ literal ( ) 
+ literales ( ) lemma=literal 
+ literalmente ( ) lemma=literal 
+ literaria ( ) lemma=literario 
+ literario ( ) 
+ literariamente ( ) lemma=literario 
+ literarias ( ) lemma=literario 
+ literarios ( ) lemma=literario 
+ literato ( ) 
+ literatos ( ) lemma=literato 
+ literatura ( ) 
+ literaturas ( ) lemma=literatura 
+ litiasis ( ) 
+ litigantes ( ) lemma=litigante 
+ litigante ( ) 
+ litigio ( ) 
+ litigios ( ) lemma=litigio 
+ litografía ( ) 
+ litológica ( ) lemma=litológico 
+ litológico ( ) 
+ litoral ( ) 
+ litorales ( ) lemma=litoral 
+ litro ( ) 
+ litros ( ) lemma=litro 
+ liturgia ( ) 
+ liturgias ( ) lemma=liturgia 
+ litúrgica ( ) lemma=litúrgico 
+ litúrgico ( ) 
+ litúrgicos ( ) lemma=litúrgico 
+ liviana ( ) lemma=liviano 
+ liviano ( ) 
+ livianas ( ) lemma=liviano 
+ livianos ( ) lemma=liviano 
+ liza ( ) 
+ lié ( ) lemma=liar 
+ liéis ( ) lemma=liar 
+ lió ( ) lemma=liar 
+ llaga ( ) lemma=llagar 
+ llagar ( ) 
+ llagas ( ) lemma=llagar 
+ llama ( ) 
+ llamaba ( ) lemma=llamar 
+ llamar ( ) 
+ llamaban ( ) lemma=llamar 
+ llamabas ( ) lemma=llamar 
+ llamada ( ) 
+ llamadas ( ) lemma=llamada 
+ llamadita ( ) lemma=llamada 
+ llamaditas ( ) lemma=llamada 
+ llamado ( ) 
+ llamados ( ) lemma=llamar 
+ llamai ( ) lemma=llama 
+ llamamiento ( ) 
+ llamamientos ( ) lemma=llamamiento 
+ llamamos ( ) lemma=llamar 
+ llaman ( ) lemma=llamar 
+ llamando ( ) lemma=llamar 
+ llamante ( ) lemma=llamar 
+ llamantes ( ) lemma=llamar 
+ llamara ( ) lemma=llamar 
+ llamaradas ( ) lemma=llamarada 
+ llamarada ( ) 
+ llamaran ( ) lemma=llamar 
+ llamaremos ( ) lemma=llamar 
+ llamarla ( ) lemma=llamar 
+ llamarlas ( ) lemma=llamar 
+ llamarle ( ) lemma=llamar 
+ llamarles ( ) lemma=llamar 
+ llamarlo ( ) lemma=llamar 
+ llamarlos ( ) lemma=llamar 
+ llamarme ( ) lemma=llamar 
+ llamarnos ( ) lemma=llamar 
+ llamaron ( ) lemma=llamar 
+ llamaros ( ) lemma=llamar 
+ llamarse ( ) 
+ llamarte ( ) lemma=llamar 
+ llamará ( ) lemma=llamar 
+ llamarán ( ) lemma=llamar 
+ llamarás ( ) lemma=llamar 
+ llamaré ( ) lemma=llamar 
+ llamaría ( ) lemma=llamar 
+ llamaríamos ( ) lemma=llamar 
+ llamarían ( ) lemma=llamar 
+ llamas ( ) lemma=llama 
+ llamase ( ) lemma=llamar 
+ llamaste ( ) lemma=llamar 
+ llamativa ( ) lemma=llamativo 
+ llamativo ( ) 
+ llamativamente ( ) lemma=llamativo 
+ llamativas ( ) lemma=llamativo 
+ llamativos ( ) lemma=llamativo 
+ llame ( ) lemma=llamar 
+ llamemos ( ) lemma=llamar 
+ llamen ( ) lemma=llamar 
+ llames ( ) lemma=llamar 
+ llamo ( ) lemma=llamar 
+ llamábamos ( ) lemma=llamar 
+ llamáis ( ) lemma=llamar 
+ llamándola ( ) lemma=llamar 
+ llamándole ( ) lemma=llamar 
+ llamándolo ( ) lemma=llamar 
+ llamándome ( ) lemma=llamar 
+ llamándonos ( ) lemma=llamar 
+ llamándose ( ) lemma=llamar 
+ llamándote ( ) lemma=llamar 
+ llamársele ( ) lemma=llamarse 
+ llamárseles ( ) lemma=llamarse 
+ llamé ( ) lemma=llamar 
+ llaméis ( ) lemma=llamar 
+ llamémosla ( ) lemma=llamar 
+ llamémoslas ( ) lemma=llamar 
+ llamémosle ( ) lemma=llamar 
+ llamémosles ( ) lemma=llamar 
+ llamémoslo ( ) lemma=llamar 
+ llamémoslos ( ) lemma=llamar 
+ llamó ( ) lemma=llamar 
+ llana ( ) lemma=llano 
+ llano ( ) 
+ llanamente ( ) lemma=llano 
+ llanas ( ) lemma=llano 
+ llanos ( ) lemma=llano 
+ llanta ( ) 
+ llantas ( ) lemma=llanta 
+ llanto ( ) 
+ llantos ( ) lemma=llanto 
+ llanura ( ) 
+ llanuras ( ) lemma=llanura 
+ llave ( ) 
+ llavecita ( ) lemma=llave 
+ llaveros ( ) lemma=llavero 
+ llavero ( ) 
+ llaves ( ) lemma=llave 
+ llega ( ) lemma=llegar 
+ llegar ( ) 
+ llegaba ( ) lemma=llegar 
+ llegaban ( ) lemma=llegar 
+ llegabas ( ) lemma=llegar 
+ llegada ( ) 
+ llegadas ( ) lemma=llegar 
+ llegado ( ) lemma=llegar 
+ llegados ( ) lemma=llegar 
+ llegamos ( ) lemma=llegar 
+ llegan ( ) lemma=llegar 
+ llegando ( ) lemma=llegar 
+ llegara ( ) lemma=llegar 
+ llegaran ( ) lemma=llegar 
+ llegaras ( ) lemma=llegar 
+ llegaremos ( ) lemma=llegar 
+ llegarme ( ) lemma=llegar 
+ llegaron ( ) lemma=llegar 
+ llegarse ( ) 
+ llegará ( ) lemma=llegar 
+ llegarán ( ) lemma=llegar 
+ llegaré ( ) lemma=llegar 
+ llegaréis ( ) lemma=llegar 
+ llegaría ( ) lemma=llegar 
+ llegaríamos ( ) lemma=llegar 
+ llegarían ( ) lemma=llegar 
+ llegas ( ) lemma=llegar 
+ llegase ( ) lemma=llegar 
+ llegasen ( ) lemma=llegar 
+ llegaste ( ) lemma=llegar 
+ llegasteis ( ) lemma=llegar 
+ llego ( ) lemma=llegar 
+ llegue ( ) lemma=llegar 
+ lleguemos ( ) lemma=llegar 
+ lleguen ( ) lemma=llegar 
+ llegues ( ) lemma=llegar 
+ llegué ( ) lemma=llegar 
+ lleguéis ( ) lemma=llegar 
+ llegábamos ( ) lemma=llegar 
+ llegándose ( ) lemma=llegarse 
+ llegáramos ( ) lemma=llegar 
+ llegás ( ) lemma=llegar 
+ llegásemos ( ) lemma=llegar 
+ llegó ( ) lemma=llegar 
+ llena ( ) lemma=lleno 
+ lleno ( ) 
+ llenaba ( ) lemma=llenar 
+ llenar ( ) 
+ llenaban ( ) lemma=llenar 
+ llenabas ( ) lemma=llenar 
+ llenad ( ) lemma=llenar 
+ llenado ( ) lemma=llenar 
+ llenamos ( ) lemma=llenar 
+ llenan ( ) lemma=llenar 
+ llenando ( ) lemma=llenar 
+ llenaran ( ) lemma=llenar 
+ llenaremos ( ) lemma=llenar 
+ llenarle ( ) lemma=llenar 
+ llenarles ( ) lemma=llenar 
+ llenarme ( ) lemma=llenar 
+ llenarnos ( ) lemma=llenar 
+ llenaron ( ) lemma=llenar 
+ llenarse ( ) 
+ llenará ( ) lemma=llenar 
+ llenarán ( ) lemma=llenar 
+ llenarías ( ) lemma=llenar 
+ llenas ( ) lemma=lleno 
+ llene ( ) lemma=llenar 
+ llenes ( ) lemma=llenar 
+ llenita ( ) lemma=lleno 
+ llenos ( ) lemma=lleno 
+ llenábamos ( ) lemma=llenar 
+ llenáis ( ) lemma=llenar 
+ llenándose ( ) lemma=llenar 
+ llené ( ) lemma=llenar 
+ llenísimo ( ) lemma=lleno 
+ llenó ( ) lemma=llenar 
+ lleva ( ) lemma=llevar 
+ llevar ( ) 
+ llevaba ( ) lemma=llevar 
+ llevabais ( ) lemma=llevar 
+ llevabamos ( ) lemma=llevar 
+ llevaban ( ) lemma=llevar 
+ llevabas ( ) lemma=llevar 
+ llevable ( ) 
+ llevada ( ) lemma=llevar 
+ llevadas ( ) lemma=llevar 
+ llevadera ( ) lemma=llevadero 
+ llevadero ( ) 
+ llevaderas ( ) lemma=llevadero 
+ llevaderos ( ) lemma=llevadero 
+ llevado ( ) lemma=llevar 
+ llevados ( ) lemma=llevar 
+ llevamos ( ) lemma=llevar 
+ llevan ( ) lemma=llevar 
+ llevando ( ) lemma=llevar 
+ llevanzar ( ) 
+ llevara ( ) lemma=llevar 
+ llevaran ( ) lemma=llevar 
+ llevaremos ( ) lemma=llevar 
+ llevarla ( ) lemma=llevar 
+ llevarle ( ) lemma=llevar 
+ llevarles ( ) lemma=llevar 
+ llevarlo ( ) lemma=llevar 
+ llevarlos ( ) lemma=llevar 
+ llevarme ( ) lemma=llevar 
+ llevarnos ( ) lemma=llevar 
+ llevaron ( ) lemma=llevar 
+ llevarse ( ) 
+ llevarte ( ) lemma=llevar 
+ llevará ( ) lemma=llevar 
+ llevarán ( ) lemma=llevar 
+ llevarás ( ) lemma=llevar 
+ llevaré ( ) lemma=llevar 
+ llevaréis ( ) lemma=llevar 
+ llevaría ( ) lemma=llevar 
+ llevaríamos ( ) lemma=llevar 
+ llevarían ( ) lemma=llevar 
+ llevas ( ) lemma=llevar 
+ llevase ( ) lemma=llevar 
+ llevasen ( ) lemma=llevar 
+ llevaste ( ) lemma=llevar 
+ llevasteis ( ) lemma=llevar 
+ lleve ( ) lemma=llevar 
+ llevemos ( ) lemma=llevar 
+ lleven ( ) lemma=llevar 
+ lleves ( ) lemma=llevar 
+ llevo ( ) lemma=llevar 
+ llevábamos ( ) lemma=llevar 
+ lleváis ( ) lemma=llevar 
+ llevándola ( ) lemma=llevar 
+ llevándole ( ) lemma=llevar 
+ llevándolo ( ) lemma=llevar 
+ llevándose ( ) lemma=llevar 
+ llevándoselo ( ) lemma=llevar 
+ lleváramos ( ) lemma=llevar 
+ llevármelo ( ) lemma=llevar 
+ llevárnoslo ( ) lemma=llevar 
+ llevársela ( ) lemma=llevar 
+ llevárselo ( ) lemma=llevar 
+ llevártelo ( ) lemma=llevar 
+ llevásemos ( ) lemma=llevar 
+ llevé ( ) lemma=llevar 
+ llevéis ( ) lemma=llevar 
+ llevó ( ) lemma=llevar 
+ llobregat ( ) 
+ llora ( ) lemma=llorar 
+ llorar ( ) 
+ lloraba ( ) lemma=llorar 
+ lloraban ( ) lemma=llorar 
+ llorado ( ) lemma=llorar 
+ lloramos ( ) lemma=llorar 
+ lloran ( ) lemma=llorar 
+ llorando ( ) lemma=llorar 
+ llorara ( ) lemma=llorar 
+ lloraron ( ) lemma=llorar 
+ lloraría ( ) lemma=llorar 
+ lloremos ( ) lemma=llorar 
+ lloren ( ) lemma=llorar 
+ llores ( ) lemma=llorar 
+ lloro ( ) 
+ lloros ( ) lemma=lloro 
+ lloroso ( ) 
+ llorosos ( ) lemma=lloroso 
+ lloré ( ) lemma=llorar 
+ lloró ( ) lemma=llorar 
+ llorón ( ) 
+ llover ( ) 
+ llovido ( ) lemma=llover 
+ lloviendo ( ) lemma=llover 
+ lloviera ( ) lemma=llover 
+ llovizna ( ) 
+ lloviznando ( ) lemma=lloviznar 
+ lloviznar ( ) 
+ llovió ( ) lemma=llover 
+ llovía ( ) lemma=llover 
+ llovían ( ) lemma=llover 
+ llueva ( ) lemma=llover 
+ llueve ( ) lemma=llover 
+ lluvia ( ) 
+ lluvias ( ) lemma=lluvia 
+ lluviosa ( ) lemma=lluvioso 
+ lluvioso ( ) 
+ llámala ( ) lemma=llamar 
+ llámale ( ) lemma=llamar 
+ llámalo ( ) lemma=llamar 
+ llámalos ( ) lemma=llamar 
+ llámame ( ) lemma=llamar 
+ llámele ( ) lemma=llamar 
+ llámeme ( ) lemma=llamar 
+ llámenme ( ) lemma=llamar 
+ llámennos ( ) lemma=llamar 
+ llámese ( ) lemma=llamarse 
+ llámeselo ( ) lemma=llamar 
+ llévala ( ) lemma=llevar 
+ llévalo ( ) lemma=llevar 
+ llévame ( ) lemma=llevar 
+ llévasela ( ) lemma=llevar 
+ llévate ( ) lemma=llevar 
+ llévatela ( ) lemma=llevar 
+ llévatelas ( ) lemma=llevar 
+ llévela ( ) lemma=llevar 
+ lo ( ) lemma=el 
+ loa ( ) lemma=loar 
+ loar ( ) 
+ loable ( ) 
+ loablemente ( ) lemma=loable 
+ loables ( ) lemma=loable 
+ load ( ) lemma=loar 
+ loadas ( ) lemma=loar 
  loading ( ) 
- loar ( VERB ) 
- loas ( VERB ) 
- loba ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lobectomía ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lobo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lobos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lobuladas ( ADJECTIVE ) 
- lobular ( ADJECTIVE ) 
- lobulos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- loca ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- local ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- locales ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- localice ( VERB ) 
- localicen ( VERB ) 
- localicé ( VERB ) 
- localidad ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- localidades ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- localiza ( VERB ) 
- localizaba ( VERB ) 
- localizable ( ADJECTIVE ) 
- localizaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- localización ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- localizada ( VERB_PAST_PARTICIPLE VERB ) 
- localizadas ( VERB_PAST_PARTICIPLE VERB ) 
- localizado ( VERB_PAST_PARTICIPLE VERB ) 
- localizados ( VERB_PAST_PARTICIPLE VERB ) 
- localizamos ( VERB ) 
- localizan ( VERB ) 
- localizar ( VERB ) 
- localizarla ( VERB_INFINITIVE VERB ) 
- localizarlas ( VERB_INFINITIVE VERB ) 
- localizarle ( VERB_INFINITIVE VERB ) 
- localizarlo ( VERB_INFINITIVE VERB ) 
- localizarlos ( VERB_INFINITIVE VERB ) 
- localizaron ( VERB ) 
- localizarse ( VERB ) 
- localizarte ( VERB_INFINITIVE VERB ) 
- localizarán ( VERB ) 
- localizaste ( VERB ) 
- localizo ( VERB ) 
- localizáis ( VERB ) 
- localizándose ( VERB_PAST_PARTICIPLE VERB ) 
- localizó ( VERB ) 
- localmente ( ADVERB ) 
- localnet ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locamente ( ADVERB ) 
- locas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- locatarios ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ loas ( ) lemma=loar 
+ loba ( ) lemma=lobo 
+ lobo ( ) 
+ lobectomía ( ) 
+ lobos ( ) lemma=lobo 
+ lobuladas ( ) lemma=lobulado 
+ lobulado ( ) 
+ lobular ( ) 
+ lobulos ( ) lemma=lobulo 
+ lobulo ( ) 
+ loca ( ) lemma=loco 
+ loco ( ) 
+ local ( ) 
+ locales ( ) lemma=local 
+ localice ( ) lemma=localizar 
+ localizar ( ) 
+ localicen ( ) lemma=localizar 
+ localicé ( ) lemma=localizar 
+ localidad ( ) 
+ localidades ( ) lemma=localidad 
+ localiza ( ) lemma=localizar 
+ localizaba ( ) lemma=localizar 
+ localizable ( ) 
+ localizaciones ( ) lemma=localización 
+ localización ( ) 
+ localizada ( ) lemma=localizar 
+ localizadas ( ) lemma=localizar 
+ localizado ( ) lemma=localizar 
+ localizados ( ) lemma=localizar 
+ localizamos ( ) lemma=localizar 
+ localizan ( ) lemma=localizar 
+ localizarla ( ) lemma=localizar 
+ localizarlas ( ) lemma=localizar 
+ localizarle ( ) lemma=localizar 
+ localizarlo ( ) lemma=localizar 
+ localizarlos ( ) lemma=localizar 
+ localizaron ( ) lemma=localizar 
+ localizarse ( ) lemma=localizar 
+ localizarte ( ) lemma=localizar 
+ localizarán ( ) lemma=localizar 
+ localizaste ( ) lemma=localizar 
+ localizo ( ) lemma=localizar 
+ localizáis ( ) lemma=localizar 
+ localizándose ( ) lemma=localizar 
+ localizó ( ) lemma=localizar 
+ localmente ( ) lemma=local 
+ localnet ( ) 
+ locamente ( ) lemma=loco 
+ locas ( ) lemma=loco 
+ locatarios ( ) lemma=locatario 
+ locatario ( ) 
  located ( ) 
- loci ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lock-out ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- loco ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- locomoción ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locomotor ( ADJECTIVE ) 
- locomotora ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locomotoras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- locuciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locucioness ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locución ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- loculación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locular ( VERB_PAST_PARTICIPLE VERB ) 
- locura ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locuras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locus ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locutor ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locutora ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- locutores ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lodo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lodos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- loe ( VERB ) 
- log ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logaritmo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logaritmos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logarítmica ( ADJECTIVE ) 
- logarítmico ( ADJECTIVE ) 
- logarítmicos ( ADJECTIVE ) 
- logatomos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ loci ( ) 
+ lock-out ( ) lemma=lock 
+ lock ( ) 
+ locomoción ( ) 
+ locomotor ( ) 
+ locomotora ( ) 
+ locomotoras ( ) lemma=locomotora 
+ locos ( ) lemma=loco 
+ locuciones ( ) lemma=locución 
+ locución ( ) 
+ locucioness ( ) 
+ loculación ( ) 
+ locular ( ) 
+ locura ( ) 
+ locuras ( ) lemma=locura 
+ locus ( ) 
+ locutor ( ) 
+ locutora ( ) lemma=locutor 
+ locutores ( ) lemma=locutor 
+ lodo ( ) 
+ lodos ( ) lemma=lodo 
+ loe ( ) lemma=loar 
+ log ( ) 
+ logaritmo ( ) 
+ logaritmos ( ) lemma=logaritmo 
+ logarítmica ( ) lemma=logarítmico 
+ logarítmico ( ) 
+ logarítmicos ( ) lemma=logarítmico 
+ logatomos ( ) lemma=logatomo 
+ logatomo ( ) 
  logiciel ( ) 
- logo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logotipo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logotipos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logra ( VERB ) 
- lograba ( VERB ) 
- lograban ( VERB ) 
- lograbas ( VERB ) 
- lograda ( VERB_PAST_PARTICIPLE VERB ) 
- logradas ( VERB_PAST_PARTICIPLE VERB ) 
- logrado ( VERB_PAST_PARTICIPLE VERB ) 
- logrados ( VERB_PAST_PARTICIPLE VERB ) 
- logramos ( VERB ) 
- logran ( VERB ) 
- logrando ( NOUN NOUN_GERUND ) 
- lograr ( VERB ) 
- lograra ( VERB ) 
- lograran ( VERB ) 
- lograre ( VERB ) 
- lograremos ( VERB ) 
- lograrla ( VERB_INFINITIVE VERB ) 
- lograrlo ( VERB_INFINITIVE VERB ) 
- lograrlos ( VERB_INFINITIVE VERB ) 
- lograron ( VERB ) 
- lograrse ( VERB_INFINITIVE VERB ) 
- logrará ( VERB ) 
- lograrán ( VERB ) 
- lograrás ( VERB ) 
- lograré ( VERB ) 
- lograréis ( VERB ) 
- lograría ( VERB ) 
- lograríamos ( VERB ) 
- lograrían ( VERB ) 
- logras ( VERB ) 
- lograse ( VERB ) 
- lograsen ( VERB ) 
- lograste ( VERB ) 
- logre ( VERB ) 
- logremos ( VERB ) 
- logren ( VERB ) 
- logro ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lográbamos ( VERB ) 
- lográramos ( VERB ) 
- lográsemos ( VERB ) 
- logré ( VERB ) 
- logística ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logísticamente ( ADVERB ) 
- logísticas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- logístico ( ADJECTIVE ) 
- logísticos ( ADJECTIVE ) 
+ logo ( ) 
+ logos ( ) lemma=logo 
+ logotipo ( ) 
+ logotipos ( ) lemma=logotipo 
+ logra ( ) lemma=lograr 
+ lograr ( ) 
+ lograba ( ) lemma=lograr 
+ lograban ( ) lemma=lograr 
+ lograbas ( ) lemma=lograr 
+ lograda ( ) lemma=lograr 
+ logradas ( ) lemma=lograr 
+ logrado ( ) lemma=lograr 
+ logrados ( ) lemma=lograr 
+ logramos ( ) lemma=lograr 
+ logran ( ) lemma=lograr 
+ logrando ( ) lemma=lograr 
+ lograra ( ) lemma=lograr 
+ lograran ( ) lemma=lograr 
+ lograre ( ) lemma=lograr 
+ lograremos ( ) lemma=lograr 
+ lograrla ( ) lemma=lograr 
+ lograrlo ( ) lemma=lograr 
+ lograrlos ( ) lemma=lograr 
+ lograron ( ) lemma=lograr 
+ lograrse ( ) 
+ logrará ( ) lemma=lograr 
+ lograrán ( ) lemma=lograr 
+ lograrás ( ) lemma=lograr 
+ lograré ( ) lemma=lograr 
+ lograréis ( ) lemma=lograr 
+ lograría ( ) lemma=lograr 
+ lograríamos ( ) lemma=lograr 
+ lograrían ( ) lemma=lograr 
+ logras ( ) lemma=lograr 
+ lograse ( ) lemma=lograr 
+ lograsen ( ) lemma=lograr 
+ lograste ( ) lemma=lograr 
+ logre ( ) lemma=lograr 
+ logremos ( ) lemma=lograr 
+ logren ( ) lemma=lograr 
+ logro ( ) 
+ logros ( ) lemma=logro 
+ lográbamos ( ) lemma=lograr 
+ lográramos ( ) lemma=lograr 
+ lográsemos ( ) lemma=lograr 
+ logré ( ) lemma=lograr 
+ logró ( ) lemma=lograr 
+ logística ( ) 
+ logísticamente ( ) lemma=logístico 
+ logístico ( ) 
+ logísticas ( ) lemma=logística 
+ logísticos ( ) lemma=logístico 
  loi ( ) 
- loma ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lomas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lombarda ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lombardos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lombrices ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lombriz ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lomo ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lomos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lona ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lonas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lonchas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- londinense ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- londinenses ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
+ loma ( ) 
+ lomas ( ) lemma=loma 
+ lombarda ( ) lemma=lombardo 
+ lombardo ( ) 
+ lombardos ( ) lemma=lombardo 
+ lombrices ( ) lemma=lombriz 
+ lombriz ( ) 
+ lomo ( ) 
+ lomos ( ) lemma=lomo 
+ lona ( ) 
+ lonas ( ) lemma=lona 
+ lonchas ( ) lemma=loncha 
+ loncha ( ) 
+ londinense ( ) 
+ londinenses ( ) lemma=londinense 
  long ( ) 
- longaniza ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- longanizas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- longitud ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- longitudes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- longitudinal ( ADJECTIVE ) 
- longitudinal-retrospectivo ( ADJECTIVE ) 
- longitudinales ( ADJECTIVE ) 
- longitudinalmente ( ADVERB ) 
+ longaniza ( ) 
+ longanizas ( ) lemma=longaniza 
+ longitud ( ) 
+ longitudes ( ) lemma=longitud 
+ longitudinal ( ) 
+ longitudinal-retrospectivo ( ) 
+ longitudinales ( ) lemma=longitudinal 
+ longitudinalmente ( ) 
  longueur ( ) 
- lonja ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lonjas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ lonja ( ) 
+ lonjas ( ) lemma=lonja 
  loop ( ) 
- lora ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lord ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lorita ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- loro ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- los ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
- losa ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- losas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
+ lora ( ) lemma=loro 
+ loro ( ) 
+ lord ( ) 
+ lorita ( ) lemma=loro 
+ los ( ) lemma=el 
+ losa ( ) 
+ losas ( ) lemma=losa 
  loss ( ) 
  lost ( ) 
- lote ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lotería ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- loterías ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lotes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
+ lote ( ) 
+ lotería ( ) 
+ loterías ( ) lemma=lotería 
+ lotes ( ) lemma=lote 
  loudness ( ) 
  loudspeaking ( ) 
- loza ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lozana ( ADJECTIVE ) 
- lozano ( ADJECTIVE ) 
- lubricación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lubricante ( ADJECTIVE ) 
- lubricantes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lubrificados ( VERB_PAST_PARTICIPLE VERB ) 
- lubrificantes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luca ( ADJECTIVE_NUMBER NOUN_NUMBER ) 
- lucas ( ADJECTIVE_NUMBER NOUN_NUMBER ) 
- luce ( VERB ) 
- lucecita ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lucecitas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lucen ( VERB ) 
- lucero ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luces ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lucha ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- luchaba ( VERB ) 
- luchaban ( VERB ) 
- luchada ( VERB_PAST_PARTICIPLE VERB ) 
- luchado ( VERB_PAST_PARTICIPLE VERB ) 
- luchador ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- luchadora ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- luchadores ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- luchamos ( VERB ) 
- luchan ( VERB ) 
- luchando ( NOUN NOUN_GERUND ) 
- luchar ( VERB ) 
- luchara ( VERB ) 
- lucharan ( VERB ) 
- lucharemos ( VERB ) 
- lucharon ( VERB ) 
- luchará ( VERB ) 
- lucharán ( VERB ) 
- lucharíamos ( VERB ) 
- lucharían ( VERB ) 
- luchas ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- luche ( VERB ) 
- luchemos ( VERB ) 
- luchen ( VERB ) 
- lucho ( VERB ) 
- luchábamos ( VERB ) 
- luché ( VERB ) 
- luchó ( VERB ) 
- lucia ( VERB ADJECTIVE ) 
- lucidez ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lucido ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- lucidísimo ( ADJECTIVE ) 
- luciendo ( NOUN NOUN_GERUND ) 
- lucieron ( VERB ) 
- lucio ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lucir ( VERB ) 
- lucirse ( VERB_INFINITIVE VERB ) 
- lucirá ( VERB ) 
- luciría ( VERB ) 
- lució ( VERB ) 
- lucra ( VERB ) 
- lucran ( VERB ) 
- lucrativa ( ADJECTIVE ) 
- lucrativo ( ADJECTIVE ) 
- lucrativos ( ADJECTIVE ) 
- lucren ( VERB ) 
- lucro ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- luctuoso ( ADJECTIVE ) 
- lucía ( VERB ) 
- lucían ( VERB ) 
- luego ( ADVERB CONJUNCTION_SUBORDINATE ) 
- lueguito ( ADVERB ) 
- lugar ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lugares ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lujo ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lujos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lujosa ( ADJECTIVE ) 
- lujosamente ( ADVERB ) 
- lujosas ( ADJECTIVE ) 
- lujoso ( ADJECTIVE ) 
- lujosos ( ADJECTIVE ) 
- lujuria ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lujuriosamente ( ADVERB ) 
- lulito ( ADJECTIVE ) 
- lulu ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lumbago ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lumbar ( ADJECTIVE ) 
- lumbares ( ADJECTIVE ) 
- lumbosacra ( ADJECTIVE ) 
- lumbre ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lumbrera ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lumbreras ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lumbricale ( ADJECTIVE ) 
- lumbálgico ( ADJECTIVE ) 
- lumen ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luminal ( ADJECTIVE ) 
- luminalmente ( ADVERB ) 
- luminaria ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luminarias ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luminosa ( ADJECTIVE ) 
- luminosas ( ADJECTIVE ) 
- luminoso ( ADJECTIVE ) 
- luminosos ( ADJECTIVE ) 
- luna ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lunar ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lunarcito ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lunares ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lunas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lunes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lupa ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lupanar ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luria-delbruck ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lustre ( VERB ) 
- lustro ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- lustros ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lustrosa ( ADJECTIVE ) 
- lustroso ( ADJECTIVE ) 
- lustrosos ( ADJECTIVE ) 
- luteinizante ( ADJECTIVE ) 
- luteínico ( ADJECTIVE ) 
- luto ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lutos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lux ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luxaciones ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luxación ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luxemburguesa ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- luxemburguesas ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- luxemburgués ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- luz ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- luzca ( VERB ) 
- luzcan ( VERB ) 
- lábil ( ADJECTIVE ) 
- láctea ( ADJECTIVE ) 
- lácteas ( ADJECTIVE ) 
- lácteo ( ADJECTIVE ) 
- lácteos ( ADJECTIVE ) 
- láctica ( ADJECTIVE ) 
- láctico ( ADJECTIVE ) 
- lágrima ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lágrimas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lámina ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- láminas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lámpara ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lámparas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lánzate ( ) 
- lápices ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lápida ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lápiz ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- láser ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- láseres ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lástima ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- látex ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- látigo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- látigos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- léas ( VERB ) 
- léase ( ) 
- léeme ( ) 
- léxica ( ADJECTIVE ) 
- léxicas ( ADJECTIVE ) 
- léxico ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- léxicos ( ADJECTIVE ) 
- lía ( VERB ) 
- lían ( VERB ) 
- lías ( VERB ) 
- lícita ( ADJECTIVE ) 
- lícitamente ( ADVERB ) 
- lícito ( ADJECTIVE ) 
- lícitos ( ADJECTIVE ) 
- líder ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- líderes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- líe ( VERB ) 
- líes ( VERB ) 
- límite ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- límites ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- límpiate ( VERB ) 
- línea ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- líneas ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lío ( NOUN VERB NOUN_SINGULAR NOUN_PLURAL ) 
- líos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lípido ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lípido-proteína ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lípidos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- líquenes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- líquida ( ADJECTIVE ) 
- líquidas ( ADJECTIVE ) 
- líquido ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- líquidos ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lírica ( ADJECTIVE ) 
- lírico ( ADJECTIVE ) 
- líricos ( ADJECTIVE ) 
- lístense ( VERB ) 
- lítica ( ADJECTIVE ) 
- líticas ( ADJECTIVE ) 
- lítico ( ADJECTIVE ) 
- lívido ( ADJECTIVE ) 
- lóbrego ( ADJECTIVE ) 
- lóbulo ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lóbulos ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lógica ( NOUN ADJECTIVE NOUN_SINGULAR NOUN_PLURAL ) 
- lógicamente ( ADVERB ) 
- lógicas ( ADJECTIVE ) 
- lógico ( ADJECTIVE ) 
- lógicos ( ADJECTIVE ) 
- lúcido ( ADJECTIVE ) 
- lúcidos ( ADJECTIVE ) 
- lúgubre ( ADJECTIVE ) 
- lúgubremente ( ADVERB ) 
- lúgubres ( ADJECTIVE ) 
- lúmenes ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lúnula ( NOUN NOUN_SINGULAR NOUN_PLURAL ) 
- lúpico ( ADJECTIVE ) 
+ loza ( ) 
+ lozana ( ) lemma=lozano 
+ lozano ( ) 
+ lubricación ( ) 
+ lubricante ( ) 
+ lubricantes ( ) lemma=lubricante 
+ lubrificados ( ) lemma=lubrificar 
+ lubrificar ( ) 
+ lubrificantes ( ) lemma=lubrificante 
+ lubrificante ( ) 
+ luca ( ) 
+ lucas ( ) lemma=luca 
+ luce ( ) lemma=lucir 
+ lucir ( ) 
+ lucecita ( ) lemma=luz 
+ luz ( ) 
+ lucecitas ( ) lemma=luz 
+ lucen ( ) lemma=lucir 
+ lucero ( ) 
+ luces ( ) lemma=luz 
+ lucha ( ) 
+ luchaba ( ) lemma=luchar 
+ luchar ( ) 
+ luchaban ( ) lemma=luchar 
+ luchada ( ) lemma=luchar 
+ luchado ( ) lemma=luchar 
+ luchador ( ) 
+ luchadora ( ) lemma=luchador 
+ luchadores ( ) lemma=luchador 
+ luchamos ( ) lemma=luchar 
+ luchan ( ) lemma=luchar 
+ luchando ( ) lemma=luchar 
+ luchara ( ) lemma=luchar 
+ lucharan ( ) lemma=luchar 
+ lucharemos ( ) lemma=luchar 
+ lucharon ( ) lemma=luchar 
+ luchará ( ) lemma=luchar 
+ lucharán ( ) lemma=luchar 
+ lucharíamos ( ) lemma=luchar 
+ lucharían ( ) lemma=luchar 
+ luchas ( ) lemma=lucha 
+ luche ( ) lemma=luchar 
+ luchemos ( ) lemma=luchar 
+ luchen ( ) lemma=luchar 
+ lucho ( ) lemma=luchar 
+ luchábamos ( ) lemma=luchar 
+ luché ( ) lemma=luchar 
+ luchó ( ) lemma=luchar 
+ lucia ( ) lemma=lucio 
+ lucio ( ) 
+ lucidez ( ) 
+ lucido ( ) 
+ lucidísimo ( ) lemma=lucido 
+ luciendo ( ) lemma=lucir 
+ lucieron ( ) lemma=lucir 
+ lucirse ( ) 
+ lucirá ( ) lemma=lucir 
+ luciría ( ) lemma=lucir 
+ lució ( ) lemma=lucir 
+ lucra ( ) lemma=lucrar 
+ lucrar ( ) 
+ lucran ( ) lemma=lucrar 
+ lucrativa ( ) lemma=lucrativo 
+ lucrativo ( ) 
+ lucrativos ( ) lemma=lucrativo 
+ lucren ( ) lemma=lucrar 
+ lucro ( ) 
+ luctuoso ( ) 
+ lucía ( ) lemma=lucir 
+ lucían ( ) lemma=lucir 
+ luego ( ) 
+ lueguito ( ) lemma=luego 
+ lugar ( ) 
+ lugares ( ) lemma=lugar 
+ lujo ( ) 
+ lujos ( ) lemma=lujo 
+ lujosa ( ) lemma=lujoso 
+ lujoso ( ) 
+ lujosamente ( ) lemma=lujoso 
+ lujosas ( ) lemma=lujoso 
+ lujosos ( ) lemma=lujoso 
+ lujuria ( ) 
+ lujuriosamente ( ) lemma=lujurioso 
+ lujurioso ( ) 
+ lulito ( ) lemma=lulo 
+ lulo ( ) 
+ lulu ( ) 
+ lumbago ( ) 
+ lumbar ( ) 
+ lumbares ( ) lemma=lumbar 
+ lumbosacra ( ) lemma=lumbosacro 
+ lumbosacro ( ) 
+ lumbre ( ) 
+ lumbrera ( ) 
+ lumbreras ( ) lemma=lumbrera 
+ lumbricale ( ) 
+ lumbálgico ( ) 
+ lumen ( ) 
+ luminal ( ) 
+ luminalmente ( ) 
+ luminaria ( ) 
+ luminarias ( ) lemma=luminaria 
+ luminosa ( ) lemma=luminoso 
+ luminoso ( ) 
+ luminosas ( ) lemma=luminoso 
+ luminosidad ( ) 
+ luminosos ( ) lemma=luminoso 
+ luna ( ) 
+ lunar ( ) 
+ lunarcito ( ) lemma=lunar 
+ lunares ( ) lemma=lunar 
+ lunas ( ) lemma=luna 
+ lunes ( ) 
+ lupa ( ) 
+ lupanar ( ) 
+ luria-delbruck ( ) 
+ lustre ( ) lemma=lustrar 
+ lustrar ( ) 
+ lustro ( ) 
+ lustros ( ) lemma=lustro 
+ lustrosa ( ) lemma=lustroso 
+ lustroso ( ) 
+ lustrosos ( ) lemma=lustroso 
+ luteinizante ( ) 
+ luteínico ( ) 
+ luto ( ) 
+ lutos ( ) lemma=luto 
+ lux ( ) 
+ luxaciones ( ) lemma=luxación 
+ luxación ( ) 
+ luxemburguesa ( ) lemma=luxemburgués 
+ luxemburgués ( ) 
+ luxemburguesas ( ) lemma=luxemburgués 
+ luzca ( ) lemma=lucir 
+ luzcan ( ) lemma=lucir 
+ lábil ( ) 
+ láctea ( ) lemma=lácteo 
+ lácteo ( ) 
+ lácteas ( ) lemma=lácteo 
+ lácteos ( ) lemma=lácteo 
+ láctica ( ) lemma=láctico 
+ láctico ( ) 
+ lágrimas ( ) lemma=lágrima 
+ lámina ( ) 
+ láminas ( ) lemma=lámina 
+ lámparas ( ) lemma=lámpara 
+ lánzate ( ) lemma=lanzar 
+ lápices ( ) lemma=lápiz 
+ lápiz ( ) 
+ lápida ( ) 
+ láser ( ) 
+ láseres ( ) lemma=láser 
+ lástima ( ) 
+ látex ( ) 
+ látigos ( ) lemma=látigo 
+ léas ( ) lemma=leer 
+ léase ( ) lemma=leerse 
+ léeme ( ) lemma=leer 
+ léxica ( ) lemma=léxico 
+ léxico ( ) 
+ léxicas ( ) lemma=léxico 
+ léxicos ( ) lemma=léxico 
+ lía ( ) lemma=liar 
+ lían ( ) lemma=liar 
+ lías ( ) lemma=liar 
+ lícita ( ) lemma=lícito 
+ lícito ( ) 
+ lícitamente ( ) lemma=lícito 
+ lícitas ( ) lemma=lícito 
+ lícitos ( ) lemma=lícito 
+ líder ( ) 
+ líderes ( ) lemma=líder 
+ líe ( ) lemma=liar 
+ líes ( ) lemma=liar 
+ límites ( ) lemma=límite 
+ límpiate ( ) lemma=limpiar 
+ líneas ( ) lemma=línea 
+ lío ( ) 
+ líos ( ) lemma=lío 
+ lípido ( ) 
+ lípido-proteína ( ) 
+ lípidos ( ) lemma=lípido 
+ líquenes ( ) lemma=liquen 
+ líquida ( ) lemma=líquido 
+ líquido ( ) 
+ líquidas ( ) lemma=líquido 
+ líquidos ( ) lemma=líquido 
+ lírica ( ) lemma=lírico 
+ lírico ( ) 
+ líricos ( ) lemma=lírico 
+ lístense ( ) lemma=listar 
+ lítica ( ) lemma=lítico 
+ lítico ( ) 
+ líticas ( ) lemma=lítico 
+ lívido ( ) 
+ lóbrego ( ) 
+ lóbulo ( ) 
+ lóbulos ( ) lemma=lóbulo 
+ lógica ( ) lemma=lógico 
+ lógico ( ) 
+ lógicamente ( ) lemma=lógico 
+ lógicas ( ) lemma=lógico 
+ lógicos ( ) lemma=lógico 
+ lúcido ( ) 
+ lúcidos ( ) lemma=lúcido 
+ lúgubre ( ) 
+ lúgubremente ( ) lemma=lúgubre 
+ lúgubres ( ) lemma=lúgubre 
+ lúmenes ( ) lemma=lumen 
+ lúnula ( ) 
+ lúpico ( ) 

@@ -1,4 +1,5 @@
-﻿ 800mila ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
- 8mila ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
- 8-) ( ) 
- 80mila ( PRONOUN_SUBJECT PRONOUN_OBJECT DETERMINER ) 
+﻿ 8-) ( ) lemma=8- 
+ 8- ( ) 
+ 800mila ( ) 
+ 80mila ( ) 
+ 8mila ( ) 

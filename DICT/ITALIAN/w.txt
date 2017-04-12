@@ -1,124 +1,124 @@
-﻿ Wright ( NOUN NOUN_PROPER_SINGULAR ) 
- Werner ( NOUN NOUN_PROPER_SINGULAR ) 
- W. ( NOUN NOUN_PROPER_SINGULAR ) 
- Welles ( NOUN NOUN_PROPER_SINGULAR ) 
- Warner ( NOUN NOUN_PROPER_SINGULAR ) 
- Walesa ( NOUN NOUN_PROPER_SINGULAR ) 
- Washington ( NOUN NOUN_PROPER_SINGULAR ) 
- Wim ( NOUN NOUN_PROPER_SINGULAR ) 
- Westminster ( NOUN NOUN_PROPER_SINGULAR ) 
- White ( NOUN NOUN_PROPER_SINGULAR ) 
- Waldheim ( NOUN NOUN_PROPER_SINGULAR ) 
- Wagner ( NOUN NOUN_PROPER_SINGULAR ) 
- Welfare ( NOUN NOUN_PROPER_SINGULAR ) 
- Warren ( NOUN NOUN_PROPER_SINGULAR ) 
- Williams ( NOUN NOUN_PROPER_SINGULAR ) 
- Wall ( NOUN NOUN_PROPER_SINGULAR ) 
- Walter ( NOUN NOUN_PROPER_SINGULAR ) 
- Wojtyla ( NOUN NOUN_PROPER_SINGULAR ) 
- Wenders ( NOUN NOUN_PROPER_SINGULAR ) 
- Waigel ( NOUN NOUN_PROPER_SINGULAR ) 
- Wembley ( NOUN NOUN_PROPER_SINGULAR ) 
- Wayne ( NOUN NOUN_PROPER_SINGULAR ) 
- Wimbledon ( NOUN NOUN_PROPER_SINGULAR ) 
- Walt ( NOUN NOUN_PROPER_SINGULAR ) 
- Weah ( NOUN NOUN_PROPER_SINGULAR ) 
- Weber ( NOUN NOUN_PROPER_SINGULAR ) 
- West ( NOUN NOUN_PROPER_SINGULAR ) 
- Wilde ( NOUN NOUN_PROPER_SINGULAR ) 
- William ( NOUN NOUN_PROPER_SINGULAR ) 
- Willy ( NOUN NOUN_PROPER_SINGULAR ) 
- Wilson ( NOUN NOUN_PROPER_SINGULAR ) 
- Wind ( NOUN NOUN_PROPER_SINGULAR ) 
- Winter ( NOUN NOUN_PROPER_SINGULAR ) 
- Wolf ( NOUN NOUN_PROPER_SINGULAR ) 
- Wolfgang ( NOUN NOUN_PROPER_SINGULAR ) 
- Woody ( NOUN NOUN_PROPER_SINGULAR ) 
- World ( NOUN NOUN_PROPER_SINGULAR ) 
- Wwf ( NOUN NOUN_PROPER_SINGULAR ) 
- wagon ( NOUN NOUN_SINGULAR ) 
- walkie-talkie ( NOUN NOUN_SINGULAR ) 
- walkman ( NOUN NOUN_SINGULAR ) 
- walseriana ( ADJECTIVE ) 
- walseriane ( ADJECTIVE ) 
- walseriani ( ADJECTIVE ) 
- walserianissima ( ADJECTIVE ) 
- walserianissime ( ADJECTIVE ) 
- walserianissimi ( ADJECTIVE ) 
- walserianissimo ( ADJECTIVE ) 
- walseriano ( ADJECTIVE ) 
- washingtoniana ( ADJECTIVE ) 
- washingtoniane ( ADJECTIVE ) 
- washingtoniani ( ADJECTIVE ) 
- washingtonianissima ( ADJECTIVE ) 
- washingtonianissime ( ADJECTIVE ) 
- washingtonianissimi ( ADJECTIVE ) 
- washingtonianissimo ( ADJECTIVE ) 
- washingtoniano ( ADJECTIVE ) 
- water ( NOUN NOUN_SINGULAR ) 
- watussi ( NOUN NOUN_SINGULAR ) 
- watusso ( NOUN NOUN_SINGULAR ) 
- wc ( NOUN NOUN_SINGULAR ) 
- web ( NOUN NOUN_SINGULAR ) 
- weberiana ( ADJECTIVE ) 
- weberiane ( ADJECTIVE ) 
- weberiani ( ADJECTIVE ) 
- weberianissima ( ADJECTIVE ) 
- weberianissime ( ADJECTIVE ) 
- weberianissimi ( ADJECTIVE ) 
- weberianissimo ( ADJECTIVE ) 
- weberiano ( ADJECTIVE ) 
- week-end ( NOUN NOUN_SINGULAR ) 
- weekend ( NOUN NOUN_SINGULAR ) 
- welfare ( NOUN NOUN_SINGULAR ) 
- wellesiana ( ADJECTIVE ) 
- wellesiane ( ADJECTIVE ) 
- wellesiani ( ADJECTIVE ) 
- wellesianissima ( ADJECTIVE ) 
- wellesianissime ( ADJECTIVE ) 
- wellesianissimi ( ADJECTIVE ) 
- wellesianissimo ( ADJECTIVE ) 
- wellesiano ( ADJECTIVE ) 
- welter ( NOUN NOUN_SINGULAR ) 
- wendersiana ( ADJECTIVE ) 
- wendersiane ( ADJECTIVE ) 
- wendersiani ( ADJECTIVE ) 
- wendersianissima ( ADJECTIVE ) 
- wendersianissime ( ADJECTIVE ) 
- wendersianissimi ( ADJECTIVE ) 
- wendersianissimo ( ADJECTIVE ) 
- wendersiano ( ADJECTIVE ) 
- wertheriana ( ADJECTIVE ) 
- wertheriane ( ADJECTIVE ) 
- wertheriani ( ADJECTIVE ) 
- wertherianissima ( ADJECTIVE ) 
- wertherianissime ( ADJECTIVE ) 
- wertherianissimi ( ADJECTIVE ) 
- wertherianissimo ( ADJECTIVE ) 
- wertheriano ( ADJECTIVE ) 
- west ( NOUN NOUN_SINGULAR ) 
- western ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- westinghouse ( NOUN NOUN_SINGULAR ) 
- westinghouses ( NOUN NOUN_SINGULAR ) 
- whisky ( NOUN NOUN_SINGULAR ) 
- whitmaniana ( ADJECTIVE ) 
- whitmaniane ( ADJECTIVE ) 
- whitmaniani ( ADJECTIVE ) 
- whitmanianissima ( ADJECTIVE ) 
- whitmanianissime ( ADJECTIVE ) 
- whitmanianissimi ( ADJECTIVE ) 
- whitmanianissimo ( ADJECTIVE ) 
- whitmaniano ( ADJECTIVE ) 
- windsurf ( NOUN NOUN_SINGULAR ) 
- wojtyliana ( ADJECTIVE ) 
- wojtyliane ( ADJECTIVE ) 
- wojtyliani ( ADJECTIVE ) 
- wojtylianissima ( ADJECTIVE ) 
- wojtylianissime ( ADJECTIVE ) 
- wojtylianissimi ( ADJECTIVE ) 
- wojtylianissimo ( ADJECTIVE ) 
- wojtyliano ( ADJECTIVE ) 
- won ( NOUN NOUN_SINGULAR ) 
- workshop ( NOUN NOUN_SINGULAR ) 
- workstation ( NOUN NOUN_SINGULAR ) 
- wurstel ( NOUN NOUN_SINGULAR ) 
+﻿ W. ( ) 
+ Wagner ( ) 
+ Waigel ( ) 
+ Waldheim ( ) 
+ Walesa ( ) 
+ Wall ( ) 
+ Walt ( ) 
+ Walter ( ) 
+ Warner ( ) 
+ Warren ( ) 
+ Washington ( ) 
+ Wayne ( ) 
+ Weah ( ) 
+ Weber ( ) 
+ Welfare ( ) 
+ Welles ( ) 
+ Wembley ( ) 
+ Wenders ( ) 
+ Werner ( ) 
+ West ( ) 
+ Westminster ( ) 
+ White ( ) 
+ Wilde ( ) 
+ William ( ) 
+ Williams ( ) 
+ Willy ( ) 
+ Wilson ( ) 
+ Wim ( ) 
+ Wimbledon ( ) 
+ Wind ( ) 
+ Winter ( ) 
+ Wojtyla ( ) 
+ Wolf ( ) 
+ Wolfgang ( ) 
+ Woody ( ) 
+ World ( ) 
+ Wright ( ) 
+ Wwf ( ) 
+ wagon ( ) 
+ walkie-talkie ( ) 
+ walkman ( ) 
+ walseriana ( ) lemma=walseriano 
+ walseriano ( ) 
+ walseriane ( ) lemma=walseriano 
+ walseriani ( ) lemma=walseriano 
+ walserianissima ( ) lemma=walseriano 
+ walserianissime ( ) lemma=walseriano 
+ walserianissimi ( ) lemma=walseriano 
+ walserianissimo ( ) lemma=walseriano 
+ washingtoniana ( ) lemma=washingtoniano 
+ washingtoniano ( ) 
+ washingtoniane ( ) lemma=washingtoniano 
+ washingtoniani ( ) lemma=washingtoniano 
+ washingtonianissima ( ) lemma=washingtoniano 
+ washingtonianissime ( ) lemma=washingtoniano 
+ washingtonianissimi ( ) lemma=washingtoniano 
+ washingtonianissimo ( ) lemma=washingtoniano 
+ water ( ) 
+ watussi ( ) lemma=watusso 
+ watusso ( ) 
+ wc ( ) 
+ web ( ) 
+ weberiana ( ) lemma=weberiano 
+ weberiano ( ) 
+ weberiane ( ) lemma=weberiano 
+ weberiani ( ) lemma=weberiano 
+ weberianissima ( ) lemma=weberiano 
+ weberianissime ( ) lemma=weberiano 
+ weberianissimi ( ) lemma=weberiano 
+ weberianissimo ( ) lemma=weberiano 
+ week-end ( ) 
+ weekend ( ) 
+ welfare ( ) 
+ wellesiana ( ) lemma=wellesiano 
+ wellesiano ( ) 
+ wellesiane ( ) lemma=wellesiano 
+ wellesiani ( ) lemma=wellesiano 
+ wellesianissima ( ) lemma=wellesiano 
+ wellesianissime ( ) lemma=wellesiano 
+ wellesianissimi ( ) lemma=wellesiano 
+ wellesianissimo ( ) lemma=wellesiano 
+ welter ( ) 
+ wendersiana ( ) lemma=wendersiano 
+ wendersiano ( ) 
+ wendersiane ( ) lemma=wendersiano 
+ wendersiani ( ) lemma=wendersiano 
+ wendersianissima ( ) lemma=wendersiano 
+ wendersianissime ( ) lemma=wendersiano 
+ wendersianissimi ( ) lemma=wendersiano 
+ wendersianissimo ( ) lemma=wendersiano 
+ wertheriana ( ) lemma=wertheriano 
+ wertheriano ( ) 
+ wertheriane ( ) lemma=wertheriano 
+ wertheriani ( ) lemma=wertheriano 
+ wertherianissima ( ) lemma=wertheriano 
+ wertherianissime ( ) lemma=wertheriano 
+ wertherianissimi ( ) lemma=wertheriano 
+ wertherianissimo ( ) lemma=wertheriano 
+ west ( ) 
+ western ( ) 
+ westinghouse ( ) 
+ westinghouses ( ) lemma=westinghouse 
+ whisky ( ) 
+ whitmaniana ( ) lemma=whitmaniano 
+ whitmaniano ( ) 
+ whitmaniane ( ) lemma=whitmaniano 
+ whitmaniani ( ) lemma=whitmaniano 
+ whitmanianissima ( ) lemma=whitmaniano 
+ whitmanianissime ( ) lemma=whitmaniano 
+ whitmanianissimi ( ) lemma=whitmaniano 
+ whitmanianissimo ( ) lemma=whitmaniano 
+ windsurf ( ) 
+ wojtyliana ( ) lemma=wojtyliano 
+ wojtyliano ( ) 
+ wojtyliane ( ) lemma=wojtyliano 
+ wojtyliani ( ) lemma=wojtyliano 
+ wojtylianissima ( ) lemma=wojtyliano 
+ wojtylianissime ( ) lemma=wojtyliano 
+ wojtylianissimi ( ) lemma=wojtyliano 
+ wojtylianissimo ( ) lemma=wojtyliano 
+ won ( ) 
+ workshop ( ) 
+ workstation ( ) 
+ wurstel ( ) 

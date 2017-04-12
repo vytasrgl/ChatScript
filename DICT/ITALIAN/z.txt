@@ -1,1502 +1,1502 @@
-﻿ Zola ( NOUN NOUN_PROPER_SINGULAR ) 
- Zanetti ( NOUN NOUN_PROPER_SINGULAR ) 
- Zelanda ( NOUN NOUN_PROPER_SINGULAR ) 
- Z. ( NOUN NOUN_PROPER_SINGULAR ) 
- Zeman ( NOUN NOUN_PROPER_SINGULAR ) 
- Zeri ( NOUN NOUN_PROPER_SINGULAR ) 
- Zeffirelli ( NOUN NOUN_PROPER_SINGULAR ) 
- Zanone ( NOUN NOUN_PROPER_SINGULAR ) 
- Zidane ( NOUN NOUN_PROPER_SINGULAR ) 
- Zanussi ( NOUN NOUN_PROPER_SINGULAR ) 
- Zeitung ( NOUN NOUN_PROPER_SINGULAR ) 
- Zaire ( NOUN NOUN_PROPER_SINGULAR ) 
- Zoff ( NOUN NOUN_PROPER_SINGULAR ) 
- Zavoli ( NOUN NOUN_PROPER_SINGULAR ) 
- Zenga ( NOUN NOUN_PROPER_SINGULAR ) 
- Zucchero ( NOUN NOUN_PROPER_SINGULAR ) 
- Zagabria ( NOUN NOUN_PROPER_SINGULAR ) 
- Zaccheroni ( NOUN NOUN_PROPER_SINGULAR ) 
- zaccagniniana ( ADJECTIVE ) 
- zaccagniniane ( ADJECTIVE ) 
- zaccagniniani ( ADJECTIVE ) 
- zaccagninianissima ( ADJECTIVE ) 
- zaccagninianissime ( ADJECTIVE ) 
- zaccagninianissimi ( ADJECTIVE ) 
- zaccagninianissimo ( ADJECTIVE ) 
- zaccagniniano ( ADJECTIVE ) 
- zadanoviana ( ADJECTIVE ) 
- zadanoviane ( ADJECTIVE ) 
- zadanoviani ( ADJECTIVE ) 
- zadanovianissima ( ADJECTIVE ) 
- zadanovianissime ( ADJECTIVE ) 
- zadanovianissimi ( ADJECTIVE ) 
- zadanovianissimo ( ADJECTIVE ) 
- zadanoviano ( ADJECTIVE ) 
- zaffa ( VERB ) 
- zaffai ( VERB ) 
- zaffammo ( VERB ) 
- zaffan ( VERB ) 
- zaffando ( NOUN NOUN_GERUND ) 
- zaffano ( VERB ) 
- zaffante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zaffanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zaffar ( VERB_INFINITIVE VERB ) 
- zaffare ( VERB_INFINITIVE VERB ) 
- zaffaron ( VERB ) 
- zaffarono ( VERB ) 
- zaffasse ( VERB ) 
- zaffasser ( VERB ) 
- zaffassero ( VERB ) 
- zaffassi ( VERB ) 
- zaffassimo ( VERB ) 
- zaffaste ( VERB ) 
- zaffasti ( VERB ) 
- zaffata ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- zaffate ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- zaffati ( VERB_PAST_PARTICIPLE VERB ) 
- zaffato ( VERB_PAST_PARTICIPLE VERB ) 
- zaffava ( VERB ) 
- zaffavamo ( VERB ) 
- zaffavan ( VERB ) 
- zaffavano ( VERB ) 
- zaffavate ( VERB ) 
- zaffavi ( VERB ) 
- zaffavo ( VERB ) 
- zaffera' ( VERB ) 
- zafferai ( VERB ) 
- zafferan ( VERB ) 
- zafferanno ( VERB ) 
- zafferebbe ( VERB ) 
- zafferebber ( VERB ) 
- zafferebbero ( VERB ) 
- zafferei ( VERB ) 
- zafferemmo ( VERB ) 
- zafferemo ( VERB ) 
- zaffereste ( VERB ) 
- zafferesti ( VERB ) 
- zafferete ( VERB ) 
- zaffero' ( VERB ) 
- zafferà ( VERB ) 
- zafferò ( VERB ) 
- zaffi ( VERB ) 
- zaffiamo ( VERB ) 
- zaffiate ( VERB ) 
- zaffin ( VERB ) 
- zaffino ( VERB ) 
- zaffiri ( NOUN NOUN_SINGULAR ) 
- zaffiro ( NOUN NOUN_SINGULAR ) 
- zaffo ( VERB ) 
- zaffo' ( VERB ) 
- zaffò ( VERB ) 
- zainetti ( NOUN NOUN_SINGULAR ) 
- zainetto ( NOUN NOUN_SINGULAR ) 
- zaini ( NOUN NOUN_SINGULAR ) 
- zaino ( NOUN NOUN_SINGULAR ) 
- zairese ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zairesi ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zairesissima ( ADJECTIVE ) 
- zairesissime ( ADJECTIVE ) 
- zairesissimi ( ADJECTIVE ) 
- zairesissimo ( ADJECTIVE ) 
- zambiana ( ADJECTIVE ) 
- zambiane ( ADJECTIVE ) 
- zambiani ( ADJECTIVE ) 
- zambianissima ( ADJECTIVE ) 
- zambianissime ( ADJECTIVE ) 
- zambianissimi ( ADJECTIVE ) 
- zambianissimo ( ADJECTIVE ) 
- zambiano ( ADJECTIVE ) 
- zampa ( NOUN VERB NOUN_SINGULAR ) 
- zampai ( VERB ) 
- zampammo ( VERB ) 
- zampan ( VERB ) 
- zampando ( NOUN NOUN_GERUND ) 
- zampano ( VERB ) 
- zampante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zampanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zampar ( VERB_INFINITIVE VERB ) 
- zampare ( VERB_INFINITIVE VERB ) 
- zamparon ( VERB ) 
- zamparono ( VERB ) 
- zampasse ( VERB ) 
- zampasser ( VERB ) 
- zampassero ( VERB ) 
- zampassi ( VERB ) 
- zampassimo ( VERB ) 
- zampaste ( VERB ) 
- zampasti ( VERB ) 
- zampata ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- zampate ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- zampati ( VERB_PAST_PARTICIPLE VERB ) 
- zampato ( VERB_PAST_PARTICIPLE VERB ) 
- zampava ( VERB ) 
- zampavamo ( VERB ) 
- zampavan ( VERB ) 
- zampavano ( VERB ) 
- zampavate ( VERB ) 
- zampavi ( VERB ) 
- zampavo ( VERB ) 
- zampe ( NOUN NOUN_SINGULAR ) 
- zampera' ( VERB ) 
- zamperai ( VERB ) 
- zamperan ( VERB ) 
- zamperanno ( VERB ) 
- zamperebbe ( VERB ) 
- zamperebber ( VERB ) 
- zamperebbero ( VERB ) 
- zamperei ( VERB ) 
- zamperemmo ( VERB ) 
- zamperemo ( VERB ) 
- zampereste ( VERB ) 
- zamperesti ( VERB ) 
- zamperete ( VERB ) 
- zampero' ( VERB ) 
- zamperà ( VERB ) 
- zamperò ( VERB ) 
- zampetta ( VERB ) 
- zampettai ( VERB ) 
- zampettammo ( VERB ) 
- zampettan ( VERB ) 
- zampettando ( NOUN NOUN_GERUND ) 
- zampettano ( VERB ) 
- zampettante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zampettanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zampettar ( VERB_INFINITIVE VERB ) 
- zampettare ( VERB_INFINITIVE VERB ) 
- zampettaron ( VERB ) 
- zampettarono ( VERB ) 
- zampettasse ( VERB ) 
- zampettasser ( VERB ) 
- zampettassero ( VERB ) 
- zampettassi ( VERB ) 
- zampettassimo ( VERB ) 
- zampettaste ( VERB ) 
- zampettasti ( VERB ) 
- zampettata ( VERB_PAST_PARTICIPLE VERB ) 
- zampettate ( VERB_PAST_PARTICIPLE VERB ) 
- zampettati ( VERB_PAST_PARTICIPLE VERB ) 
- zampettato ( VERB_PAST_PARTICIPLE VERB ) 
- zampettava ( VERB ) 
- zampettavamo ( VERB ) 
- zampettavan ( VERB ) 
- zampettavano ( VERB ) 
- zampettavate ( VERB ) 
- zampettavi ( VERB ) 
- zampettavo ( VERB ) 
- zampettera' ( VERB ) 
- zampetterai ( VERB ) 
- zampetteran ( VERB ) 
- zampetteranno ( VERB ) 
- zampetterebbe ( VERB ) 
- zampetterebber ( VERB ) 
- zampetterebbero ( VERB ) 
- zampetterei ( VERB ) 
- zampetteremmo ( VERB ) 
- zampetteremo ( VERB ) 
- zampettereste ( VERB ) 
- zampetteresti ( VERB ) 
- zampetterete ( VERB ) 
- zampettero' ( VERB ) 
- zampetterà ( VERB ) 
- zampetterò ( VERB ) 
- zampetti ( VERB ) 
- zampettiamo ( VERB ) 
- zampettiate ( VERB ) 
- zampettin ( VERB ) 
- zampettino ( VERB ) 
- zampetto ( VERB ) 
- zampetto' ( VERB ) 
- zampettò ( VERB ) 
- zampi ( VERB ) 
- zampiamo ( VERB ) 
- zampiate ( VERB ) 
- zampilla ( VERB ) 
- zampillai ( VERB ) 
- zampillammo ( VERB ) 
- zampillan ( VERB ) 
- zampillando ( NOUN NOUN_GERUND ) 
- zampillano ( VERB ) 
- zampillante ( VERB_PRESENT_PARTICIPLE VERB ADJECTIVE ) 
- zampillanti ( VERB_PRESENT_PARTICIPLE VERB ADJECTIVE ) 
- zampillantissima ( ADJECTIVE ) 
- zampillantissime ( ADJECTIVE ) 
- zampillantissimi ( ADJECTIVE ) 
- zampillantissimo ( ADJECTIVE ) 
- zampillar ( VERB_INFINITIVE VERB ) 
- zampillare ( VERB_INFINITIVE VERB ) 
- zampillaron ( VERB ) 
- zampillarono ( VERB ) 
- zampillasse ( VERB ) 
- zampillasser ( VERB ) 
- zampillassero ( VERB ) 
- zampillassi ( VERB ) 
- zampillassimo ( VERB ) 
- zampillaste ( VERB ) 
- zampillasti ( VERB ) 
- zampillata ( VERB_PAST_PARTICIPLE VERB ) 
- zampillate ( VERB_PAST_PARTICIPLE VERB ) 
- zampillati ( VERB_PAST_PARTICIPLE VERB ) 
- zampillato ( VERB_PAST_PARTICIPLE VERB ) 
- zampillava ( VERB ) 
- zampillavamo ( VERB ) 
- zampillavan ( VERB ) 
- zampillavano ( VERB ) 
- zampillavate ( VERB ) 
- zampillavi ( VERB ) 
- zampillavo ( VERB ) 
- zampillera' ( VERB ) 
- zampillerai ( VERB ) 
- zampilleran ( VERB ) 
- zampilleranno ( VERB ) 
- zampillerebbe ( VERB ) 
- zampillerebber ( VERB ) 
- zampillerebbero ( VERB ) 
- zampillerei ( VERB ) 
- zampilleremmo ( VERB ) 
- zampilleremo ( VERB ) 
- zampillereste ( VERB ) 
- zampilleresti ( VERB ) 
- zampillerete ( VERB ) 
- zampillero' ( VERB ) 
- zampillerà ( VERB ) 
- zampillerò ( VERB ) 
- zampilli ( NOUN VERB NOUN_SINGULAR ) 
- zampilliamo ( VERB ) 
- zampilliate ( VERB ) 
- zampillin ( VERB ) 
- zampillino ( VERB ) 
- zampillo ( NOUN VERB NOUN_SINGULAR ) 
- zampillo' ( VERB ) 
- zampillò ( VERB ) 
- zampin ( VERB ) 
- zampini ( NOUN NOUN_SINGULAR ) 
- zampino ( NOUN VERB NOUN_SINGULAR ) 
- zampo ( VERB ) 
- zampo' ( VERB ) 
- zampò ( VERB ) 
- zanardelliana ( ADJECTIVE ) 
- zanardelliane ( ADJECTIVE ) 
- zanardelliani ( ADJECTIVE ) 
- zanardellianissima ( ADJECTIVE ) 
- zanardellianissime ( ADJECTIVE ) 
- zanardellianissimi ( ADJECTIVE ) 
- zanardellianissimo ( ADJECTIVE ) 
- zanardelliano ( ADJECTIVE ) 
- zangheriana ( ADJECTIVE ) 
- zangheriane ( ADJECTIVE ) 
- zangheriani ( ADJECTIVE ) 
- zangherianissima ( ADJECTIVE ) 
- zangherianissime ( ADJECTIVE ) 
- zangherianissimi ( ADJECTIVE ) 
- zangherianissimo ( ADJECTIVE ) 
- zangheriano ( ADJECTIVE ) 
- zanna ( NOUN NOUN_SINGULAR ) 
- zanne ( NOUN NOUN_SINGULAR ) 
- zanzara ( NOUN NOUN_SINGULAR ) 
- zanzare ( NOUN NOUN_SINGULAR ) 
- zapatista ( NOUN NOUN_SINGULAR ) 
- zapatisti ( NOUN NOUN_SINGULAR ) 
- zappa ( NOUN VERB NOUN_SINGULAR ) 
- zappai ( VERB ) 
- zappammo ( VERB ) 
- zappan ( VERB ) 
- zappando ( NOUN NOUN_GERUND ) 
- zappano ( VERB ) 
- zappante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zappanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zappar ( VERB_INFINITIVE VERB ) 
- zappare ( VERB_INFINITIVE VERB ) 
- zapparlo ( VERB_INFINITIVE VERB ) 
- zapparon ( VERB ) 
- zapparono ( VERB ) 
- zappasse ( VERB ) 
- zappasser ( VERB ) 
- zappassero ( VERB ) 
- zappassi ( VERB ) 
- zappassimo ( VERB ) 
- zappaste ( VERB ) 
- zappasti ( VERB ) 
- zappata ( VERB_PAST_PARTICIPLE VERB ) 
- zappate ( VERB_PAST_PARTICIPLE VERB ) 
- zappati ( VERB_PAST_PARTICIPLE VERB ) 
- zappato ( VERB_PAST_PARTICIPLE VERB ) 
- zappava ( VERB ) 
- zappavamo ( VERB ) 
- zappavan ( VERB ) 
- zappavano ( VERB ) 
- zappavate ( VERB ) 
- zappavi ( VERB ) 
- zappavo ( VERB ) 
- zappe ( NOUN NOUN_SINGULAR ) 
- zappera' ( VERB ) 
- zapperai ( VERB ) 
- zapperan ( VERB ) 
- zapperanno ( VERB ) 
- zapperebbe ( VERB ) 
- zapperebber ( VERB ) 
- zapperebbero ( VERB ) 
- zapperei ( VERB ) 
- zapperemmo ( VERB ) 
- zapperemo ( VERB ) 
- zappereste ( VERB ) 
- zapperesti ( VERB ) 
- zapperete ( VERB ) 
- zappero' ( VERB ) 
- zapperà ( VERB ) 
- zapperò ( VERB ) 
- zappetta ( VERB ) 
- zappettai ( VERB ) 
- zappettammo ( VERB ) 
- zappettan ( VERB ) 
- zappettando ( NOUN NOUN_GERUND ) 
- zappettano ( VERB ) 
- zappettante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zappettanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zappettar ( VERB_INFINITIVE VERB ) 
- zappettare ( VERB_INFINITIVE VERB ) 
- zappettaron ( VERB ) 
- zappettarono ( VERB ) 
- zappettasse ( VERB ) 
- zappettasser ( VERB ) 
- zappettassero ( VERB ) 
- zappettassi ( VERB ) 
- zappettassimo ( VERB ) 
- zappettaste ( VERB ) 
- zappettasti ( VERB ) 
- zappettata ( VERB_PAST_PARTICIPLE VERB ) 
- zappettate ( VERB_PAST_PARTICIPLE VERB ) 
- zappettati ( VERB_PAST_PARTICIPLE VERB ) 
- zappettato ( VERB_PAST_PARTICIPLE VERB ) 
- zappettava ( VERB ) 
- zappettavamo ( VERB ) 
- zappettavan ( VERB ) 
- zappettavano ( VERB ) 
- zappettavate ( VERB ) 
- zappettavi ( VERB ) 
- zappettavo ( VERB ) 
- zappettera' ( VERB ) 
- zappetterai ( VERB ) 
- zappetteran ( VERB ) 
- zappetteranno ( VERB ) 
- zappetterebbe ( VERB ) 
- zappetterebber ( VERB ) 
- zappetterebbero ( VERB ) 
- zappetterei ( VERB ) 
- zappetteremmo ( VERB ) 
- zappetteremo ( VERB ) 
- zappettereste ( VERB ) 
- zappetteresti ( VERB ) 
- zappetterete ( VERB ) 
- zappettero' ( VERB ) 
- zappetterà ( VERB ) 
- zappetterò ( VERB ) 
- zappetti ( VERB ) 
- zappettiamo ( VERB ) 
- zappettiate ( VERB ) 
- zappettin ( VERB ) 
- zappettino ( VERB ) 
- zappetto ( VERB ) 
- zappetto' ( VERB ) 
- zappettò ( VERB ) 
- zappi ( VERB ) 
- zappiamo ( VERB ) 
- zappiate ( VERB ) 
- zappin ( VERB ) 
- zapping ( NOUN NOUN_SINGULAR ) 
- zappino ( VERB ) 
- zappo ( VERB ) 
- zappo' ( VERB ) 
- zappò ( VERB ) 
- zar ( NOUN NOUN_SINGULAR ) 
- zarina ( NOUN NOUN_SINGULAR ) 
- zarine ( NOUN NOUN_SINGULAR ) 
- zarista ( ADJECTIVE ) 
- zariste ( ADJECTIVE ) 
- zaristi ( ADJECTIVE ) 
- zaristissima ( ADJECTIVE ) 
- zaristissime ( ADJECTIVE ) 
- zaristissimi ( ADJECTIVE ) 
- zaristissimo ( ADJECTIVE ) 
- zattera ( NOUN NOUN_SINGULAR ) 
- zattere ( NOUN NOUN_SINGULAR ) 
- zatterone ( NOUN NOUN_SINGULAR ) 
- zatteroni ( NOUN NOUN_SINGULAR ) 
- zavattiniana ( ADJECTIVE ) 
- zavattiniane ( ADJECTIVE ) 
- zavattiniani ( ADJECTIVE ) 
- zavattinianissima ( ADJECTIVE ) 
- zavattinianissime ( ADJECTIVE ) 
- zavattinianissimi ( ADJECTIVE ) 
- zavattinianissimo ( ADJECTIVE ) 
- zavattiniano ( ADJECTIVE ) 
- zavorra ( NOUN VERB NOUN_SINGULAR ) 
- zavorrai ( VERB ) 
- zavorrammo ( VERB ) 
- zavorran ( VERB ) 
- zavorrando ( NOUN NOUN_GERUND ) 
- zavorrano ( VERB ) 
- zavorrante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zavorranti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zavorrar ( VERB_INFINITIVE VERB ) 
- zavorrare ( VERB_INFINITIVE VERB ) 
- zavorraron ( VERB ) 
- zavorrarono ( VERB ) 
- zavorrasse ( VERB ) 
- zavorrasser ( VERB ) 
- zavorrassero ( VERB ) 
- zavorrassi ( VERB ) 
- zavorrassimo ( VERB ) 
- zavorraste ( VERB ) 
- zavorrasti ( VERB ) 
- zavorrata ( VERB_PAST_PARTICIPLE VERB ) 
- zavorrate ( VERB_PAST_PARTICIPLE VERB ) 
- zavorrati ( VERB_PAST_PARTICIPLE VERB ) 
- zavorrato ( VERB_PAST_PARTICIPLE VERB ) 
- zavorrava ( VERB ) 
- zavorravamo ( VERB ) 
- zavorravan ( VERB ) 
- zavorravano ( VERB ) 
- zavorravate ( VERB ) 
- zavorravi ( VERB ) 
- zavorravo ( VERB ) 
- zavorre ( NOUN NOUN_SINGULAR ) 
- zavorrera' ( VERB ) 
- zavorrerai ( VERB ) 
- zavorreran ( VERB ) 
- zavorreranno ( VERB ) 
- zavorrerebbe ( VERB ) 
- zavorrerebber ( VERB ) 
- zavorrerebbero ( VERB ) 
- zavorrerei ( VERB ) 
- zavorreremmo ( VERB ) 
- zavorreremo ( VERB ) 
- zavorrereste ( VERB ) 
- zavorreresti ( VERB ) 
- zavorrerete ( VERB ) 
- zavorrero' ( VERB ) 
- zavorrerà ( VERB ) 
- zavorrerò ( VERB ) 
- zavorri ( VERB ) 
- zavorriamo ( VERB ) 
- zavorriate ( VERB ) 
- zavorrin ( VERB ) 
- zavorrino ( VERB ) 
- zavorro ( VERB ) 
- zavorro' ( VERB ) 
- zavorrò ( VERB ) 
- zazzera ( NOUN NOUN_SINGULAR ) 
- zazzere ( NOUN NOUN_SINGULAR ) 
- zebrata ( ADJECTIVE ) 
- zebrate ( ADJECTIVE ) 
- zebrati ( ADJECTIVE ) 
- zebratissima ( ADJECTIVE ) 
- zebratissime ( ADJECTIVE ) 
- zebratissimi ( ADJECTIVE ) 
- zebratissimo ( ADJECTIVE ) 
- zebrato ( ADJECTIVE ) 
- zecca ( NOUN NOUN_SINGULAR ) 
- zecche ( NOUN NOUN_SINGULAR ) 
- zeffirelliana ( ADJECTIVE ) 
- zeffirelliane ( ADJECTIVE ) 
- zeffirelliani ( ADJECTIVE ) 
- zeffirellianissima ( ADJECTIVE ) 
- zeffirellianissime ( ADJECTIVE ) 
- zeffirellianissimi ( ADJECTIVE ) 
- zeffirellianissimo ( ADJECTIVE ) 
- zeffirelliano ( ADJECTIVE ) 
- zelante ( ADJECTIVE ) 
- zelanti ( ADJECTIVE ) 
- zelantissima ( ADJECTIVE ) 
- zelantissime ( ADJECTIVE ) 
- zelantissimi ( ADJECTIVE ) 
- zelantissimo ( ADJECTIVE ) 
- zeli ( NOUN NOUN_SINGULAR ) 
- zelo ( NOUN NOUN_SINGULAR ) 
- zen ( ADJECTIVE ) 
- zeppa ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zeppe ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zeppi ( ADJECTIVE ) 
- zeppissima ( ADJECTIVE ) 
- zeppissime ( ADJECTIVE ) 
- zeppissimi ( ADJECTIVE ) 
- zeppissimo ( ADJECTIVE ) 
- zeppo ( ADJECTIVE ) 
- zera ( ADJECTIVE ) 
- zere ( ADJECTIVE ) 
- zeri ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zerissima ( ADJECTIVE ) 
- zerissime ( ADJECTIVE ) 
- zerissimi ( ADJECTIVE ) 
- zerissimo ( ADJECTIVE ) 
- zero ( PRONOUN_SUBJECT PRONOUN_OBJECT NOUN ADJECTIVE DETERMINER NOUN_SINGULAR ) 
- zi ( NOUN NOUN_SINGULAR ) 
- zia ( NOUN NOUN_SINGULAR ) 
- zibellini ( NOUN NOUN_SINGULAR ) 
- zibellino ( NOUN NOUN_SINGULAR ) 
- zichiana ( ADJECTIVE ) 
- zichiane ( ADJECTIVE ) 
- zichiani ( ADJECTIVE ) 
- zichianissima ( ADJECTIVE ) 
- zichianissime ( ADJECTIVE ) 
- zichianissimi ( ADJECTIVE ) 
- zichianissimo ( ADJECTIVE ) 
- zichiano ( ADJECTIVE ) 
- zie ( NOUN NOUN_SINGULAR ) 
- zig-zag ( NOUN NOUN_SINGULAR ) 
- ziga ( VERB ) 
- zigai ( VERB ) 
- zigammo ( VERB ) 
- zigan ( VERB ) 
- zigana ( ADJECTIVE ) 
- zigando ( NOUN NOUN_GERUND ) 
- zigane ( ADJECTIVE ) 
- zigani ( ADJECTIVE ) 
- ziganissima ( ADJECTIVE ) 
- ziganissime ( ADJECTIVE ) 
- ziganissimi ( ADJECTIVE ) 
- ziganissimo ( ADJECTIVE ) 
- zigano ( VERB ADJECTIVE ) 
- zigante ( VERB_PRESENT_PARTICIPLE VERB ) 
- ziganti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zigar ( VERB_INFINITIVE VERB ) 
- zigare ( VERB_INFINITIVE VERB ) 
- zigaron ( VERB ) 
- zigarono ( VERB ) 
- zigasse ( VERB ) 
- zigasser ( VERB ) 
- zigassero ( VERB ) 
- zigassi ( VERB ) 
- zigassimo ( VERB ) 
- zigaste ( VERB ) 
- zigasti ( VERB ) 
- zigata ( VERB_PAST_PARTICIPLE VERB ) 
- zigate ( VERB_PAST_PARTICIPLE VERB ) 
- zigati ( VERB_PAST_PARTICIPLE VERB ) 
- zigato ( VERB_PAST_PARTICIPLE VERB ) 
- zigava ( VERB ) 
- zigavamo ( VERB ) 
- zigavan ( VERB ) 
- zigavano ( VERB ) 
- zigavate ( VERB ) 
- zigavi ( VERB ) 
- zigavo ( VERB ) 
- zighera' ( VERB ) 
- zigherai ( VERB ) 
- zigheran ( VERB ) 
- zigheranno ( VERB ) 
- zigherebbe ( VERB ) 
- zigherebber ( VERB ) 
- zigherebbero ( VERB ) 
- zigherei ( VERB ) 
- zigheremmo ( VERB ) 
- zigheremo ( VERB ) 
- zighereste ( VERB ) 
- zigheresti ( VERB ) 
- zigherete ( VERB ) 
- zighero' ( VERB ) 
- zigherà ( VERB ) 
- zigherò ( VERB ) 
- zighi ( VERB ) 
- zighiamo ( VERB ) 
- zighiate ( VERB ) 
- zighin ( VERB ) 
- zighino ( VERB ) 
- zigo ( VERB ) 
- zigo' ( VERB ) 
- zigomatica ( ADJECTIVE ) 
- zigomatiche ( ADJECTIVE ) 
- zigomatici ( ADJECTIVE ) 
- zigomaticissima ( ADJECTIVE ) 
- zigomaticissime ( ADJECTIVE ) 
- zigomaticissimi ( ADJECTIVE ) 
- zigomaticissimo ( ADJECTIVE ) 
- zigomatico ( ADJECTIVE ) 
- zigomi ( NOUN NOUN_SINGULAR ) 
- zigomo ( NOUN NOUN_SINGULAR ) 
- zigrina ( VERB ) 
- zigrinai ( VERB ) 
- zigrinammo ( VERB ) 
- zigrinan ( VERB ) 
- zigrinando ( NOUN NOUN_GERUND ) 
- zigrinano ( VERB ) 
- zigrinante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zigrinanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zigrinar ( VERB_INFINITIVE VERB ) 
- zigrinare ( VERB_INFINITIVE VERB ) 
- zigrinaron ( VERB ) 
- zigrinarono ( VERB ) 
- zigrinasse ( VERB ) 
- zigrinasser ( VERB ) 
- zigrinassero ( VERB ) 
- zigrinassi ( VERB ) 
- zigrinassimo ( VERB ) 
- zigrinaste ( VERB ) 
- zigrinasti ( VERB ) 
- zigrinata ( VERB_PAST_PARTICIPLE VERB ) 
- zigrinate ( VERB_PAST_PARTICIPLE VERB ) 
- zigrinati ( VERB_PAST_PARTICIPLE VERB ) 
- zigrinato ( VERB_PAST_PARTICIPLE VERB ) 
- zigrinava ( VERB ) 
- zigrinavamo ( VERB ) 
- zigrinavan ( VERB ) 
- zigrinavano ( VERB ) 
- zigrinavate ( VERB ) 
- zigrinavi ( VERB ) 
- zigrinavo ( VERB ) 
- zigrinera' ( VERB ) 
- zigrinerai ( VERB ) 
- zigrineran ( VERB ) 
- zigrineranno ( VERB ) 
- zigrinerebbe ( VERB ) 
- zigrinerebber ( VERB ) 
- zigrinerebbero ( VERB ) 
- zigrinerei ( VERB ) 
- zigrineremmo ( VERB ) 
- zigrineremo ( VERB ) 
- zigrinereste ( VERB ) 
- zigrineresti ( VERB ) 
- zigrinerete ( VERB ) 
- zigrinero' ( VERB ) 
- zigrinerà ( VERB ) 
- zigrinerò ( VERB ) 
- zigrini ( VERB ) 
- zigriniamo ( VERB ) 
- zigriniate ( VERB ) 
- zigrinin ( VERB ) 
- zigrinino ( VERB ) 
- zigrino ( VERB ) 
- zigrino' ( VERB ) 
- zigrinò ( VERB ) 
- zigzaga ( VERB ) 
- zigzagai ( VERB ) 
- zigzagammo ( VERB ) 
- zigzagan ( VERB ) 
- zigzagando ( NOUN NOUN_GERUND ) 
- zigzagano ( VERB ) 
- zigzagante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zigzaganti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zigzagar ( VERB_INFINITIVE VERB ) 
- zigzagare ( VERB_INFINITIVE VERB ) 
- zigzagaron ( VERB ) 
- zigzagarono ( VERB ) 
- zigzagasse ( VERB ) 
- zigzagasser ( VERB ) 
- zigzagassero ( VERB ) 
- zigzagassi ( VERB ) 
- zigzagassimo ( VERB ) 
- zigzagaste ( VERB ) 
- zigzagasti ( VERB ) 
- zigzagata ( VERB_PAST_PARTICIPLE VERB ) 
- zigzagate ( VERB_PAST_PARTICIPLE VERB ) 
- zigzagati ( VERB_PAST_PARTICIPLE VERB ) 
- zigzagato ( VERB_PAST_PARTICIPLE VERB ) 
- zigzagava ( VERB ) 
- zigzagavamo ( VERB ) 
- zigzagavan ( VERB ) 
- zigzagavano ( VERB ) 
- zigzagavate ( VERB ) 
- zigzagavi ( VERB ) 
- zigzagavo ( VERB ) 
- zigzaghera' ( VERB ) 
- zigzagherai ( VERB ) 
- zigzagheran ( VERB ) 
- zigzagheranno ( VERB ) 
- zigzagherebbe ( VERB ) 
- zigzagherebber ( VERB ) 
- zigzagherebbero ( VERB ) 
- zigzagherei ( VERB ) 
- zigzagheremmo ( VERB ) 
- zigzagheremo ( VERB ) 
- zigzaghereste ( VERB ) 
- zigzagheresti ( VERB ) 
- zigzagherete ( VERB ) 
- zigzaghero' ( VERB ) 
- zigzagherà ( VERB ) 
- zigzagherò ( VERB ) 
- zigzaghi ( VERB ) 
- zigzaghiamo ( VERB ) 
- zigzaghiate ( VERB ) 
- zigzaghin ( VERB ) 
- zigzaghino ( VERB ) 
- zigzago ( VERB ) 
- zigzago' ( VERB ) 
- zigzagò ( VERB ) 
- zigò ( VERB ) 
- zii ( NOUN NOUN_SINGULAR ) 
- zimbelli ( NOUN NOUN_SINGULAR ) 
- zimbello ( NOUN NOUN_SINGULAR ) 
- zinca ( VERB ) 
- zincai ( VERB ) 
- zincammo ( VERB ) 
- zincan ( VERB ) 
- zincando ( NOUN NOUN_GERUND ) 
- zincano ( VERB ) 
- zincante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zincanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zincar ( VERB_INFINITIVE VERB ) 
- zincare ( VERB_INFINITIVE VERB ) 
- zincaron ( VERB ) 
- zincarono ( VERB ) 
- zincasse ( VERB ) 
- zincasser ( VERB ) 
- zincassero ( VERB ) 
- zincassi ( VERB ) 
- zincassimo ( VERB ) 
- zincaste ( VERB ) 
- zincasti ( VERB ) 
- zincata ( VERB_PAST_PARTICIPLE VERB ) 
- zincate ( VERB_PAST_PARTICIPLE VERB ) 
- zincati ( VERB_PAST_PARTICIPLE VERB ) 
- zincato ( VERB_PAST_PARTICIPLE VERB ) 
- zincava ( VERB ) 
- zincavamo ( VERB ) 
- zincavan ( VERB ) 
- zincavano ( VERB ) 
- zincavate ( VERB ) 
- zincavi ( VERB ) 
- zincavo ( VERB ) 
- zinchera' ( VERB ) 
- zincherai ( VERB ) 
- zincheran ( VERB ) 
- zincheranno ( VERB ) 
- zincherebbe ( VERB ) 
- zincherebber ( VERB ) 
- zincherebbero ( VERB ) 
- zincherei ( VERB ) 
- zincheremmo ( VERB ) 
- zincheremo ( VERB ) 
- zinchereste ( VERB ) 
- zincheresti ( VERB ) 
- zincherete ( VERB ) 
- zinchero' ( VERB ) 
- zincherà ( VERB ) 
- zincherò ( VERB ) 
- zinchi ( VERB ) 
- zinchiamo ( VERB ) 
- zinchiate ( VERB ) 
- zinchin ( VERB ) 
- zinchino ( VERB ) 
- zinco ( VERB ) 
- zinco' ( VERB ) 
- zincò ( VERB ) 
- zingara ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zingare ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zingarella ( NOUN NOUN_SINGULAR ) 
- zingarelle ( NOUN NOUN_SINGULAR ) 
- zingarelli ( NOUN NOUN_SINGULAR ) 
- zingarello ( NOUN NOUN_SINGULAR ) 
- zingaresca ( ADJECTIVE ) 
- zingaresche ( ADJECTIVE ) 
- zingareschi ( ADJECTIVE ) 
- zingareschissima ( ADJECTIVE ) 
- zingareschissime ( ADJECTIVE ) 
- zingareschissimi ( ADJECTIVE ) 
- zingareschissimo ( ADJECTIVE ) 
- zingaresco ( ADJECTIVE ) 
- zingari ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zingarissima ( ADJECTIVE ) 
- zingarissime ( ADJECTIVE ) 
- zingarissimi ( ADJECTIVE ) 
- zingarissimo ( ADJECTIVE ) 
- zingaro ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zio ( NOUN NOUN_SINGULAR ) 
- zip ( NOUN NOUN_SINGULAR ) 
- zirla ( VERB ) 
- zirlai ( VERB ) 
- zirlammo ( VERB ) 
- zirlan ( VERB ) 
- zirlando ( NOUN NOUN_GERUND ) 
- zirlano ( VERB ) 
- zirlante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zirlanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zirlar ( VERB_INFINITIVE VERB ) 
- zirlare ( VERB_INFINITIVE VERB ) 
- zirlaron ( VERB ) 
- zirlarono ( VERB ) 
- zirlasse ( VERB ) 
- zirlasser ( VERB ) 
- zirlassero ( VERB ) 
- zirlassi ( VERB ) 
- zirlassimo ( VERB ) 
- zirlaste ( VERB ) 
- zirlasti ( VERB ) 
- zirlata ( VERB_PAST_PARTICIPLE VERB ) 
- zirlate ( VERB_PAST_PARTICIPLE VERB ) 
- zirlati ( VERB_PAST_PARTICIPLE VERB ) 
- zirlato ( VERB_PAST_PARTICIPLE VERB ) 
- zirlava ( VERB ) 
- zirlavamo ( VERB ) 
- zirlavan ( VERB ) 
- zirlavano ( VERB ) 
- zirlavate ( VERB ) 
- zirlavi ( VERB ) 
- zirlavo ( VERB ) 
- zirlera' ( VERB ) 
- zirlerai ( VERB ) 
- zirleran ( VERB ) 
- zirleranno ( VERB ) 
- zirlerebbe ( VERB ) 
- zirlerebber ( VERB ) 
- zirlerebbero ( VERB ) 
- zirlerei ( VERB ) 
- zirleremmo ( VERB ) 
- zirleremo ( VERB ) 
- zirlereste ( VERB ) 
- zirleresti ( VERB ) 
- zirlerete ( VERB ) 
- zirlero' ( VERB ) 
- zirlerà ( VERB ) 
- zirlerò ( VERB ) 
- zirli ( VERB ) 
- zirliamo ( VERB ) 
- zirliate ( VERB ) 
- zirlin ( VERB ) 
- zirlino ( VERB ) 
- zirlo ( VERB ) 
- zirlo' ( VERB ) 
- zirlò ( VERB ) 
- zitella ( NOUN NOUN_SINGULAR ) 
- zitelle ( NOUN NOUN_SINGULAR ) 
- zitta ( ADJECTIVE ) 
- zitte ( ADJECTIVE ) 
- zittendo ( NOUN NOUN_GERUND ) 
- zittente ( VERB_PRESENT_PARTICIPLE VERB ) 
- zittenti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zitti ( ADJECTIVE ) 
- zitti' ( VERB ) 
- zittiamo ( VERB ) 
- zittiate ( VERB ) 
- zittii ( VERB ) 
- zittimmo ( VERB ) 
- zittir ( VERB_INFINITIVE VERB ) 
- zittira' ( VERB ) 
- zittirai ( VERB ) 
- zittiran ( VERB ) 
- zittiranno ( VERB ) 
- zittire ( VERB_INFINITIVE VERB ) 
- zittirebbe ( VERB ) 
- zittirebber ( VERB ) 
- zittirebbero ( VERB ) 
- zittirei ( VERB ) 
- zittiremmo ( VERB ) 
- zittiremo ( VERB ) 
- zittireste ( VERB ) 
- zittiresti ( VERB ) 
- zittirete ( VERB ) 
- zittirlo ( VERB_INFINITIVE VERB ) 
- zittiro' ( VERB ) 
- zittiron ( VERB ) 
- zittirono ( VERB ) 
- zittirà ( VERB ) 
- zittirò ( VERB ) 
- zittisca ( VERB ) 
- zittiscan ( VERB ) 
- zittiscano ( VERB ) 
- zittisce ( VERB ) 
- zittisci ( VERB ) 
- zittisco ( VERB ) 
- zittiscon ( VERB ) 
- zittiscono ( VERB ) 
- zittisse ( VERB ) 
- zittisser ( VERB ) 
- zittissero ( VERB ) 
- zittissi ( VERB ) 
- zittissima ( ADJECTIVE ) 
- zittissime ( ADJECTIVE ) 
- zittissimi ( ADJECTIVE ) 
- zittissimo ( VERB ADJECTIVE ) 
- zittiste ( VERB ) 
- zittisti ( VERB ) 
- zittita ( VERB_PAST_PARTICIPLE VERB ) 
- zittite ( VERB_PAST_PARTICIPLE VERB ) 
- zittiti ( VERB_PAST_PARTICIPLE VERB ) 
- zittito ( VERB_PAST_PARTICIPLE VERB ) 
- zittiva ( VERB ) 
- zittivamo ( VERB ) 
- zittivan ( VERB ) 
- zittivano ( VERB ) 
- zittivate ( VERB ) 
- zittivi ( VERB ) 
- zittivo ( VERB ) 
- zitto ( ADJECTIVE ) 
- zittì ( VERB ) 
- zoccola ( NOUN VERB NOUN_SINGULAR ) 
- zoccolai ( VERB ) 
- zoccolammo ( VERB ) 
- zoccolan ( VERB ) 
- zoccolando ( NOUN NOUN_GERUND ) 
- zoccolano ( VERB ) 
- zoccolante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zoccolanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zoccolar ( VERB_INFINITIVE VERB ) 
- zoccolare ( VERB_INFINITIVE VERB ) 
- zoccolaron ( VERB ) 
- zoccolarono ( VERB ) 
- zoccolasse ( VERB ) 
- zoccolasser ( VERB ) 
- zoccolassero ( VERB ) 
- zoccolassi ( VERB ) 
- zoccolassimo ( VERB ) 
- zoccolaste ( VERB ) 
- zoccolasti ( VERB ) 
- zoccolata ( VERB_PAST_PARTICIPLE VERB ) 
- zoccolate ( VERB_PAST_PARTICIPLE VERB ) 
- zoccolati ( VERB_PAST_PARTICIPLE VERB ) 
- zoccolato ( VERB_PAST_PARTICIPLE VERB ) 
- zoccolava ( VERB ) 
- zoccolavamo ( VERB ) 
- zoccolavan ( VERB ) 
- zoccolavano ( VERB ) 
- zoccolavate ( VERB ) 
- zoccolavi ( VERB ) 
- zoccolavo ( VERB ) 
- zoccole ( NOUN NOUN_SINGULAR ) 
- zoccolera' ( VERB ) 
- zoccolerai ( VERB ) 
- zoccoleran ( VERB ) 
- zoccoleranno ( VERB ) 
- zoccolerebbe ( VERB ) 
- zoccolerebber ( VERB ) 
- zoccolerebbero ( VERB ) 
- zoccolerei ( VERB ) 
- zoccoleremmo ( VERB ) 
- zoccoleremo ( VERB ) 
- zoccolereste ( VERB ) 
- zoccoleresti ( VERB ) 
- zoccolerete ( VERB ) 
- zoccolero' ( VERB ) 
- zoccolerà ( VERB ) 
- zoccolerò ( VERB ) 
- zoccoli ( NOUN VERB NOUN_SINGULAR ) 
- zoccoliamo ( VERB ) 
- zoccoliate ( VERB ) 
- zoccolin ( VERB ) 
- zoccolino ( VERB ) 
- zoccolo ( NOUN VERB NOUN_SINGULAR ) 
- zoccolo' ( VERB ) 
- zoccolò ( VERB ) 
- zodiacale ( ADJECTIVE ) 
- zodiacali ( ADJECTIVE ) 
- zodiacalissima ( ADJECTIVE ) 
- zodiacalissime ( ADJECTIVE ) 
- zodiacalissimi ( ADJECTIVE ) 
- zodiacalissimo ( ADJECTIVE ) 
- zolfi ( NOUN NOUN_SINGULAR ) 
- zolfo ( NOUN NOUN_SINGULAR ) 
- zolla ( NOUN NOUN_SINGULAR ) 
- zolle ( NOUN NOUN_SINGULAR ) 
- zombi ( NOUN NOUN_SINGULAR ) 
- zombie ( NOUN NOUN_SINGULAR ) 
- zompa ( VERB ) 
- zompai ( VERB ) 
- zompammo ( VERB ) 
- zompan ( VERB ) 
- zompando ( NOUN NOUN_GERUND ) 
- zompano ( VERB ) 
- zompante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zompanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zompar ( VERB_INFINITIVE VERB ) 
- zompare ( VERB_INFINITIVE VERB ) 
- zomparon ( VERB ) 
- zomparono ( VERB ) 
- zompasse ( VERB ) 
- zompasser ( VERB ) 
- zompassero ( VERB ) 
- zompassi ( VERB ) 
- zompassimo ( VERB ) 
- zompaste ( VERB ) 
- zompasti ( VERB ) 
- zompata ( VERB_PAST_PARTICIPLE VERB ) 
- zompate ( VERB_PAST_PARTICIPLE VERB ) 
- zompati ( VERB_PAST_PARTICIPLE VERB ) 
- zompato ( VERB_PAST_PARTICIPLE VERB ) 
- zompava ( VERB ) 
- zompavamo ( VERB ) 
- zompavan ( VERB ) 
- zompavano ( VERB ) 
- zompavate ( VERB ) 
- zompavi ( VERB ) 
- zompavo ( VERB ) 
- zompera' ( VERB ) 
- zomperai ( VERB ) 
- zomperan ( VERB ) 
- zomperanno ( VERB ) 
- zomperebbe ( VERB ) 
- zomperebber ( VERB ) 
- zomperebbero ( VERB ) 
- zomperei ( VERB ) 
- zomperemmo ( VERB ) 
- zomperemo ( VERB ) 
- zompereste ( VERB ) 
- zomperesti ( VERB ) 
- zomperete ( VERB ) 
- zompero' ( VERB ) 
- zomperà ( VERB ) 
- zomperò ( VERB ) 
- zompetta ( VERB ) 
- zompettai ( VERB ) 
- zompettammo ( VERB ) 
- zompettan ( VERB ) 
- zompettando ( NOUN NOUN_GERUND ) 
- zompettano ( VERB ) 
- zompettante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zompettanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zompettar ( VERB_INFINITIVE VERB ) 
- zompettare ( VERB_INFINITIVE VERB ) 
- zompettaron ( VERB ) 
- zompettarono ( VERB ) 
- zompettasse ( VERB ) 
- zompettasser ( VERB ) 
- zompettassero ( VERB ) 
- zompettassi ( VERB ) 
- zompettassimo ( VERB ) 
- zompettaste ( VERB ) 
- zompettasti ( VERB ) 
- zompettata ( VERB_PAST_PARTICIPLE VERB ) 
- zompettate ( VERB_PAST_PARTICIPLE VERB ) 
- zompettati ( VERB_PAST_PARTICIPLE VERB ) 
- zompettato ( VERB_PAST_PARTICIPLE VERB ) 
- zompettava ( VERB ) 
- zompettavamo ( VERB ) 
- zompettavan ( VERB ) 
- zompettavano ( VERB ) 
- zompettavate ( VERB ) 
- zompettavi ( VERB ) 
- zompettavo ( VERB ) 
- zompettera' ( VERB ) 
- zompetterai ( VERB ) 
- zompetteran ( VERB ) 
- zompetteranno ( VERB ) 
- zompetterebbe ( VERB ) 
- zompetterebber ( VERB ) 
- zompetterebbero ( VERB ) 
- zompetterei ( VERB ) 
- zompetteremmo ( VERB ) 
- zompetteremo ( VERB ) 
- zompettereste ( VERB ) 
- zompetteresti ( VERB ) 
- zompetterete ( VERB ) 
- zompettero' ( VERB ) 
- zompetterà ( VERB ) 
- zompetterò ( VERB ) 
- zompetti ( VERB ) 
- zompettiamo ( VERB ) 
- zompettiate ( VERB ) 
- zompettin ( VERB ) 
- zompettino ( VERB ) 
- zompetto ( VERB ) 
- zompetto' ( VERB ) 
- zompettò ( VERB ) 
- zompi ( VERB ) 
- zompiamo ( VERB ) 
- zompiate ( VERB ) 
- zompin ( VERB ) 
- zompino ( VERB ) 
- zompo ( VERB ) 
- zompo' ( VERB ) 
- zompò ( VERB ) 
- zona ( NOUN NOUN_SINGULAR ) 
- zonale ( ADJECTIVE ) 
- zonali ( ADJECTIVE ) 
- zonalissima ( ADJECTIVE ) 
- zonalissime ( ADJECTIVE ) 
- zonalissimi ( ADJECTIVE ) 
- zonalissimo ( ADJECTIVE ) 
- zone ( NOUN NOUN_SINGULAR ) 
- zonista ( NOUN NOUN_SINGULAR ) 
- zonisti ( NOUN NOUN_SINGULAR ) 
- zoo ( NOUN NOUN_SINGULAR ) 
- zoologi ( NOUN NOUN_SINGULAR ) 
- zoologia ( NOUN NOUN_SINGULAR ) 
- zoologica ( ADJECTIVE ) 
- zoologiche ( ADJECTIVE ) 
- zoologici ( ADJECTIVE ) 
- zoologicissima ( ADJECTIVE ) 
- zoologicissime ( ADJECTIVE ) 
- zoologicissimi ( ADJECTIVE ) 
- zoologicissimo ( ADJECTIVE ) 
- zoologico ( ADJECTIVE ) 
- zoologie ( NOUN NOUN_SINGULAR ) 
- zoologo ( NOUN NOUN_SINGULAR ) 
- zoom ( NOUN NOUN_SINGULAR ) 
- zooma ( VERB ) 
- zoomai ( VERB ) 
- zoomammo ( VERB ) 
- zooman ( VERB ) 
- zoomando ( NOUN NOUN_GERUND ) 
- zoomano ( VERB ) 
- zoomante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zoomanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zoomar ( VERB_INFINITIVE VERB ) 
- zoomare ( VERB_INFINITIVE VERB ) 
- zoomaron ( VERB ) 
- zoomarono ( VERB ) 
- zoomasse ( VERB ) 
- zoomasser ( VERB ) 
- zoomassero ( VERB ) 
- zoomassi ( VERB ) 
- zoomassimo ( VERB ) 
- zoomaste ( VERB ) 
- zoomasti ( VERB ) 
- zoomata ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- zoomate ( VERB_PAST_PARTICIPLE NOUN VERB NOUN_SINGULAR ) 
- zoomati ( VERB_PAST_PARTICIPLE VERB ) 
- zoomato ( VERB_PAST_PARTICIPLE VERB ) 
- zoomava ( VERB ) 
- zoomavamo ( VERB ) 
- zoomavan ( VERB ) 
- zoomavano ( VERB ) 
- zoomavate ( VERB ) 
- zoomavi ( VERB ) 
- zoomavo ( VERB ) 
- zoomera' ( VERB ) 
- zoomerai ( VERB ) 
- zoomeran ( VERB ) 
- zoomeranno ( VERB ) 
- zoomerebbe ( VERB ) 
- zoomerebber ( VERB ) 
- zoomerebbero ( VERB ) 
- zoomerei ( VERB ) 
- zoomeremmo ( VERB ) 
- zoomeremo ( VERB ) 
- zoomereste ( VERB ) 
- zoomeresti ( VERB ) 
- zoomerete ( VERB ) 
- zoomero' ( VERB ) 
- zoomerà ( VERB ) 
- zoomerò ( VERB ) 
- zoomi ( VERB ) 
- zoomiamo ( VERB ) 
- zoomiate ( VERB ) 
- zoomin ( VERB ) 
- zoomino ( VERB ) 
- zoomo ( VERB ) 
- zoomo' ( VERB ) 
- zoomorfa ( ADJECTIVE ) 
- zoomorfe ( ADJECTIVE ) 
- zoomorfi ( ADJECTIVE ) 
- zoomorfica ( ADJECTIVE ) 
- zoomorfiche ( ADJECTIVE ) 
- zoomorfici ( ADJECTIVE ) 
- zoomorficissima ( ADJECTIVE ) 
- zoomorficissime ( ADJECTIVE ) 
- zoomorficissimi ( ADJECTIVE ) 
- zoomorficissimo ( ADJECTIVE ) 
- zoomorfico ( ADJECTIVE ) 
- zoomorfissima ( ADJECTIVE ) 
- zoomorfissime ( ADJECTIVE ) 
- zoomorfissimi ( ADJECTIVE ) 
- zoomorfissimo ( ADJECTIVE ) 
- zoomorfo ( ADJECTIVE ) 
- zoomò ( VERB ) 
- zootecnia ( NOUN NOUN_SINGULAR ) 
- zootecnica ( ADJECTIVE ) 
- zootecniche ( ADJECTIVE ) 
- zootecnici ( ADJECTIVE ) 
- zootecnicissima ( ADJECTIVE ) 
- zootecnicissime ( ADJECTIVE ) 
- zootecnicissimi ( ADJECTIVE ) 
- zootecnicissimo ( ADJECTIVE ) 
- zootecnico ( ADJECTIVE ) 
- zootecnie ( NOUN NOUN_SINGULAR ) 
- zoppa ( ADJECTIVE ) 
- zoppe ( ADJECTIVE ) 
- zoppi ( ADJECTIVE ) 
- zoppia ( NOUN NOUN_SINGULAR ) 
- zoppica ( VERB ) 
- zoppicai ( VERB ) 
- zoppicammo ( VERB ) 
- zoppican ( VERB ) 
- zoppicando ( NOUN NOUN_GERUND ) 
- zoppicano ( VERB ) 
- zoppicante ( VERB_PRESENT_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- zoppicanti ( VERB_PRESENT_PARTICIPLE NOUN VERB ADJECTIVE NOUN_SINGULAR ) 
- zoppicantissima ( ADJECTIVE ) 
- zoppicantissime ( ADJECTIVE ) 
- zoppicantissimi ( ADJECTIVE ) 
- zoppicantissimo ( ADJECTIVE ) 
- zoppicar ( VERB_INFINITIVE VERB ) 
- zoppicare ( VERB_INFINITIVE VERB ) 
- zoppicaron ( VERB ) 
- zoppicarono ( VERB ) 
- zoppicasse ( VERB ) 
- zoppicasser ( VERB ) 
- zoppicassero ( VERB ) 
- zoppicassi ( VERB ) 
- zoppicassimo ( VERB ) 
- zoppicaste ( VERB ) 
- zoppicasti ( VERB ) 
- zoppicata ( VERB_PAST_PARTICIPLE VERB ) 
- zoppicate ( VERB_PAST_PARTICIPLE VERB ) 
- zoppicati ( VERB_PAST_PARTICIPLE VERB ) 
- zoppicato ( VERB_PAST_PARTICIPLE VERB ) 
- zoppicava ( VERB ) 
- zoppicavamo ( VERB ) 
- zoppicavan ( VERB ) 
- zoppicavano ( VERB ) 
- zoppicavate ( VERB ) 
- zoppicavi ( VERB ) 
- zoppicavo ( VERB ) 
- zoppichera' ( VERB ) 
- zoppicherai ( VERB ) 
- zoppicheran ( VERB ) 
- zoppicheranno ( VERB ) 
- zoppicherebbe ( VERB ) 
- zoppicherebber ( VERB ) 
- zoppicherebbero ( VERB ) 
- zoppicherei ( VERB ) 
- zoppicheremmo ( VERB ) 
- zoppicheremo ( VERB ) 
- zoppichereste ( VERB ) 
- zoppicheresti ( VERB ) 
- zoppicherete ( VERB ) 
- zoppichero' ( VERB ) 
- zoppicherà ( VERB ) 
- zoppicherò ( VERB ) 
- zoppichi ( VERB ) 
- zoppichiamo ( VERB ) 
- zoppichiate ( VERB ) 
- zoppichin ( VERB ) 
- zoppichino ( VERB ) 
- zoppico ( VERB ) 
- zoppico' ( VERB ) 
- zoppicò ( VERB ) 
- zoppie ( NOUN NOUN_SINGULAR ) 
- zoppissima ( ADJECTIVE ) 
- zoppissime ( ADJECTIVE ) 
- zoppissimi ( ADJECTIVE ) 
- zoppissimo ( ADJECTIVE ) 
- zoppo ( ADJECTIVE ) 
- zoppìa ( NOUN NOUN_SINGULAR ) 
- zoppìe ( NOUN NOUN_SINGULAR ) 
- zuava ( ADJECTIVE ) 
- zuave ( ADJECTIVE ) 
- zuavi ( ADJECTIVE ) 
- zuavissima ( ADJECTIVE ) 
- zuavissime ( ADJECTIVE ) 
- zuavissimi ( ADJECTIVE ) 
- zuavissimo ( ADJECTIVE ) 
- zuavo ( ADJECTIVE ) 
- zucca ( NOUN NOUN_SINGULAR ) 
- zucche ( NOUN NOUN_SINGULAR ) 
- zucchera ( VERB ) 
- zuccherai ( VERB ) 
- zuccherammo ( VERB ) 
- zuccheran ( VERB ) 
- zuccherando ( NOUN NOUN_GERUND ) 
- zuccherano ( VERB ) 
- zuccherante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zuccheranti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zuccherar ( VERB_INFINITIVE VERB ) 
- zuccherare ( VERB_INFINITIVE VERB ) 
- zuccheraron ( VERB ) 
- zuccherarono ( VERB ) 
- zuccherasse ( VERB ) 
- zuccherasser ( VERB ) 
- zuccherassero ( VERB ) 
- zuccherassi ( VERB ) 
- zuccherassimo ( VERB ) 
- zuccheraste ( VERB ) 
- zuccherasti ( VERB ) 
- zuccherata ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- zuccherate ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- zuccherati ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- zuccheratissima ( ADJECTIVE ) 
- zuccheratissime ( ADJECTIVE ) 
- zuccheratissimi ( ADJECTIVE ) 
- zuccheratissimo ( ADJECTIVE ) 
- zuccherato ( VERB_PAST_PARTICIPLE VERB ADJECTIVE ) 
- zuccherava ( VERB ) 
- zuccheravamo ( VERB ) 
- zuccheravan ( VERB ) 
- zuccheravano ( VERB ) 
- zuccheravate ( VERB ) 
- zuccheravi ( VERB ) 
- zuccheravo ( VERB ) 
- zuccherera' ( VERB ) 
- zucchererai ( VERB ) 
- zucchereran ( VERB ) 
- zucchereranno ( VERB ) 
- zucchererebbe ( VERB ) 
- zucchererebber ( VERB ) 
- zucchererebbero ( VERB ) 
- zucchererei ( VERB ) 
- zucchereremmo ( VERB ) 
- zucchereremo ( VERB ) 
- zuccherereste ( VERB ) 
- zucchereresti ( VERB ) 
- zucchererete ( VERB ) 
- zuccherero' ( VERB ) 
- zucchererà ( VERB ) 
- zucchererò ( VERB ) 
- zuccheri ( NOUN VERB NOUN_SINGULAR ) 
- zuccheriamo ( VERB ) 
- zuccheriate ( VERB ) 
- zuccheriera ( ADJECTIVE ) 
- zuccheriere ( ADJECTIVE ) 
- zuccherieri ( ADJECTIVE ) 
- zuccherierissima ( ADJECTIVE ) 
- zuccherierissime ( ADJECTIVE ) 
- zuccherierissimi ( ADJECTIVE ) 
- zuccherierissimo ( ADJECTIVE ) 
- zuccheriero ( ADJECTIVE ) 
- zuccherifici ( NOUN NOUN_SINGULAR ) 
- zuccherificio ( NOUN NOUN_SINGULAR ) 
- zuccherin ( VERB ) 
- zuccherina ( ADJECTIVE ) 
- zuccherine ( ADJECTIVE ) 
- zuccherini ( ADJECTIVE ) 
- zuccherinissima ( ADJECTIVE ) 
- zuccherinissime ( ADJECTIVE ) 
- zuccherinissimi ( ADJECTIVE ) 
- zuccherinissimo ( ADJECTIVE ) 
- zuccherino ( VERB ADJECTIVE ) 
- zucchero ( NOUN VERB NOUN_SINGULAR ) 
- zucchero' ( VERB ) 
- zuccherosa ( ADJECTIVE ) 
- zuccherose ( ADJECTIVE ) 
- zuccherosi ( ADJECTIVE ) 
- zuccherosissima ( ADJECTIVE ) 
- zuccherosissime ( ADJECTIVE ) 
- zuccherosissimi ( ADJECTIVE ) 
- zuccherosissimo ( ADJECTIVE ) 
- zuccheroso ( ADJECTIVE ) 
- zuccherò ( VERB ) 
- zuccone ( ADJECTIVE ) 
- zucconi ( ADJECTIVE ) 
- zucconissima ( ADJECTIVE ) 
- zucconissime ( ADJECTIVE ) 
- zucconissimi ( ADJECTIVE ) 
- zucconissimo ( ADJECTIVE ) 
- zufola ( VERB ) 
- zufolai ( VERB ) 
- zufolammo ( VERB ) 
- zufolan ( VERB ) 
- zufolando ( NOUN NOUN_GERUND ) 
- zufolano ( VERB ) 
- zufolante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zufolanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zufolar ( VERB_INFINITIVE VERB ) 
- zufolare ( VERB_INFINITIVE VERB ) 
- zufolaron ( VERB ) 
- zufolarono ( VERB ) 
- zufolasse ( VERB ) 
- zufolasser ( VERB ) 
- zufolassero ( VERB ) 
- zufolassi ( VERB ) 
- zufolassimo ( VERB ) 
- zufolaste ( VERB ) 
- zufolasti ( VERB ) 
- zufolata ( VERB_PAST_PARTICIPLE VERB ) 
- zufolate ( VERB_PAST_PARTICIPLE VERB ) 
- zufolati ( VERB_PAST_PARTICIPLE VERB ) 
- zufolato ( VERB_PAST_PARTICIPLE VERB ) 
- zufolava ( VERB ) 
- zufolavamo ( VERB ) 
- zufolavan ( VERB ) 
- zufolavano ( VERB ) 
- zufolavate ( VERB ) 
- zufolavi ( VERB ) 
- zufolavo ( VERB ) 
- zufolera' ( VERB ) 
- zufolerai ( VERB ) 
- zufoleran ( VERB ) 
- zufoleranno ( VERB ) 
- zufolerebbe ( VERB ) 
- zufolerebber ( VERB ) 
- zufolerebbero ( VERB ) 
- zufolerei ( VERB ) 
- zufoleremmo ( VERB ) 
- zufoleremo ( VERB ) 
- zufolereste ( VERB ) 
- zufoleresti ( VERB ) 
- zufolerete ( VERB ) 
- zufolero' ( VERB ) 
- zufolerà ( VERB ) 
- zufolerò ( VERB ) 
- zufoli ( VERB ) 
- zufoliamo ( VERB ) 
- zufoliate ( VERB ) 
- zufolin ( VERB ) 
- zufolino ( VERB ) 
- zufolo ( VERB ) 
- zufolo' ( VERB ) 
- zufolò ( VERB ) 
- zulu' ( ADJECTIVE ) 
- zulù ( ADJECTIVE ) 
- zuma ( VERB ) 
- zumai ( VERB ) 
- zumammo ( VERB ) 
- zuman ( VERB ) 
- zumando ( NOUN NOUN_GERUND ) 
- zumano ( VERB ) 
- zumante ( VERB_PRESENT_PARTICIPLE VERB ) 
- zumanti ( VERB_PRESENT_PARTICIPLE VERB ) 
- zumar ( VERB_INFINITIVE VERB ) 
- zumare ( VERB_INFINITIVE VERB ) 
- zumaron ( VERB ) 
- zumarono ( VERB ) 
- zumasse ( VERB ) 
- zumasser ( VERB ) 
- zumassero ( VERB ) 
- zumassi ( VERB ) 
- zumassimo ( VERB ) 
- zumaste ( VERB ) 
- zumasti ( VERB ) 
- zumata ( VERB_PAST_PARTICIPLE VERB ) 
- zumate ( VERB_PAST_PARTICIPLE VERB ) 
- zumati ( VERB_PAST_PARTICIPLE VERB ) 
- zumato ( VERB_PAST_PARTICIPLE VERB ) 
- zumava ( VERB ) 
- zumavamo ( VERB ) 
- zumavan ( VERB ) 
- zumavano ( VERB ) 
- zumavate ( VERB ) 
- zumavi ( VERB ) 
- zumavo ( VERB ) 
- zumera' ( VERB ) 
- zumerai ( VERB ) 
- zumeran ( VERB ) 
- zumeranno ( VERB ) 
- zumerebbe ( VERB ) 
- zumerebber ( VERB ) 
- zumerebbero ( VERB ) 
- zumerei ( VERB ) 
- zumeremmo ( VERB ) 
- zumeremo ( VERB ) 
- zumereste ( VERB ) 
- zumeresti ( VERB ) 
- zumerete ( VERB ) 
- zumero' ( VERB ) 
- zumerà ( VERB ) 
- zumerò ( VERB ) 
- zumi ( VERB ) 
- zumiamo ( VERB ) 
- zumiate ( VERB ) 
- zumin ( VERB ) 
- zumino ( VERB ) 
- zumo ( VERB ) 
- zumo' ( VERB ) 
- zumò ( VERB ) 
- zuppa ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zuppe ( NOUN ADJECTIVE NOUN_SINGULAR ) 
- zuppi ( ADJECTIVE ) 
- zuppissima ( ADJECTIVE ) 
- zuppissime ( ADJECTIVE ) 
- zuppissimi ( ADJECTIVE ) 
- zuppissimo ( ADJECTIVE ) 
- zuppo ( ADJECTIVE ) 
- zurighese ( ADJECTIVE ) 
- zurighesi ( ADJECTIVE ) 
- zurighesissima ( ADJECTIVE ) 
- zurighesissime ( ADJECTIVE ) 
- zurighesissimi ( ADJECTIVE ) 
- zurighesissimo ( ADJECTIVE ) 
- zurliniana ( ADJECTIVE ) 
- zurliniane ( ADJECTIVE ) 
- zurliniani ( ADJECTIVE ) 
- zurlinianissima ( ADJECTIVE ) 
- zurlinianissime ( ADJECTIVE ) 
- zurlinianissimi ( ADJECTIVE ) 
- zurlinianissimo ( ADJECTIVE ) 
- zurliniano ( ADJECTIVE ) 
+﻿ Z. ( ) 
+ Zaccheroni ( ) 
+ Zagabria ( ) 
+ Zaire ( ) 
+ Zanetti ( ) 
+ Zanone ( ) 
+ Zanussi ( ) 
+ Zavoli ( ) 
+ Zeffirelli ( ) 
+ Zeitung ( ) 
+ Zelanda ( ) 
+ Zeman ( ) 
+ Zenga ( ) 
+ Zeri ( ) 
+ Zidane ( ) 
+ Zoff ( ) 
+ Zola ( ) 
+ Zucchero ( ) 
+ zaccagniniana ( ) lemma=zaccagniniano 
+ zaccagniniano ( ) 
+ zaccagniniane ( ) lemma=zaccagniniano 
+ zaccagniniani ( ) lemma=zaccagniniano 
+ zaccagninianissima ( ) lemma=zaccagniniano 
+ zaccagninianissime ( ) lemma=zaccagniniano 
+ zaccagninianissimi ( ) lemma=zaccagniniano 
+ zaccagninianissimo ( ) lemma=zaccagniniano 
+ zadanoviana ( ) lemma=zadanoviano 
+ zadanoviano ( ) 
+ zadanoviane ( ) lemma=zadanoviano 
+ zadanoviani ( ) lemma=zadanoviano 
+ zadanovianissima ( ) lemma=zadanoviano 
+ zadanovianissime ( ) lemma=zadanoviano 
+ zadanovianissimi ( ) lemma=zadanoviano 
+ zadanovianissimo ( ) lemma=zadanoviano 
+ zaffa ( ) lemma=zaffare 
+ zaffare ( ) 
+ zaffai ( ) lemma=zaffare 
+ zaffammo ( ) lemma=zaffare 
+ zaffan ( ) lemma=zaffare 
+ zaffando ( ) lemma=zaffare 
+ zaffano ( ) lemma=zaffare 
+ zaffante ( ) lemma=zaffare 
+ zaffanti ( ) lemma=zaffare 
+ zaffar ( ) lemma=zaffare 
+ zaffaron ( ) lemma=zaffare 
+ zaffarono ( ) lemma=zaffare 
+ zaffasse ( ) lemma=zaffare 
+ zaffasser ( ) lemma=zaffare 
+ zaffassero ( ) lemma=zaffare 
+ zaffassi ( ) lemma=zaffare 
+ zaffassimo ( ) lemma=zaffare 
+ zaffaste ( ) lemma=zaffare 
+ zaffasti ( ) lemma=zaffare 
+ zaffata ( ) 
+ zaffate ( ) lemma=zaffata 
+ zaffati ( ) lemma=zaffare 
+ zaffato ( ) lemma=zaffare 
+ zaffava ( ) lemma=zaffare 
+ zaffavamo ( ) lemma=zaffare 
+ zaffavan ( ) lemma=zaffare 
+ zaffavano ( ) lemma=zaffare 
+ zaffavate ( ) lemma=zaffare 
+ zaffavi ( ) lemma=zaffare 
+ zaffavo ( ) lemma=zaffare 
+ zaffera' ( ) lemma=zaffare 
+ zafferai ( ) lemma=zaffare 
+ zafferan ( ) lemma=zaffare 
+ zafferanno ( ) lemma=zaffare 
+ zafferebbe ( ) lemma=zaffare 
+ zafferebber ( ) lemma=zaffare 
+ zafferebbero ( ) lemma=zaffare 
+ zafferei ( ) lemma=zaffare 
+ zafferemmo ( ) lemma=zaffare 
+ zafferemo ( ) lemma=zaffare 
+ zaffereste ( ) lemma=zaffare 
+ zafferesti ( ) lemma=zaffare 
+ zafferete ( ) lemma=zaffare 
+ zaffero' ( ) lemma=zaffare 
+ zafferà ( ) lemma=zaffare 
+ zafferò ( ) lemma=zaffare 
+ zaffi ( ) lemma=zaffare 
+ zaffiamo ( ) lemma=zaffare 
+ zaffiate ( ) lemma=zaffare 
+ zaffin ( ) lemma=zaffare 
+ zaffino ( ) lemma=zaffare 
+ zaffiri ( ) lemma=zaffiro 
+ zaffiro ( ) 
+ zaffo ( ) lemma=zaffare 
+ zaffo' ( ) lemma=zaffare 
+ zaffò ( ) lemma=zaffare 
+ zainetti ( ) lemma=zainetto 
+ zainetto ( ) 
+ zaini ( ) lemma=zaino 
+ zaino ( ) 
+ zairese ( ) 
+ zairesi ( ) lemma=zairese 
+ zairesissima ( ) lemma=zairese 
+ zairesissime ( ) lemma=zairese 
+ zairesissimi ( ) lemma=zairese 
+ zairesissimo ( ) lemma=zairese 
+ zambiana ( ) lemma=zambiano 
+ zambiano ( ) 
+ zambiane ( ) lemma=zambiano 
+ zambiani ( ) lemma=zambiano 
+ zambianissima ( ) lemma=zambiano 
+ zambianissime ( ) lemma=zambiano 
+ zambianissimi ( ) lemma=zambiano 
+ zambianissimo ( ) lemma=zambiano 
+ zampa ( ) 
+ zampai ( ) lemma=zampare 
+ zampare ( ) 
+ zampammo ( ) lemma=zampare 
+ zampan ( ) lemma=zampare 
+ zampando ( ) lemma=zampare 
+ zampano ( ) lemma=zampare 
+ zampante ( ) lemma=zampare 
+ zampanti ( ) lemma=zampare 
+ zampar ( ) lemma=zampare 
+ zamparon ( ) lemma=zampare 
+ zamparono ( ) lemma=zampare 
+ zampasse ( ) lemma=zampare 
+ zampasser ( ) lemma=zampare 
+ zampassero ( ) lemma=zampare 
+ zampassi ( ) lemma=zampare 
+ zampassimo ( ) lemma=zampare 
+ zampaste ( ) lemma=zampare 
+ zampasti ( ) lemma=zampare 
+ zampata ( ) 
+ zampate ( ) lemma=zampata 
+ zampati ( ) lemma=zampare 
+ zampato ( ) lemma=zampare 
+ zampava ( ) lemma=zampare 
+ zampavamo ( ) lemma=zampare 
+ zampavan ( ) lemma=zampare 
+ zampavano ( ) lemma=zampare 
+ zampavate ( ) lemma=zampare 
+ zampavi ( ) lemma=zampare 
+ zampavo ( ) lemma=zampare 
+ zampe ( ) lemma=zampa 
+ zampera' ( ) lemma=zampare 
+ zamperai ( ) lemma=zampare 
+ zamperan ( ) lemma=zampare 
+ zamperanno ( ) lemma=zampare 
+ zamperebbe ( ) lemma=zampare 
+ zamperebber ( ) lemma=zampare 
+ zamperebbero ( ) lemma=zampare 
+ zamperei ( ) lemma=zampare 
+ zamperemmo ( ) lemma=zampare 
+ zamperemo ( ) lemma=zampare 
+ zampereste ( ) lemma=zampare 
+ zamperesti ( ) lemma=zampare 
+ zamperete ( ) lemma=zampare 
+ zampero' ( ) lemma=zampare 
+ zamperà ( ) lemma=zampare 
+ zamperò ( ) lemma=zampare 
+ zampetta ( ) lemma=zampettare 
+ zampettare ( ) 
+ zampettai ( ) lemma=zampettare 
+ zampettammo ( ) lemma=zampettare 
+ zampettan ( ) lemma=zampettare 
+ zampettando ( ) lemma=zampettare 
+ zampettano ( ) lemma=zampettare 
+ zampettante ( ) lemma=zampettare 
+ zampettanti ( ) lemma=zampettare 
+ zampettar ( ) lemma=zampettare 
+ zampettaron ( ) lemma=zampettare 
+ zampettarono ( ) lemma=zampettare 
+ zampettasse ( ) lemma=zampettare 
+ zampettasser ( ) lemma=zampettare 
+ zampettassero ( ) lemma=zampettare 
+ zampettassi ( ) lemma=zampettare 
+ zampettassimo ( ) lemma=zampettare 
+ zampettaste ( ) lemma=zampettare 
+ zampettasti ( ) lemma=zampettare 
+ zampettata ( ) lemma=zampettare 
+ zampettate ( ) lemma=zampettare 
+ zampettati ( ) lemma=zampettare 
+ zampettato ( ) lemma=zampettare 
+ zampettava ( ) lemma=zampettare 
+ zampettavamo ( ) lemma=zampettare 
+ zampettavan ( ) lemma=zampettare 
+ zampettavano ( ) lemma=zampettare 
+ zampettavate ( ) lemma=zampettare 
+ zampettavi ( ) lemma=zampettare 
+ zampettavo ( ) lemma=zampettare 
+ zampettera' ( ) lemma=zampettare 
+ zampetterai ( ) lemma=zampettare 
+ zampetteran ( ) lemma=zampettare 
+ zampetteranno ( ) lemma=zampettare 
+ zampetterebbe ( ) lemma=zampettare 
+ zampetterebber ( ) lemma=zampettare 
+ zampetterebbero ( ) lemma=zampettare 
+ zampetterei ( ) lemma=zampettare 
+ zampetteremmo ( ) lemma=zampettare 
+ zampetteremo ( ) lemma=zampettare 
+ zampettereste ( ) lemma=zampettare 
+ zampetteresti ( ) lemma=zampettare 
+ zampetterete ( ) lemma=zampettare 
+ zampettero' ( ) lemma=zampettare 
+ zampetterà ( ) lemma=zampettare 
+ zampetterò ( ) lemma=zampettare 
+ zampetti ( ) lemma=zampettare 
+ zampettiamo ( ) lemma=zampettare 
+ zampettiate ( ) lemma=zampettare 
+ zampettin ( ) lemma=zampettare 
+ zampettino ( ) lemma=zampettare 
+ zampetto ( ) lemma=zampettare 
+ zampetto' ( ) lemma=zampettare 
+ zampettò ( ) lemma=zampettare 
+ zampi ( ) lemma=zampare 
+ zampiamo ( ) lemma=zampare 
+ zampiate ( ) lemma=zampare 
+ zampilla ( ) lemma=zampillare 
+ zampillare ( ) 
+ zampillai ( ) lemma=zampillare 
+ zampillammo ( ) lemma=zampillare 
+ zampillan ( ) lemma=zampillare 
+ zampillando ( ) lemma=zampillare 
+ zampillano ( ) lemma=zampillare 
+ zampillante ( ) 
+ zampillanti ( ) lemma=zampillante 
+ zampillantissima ( ) lemma=zampillante 
+ zampillantissime ( ) lemma=zampillante 
+ zampillantissimi ( ) lemma=zampillante 
+ zampillantissimo ( ) lemma=zampillante 
+ zampillar ( ) lemma=zampillare 
+ zampillaron ( ) lemma=zampillare 
+ zampillarono ( ) lemma=zampillare 
+ zampillasse ( ) lemma=zampillare 
+ zampillasser ( ) lemma=zampillare 
+ zampillassero ( ) lemma=zampillare 
+ zampillassi ( ) lemma=zampillare 
+ zampillassimo ( ) lemma=zampillare 
+ zampillaste ( ) lemma=zampillare 
+ zampillasti ( ) lemma=zampillare 
+ zampillata ( ) lemma=zampillare 
+ zampillate ( ) lemma=zampillare 
+ zampillati ( ) lemma=zampillare 
+ zampillato ( ) lemma=zampillare 
+ zampillava ( ) lemma=zampillare 
+ zampillavamo ( ) lemma=zampillare 
+ zampillavan ( ) lemma=zampillare 
+ zampillavano ( ) lemma=zampillare 
+ zampillavate ( ) lemma=zampillare 
+ zampillavi ( ) lemma=zampillare 
+ zampillavo ( ) lemma=zampillare 
+ zampillera' ( ) lemma=zampillare 
+ zampillerai ( ) lemma=zampillare 
+ zampilleran ( ) lemma=zampillare 
+ zampilleranno ( ) lemma=zampillare 
+ zampillerebbe ( ) lemma=zampillare 
+ zampillerebber ( ) lemma=zampillare 
+ zampillerebbero ( ) lemma=zampillare 
+ zampillerei ( ) lemma=zampillare 
+ zampilleremmo ( ) lemma=zampillare 
+ zampilleremo ( ) lemma=zampillare 
+ zampillereste ( ) lemma=zampillare 
+ zampilleresti ( ) lemma=zampillare 
+ zampillerete ( ) lemma=zampillare 
+ zampillero' ( ) lemma=zampillare 
+ zampillerà ( ) lemma=zampillare 
+ zampillerò ( ) lemma=zampillare 
+ zampilli ( ) lemma=zampillo 
+ zampillo ( ) 
+ zampilliamo ( ) lemma=zampillare 
+ zampilliate ( ) lemma=zampillare 
+ zampillin ( ) lemma=zampillare 
+ zampillino ( ) lemma=zampillare 
+ zampillo' ( ) lemma=zampillare 
+ zampillò ( ) lemma=zampillare 
+ zampin ( ) lemma=zampare 
+ zampini ( ) lemma=zampino 
+ zampino ( ) 
+ zampo ( ) lemma=zampare 
+ zampo' ( ) lemma=zampare 
+ zampò ( ) lemma=zampare 
+ zanardelliana ( ) lemma=zanardelliano 
+ zanardelliano ( ) 
+ zanardelliane ( ) lemma=zanardelliano 
+ zanardelliani ( ) lemma=zanardelliano 
+ zanardellianissima ( ) lemma=zanardelliano 
+ zanardellianissime ( ) lemma=zanardelliano 
+ zanardellianissimi ( ) lemma=zanardelliano 
+ zanardellianissimo ( ) lemma=zanardelliano 
+ zangheriana ( ) lemma=zangheriano 
+ zangheriano ( ) 
+ zangheriane ( ) lemma=zangheriano 
+ zangheriani ( ) lemma=zangheriano 
+ zangherianissima ( ) lemma=zangheriano 
+ zangherianissime ( ) lemma=zangheriano 
+ zangherianissimi ( ) lemma=zangheriano 
+ zangherianissimo ( ) lemma=zangheriano 
+ zanna ( ) 
+ zanne ( ) lemma=zanna 
+ zanzara ( ) 
+ zanzare ( ) lemma=zanzara 
+ zapatista ( ) 
+ zapatisti ( ) lemma=zapatista 
+ zappa ( ) 
+ zappai ( ) lemma=zappare 
+ zappare ( ) 
+ zappammo ( ) lemma=zappare 
+ zappan ( ) lemma=zappare 
+ zappando ( ) lemma=zappare 
+ zappano ( ) lemma=zappare 
+ zappante ( ) lemma=zappare 
+ zappanti ( ) lemma=zappare 
+ zappar ( ) lemma=zappare 
+ zapparlo ( ) lemma=zappare 
+ zapparon ( ) lemma=zappare 
+ zapparono ( ) lemma=zappare 
+ zappasse ( ) lemma=zappare 
+ zappasser ( ) lemma=zappare 
+ zappassero ( ) lemma=zappare 
+ zappassi ( ) lemma=zappare 
+ zappassimo ( ) lemma=zappare 
+ zappaste ( ) lemma=zappare 
+ zappasti ( ) lemma=zappare 
+ zappata ( ) lemma=zappare 
+ zappate ( ) lemma=zappare 
+ zappati ( ) lemma=zappare 
+ zappato ( ) lemma=zappare 
+ zappava ( ) lemma=zappare 
+ zappavamo ( ) lemma=zappare 
+ zappavan ( ) lemma=zappare 
+ zappavano ( ) lemma=zappare 
+ zappavate ( ) lemma=zappare 
+ zappavi ( ) lemma=zappare 
+ zappavo ( ) lemma=zappare 
+ zappe ( ) lemma=zappa 
+ zappera' ( ) lemma=zappare 
+ zapperai ( ) lemma=zappare 
+ zapperan ( ) lemma=zappare 
+ zapperanno ( ) lemma=zappare 
+ zapperebbe ( ) lemma=zappare 
+ zapperebber ( ) lemma=zappare 
+ zapperebbero ( ) lemma=zappare 
+ zapperei ( ) lemma=zappare 
+ zapperemmo ( ) lemma=zappare 
+ zapperemo ( ) lemma=zappare 
+ zappereste ( ) lemma=zappare 
+ zapperesti ( ) lemma=zappare 
+ zapperete ( ) lemma=zappare 
+ zappero' ( ) lemma=zappare 
+ zapperà ( ) lemma=zappare 
+ zapperò ( ) lemma=zappare 
+ zappetta ( ) lemma=zappettare 
+ zappettare ( ) 
+ zappettai ( ) lemma=zappettare 
+ zappettammo ( ) lemma=zappettare 
+ zappettan ( ) lemma=zappettare 
+ zappettando ( ) lemma=zappettare 
+ zappettano ( ) lemma=zappettare 
+ zappettante ( ) lemma=zappettare 
+ zappettanti ( ) lemma=zappettare 
+ zappettar ( ) lemma=zappettare 
+ zappettaron ( ) lemma=zappettare 
+ zappettarono ( ) lemma=zappettare 
+ zappettasse ( ) lemma=zappettare 
+ zappettasser ( ) lemma=zappettare 
+ zappettassero ( ) lemma=zappettare 
+ zappettassi ( ) lemma=zappettare 
+ zappettassimo ( ) lemma=zappettare 
+ zappettaste ( ) lemma=zappettare 
+ zappettasti ( ) lemma=zappettare 
+ zappettata ( ) lemma=zappettare 
+ zappettate ( ) lemma=zappettare 
+ zappettati ( ) lemma=zappettare 
+ zappettato ( ) lemma=zappettare 
+ zappettava ( ) lemma=zappettare 
+ zappettavamo ( ) lemma=zappettare 
+ zappettavan ( ) lemma=zappettare 
+ zappettavano ( ) lemma=zappettare 
+ zappettavate ( ) lemma=zappettare 
+ zappettavi ( ) lemma=zappettare 
+ zappettavo ( ) lemma=zappettare 
+ zappettera' ( ) lemma=zappettare 
+ zappetterai ( ) lemma=zappettare 
+ zappetteran ( ) lemma=zappettare 
+ zappetteranno ( ) lemma=zappettare 
+ zappetterebbe ( ) lemma=zappettare 
+ zappetterebber ( ) lemma=zappettare 
+ zappetterebbero ( ) lemma=zappettare 
+ zappetterei ( ) lemma=zappettare 
+ zappetteremmo ( ) lemma=zappettare 
+ zappetteremo ( ) lemma=zappettare 
+ zappettereste ( ) lemma=zappettare 
+ zappetteresti ( ) lemma=zappettare 
+ zappetterete ( ) lemma=zappettare 
+ zappettero' ( ) lemma=zappettare 
+ zappetterà ( ) lemma=zappettare 
+ zappetterò ( ) lemma=zappettare 
+ zappetti ( ) lemma=zappettare 
+ zappettiamo ( ) lemma=zappettare 
+ zappettiate ( ) lemma=zappettare 
+ zappettin ( ) lemma=zappettare 
+ zappettino ( ) lemma=zappettare 
+ zappetto ( ) lemma=zappettare 
+ zappetto' ( ) lemma=zappettare 
+ zappettò ( ) lemma=zappettare 
+ zappi ( ) lemma=zappare 
+ zappiamo ( ) lemma=zappare 
+ zappiate ( ) lemma=zappare 
+ zappin ( ) lemma=zappare 
+ zapping ( ) 
+ zappino ( ) lemma=zappare 
+ zappo ( ) lemma=zappare 
+ zappo' ( ) lemma=zappare 
+ zappò ( ) lemma=zappare 
+ zar ( ) 
+ zarina ( ) 
+ zarine ( ) lemma=zarina 
+ zarista ( ) 
+ zariste ( ) lemma=zarista 
+ zaristi ( ) lemma=zarista 
+ zaristissima ( ) lemma=zarista 
+ zaristissime ( ) lemma=zarista 
+ zaristissimi ( ) lemma=zarista 
+ zaristissimo ( ) lemma=zarista 
+ zattera ( ) 
+ zattere ( ) lemma=zattera 
+ zatterone ( ) 
+ zatteroni ( ) lemma=zatterone 
+ zavattiniana ( ) lemma=zavattiniano 
+ zavattiniano ( ) 
+ zavattiniane ( ) lemma=zavattiniano 
+ zavattiniani ( ) lemma=zavattiniano 
+ zavattinianissima ( ) lemma=zavattiniano 
+ zavattinianissime ( ) lemma=zavattiniano 
+ zavattinianissimi ( ) lemma=zavattiniano 
+ zavattinianissimo ( ) lemma=zavattiniano 
+ zavorra ( ) 
+ zavorrai ( ) lemma=zavorrare 
+ zavorrare ( ) 
+ zavorrammo ( ) lemma=zavorrare 
+ zavorran ( ) lemma=zavorrare 
+ zavorrando ( ) lemma=zavorrare 
+ zavorrano ( ) lemma=zavorrare 
+ zavorrante ( ) lemma=zavorrare 
+ zavorranti ( ) lemma=zavorrare 
+ zavorrar ( ) lemma=zavorrare 
+ zavorraron ( ) lemma=zavorrare 
+ zavorrarono ( ) lemma=zavorrare 
+ zavorrasse ( ) lemma=zavorrare 
+ zavorrasser ( ) lemma=zavorrare 
+ zavorrassero ( ) lemma=zavorrare 
+ zavorrassi ( ) lemma=zavorrare 
+ zavorrassimo ( ) lemma=zavorrare 
+ zavorraste ( ) lemma=zavorrare 
+ zavorrasti ( ) lemma=zavorrare 
+ zavorrata ( ) lemma=zavorrare 
+ zavorrate ( ) lemma=zavorrare 
+ zavorrati ( ) lemma=zavorrare 
+ zavorrato ( ) lemma=zavorrare 
+ zavorrava ( ) lemma=zavorrare 
+ zavorravamo ( ) lemma=zavorrare 
+ zavorravan ( ) lemma=zavorrare 
+ zavorravano ( ) lemma=zavorrare 
+ zavorravate ( ) lemma=zavorrare 
+ zavorravi ( ) lemma=zavorrare 
+ zavorravo ( ) lemma=zavorrare 
+ zavorre ( ) lemma=zavorra 
+ zavorrera' ( ) lemma=zavorrare 
+ zavorrerai ( ) lemma=zavorrare 
+ zavorreran ( ) lemma=zavorrare 
+ zavorreranno ( ) lemma=zavorrare 
+ zavorrerebbe ( ) lemma=zavorrare 
+ zavorrerebber ( ) lemma=zavorrare 
+ zavorrerebbero ( ) lemma=zavorrare 
+ zavorrerei ( ) lemma=zavorrare 
+ zavorreremmo ( ) lemma=zavorrare 
+ zavorreremo ( ) lemma=zavorrare 
+ zavorrereste ( ) lemma=zavorrare 
+ zavorreresti ( ) lemma=zavorrare 
+ zavorrerete ( ) lemma=zavorrare 
+ zavorrero' ( ) lemma=zavorrare 
+ zavorrerà ( ) lemma=zavorrare 
+ zavorrerò ( ) lemma=zavorrare 
+ zavorri ( ) lemma=zavorrare 
+ zavorriamo ( ) lemma=zavorrare 
+ zavorriate ( ) lemma=zavorrare 
+ zavorrin ( ) lemma=zavorrare 
+ zavorrino ( ) lemma=zavorrare 
+ zavorro ( ) lemma=zavorrare 
+ zavorro' ( ) lemma=zavorrare 
+ zavorrò ( ) lemma=zavorrare 
+ zazzera ( ) 
+ zazzere ( ) lemma=zazzera 
+ zebrata ( ) lemma=zebrato 
+ zebrato ( ) 
+ zebrate ( ) lemma=zebrato 
+ zebrati ( ) lemma=zebrato 
+ zebratissima ( ) lemma=zebrato 
+ zebratissime ( ) lemma=zebrato 
+ zebratissimi ( ) lemma=zebrato 
+ zebratissimo ( ) lemma=zebrato 
+ zecca ( ) 
+ zecche ( ) lemma=zecca 
+ zeffirelliana ( ) lemma=zeffirelliano 
+ zeffirelliano ( ) 
+ zeffirelliane ( ) lemma=zeffirelliano 
+ zeffirelliani ( ) lemma=zeffirelliano 
+ zeffirellianissima ( ) lemma=zeffirelliano 
+ zeffirellianissime ( ) lemma=zeffirelliano 
+ zeffirellianissimi ( ) lemma=zeffirelliano 
+ zeffirellianissimo ( ) lemma=zeffirelliano 
+ zelante ( ) 
+ zelanti ( ) lemma=zelante 
+ zelantissima ( ) lemma=zelante 
+ zelantissime ( ) lemma=zelante 
+ zelantissimi ( ) lemma=zelante 
+ zelantissimo ( ) lemma=zelante 
+ zeli ( ) lemma=zelo 
+ zelo ( ) 
+ zen ( ) 
+ zeppa ( ) lemma=zeppo 
+ zeppo ( ) 
+ zeppe ( ) lemma=zeppo 
+ zeppi ( ) lemma=zeppo 
+ zeppissima ( ) lemma=zeppo 
+ zeppissime ( ) lemma=zeppo 
+ zeppissimi ( ) lemma=zeppo 
+ zeppissimo ( ) lemma=zeppo 
+ zera ( ) lemma=zero 
+ zero ( ) 
+ zere ( ) lemma=zero 
+ zeri ( ) lemma=zero 
+ zerissima ( ) lemma=zero 
+ zerissime ( ) lemma=zero 
+ zerissimi ( ) lemma=zero 
+ zerissimo ( ) lemma=zero 
+ zi ( ) lemma=zio 
+ zio ( ) 
+ zia ( ) 
+ zibellini ( ) lemma=zibellino 
+ zibellino ( ) 
+ zichiana ( ) lemma=zichiano 
+ zichiano ( ) 
+ zichiane ( ) lemma=zichiano 
+ zichiani ( ) lemma=zichiano 
+ zichianissima ( ) lemma=zichiano 
+ zichianissime ( ) lemma=zichiano 
+ zichianissimi ( ) lemma=zichiano 
+ zichianissimo ( ) lemma=zichiano 
+ zie ( ) lemma=zia 
+ zig-zag ( ) 
+ ziga ( ) lemma=zigare 
+ zigare ( ) 
+ zigai ( ) lemma=zigare 
+ zigammo ( ) lemma=zigare 
+ zigan ( ) lemma=zigare 
+ zigana ( ) lemma=zigano 
+ zigano ( ) 
+ zigando ( ) lemma=zigare 
+ zigane ( ) lemma=zigano 
+ zigani ( ) lemma=zigano 
+ ziganissima ( ) lemma=zigano 
+ ziganissime ( ) lemma=zigano 
+ ziganissimi ( ) lemma=zigano 
+ ziganissimo ( ) lemma=zigano 
+ zigante ( ) lemma=zigare 
+ ziganti ( ) lemma=zigare 
+ zigar ( ) lemma=zigare 
+ zigaron ( ) lemma=zigare 
+ zigarono ( ) lemma=zigare 
+ zigasse ( ) lemma=zigare 
+ zigasser ( ) lemma=zigare 
+ zigassero ( ) lemma=zigare 
+ zigassi ( ) lemma=zigare 
+ zigassimo ( ) lemma=zigare 
+ zigaste ( ) lemma=zigare 
+ zigasti ( ) lemma=zigare 
+ zigata ( ) lemma=zigare 
+ zigate ( ) lemma=zigare 
+ zigati ( ) lemma=zigare 
+ zigato ( ) lemma=zigare 
+ zigava ( ) lemma=zigare 
+ zigavamo ( ) lemma=zigare 
+ zigavan ( ) lemma=zigare 
+ zigavano ( ) lemma=zigare 
+ zigavate ( ) lemma=zigare 
+ zigavi ( ) lemma=zigare 
+ zigavo ( ) lemma=zigare 
+ zighera' ( ) lemma=zigare 
+ zigherai ( ) lemma=zigare 
+ zigheran ( ) lemma=zigare 
+ zigheranno ( ) lemma=zigare 
+ zigherebbe ( ) lemma=zigare 
+ zigherebber ( ) lemma=zigare 
+ zigherebbero ( ) lemma=zigare 
+ zigherei ( ) lemma=zigare 
+ zigheremmo ( ) lemma=zigare 
+ zigheremo ( ) lemma=zigare 
+ zighereste ( ) lemma=zigare 
+ zigheresti ( ) lemma=zigare 
+ zigherete ( ) lemma=zigare 
+ zighero' ( ) lemma=zigare 
+ zigherà ( ) lemma=zigare 
+ zigherò ( ) lemma=zigare 
+ zighi ( ) lemma=zigare 
+ zighiamo ( ) lemma=zigare 
+ zighiate ( ) lemma=zigare 
+ zighin ( ) lemma=zigare 
+ zighino ( ) lemma=zigare 
+ zigo ( ) lemma=zigare 
+ zigo' ( ) lemma=zigare 
+ zigomatica ( ) lemma=zigomatico 
+ zigomatico ( ) 
+ zigomatiche ( ) lemma=zigomatico 
+ zigomatici ( ) lemma=zigomatico 
+ zigomaticissima ( ) lemma=zigomatico 
+ zigomaticissime ( ) lemma=zigomatico 
+ zigomaticissimi ( ) lemma=zigomatico 
+ zigomaticissimo ( ) lemma=zigomatico 
+ zigomi ( ) lemma=zigomo 
+ zigomo ( ) 
+ zigrina ( ) lemma=zigrinare 
+ zigrinare ( ) 
+ zigrinai ( ) lemma=zigrinare 
+ zigrinammo ( ) lemma=zigrinare 
+ zigrinan ( ) lemma=zigrinare 
+ zigrinando ( ) lemma=zigrinare 
+ zigrinano ( ) lemma=zigrinare 
+ zigrinante ( ) lemma=zigrinare 
+ zigrinanti ( ) lemma=zigrinare 
+ zigrinar ( ) lemma=zigrinare 
+ zigrinaron ( ) lemma=zigrinare 
+ zigrinarono ( ) lemma=zigrinare 
+ zigrinasse ( ) lemma=zigrinare 
+ zigrinasser ( ) lemma=zigrinare 
+ zigrinassero ( ) lemma=zigrinare 
+ zigrinassi ( ) lemma=zigrinare 
+ zigrinassimo ( ) lemma=zigrinare 
+ zigrinaste ( ) lemma=zigrinare 
+ zigrinasti ( ) lemma=zigrinare 
+ zigrinata ( ) lemma=zigrinare 
+ zigrinate ( ) lemma=zigrinare 
+ zigrinati ( ) lemma=zigrinare 
+ zigrinato ( ) lemma=zigrinare 
+ zigrinava ( ) lemma=zigrinare 
+ zigrinavamo ( ) lemma=zigrinare 
+ zigrinavan ( ) lemma=zigrinare 
+ zigrinavano ( ) lemma=zigrinare 
+ zigrinavate ( ) lemma=zigrinare 
+ zigrinavi ( ) lemma=zigrinare 
+ zigrinavo ( ) lemma=zigrinare 
+ zigrinera' ( ) lemma=zigrinare 
+ zigrinerai ( ) lemma=zigrinare 
+ zigrineran ( ) lemma=zigrinare 
+ zigrineranno ( ) lemma=zigrinare 
+ zigrinerebbe ( ) lemma=zigrinare 
+ zigrinerebber ( ) lemma=zigrinare 
+ zigrinerebbero ( ) lemma=zigrinare 
+ zigrinerei ( ) lemma=zigrinare 
+ zigrineremmo ( ) lemma=zigrinare 
+ zigrineremo ( ) lemma=zigrinare 
+ zigrinereste ( ) lemma=zigrinare 
+ zigrineresti ( ) lemma=zigrinare 
+ zigrinerete ( ) lemma=zigrinare 
+ zigrinero' ( ) lemma=zigrinare 
+ zigrinerà ( ) lemma=zigrinare 
+ zigrinerò ( ) lemma=zigrinare 
+ zigrini ( ) lemma=zigrinare 
+ zigriniamo ( ) lemma=zigrinare 
+ zigriniate ( ) lemma=zigrinare 
+ zigrinin ( ) lemma=zigrinare 
+ zigrinino ( ) lemma=zigrinare 
+ zigrino ( ) lemma=zigrinare 
+ zigrino' ( ) lemma=zigrinare 
+ zigrinò ( ) lemma=zigrinare 
+ zigzaga ( ) lemma=zigzagare 
+ zigzagare ( ) 
+ zigzagai ( ) lemma=zigzagare 
+ zigzagammo ( ) lemma=zigzagare 
+ zigzagan ( ) lemma=zigzagare 
+ zigzagando ( ) lemma=zigzagare 
+ zigzagano ( ) lemma=zigzagare 
+ zigzagante ( ) lemma=zigzagare 
+ zigzaganti ( ) lemma=zigzagare 
+ zigzagar ( ) lemma=zigzagare 
+ zigzagaron ( ) lemma=zigzagare 
+ zigzagarono ( ) lemma=zigzagare 
+ zigzagasse ( ) lemma=zigzagare 
+ zigzagasser ( ) lemma=zigzagare 
+ zigzagassero ( ) lemma=zigzagare 
+ zigzagassi ( ) lemma=zigzagare 
+ zigzagassimo ( ) lemma=zigzagare 
+ zigzagaste ( ) lemma=zigzagare 
+ zigzagasti ( ) lemma=zigzagare 
+ zigzagata ( ) lemma=zigzagare 
+ zigzagate ( ) lemma=zigzagare 
+ zigzagati ( ) lemma=zigzagare 
+ zigzagato ( ) lemma=zigzagare 
+ zigzagava ( ) lemma=zigzagare 
+ zigzagavamo ( ) lemma=zigzagare 
+ zigzagavan ( ) lemma=zigzagare 
+ zigzagavano ( ) lemma=zigzagare 
+ zigzagavate ( ) lemma=zigzagare 
+ zigzagavi ( ) lemma=zigzagare 
+ zigzagavo ( ) lemma=zigzagare 
+ zigzaghera' ( ) lemma=zigzagare 
+ zigzagherai ( ) lemma=zigzagare 
+ zigzagheran ( ) lemma=zigzagare 
+ zigzagheranno ( ) lemma=zigzagare 
+ zigzagherebbe ( ) lemma=zigzagare 
+ zigzagherebber ( ) lemma=zigzagare 
+ zigzagherebbero ( ) lemma=zigzagare 
+ zigzagherei ( ) lemma=zigzagare 
+ zigzagheremmo ( ) lemma=zigzagare 
+ zigzagheremo ( ) lemma=zigzagare 
+ zigzaghereste ( ) lemma=zigzagare 
+ zigzagheresti ( ) lemma=zigzagare 
+ zigzagherete ( ) lemma=zigzagare 
+ zigzaghero' ( ) lemma=zigzagare 
+ zigzagherà ( ) lemma=zigzagare 
+ zigzagherò ( ) lemma=zigzagare 
+ zigzaghi ( ) lemma=zigzagare 
+ zigzaghiamo ( ) lemma=zigzagare 
+ zigzaghiate ( ) lemma=zigzagare 
+ zigzaghin ( ) lemma=zigzagare 
+ zigzaghino ( ) lemma=zigzagare 
+ zigzago ( ) lemma=zigzagare 
+ zigzago' ( ) lemma=zigzagare 
+ zigzagò ( ) lemma=zigzagare 
+ zigò ( ) lemma=zigare 
+ zii ( ) lemma=zio 
+ zimbelli ( ) lemma=zimbello 
+ zimbello ( ) 
+ zinca ( ) lemma=zincare 
+ zincare ( ) 
+ zincai ( ) lemma=zincare 
+ zincammo ( ) lemma=zincare 
+ zincan ( ) lemma=zincare 
+ zincando ( ) lemma=zincare 
+ zincano ( ) lemma=zincare 
+ zincante ( ) lemma=zincare 
+ zincanti ( ) lemma=zincare 
+ zincar ( ) lemma=zincare 
+ zincaron ( ) lemma=zincare 
+ zincarono ( ) lemma=zincare 
+ zincasse ( ) lemma=zincare 
+ zincasser ( ) lemma=zincare 
+ zincassero ( ) lemma=zincare 
+ zincassi ( ) lemma=zincare 
+ zincassimo ( ) lemma=zincare 
+ zincaste ( ) lemma=zincare 
+ zincasti ( ) lemma=zincare 
+ zincata ( ) lemma=zincare 
+ zincate ( ) lemma=zincare 
+ zincati ( ) lemma=zincare 
+ zincato ( ) lemma=zincare 
+ zincava ( ) lemma=zincare 
+ zincavamo ( ) lemma=zincare 
+ zincavan ( ) lemma=zincare 
+ zincavano ( ) lemma=zincare 
+ zincavate ( ) lemma=zincare 
+ zincavi ( ) lemma=zincare 
+ zincavo ( ) lemma=zincare 
+ zinchera' ( ) lemma=zincare 
+ zincherai ( ) lemma=zincare 
+ zincheran ( ) lemma=zincare 
+ zincheranno ( ) lemma=zincare 
+ zincherebbe ( ) lemma=zincare 
+ zincherebber ( ) lemma=zincare 
+ zincherebbero ( ) lemma=zincare 
+ zincherei ( ) lemma=zincare 
+ zincheremmo ( ) lemma=zincare 
+ zincheremo ( ) lemma=zincare 
+ zinchereste ( ) lemma=zincare 
+ zincheresti ( ) lemma=zincare 
+ zincherete ( ) lemma=zincare 
+ zinchero' ( ) lemma=zincare 
+ zincherà ( ) lemma=zincare 
+ zincherò ( ) lemma=zincare 
+ zinchi ( ) lemma=zincare 
+ zinchiamo ( ) lemma=zincare 
+ zinchiate ( ) lemma=zincare 
+ zinchin ( ) lemma=zincare 
+ zinchino ( ) lemma=zincare 
+ zinco ( ) lemma=zincare 
+ zinco' ( ) lemma=zincare 
+ zincò ( ) lemma=zincare 
+ zingara ( ) lemma=zingaro 
+ zingaro ( ) 
+ zingare ( ) lemma=zingaro 
+ zingarella ( ) 
+ zingarelle ( ) lemma=zingarella 
+ zingarelli ( ) lemma=zingarello 
+ zingarello ( ) 
+ zingaresca ( ) lemma=zingaresco 
+ zingaresco ( ) 
+ zingaresche ( ) lemma=zingaresco 
+ zingareschi ( ) lemma=zingaresco 
+ zingareschissima ( ) lemma=zingaresco 
+ zingareschissime ( ) lemma=zingaresco 
+ zingareschissimi ( ) lemma=zingaresco 
+ zingareschissimo ( ) lemma=zingaresco 
+ zingari ( ) lemma=zingaro 
+ zingarissima ( ) lemma=zingaro 
+ zingarissime ( ) lemma=zingaro 
+ zingarissimi ( ) lemma=zingaro 
+ zingarissimo ( ) lemma=zingaro 
+ zip ( ) 
+ zirla ( ) lemma=zirlare 
+ zirlare ( ) 
+ zirlai ( ) lemma=zirlare 
+ zirlammo ( ) lemma=zirlare 
+ zirlan ( ) lemma=zirlare 
+ zirlando ( ) lemma=zirlare 
+ zirlano ( ) lemma=zirlare 
+ zirlante ( ) lemma=zirlare 
+ zirlanti ( ) lemma=zirlare 
+ zirlar ( ) lemma=zirlare 
+ zirlaron ( ) lemma=zirlare 
+ zirlarono ( ) lemma=zirlare 
+ zirlasse ( ) lemma=zirlare 
+ zirlasser ( ) lemma=zirlare 
+ zirlassero ( ) lemma=zirlare 
+ zirlassi ( ) lemma=zirlare 
+ zirlassimo ( ) lemma=zirlare 
+ zirlaste ( ) lemma=zirlare 
+ zirlasti ( ) lemma=zirlare 
+ zirlata ( ) lemma=zirlare 
+ zirlate ( ) lemma=zirlare 
+ zirlati ( ) lemma=zirlare 
+ zirlato ( ) lemma=zirlare 
+ zirlava ( ) lemma=zirlare 
+ zirlavamo ( ) lemma=zirlare 
+ zirlavan ( ) lemma=zirlare 
+ zirlavano ( ) lemma=zirlare 
+ zirlavate ( ) lemma=zirlare 
+ zirlavi ( ) lemma=zirlare 
+ zirlavo ( ) lemma=zirlare 
+ zirlera' ( ) lemma=zirlare 
+ zirlerai ( ) lemma=zirlare 
+ zirleran ( ) lemma=zirlare 
+ zirleranno ( ) lemma=zirlare 
+ zirlerebbe ( ) lemma=zirlare 
+ zirlerebber ( ) lemma=zirlare 
+ zirlerebbero ( ) lemma=zirlare 
+ zirlerei ( ) lemma=zirlare 
+ zirleremmo ( ) lemma=zirlare 
+ zirleremo ( ) lemma=zirlare 
+ zirlereste ( ) lemma=zirlare 
+ zirleresti ( ) lemma=zirlare 
+ zirlerete ( ) lemma=zirlare 
+ zirlero' ( ) lemma=zirlare 
+ zirlerà ( ) lemma=zirlare 
+ zirlerò ( ) lemma=zirlare 
+ zirli ( ) lemma=zirlare 
+ zirliamo ( ) lemma=zirlare 
+ zirliate ( ) lemma=zirlare 
+ zirlin ( ) lemma=zirlare 
+ zirlino ( ) lemma=zirlare 
+ zirlo ( ) lemma=zirlare 
+ zirlo' ( ) lemma=zirlare 
+ zirlò ( ) lemma=zirlare 
+ zitella ( ) 
+ zitelle ( ) lemma=zitella 
+ zitta ( ) lemma=zitto 
+ zitto ( ) 
+ zitte ( ) lemma=zitto 
+ zittendo ( ) lemma=zittire 
+ zittire ( ) 
+ zittente ( ) lemma=zittire 
+ zittenti ( ) lemma=zittire 
+ zitti ( ) lemma=zitto 
+ zitti' ( ) lemma=zittire 
+ zittiamo ( ) lemma=zittire 
+ zittiate ( ) lemma=zittire 
+ zittii ( ) lemma=zittire 
+ zittimmo ( ) lemma=zittire 
+ zittir ( ) lemma=zittire 
+ zittira' ( ) lemma=zittire 
+ zittirai ( ) lemma=zittire 
+ zittiran ( ) lemma=zittire 
+ zittiranno ( ) lemma=zittire 
+ zittirebbe ( ) lemma=zittire 
+ zittirebber ( ) lemma=zittire 
+ zittirebbero ( ) lemma=zittire 
+ zittirei ( ) lemma=zittire 
+ zittiremmo ( ) lemma=zittire 
+ zittiremo ( ) lemma=zittire 
+ zittireste ( ) lemma=zittire 
+ zittiresti ( ) lemma=zittire 
+ zittirete ( ) lemma=zittire 
+ zittirlo ( ) lemma=zittire 
+ zittiro' ( ) lemma=zittire 
+ zittiron ( ) lemma=zittire 
+ zittirono ( ) lemma=zittire 
+ zittirà ( ) lemma=zittire 
+ zittirò ( ) lemma=zittire 
+ zittisca ( ) lemma=zittire 
+ zittiscan ( ) lemma=zittire 
+ zittiscano ( ) lemma=zittire 
+ zittisce ( ) lemma=zittire 
+ zittisci ( ) lemma=zittire 
+ zittisco ( ) lemma=zittire 
+ zittiscon ( ) lemma=zittire 
+ zittiscono ( ) lemma=zittire 
+ zittisse ( ) lemma=zittire 
+ zittisser ( ) lemma=zittire 
+ zittissero ( ) lemma=zittire 
+ zittissi ( ) lemma=zittire 
+ zittissima ( ) lemma=zitto 
+ zittissime ( ) lemma=zitto 
+ zittissimi ( ) lemma=zitto 
+ zittissimo ( ) lemma=zitto 
+ zittiste ( ) lemma=zittire 
+ zittisti ( ) lemma=zittire 
+ zittita ( ) lemma=zittire 
+ zittite ( ) lemma=zittire 
+ zittiti ( ) lemma=zittire 
+ zittito ( ) lemma=zittire 
+ zittiva ( ) lemma=zittire 
+ zittivamo ( ) lemma=zittire 
+ zittivan ( ) lemma=zittire 
+ zittivano ( ) lemma=zittire 
+ zittivate ( ) lemma=zittire 
+ zittivi ( ) lemma=zittire 
+ zittivo ( ) lemma=zittire 
+ zittì ( ) lemma=zittire 
+ zoccola ( ) 
+ zoccolai ( ) lemma=zoccolare 
+ zoccolare ( ) 
+ zoccolammo ( ) lemma=zoccolare 
+ zoccolan ( ) lemma=zoccolare 
+ zoccolando ( ) lemma=zoccolare 
+ zoccolano ( ) lemma=zoccolare 
+ zoccolante ( ) lemma=zoccolare 
+ zoccolanti ( ) lemma=zoccolare 
+ zoccolar ( ) lemma=zoccolare 
+ zoccolaron ( ) lemma=zoccolare 
+ zoccolarono ( ) lemma=zoccolare 
+ zoccolasse ( ) lemma=zoccolare 
+ zoccolasser ( ) lemma=zoccolare 
+ zoccolassero ( ) lemma=zoccolare 
+ zoccolassi ( ) lemma=zoccolare 
+ zoccolassimo ( ) lemma=zoccolare 
+ zoccolaste ( ) lemma=zoccolare 
+ zoccolasti ( ) lemma=zoccolare 
+ zoccolata ( ) lemma=zoccolare 
+ zoccolate ( ) lemma=zoccolare 
+ zoccolati ( ) lemma=zoccolare 
+ zoccolato ( ) lemma=zoccolare 
+ zoccolava ( ) lemma=zoccolare 
+ zoccolavamo ( ) lemma=zoccolare 
+ zoccolavan ( ) lemma=zoccolare 
+ zoccolavano ( ) lemma=zoccolare 
+ zoccolavate ( ) lemma=zoccolare 
+ zoccolavi ( ) lemma=zoccolare 
+ zoccolavo ( ) lemma=zoccolare 
+ zoccole ( ) lemma=zoccola 
+ zoccolera' ( ) lemma=zoccolare 
+ zoccolerai ( ) lemma=zoccolare 
+ zoccoleran ( ) lemma=zoccolare 
+ zoccoleranno ( ) lemma=zoccolare 
+ zoccolerebbe ( ) lemma=zoccolare 
+ zoccolerebber ( ) lemma=zoccolare 
+ zoccolerebbero ( ) lemma=zoccolare 
+ zoccolerei ( ) lemma=zoccolare 
+ zoccoleremmo ( ) lemma=zoccolare 
+ zoccoleremo ( ) lemma=zoccolare 
+ zoccolereste ( ) lemma=zoccolare 
+ zoccoleresti ( ) lemma=zoccolare 
+ zoccolerete ( ) lemma=zoccolare 
+ zoccolero' ( ) lemma=zoccolare 
+ zoccolerà ( ) lemma=zoccolare 
+ zoccolerò ( ) lemma=zoccolare 
+ zoccoli ( ) lemma=zoccolo 
+ zoccolo ( ) 
+ zoccoliamo ( ) lemma=zoccolare 
+ zoccoliate ( ) lemma=zoccolare 
+ zoccolin ( ) lemma=zoccolare 
+ zoccolino ( ) lemma=zoccolare 
+ zoccolo' ( ) lemma=zoccolare 
+ zoccolò ( ) lemma=zoccolare 
+ zodiacale ( ) 
+ zodiacali ( ) lemma=zodiacale 
+ zodiacalissima ( ) lemma=zodiacale 
+ zodiacalissime ( ) lemma=zodiacale 
+ zodiacalissimi ( ) lemma=zodiacale 
+ zodiacalissimo ( ) lemma=zodiacale 
+ zolfi ( ) lemma=zolfo 
+ zolfo ( ) 
+ zolla ( ) 
+ zolle ( ) lemma=zolla 
+ zombi ( ) 
+ zombie ( ) 
+ zompa ( ) lemma=zompare 
+ zompare ( ) 
+ zompai ( ) lemma=zompare 
+ zompammo ( ) lemma=zompare 
+ zompan ( ) lemma=zompare 
+ zompando ( ) lemma=zompare 
+ zompano ( ) lemma=zompare 
+ zompante ( ) lemma=zompare 
+ zompanti ( ) lemma=zompare 
+ zompar ( ) lemma=zompare 
+ zomparon ( ) lemma=zompare 
+ zomparono ( ) lemma=zompare 
+ zompasse ( ) lemma=zompare 
+ zompasser ( ) lemma=zompare 
+ zompassero ( ) lemma=zompare 
+ zompassi ( ) lemma=zompare 
+ zompassimo ( ) lemma=zompare 
+ zompaste ( ) lemma=zompare 
+ zompasti ( ) lemma=zompare 
+ zompata ( ) lemma=zompare 
+ zompate ( ) lemma=zompare 
+ zompati ( ) lemma=zompare 
+ zompato ( ) lemma=zompare 
+ zompava ( ) lemma=zompare 
+ zompavamo ( ) lemma=zompare 
+ zompavan ( ) lemma=zompare 
+ zompavano ( ) lemma=zompare 
+ zompavate ( ) lemma=zompare 
+ zompavi ( ) lemma=zompare 
+ zompavo ( ) lemma=zompare 
+ zompera' ( ) lemma=zompare 
+ zomperai ( ) lemma=zompare 
+ zomperan ( ) lemma=zompare 
+ zomperanno ( ) lemma=zompare 
+ zomperebbe ( ) lemma=zompare 
+ zomperebber ( ) lemma=zompare 
+ zomperebbero ( ) lemma=zompare 
+ zomperei ( ) lemma=zompare 
+ zomperemmo ( ) lemma=zompare 
+ zomperemo ( ) lemma=zompare 
+ zompereste ( ) lemma=zompare 
+ zomperesti ( ) lemma=zompare 
+ zomperete ( ) lemma=zompare 
+ zompero' ( ) lemma=zompare 
+ zomperà ( ) lemma=zompare 
+ zomperò ( ) lemma=zompare 
+ zompetta ( ) lemma=zompettare 
+ zompettare ( ) 
+ zompettai ( ) lemma=zompettare 
+ zompettammo ( ) lemma=zompettare 
+ zompettan ( ) lemma=zompettare 
+ zompettando ( ) lemma=zompettare 
+ zompettano ( ) lemma=zompettare 
+ zompettante ( ) lemma=zompettare 
+ zompettanti ( ) lemma=zompettare 
+ zompettar ( ) lemma=zompettare 
+ zompettaron ( ) lemma=zompettare 
+ zompettarono ( ) lemma=zompettare 
+ zompettasse ( ) lemma=zompettare 
+ zompettasser ( ) lemma=zompettare 
+ zompettassero ( ) lemma=zompettare 
+ zompettassi ( ) lemma=zompettare 
+ zompettassimo ( ) lemma=zompettare 
+ zompettaste ( ) lemma=zompettare 
+ zompettasti ( ) lemma=zompettare 
+ zompettata ( ) lemma=zompettare 
+ zompettate ( ) lemma=zompettare 
+ zompettati ( ) lemma=zompettare 
+ zompettato ( ) lemma=zompettare 
+ zompettava ( ) lemma=zompettare 
+ zompettavamo ( ) lemma=zompettare 
+ zompettavan ( ) lemma=zompettare 
+ zompettavano ( ) lemma=zompettare 
+ zompettavate ( ) lemma=zompettare 
+ zompettavi ( ) lemma=zompettare 
+ zompettavo ( ) lemma=zompettare 
+ zompettera' ( ) lemma=zompettare 
+ zompetterai ( ) lemma=zompettare 
+ zompetteran ( ) lemma=zompettare 
+ zompetteranno ( ) lemma=zompettare 
+ zompetterebbe ( ) lemma=zompettare 
+ zompetterebber ( ) lemma=zompettare 
+ zompetterebbero ( ) lemma=zompettare 
+ zompetterei ( ) lemma=zompettare 
+ zompetteremmo ( ) lemma=zompettare 
+ zompetteremo ( ) lemma=zompettare 
+ zompettereste ( ) lemma=zompettare 
+ zompetteresti ( ) lemma=zompettare 
+ zompetterete ( ) lemma=zompettare 
+ zompettero' ( ) lemma=zompettare 
+ zompetterà ( ) lemma=zompettare 
+ zompetterò ( ) lemma=zompettare 
+ zompetti ( ) lemma=zompettare 
+ zompettiamo ( ) lemma=zompettare 
+ zompettiate ( ) lemma=zompettare 
+ zompettin ( ) lemma=zompettare 
+ zompettino ( ) lemma=zompettare 
+ zompetto ( ) lemma=zompettare 
+ zompetto' ( ) lemma=zompettare 
+ zompettò ( ) lemma=zompettare 
+ zompi ( ) lemma=zompare 
+ zompiamo ( ) lemma=zompare 
+ zompiate ( ) lemma=zompare 
+ zompin ( ) lemma=zompare 
+ zompino ( ) lemma=zompare 
+ zompo ( ) lemma=zompare 
+ zompo' ( ) lemma=zompare 
+ zompò ( ) lemma=zompare 
+ zona ( ) 
+ zonale ( ) 
+ zonali ( ) lemma=zonale 
+ zonalissima ( ) lemma=zonale 
+ zonalissime ( ) lemma=zonale 
+ zonalissimi ( ) lemma=zonale 
+ zonalissimo ( ) lemma=zonale 
+ zone ( ) lemma=zona 
+ zonista ( ) 
+ zonisti ( ) lemma=zonista 
+ zoo ( ) 
+ zoologi ( ) lemma=zoologo 
+ zoologo ( ) 
+ zoologia ( ) 
+ zoologica ( ) lemma=zoologico 
+ zoologico ( ) 
+ zoologiche ( ) lemma=zoologico 
+ zoologici ( ) lemma=zoologico 
+ zoologicissima ( ) lemma=zoologico 
+ zoologicissime ( ) lemma=zoologico 
+ zoologicissimi ( ) lemma=zoologico 
+ zoologicissimo ( ) lemma=zoologico 
+ zoologie ( ) lemma=zoologia 
+ zoom ( ) 
+ zooma ( ) lemma=zoomare 
+ zoomare ( ) 
+ zoomai ( ) lemma=zoomare 
+ zoomammo ( ) lemma=zoomare 
+ zooman ( ) lemma=zoomare 
+ zoomando ( ) lemma=zoomare 
+ zoomano ( ) lemma=zoomare 
+ zoomante ( ) lemma=zoomare 
+ zoomanti ( ) lemma=zoomare 
+ zoomar ( ) lemma=zoomare 
+ zoomaron ( ) lemma=zoomare 
+ zoomarono ( ) lemma=zoomare 
+ zoomasse ( ) lemma=zoomare 
+ zoomasser ( ) lemma=zoomare 
+ zoomassero ( ) lemma=zoomare 
+ zoomassi ( ) lemma=zoomare 
+ zoomassimo ( ) lemma=zoomare 
+ zoomaste ( ) lemma=zoomare 
+ zoomasti ( ) lemma=zoomare 
+ zoomata ( ) 
+ zoomate ( ) lemma=zoomata 
+ zoomati ( ) lemma=zoomare 
+ zoomato ( ) lemma=zoomare 
+ zoomava ( ) lemma=zoomare 
+ zoomavamo ( ) lemma=zoomare 
+ zoomavan ( ) lemma=zoomare 
+ zoomavano ( ) lemma=zoomare 
+ zoomavate ( ) lemma=zoomare 
+ zoomavi ( ) lemma=zoomare 
+ zoomavo ( ) lemma=zoomare 
+ zoomera' ( ) lemma=zoomare 
+ zoomerai ( ) lemma=zoomare 
+ zoomeran ( ) lemma=zoomare 
+ zoomeranno ( ) lemma=zoomare 
+ zoomerebbe ( ) lemma=zoomare 
+ zoomerebber ( ) lemma=zoomare 
+ zoomerebbero ( ) lemma=zoomare 
+ zoomerei ( ) lemma=zoomare 
+ zoomeremmo ( ) lemma=zoomare 
+ zoomeremo ( ) lemma=zoomare 
+ zoomereste ( ) lemma=zoomare 
+ zoomeresti ( ) lemma=zoomare 
+ zoomerete ( ) lemma=zoomare 
+ zoomero' ( ) lemma=zoomare 
+ zoomerà ( ) lemma=zoomare 
+ zoomerò ( ) lemma=zoomare 
+ zoomi ( ) lemma=zoomare 
+ zoomiamo ( ) lemma=zoomare 
+ zoomiate ( ) lemma=zoomare 
+ zoomin ( ) lemma=zoomare 
+ zoomino ( ) lemma=zoomare 
+ zoomo ( ) lemma=zoomare 
+ zoomo' ( ) lemma=zoomare 
+ zoomorfa ( ) lemma=zoomorfo 
+ zoomorfo ( ) 
+ zoomorfe ( ) lemma=zoomorfo 
+ zoomorfi ( ) lemma=zoomorfo 
+ zoomorfica ( ) lemma=zoomorfico 
+ zoomorfico ( ) 
+ zoomorfiche ( ) lemma=zoomorfico 
+ zoomorfici ( ) lemma=zoomorfico 
+ zoomorficissima ( ) lemma=zoomorfico 
+ zoomorficissime ( ) lemma=zoomorfico 
+ zoomorficissimi ( ) lemma=zoomorfico 
+ zoomorficissimo ( ) lemma=zoomorfico 
+ zoomorfissima ( ) lemma=zoomorfo 
+ zoomorfissime ( ) lemma=zoomorfo 
+ zoomorfissimi ( ) lemma=zoomorfo 
+ zoomorfissimo ( ) lemma=zoomorfo 
+ zoomò ( ) lemma=zoomare 
+ zootecnia ( ) 
+ zootecnica ( ) lemma=zootecnico 
+ zootecnico ( ) 
+ zootecniche ( ) lemma=zootecnico 
+ zootecnici ( ) lemma=zootecnico 
+ zootecnicissima ( ) lemma=zootecnico 
+ zootecnicissime ( ) lemma=zootecnico 
+ zootecnicissimi ( ) lemma=zootecnico 
+ zootecnicissimo ( ) lemma=zootecnico 
+ zootecnie ( ) lemma=zootecnia 
+ zoppa ( ) lemma=zoppo 
+ zoppo ( ) 
+ zoppe ( ) lemma=zoppo 
+ zoppi ( ) lemma=zoppo 
+ zoppia ( ) 
+ zoppica ( ) lemma=zoppicare 
+ zoppicare ( ) 
+ zoppicai ( ) lemma=zoppicare 
+ zoppicammo ( ) lemma=zoppicare 
+ zoppican ( ) lemma=zoppicare 
+ zoppicando ( ) lemma=zoppicare 
+ zoppicano ( ) lemma=zoppicare 
+ zoppicante ( ) 
+ zoppicanti ( ) lemma=zoppicante 
+ zoppicantissima ( ) lemma=zoppicante 
+ zoppicantissime ( ) lemma=zoppicante 
+ zoppicantissimi ( ) lemma=zoppicante 
+ zoppicantissimo ( ) lemma=zoppicante 
+ zoppicar ( ) lemma=zoppicare 
+ zoppicaron ( ) lemma=zoppicare 
+ zoppicarono ( ) lemma=zoppicare 
+ zoppicasse ( ) lemma=zoppicare 
+ zoppicasser ( ) lemma=zoppicare 
+ zoppicassero ( ) lemma=zoppicare 
+ zoppicassi ( ) lemma=zoppicare 
+ zoppicassimo ( ) lemma=zoppicare 
+ zoppicaste ( ) lemma=zoppicare 
+ zoppicasti ( ) lemma=zoppicare 
+ zoppicata ( ) lemma=zoppicare 
+ zoppicate ( ) lemma=zoppicare 
+ zoppicati ( ) lemma=zoppicare 
+ zoppicato ( ) lemma=zoppicare 
+ zoppicava ( ) lemma=zoppicare 
+ zoppicavamo ( ) lemma=zoppicare 
+ zoppicavan ( ) lemma=zoppicare 
+ zoppicavano ( ) lemma=zoppicare 
+ zoppicavate ( ) lemma=zoppicare 
+ zoppicavi ( ) lemma=zoppicare 
+ zoppicavo ( ) lemma=zoppicare 
+ zoppichera' ( ) lemma=zoppicare 
+ zoppicherai ( ) lemma=zoppicare 
+ zoppicheran ( ) lemma=zoppicare 
+ zoppicheranno ( ) lemma=zoppicare 
+ zoppicherebbe ( ) lemma=zoppicare 
+ zoppicherebber ( ) lemma=zoppicare 
+ zoppicherebbero ( ) lemma=zoppicare 
+ zoppicherei ( ) lemma=zoppicare 
+ zoppicheremmo ( ) lemma=zoppicare 
+ zoppicheremo ( ) lemma=zoppicare 
+ zoppichereste ( ) lemma=zoppicare 
+ zoppicheresti ( ) lemma=zoppicare 
+ zoppicherete ( ) lemma=zoppicare 
+ zoppichero' ( ) lemma=zoppicare 
+ zoppicherà ( ) lemma=zoppicare 
+ zoppicherò ( ) lemma=zoppicare 
+ zoppichi ( ) lemma=zoppicare 
+ zoppichiamo ( ) lemma=zoppicare 
+ zoppichiate ( ) lemma=zoppicare 
+ zoppichin ( ) lemma=zoppicare 
+ zoppichino ( ) lemma=zoppicare 
+ zoppico ( ) lemma=zoppicare 
+ zoppico' ( ) lemma=zoppicare 
+ zoppicò ( ) lemma=zoppicare 
+ zoppie ( ) lemma=zoppia 
+ zoppissima ( ) lemma=zoppo 
+ zoppissime ( ) lemma=zoppo 
+ zoppissimi ( ) lemma=zoppo 
+ zoppissimo ( ) lemma=zoppo 
+ zoppìa ( ) 
+ zoppìe ( ) lemma=zoppìa 
+ zuava ( ) lemma=zuavo 
+ zuavo ( ) 
+ zuave ( ) lemma=zuavo 
+ zuavi ( ) lemma=zuavo 
+ zuavissima ( ) lemma=zuavo 
+ zuavissime ( ) lemma=zuavo 
+ zuavissimi ( ) lemma=zuavo 
+ zuavissimo ( ) lemma=zuavo 
+ zucca ( ) 
+ zucche ( ) lemma=zucca 
+ zucchera ( ) lemma=zuccherare 
+ zuccherare ( ) 
+ zuccherai ( ) lemma=zuccherare 
+ zuccherammo ( ) lemma=zuccherare 
+ zuccheran ( ) lemma=zuccherare 
+ zuccherando ( ) lemma=zuccherare 
+ zuccherano ( ) lemma=zuccherare 
+ zuccherante ( ) lemma=zuccherare 
+ zuccheranti ( ) lemma=zuccherare 
+ zuccherar ( ) lemma=zuccherare 
+ zuccheraron ( ) lemma=zuccherare 
+ zuccherarono ( ) lemma=zuccherare 
+ zuccherasse ( ) lemma=zuccherare 
+ zuccherasser ( ) lemma=zuccherare 
+ zuccherassero ( ) lemma=zuccherare 
+ zuccherassi ( ) lemma=zuccherare 
+ zuccherassimo ( ) lemma=zuccherare 
+ zuccheraste ( ) lemma=zuccherare 
+ zuccherasti ( ) lemma=zuccherare 
+ zuccherata ( ) lemma=zuccherato 
+ zuccherato ( ) 
+ zuccherate ( ) lemma=zuccherato 
+ zuccherati ( ) lemma=zuccherato 
+ zuccheratissima ( ) lemma=zuccherato 
+ zuccheratissime ( ) lemma=zuccherato 
+ zuccheratissimi ( ) lemma=zuccherato 
+ zuccheratissimo ( ) lemma=zuccherato 
+ zuccherava ( ) lemma=zuccherare 
+ zuccheravamo ( ) lemma=zuccherare 
+ zuccheravan ( ) lemma=zuccherare 
+ zuccheravano ( ) lemma=zuccherare 
+ zuccheravate ( ) lemma=zuccherare 
+ zuccheravi ( ) lemma=zuccherare 
+ zuccheravo ( ) lemma=zuccherare 
+ zuccherera' ( ) lemma=zuccherare 
+ zucchererai ( ) lemma=zuccherare 
+ zucchereran ( ) lemma=zuccherare 
+ zucchereranno ( ) lemma=zuccherare 
+ zucchererebbe ( ) lemma=zuccherare 
+ zucchererebber ( ) lemma=zuccherare 
+ zucchererebbero ( ) lemma=zuccherare 
+ zucchererei ( ) lemma=zuccherare 
+ zucchereremmo ( ) lemma=zuccherare 
+ zucchereremo ( ) lemma=zuccherare 
+ zuccherereste ( ) lemma=zuccherare 
+ zucchereresti ( ) lemma=zuccherare 
+ zucchererete ( ) lemma=zuccherare 
+ zuccherero' ( ) lemma=zuccherare 
+ zucchererà ( ) lemma=zuccherare 
+ zucchererò ( ) lemma=zuccherare 
+ zuccheri ( ) lemma=zucchero 
+ zucchero ( ) 
+ zuccheriamo ( ) lemma=zuccherare 
+ zuccheriate ( ) lemma=zuccherare 
+ zuccheriera ( ) lemma=zuccheriero 
+ zuccheriero ( ) 
+ zuccheriere ( ) lemma=zuccheriero 
+ zuccherieri ( ) lemma=zuccheriero 
+ zuccherierissima ( ) lemma=zuccheriero 
+ zuccherierissime ( ) lemma=zuccheriero 
+ zuccherierissimi ( ) lemma=zuccheriero 
+ zuccherierissimo ( ) lemma=zuccheriero 
+ zuccherifici ( ) lemma=zuccherificio 
+ zuccherificio ( ) 
+ zuccherin ( ) lemma=zuccherare 
+ zuccherina ( ) lemma=zuccherino 
+ zuccherino ( ) 
+ zuccherine ( ) lemma=zuccherino 
+ zuccherini ( ) lemma=zuccherino 
+ zuccherinissima ( ) lemma=zuccherino 
+ zuccherinissime ( ) lemma=zuccherino 
+ zuccherinissimi ( ) lemma=zuccherino 
+ zuccherinissimo ( ) lemma=zuccherino 
+ zucchero' ( ) lemma=zuccherare 
+ zuccherosa ( ) lemma=zuccheroso 
+ zuccheroso ( ) 
+ zuccherose ( ) lemma=zuccheroso 
+ zuccherosi ( ) lemma=zuccheroso 
+ zuccherosissima ( ) lemma=zuccheroso 
+ zuccherosissime ( ) lemma=zuccheroso 
+ zuccherosissimi ( ) lemma=zuccheroso 
+ zuccherosissimo ( ) lemma=zuccheroso 
+ zuccherò ( ) lemma=zuccherare 
+ zuccone ( ) 
+ zucconi ( ) lemma=zuccone 
+ zucconissima ( ) lemma=zuccone 
+ zucconissime ( ) lemma=zuccone 
+ zucconissimi ( ) lemma=zuccone 
+ zucconissimo ( ) lemma=zuccone 
+ zufola ( ) lemma=zufolare 
+ zufolare ( ) 
+ zufolai ( ) lemma=zufolare 
+ zufolammo ( ) lemma=zufolare 
+ zufolan ( ) lemma=zufolare 
+ zufolando ( ) lemma=zufolare 
+ zufolano ( ) lemma=zufolare 
+ zufolante ( ) lemma=zufolare 
+ zufolanti ( ) lemma=zufolare 
+ zufolar ( ) lemma=zufolare 
+ zufolaron ( ) lemma=zufolare 
+ zufolarono ( ) lemma=zufolare 
+ zufolasse ( ) lemma=zufolare 
+ zufolasser ( ) lemma=zufolare 
+ zufolassero ( ) lemma=zufolare 
+ zufolassi ( ) lemma=zufolare 
+ zufolassimo ( ) lemma=zufolare 
+ zufolaste ( ) lemma=zufolare 
+ zufolasti ( ) lemma=zufolare 
+ zufolata ( ) lemma=zufolare 
+ zufolate ( ) lemma=zufolare 
+ zufolati ( ) lemma=zufolare 
+ zufolato ( ) lemma=zufolare 
+ zufolava ( ) lemma=zufolare 
+ zufolavamo ( ) lemma=zufolare 
+ zufolavan ( ) lemma=zufolare 
+ zufolavano ( ) lemma=zufolare 
+ zufolavate ( ) lemma=zufolare 
+ zufolavi ( ) lemma=zufolare 
+ zufolavo ( ) lemma=zufolare 
+ zufolera' ( ) lemma=zufolare 
+ zufolerai ( ) lemma=zufolare 
+ zufoleran ( ) lemma=zufolare 
+ zufoleranno ( ) lemma=zufolare 
+ zufolerebbe ( ) lemma=zufolare 
+ zufolerebber ( ) lemma=zufolare 
+ zufolerebbero ( ) lemma=zufolare 
+ zufolerei ( ) lemma=zufolare 
+ zufoleremmo ( ) lemma=zufolare 
+ zufoleremo ( ) lemma=zufolare 
+ zufolereste ( ) lemma=zufolare 
+ zufoleresti ( ) lemma=zufolare 
+ zufolerete ( ) lemma=zufolare 
+ zufolero' ( ) lemma=zufolare 
+ zufolerà ( ) lemma=zufolare 
+ zufolerò ( ) lemma=zufolare 
+ zufoli ( ) lemma=zufolare 
+ zufoliamo ( ) lemma=zufolare 
+ zufoliate ( ) lemma=zufolare 
+ zufolin ( ) lemma=zufolare 
+ zufolino ( ) lemma=zufolare 
+ zufolo ( ) lemma=zufolare 
+ zufolo' ( ) lemma=zufolare 
+ zufolò ( ) lemma=zufolare 
+ zulu' ( ) lemma=zulù 
+ zulù ( ) 
+ zuma ( ) lemma=zumare 
+ zumare ( ) 
+ zumai ( ) lemma=zumare 
+ zumammo ( ) lemma=zumare 
+ zuman ( ) lemma=zumare 
+ zumando ( ) lemma=zumare 
+ zumano ( ) lemma=zumare 
+ zumante ( ) lemma=zumare 
+ zumanti ( ) lemma=zumare 
+ zumar ( ) lemma=zumare 
+ zumaron ( ) lemma=zumare 
+ zumarono ( ) lemma=zumare 
+ zumasse ( ) lemma=zumare 
+ zumasser ( ) lemma=zumare 
+ zumassero ( ) lemma=zumare 
+ zumassi ( ) lemma=zumare 
+ zumassimo ( ) lemma=zumare 
+ zumaste ( ) lemma=zumare 
+ zumasti ( ) lemma=zumare 
+ zumata ( ) lemma=zumare 
+ zumate ( ) lemma=zumare 
+ zumati ( ) lemma=zumare 
+ zumato ( ) lemma=zumare 
+ zumava ( ) lemma=zumare 
+ zumavamo ( ) lemma=zumare 
+ zumavan ( ) lemma=zumare 
+ zumavano ( ) lemma=zumare 
+ zumavate ( ) lemma=zumare 
+ zumavi ( ) lemma=zumare 
+ zumavo ( ) lemma=zumare 
+ zumera' ( ) lemma=zumare 
+ zumerai ( ) lemma=zumare 
+ zumeran ( ) lemma=zumare 
+ zumeranno ( ) lemma=zumare 
+ zumerebbe ( ) lemma=zumare 
+ zumerebber ( ) lemma=zumare 
+ zumerebbero ( ) lemma=zumare 
+ zumerei ( ) lemma=zumare 
+ zumeremmo ( ) lemma=zumare 
+ zumeremo ( ) lemma=zumare 
+ zumereste ( ) lemma=zumare 
+ zumeresti ( ) lemma=zumare 
+ zumerete ( ) lemma=zumare 
+ zumero' ( ) lemma=zumare 
+ zumerà ( ) lemma=zumare 
+ zumerò ( ) lemma=zumare 
+ zumi ( ) lemma=zumare 
+ zumiamo ( ) lemma=zumare 
+ zumiate ( ) lemma=zumare 
+ zumin ( ) lemma=zumare 
+ zumino ( ) lemma=zumare 
+ zumo ( ) lemma=zumare 
+ zumo' ( ) lemma=zumare 
+ zumò ( ) lemma=zumare 
+ zuppa ( ) lemma=zuppo 
+ zuppo ( ) 
+ zuppe ( ) lemma=zuppo 
+ zuppi ( ) lemma=zuppo 
+ zuppissima ( ) lemma=zuppo 
+ zuppissime ( ) lemma=zuppo 
+ zuppissimi ( ) lemma=zuppo 
+ zuppissimo ( ) lemma=zuppo 
+ zurighese ( ) 
+ zurighesi ( ) lemma=zurighese 
+ zurighesissima ( ) lemma=zurighese 
+ zurighesissime ( ) lemma=zurighese 
+ zurighesissimi ( ) lemma=zurighese 
+ zurighesissimo ( ) lemma=zurighese 
+ zurliniana ( ) lemma=zurliniano 
+ zurliniano ( ) 
+ zurliniane ( ) lemma=zurliniano 
+ zurliniani ( ) lemma=zurliniano 
+ zurlinianissima ( ) lemma=zurliniano 
+ zurlinianissime ( ) lemma=zurliniano 
+ zurlinianissimi ( ) lemma=zurliniano 
+ zurlinianissimo ( ) lemma=zurliniano 
