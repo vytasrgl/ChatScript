@@ -1,5 +1,5 @@
 # ChatScript System Functions Manual
-© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com
 <br>Revision 4/8/2017 cs7.31
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
@@ -146,12 +146,12 @@ That sentence is now used up, and will not be seen next when the current revised
 Sample code might be:
 ```
 t: Do you have any pets
-    a: (~yes) refine()
-        b: (%more) Next(input) refine()
-            c: (~pets) … # react to pet
+    a: ( ~yes ) refine()
+        b: ( %more ) ^next(input) refine()
+            c: ( ~pets ) ... # react to pet
             c: () ^retry(SENTENCE) # return to try input from scratch
         b: () What kind do you have?
-            c: (~pets) … # react to pet
+            c: ( ~pets ) ... # react to pet
 ```
 
 If _label_ is `LOOP`, the system will stop processing code in the current loop and return to
@@ -168,25 +168,25 @@ If topicname is omitted, removes the current topic AND makes the current topic f
 
 ### `^refine ( ? )`
 
-This is like a switch statement in _C language_. It executes in order the rejoinders
-attached to its rule in sequence. 
+This is like a switch statement in _C language_. 
+It executes in order the rejoinders attached to its rule in sequence. 
 
 When the pattern of one matches, it executes that output and is done, 
-regardless of whether or not the output fails or generates nothing. It does not
-"fail", unless you add an optional FAIL argument. You can also provide a rule tag.
-Normally it uses the rule the refine is executing from, but you can direct it to refine from any rule.
+regardless of whether or not the output fails or generates nothing. 
+It does not "fail", unless you add an optional FAIL argument. 
+You can also provide a rule tag.
+Normally it uses the rule the refine is executing from, 
+but you can direct it to refine from any rule.
 
 
-### `^rejoinder()`
+### `^rejoinder ( {tag/label} )`
 
-See if the prior input ended with a potential rejoinder rule, and if so test it
-on the current sentence. If we match and dont fail on a rejoinder, the rejoinder is satisfied.
-If we fail to match on the 1st input sentence, the rejoinder remains in place for a second
-sentence. If that doesn't match, it is canceled. It is also canceled if output matching the
-first sentence sets a rejoinder.
-
-
-### `^rejoinder ( tag/label )`
+Without argument, see if the prior input ended with a potential rejoinder rule, 
+and if so test it on the current sentence. 
+If we match and dont fail on a rejoinder, the rejoinder is satisfied.
+If we fail to match on the 1st input sentence, 
+the rejoinder remains in place for a second sentence.  If that doesn't match, it is canceled. 
+It is also canceled if output matching the first sentence sets a rejoinder.
 
 You can give an optional tag or label to pretend the named rule
 had been the one to set a rejoinder and so therefore execute its rejoinders explicitly.
@@ -194,25 +194,25 @@ had been the one to set a rejoinder and so therefore execute its rejoinders expl
 
 ### `^respond ( value value ... )`
 
-Tests the sentence against the named value topic in responder
-mode to see if any rule matches (executes the rule when matched). It does not fail
-(though it may not generate any output), unless a rule forces it to fail or the topic
-requested does not exist or is disabled. 
+Tests the sentence against the named value topic in responder mode to see if any rule matches 
+(executes the rule when matched). 
+It does not fail (though it may not generate any output), 
+unless a rule forces it to fail or the topic requested does not exist or is disabled. 
 
 This rule will not erase but the responding rule might. 
-If the first value fails to generate an answer, it tries the second, and so on. You can
-supply an optional last argument `FAIL`, in which case it will return `FAILRULE_BIT` if it
-didn't fail but it didn't generate any new output either.
+If the first value fails to generate an answer, it tries the second, and so on. 
+You can supply an optional last argument `FAIL`, 
+in which case it will return `FAILRULE_BIT` if it didn't fail but it didn't generate any new output either.
 
-If a value designates a labelled or tagged rule (e.g., `~mytopic.mylabel` or
-`~mytopic.1.0`) then the system will skip over all rules until it reaches that rule, then begin
-linear scanning, even if the topic is designated random.
+If a value designates a labelled or tagged rule (e.g., `~mytopic.mylabel` or `~mytopic.1.0`) 
+then the system will skip over all rules until it reaches that rule, then begin linear scanning, 
+even if the topic is designated random.
 
 The _value_ may be `~`, which means use the current topic you are within. 
 
-It can also be `PENDING`, which means pick a topic from the pending topics stack (they are all pending
-being returned to but not including the current topic). Or it can be any other word, which
-will be a keyword of some topic to pick.
+It can also be `PENDING`, which means pick a topic from the pending topics stack 
+(they are all pending being returned to but not including the current topic). 
+Or it can be any other word, which will be a keyword of some topic to pick.
 
 
 ### `^retry ( item )`
@@ -227,7 +227,8 @@ To prevent infinite loops, it will not perform more than 5 retries during a voll
 `SENTENCE` is particularly useful with changing the tokenflags to get input processing
 done differently. If item is INPUT it will retry all input again.
 
-`^retry(TOPRULE)` will return back to the top level rule (not of the topic but of a rejoinder set) and retry.  
+`^retry(TOPRULE)` will return back to the top level rule 
+(not of the topic but of a rejoinder set) and retry.  
 It's the same if the current rule was a top level rule, 
 but if the current rule is from `^refine()`, then it returns to the outermost rule to restart. 
 If the current rule is not from `^refine()`, then `TOPRULE` means the lexically placed toprule 
@@ -249,10 +250,10 @@ disabled if it is allowed. If not allowed, the calling rule will be disabled if 
 ```
 t: NAME () My name is Bob.
 
-?: ( << what you name >>) 
+?: ( << what you name >> ) 
     ^reuse(NAME)
 
-?: ( << what you girlfriend name >>) 
+?: ( << what you girlfriend name >> ) 
     ^reuse(~SARAH.NAME)
 ```
 Normally reuse will use the output of a rule whether or not the rule has been disabled.
@@ -555,18 +556,20 @@ from `^input` and not from the user by `%revisedInput` (bool) being true (1).
 
 ### `^original ( _n )`
 
-The argument is the name of a match variable. 
+The argument is the name of a match variable.
 Whatever it has memorized will be used to locate the corresponding series of words 
 in the original raw input from the user that led to this match. 
-Eg, if the input was:
 
-    I lick ice crem
+E.g., if the input was: _I lick ice crem_, the converted input became _I lick ice_create_ and you'd memorized the food onto a match variable, then you could do `^original(_0)` and get back _ice crem_.
 
-and the converted input became
+Another example:
 
-    I lick ice_create
-
-and you'd memorized the food onto a match variable, then you could do `^original(_0)` and get back _ice crem_.
+    # get foreign language proper name, without any CS standard processing.
+    u: what's your first name?
+        #! Anna Lisa
+        a: ( _* )
+	   $firstname = ^original ( _0 )
+	   Nice to meet you, $firstname 
 
 
 ### `^position ( which _var )`
@@ -624,7 +627,7 @@ The answer will be `?` if the operation makes no sense and infinity if you divid
 `~numberOperator` recognizes these operations:
 
 | operator symbol   | description                                    |
-| ---------------   | -------                                        |
+| ---------------   | ---------------------------------------------- |
 | `+`               | plus add and (addition) 
 | `-`               | minus subtract deduct (subtraction) 
 | `*`               | x time multiply (multiplication) 
@@ -1081,21 +1084,22 @@ files by using `^import` and `^export` of facts.
 
 ### `^popen ( commandstring 'function )`
 
-The command string is a string to pass the os shell
-to execute. That will return output strings (some number of them) which will have any `\r`
-or `\n` changed to blanks and then the string stripped of leading and trailing blanks. The
-string is then wrapped in double quotes so it looks like a standard ChatScript single
-argument string, and sent to the declared function, which must be an output macro or
-system function name, preceded by a quote. 
+The command string is a string to pass the os shell to execute. 
+That will return output strings (some number of them) which will have any `\r` or `\n` 
+changed to blanks and then the string stripped of leading and trailing blanks. 
+
+The string is then wrapped in double quotes so it looks like a standard ChatScript single argument string, 
+and sent to the declared function, which must be an output macro or system function name, preceded by a quote.
+
 The function can do whatever it wants. Any output it prints to the output buffer will be concatenated together 
 to be the output from ChatScript. If you need a doublequote in the command string, use a backslash in front of
 each one.  They will be removed prior to sending the command. E.g.,
-```
-outputmacro: ^myfunc(^arg)
-^arg \n
-topic: ~test( testing )
-u: () popen( "dir *.* /on" '^myfunc)
-```
+
+    outputmacro: ^myfunc(^arg)
+    ^arg \n
+    topic: ~test( testing )
+    u: () popen( "dir *.* /on" '^myfunc)
+
 output this:
 ```
 Volume in drive C is OS
@@ -1118,12 +1122,14 @@ Directory of C:ChatScript
 
 ### `^tcpopen ( kind url data 'function )`
 
-Analogous in spirit to popen. You name the `kind` of service (`POST`, `GET`), 
-the `url` (not including `http://`) but including any subdirectory, 
+Analogous in spirit to popen. 
+
+You name the `kind` of service (`POST`, `GET`), the `url` (not including `http://`) but including any subdirectory, 
 the text string to send as data, and the quoted function in ChatScript you want to receive the answer. 
-The answer will be read as strings of text (newlines separate and are stripped off
-with carriage returns) and each string is passed in turn to your function which takes a
-single argument (that text). 
+
+The answer will be read as strings of text 
+(newlines separate and are stripped off with carriage returns) 
+and each string is passed in turn to your function which takes a single argument (that text). 
 
     :trace TRACE_TCP 
 
@@ -1134,7 +1140,9 @@ communication scenarios and returns structured data so you don't have to write s
 yourself to parse the text.
 
 `'function` can be `null` if you are not needing to look at output. 
+
 The system will set `$$tcpopen_error` with error information if this function fails.
+
 When you look at a webpage you often see it's url looking like this:
 ```
 http://xml.weather.com/weather/local/4f33?cc=*&unit ="+vunit+"&dayf=7"
@@ -1145,28 +1153,33 @@ The host: `xml.weather.com`.
 
 The service or directory: `/weather/local/4f33`. 
 
-The arguments: everything AFTER the `?`. The arguments are URLencoded, so spaces have been replaced by `+`, 
+The arguments: everything AFTER the `?`. 
+
+The arguments are URLencoded, so spaces have been replaced by `+`, 
 special characters will be converted to `%xx` hex numbers. 
-If there are multiple values, they will be separated by `&` and the left side of
-an `=` is the argument name and the right side is the value. 
 
-When you call `^tcpopen`, normally you provide the host and service as a single argument (everything to the left
-of `?`) and the data as another argument (everything to the right of `?`).
+If there are multiple values, they will be separated by `&` 
+and the left side of an `=` is the argument name and the right side is the value. 
 
-Since ChatScript URL encodes, you don't. If you don't know the unencoded form of the
-data or you don't think CS will get it right, you can provide URL-encoded data yourself,
-in which case make your first argument either `POSTU` or `GETU`, meaning you are
-supplying url-encoded data so CS should not do anything to your arguments.
+When you call `^tcpopen`, normally you provide the host and service as a single argument 
+(everything to the left of `?`) and the data as another argument (everything to the right of `?`).
+
+Since ChatScript URL encodes, you don't. 
+If you don't know the unencoded form of the data or you don't think CS will get it right, 
+you can provide URL-encoded data yourself, 
+in which case make your first argument either `POSTU` or `GETU`, 
+meaning you are supplying url-encoded data so CS should not do anything to your arguments.
 
 Below is sample code to find current conditions and temperature in san francisco if you
 have an api key to the service. It calls the service, gets back all the JSON formatted data
 from the request, and line by line passes it to `^myfunc`. 
+
 This, in turn, calls a topic to hunt selectively for fragments and save them, 
 and when all the fragments we want have been found, 
 `^myfunc` outputs a message and stops further processing by calling `^END(RULE)`.
 
-Note that in this example there is no data to pass, everything is in the service named, so
-the data value is "".
+Note that in this example there is no data to pass, 
+everything is in the service named, so the data value is "".
 
 ```
 outputmacro: ^myfunc (^value)
@@ -1203,11 +1216,11 @@ u: (weather)
     if ( tcpopen(GET api.wunderground.com/api/yourkey/conditions/q/CA/San_Francisco.json "" '^myfunc)) 
         { hi }
     else 
-        {$$tcpopen_error}
+        { $$tcpopen_error }
 ```
 
-There is a subtlety in the `^myfunc` code in that it uses ^print to put out the result. Just
-writing:
+There is a subtlety in the `^myfunc` code in that it uses ^print to put out the result. 
+Just writing:
 ```
 if ($$currentCondition AND $$currentTEMP)
     { 
@@ -1219,15 +1232,16 @@ if ($$currentCondition AND $$currentTEMP)
 
 will not work, because that output is being generated by the call to `^tcpopen`, which is in
 the test part of the if, so everything it does is purely for effect of testing a condition. The
-generated output is dicarded. If you moved the output generation to the `{ }` of the `if`,
-things would be fine. E.g.,
+generated output is dicarded. 
+
+If you moved the output generation to the `{ }` of the `if`, things would be fine. E.g.,
 ```
-if ( tcpopen(GET api.wunderground.com/api/yourkey/conditions/q/CA/San_Francisco.json "" '^myfunc)) 
+if ( tcpopen(GET api.wunderground.com/api/yourkey/conditions/q/CA/San_Francisco.json "" '^myfunc) ) 
     {
     It is $$currentCondition.
     The temperature is $$currentTemp.
     }
-else {$$tcpopen_error}
+else { $$tcpopen_error }
 ```
 Doing the output without using `^print` is my preferred style; it is easier to see what is
 going on for output if it is not hidden deep inside some if test.
@@ -1263,9 +1277,9 @@ erase at end of volley) or `permanent` meaning keep the facts as part of user da
 If _set_ is null, then facts are created but not stored into any fact-set and the subject of
 the first fact is returned as the answer (presumed to be a json structure).
 
-If the name includes the substring "ltm", then the file will 
-be decryptable and routes to databases if the filesystem has been overridden by Mongo, Postgres,
-or MySQL.
+If the name includes the substring "ltm", 
+then the file will  be decryptable and routes to databases 
+if the filesystem has been overridden by Mongo, Postgres, or MySQL.
 
 
 ## Debugging Function `^debug ()`
@@ -1324,10 +1338,12 @@ E.g.,
 
 ```
 topic: ~document_pre system repeat()
+
 t: ^memorymark() # note start
   Log(OUTPUT_ECHO \n Begin $$document ) # instant display
 
 topic: ~main_control system repeat () # executed each sentence of document
+
 u: (%document)
   respond(~filter)
   ^memoryfree()
@@ -1498,8 +1514,10 @@ You may omit the leading . of a path and CS will by default assume it
 
 Takes the data source text and hunts within it for instances of the burst-character-string. 
 If it is being dumped to the output stream then only the first piece is dumped. 
+
 If it is being assigned to a fact set (like `@2`) then a series of transient facts are created for the pieces, 
 with the piece as the subject and `^burst` `^burst` as the verb and object. 
+
 If it is being assigned to a match variable, 
 then pieces are assigned starting at that variable and moving on to successively higher ones.
 
@@ -1511,10 +1529,11 @@ If burst_character is omitted, it is presumed to be BOTH `_`
 (which joins composite words and names) and " ", which separates words.
 
 If burst_character is the null string "", it means burst into characters.
+
 `^burst` takes an optional first parameter `count`, which tells it to return how many items it
-would return if you burst, but not to do the burst.
-`^burst` takes an optional first parameter `once` which says split only into the first burst
-and then the leftover rest.
+would return if you burst, but not to do the burst.  
+`^burst` takes an optional first parameter `once` 
+which says split only into the first burst and then the leftover rest.
 
 
 ### `^words ( someword )` 
@@ -1551,25 +1570,18 @@ Return the substring with the designated offset range
 (exclusive of end location). Useful for data extraction using ^popen and ^tcpopen when
 combined with `^findtext`.
 
-In addition to absolute unsigned values, start and end can take on offsets or relative values. A signed end is a length to extract plus a direction or shift in start.
+In addition to absolute unsigned values, start and end can take on offsets or relative values. 
+A signed end is a length to extract plus a direction or shift in start:
 
-    ^extract($$source 5 +2)
+    ^extract($$source 5 +2) # to extract 2 characters beginning at position
     
-to extract 2 characters beginning at position
-    
-    ^extract($$source 5 -2)
-
-to extract 2 characters ending at position 5
+    ^extract($$source 5 -2) # to extract 2 characters ending at position 5
     
 A negative start is a backwards offset from end.
 
-    ^extract($$source -1 +1)
-    
-from end, 1 character before and get 1 character
+    ^extract($$source -1 +1) # from end, 1 character before and get 1 character
 
-    ^extract($$source -5 -1)
-    
-from end, 5 characters before and get 1 character before. i.e. the 6th char from end.
+    ^extract($$source -5 -1) # from end, 5 characters before and get 1 character before. i.e. the 6th char from end.
 
 
 ### `^findtext ( source substring offset {insensitive} )`
@@ -1580,9 +1592,13 @@ Useful for data extraction using `^popen` and `^tcpopen` when combined with `^ex
 `$$findtext_word` is bound to the word index in which the match was found where one or more blanks separate words.
 Indexing starts at 1 (same as sentence positional notation).
 
-An optional fourth argument `insensitive` will match insensitively. Failing to match will generate a rule failure. If the source or substring contains an `_`, these will be converted to blanks before execution, to allow that
-or the space notation to be considered equivalent (unless your source or substring is
-literally an underscore only.
+An optional fourth argument `insensitive` will match insensitively. 
+
+Failing to match will generate a rule failure. 
+If the source or substring contains an `_`, 
+these will be converted to blanks before execution, 
+to allow that or the space notation to be considered equivalent 
+(unless your source or substring is literally an underscore only).
 
 
 ### `^flags ( word )`
@@ -1628,49 +1644,56 @@ already in the dictionary.
 
 Generates a particular form of a word in any form and puts it in the output stream. 
 If it cannot generate the request, it issues a RULE failure. 
-Most combinations of arguments are obvious. Here are the 1st & 3rd choices:
+Most combinations of arguments are obvious. Here are the 1st & 3rd choices.
+For verbs with irregular pronoun conjugation, supply 4th argument of pronoun to use.
 
-```
-conjugate pos-integer (as returned from ^partofspeech) returns the word with that
-part of speech (eg conjugate go #VERB_PAST_PARTICIPLE)
-raw integer 1 .. %length (returns the original word in sentence)
-syllable word – tells you how many syllables a word has
-hex64 integer-word converts a number to 64bit hex
-hex32 integer-word converts a number to 32 bit hex
-type word – returns concept, number, word, or unknown
-common word – returns level of commonness of the word
-verb verb – given verb in any form, return requested form
-present_participle
-past_participle
-infinitive
-past
-present3ps
-present
-for verbs with irregular pronoun conjugation, supply 4th argument of
-pronoun to use
-verb verb match noun – returns noun form matching verb (sing./plural)
-eg (walk match dog) => walks
-aux auxverb pronoun – returns verb form matching pronoun supplied
-for "do","have", "be"
-pronoun word flip - changes person form for 1st and 2nd person
-adjective word more writes the adjective in its comparative form: fast->faster
-most – the superlative form – beautiful->most beautiful
-adverb word more – writes comparative form: strong-> strongly
-most – writes the superlative form
-noun word proper – return word as a proper noun (appropriately cased)
-lowercaseexist
-uppercaseexist
-singular or a number == 1
-plural or a number > 1
-irregular – return value only for irregular nouns
-determiner word noun - add a determiner "a/an" if it needs one
-place integer - return place number of integer
-capitalize/uppercase word
-lowercase word
-allupper word
-canonical word
-integer floatnumber generate integer if float is exact integer
-```
+| part-of-speech       | word/verb/number<br>(+ supplement-data argument) | action
+|----------------------|----------------------------------|-------------------------- 
+| `conjugate`          | pos-integer<br>(as returned from `^partofspeech`) | returns the word with that part of speech (eg conjugate go #VERB_PAST_PARTICIPLE)
+|`raw`                 | integer 1 .. `%length` | (returns the original word in sentence)
+| `syllable`           | word | tells you how many syllables a word has
+| `hex64`              | integer-word | converts a number to 64bit hex
+| `hex32`              | integer-word | converts a number to 32 bit hex
+| `type`               | word         | returns concept, number, word, or unknown
+| `common`             | word         | returns level of commonness of the word
+| `verb`               | verb         | given verb in any form, return requested form
+| `present_participle` | verb         |
+| `past_participle`    | verb         |
+| `infinitive`         | verb         |
+| `past`               | verb         |
+| `present3ps`         | verb         | 
+| `present`            | verb         | 
+| `verb`               | `match` noun | returns noun form matching verb (sing./plural).<br>e.g. (_walk match dog_) -> _walks_
+| `aux`                | auxverb `pronoun` | returns verb form matching pronoun supplied.<br>for _do_,_have_, _be_
+| `pronoun`            | word  `flip` | changes person form for 1st and 2nd person
+| `adjective`          | word `more`  | writes the adjective in its comparative form: _fast_ -> _faster_
+| `most`               | word         | the superlative form. _beautiful_ -> _most beautiful_
+| `adverb`             | word `more`  | writes comparative form: _strong_ -> _strongly_
+| `noun`               | word `proper` | return word as a proper noun (appropriately cased)
+| `lowercaseexist`     | word         |
+| `uppercaseexist`     | word         |
+| `singular`           | word or a number | == 1
+| `plural`             | word or a number | > 1
+| `irregular`          | word         | return value only for irregular nouns
+| `determiner`         | word `noun`  | add a determiner "a/an" if it needs one
+| `place`              | integer      | return place number of integer
+| `capitalize`         | word         |
+| `uppercase`          | word         |
+| `lowercase`          | word         |
+| `allupper`           | word         |
+| `canonical`          | word         |
+| `integer`            | floatnumber  | generate integer if float is exact integer
+
+Example:
+
+    # get first name (in a not English language), and capitalize
+    u: what's your first name?
+        #! giuditta
+        a: ( _* )
+	   $_name = ^original(_0)
+	   Nice to meet you, ^pos(capitalize $_name)
+	   # if user enter giuditta, the rejoinder output: Nice to meet you, Giuditta 
+
 
 ### `^decodeInputtoken ( number )`
 
@@ -1750,7 +1773,7 @@ select insensitive word match by making the first argument be a text string cont
 normal 1st argument values, e.g. _insensitive word_
 
     ^substitute(word "I love lovely flowers" love hate) 
-
+    
 outputs _I hate lovely flowers_
 
 
@@ -1855,37 +1878,46 @@ since property fails if the word is not found.
 
 ### `^removeinternalflag ( word value )`
 
-Removes named internal flag from word. Currently only value is `HAS_SUBSTITUTE`, 
-which allows you to disable a word/phrase substitution. Use as word the full text of the left entry in a substitutions file. E.g.,
+Removes named internal flag from word. 
 
-<constantly> maps to `~yes` normally. If you do `^removeinternalflag( <constantly> HAS_SUBSTITUTE)` then it will no longer do that. This is a permanent change to the resident dictionary, which will take effect until the system is reloaded.
+Currently only value is `HAS_SUBSTITUTE`, which allows you to disable a word/phrase substitution. 
+Use as word the full text of the left entry in a substitutions file. E.g.,
+
+`<constantly>` maps to `~yes` normally. 
+If you do `^removeinternalflag( <constantly> HAS_SUBSTITUTE)` then it will no longer do that. 
+
+This is a permanent change to the resident dictionary, which will take effect until the system is reloaded.
 
 
 ### `^removeproperty ( word value )`
 
-Remove this property bit from this word. This effect lasts until the system is reloaded. Value should be all upper case.
-Value is normally a system flag value or a property value from `dictionarysystem.h` which does not need a hash in front of it (system will look up the name).
+Remove this property bit from this word. 
+
+This effect lasts until the system is reloaded. Value should be all upper case.
+Value is normally a system flag value or a property value from `dictionarysystem.h` 
+which does not need a hash in front of it (system will look up the name).
 
 _word_ can be in doublequotes. And there are two internal bits that are also allowed to be removed:  `CONCEPT` and `HAS_SUBSITUTE`.  
 
 You can use `HAS_SUBSTITUTE` to disable some standard substitution in LIVEDATA, but you can't apply this at build time because the system won't remember. Instead call it from `^csboot` during startup.
-Instead call it from `^csboot` during startup. For example, in LIVEDATA interjections file, there is an entry:
-```
- <surprise ~emosurprise
- ```
- But if you didn't want surpise at the start of a sentence declared the interjection ~emosurprise, you could do
- ```
- ^removeproperty("<surprise" HAS_SUBSTITUTE)
- ```
 
- And the dictionary has some words which are composites, like `iced_coffee` and it will
- automatically convert the two words into a single token. If you wanted to stop this behavior,
- you could disable this composite word via 
- ```
- ^removeproperty(iced_coffee NOUN)
- ```
- since it is declared as a NOUN (you can see with `:word iced_coffee`). You can do this 
- to nouns, adjectives, adverbs.
+Instead call it from `^csboot` during startup. For example, in LIVEDATA interjections file, there is an entry:
+
+     <surprise ~emosurprise
+
+ But if you didn't want surpise at the start of a sentence declared the interjection `~emosurprise`, you could do
+ 
+     ^removeproperty("<surprise" HAS_SUBSTITUTE)
+ 
+
+ And the dictionary has some words which are composites, like _iced_coffee_ 
+ and it will automatically convert the two words into a single token. 
+ If you wanted to stop this behavior, you could disable this composite word via 
+ 
+     ^removeproperty(iced_coffee NOUN)
+ 
+ since it is declared as a NOUN (you can see with `:word iced_coffee`). 
+ You can do this to nouns, adjectives, adverbs.
 
 
 ### `^walkdictionary ( 'function )` 
@@ -1910,29 +1942,34 @@ loop () # unload every resource on board
 
 ### `^wordAtIndex ( ({original, canonical} n))` 
 
-`^wordAtIndex`  retrieves the word from the current sentence at the index 
-given, as either the original word  or as a 
-canonical word (as a match variable sees it)
+`^wordAtIndex`  retrieves the word from the current sentence at the index given, 
+as either the original word  or as a  canonical word (as a match variable sees it)
+
+
 
 # Multipurpose Functions
-
 
 ### `^disable ( what ? )` 
 
 What can be `topic` or `rule` or `inputrejoinder` or `outputrejoinder` or `save` or `write @set`. 
+
 If `topic`, the next argument can be a topic name (with or without `~` or just `~` meaning the current topic). 
 It means to disable (BLOCK) that topic. 
 
 If a `rule`, you erase (disable) the labeled rule (or rule tag and `~` means the current rule). 
 
-If `outputrejoinder`, it cancels the current output rejoinder mark, allowing a new rule to set a rejoinder. If inputrejoinder then it cancels any pending rejoinder on input.
+If `outputrejoinder`, it cancels the current output rejoinder mark, 
+allowing a new rule to set a rejoinder. 
+
+If `inputrejoinder` then it cancels any pending rejoinder on input.
 
 If `save`, then the user data will not be saved. It's as though this
 interchange didn't happen. 
 
 If `^disable(write @1)` then factset `@1` will not be written out
 into user data and is junk at the next volley (normally this is true).
-You can also disable the inputrejoinder with `^setrejoinder(input)` and the output rejoinder with `^setrejoinder(output)`.
+
+You can also disable the `inputrejoinder` with `^setrejoinder(input)` and the output rejoinder with `^setrejoinder(output)`.
 
 
 ### `^enable ( what ? )`
@@ -1952,18 +1989,21 @@ the next volley (normally this is not true).
 ### `^length ( what )` 
 
 If what is a fact set like `@1`, length returns how many facts are in the set.
-If what is a word, length counts its characters. If what is a concept set, length returns a
-count of the top level (nonrecursive) members. If the name of a json array or object,
-returns how many top level elements it has.
+If what is a word, length counts its characters. 
+If what is a concept set, length returns a count of the top level (nonrecursive) members. 
+If the name of a json array or object, returns how many top level elements it has.
 
 
 ### `^pick ( what )`
 
-Retrieve a random member of the concept if what is a concept. Pick is
-also used with factsets to pick a random fact (see FACTS MANUAL). 
-For a concept, if the member chosen is itself a concept, the system will recurse to pick randomly from that
-concept. If the argument to pick is a $ or _var, it will be evaluated and then pick will be
-tried on the result (but it won't recurse to try that again).
+Retrieve a random member of the concept if what is a concept. 
+Pick is also used with factsets to pick a random fact (see FACTS MANUAL). 
+
+For a concept, if the member chosen is itself a concept, 
+the system will recurse to pick randomly from that concept. 
+If the argument to pick is a $var or \_var, 
+it will be evaluated and then pick will be tried on the result 
+(but it won't recurse to try that again).
 
 If the argument is a JSON object it randomly picks a fact whose verb/object is a key-value pair. 
 If the argument is a JSON array, it randomly picks a fact whose verb is the index and whose object is the value.
@@ -1972,11 +2012,13 @@ The fact id returned can be used with ^field or you can use something like $resu
 
 ### `^reset ( what ? )`
 
-What can be user or topic or factset. If what is user, the system drops
-all history and starts the user afresh from first meeting (launching a new conversation),
-having erased the user topic file. If what is a factset, the "next" pointer for walking the set
-is reset back to the beginning. If what is a topic, all rules are re-enabled and all last
-accessed values are reset to 0.
+What can be user or topic or factset. 
+
+If what is user, the system drops all history and starts the user afresh from first meeting 
+(launching a new conversation), having erased the user topic file. 
+
+If what is a factset, the "next" pointer for walking the set is reset back to the beginning. 
+If what is a topic, all rules are re-enabled and all last accessed values are reset to 0.
 
 
 # FACT FUNCTIONS
@@ -1996,14 +2038,14 @@ need to be really advanced to add to it). The simplest query kinds are:
 
 | query kind   | description                                                  |
 | ----------   | ------------------------------------------------------------ |
-| direct_s     | find all facts with the given subject |
-| direct_v     | find all facts with the given verb |
-| direct_o     | find all facts with the given object |
-| direct_sv    | find all facts with the given subject and verb |
-| direct_so    | find all facts with the given subject and object |
-| direct_vo    | find all facts with the given object and verb |
-| direct_svo   | find all facts given all fields (prove that this fact exists) |
-| Unipropogate | find how subject joins into the object set|
+| direct_s     | find all facts with the given subject 
+| direct_v     | find all facts with the given verb 
+| direct_o     | find all facts with the given object 
+| direct_sv    | find all facts with the given subject and verb 
+| direct_so    | find all facts with the given subject and object 
+| direct_vo    | find all facts with the given object and verb 
+| direct_svo   | find all facts given all fields (prove that this fact exists) 
+| Unipropogate | find how subject joins into the object set
 
 If no matching facts are found, the query function returns the RULE fail code.
 
@@ -2051,6 +2093,7 @@ If no fact is found, the query does not fail, $$tmp is merely set to null.
 
 The final two arguments only make sense with specific query types that use those
 arguments.
+
 For `unipropogate`, if you have these concepts;
 
     concept: ~things (~animals ~vegetables ~minerals)
