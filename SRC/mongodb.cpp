@@ -254,10 +254,11 @@ FunctionResult mongoGetDocument(char* key,char* buffer,int limit,bool user)
     }
     else result = FAILRULE_BIT;
     
+	if( pStrTemp != NULL ) bson_free( pStrTemp );
     if( pDoc != NULL ) bson_destroy( pDoc );
-    if( psQuery != NULL ) bson_destroy( psQuery );
     if( psCursor != NULL ) mongoc_cursor_destroy( psCursor );
-    return result;
+	if( psQuery != NULL ) bson_destroy( psQuery );
+	return result;
 }
 
 FunctionResult mongoFindDocument(char* buffer) // from user not system but can name filesys refs as ARGUMENT(2)

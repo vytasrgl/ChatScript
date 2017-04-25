@@ -26,7 +26,8 @@
     <LocalDebuggerWorkingDirectory>$(SolutionDir)..\BINARIES</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(SolutionDir)..\BINARIES\chatscriptpg.exe </LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments />
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Treetagger|Win32'">

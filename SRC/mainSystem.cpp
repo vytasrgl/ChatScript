@@ -1,6 +1,6 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.31";
+char* version = "7.4";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
@@ -11,6 +11,10 @@ char livedata[500];		// where is the livedata folder
 char languageFolder[500];		// where is the livedata language folder
 char systemFolder[500];		// where is the livedata system folder
 bool noboot = false;
+static char* erasename = "csuser_erase";
+bool build0Requested = false;
+bool build1Requested = false;
+bool servertrace = false;
 bool pendingRestart = false;
 bool pendingUserReset = false;
 bool rebooting = false;
@@ -490,9 +494,11 @@ static void ProcessArgument(char* arg)
 		strcpy(language,arg+9);
 		MakeUpperCase(language);
 	}
+	else if (!strnicmp(arg, "erasename=", 10)) erasename = arg + 10;
 	else if (!stricmp(arg,"userencrypt")) userEncrypt = true;
 	else if (!stricmp(arg,"ltmencrypt")) ltmEncrypt = true;
 	else if (!stricmp(arg,"noboot")) noboot = true;
+	else if (!stricmp(arg, "servertrace")) servertrace = true;
 	else if (!strnicmp(arg,(char*)"apikey=",7)) strcpy(apikey,arg+7);
 	else if (!strnicmp(arg,(char*)"logsize=",8)) logsize = atoi(arg+8); // bytes avail for log buffer
 	else if (!strnicmp(arg, (char*)"loglimit=", 9)) loglimit = atoi(arg + 9); // max mb of log file before change files
@@ -752,6 +758,12 @@ unsigned int InitSystem(int argcx, char * argvx[],char* unchangedPath, char* rea
 #endif
 
 	if (volleyLimit == -1) volleyLimit = DEFAULT_VOLLEY_LIMIT;
+	for (int i = 1; i < argc; ++i)
+	{
+		if (!strnicmp(argv[i], (char*)"build0=", 7)) build0Requested = true;
+		if (!strnicmp(argv[i], (char*)"build1=", 7)) build1Requested = true;
+	}
+
 	CreateSystem();
 	for (int i = 1; i < argc; ++i)
 	{
@@ -1186,6 +1198,7 @@ void ResetToPreUser() // prepare for multiple sentences being processed - data l
 	totalCounter = 0;
 	itAssigned = theyAssigned = 0;
 	ResetTokenSystem();
+	fullfloat = false;
 
 	//  Revert to pre user-loaded state, fresh for a new user
 	ReturnToAfterLayer(LAYER_BOOT,false);  // dict/fact/strings reverted and any extra topic loaded info  (but CSBoot process NOT lost)
@@ -1453,6 +1466,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	timerCheckInstance = 0;
 	modifiedTraceVal = 0;
 	modifiedTrace = false;
+	if (server && servertrace) trace = -1;
 	myBot = 0;
 	if (!documentMode) tokenCount = 0;
 	InitJSONNames(); // reset indices for this volley
@@ -1460,6 +1474,16 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	ResetEncryptTags();
 
 	HandleBoot(FindWord("^cs_reboot"),true);
+
+	bool eraseUser = false;
+
+	// accept a user topic file erase command
+	char* x = strstr(incoming, erasename);
+	if (x)
+	{
+		eraseUser = true;
+		strncpy(x, erasename, strlen(erasename));
+	}
 
 	mainInputBuffer = incoming;
 	mainOutputBuffer = output;
@@ -1524,8 +1548,6 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 		}
 	}
 
-    if (trace & TRACE_MATCH) Log(STDTRACELOG,(char*)"Incoming data- %s | %s | %s\r\n",caller, (*callee) ? callee : (char*)" ", (incoming) ? incoming : (char*)"");
- 
 	bool fakeContinue = false;
 	if (callee[0] == '&') // allow to hook onto existing conversation w/o new start
 	{
@@ -1534,6 +1556,8 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 	}
     Login(caller,callee,ip); //   get the participants names
 	if (!*computerID && *incoming != ':') ReportBug("No computer id before user load?")
+
+	if (trace & TRACE_MATCH) Log(STDTRACELOG, (char*)"Incoming data- %s | %s | %s\r\n", caller, (*callee) ? callee : (char*)" ", (incoming) ? incoming : (char*)"");
 
 	if (systemReset) // drop old user
 	{
@@ -1548,6 +1572,7 @@ int PerformChat(char* user, char* usee, char* incoming,char* ip,char* output) //
 		}
 		systemReset = 0;
 	}
+	else if (eraseUser) ReadNewUser();
 	else if (!documentMode) 
 	{
 		// preserve file status reference across this read use of ReadALine

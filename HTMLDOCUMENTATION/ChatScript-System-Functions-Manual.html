@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-system-functions-manual">ChatScript System Functions Manual</h1>
-<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/8/2017 cs7.31</p>
+<p>© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/24/2017 cs7.4</p>
 <ul>
 <li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
 <li><a href="ChatScript-System-Functions-Manual.html#marking-functions">Marking Functions</a></li>
@@ -71,21 +71,20 @@ t: () name(xxx) # explicitly add an empty pattern</code></pre>
 <p>For <code>^next(INPUT)</code> the system will read the next sentence and prep the system with it. This means that all patterns and code executing thereafter will be in the context of the next input sentence. That sentence is now used up, and will not be seen next when the current revised sentence finishes.</p>
 <p>Sample code might be:</p>
 <pre><code>t: Do you have any pets
-    a: (~yes) refine()
-        b: (%more) Next(input) refine()
-            c: (~pets) … # react to pet
+    a: ( ~yes ) refine()
+        b: ( %more ) ^next(input) refine()
+            c: ( ~pets ) ... # react to pet
             c: () ^retry(SENTENCE) # return to try input from scratch
         b: () What kind do you have?
-            c: (~pets) … # react to pet</code></pre>
+            c: ( ~pets ) ... # react to pet</code></pre>
 <p>If <em>label</em> is <code>LOOP</code>, the system will stop processing code in the current loop and return to the next iteration of it, e.g. C++/Java continue, except that it will stop all code and return to however high up the loop really is, exiting topics and functions willy nilly if need be.</p>
 <h3 id="poptopic-topicname"><code>^poptopic ( topicname )</code></h3>
 <p>Removes the named topic as a pending topic. The intent is not to automatically return here in future conversation. If topicname is omitted, removes the current topic AND makes the current topic fail execution at this point.</p>
 <h3 id="refine"><code>^refine ( ? )</code></h3>
 <p>This is like a switch statement in <em>C language</em>. It executes in order the rejoinders attached to its rule in sequence.</p>
 <p>When the pattern of one matches, it executes that output and is done, regardless of whether or not the output fails or generates nothing. It does not &quot;fail&quot;, unless you add an optional FAIL argument. You can also provide a rule tag. Normally it uses the rule the refine is executing from, but you can direct it to refine from any rule.</p>
-<h3 id="rejoinder"><code>^rejoinder()</code></h3>
-<p>See if the prior input ended with a potential rejoinder rule, and if so test it on the current sentence. If we match and dont fail on a rejoinder, the rejoinder is satisfied. If we fail to match on the 1st input sentence, the rejoinder remains in place for a second sentence. If that doesn't match, it is canceled. It is also canceled if output matching the first sentence sets a rejoinder.</p>
-<h3 id="rejoinder-taglabel"><code>^rejoinder ( tag/label )</code></h3>
+<h3 id="rejoinder-taglabel"><code>^rejoinder ( {tag/label} )</code></h3>
+<p>Without argument, see if the prior input ended with a potential rejoinder rule, and if so test it on the current sentence. If we match and dont fail on a rejoinder, the rejoinder is satisfied. If we fail to match on the 1st input sentence, the rejoinder remains in place for a second sentence. If that doesn't match, it is canceled. It is also canceled if output matching the first sentence sets a rejoinder.</p>
 <p>You can give an optional tag or label to pretend the named rule had been the one to set a rejoinder and so therefore execute its rejoinders explicitly.</p>
 <h3 id="respond-value-value-..."><code>^respond ( value value ... )</code></h3>
 <p>Tests the sentence against the named value topic in responder mode to see if any rule matches (executes the rule when matched). It does not fail (though it may not generate any output), unless a rule forces it to fail or the topic requested does not exist or is disabled.</p>
@@ -105,10 +104,10 @@ It's the same if the current rule was a top level rule, but if the current rule 
 <p>When it executes the output of the other rule, that rule is credited with matching and is disabled if it is allowed. If not allowed, the calling rule will be disabled if it can be.</p>
 <pre><code>t: NAME () My name is Bob.
 
-?: ( &lt;&lt; what you name &gt;&gt;) 
+?: ( &lt;&lt; what you name &gt;&gt; ) 
     ^reuse(NAME)
 
-?: ( &lt;&lt; what you girlfriend name &gt;&gt;) 
+?: ( &lt;&lt; what you girlfriend name &gt;&gt; ) 
     ^reuse(~SARAH.NAME)</code></pre>
 <p>Normally reuse will use the output of a rule whether or not the rule has been disabled. But, if you supply a 2nd argument (whatever it is), then it will ignore disabled ones and try to find one with the same label that is not disabled. You can also supply a <code>FAIL</code> argument (as either 2nd or 3rd) which indicates the system should issue a RULE FAIL if it doesn't generate any output.</p>
 <p>If you want to use a common rule to hold an answer and ONLY fire when reused, perhaps with rejoinders, the most efficient way to do that is with a rule whose pattern can never match. E.g. like this:</p>
@@ -210,11 +209,15 @@ It's the same if the current rule was a top level rule, but if the current rule 
 <p>The arguments, separated by spaces, are injected back into the input stream as the next input, processed before any pending additional input. Typically this command is then followed by <code>^fail(SENTENCE)</code> to cancel current processing and move onto the revised input.</p>
 <p>Since the sentence is fed in immediately after the current input, if you want to feed in multiple sentences, you must reverse the order so the last sentence to be processed is submitted via input first. You can detect that the current sentence comes from <code>^input</code> and not from the user by <code>%revisedInput</code> (bool) being true (1).</p>
 <h3 id="original-_n"><code>^original ( _n )</code></h3>
-<p>The argument is the name of a match variable. Whatever it has memorized will be used to locate the corresponding series of words in the original raw input from the user that led to this match. Eg, if the input was:</p>
-<pre><code>I lick ice crem</code></pre>
-<p>and the converted input became</p>
-<pre><code>I lick ice_create</code></pre>
-<p>and you'd memorized the food onto a match variable, then you could do <code>^original(_0)</code> and get back <em>ice crem</em>.</p>
+<p>The argument is the name of a match variable. Whatever it has memorized will be used to locate the corresponding series of words in the original raw input from the user that led to this match.</p>
+<p>E.g., if the input was: <em>I lick ice crem</em>, the converted input became <em>I lick ice_create</em> and you'd memorized the food onto a match variable, then you could do <code>^original(_0)</code> and get back <em>ice crem</em>.</p>
+<p>Another example:</p>
+<pre><code># get foreign language proper name, without any CS standard processing.
+u: what&#39;s your first name?
+    #! Anna Lisa
+    a: ( _* )
+   $firstname = ^original ( _0 )
+   Nice to meet you, $firstname </code></pre>
 <h3 id="position-which-_var"><code>^position ( which _var )</code></h3>
 <p>If <em>which</em> is <code>start</code> this returns the starting index of the word matched in the named <code>_var</code>.</p>
 <p>If <em>which</em> is <code>end</code> this returns the ending index. E.g.,</p>
@@ -610,7 +613,9 @@ if ($$newtype == $$type AND match($$newrule)) # we would match this rule</code><
 <h3 id="system-any-number-of-arguments"><code>^system ( any number of arguments )</code></h3>
 <p>The arguments, separated by spaces, are passed as a text string to the operating system for execution as a command. The function always succeeds, returning the return code of the call. You can transfer data back and forth via files by using <code>^import</code> and <code>^export</code> of facts.</p>
 <h3 id="popen-commandstring-function"><code>^popen ( commandstring 'function )</code></h3>
-<p>The command string is a string to pass the os shell to execute. That will return output strings (some number of them) which will have any <code>\r</code> or <code>\n</code> changed to blanks and then the string stripped of leading and trailing blanks. The string is then wrapped in double quotes so it looks like a standard ChatScript single argument string, and sent to the declared function, which must be an output macro or system function name, preceded by a quote. The function can do whatever it wants. Any output it prints to the output buffer will be concatenated together to be the output from ChatScript. If you need a doublequote in the command string, use a backslash in front of each one. They will be removed prior to sending the command. E.g.,</p>
+<p>The command string is a string to pass the os shell to execute. That will return output strings (some number of them) which will have any <code>\r</code> or <code>\n</code> changed to blanks and then the string stripped of leading and trailing blanks.</p>
+<p>The string is then wrapped in double quotes so it looks like a standard ChatScript single argument string, and sent to the declared function, which must be an output macro or system function name, preceded by a quote.</p>
+<p>The function can do whatever it wants. Any output it prints to the output buffer will be concatenated together to be the output from ChatScript. If you need a doublequote in the command string, use a backslash in front of each one. They will be removed prior to sending the command. E.g.,</p>
 <pre><code>outputmacro: ^myfunc(^arg)
 ^arg \n
 topic: ~test( testing )
@@ -631,19 +636,26 @@ Directory of C:ChatScript
 24 Dir(s) 566,354,685,952 bytes free</code></pre>
 <p><code>'Function</code> can be null if you are not needing to look at output.</p>
 <h3 id="tcpopen-kind-url-data-function"><code>^tcpopen ( kind url data 'function )</code></h3>
-<p>Analogous in spirit to popen. You name the <code>kind</code> of service (<code>POST</code>, <code>GET</code>), the <code>url</code> (not including <code>http://</code>) but including any subdirectory, the text string to send as data, and the quoted function in ChatScript you want to receive the answer. The answer will be read as strings of text (newlines separate and are stripped off with carriage returns) and each string is passed in turn to your function which takes a single argument (that text).</p>
+<p>Analogous in spirit to popen.</p>
+<p>You name the <code>kind</code> of service (<code>POST</code>, <code>GET</code>), the <code>url</code> (not including <code>http://</code>) but including any subdirectory, the text string to send as data, and the quoted function in ChatScript you want to receive the answer.</p>
+<p>The answer will be read as strings of text (newlines separate and are stripped off with carriage returns) and each string is passed in turn to your function which takes a single argument (that text).</p>
 <pre><code>:trace TRACE_TCP </code></pre>
 <p>can be enabled to log what happens during the call.</p>
 <p>Likely you will prefer <code>^jsonopen</code> which can deal with more complex web communication scenarios and returns structured data so you don't have to write script yourself to parse the text.</p>
-<p><code>'function</code> can be <code>null</code> if you are not needing to look at output. The system will set <code>$$tcpopen_error</code> with error information if this function fails. When you look at a webpage you often see it's url looking like this:</p>
+<p><code>'function</code> can be <code>null</code> if you are not needing to look at output.</p>
+<p>The system will set <code>$$tcpopen_error</code> with error information if this function fails.</p>
+<p>When you look at a webpage you often see it's url looking like this:</p>
 <pre><code>http://xml.weather.com/weather/local/4f33?cc=*&amp;unit =&quot;+vunit+&quot;&amp;dayf=7&quot;</code></pre>
 <p>There are three components to it.</p>
 <p>The host: <code>xml.weather.com</code>.</p>
 <p>The service or directory: <code>/weather/local/4f33</code>.</p>
-<p>The arguments: everything AFTER the <code>?</code>. The arguments are URLencoded, so spaces have been replaced by <code>+</code>, special characters will be converted to <code>%xx</code> hex numbers. If there are multiple values, they will be separated by <code>&amp;</code> and the left side of an <code>=</code> is the argument name and the right side is the value.</p>
+<p>The arguments: everything AFTER the <code>?</code>.</p>
+<p>The arguments are URLencoded, so spaces have been replaced by <code>+</code>, special characters will be converted to <code>%xx</code> hex numbers.</p>
+<p>If there are multiple values, they will be separated by <code>&amp;</code> and the left side of an <code>=</code> is the argument name and the right side is the value.</p>
 <p>When you call <code>^tcpopen</code>, normally you provide the host and service as a single argument (everything to the left of <code>?</code>) and the data as another argument (everything to the right of <code>?</code>).</p>
 <p>Since ChatScript URL encodes, you don't. If you don't know the unencoded form of the data or you don't think CS will get it right, you can provide URL-encoded data yourself, in which case make your first argument either <code>POSTU</code> or <code>GETU</code>, meaning you are supplying url-encoded data so CS should not do anything to your arguments.</p>
-<p>Below is sample code to find current conditions and temperature in san francisco if you have an api key to the service. It calls the service, gets back all the JSON formatted data from the request, and line by line passes it to <code>^myfunc</code>. This, in turn, calls a topic to hunt selectively for fragments and save them, and when all the fragments we want have been found, <code>^myfunc</code> outputs a message and stops further processing by calling <code>^END(RULE)</code>.</p>
+<p>Below is sample code to find current conditions and temperature in san francisco if you have an api key to the service. It calls the service, gets back all the JSON formatted data from the request, and line by line passes it to <code>^myfunc</code>.</p>
+<p>This, in turn, calls a topic to hunt selectively for fragments and save them, and when all the fragments we want have been found, <code>^myfunc</code> outputs a message and stops further processing by calling <code>^END(RULE)</code>.</p>
 <p>Note that in this example there is no data to pass, everything is in the service named, so the data value is &quot;&quot;.</p>
 <pre><code>outputmacro: ^myfunc (^value)
 
@@ -679,7 +691,7 @@ u: (weather)
     if ( tcpopen(GET api.wunderground.com/api/yourkey/conditions/q/CA/San_Francisco.json &quot;&quot; &#39;^myfunc)) 
         { hi }
     else 
-        {$$tcpopen_error}</code></pre>
+        { $$tcpopen_error }</code></pre>
 <p>There is a subtlety in the <code>^myfunc</code> code in that it uses ^print to put out the result. Just writing:</p>
 <pre><code>if ($$currentCondition AND $$currentTEMP)
     { 
@@ -687,13 +699,14 @@ u: (weather)
     The temperature is $$currentTemp.
     ^END(RULE)
     }</code></pre>
-<p>will not work, because that output is being generated by the call to <code>^tcpopen</code>, which is in the test part of the if, so everything it does is purely for effect of testing a condition. The generated output is dicarded. If you moved the output generation to the <code>{ }</code> of the <code>if</code>, things would be fine. E.g.,</p>
-<pre><code>if ( tcpopen(GET api.wunderground.com/api/yourkey/conditions/q/CA/San_Francisco.json &quot;&quot; &#39;^myfunc)) 
+<p>will not work, because that output is being generated by the call to <code>^tcpopen</code>, which is in the test part of the if, so everything it does is purely for effect of testing a condition. The generated output is dicarded.</p>
+<p>If you moved the output generation to the <code>{ }</code> of the <code>if</code>, things would be fine. E.g.,</p>
+<pre><code>if ( tcpopen(GET api.wunderground.com/api/yourkey/conditions/q/CA/San_Francisco.json &quot;&quot; &#39;^myfunc) ) 
     {
     It is $$currentCondition.
     The temperature is $$currentTemp.
     }
-else {$$tcpopen_error}</code></pre>
+else { $$tcpopen_error }</code></pre>
 <p>Doing the output without using <code>^print</code> is my preferred style; it is easier to see what is going on for output if it is not hidden deep inside some if test.</p>
 <h3 id="export-name-from"><code>^export ( name from )</code></h3>
 <p>From must be a fact set to export. Name is the file to write them to. An optional 3rd argument <code>append</code> means to add to the file at the end, rather than recreate the file from scratch.</p>
@@ -727,16 +740,18 @@ else {$$tcpopen_error}</code></pre>
 <h3 id="memoryfree"><code>^memoryfree ()</code></h3>
 <p>This releases memory back to the last <code>^memorymark()</code>. It is best done after your main control of the document bot has finished processing a sentence. E.g.,</p>
 <pre><code>topic: ~document_pre system repeat()
+
 t: ^memorymark() # note start
   Log(OUTPUT_ECHO \n Begin $$document ) # instant display
 
 topic: ~main_control system repeat () # executed each sentence of document
+
 u: (%document)
   respond(~filter)
   ^memoryfree()</code></pre>
 <p>The caveats and warnings about how this works. Whenenver you free memory, the system will clear all fact sets. It will clear all user variables set after the memory mark (leaving the ones before alone). It will then release facts, text, and dictionary nodes created after the mark.</p>
 <h3 id="memorygc"><code>^memorygc ()</code></h3>
-<p>This can function in either document mode or chat mode. It does what it can to release unused memory. It has restrictions in it does not work if you have facts with facts as fields or are in planning mode. It also discards saved sentence data, recovery data when you modify flags or properties of dictionary entries that are preloaded, and all of your analysis data for the current sentence.</p>
+<p>This can function in either document mode or chat mode. It does what it can to release unused memory. It has restrictions in it does not work if you have facts with facts as fields or are in planning mode. It also discards saved sentence data, and all of your analysis data for the current sentence. It also discards all data in factsets.</p>
 <h1 id="json-functions">JSON Functions</h1>
 <p>JSON functions and JSON are described more fully in the ChatScript JSON manual.</p>
 <h3 id="jsonarrayinsert-arrayname-value"><code>^jsonarrayinsert ( arrayname value )</code></h3>
@@ -788,10 +803,14 @@ u: (%document)
 <pre><code>^jsonpath(&quot;st. helen&quot;.data $tmp)</code></pre>
 <h1 id="word-manipulation-functions">Word Manipulation Functions</h1>
 <h3 id="burst-count-once-data-source-burst-character-string"><code>^burst ( {count once} data-source burst-character-string )</code></h3>
-<p>Takes the data source text and hunts within it for instances of the burst-character-string. If it is being dumped to the output stream then only the first piece is dumped. If it is being assigned to a fact set (like <code>@2</code>) then a series of transient facts are created for the pieces, with the piece as the subject and <code>^burst</code> <code>^burst</code> as the verb and object. If it is being assigned to a match variable, then pieces are assigned starting at that variable and moving on to successively higher ones.</p>
+<p>Takes the data source text and hunts within it for instances of the burst-character-string. If it is being dumped to the output stream then only the first piece is dumped.</p>
+<p>If it is being assigned to a fact set (like <code>@2</code>) then a series of transient facts are created for the pieces, with the piece as the subject and <code>^burst</code> <code>^burst</code> as the verb and object.</p>
+<p>If it is being assigned to a match variable, then pieces are assigned starting at that variable and moving on to successively higher ones.</p>
 <p>If burst does not find a separator, it puts out the original value. For assignment to match variables, it also clears the next match variable so the end of the list will be a null match variable.</p>
 <p>If burst_character is omitted, it is presumed to be BOTH <code>_</code> (which joins composite words and names) and &quot; &quot;, which separates words.</p>
-<p>If burst_character is the null string &quot;&quot;, it means burst into characters. <code>^burst</code> takes an optional first parameter <code>count</code>, which tells it to return how many items it would return if you burst, but not to do the burst. <code>^burst</code> takes an optional first parameter <code>once</code> which says split only into the first burst and then the leftover rest.</p>
+<p>If burst_character is the null string &quot;&quot;, it means burst into characters.</p>
+<p><code>^burst</code> takes an optional first parameter <code>count</code>, which tells it to return how many items it would return if you burst, but not to do the burst.<br />
+<code>^burst</code> takes an optional first parameter <code>once</code> which says split only into the first burst and then the leftover rest.</p>
 <h3 id="words-someword"><code>^words ( someword )</code></h3>
 <p>Looks up the given word and returns all words matching it. Matching includes the lower case form of it and any number of uppercase forms of it. E.g, you might say <code>^words(ted)</code> and get back facts for <em>ted</em>, <em>Ted</em>, <em>TED</em>.</p>
 <p>The answers are a series of facts of the form (someword words words). In addition to case switching, the system will automatically switch words with underscores or blanks into words with changes in them to the other (since CS stores phrases with underscores). So <code>^words(&quot;I love you&quot;)</code> can match phrases already in the dictionary of: <br><em>I_love you</em> <br><em>I_love_you</em> <br><em>I love you</em> <br><em>I LOVE You</em></p>
@@ -802,19 +821,18 @@ u: (%document)
 <p>Convert a word into a series of facts of its letters.</p>
 <h3 id="extract-source-start-end"><code>^extract ( source start end )</code></h3>
 <p>Return the substring with the designated offset range (exclusive of end location). Useful for data extraction using ^popen and ^tcpopen when combined with <code>^findtext</code>.</p>
-<p>In addition to absolute unsigned values, start and end can take on offsets or relative values. A signed end is a length to extract plus a direction or shift in start.</p>
-<pre><code>^extract($$source 5 +2)</code></pre>
-<p>to extract 2 characters beginning at position</p>
-<pre><code>^extract($$source 5 -2)</code></pre>
-<p>to extract 2 characters ending at position 5</p>
+<p>In addition to absolute unsigned values, start and end can take on offsets or relative values. A signed end is a length to extract plus a direction or shift in start:</p>
+<pre><code>^extract($$source 5 +2) # to extract 2 characters beginning at position
+
+^extract($$source 5 -2) # to extract 2 characters ending at position 5</code></pre>
 <p>A negative start is a backwards offset from end.</p>
-<pre><code>^extract($$source -1 +1)</code></pre>
-<p>from end, 1 character before and get 1 character</p>
-<pre><code>^extract($$source -5 -1)</code></pre>
-<p>from end, 5 characters before and get 1 character before. i.e. the 6th char from end.</p>
+<pre><code>^extract($$source -1 +1) # from end, 1 character before and get 1 character
+
+^extract($$source -5 -1) # from end, 5 characters before and get 1 character before. i.e. the 6th char from end.</code></pre>
 <h3 id="findtext-source-substring-offset-insensitive"><code>^findtext ( source substring offset {insensitive} )</code></h3>
 <p>Find case sensitive substring within source+offset and return offset starting immediately after match. Useful for data extraction using <code>^popen</code> and <code>^tcpopen</code> when combined with <code>^extract</code>. <code>$$findtext_start</code> is bound to the actual start of the match. <code>$$findtext_word</code> is bound to the word index in which the match was found where one or more blanks separate words. Indexing starts at 1 (same as sentence positional notation).</p>
-<p>An optional fourth argument <code>insensitive</code> will match insensitively. Failing to match will generate a rule failure. If the source or substring contains an <code>_</code>, these will be converted to blanks before execution, to allow that or the space notation to be considered equivalent (unless your source or substring is literally an underscore only.</p>
+<p>An optional fourth argument <code>insensitive</code> will match insensitively.</p>
+<p>Failing to match will generate a rule failure. If the source or substring contains an <code>_</code>, these will be converted to blanks before execution, to allow that or the space notation to be considered equivalent (unless your source or substring is literally an underscore only).</p>
 <h3 id="flags-word"><code>^flags ( word )</code></h3>
 <p>get the 64bit systemflags of a word.</p>
 <h3 id="intersectwords-arg1-arg2-optional"><code>^intersectwords ( arg1 arg2 optional )</code></h3>
@@ -828,46 +846,216 @@ u: (%document)
 <h3 id="properties-word"><code>^properties ( word )</code></h3>
 <p>Returns the 64bit properties of a word or fail-rule if the word is not already in the dictionary.</p>
 <h3 id="pos-part-of-speech-word-supplemental-data"><code>^pos( part-of-speech word supplemental-data )</code></h3>
-<p>Generates a particular form of a word in any form and puts it in the output stream. If it cannot generate the request, it issues a RULE failure. Most combinations of arguments are obvious. Here are the 1st &amp; 3rd choices:</p>
-<pre><code>conjugate pos-integer (as returned from ^partofspeech) returns the word with that
-part of speech (eg conjugate go #VERB_PAST_PARTICIPLE)
-raw integer 1 .. %length (returns the original word in sentence)
-syllable word – tells you how many syllables a word has
-hex64 integer-word converts a number to 64bit hex
-hex32 integer-word converts a number to 32 bit hex
-type word – returns concept, number, word, or unknown
-common word – returns level of commonness of the word
-verb verb – given verb in any form, return requested form
-present_participle
-past_participle
-infinitive
-past
-present3ps
-present
-for verbs with irregular pronoun conjugation, supply 4th argument of
-pronoun to use
-verb verb match noun – returns noun form matching verb (sing./plural)
-eg (walk match dog) =&gt; walks
-aux auxverb pronoun – returns verb form matching pronoun supplied
-for &quot;do&quot;,&quot;have&quot;, &quot;be&quot;
-pronoun word flip - changes person form for 1st and 2nd person
-adjective word more writes the adjective in its comparative form: fast-&gt;faster
-most – the superlative form – beautiful-&gt;most beautiful
-adverb word more – writes comparative form: strong-&gt; strongly
-most – writes the superlative form
-noun word proper – return word as a proper noun (appropriately cased)
-lowercaseexist
-uppercaseexist
-singular or a number == 1
-plural or a number &gt; 1
-irregular – return value only for irregular nouns
-determiner word noun - add a determiner &quot;a/an&quot; if it needs one
-place integer - return place number of integer
-capitalize/uppercase word
-lowercase word
-allupper word
-canonical word
-integer floatnumber generate integer if float is exact integer</code></pre>
+<p>Generates a particular form of a word in any form and puts it in the output stream. If it cannot generate the request, it issues a RULE failure. Most combinations of arguments are obvious. Here are the 1st &amp; 3rd choices. For verbs with irregular pronoun conjugation, supply 4th argument of pronoun to use.</p>
+<table>
+<colgroup>
+<col width="27%" />
+<col width="41%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>part-of-speech</th>
+<th>word/verb/number<br>(+ supplement-data argument)</th>
+<th>action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>conjugate</code></td>
+<td>pos-integer<br>(as returned from <code>^partofspeech</code>)</td>
+<td>returns the word with that part of speech (eg conjugate go #VERB_PAST_PARTICIPLE)</td>
+</tr>
+<tr class="even">
+<td><code>raw</code></td>
+<td>integer 1 .. <code>%length</code></td>
+<td>(returns the original word in sentence)</td>
+</tr>
+<tr class="odd">
+<td><code>syllable</code></td>
+<td>word</td>
+<td>tells you how many syllables a word has</td>
+</tr>
+<tr class="even">
+<td><code>hex64</code></td>
+<td>integer-word</td>
+<td>converts a number to 64bit hex</td>
+</tr>
+<tr class="odd">
+<td><code>hex32</code></td>
+<td>integer-word</td>
+<td>converts a number to 32 bit hex</td>
+</tr>
+<tr class="even">
+<td><code>ismodelnumber</code></td>
+<td>word</td>
+<td>return 1 if it is (mixed alpha/numeric). Fails otherwise.</td>
+</tr>
+<tr class="odd">
+<td><code>isinteger</code></td>
+<td>word</td>
+<td>return 1 if it is all digits, fails otherwise</td>
+</tr>
+<tr class="even">
+<td><code>isfloat</code></td>
+<td>word</td>
+<td>return 1 if it is float, fails otherwise</td>
+</tr>
+<tr class="odd">
+<td><code>type</code></td>
+<td>word</td>
+<td>returns concept, number, word, or unknown</td>
+</tr>
+<tr class="even">
+<td><code>common</code></td>
+<td>word</td>
+<td>returns level of commonness of the word</td>
+</tr>
+<tr class="odd">
+<td><code>verb</code></td>
+<td>verb</td>
+<td>given verb in any form, return requested form</td>
+</tr>
+<tr class="even">
+<td><code>present_participle</code></td>
+<td>verb</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>past_participle</code></td>
+<td>verb</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>infinitive</code></td>
+<td>verb</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>past</code></td>
+<td>verb</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>present3ps</code></td>
+<td>verb</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>present</code></td>
+<td>verb</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>verb</code></td>
+<td><code>match</code> noun</td>
+<td>returns noun form matching verb (sing./plural).<br>e.g. (<em>walk match dog</em>) -&gt; <em>walks</em></td>
+</tr>
+<tr class="odd">
+<td><code>aux</code></td>
+<td>auxverb <code>pronoun</code></td>
+<td>returns verb form matching pronoun supplied.<br>for <em>do</em>,<em>have</em>, <em>be</em></td>
+</tr>
+<tr class="even">
+<td><code>pronoun</code></td>
+<td>word <code>flip</code></td>
+<td>changes person form for 1st and 2nd person</td>
+</tr>
+<tr class="odd">
+<td><code>adjective</code></td>
+<td>word <code>more</code></td>
+<td>writes the adjective in its comparative form: <em>fast</em> -&gt; <em>faster</em></td>
+</tr>
+<tr class="even">
+<td><code>most</code></td>
+<td>word</td>
+<td>the superlative form. <em>beautiful</em> -&gt; <em>most beautiful</em></td>
+</tr>
+<tr class="odd">
+<td><code>adverb</code></td>
+<td>word <code>more</code></td>
+<td>writes comparative form: <em>strong</em> -&gt; <em>strongly</em></td>
+</tr>
+<tr class="even">
+<td><code>noun</code></td>
+<td>word <code>proper</code></td>
+<td>return word as a proper noun (appropriately cased)</td>
+</tr>
+<tr class="odd">
+<td><code>lowercaseexist</code></td>
+<td>word</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>uppercaseexist</code></td>
+<td>word</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>singular</code></td>
+<td>word or a number</td>
+<td>== 1</td>
+</tr>
+<tr class="even">
+<td><code>plural</code></td>
+<td>word or a number</td>
+<td>&gt; 1</td>
+</tr>
+<tr class="odd">
+<td><code>irregular</code></td>
+<td>word</td>
+<td>return value only for irregular nouns</td>
+</tr>
+<tr class="even">
+<td><code>determiner</code></td>
+<td>word <code>noun</code></td>
+<td>add a determiner &quot;a/an&quot; if it needs one</td>
+</tr>
+<tr class="odd">
+<td><code>place</code></td>
+<td>integer</td>
+<td>return place number of integer</td>
+</tr>
+<tr class="even">
+<td><code>capitalize</code></td>
+<td>word</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>uppercase</code></td>
+<td>word</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>lowercase</code></td>
+<td>word</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>allupper</code></td>
+<td>word</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>canonical</code></td>
+<td>word</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>integer</code></td>
+<td>floatnumber</td>
+<td>generate integer if float is exact integer</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<pre><code># get first name (in a not English language), and capitalize
+u: what&#39;s your first name?
+    #! giuditta
+    a: ( _* )
+   $_name = ^original(_0)
+   Nice to meet you, ^pos(capitalize $_name)
+   # if user enter giuditta, the rejoinder output: Nice to meet you, Giuditta </code></pre>
 <h3 id="decodeinputtoken-number"><code>^decodeInputtoken ( number )</code></h3>
 <p>Display the text values of tokenflag bits. You can pass it <code>%token</code> to see the meanings of the current sentence analysis or <code>$cs_token</code> to see what you have current set as token controls.</p>
 <h3 id="decodepos-pos-location"><code>^decodepos ( pos location )</code></h3>
@@ -929,51 +1117,43 @@ integer floatnumber generate integer if float is exact integer</code></pre>
 <pre><code>^properties(dog) AND ^hasproperty(dog xxx) </code></pre>
 <p>since property fails if the word is not found.</p>
 <h3 id="removeinternalflag-word-value"><code>^removeinternalflag ( word value )</code></h3>
-<p>Removes named internal flag from word. Currently only value is <code>HAS_SUBSTITUTE</code>, which allows you to disable a word/phrase substitution. Use as word the full text of the left entry in a substitutions file. E.g.,</p>
-<p><constantly> maps to <code>~yes</code> normally. If you do <code>^removeinternalflag( &lt;constantly&gt; HAS_SUBSTITUTE)</code> then it will no longer do that. This is a permanent change to the resident dictionary, which will take effect until the system is reloaded.</p>
+<p>Removes named internal flag from word.</p>
+<p>Currently only value is <code>HAS_SUBSTITUTE</code>, which allows you to disable a word/phrase substitution. Use as word the full text of the left entry in a substitutions file. E.g.,</p>
+<p><code>&lt;constantly&gt;</code> maps to <code>~yes</code> normally. If you do <code>^removeinternalflag( &lt;constantly&gt; HAS_SUBSTITUTE)</code> then it will no longer do that.</p>
+<p>This is a permanent change to the resident dictionary, which will take effect until the system is reloaded.</p>
 <h3 id="removeproperty-word-value"><code>^removeproperty ( word value )</code></h3>
-<p>Remove this property bit from this word. This effect lasts until the system is reloaded. Value should be all upper case. Value is normally a system flag value or a property value from <code>dictionarysystem.h</code> which does not need a hash in front of it (system will look up the name).</p>
+<p>Remove this property bit from this word.</p>
+<p>This effect lasts until the system is reloaded. Value should be all upper case. Value is normally a system flag value or a property value from <code>dictionarysystem.h</code> which does not need a hash in front of it (system will look up the name).</p>
 <p><em>word</em> can be in doublequotes. And there are two internal bits that are also allowed to be removed: <code>CONCEPT</code> and <code>HAS_SUBSITUTE</code>.</p>
-<p>You can use <code>HAS_SUBSTITUTE</code> to disable some standard substitution in LIVEDATA, but you can't apply this at build time because the system won't remember. Instead call it from <code>^csboot</code> during startup. Instead call it from <code>^csboot</code> during startup. For example, in LIVEDATA interjections file, there is an entry:</p>
-<pre><code> &lt;surprise ~emosurprise
- ```
- But if you didn&#39;t want surpise at the start of a sentence declared the interjection ~emosurprise, you could do
- ```
- ^removeproperty(&quot;&lt;surprise&quot; HAS_SUBSTITUTE)
- ```
-
- And the dictionary has some words which are composites, like `iced_coffee` and it will
- automatically convert the two words into a single token. If you wanted to stop this behavior,
- you could disable this composite word via 
- ```
- ^removeproperty(iced_coffee NOUN)
- ```
- since it is declared as a NOUN (you can see with `:word iced_coffee`). You can do this 
- to nouns, adjectives, adverbs.
-
-
-### `^walkdictionary ( &#39;function )` 
-
-calls the named output macro from every word in the dictionary. 
-The function should have 1 argument, the word.
-
-
-### `^Iterator ( ? member ~concept )`
-
-An iterator is a repeatable fact query that allows you to walk through each member of a
-concept, either at top level or recursively. Useful in conjunction with a `loop()`, the
-function is defined in the planning manual but can be used outside of planning. You can
-have one iterator in progress per rule.</code></pre>
-<p>loop () # unload every resource on board { $$resource = ^iterator(? member ~resources) ... } ```</p>
+<p>You can use <code>HAS_SUBSTITUTE</code> to disable some standard substitution in LIVEDATA, but you can't apply this at build time because the system won't remember. Instead call it from <code>^csboot</code> during startup.</p>
+<p>Instead call it from <code>^csboot</code> during startup. For example, in LIVEDATA interjections file, there is an entry:</p>
+<pre><code> &lt;surprise ~emosurprise</code></pre>
+<p>But if you didn't want surpise at the start of a sentence declared the interjection <code>~emosurprise</code>, you could do</p>
+<pre><code> ^removeproperty(&quot;&lt;surprise&quot; HAS_SUBSTITUTE)</code></pre>
+<p>And the dictionary has some words which are composites, like <em>iced_coffee</em> and it will automatically convert the two words into a single token. If you wanted to stop this behavior, you could disable this composite word via</p>
+<pre><code> ^removeproperty(iced_coffee NOUN)</code></pre>
+<p>since it is declared as a NOUN (you can see with <code>:word iced_coffee</code>). You can do this to nouns, adjectives, adverbs.</p>
+<h3 id="walkdictionary-function"><code>^walkdictionary ( 'function )</code></h3>
+<p>calls the named output macro from every word in the dictionary. The function should have 1 argument, the word.</p>
+<h3 id="iterator-member-concept"><code>^Iterator ( ? member ~concept )</code></h3>
+<p>An iterator is a repeatable fact query that allows you to walk through each member of a concept, either at top level or recursively. Useful in conjunction with a <code>loop()</code>, the function is defined in the planning manual but can be used outside of planning. You can have one iterator in progress per rule.</p>
+<pre><code>loop () # unload every resource on board
+    {
+    $$resource = ^iterator(? member ~resources)
+    ...
+   }</code></pre>
 <h3 id="wordatindex-original-canonical-n"><code>^wordAtIndex ( ({original, canonical} n))</code></h3>
 <p><code>^wordAtIndex</code> retrieves the word from the current sentence at the index given, as either the original word or as a canonical word (as a match variable sees it)</p>
 <h1 id="multipurpose-functions">Multipurpose Functions</h1>
 <h3 id="disable-what"><code>^disable ( what ? )</code></h3>
-<p>What can be <code>topic</code> or <code>rule</code> or <code>inputrejoinder</code> or <code>outputrejoinder</code> or <code>save</code> or <code>write @set</code>. If <code>topic</code>, the next argument can be a topic name (with or without <code>~</code> or just <code>~</code> meaning the current topic). It means to disable (BLOCK) that topic.</p>
+<p>What can be <code>topic</code> or <code>rule</code> or <code>inputrejoinder</code> or <code>outputrejoinder</code> or <code>save</code> or <code>write @set</code>.</p>
+<p>If <code>topic</code>, the next argument can be a topic name (with or without <code>~</code> or just <code>~</code> meaning the current topic). It means to disable (BLOCK) that topic.</p>
 <p>If a <code>rule</code>, you erase (disable) the labeled rule (or rule tag and <code>~</code> means the current rule).</p>
-<p>If <code>outputrejoinder</code>, it cancels the current output rejoinder mark, allowing a new rule to set a rejoinder. If inputrejoinder then it cancels any pending rejoinder on input.</p>
+<p>If <code>outputrejoinder</code>, it cancels the current output rejoinder mark, allowing a new rule to set a rejoinder.</p>
+<p>If <code>inputrejoinder</code> then it cancels any pending rejoinder on input.</p>
 <p>If <code>save</code>, then the user data will not be saved. It's as though this interchange didn't happen.</p>
-<p>If <code>^disable(write @1)</code> then factset <code>@1</code> will not be written out into user data and is junk at the next volley (normally this is true). You can also disable the inputrejoinder with <code>^setrejoinder(input)</code> and the output rejoinder with <code>^setrejoinder(output)</code>.</p>
+<p>If <code>^disable(write @1)</code> then factset <code>@1</code> will not be written out into user data and is junk at the next volley (normally this is true).</p>
+<p>You can also disable the <code>inputrejoinder</code> with <code>^setrejoinder(input)</code> and the output rejoinder with <code>^setrejoinder(output)</code>.</p>
 <h3 id="enable-what"><code>^enable ( what ? )</code></h3>
 <p>What can be <code>topic</code> or <code>rule</code> or <code>save</code> or <code>write @set</code>.</p>
 <p>If <code>topic</code>, thenext argument can be a topic name or the word <code>all</code> for all topics . Designated topics will be enabld (unBlocked).</p>
@@ -982,10 +1162,13 @@ have one iterator in progress per rule.</code></pre>
 <h3 id="length-what"><code>^length ( what )</code></h3>
 <p>If what is a fact set like <code>@1</code>, length returns how many facts are in the set. If what is a word, length counts its characters. If what is a concept set, length returns a count of the top level (nonrecursive) members. If the name of a json array or object, returns how many top level elements it has.</p>
 <h3 id="pick-what"><code>^pick ( what )</code></h3>
-<p>Retrieve a random member of the concept if what is a concept. Pick is also used with factsets to pick a random fact (see FACTS MANUAL). For a concept, if the member chosen is itself a concept, the system will recurse to pick randomly from that concept. If the argument to pick is a $ or _var, it will be evaluated and then pick will be tried on the result (but it won't recurse to try that again).</p>
+<p>Retrieve a random member of the concept if what is a concept. Pick is also used with factsets to pick a random fact (see FACTS MANUAL).</p>
+<p>For a concept, if the member chosen is itself a concept, the system will recurse to pick randomly from that concept. If the argument to pick is a $var or _var, it will be evaluated and then pick will be tried on the result (but it won't recurse to try that again).</p>
 <p>If the argument is a JSON object it randomly picks a fact whose verb/object is a key-value pair. If the argument is a JSON array, it randomly picks a fact whose verb is the index and whose object is the value. The fact id returned can be used with ^field or you can use something like $result.object to get the specific object.</p>
 <h3 id="reset-what"><code>^reset ( what ? )</code></h3>
-<p>What can be user or topic or factset. If what is user, the system drops all history and starts the user afresh from first meeting (launching a new conversation), having erased the user topic file. If what is a factset, the &quot;next&quot; pointer for walking the set is reset back to the beginning. If what is a topic, all rules are re-enabled and all last accessed values are reset to 0.</p>
+<p>What can be user or topic or factset.</p>
+<p>If what is user, the system drops all history and starts the user afresh from first meeting (launching a new conversation), having erased the user topic file.</p>
+<p>If what is a factset, the &quot;next&quot; pointer for walking the set is reset back to the beginning. If what is a topic, all rules are re-enabled and all last accessed values are reset to 0.</p>
 <h1 id="fact-functions">FACT FUNCTIONS</h1>
 <h3 id="findfact-subject-verb-object"><code>^findfact ( subject verb object )</code></h3>
 <p>The simplest fact find involves knowing all the components (meanings) and asking if the fact already exists. If it does, it returns the index of the fact. If it doesn't it returns <code>FAILRULE_BIT</code>.</p>
@@ -1050,7 +1233,8 @@ have one iterator in progress per rule.</code></pre>
 <p>You can also simultaneously query and unpack a single field from the first matching fact by naming the field on the to argument.</p>
 <pre><code>$$tmp = ^query(direct_sv you eat ? 1 ? @5object)</code></pre>
 <p>Typically you would do this if you expected only a single fact and were trying to find a specific field value. So you'd set the limit to 1. If a fact is found, it is stored in <code>@5</code>, and the object field is pulled off and stored onto <code>$$tmp</code>. If no fact is found, the query does not fail, $$tmp is merely set to null.</p>
-<p>The final two arguments only make sense with specific query types that use those arguments. For <code>unipropogate</code>, if you have these concepts;</p>
+<p>The final two arguments only make sense with specific query types that use those arguments.</p>
+<p>For <code>unipropogate</code>, if you have these concepts;</p>
 <pre><code>concept: ~things (~animals ~vegetables ~minerals)
 concept: ~animals (~canine ~feline)
 concept: ~canine (dog)</code></pre>

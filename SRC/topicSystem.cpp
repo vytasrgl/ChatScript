@@ -2620,7 +2620,15 @@ static void InitMacros(const char* name,const char* layer,unsigned int build)
 		else if (*tmpWord == 'o') AddInternalFlag(D,IS_OUTPUT_MACRO); 
 		else if (*tmpWord == 'p') AddInternalFlag(D,IS_PATTERN_MACRO); 
 		else if (*tmpWord == 'd') AddInternalFlag(D,IS_PATTERN_MACRO|IS_OUTPUT_MACRO);
-		else ReportBug("FATAL: Old style function compile. Recompile your script")
+		else
+		{
+			fclose(in);
+			printf("FATAL: Old style function compile of %s. Recompile your script", name);
+			EraseTopicFiles(build, (build == BUILD1) ? (char*)"1" : (char*) "0");
+			Log(ECHOSTDTRACELOG, (char*)"\r\nOld style function compile of %s. Recompile your script", name);
+			if (!server && !commandLineCompile) ReadALine(readBuffer, stdin);
+			myexit("bad compile", 4); // error
+		}
 		size_t len = strlen(ptr) + 4;
 		ptr -= 4; // add continuation index at front
 		ptr[0] = ptr[1] = ptr[2] = ptr[3] = 0; // jump index
@@ -2797,10 +2805,10 @@ static void IndirectMembers(WORDP D, uint64 buildx)
 
 topicBlock* TI(int topicid)
 {
-	if (topicid <= numberOfTopicsInLayer[0]) return topicBlockPtrs[0]+topicid;
-	if (topicid <= numberOfTopicsInLayer[1]) return topicBlockPtrs[1]+topicid;
-	if (topicid <= numberOfTopicsInLayer[2]) return topicBlockPtrs[2]+topicid;
-	if (topicid <= numberOfTopicsInLayer[2]) return topicBlockPtrs[3] + topicid;
+	if (topicid <= numberOfTopicsInLayer[LAYER_0]) return topicBlockPtrs[LAYER_0] + topicid;
+	if (topicid <= numberOfTopicsInLayer[LAYER_1]) return topicBlockPtrs[LAYER_1] + topicid;
+	if (topicid <= numberOfTopicsInLayer[LAYER_BOOT]) return topicBlockPtrs[LAYER_BOOT] + topicid;
+	if (topicid <= numberOfTopicsInLayer[LAYER_USER]) return topicBlockPtrs[LAYER_USER] + topicid;
 	return NULL;
 }
 	
@@ -2858,19 +2866,23 @@ void LoadTopicSystem() // reload all topic data
 {
 	//   purge any prior topic system - except any patternword marks made on basic dictionary will remain (doesnt matter if we have too many marked)
 	ReturnDictionaryToWordNet(); // return dictionary and heap space to pretopic conditions
-	*timeStamp[0] = *timeStamp[1] = *timeStamp[2] =0;
+	*timeStamp[0] = *timeStamp[1] = *timeStamp[2] = 0;
 	ResetContext(); // the history
 	topicStack[0] = 0;
 	currentTopicID = 0;
 	ClearBotVariables();
-	
-	printf((char*)"WordNet: dict=%ld  fact=%ld  heap=%ld %s\r\n",(long int)(dictionaryFree-dictionaryBase),(long int)(factFree-factBase),(long int)(heapBase-heapFree),dictionaryTimeStamp);
 
-	LoadLayer(LAYER_0,(char*)"0",BUILD0);
-	UnlockLayer(LAYER_1);
-	ReadLivePosData(); // any needed concepts must have been defined by now in level 0 (assumed). Not done in level1
-	LockLayer(false); // rewrite prebuild file because we augmented level 0
-	LoadLayer(LAYER_1,(char*)"1",BUILD1);
+	printf((char*)"WordNet: dict=%ld  fact=%ld  heap=%ld %s\r\n", (long int)(dictionaryFree - dictionaryBase), (long int)(factFree - factBase), (long int)(heapBase - heapFree), dictionaryTimeStamp);
+
+	if (!build0Requested) LoadLayer(LAYER_0, (char*)"0", BUILD0); // we will rebuild so dont bother loading
+
+	if (!build0Requested && !build1Requested) // no point in loading layer1 if we are autobuilding layer0 or layer1
+	{
+		UnlockLayer(LAYER_1);
+		ReadLivePosData(); // any needed concepts must have been defined by now in level 0 (assumed). Not done in level1
+		LockLayer(false); // rewrite prebuild file because we augmented level 0
+		LoadLayer(LAYER_1, (char*)"1", BUILD1);
+	}
 }
 
 

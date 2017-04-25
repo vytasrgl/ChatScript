@@ -277,6 +277,7 @@ void InitStackHeap()
 	stackFree = heapEnd;
 	minHeapAvailable = maxHeapBytes;
 	stackStart = stackFree;
+	ClearNumbers();
 }
 
 void FreeStackHeap()

@@ -848,10 +848,10 @@ void TagIt() // get the set of all possible tags. Parse if one can to reduce thi
 		int j;
 		for (j = i+1; j < wordCount; ++j) 
 		{
-			if (!ignoreWord[j] && *wordStarts[j] == ';') break;
+			if (!ignoreWord[j] && *wordStarts[j] == ';' && !(tokenControl & NO_SEMICOLON_END) ) break;
 		}
 		unsigned int end;
-		if (j <= wordCount && *wordStarts[j] == ';')
+		if (j <= wordCount && *wordStarts[j] == ';' && !(tokenControl & NO_SEMICOLON_END))
 		{
 			end = j - 1;
 			tokenFlags &= -1 ^ SENTENCE_TOKENFLAGS; // reset results bits
@@ -1333,7 +1333,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 					}
 					
 					// after "as" object as adjective
-					if (!stricmp(wordStarts[i-1],(char*)"as")) // I remember him as silly
+					if (i > 1 && !stricmp(wordStarts[i-1],(char*)"as")) // I remember him as silly
 					{
 						answer = true;
 						break;
@@ -1391,7 +1391,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 					}
 
 					// acting as noun
-					if (posValues[i-1] & PRONOUN_POSSESSIVE || !stricmp(wordStarts[i-1],(char*)"the"))  // actually only with "the" and possessive pronouns"  = "on her *own"   "the *rich eat well"
+					if (i > 1 && (posValues[i - 1] & PRONOUN_POSSESSIVE || !stricmp(wordStarts[i - 1], (char*)"the")))  // actually only with "the" and possessive pronouns"  = "on her *own"   "the *rich eat well"
 					{
 						answer = true;
 						break;
@@ -1542,14 +1542,14 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 					answer = true;
 					break;
 				}
-				if (!stricmp(wordStarts[i-1],(char*)"not")) // why not go?  why, then, not put it off
+				if (i > 1 && !stricmp(wordStarts[i-1],(char*)"not")) // why not go?  why, then, not put it off
 				{
 					answer = true;
 					break;
 				}
 				at = i;
 				while (posValues[--at] == ADVERB || posValues[at] == COMMA) {;}  // allow adverb before the infinitive
-				if (!stricmp(wordStarts[at],(char*)"except") || !stricmp(wordStarts[at],(char*)"but") || !stricmp(wordStarts[at],(char*)"why") || !stricmp(wordStarts[at],(char*)"than") || !stricmp(wordStarts[at],(char*)"sooner") || !stricmp(wordStarts[at],(char*)"rather")|| !stricmp(wordStarts[at],(char*)"better")) // why, would rather, would sooner, rather than, had better"
+				if (at > 0 && (!stricmp(wordStarts[at],(char*)"except") || !stricmp(wordStarts[at],(char*)"but") || !stricmp(wordStarts[at],(char*)"why") || !stricmp(wordStarts[at],(char*)"than") || !stricmp(wordStarts[at],(char*)"sooner") || !stricmp(wordStarts[at],(char*)"rather")|| !stricmp(wordStarts[at],(char*)"better"))) // why, would rather, would sooner, rather than, had better"
 				{
 					answer = true;
 					break;
@@ -1564,7 +1564,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 				for (at = i-1; at >= startSentence; --at)
 				{
 					if (posValues[at] & (COMMA | CONJUNCTION_COORDINATE)) baseseen = true;
-					if ( *wordStarts[at] == ';' || *wordStarts[at] == ':')  baseseen = true;
+					if (at > 0 &&  *wordStarts[at] == ';' || *wordStarts[at] == ':')  baseseen = true;
 					if (posValues[at] & (VERB_INFINITIVE|NOUN_INFINITIVE) && baseseen) 
 					{
 						answer = true;
@@ -1574,7 +1574,7 @@ static int TestTag(int &i, int control, uint64 bits,int direction,bool tracex)
 				if (answer) break;
 				
 				// simple imperative with no subject before? how can we tell unless we are close to front
-				if ((i - startSentence) < 4 || posValues[i-1] == COMMA || *wordStarts[i-1] == ';' || *wordStarts[i-1] == ':' ) // "here, ned, *catch this ball"
+				if (i > 1 && ((i - startSentence) < 4 || posValues[i - 1] == COMMA || *wordStarts[i - 1] == ';' || *wordStarts[i - 1] == ':')) // "here, ned, *catch this ball"
 				{
 					answer = true;
 					break;
@@ -2152,7 +2152,7 @@ static void WordIdioms(bool &changed)
 				bitCounts[i+1] = 1;
 				--i; // use word before
 			}
-			else if (!stricmp(wordStarts[i-1],wordStarts[i+2])) 
+			else if (i > 1 && i < wordCount && !stricmp(wordStarts[i-1],wordStarts[i+2])) 
 			{
 				tagged = 2;
 				SetIdiom(i-1, i);
@@ -2701,10 +2701,10 @@ void MarkTags(unsigned int i)
 		}
 		uint64 age = originalLower[i]->systemFlags & AGE_LEARNED;
 		if (!age){;}
-		else if (age == KINDERGARTEN)  MarkFacts(ucase,MakeMeaning(StoreWord((char*)"~KINDERGARTEN")),start,stop);
-		else if (age == GRADE1_2)  MarkFacts(ucase,MakeMeaning(StoreWord((char*)"~GRADE1_2")),start,stop);
-		else if (age == GRADE3_4)  MarkFacts(ucase,MakeMeaning(StoreWord((char*)"~GRADE3_4")),start,stop);
-		else if (age == GRADE5_6)  MarkFacts(ucase,MakeMeaning(StoreWord((char*)"~GRADE5_6")),start,stop);
+		else if (age == KINDERGARTEN)  MarkFacts(ucase,MakeMeaning(StoreWord((char*)"~kindergarten")),start,stop);
+		else if (age == GRADE1_2)  MarkFacts(ucase,MakeMeaning(StoreWord((char*)"~grade1_2")),start,stop);
+		else if (age == GRADE3_4)  MarkFacts(ucase,MakeMeaning(StoreWord((char*)"~grade3_4")),start,stop);
+		else if (age == GRADE5_6)  MarkFacts(ucase,MakeMeaning(StoreWord((char*)"~grade5_6")),start,stop);
 	}
 	if (bits & AUX_VERB ) finalPosValues[i] |= VERB;	// lest it report "can" as untyped, and thus become a noun -- but not ~verb from system view
 
@@ -9237,7 +9237,7 @@ restart:
 					CloseLevel(i);
 				}
 
-				if (*wordStarts[i-1] == ';' && *wordStarts[i+1] == ',' && parseFlags[i] & CONJUNCTIVE_ADVERB) // conjunctive adverb
+				if (i > 1 && *wordStarts[i-1] == ';' && *wordStarts[i+1] == ',' && parseFlags[i] & CONJUNCTIVE_ADVERB) // conjunctive adverb
 				{
 					SetRole(i,CONJUNCT_SENTENCE);
 					if (!FinishSentenceAdjust(false,changed,startSentence,i)) break; // start over, it changed stuff

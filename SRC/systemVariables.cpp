@@ -536,7 +536,7 @@ static char* Sdocument(char* value)
 static char* SfreeText(char* value)
 {
 	static char hold[50] = ".";
-	if (value) return strcpy(hold,value); // may not legall set on one's own
+	if (value) return strcpy(hold,value); // may not legally set on one's own
 	int nominalUsed = maxHeapBytes - (heapBase - heapFree);
 	sprintf(hold,(char*)"%d",nominalUsed / 1000);
 	return hold;
@@ -545,7 +545,7 @@ static char* SfreeText(char* value)
 static char* SfreeWord(char* value)
 {
 	static char hold[50] = ".";
-	if (value) return strcpy(hold,value); // may not legall set on one's own
+	if (value) return strcpy(hold,value); // may not legally set on one's own
 	sprintf(hold,(char*)"%ld",((unsigned int)maxDictEntries)-(dictionaryFree-dictionaryBase));
 	return hold;
 }
@@ -553,8 +553,7 @@ static char* SfreeWord(char* value)
 static char* SfreeFact(char* value)
 {
 	static char hold[50] = ".";
-	if (value) return strcpy(hold,value); // may not legall set on one's own
-	if (*hold != '.') return hold;
+	if (value) return strcpy(hold,value); // may not legally set on one's own
 	sprintf(hold,(char*)"%ld",factEnd-factFree);
 	return hold;
 }

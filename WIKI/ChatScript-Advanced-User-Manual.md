@@ -1,6 +1,6 @@
 # ChatScript Advanced User's Manual
 © Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 4/8/2017 cs7.31
+> Revision 4/24/2017 cs7.4
 <br><br>
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
@@ -1052,6 +1052,7 @@ of finding things and to the speed of matching.
 
 
 # ADVANCED OUTPUT
+
 ## Committed Output
 Simple output puts words into the output stream, a magical place that queues up each
 word you write in a rule output. What I didn't tell you before was that if the rule fails
@@ -1117,7 +1118,7 @@ $_response = %response
 ...
 if ($_response == %response) {...}
 ```
-^flushoutput will commit pending output.
+`^flushoutput` will commit pending output.
 
 ## Output cannot have rules in it
 Output script cannot emed another rule inside it. Output is executed during the current volley whereas rules 
@@ -1426,6 +1427,11 @@ This both creates the result, and ends the function immediately even if other co
 
 > **Note - calls to macros use "pass by reference", so the actual value of the ^variable is the
 name of what was passed in, and it is generally (but not always) evaluated on use.** 
+
+You may make references to outputmacros before they are defined, EXCEPT when the Function
+is directly or indirectly referenced from a table. Tables immediately execute as they
+are compiled, and you will get an error if a function it tries to use is
+not defined.
 
 ## Sharing function definitions
 

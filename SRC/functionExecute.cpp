@@ -864,6 +864,7 @@ char* DoFunction(char* name,char* ptr,char* buffer,FunctionResult &result) // Do
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
 	if (!D || !(D->internalBits & FUNCTION_NAME))
     {
+		if (compiling) BADSCRIPT("Attempting to call undefined function %s from table code",name)
 		result = UNDEFINED_FUNCTION;
 		return ptr; 
 	}
@@ -2528,16 +2529,19 @@ static FunctionResult MarkCode(char* buffer)
 		int val = atoi(buffer);
 		startPosition = val & 0x0000ffff;
 		endPosition = val >> 16;
-		if (endPosition == 0) endPosition = startPosition; // SHARED
 	}
 	else if (*buffer == '_') //  wildcard position designator
 	{
-		if (!*wildcardOriginalText[GetWildcardID(buffer)]) return FAILRULE_BIT;
-		startPosition = wildcardPosition[GetWildcardID(buffer)] & 0x0000ffff; // the match location
-		endPosition = wildcardPosition[GetWildcardID(buffer)] >> 16; 
+		startPosition = WILDCARD_START(wildcardPosition[GetWildcardID(buffer)]); // the match location
+		endPosition = WILDCARD_END(wildcardPosition[GetWildcardID(buffer)]);
 	}
-	else return FAILRULE_BIT;
+	else
+	{
+		*buffer = 0;
+		return FAILRULE_BIT;
+	}
 
+	if (endPosition == 0) endPosition = startPosition; // SHARED
 	if (startPosition < 1 || startPosition > wordCount) // fail silently
 	{
 		*buffer = 0;
@@ -2836,7 +2840,7 @@ static FunctionResult UnmarkCode(char* buffer)
 	FunctionResult result;
 	ptr = ReadShortCommandArg(ptr,word,result);// set
 	if (result & ENDCODES) return result;
-	if (matching) clearUnmarks = true;
+	if (matching) clearUnmarks = true; // mark done during a pattern should be undone
 	
 	if (!*word) // unmark() reenables generic unmarking
 	{
@@ -2882,7 +2886,6 @@ static FunctionResult UnmarkCode(char* buffer)
 	}
 	else if (*buffer == '_') 
 	{
-		if (!*wildcardOriginalText[GetWildcardID(buffer)]) return FAILRULE_BIT;
 		startPosition = WILDCARD_START(wildcardPosition[GetWildcardID(buffer)]); // the match location
 		endPosition = WILDCARD_END(wildcardPosition[GetWildcardID(buffer)]);
 	}
@@ -2894,13 +2897,20 @@ static FunctionResult UnmarkCode(char* buffer)
 		*buffer = 0;
 		return NOPROBLEM_BIT;
 	}
- 	else  return FAILRULE_BIT;
-	if (endPosition > wordCount) endPosition = wordCount;
-	if (!startPosition || startPosition > wordCount)
+	else
+	{
+		*buffer = 0;
+		return FAILRULE_BIT;
+	}
+
+	if (endPosition == 0) endPosition = startPosition; // SHARED
+	if (startPosition < 1 || startPosition > wordCount)
 	{
 		*buffer = 0;
 		return NOPROBLEM_BIT;	// fail silently
 	}
+	if (endPosition > wordCount) endPosition = wordCount;
+
 	if (*word == '*') // set unmark EVERYTHING in range 
 	{
 		if (trace & TRACE_OUTPUT) Log(STDTRACELOG,(char*)"unmark * %d...%d words: ",startPosition,endPosition);
@@ -3139,7 +3149,7 @@ static FunctionResult ComputeCode(char* buffer)
 				sprintf(buffer,(char*)"%lld",(long long int) x); 
 #endif
 			}
-			else sprintf(buffer,(char*)"%1.2f",fvalue);
+			else WriteFloat(buffer,fvalue);
 		}
 		else sprintf(buffer,(char*)"%s",(char*)" ?");
 	}
@@ -3832,7 +3842,7 @@ FunctionResult IdentifyCode(char* buffer)
 FunctionResult DebugCode(char* buffer) 
 {	
 	char* xarg = ARGUMENT(1);
-	if (!stricmp(xarg,(char*)"deeptrace") && trace) deeptrace = !deeptrace;
+	if (buffer && xarg && !stricmp(xarg,(char*)"deeptrace") && trace) deeptrace = !deeptrace;
 	return NOPROBLEM_BIT;
 }
 
@@ -4035,23 +4045,23 @@ static FunctionResult SaveSentenceCode(char* buffer)
 
 	// compute words (4byte int) needed
 	int size = 2; // basic list
+	++size;		// general reserve for future use
 	size += 2;	// tokenflags
 	size += 1;	// preparation count
 	++size; // wordcount
 	size += 6 * wordCount;	// wordStarts + wordCanonical + finalpos(2) + topics and concepts
 	size += 1 + derivationLength + 256/2; // derivation count and sentence words and derivation index
-
 	++size;  // map counter
 	for (std::map<WORDP,int>::iterator it=triedData.begin(); it!=triedData.end(); ++it) size += 2; // key and stringspace reference
 	size += MAX_SENTENCE_LENGTH/4;
-	
 	int total = size;
 	if (total & 1) ++total; // round to even set of words, for int64 align
 	total += 1; // save bits for moretocome and moretocomequestion
 
+	// allocate as 64bit aligned memory
 	unsigned int* memory = (unsigned int*) AllocateHeap(NULL,total/2,8,false); // int64 aligned
 	memory[0] = savedSentences;
-	savedSentences = Heap2Index((char*) memory); // threaded list
+	savedSentences = Heap2Index((char*) memory); // basic threaded list
 	memory[1] = M; // key 
 	memory[2] = 0; // UNUSED
 	unsigned int x = tokenFlags >> 32;
@@ -4108,7 +4118,7 @@ static FunctionResult SaveSentenceCode(char* buffer)
 
 	if (n != size)
 	{
-		int xx = 0; // TROUBLE
+		Bug();
 	}
 	saveCount = n;
 	sprintf(buffer,"%d",n); // words
@@ -5003,9 +5013,37 @@ static FunctionResult POSCode(char* buffer)
 {
 	char* arg1 = ARGUMENT(1);
 	char* arg2 = ARGUMENT(2);
-	if (!arg1 || !arg2 || !*arg1 || !*arg2) return FAILRULE_BIT;
+	if (!arg1 || !arg2 || !*arg1) return FAILRULE_BIT;
+	if (!*arg2) return NOPROBLEM_BIT;
 	char* arg3 = ARGUMENT(3);
 	char* arg4 = ARGUMENT(4);
+	if (!stricmp(arg1, (char*) "ismodelnumber"))
+	{
+		if (IsModelNumber(arg2))
+		{
+			strcpy(buffer, "1");
+			return NOPROBLEM_BIT;
+		}
+		else return FAILRULE_BIT;
+	}
+	if (!stricmp(arg1, (char*) "isinteger"))
+	{
+		if (IsInteger(arg2, false))
+		{
+			strcpy(buffer, "1");
+			return NOPROBLEM_BIT;
+		}
+		else return FAILRULE_BIT;
+	}
+	if (!stricmp(arg1, (char*) "isfloat"))
+	{
+		if (IsFloat(arg2, arg2 + strlen(arg2)))
+		{
+			strcpy(buffer, "1");
+			return NOPROBLEM_BIT;
+		}
+		else return FAILRULE_BIT;
+	}
 	if (!stricmp(arg1,(char*)"raw"))
 	{
 		int n = atoi(arg2);
@@ -7910,7 +7948,7 @@ static FunctionResult MakeRealCode(char* buffer)
 		int set = GetSetID(arg);
 		if (set < 0) return FAILRULE_BIT;
 		unsigned int count = FACTSET_COUNT(set);
-		for (int i = 1; i <= count; ++i)
+		for (unsigned int i = 1; i <= count; ++i)
 		{
 			FACT* F = factSet[set][i];
 			if (F->flags & FACTTRANSIENT) F->flags ^= FACTTRANSIENT;

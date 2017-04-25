@@ -80,7 +80,8 @@ void JoinMatch(int start, int end,int index,bool inpattern)
 
 	// force a particular case? do we know the word?
 	int lookup = STANDARD_LOOKUP;
-	if (uppercaseFind > 0) lookup = UPPERCASE_LOOKUP;
+	if (uppercaseFind > 0) 
+		lookup = UPPERCASE_LOOKUP;
 	else if (uppercaseFind == 0) lookup = LOWERCASE_LOOKUP;
 	WORDP D = FindWord(wildcardCanonicalText[index], 0, lookup);
 	if (D) strcpy(wildcardCanonicalText[index], D->word); // but may not be found if original has plural or such or if uses _
@@ -392,7 +393,7 @@ void PrepareVariableChange(WORDP D,char* word,bool init)
 	}
 	else if (!(D->internalBits & VAR_CHANGED))	// not changed already this volley
     {
-		char* data = AllocateHeap(0, 2, 4); // word  aligned
+		char* data = AllocateHeap(NULL, 2, 4); // word  aligned
 		((unsigned int*)data)[0] = userVariableThreadList;
 		((unsigned int*)data)[1] = Word2Index(D);
 		userVariableThreadList = Heap2Index(data);
@@ -446,6 +447,10 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 		}
 		tokenControl = val;
 	}
+	// cs_float changes are noticed by the engine
+	if (!stricmp(var, (char*)"$cs_fullfloat")) 
+		fullfloat = (word && *word) ? true : false;
+	
 	// trace
 	else if (!stricmp(var,(char*)"$cs_trace")) 
 	{
@@ -526,15 +531,8 @@ void Add2UserVariable(char* var, char* moreValue,char* op,char* originalArg)
 			newval = (double) (ivalue % morval);
 		}
         else newval += more;
-        sprintf(result,(char*)"%1.2f",newval);
-		char* at = strchr(result,'.');
-		char* loc = at;
-		while (*++at)
-		{
-			 if (*at != '0') break; // not pure
-		}
-		if (!*at) *loc = 0; // switch to integer
- 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s   ",result);
+        WriteFloat(result,newval);
+		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACELOG,(char*)" %s   ",result);
     }
     else
     {
@@ -738,7 +736,8 @@ void DumpUserVariables()
 	{
 		unsigned int* cell = (unsigned int*)Index2Heap(varthread);
 		varthread = cell[0];
-		arySortVariablesHelper[i++] = Index2Word(cell[1]);
+		WORDP D = Index2Word(cell[1]);
+		arySortVariablesHelper[i++] = D;
 	}
 
 	// Sort it.
@@ -753,11 +752,10 @@ void DumpUserVariables()
 		{
 			if (!stricmp(D->word, "$cs_token"))
 			{
-				Log(STDTRACELOG, "  variable: decoded %s = ", D->word);
+				Log(STDTRACELOG, "  variable: $cs_token decoded = ");
 				int64 val;
 				ReadInt64(value, val);
 				DumpTokenControls(val);
-
 				Log(STDTRACELOG, "\r\n");
 			}
 			else Log(STDTRACELOG, "  variable: %s = %s\r\n", D->word, value);

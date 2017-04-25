@@ -1,6 +1,6 @@
 # ChatScript Debugging Manual
 © Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com<br>
-Revision 3/4/2017 cs7.3
+<br>Revision 4/24/2017 cs7.4
 
 You've written script. It doesn't work. Now what? Now you need to debug it, fix it, and
 recompile it. Debugging is mostly a matter of tracing what the system does testpaand
@@ -786,9 +786,10 @@ Change focus to conversing with the named bot (presuming you have such a bot). I
 resets the user back to complete new, flushing the users history, variables, etc.
 
 ### `:reset`
-Flush the current user's total history (erases the `USER/TOPIC` file), variables, and facts and
+Flush the current user's total history (erases the `USER/TOPIC` file) and reruns the bot definition macro,
 starting conversation from the beginning. Can be done from within a script without
-damaging the existing control flow or input sentence.
+damaging the existing control flow or input sentence but that means variables and facts not covered by the bot definition
+will remain untouched. For a complete reset see command line parameter `erasename`.
 
 ### `:user username`
 Change your login id. It will then prompt you for new input as that user and proceed from

@@ -40,7 +40,7 @@ void jkillfact(WORDP D);
 void InitJSONNames();
 
 #ifndef DISCARDJSONOPEN
-char* UrlEncode(char* input);
+char* UrlEncodePiece(char* input);
 FunctionResult JSONOpenCode(char* buffer);
 void CurlShutdown();
 #endif

@@ -472,7 +472,7 @@ void KillFact(FACT* F,bool jsonrecurse, bool autoreviseArray)
 {
 	if (!F || F->flags & FACTDEAD) return; // already dead
 	
-	if (F <= factsPreBuild[LAYER_USER]) 
+	if (F <= factsPreBuild[currentBeforeLayer])
 		return;	 // may not kill off facts built into world
 
 	F->flags |= FACTDEAD;
@@ -682,6 +682,11 @@ FACT* CreateFact(FACTOID_OR_MEANING subject, FACTOID_OR_MEANING verb, FACTOID_OR
 		{
 			DebugCode(NULL);
 		}
+	}
+
+	if (compiling)
+	{
+		if (buildId == BUILD1) properties |= FACTBUILD1;
 	}
 
 	//   insure fact is unique if requested
@@ -1065,7 +1070,8 @@ void WriteFacts(FILE* out,FACT* F, int flags) //   write out from here to end
 		if (!(F->flags & (FACTTRANSIENT|FACTDEAD))) 
 		{
 			F->flags |= flags; // used to pass along build2 flag
-			fprintf(out,(char*)"%s",WriteFact(F,true,word,false,true));
+			char* f = WriteFact(F, true, word, false, true);
+			fprintf(out,(char*)"%s",f);
 			F->flags ^= flags;
 		}
 	}

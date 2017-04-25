@@ -1,6 +1,6 @@
 # ChatScript System Functions Manual
 © Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 4/8/2017 cs7.31
+<br>Revision 4/24/2017 cs7.4
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -1357,8 +1357,8 @@ created after the mark.
 ### `^memorygc ()`
 
 This can function in either document mode or chat mode. It does what it can to release unused memory. It has restrictions in it does
-not work if you have facts with facts as fields or are in planning mode. It also discards saved sentence data, recovery data when you modify flags or properties
-of dictionary entries that are preloaded, and all of your analysis data for the current sentence.
+not work if you have facts with facts as fields or are in planning mode. It also discards saved sentence data, 
+and all of your analysis data for the current sentence. It also discards all data in factsets.
 
 
 # JSON Functions 
@@ -1654,6 +1654,9 @@ For verbs with irregular pronoun conjugation, supply 4th argument of pronoun to 
 | `syllable`           | word | tells you how many syllables a word has
 | `hex64`              | integer-word | converts a number to 64bit hex
 | `hex32`              | integer-word | converts a number to 32 bit hex
+| `ismodelnumber`      | word | return 1 if it is (mixed alpha/numeric). Fails otherwise.
+| `isinteger`      | word | return 1 if it is all digits, fails otherwise
+| `isfloat`      | word | return 1 if it is float, fails otherwise
 | `type`               | word         | returns concept, number, word, or unknown
 | `common`             | word         | returns level of commonness of the word
 | `verb`               | verb         | given verb in any form, return requested form

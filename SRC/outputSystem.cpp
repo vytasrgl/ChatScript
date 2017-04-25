@@ -369,7 +369,6 @@ void StdNumber(char* word,char*& buffer,int controls) // text numbers may have s
 {
 	size_t len = strlen(word);
 	char* ptr = word;
-	while (IsDigit(*++ptr) || *ptr == '.') {;}
     if ( IsAlphaUTF8(*ptr) ||  !IsDigitWord(word) || strchr(word,':')) // either its not a number or its a time - leave unchanged
     {
         strcpy(buffer,word);  
@@ -381,16 +380,22 @@ void StdNumber(char* word,char*& buffer,int controls) // text numbers may have s
 
         return;
     }
-    char* dot = strchr(word,'.'); // float?
-    if (dot) 
-    {
-        *dot = 0; 
-        len = dot-word; // integral prefix
-    }
+
+	if (IsFloat(word,word+len))
+	{
+		if (!fullfloat) // insure is not full
+		{
+			char c = word[len];
+			word[len] = 0;
+			WriteFloat(buffer, atof(word));
+			word[len] = c;
+		}
+		else strcpy(buffer, word); // is best we can get
+		return;
+	}
 
     if (len < 5 || controls & OUTPUT_NOCOMMANUMBER) // no comma with <= 4 digit, e.g., year numbers
     {
-        if (dot) *dot = '.'; 
         strcpy(buffer,word);  
         return;
     }
@@ -410,12 +415,7 @@ void StdNumber(char* word,char*& buffer,int controls) // text numbers may have s
         *buffer++ = *ptr++;
         if (len) *buffer++ = ',';
     }
-	if (dot) 
-	{
-		*buffer++ = '.';
-		strcpy(buffer,dot+1);
-	}
-	else *buffer = 0;
+	*buffer = 0;
 }
 
 char* StdIntOutput(int n)
@@ -428,17 +428,6 @@ char* StdIntOutput(int n)
 #else
 	sprintf(buffer,(char*)"%lld",(long long int) n); 
 #endif
-	char* ptr = answer;
-	StdNumber(buffer,ptr,0);
-	return answer;
-}
-
-char* StdFloatOutput(double n)
-{
-	char buffer[50];
-	static char answer[50];
-	*answer = 0;
-	sprintf(buffer,(char*)"%1.2f",n);
 	char* ptr = answer;
 	StdNumber(buffer,ptr,0);
 	return answer;
@@ -1184,7 +1173,8 @@ retry:
 		if (size >= currentOutputLimit) 
 		{
 			char hold[100];
-			strncpy(hold,currentRule,80);
+			*hold = 0;
+			if (currentRule) strncpy(hold,currentRule,80);
 			hold[50] = 0;
 			char hold1[100];
 			strncpy(hold1,currentOutputBase,80);

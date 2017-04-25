@@ -372,7 +372,7 @@ static int64 ProcessNumber(int at, char* original, WORDP& revise, WORDP &entry, 
 				int y = atoi(fraction + 1);
 				double val = (double)((double)x / (double)y);
 				val += basenumber;
-				sprintf(number, (char*)"%1.2f", val);
+				WriteFloat(number, val);
 				properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
 				if (!entry) entry = StoreWord(original, properties);
 				canonical = FindWord(number, 0, PRIMARY_CASE_ALLOWED);
@@ -402,7 +402,7 @@ static int64 ProcessNumber(int at, char* original, WORDP& revise, WORDP &entry, 
 			if (at > 1 && start != at && IsNumber(wordStarts[at - 1])) // fraction not place
 			{
 				double val = 1.0 / Convert2Integer(original);
-				sprintf(number, (char*)"%1.2f", val);
+				WriteFloat(number,val);
 			}
 			else sprintf(number, (char*)"%d", (int)Convert2Integer(original));
 			sysflags |= ORDINAL;
@@ -412,7 +412,7 @@ static int64 ProcessNumber(int at, char* original, WORDP& revise, WORDP &entry, 
 		{
 			int64 val1 = atoi(original);
 			double val = (double)(val1 / 100.0);
-			sprintf(number, (char*)"%1.2f", val);
+			WriteFloat(number,  val);
 			properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
 			entry = StoreWord(original, properties);
 			canonical = StoreWord(number, properties);
@@ -434,7 +434,7 @@ static int64 ProcessNumber(int at, char* original, WORDP& revise, WORDP &entry, 
 				val *= (double)val2; // one-half
 			}
 			else val = (double)((double)val1 / (double)val2); // one-half
-			sprintf(number, (char*)"%1.2f", val);
+			WriteFloat(number, val);
 			properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
 			*br = c;
 			entry = StoreWord(original, properties);
@@ -460,7 +460,7 @@ static int64 ProcessNumber(int at, char* original, WORDP& revise, WORDP &entry, 
 				sprintf(number, (char*)"%lld", n);
 #endif
 			}
-			else if (strchr(value, '.')) sprintf(number, (char*)"%1.2f", fn);
+			else if (strchr(value, '.') || strchr(value,'e') || strchr(value,'E')) WriteFloat(number, fn);
 			else
 			{
 #ifdef WIN32
@@ -483,18 +483,22 @@ static int64 ProcessNumber(int at, char* original, WORDP& revise, WORDP &entry, 
 			len = strlen(original);
 			bool percent = original[len - 1] == '%';
 			if (percent) original[len - 1] = 0;
+			char* exponent = strchr(original, 'e');
+			if (!exponent) exponent = strchr(original, 'E');
+			if (exponent && !IsDigit(exponent[-1]) && exponent[-1] != '.') exponent = NULL; // no digit or period before
+			if (exponent && !IsDigit(exponent[1]) && exponent[1] != '+' && exponent[1] != '-') exponent = NULL; // no digit or period before
 
-			if (strchr(original, '.')) // floating
+			if (strchr(original, '.') || exponent) // floating
 			{
 				double val = Convert2Float(original);
 				if (percent) val /= 100;
-				sprintf(number, (char*)"%1.2f", val);
+				WriteFloat(number,  val);
 			}
 			else if (percent)
 			{
 				int64 val = Convert2Integer(original);
 				double val1 = ((double)val) / 100.0;
-				sprintf(number, (char*)"%1.2f", val1);
+				WriteFloat(number,val1);
 			}
 			else
 			{
@@ -629,7 +633,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		while (--x >= start) if (*wordStarts[x] == '"') break;
 		if (x > 0 && wordStarts[x] && *wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
 	}
-	if (wordStarts[start] && (*wordStarts[start] == '"' || *wordStarts[start] == '(')) ++start; // skip over any quotes or paren starter -- consider next thing a starter
+	if (at > 0 && wordStarts[start] && (*wordStarts[start] == '"' || *wordStarts[start] == '(')) ++start; // skip over any quotes or paren starter -- consider next thing a starter
 	if (at == 0) at = 1; //but leave <0 alone, means dont look at neighbors
 	if (at > 0 && !wordStarts[at-1]) wordStarts[at-1] = AllocateHeap((char*)""); // protection
 	if (at > 0 && !wordStarts[at+1]) wordStarts[at+1] = AllocateHeap((char*)"");	// protection
@@ -1338,16 +1342,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		if (!canonical) canonical = DunknownWord;
 	}
 	if (!canonical) canonical = entry;
-
-    int alphanumeric = 0;
-    char* atx = original - 1;
-    while (*++atx)
-    {
-        if (IsAlphaUTF8(*atx)) alphanumeric |= 1;
-        else if (IsDigit(*atx)) alphanumeric |= 2;
-    }
-    if (alphanumeric == 3) properties |= MODEL_NUMBER;
-
+	if (IsModelNumber(original))  properties |= MODEL_NUMBER;
+ 
 	AddProperty(entry,properties);
 	// interpolate singular normal nouns to adjective_noun EXCEPT qword nouns like "why"
 	//if (properties & (NOUN_SINGULAR|NOUN_PLURAL) && !(entry->properties & QWORD) && !strchr(entry->word,'_')) flags |= ADJECTIVE_NOUN; // proper names also when followed by ' and 's  merge to be adjective nouns  

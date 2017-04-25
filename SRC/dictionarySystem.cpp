@@ -395,8 +395,11 @@ static char* predefinedSets[] = //  some internally mapped concepts not includin
 {
 	 (char*)"~repeatme",(char*)"~repeatinput1",(char*)"~repeatinput2",(char*)"~repeatinput3",(char*)"~repeatinput4",(char*)"~repeatinput5",(char*)"~repeatinput6",(char*)"~uppercase",(char*)"~utf8",(char*)"~sentenceend",
 	(char*)"~pos",(char*)"~sys",(char*)"~grammar_role",(char*)"~daynumber",(char*)"~yearnumber",(char*)"~dateinfo",(char*)"~email_url",(char*)"~fahrenheit",(char*)"~celsius",(char*)"~kelvin",
-	(char*)"~KINDERGARTEN",(char*)"~GRADE1_2",(char*)"~GRADE3_4",(char*)"~GRADE5_6",(char*)"~twitter_name",(char*)"~hashtag_label",
-
+	(char*)"~kindergarten",(char*)"~grade1_2",(char*)"~grade3_4",(char*)"~grade5_6",(char*)"~twitter_name",(char*)"~hashtag_label",
+	(char*)"~shout",(char*)"~distance_noun_modify_adverb",
+	(char*)"~distance_noun_modify_adjective",(char*)"~modelnumber",
+	(char*)"~time_noun_modify_adverb",
+	(char*)"~time_noun_modify_adjective",
     NULL
 };
 
@@ -571,6 +574,7 @@ void BuildDictionary(char* label)
 	InitDictionary();
 	InitStackHeap();
 	InitCache();
+
 	LoadRawDictionary(miniDict); 
 	if (miniDict && miniDict != 6) StoreWord((char*)"minidict"); // mark it as a mini dictionary
 
@@ -671,7 +675,7 @@ static void PreserveSystemFlags(WORDP D)
 void AddSystemFlag(WORDP D, uint64 flag)
 {
 	if (flag & NOCONCEPTLIST && *D->word != '~') flag ^= NOCONCEPTLIST; // not allowed to mark anything but concepts with this
-	if (flag && flag != D->systemFlags) // prove there is a change - dont use & because if some bits are set is not enough
+	if (flag && flag != (D->systemFlags & flag)) // prove there is a change - dont use & because if some bits are set is not enough
 	{
 		if (D < dictionaryLocked) PreserveSystemFlags(D);
 		D->systemFlags |= flag;
@@ -2159,6 +2163,7 @@ bool ReadDictionary(char* file)
 	{
 		ptr = ReadCompiledWord(readBuffer,word); // word
 		if (!*word) continue;
+
 		ptr = ReadCompiledWord(ptr,junk);	//   read open paren
 		WORDP D = StoreWord(word,AS_IS);
 		++rawWords;
@@ -2206,7 +2211,7 @@ bool ReadDictionary(char* file)
 				char* p = ReadCompiledWord(readBuffer,junk);
 				GetMeanings(D)[i] = ReadMeaning(junk,true,true);
 				if (*p == '(') p = strchr(p,')') + 2; // point after the )
-				if (glossCount && *p && GetMeaning(D,i) & SYNSET_MARKER)
+				if (glossCount && *p) //  && GetMeaning(D,i) & SYNSET_MARKER)
 					D->w.glosses[++glossIndex] =  Heap2Index(AllocateHeap(p)) + (i << 24);
 			}
 			if (glossIndex != glossCount)
@@ -3280,7 +3285,7 @@ void LoadDictionary()
 
 WORDP BUILDCONCEPT(char* word) 
 {
-	WORDP name = StoreWord(word); 
+	WORDP name = StoreWord(word);
 	AddInternalFlag(name,CONCEPT);
 	return name;
 }
@@ -3323,7 +3328,7 @@ void ExtendDictionary()
 	Dpropername = BUILDCONCEPT((char*)"~propername"); 
 	Mphrase = MakeMeaning( BUILDCONCEPT((char*)"~phrase"));
 	MabsolutePhrase = MakeMeaning( BUILDCONCEPT((char*)"~absolutephrase"));
-	MtimePhrase = MakeMeaning( BUILDCONCEPT((char*)"~timeephrase"));
+	MtimePhrase = MakeMeaning( BUILDCONCEPT((char*)"~timephrase"));
 	Dclause = BUILDCONCEPT((char*)"~clause"); 
 	Dverbal = BUILDCONCEPT((char*)"~verbal"); 
 	Dtime = BUILDCONCEPT((char*)"~timeword"); 
@@ -3361,7 +3366,7 @@ char* FindCanonical(char* word, int i,bool notNew)
 			else y = Convert2Float(word);
             int x = (int)y;
             if (((double) x) == y) sprintf(word1,(char*)"%d",x); //   use int where you can
-            else sprintf(word1,(char*)"%1.2f", Convert2Float(word));
+            else WriteFloat(word1,Convert2Float(word));
         }
 		else if (GetCurrency((unsigned char*) word,number)) sprintf(word1,(char*)"%d",atoi(number));
 #ifdef WIN32
@@ -3562,7 +3567,6 @@ void DumpDictionaryEntry(char* word,unsigned int limit)
 	if (D->internalBits & TOPIC) Log(STDTRACELOG,(char*)"topic ");
 	if (D->internalBits & BUILD0) Log(STDTRACELOG,(char*)"build0 ");
 	if (D->internalBits & BUILD1) Log(STDTRACELOG,(char*)"build1 ");
-	if (D->internalBits & BUILD2) Log(STDTRACELOG,(char*)"build2 ");
 	if (D->internalBits & HAS_EXCLUDE) Log(STDTRACELOG,(char*)"has_exclude ");
 	if (D->systemFlags & SUBSTITUTE_RECIPIENT) Log(STDTRACELOG,(char*)"substituteRecipient ");
 	if (D->internalBits & HAS_SUBSTITUTE) 

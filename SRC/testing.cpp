@@ -3991,7 +3991,8 @@ static void C_Build(char* input)
 		if (buildId == BUILD0) MakeDirectory((char*)"TOPIC/BUILD0");
 		else if (buildId == BUILD1) MakeDirectory((char*)"TOPIC/BUILD1");
 		else if (buildId == BUILD2) MakeDirectory((char*)"TOPIC/BUILD2");
-		ReadTopicFiles(word,buildId,spell); 
+		userVariableThreadList = 0;
+		ReadTopicFiles(word, buildId, spell);
 		if (!stricmp(computerID,(char*)"anonymous")) *computerID = 0;	// use default
 		ClearPendingTopics(); // flush in case topic ids change or go away
 		ClearVolleyWordMaps();
@@ -8039,7 +8040,7 @@ static void Translate(char* msg,char* to, char* apikey)
 	char* url = AllocateBuffer();
 	size_t len = strlen(msg);
 #ifndef DISCARDJSONOPEN
-	char* tranurl = UrlEncode(msg); // transient stack
+	char* tranurl = UrlEncodePiece(msg); // transient stack
 #else
 	char* tranurl = "";
 #endif

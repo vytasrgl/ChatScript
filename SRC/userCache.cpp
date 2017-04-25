@@ -37,6 +37,7 @@ void InitCache()
 	}
 	cacheIndex[PRIOR(0)] = userCacheCount-1; // last one as prior
 	cacheIndex[NEXT(userCacheCount-1)] = 0;	// start as next one (circular list)
+	ClearNumbers();
 }
 
 void CloseCache()

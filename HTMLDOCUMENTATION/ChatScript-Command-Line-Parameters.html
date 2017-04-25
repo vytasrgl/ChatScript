@@ -12,9 +12,7 @@
 <blockquote>
 <p>Copyright Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
-<blockquote>
-<p>Revision 3/4/2017 cs7.3</p>
-</blockquote>
+<p><br>Revision 4/24/2017 cs7.4</p>
 <h1 id="command-line-parameters">Command Line Parameters</h1>
 <p>You can give parameters on the run command or in a config file. The default config file is <code>cs_init.txt</code> at the top level of CS (if the file exists). Or you can name where the file is on a command line parameter <code>config=xxx</code>. Config file data are command line parameters, 1 per line, like below:</p>
 <pre><code>noboot 
@@ -367,6 +365,11 @@ cache=20x1</code></pre>
 <p>If using LINUX EVSERVER, you can request extra copies of ChatScript (to run on each core for example). n specifies how many additional copies of ChatScript to launch.</p>
 <pre><code>Serverretry</code></pre>
 <p>Allows <code>:retry</code> to work from a server - don't use this except for testing a single-person on a server as it slows down the server.</p>
+<pre><code>servertrace</code></pre>
+<p>when present, forces all users to have tracing turned on. Traces go to the user logs.</p>
+<pre><code>erasename=myname</code></pre>
+<p>:reset, when called from running script, is unable to fully reset the system. Facts that have already been created are not destroyed and user variables that have been defined are not erased, only ones in the bot definition are changed back to their default settings. The erasename parameter is used to perform a full reset prior to loading th user topic file. The incoming input is scanned for the text given, and if found the system bypasses loading the topic file and instead just initializes a fresh bot. The actual erasename seen in input will be converted to all blanks, so it will not disturb normal behavior, either in OOB input or user input.</p>
+<p>The default value for this is: <code>csuser_erase</code> which you can change to anything else you want.</p>
 <h2 id="no-such-bot-specific---nosuchbotrestarttrue-1">No such bot-specific - nosuchbotrestart=true</h2>
 <p>If the system does not recognize the bot name requested, it can automatically restart a server (on the presumption that something got damaged). If you don't expect no such bot to happen, you can enable this restart using <code>nosuchbotrestart=true</code>. Default is false.</p>
 <h2 id="testing-a-server">Testing a server</h2>

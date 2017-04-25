@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-debugging-manual">ChatScript Debugging Manual</h1>
-<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com<br> Revision 3/4/2017 cs7.3</p>
+<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com<br> <br>Revision 4/24/2017 cs7.4</p>
 <p>You've written script. It doesn't work. Now what? Now you need to debug it, fix it, and recompile it. Debugging is mostly a matter of tracing what the system does testpaand finding out where it doesn't do what you expected. Debugging mostly done by issuing commands to the engine, as opposed to chatting.</p>
 <p>If the system detects bugs during execution, they go into <code>TMP/bugs.txt</code> You can erase the entire contents of the TMP directory any time you want to. But odds are this is not your problem.</p>
 <p>Debugging generally requires use of some :xxxx commands. I don't always remember them all, so at times I might simply say</p>
@@ -531,7 +531,7 @@ RAWDATA/ONTOLOGY/prepositionhierarchy.top</code></pre>
 <h3 id="bot-sue"><code>:bot sue</code></h3>
 <p>Change focus to conversing with the named bot (presuming you have such a bot). It resets the user back to complete new, flushing the users history, variables, etc.</p>
 <h3 id="reset"><code>:reset</code></h3>
-<p>Flush the current user's total history (erases the <code>USER/TOPIC</code> file), variables, and facts and starting conversation from the beginning. Can be done from within a script without damaging the existing control flow or input sentence.</p>
+<p>Flush the current user's total history (erases the <code>USER/TOPIC</code> file) and reruns the bot definition macro, starting conversation from the beginning. Can be done from within a script without damaging the existing control flow or input sentence but that means variables and facts not covered by the bot definition will remain untouched. For a complete reset see command line parameter <code>erasename</code>.</p>
 <h3 id="user-username"><code>:user username</code></h3>
 <p>Change your login id. It will then prompt you for new input as that user and proceed from there, not starting a new conversation but merely continuing a prior one.</p>
 <h3 id="source-regressbigregress.txt"><code>:source REGRESS/bigregress.txt</code></h3>

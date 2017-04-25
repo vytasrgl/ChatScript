@@ -1,7 +1,7 @@
 # ChatScript PostgreSQL
 
 © Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 4/8/2017 cs7.31
+<br>Revision 4/24/2017 cs7.4
 
 ChatScript ships with code and WINDOWS libraries for accessing PostgreSQL but you need a database
 somewhere. All builds with the postgres client are `ChatScriptpg` in naming as opposed to
@@ -31,9 +31,9 @@ replacement for the local file system of the USERS directory. This allows you to
 by having multiple CS servers all connecting to a common Postgres DB machine so a user can be
 routed to any server. To do this, on the ChatScript command line use:
 ```
-pguser="hostaddr = 129.22.22.24 port = 5432 user = postgres password = somepassword "
+pguser="host = 129.22.22.24 port = 5432 user = postgres password = somepassword "
 ```
-You can replace hostaddr with host to use a named notation. If both are omitted, it defaults to localhost.
+If host is omitted, it defaults to localhost.
 Localhost might not work as the name of the host, in which case use 127.0.0.1 .
 
 You do not specify the dbname. The system assumes you have a db named `users`. If it doesn't find it,

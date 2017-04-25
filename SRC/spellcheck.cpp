@@ -320,6 +320,8 @@ bool SpellCheckSentence()
 	for (int i = FindOOBEnd(1); i <= wordCount; ++i) // skip start of sentence
 	{
 		char* word = wordStarts[i];
+		if (!word[1]) continue; // autoconversion of letters to lower case should be ignored (eg A)
+		if (!stricmp(word, "the")) continue;
 		size_t len = strlen(word);
 		for (int j = 0; j < (int)len; ++j) 
 		{
@@ -330,6 +332,7 @@ bool SpellCheckSentence()
 			}
 		}
 	}
+
 	if (!lowercase && wordCount > 2) // must have multiple words all in uppercase
 	{
 		for (int i = FindOOBEnd(1); i <= wordCount; ++i)
@@ -342,6 +345,7 @@ bool SpellCheckSentence()
 				char* tokens[2];
 				tokens[1] = myword;
 				ReplaceWords("caplocWord", i, 1, 1, tokens);
+				originalCapState[i] = false;
 			}
 		}
 	}
@@ -400,8 +404,9 @@ bool SpellCheckSentence()
 		if (known && !strcmp(known,word)) continue;	 // we know it
 		if (known && strcmp(known,word)) 
 		{
+			WORDP D = FindWord(known);
 			char* tokens[2];
-			if (!IsUpperCase(*known)) // revised the word to lower case (avoid to upper case like "fields" to "Fields"
+			if ((!D || !(D->internalBits & UPPERCASE_HASH)) && !IsUpperCase(*known)) // revised the word to lower case (avoid to upper case like "fields" to "Fields"
 			{
 				WORDP X = FindWord(known,0,LOWERCASE_LOOKUP);
 				if (X) 

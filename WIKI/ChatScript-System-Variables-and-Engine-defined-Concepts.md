@@ -1,6 +1,6 @@
 # ChatScript System Variables and Engine-defined Concepts
 © Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 4/8/2017 cs7.31
+<br>Revision 4/24/2017 cs7.4
 
 
 * [Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md#engine-defined-concepts)
@@ -567,4 +567,5 @@ contents.
 | `$cs_login`             |  login name of the user |
 | `$$csmatch_start`  |  start of found words from ^match |
 | `$$csmatch_end` | end of found words from ^match |
+| `$cs_fullfloat` | if defined, causes the system to generate full float 64-bit precision on outputs, otherwise you get 2 digit precision by default |
 | `cs_botid`    |  when non-zero creates facts and functions restricted by this bitmask so facts and functions created by other masks cannot be seen. allows you to separate facts and functions per bot in a multi-bot environment. During compilation if this is set by a bot: command, then functions created and facts created by tables will be restricted to that owner.| 

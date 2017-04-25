@@ -516,6 +516,18 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
         *pipe = 0; // break apart token
     }
 
+	// check for float
+	if (strchr(token,'.') || strchr(token, 'e') || strchr(token, 'E'))
+	{
+		char* at = token;
+		while (*++at && (IsDigit(*at) || *at == '.' || *at == 'e'  || *at == 'E' || *at == '-' || *at == '+')) { ; }
+		if (IsFloat(token, at))
+		{
+			if (*at == '%') ++at;
+			return ptr + (at - token);
+		}
+	}
+
 	// check for negative number
 	if (*token == '-' && IsDigit(token[1]))
 	{
@@ -1956,6 +1968,7 @@ static bool Substitute(WORDP found,char* sub, int i,int erasing)
 
 static WORDP Viability(WORDP word, int i, unsigned int n)
 {
+	if (!word) return NULL;
     if (word->systemFlags & CONDITIONAL_IDIOM) //  dare not unless there are no conditions
     {
         char* script = word->w.conditionalIdiom;
@@ -2025,16 +2038,19 @@ static WORDP Viability(WORDP word, int i, unsigned int n)
 static WORDP ViableIdiom(char* text,int i,unsigned int n)
 { // n is words merged into "word"
 
-	// DONT convert plural to singular here
-
 	WORDP word = FindWord(text,0, STANDARD_LOOKUP);
     if (!word) return 0;
+
     bool again = primaryLookupSucceeded;
     WORDP X = Viability(word, i, n);
     if (X || !again) return X;
-    // allowed to try other case
+    
+	// allowed to try other case
     word = FindWord(text, 0, SECONDARY_CASE_ALLOWED);
-    return (word) ? Viability(word, i, n) : NULL;
+	X = Viability(word, i, n);
+	if (X) return X;
+
+	return NULL;
 }
 
 static bool ProcessMyIdiom(int i,unsigned int max,char* buffer,char* ptr)
@@ -2107,14 +2123,10 @@ static bool ProcessMyIdiom(int i,unsigned int max,char* buffer,char* ptr)
 				strcpy(noun+len-3,(char*)"y");
 				word = FindWord(noun,0, STANDARD_LOOKUP);
 			}
-			if (word && ViableIdiom(word->word,i,n)) // was composite
+			if (word && (word = ViableIdiom(word->word,i,n))) // was composite
 			{
-				char* second = strchr(buffer,'_');
-				if ( !IsUpperCase(*word->word) || (second && IsUpperCase(second[1]))) // be case sensitive in matching composites
-				{
-					found = StoreWord(buffer+1,NOUN_PLURAL); // generate the plural
-					idiomMatch = n; 
-				}
+				found = word; // tolerate the singular
+				idiomMatch = n; 
 			}
 		}
 

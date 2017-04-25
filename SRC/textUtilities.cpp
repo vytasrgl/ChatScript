@@ -2,7 +2,7 @@
 
 int startSentence;
 int endSentence;
-
+bool fullfloat = false;	// 2 float digits or all
 FILE* docOut = NULL;
 bool showBadUTF = false;			// log bad utf8 characer words
 static bool blockComment = false;
@@ -264,6 +264,11 @@ void InitTextUtilities()
 		if (c) c -= 128;	// remove top bit
 		utf82extendedascii[c] = (unsigned char)i;
 	}
+}
+
+void ClearNumbers()
+{
+	numberValues = 0; // heap is discarded, need to discard this
 }
 
 void InitTextUtilities1()
@@ -742,6 +747,18 @@ char* FindNameByValue(uint64 val) // works for invertable pos bits only
 	return D->word+1;
 }
 
+bool IsModelNumber(char* word)
+{
+	int alphanumeric = 0;
+	--word;
+	while (*++word)
+	{
+		if (IsAlphaUTF8(*word)) alphanumeric |= 1;
+		else if (IsDigit(*word)) alphanumeric |= 2;
+	}
+	return (alphanumeric == 3);
+}
+
 uint64 FindSystemValueByName(char* name)
 {
 	if (!*name || *name == '?') return 0; // ? is the default argument to call
@@ -970,8 +987,23 @@ bool IsDigitWithNumberSuffix(char* number)
 	return num;
 }
 
+bool IsInteger(char* ptr, bool comma)
+{
+	if (IsNonDigitNumberStarter(*ptr)) ++ptr; //   skip numeric nondigit header (+ - # )
+	bool foundDigit = false;
+	while (*ptr)
+	{
+		if (IsDigit(*ptr)) foundDigit = true; // we found SOME part of a number
+		else if (*ptr == ',' && comma); // allow comma
+		else  return false;
+		++ptr;
+	}
+	return foundDigit;
+}
+
 bool IsDigitWord(char* ptr,bool comma) // digitized number
 {
+	if (IsFloat(ptr, ptr + strlen(ptr))) return true;
     //   signing, # marker or currency markers are still numbers
     if (IsNonDigitNumberStarter(*ptr)) ++ptr; //   skip numeric nondigit header (+ - # )
 	char* number = 0;
@@ -1164,17 +1196,47 @@ bool IsPlaceNumber(char* word) // place number and fraction numbers
 	return IsNumber(num,false) ? true : false; // show it is correctly a number - pass false to avoid recursion from IsNumber
 }
 
+char* WriteFloat(char* buffer, double value)
+{
+	if (!fullfloat) 
+	{
+		sprintf(buffer, (char*)"%1.2f", value);
+		char* at = strchr(buffer, '.');
+		if (at)
+		{
+			char* loc = at;
+			while (*++at)
+			{
+				if (*at != '0') break; // not pure
+			}
+			if (!*at) *loc = 0; // switch to integer
+		}
+	}
+	else sprintf(buffer, (char*)"%1.50g", value);
+	return buffer;
+}
+
 bool IsFloat(char* word, char* end)
 {
 	if (*word == '-' || *word == '+') ++word; // ignore sign
+	if (!IsDigit(*word)) return false;
     int period = 0;
 	--word;
+	bool exponent = false;
 	while (++word < end) // count periods
 	{
-	    if (*word == '.') ++period;
-	    else if (!IsDigit(*word)) return false; // non digit is fatal
+	    if (*word == '.' && !exponent) ++period;
+		else if (!IsDigit(*word))
+		{
+			if ((*word == 'e' || *word == 'E') && !exponent)
+			{
+				exponent = true;
+				if (word[1] == '-' || word[1] == '+') ++word; // ignore exponent sign
+			}
+			else return false; // non digit is fatal
+		}
     }
-    return (period == 1);
+    return (period == 1 || exponent);
 }
 
 bool IsNumericDate(char* word,char* end) // 01.02.2009 or 1.02.2009 or 1.2.2009

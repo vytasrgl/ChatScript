@@ -75,7 +75,8 @@ extern unsigned int outputLength;
 extern bool readingDocument;
 extern int inputRetryRejoinderTopic;
 extern int inputRetryRejoinderRuleID;
-
+extern bool build0Requested;
+extern bool build1Requested;
 extern bool callback;
 extern char inputCopy[INPUT_BUFFER_SIZE]; 
 extern unsigned char responseOrder[MAX_RESPONSE_SENTENCES+1];
@@ -88,6 +89,7 @@ extern bool rebooting;
 extern int responseIndex;
 extern bool documentMode;
 extern bool assignedLogin;
+extern bool servertrace;
 extern char apikey[100];
 extern unsigned int volleyCount;
 extern FILE* sourceFile;

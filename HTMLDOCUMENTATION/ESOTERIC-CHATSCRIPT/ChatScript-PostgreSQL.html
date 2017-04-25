@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-postgresql">ChatScript PostgreSQL</h1>
-<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/8/2017 cs7.31</p>
+<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/24/2017 cs7.4</p>
 <p>ChatScript ships with code and WINDOWS libraries for accessing PostgreSQL but you need a database somewhere. All builds with the postgres client are <code>ChatScriptpg</code> in naming as opposed to <code>ChatScript.exe</code> or <code>LinuxChatScript32</code> or <code>LinuxChatScript64</code> which are non postgres builds.</p>
 <p>On Linux, ChatScript ships with PostgreSQL client built-in, but if you want to rebuild the system for some reason, then while standing in /src type either</p>
 <p><code>make server</code> – build ordinary CS server w/o PostgreSQL client <br><code>make pgserver</code> – build CS server w PostgreSQL client (you had to install postgress first)</p>
@@ -19,8 +19,8 @@
 <p>On Mac and IOS <code>#define DISCARDDATABASE</code> is on by default. If you have access to a PostgreSQL server remotely, that's fine. If you need one installed on your machine, see the end for how to install one.</p>
 <h2 id="using-postgres-as-file-server">Using Postgres as file server</h2>
 <p>Aside from using Postgres to store data for a chatbot to look up, one can also use Postgres as a replacement for the local file system of the USERS directory. This allows you to scale CS horizontally by having multiple CS servers all connecting to a common Postgres DB machine so a user can be routed to any server. To do this, on the ChatScript command line use:</p>
-<pre><code>pguser=&quot;hostaddr = 129.22.22.24 port = 5432 user = postgres password = somepassword &quot;</code></pre>
-<p>You can replace hostaddr with host to use a named notation. If both are omitted, it defaults to localhost. Localhost might not work as the name of the host, in which case use 127.0.0.1 .</p>
+<pre><code>pguser=&quot;host = 129.22.22.24 port = 5432 user = postgres password = somepassword &quot;</code></pre>
+<p>If host is omitted, it defaults to localhost. Localhost might not work as the name of the host, in which case use 127.0.0.1 .</p>
 <p>You do not specify the dbname. The system assumes you have a db named <code>users</code>. If it doesn't find it, it will try to open a root database named <code>postgres</code>. If it can find that, it will then create the <code>users</code> db.</p>
 <p>Obviously put the correct data for your postgres machine. CS will automatically create a <code>users</code> database and a <code>userfiles</code> tables. Each user will get an entry in the userfiles table. If Postgres is not available, the CS server will quit. Hopefully you have an automatic restart cron job and it will be able to connect to Postgres the next time.</p>
 <h2 id="access-a-postgresql-database">Access A PostgreSQL Database</h2>

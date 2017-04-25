@@ -75,6 +75,7 @@ extern unsigned char isComparatorData[];
 extern unsigned char legalNaming[256];
 extern unsigned char realPunctuation[256];
 extern signed char nestingData[];
+extern bool fullfloat;
 extern FILE* docOut;
 extern bool newline;
 #define MAX_CONDITIONALS 10
@@ -122,12 +123,15 @@ void AcquireDefines(char* fileName);
 void AcquirePosMeanings();
 char* FindNameByValue(uint64 val); // properties
 uint64 FindValueByName(char* name);
+void ClearNumbers();
 char* FindSystemNameByValue(uint64 val); // system flags
 uint64 FindSystemValueByName(char* name);
 char* FindParseNameByValue(uint64 val); // parse flags
 uint64 FindParseValueByName(char* name); // parse flags
 uint64 FindMiscValueByName(char* name); // misc data
 void CloseTextUtilities();
+bool IsModelNumber(char* word);
+bool IsInteger(char* ptr, bool comma);
 char* IsUTF8(char* buffer,char* character);
 char* Purify(char* msg);
 void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine);
@@ -150,6 +154,7 @@ char GetTemperatureLetter (char* ptr);
 bool IsLegalName(char* name);
 unsigned char* GetCurrency(unsigned char* ptr,char* &number);
 bool IsRomanNumeral(char* word, uint64& val);
+char* WriteFloat(char* buffer, double value);
 
 // conversion reoutines
 void MakeLowerCase(char* ptr);

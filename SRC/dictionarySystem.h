@@ -668,8 +668,9 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define    OUTPUT_FNDEFINITION  0x00020000	// this is a function being run
 #define    OUTPUT_RAW			0x00040000	// there are no special characters, except variable references		
 #define    OUTPUT_RETURNVALUE_ONLY		0x00080000	// just return the buffer, dont print it out		
+#define    OUTPUT_FULLFLOAT		0x00100000		// dont truncate
 
-// flags to control response processing continue from output flags
+// flags to control response processing continue from output flags $cs_response
 #define RESPONSE_UPPERSTART					0x00100000  // start each output sentence with upper case
 #define RESPONSE_REMOVESPACEBEFORECOMMA		0x00200000  // remove spaces before commas
 #define RESPONSE_ALTERUNDERSCORES			0x00400000

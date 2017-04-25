@@ -1,7 +1,7 @@
 #include "common.h"
 
 /*
-:testpattern ( a  _( dog ) ) a big dog
+:testpattern ( a  _( case 0 ) ) a big dog
 :testpattern ( [ _alternate_1 _alternate_2 ] _* _( dog ) ) alternate_2 cat dog
 :testpattern ( _* _(dog) ) cat dog
 :testpattern ( _* _one _* ( _two )  _* ( _three ) ) first one two  and three
@@ -674,7 +674,7 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
                 {
 					AllocateOutputBuffer();
 					FunctionResult result;
-					matching = true;
+					if (!stricmp(D->word,"^match") || !stricmp(D->word, "^mark") || !stricmp(D->word, "^unmark")) matching = true;
 					ptr = DoFunction(word,ptr,currentOutputBase,result);
 					matching = false;
 					matched = !(result & ENDCODES); 
@@ -786,7 +786,7 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 				}
 				if (result == FAILRULE_BIT) matched = false;
 				break;
-          case 0: // end of data (argument or function - never a real rule)
+          case 0: case '`': // end of data (argument or function - never a real rule)
 	           if (argumentText) // return to normal from argument substitution
                 {
                     ptr = argumentText;

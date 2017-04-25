@@ -1,4 +1,4 @@
-﻿file: c:/ChatScript/RAWDATA/HARRY/childhood.top 0
+﻿file: C:/ChatScript/RAWDATA/HARRY/childhood.top 0
     topic: ~childhood 2
         rule: ~childhood.0.0- t:  6
           line: 6 0
@@ -70,7 +70,7 @@
           line: 68 0
           line: 70 46
           Complexity of rule ~childhood.10.0- u: 1
-file: c:/ChatScript/RAWDATA/HARRY/introductions.top 0
+file: C:/ChatScript/RAWDATA/HARRY/introductions.top 0
     topic: ~introductions 2
         rule: ~introductions.0.0 t:  5
           line: 6 0
@@ -93,7 +93,7 @@ file: c:/ChatScript/RAWDATA/HARRY/introductions.top 0
           line: 22 0
           line: 23 11
           Complexity of rule ~introductions.3.0- u: 1
-file: c:/ChatScript/RAWDATA/HARRY/keywordless.top 0
+file: C:/ChatScript/RAWDATA/HARRY/keywordless.top 0
     topic: ~keywordless 4
         rule: ~keywordless.0.0 u:  6
           line: 6 0
@@ -126,102 +126,105 @@ file: c:/ChatScript/RAWDATA/HARRY/keywordless.top 0
           line: 39 348
           line: 42 387
           Complexity of rule ~keywordless.5.0- ?: 1
-file: c:/ChatScript/RAWDATA/HARRY/simplecontrol.top 0
+file: C:/ChatScript/RAWDATA/HARRY/simplecontrol.top 0
     macro: ^harry 2
           line: 3 0
           line: 5 54
           line: 6 89
           line: 8 108
           line: 9 131
+          line: 10 156
           Complexity of ^harry: 1
-          line: 12 0
-    topic: ~control 16
-        rule: ~control.0.0 u:  19
-          line: 20 0
-          Complexity of rule ~control.0.0- u: 1
-        rule: ~control.1.0 u:  22
+          line: 14 0
+    topic: ~control 18
+        rule: ~control.0.0 u:  21
           line: 22 0
+          Complexity of rule ~control.0.0- u: 1
+        rule: ~control.1.0 u:  24
+          line: 24 0
           Complexity of rule ~control.1.0- u: 1
-        rule: ~control.2.0 u:  23
-          line: 23 0
-          Complexity of rule ~control.2.0- u: 1
-        rule: ~control.3.0 u:  25
+        rule: ~control.2.0 u:  25
           line: 25 0
-          Complexity of rule ~control.3.0- u: 1
-        rule: ~control.4.0 u:  26
-          line: 26 0
-          Complexity of rule ~control.4.0- u: 1
-        rule: ~control.5.0 u:  27
+          Complexity of rule ~control.2.0- u: 1
+        rule: ~control.3.0 u:  27
           line: 27 0
-          Complexity of rule ~control.5.0- u: 1
-        rule: ~control.6.0 u:  28
+          Complexity of rule ~control.3.0- u: 1
+        rule: ~control.4.0 u:  28
           line: 28 0
-          Complexity of rule ~control.6.0- u: 1
-        rule: ~control.7.0 u:  29
+          Complexity of rule ~control.4.0- u: 1
+        rule: ~control.5.0 u:  29
           line: 29 0
-          Complexity of rule ~control.7.0- u: 1
-        rule: ~control.8.0 u:  30
+          Complexity of rule ~control.5.0- u: 1
+        rule: ~control.6.0 u:  30
           line: 30 0
+          Complexity of rule ~control.6.0- u: 1
+        rule: ~control.7.0 u:  31
+          line: 31 0
+          Complexity of rule ~control.7.0- u: 1
+        rule: ~control.8.0 u:  32
+          line: 32 0
           Complexity of rule ~control.8.0- u: 1
-        rule: ~control.9.0 u:  32
-          line: 34 0
-          line: 36 17
-          line: 38 88
-          line: 40 140
-          line: 43 187
-          line: 45 270
-          line: 47 305
-          line: 48 331
-          line: 50 348
-          line: 51 381
-          line: 52 420
-          line: 54 449
-          line: 56 465
-          line: 57 471
-          line: 60 473
-          line: 62 508
-          line: 68 554
-          line: 70 604
-          line: 74 650
-          line: 76 704
-          line: 80 721
-          line: 82 834
-          line: 84 869
-          line: 85 895
-          line: 87 912
-          line: 88 945
-          line: 89 983
-          line: 91 1012
-          line: 93 1028
-          line: 94 1034
-          line: 95 1036
-          line: 97 1118
-          line: 99 1153
-          line: 100 1178
-          line: 102 1195
-          line: 103 1227
-          line: 104 1265
-          line: 106 1294
-          line: 108 1310
-          line: 109 1316
-          line: 111 1318
-          line: 113 1353
-          line: 114 1367
-          line: 115 1388
-          Complexity of rule ~control.9.0- u: 16
-    topic: ~xpostprocess 118
-        rule: ~xpostprocess.0.0 t:  120
-          line: 121 0
-          line: 123 17
-          line: 124 47
-          line: 126 104
-          line: 127 114
-          line: 129 155
-          line: 131 214
-          line: 133 261
-          line: 134 267
+        rule: ~control.9.0 u:  34
+          line: 35 0
+          line: 36 18
+          line: 38 80
+          line: 40 103
+          line: 42 188
+          line: 44 254
+          line: 47 301
+          line: 49 398
+          line: 51 447
+          line: 52 473
+          line: 54 490
+          line: 55 523
+          line: 56 562
+          line: 58 605
+          line: 60 621
+          line: 61 627
+          line: 64 629
+          line: 66 678
+          line: 72 724
+          line: 74 788
+          line: 78 834
+          line: 80 888
+          line: 84 905
+          line: 86 1032
+          line: 88 1081
+          line: 89 1107
+          line: 91 1124
+          line: 92 1157
+          line: 93 1195
+          line: 95 1238
+          line: 97 1254
+          line: 98 1260
+          line: 99 1262
+          line: 101 1358
+          line: 103 1407
+          line: 104 1432
+          line: 106 1449
+          line: 107 1481
+          line: 108 1519
+          line: 110 1562
+          line: 112 1578
+          line: 113 1584
+          line: 115 1586
+          line: 117 1635
+          line: 118 1649
+          line: 119 1670
+          Complexity of rule ~control.9.0- u: 17
+    topic: ~xpostprocess 122
+        rule: ~xpostprocess.0.0 t:  124
+          line: 125 0
+          line: 127 17
+          line: 128 47
+          line: 130 104
+          line: 131 114
+          line: 133 155
+          line: 135 214
+          line: 137 261
+          line: 138 267
           Complexity of rule ~xpostprocess.0.0- t: 3
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_because.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_because.top 0
     topic: ~quibble_because 1
         rule: ~quibble_because.0.0 s:  2
           line: 2 0
@@ -278,7 +281,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_because.top 0
           line: 19 0
           line: 20 25
           Complexity of rule ~quibble_because.9.1- a: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_can.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_can.top 0
     topic: ~quibble_will 2
         rule: ~quibble_will.0.0 ?:  5
           line: 5 0
@@ -519,7 +522,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_can.top 0
           line: 88 0
           line: 89 30
           Complexity of rule ~quibble_can.72.1- b: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_do.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_do.top 0
     topic: ~quibble_do 1
         rule: ~quibble_do.0.0 ?:  4
           line: 4 0
@@ -848,7 +851,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_do.top 0
           line: 115 0
           line: 116 96
           Complexity of rule ~quibble_do.102.0- ?: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_how.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_how.top 0
     topic: ~quibble_howmuch 1
         rule: ~quibble_howmuch.0.0 ?:  3
           line: 3 0
@@ -1562,7 +1565,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_how.top 0
           line: 249 0
           line: 250 74
           Complexity of rule ~quibble_how.203.0- ?: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_misc.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_misc.top 0
     topic: ~quibble_misc 3
         rule: ~quibble_misc.0.0 u:  5
           line: 5 0
@@ -3771,7 +3774,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_misc.top 0
           line: 945 0
           line: 947 132
           Complexity of rule ~quibble_misc.633.1- b: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_not.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_not.top 0
     topic: ~quibble_not 1
         rule: ~quibble_not.0.0 s:  2
           line: 2 0
@@ -4450,7 +4453,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_not.top 0
           line: 274 0
           line: 275 90
           Complexity of rule ~quibble_not.165.0- u: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_or.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_or.top 0
     topic: ~quibble_or 1
         rule: ~quibble_or.0.0-WHY1 ?:  2
           line: 2 0
@@ -4681,7 +4684,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_or.top 0
           line: 84 0
           line: 85 75
           Complexity of rule ~quibble_or.28.1- a: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_what.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_what.top 0
     topic: ~quibble_what 1
         rule: ~quibble_what.0.0 ?:  3
           line: 3 0
@@ -5112,7 +5115,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_what.top 0
           line: 199 0
           line: 200 45
           Complexity of rule ~quibble_what.115.0- ?: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_when.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_when.top 0
     topic: ~quibble_when 2
         rule: ~quibble_when.0.0 ?:  4
           line: 4 0
@@ -5224,7 +5227,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_when.top 0
           line: 40 0
           line: 41 49
           Complexity of rule ~quibble_when.33.0- ?: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_where.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_where.top 0
     topic: ~quibble_where 1
         rule: ~quibble_where.0.0 ?:  3
           line: 3 0
@@ -5358,7 +5361,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_where.top 0
           line: 47 0
           line: 49 6
           Complexity of rule ~quibble_where.42.0- ?: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_who.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_who.top 0
     topic: ~quibble_who 1
         rule: ~quibble_who.0.0 ?:  3
           line: 3 0
@@ -5531,7 +5534,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_who.top 0
           line: 59 0
           line: 60 73
           Complexity of rule ~quibble_who.55.0- ?: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_why.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/eliza_why.top 0
     topic: ~quibble_why 1
         rule: ~quibble_why.0.0-LIE ?:  3
           line: 3 0
@@ -5876,7 +5879,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/eliza_why.top 0
           line: 116 0
           line: 117 99
           Complexity of rule ~quibble_why.110.0- ?: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/honest.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/honest.top 0
     topic: ~intent 3
         rule: ~intent.0.0 u:  5
           line: 5 0
@@ -6248,7 +6251,7 @@ file: c:/ChatScript/RAWDATA/QUIBBLE/honest.top 0
           line: 315 0
           line: 318 61
           Complexity of rule ~honest_response.45.0-GRUNT u: 1
-file: c:/ChatScript/RAWDATA/QUIBBLE/quibble.top 0
+file: C:/ChatScript/RAWDATA/QUIBBLE/quibble.top 0
     topic: ~quibble_all 1
         rule: ~quibble_all.0.0 u:  5
           line: 5 0

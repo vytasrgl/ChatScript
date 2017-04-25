@@ -2,6 +2,7 @@
 //------------------------
 // ALWAYS AVAILABLE
 //------------------------
+static unsigned int undefinedCallThreadList = 0;
 static int complexity = 0;
 static char* dataChunk = NULL;
 static char* outputStart = NULL;
@@ -1460,8 +1461,9 @@ static void ValidateCallArgs(WORDP D,char* arg1, char* arg2,char* argset[ARGSETL
 	{
 		if (stricmp(arg1,(char*)"conjugate") && stricmp(arg1,(char*)"raw")&& stricmp(arg1,(char*)"allupper")  && stricmp(arg1,(char*)"syllable") && stricmp(arg1,(char*)"ADJECTIVE") && stricmp(arg1,(char*)"ADVERB")   && stricmp(arg1,(char*)"VERB") && stricmp(arg1,(char*)"AUX") && stricmp(arg1,(char*)"PRONOUN") && stricmp(arg1,(char*)"TYPE") && stricmp(arg1,(char*)"HEX32")&& stricmp(arg1,(char*)"HEX64")
 			 && stricmp(arg1,(char*)"NOUN") && stricmp(arg1,(char*)"DETERMINER") && stricmp(arg1,(char*)"PLACE")
- 			 && stricmp(arg1,(char*)"capitalize") && stricmp(arg1,(char*)"uppercase") && stricmp(arg1,(char*)"lowercase") && stricmp(arg1,(char*)"canonical") && stricmp(arg1,(char*)"integer"))
- 			BADSCRIPT((char*)"CALL- 12 1st argument to ^pos must be SYLLABLE or ALLUPPER or  VERB or AUX or PRONOUN or NOUN or ADJECTIVE or ADVERB or DETERMINER or PLACE or CAPITALIZE or UPPERCASE or LOWERCASE or CANONICAL or INTEGER or HEX32 or HEX64 - %s",arg1)
+ 			 && stricmp(arg1,(char*)"capitalize") && stricmp(arg1,(char*)"uppercase") && stricmp(arg1,(char*)"lowercase") 
+			 && stricmp(arg1,(char*)"canonical") && stricmp(arg1,(char*)"integer") && stricmp(arg1, (char*)"IsModelNumber") && stricmp(arg1, (char*)"IsInteger") && stricmp(arg1, (char*)"IsFloat"))
+ 			BADSCRIPT((char*)"CALL- 12 1st argument to ^pos must be SYLLABLE or ALLUPPER or  VERB or AUX or PRONOUN or NOUN or ADJECTIVE or ADVERB or DETERMINER or PLACE or CAPITALIZE or UPPERCASE or LOWERCASE or CANONICAL or INTEGER or HEX32 or HEX64 or ISMODELNUMBER or ISINTEGER or ISFLOAT - %s",arg1)
 	}
 	else if (!stricmp(D->word,(char*)"^getrule"))
 	{
@@ -1610,17 +1612,19 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 	WORDP D = FindWord(name,0,LOWERCASE_LOOKUP);
 	if (!call || !D || !(D->internalBits & FUNCTION_NAME))  //   not a function, is it a function variable?
 	{
-		if (!IsDigit(name[1])) 
-			BADSCRIPT((char*)"CALL-1 Call to function not yet defined %s",name)
-		*data++ = *name++;
-		*data++ = *name++;
-		if (IsDigit(*name)) *data++ = *name++;
-		*data = 0;
-		return ptr;
+		if (IsDigit(name[1])) // function variable
+		{
+			*data++ = *name++;
+			*data++ = *name++;
+			if (IsDigit(*name)) *data++ = *name++;
+			*data = 0;
+			return ptr;
+		}
 	}
+	
 	SystemFunctionInfo* info = NULL;
 	bool isStream = false;		//   dont check contents of stream, just format it
-	if (!(D->internalBits & FUNCTION_BITS))			//   system function  (not pattern macro, outputmacro, dual macro, tablemacro, or plan macro)
+	if (D && !(D->internalBits & FUNCTION_BITS))			//   system function  (not pattern macro, outputmacro, dual macro, tablemacro, or plan macro)
 	{
 		++callingSystem;
 		info = &systemFunctionSet[D->x.codeIndex];
@@ -1629,16 +1633,16 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 		if (!stricmp(name,"^jsonarraysize")) WARNSCRIPT((char*)"^jsonarraysize deprecated in favor of ^length\r\n")
 		if (!stricmp(name,"^jsondelete")) WARNSCRIPT((char*)"^jsondelete deprecated in favor of ^delete\r\n")
 	}
-	else if (patternContext && !(D->internalBits & IS_PATTERN_MACRO)) BADSCRIPT((char*)"CALL-2 Can only call patternmacro or dual macro from pattern area - %s",name)
-	else if (!patternContext && !(D->internalBits &  (IS_OUTPUT_MACRO | IS_TABLE_MACRO))) BADSCRIPT((char*)"CALL-3 Cannot call pattern or table macro from output area - %s",name)
+	else if (patternContext && D && !(D->internalBits & IS_PATTERN_MACRO)) BADSCRIPT((char*)"CALL-2 Can only call patternmacro or dual macro from pattern area - %s",name)
+	else if (!patternContext && D && !(D->internalBits &  (IS_OUTPUT_MACRO | IS_TABLE_MACRO))) BADSCRIPT((char*)"CALL-3 Cannot call pattern or table macro from output area - %s",name)
 	
 	memset(argset,0,sizeof(argset)); //   default EVERYTHING before we test it later
-	if (!stricmp(D->word,(char*)"^debug")) 
+	if (D && !stricmp(D->word,(char*)"^debug")) 
 		DebugCode(NULL); // a place for a script compile breakpoint
 
 	// write call header
-	strcpy(data,D->word); 
-	data += D->length;
+	strcpy(data,name); 
+	data += strlen(name);
 	*data++ = ' ';	
 	*data++ = '(';	
 	*data++ = ' ';	
@@ -1787,11 +1791,11 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 		else if (*assignKind == '@' && kind != 'f') BADSCRIPT((char*)"CALL-8 Cannot assign fact field into fact set") // into set, but not a fact
 	}
 	
-	if (!stricmp(D->word,(char*)"^reuse") && (IsAlphaUTF8(*arg1) || *arg1 == '~')) 
+	if (D && !stricmp(D->word,(char*)"^reuse") && (IsAlphaUTF8(*arg1) || *arg1 == '~')) 
 	{
 		MakeUpperCopy(reuseTarget1,arg1); // topic names & labels must be upper case
 	}
-	else if (!stricmp(D->word,(char*)"^enable") && IsAlphaUTF8(*arg1)) 
+	else if (D && !stricmp(D->word,(char*)"^enable") && IsAlphaUTF8(*arg1))
 	{
 		if (stricmp(arg1,(char*)"topic") && stricmp(arg1,(char*)"write") && stricmp(arg1,(char*)"rule") && stricmp(arg1,(char*)"usedrules") ) BADSCRIPT((char*)"CALL-18 Enable 1st arg must be TOPIC or RULE or USEDRULES - %s",arg1)
 		if (*arg2 == '@'){;}
@@ -1800,7 +1804,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 			MakeUpperCopy(reuseTarget1,arg2); // topic names & labels must be upper case
 		}
 	}
-	else if (!stricmp(D->word,(char*)"^disable") && IsAlphaUTF8(*arg1)) 
+	else if (D && !stricmp(D->word,(char*)"^disable") && IsAlphaUTF8(*arg1))
 	{
 		if (stricmp(arg1,(char*)"topic") && stricmp(arg1,(char*)"rule")  && stricmp(arg1,(char*)"write")&& stricmp(arg1,(char*)"rejoinder") && stricmp(arg1,(char*)"inputrejoinder") && stricmp(arg1,(char*)"outputrejoinder")  && stricmp(arg1,(char*)"save")  ) BADSCRIPT((char*)"CALL-19 Disable 1st arg must be TOPIC or RULE or INPUTREJOINDER or OUTPUTREJOINDER or SAVE - %s",arg1)
 		if (*arg2 == '@'){;}
@@ -1808,7 +1812,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 		else if (*arg2 != '~' || strchr(arg2,'.'))  MakeUpperCopy(reuseTarget1,arg2); // topic names & labels must be upper case 
 	}
 
-	ValidateCallArgs(D,arg1,arg2,argset,needTofield);
+	if (D) ValidateCallArgs(D,arg1,arg2,argset,needTofield);
 
 	if (parenLevel != 0) BADSCRIPT((char*)"CALL-59 Failed to properly close (or [ in call to %s",D->word)
 
@@ -1818,10 +1822,24 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 		if (argumentCount != (info->argumentCount & 255) && info->argumentCount != VARIABLE_ARG_COUNT && info->argumentCount != UNEVALED && info->argumentCount != STREAM_ARG) 
 			BADSCRIPT((char*)"CALL-60 Incorrect argument count to system function %s- given %d instead of required %d",name,argumentCount,info->argumentCount & 255)
 	}
-	else if ((D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
+	else if (D && (D->internalBits & FUNCTION_BITS) == IS_PLAN_MACRO) 
 	{
 		if (argumentCount != (int)D->w.planArgCount)
 			BADSCRIPT((char*)"CALL-60 Incorrect argument count to plan %s- given %d instead of required %d",name,argumentCount,D->w.planArgCount)
+	}
+	else if (!D)
+	{
+		// generate crosscheck data
+		char* nameData = AllocateHeap(NULL, strlen(name) + 2, 1);
+		*nameData = argumentCount;
+		strcpy(nameData + 1, name);
+		char* filename = AllocateHeap(currentFilename, 0, 1);
+		int* data = (int*)AllocateHeap(NULL, 4, 4);
+		data[0] = undefinedCallThreadList;
+		data[1] = Heap2Index(nameData);
+		data[2] = Heap2Index(filename);
+		data[3] = currentFileLine;
+		undefinedCallThreadList = Heap2Index((char*)data);
 	}
 	else // std macro (input, output table)
 	{
@@ -1859,7 +1877,7 @@ static char* ReadCall(char* name, char* ptr, FILE* in, char* &data,bool call, bo
 
 	//   now generate stuff as an output stream with its validation
 	patternContext = oldContext;
-	if (!(D->internalBits & FUNCTION_BITS))	 --callingSystem;
+	if (D && !(D->internalBits & FUNCTION_BITS))  --callingSystem;
 
 	callingSystem = oldcallingsystem;
 	*data++ = ')'; //   outer layer generates trailing space
@@ -3260,9 +3278,6 @@ char* ReadOutput(bool nested,char* ptr, FILE* in,char* &mydata,char* rejoinders,
 		// a function call, 
 		if (*word == '^' && !IsDigit(word[1]) && word[1] != '^'&& word[1] != '=' && word[1] != '"' && word[1] != '\'' && word[1] != USERVAR_PREFIX && word[1] != '_' && word[1] && *nextToken == '(' )
 		{
-			WORDP D = FindWord(word,0,LOWERCASE_LOOKUP);
-			if ((!D || !(D->internalBits & FUNCTION_NAME))) 
-				BADSCRIPT((char*)"OUTPUT-5 Apparent call to %s is not yet defined",word)
 			ptr = ReadCall(word,ptr,in,dataChunk,*nextToken == '(',needtofield); //   add function call
 			needtofield = false;
 			*assignKind = 0;
@@ -3769,6 +3784,8 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 		sharedArgs = indexArg;
 	}
 	unsigned char* defn = GetDefinition(currentFunctionDefinition);
+	unsigned int wantedArgs = MACRO_ARGUMENT_COUNT(defn);
+
 	char junk[MAX_WORD_SIZE];
 	defn = (unsigned char*) ReadCompiledWord((char*)defn, junk); // read bot id
 	int flags;
@@ -3869,7 +3886,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 			// how do we store string arguments - with underscores, as is, compiled,
 			bool keepQuotes = (quoteProcessing & ( 1 << argCount)) ? 1 : 0; // want to use quotes and spaces, instead of none and convert to _ which is the default // a normal string where spaces are kept instead of _ (format string)
 			bool xxotherNotation = (quoteProcessing & ( (1 << 16) << argCount)) ? 1 : 0; // unused at present  
-			if (*word == FUNCTIONSTRING && word[1] == '"')
+			if (*word == FUNCTIONSTRING && (word[1] == '"' || word[1] == '\''))
 			{
 				strcpy(word,CompileString(word)); // no underscores in string, compiled as executable // a compile string " " becomes "^:"
 				flag = AS_IS;
@@ -3907,7 +3924,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 				if (IsUpperCase(*word)) CreateFact(MakeMeaning(StoreWord(word,NOUN|NOUN_PROPER_SINGULAR)),Mmember,base); 
 				else CreateFact(MakeMeaning(StoreWord(word,NOUN|NOUN_SINGULAR)),Mmember,base);
 			}
-			if ((MACRO_ARGUMENT_COUNT(GetDefinition(currentFunctionDefinition)) - sharedArgs) == 1)
+			if ((wantedArgs - sharedArgs) == 1)
 			{
 				memmove(readBuffer,ptr,strlen(ptr)+1);	
 				ptr = readBuffer;
@@ -3915,7 +3932,7 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 			}
 		}
 
-		while ( argCount < MACRO_ARGUMENT_COUNT(GetDefinition(currentFunctionDefinition)) && (!stricmp(word,(char*)"...") || currentFunctionDefinition->internalBits & VARIABLE_ARGS_TABLE))
+		while ( argCount < wantedArgs && (!stricmp(word,(char*)"...") || currentFunctionDefinition->internalBits & VARIABLE_ARGS_TABLE))
 		{
 			strcpy(systemArgumentList,(char*)"*");
 			systemArgumentList += strlen(systemArgumentList);
@@ -3927,8 +3944,8 @@ static char* ReadTable(char* ptr, FILE* in,unsigned int build,bool fromtopic)
 		if (choiceArg) strcpy(post,pre); // save argumentList after the multiple choices
 
 		//   now we have one map of the argumentList row
-		if (argCount && argCount != MACRO_ARGUMENT_COUNT(GetDefinition(currentFunctionDefinition))) 
-			BADSCRIPT((char*)"TABLE-9 Bad table %s in table %s, want %d arguments and have %d",original,currentFunctionDefinition->word,MACRO_ARGUMENT_COUNT(currentFunctionDefinition->w.fndefinition),argCount)
+		if (argCount && argCount != wantedArgs)
+			BADSCRIPT((char*)"TABLE-9 Bad table %s in table %s, want %d arguments and have %d",original,currentFunctionDefinition->word, wantedArgs,argCount)
 
 		//   table line is read, now execute rules on it, perhaps multiple times, after stuffing in the choice if one
 		if (argCount) //   we swallowed a dataset. Process it
@@ -4832,7 +4849,38 @@ static void ReadTopicFile(char* name,uint64 buildid) //   read contents of a top
 	}
 }
 
-void DoubleCheckReuse()
+static void DoubleCheckFunctionDefinition()
+{
+	unsigned int list = undefinedCallThreadList;
+	while (list)
+	{
+		unsigned int* data = (unsigned int*) Index2Heap(list);
+		char* functionName = Index2Heap(data[1]);
+		int args = *functionName++ ;
+		WORDP D = FindWord(functionName);
+		strcpy(currentFilename,Index2Heap(data[2]));
+		currentFileLine = data[3];
+		if (D && D->internalBits & FUNCTION_BITS)
+		{
+			unsigned char* defn = GetDefinition(D);
+			int want = MACRO_ARGUMENT_COUNT(defn);
+			if (args != want && !(D->internalBits & VARIABLE_ARGS_TABLE))
+			{
+				Log(BADSCRIPTLOG, (char*)"*** Error- Function %s wrong argument count %d expected %d given \r\n", functionName,want,args);
+				++hasErrors;
+			}
+		}
+		else
+		{
+			Log(BADSCRIPTLOG, (char*)"*** Error- Undefined function %s \r\n", functionName);
+			++hasErrors;
+		}
+		list = ((unsigned int*) Index2Heap(list))[0];
+	}
+
+}
+
+static void DoubleCheckReuse()
 {
 	char file[200];
 	sprintf(file,"%s/missingLabel.txt",topic);
@@ -4863,8 +4911,11 @@ static void WriteConcepts(WORDP D, uint64 build)
 {
 	char* name = D->word;
 	if (*name != '~' || !(D->internalBits & build)) return; // not a topic or concept or not defined this build
-	RemoveInternalFlag(D,(BUILD0|BUILD1|BUILD2));
-		
+	RemoveInternalFlag(D,(BUILD0|BUILD1));
+	if (!stricmp(name, "~unit-name-length"))
+	{
+		int xx = 0;
+	}
 	// write out keywords 
 	FILE* out = NULL;
 	char filename[SMALL_WORD_SIZE];
@@ -5151,6 +5202,7 @@ static void EmptyVerify(char* name, uint64 junk)
 int ReadTopicFiles(char* name,unsigned int build,int spell)
 {
 	int resultcode = 0;
+	undefinedCallThreadList = 0;
 	isDescribe = false;
 	*botheader = 0;
 	myBot = 0;
@@ -5301,6 +5353,7 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	// verify errors across all files
 	DoubleCheckSetOrTopic();	//   prove all sets/topics he used were defined
 	DoubleCheckReuse();		// see if jump labels are defined
+	DoubleCheckFunctionDefinition();
 	if (*duplicateTopicName)  WARNSCRIPT((char*)"At least one duplicate topic name, i.e., %s, which may intended if bot restrictions differ.\r\n",duplicateTopicName)
 	WalkDictionary(ClearBeenHere,0);
 
@@ -5385,12 +5438,12 @@ int ReadTopicFiles(char* name,unsigned int build,int spell)
 	return resultcode;
 }
 
-char* CompileString(char* ptr) // incoming is:  ^"xxx"
+char* CompileString(char* ptr) // incoming is:  ^"xxx" or ^'xxxx'
 {
 	char tmp[MAX_WORD_SIZE * 2];
 	strcpy(tmp,ptr); // protect copy from multiple readcalls
 	size_t len = strlen(tmp);
-	if (tmp[len-1] != '"') BADSCRIPT((char*)"STRING-1 String not terminated with doublequote %s",tmp)
+	if (tmp[len-1] != '"' && tmp[len-1] != '\'') BADSCRIPT((char*)"STRING-1 String not terminated with doublequote %s",tmp)
 	tmp[len-1] = 0;	// remove trailing quote
 
 	// flip the FUNCTION marker inside the string

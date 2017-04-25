@@ -486,7 +486,7 @@ static FunctionResult InitCurl()
 	return NOPROBLEM_BIT;
 }
 
-char* UrlEncode(char* input)
+char* UrlEncodePiece(char* input)
 {
 	InitCurl();
 	CURL * curl = curl_easy_init();
@@ -505,12 +505,47 @@ char* UrlEncode(char* input)
 	return buffer;
 }
 
+static char* JSONUrlEncode(char* urlx, char* fixedUrl, CURL * curl)
+{
+	char* fixed = fixedUrl;
+	*fixed = 0;
+	char* at = urlx - 1;
+	char* start = urlx;
+	char c;
+	while ((c = *++at)) // url encode segments
+	{
+		if (c == ';' || c == '/' || c == '?' || c == ':' ||
+			c == '@' || c == '&' || c == '=' || c == '+' ||
+			c == '+' || c == '$' || c == ',') // reserved meaning
+		{
+			if (at[-1] == '\\') continue; // escaped, allow as is
+			if (at != start) // url encode segment
+			{
+				strncpy(fixed, start, at - start);
+				fixed[at - start] = 0;
+				char* coded = curl_easy_escape(curl, fixed, 0);
+				strcpy(fixed, coded);
+				curl_free(coded);
+				fixed += strlen(fixed);
+			}
+			*fixed++ = c;
+			*fixed = 0;
+			start = at + 1;
+		}
+	}
+	strncpy(fixed, start, at - start);
+	fixed[at - start] = 0;
+	char* coded = curl_easy_escape(curl, fixed, 0);
+	strcpy(fixed, coded);
+	curl_free(coded);
+	return fixedUrl;
+}
+
 // Open a URL using the given arguments and return the JSON object's returned by querying the given URL as a set of ChatScript facts.
 FunctionResult JSONOpenCode(char* buffer)
 {
 	int index = JSONArgs();
 	size_t len;
-	char* url = NULL;
 	curlBufferBase = NULL;
 	char* arg = NULL;
 	char* extraRequestHeadersRaw = NULL;
@@ -524,7 +559,7 @@ FunctionResult JSONOpenCode(char* buffer)
 	if (!stricmp(raw_kind, "POST"))  kind = 'P';
 	else if (!stricmp(raw_kind, "GET")) kind = 'G';
 	else if (!stricmp(raw_kind, "POSTU")) kind = 'P';
-	else if (!stricmp(raw_kind, "GETU")) kind = 'G'; 
+	else if (!stricmp(raw_kind, "GETU")) kind = 'G';
 	else if (!stricmp(raw_kind, "PUT"))  kind = 'U';
 	else if (!stricmp(raw_kind, "DELETE"))  kind = 'D';
 	else {
@@ -534,20 +569,20 @@ FunctionResult JSONOpenCode(char* buffer)
 		return FAILRULE_BIT;
 	}
 
-	url = ARGUMENT(index++);
+	char* urlx = ARGUMENT(index++);
 
 	// Now fix starting and ending quotes around url if there are any
 
-	if (*url == '"') ++url;
-	len = strlen(url);
-	if (url[len - 1] == '"') url[len - 1] = 0;
+	if (*urlx == '"') ++urlx;
+	len = strlen(urlx);
+	if (urlx[len - 1] == '"') urlx[len - 1] = 0;
 
 	// convert \" to " within params and remove any wrapper
 	arg = ARGUMENT(index++);
 	if (*arg == '"') ++arg;
 	len = strlen(arg);
 	if (arg[len - 1] == '"') arg[len - 1] = 0;
-	if (!stricmp(arg,(char*)"null")) *arg = 0; // empty string replaces null
+	if (!stricmp(arg, (char*)"null")) *arg = 0; // empty string replaces null
 	bool bIsExtraHeaders = false;
 
 	extraRequestHeadersRaw = ARGUMENT(index++);
@@ -573,28 +608,9 @@ FunctionResult JSONOpenCode(char* buffer)
 		}
 
 	} // if (strlen(extraRequestHeadersRaw) > 0)
-	
-	if (trace & TRACE_JSON)
-	{
-		Log(STDTRACELOG,(char*)"\r\n");
-		Log(STDTRACETABLOG,(char*)"Json method/url: %s %s\r\n",raw_kind, url);
-		if (bIsExtraHeaders) 
-		{
-			Log(STDTRACELOG,(char*)"\r\n");
-			Log(STDTRACETABLOG,(char*)"Json header: %s\r\n", extraRequestHeadersRaw);
-			Log(STDTRACETABLOG,(char*)"");
-		}
-		if (kind == 'P' || kind == 'U') 
-		{
-			Log(STDTRACELOG,(char*)"\r\n");
-			len = strlen(arg);
-			if (len < (size_t)(logsize - SAFE_BUFFER_MARGIN)) Log(STDTRACETABLOG,(char*)"Json  data %d bytes: %s\r\n ",len,arg);
-			else Log(STDTRACETABLOG,(char*)"Json  data %d bytes\r\n ",len);
-			Log(STDTRACETABLOG,(char*)"");
-		}
-	}
+
 	clock_t start_time = ElapsedMilliseconds();
-	
+
 	CURLcode res;
 	struct CurlBufferStruct output;
 	output.buffer = NULL;
@@ -604,10 +620,33 @@ FunctionResult JSONOpenCode(char* buffer)
 	CURL * curl = curl_easy_init();
 	if (!curl)
 	{
-		if (trace & TRACE_JSON) Log(STDTRACELOG,(char*)"Curl easy init failed");
+		if (trace & TRACE_JSON) Log(STDTRACELOG, (char*)"Curl easy init failed");
 		return FAILRULE_BIT;
 	}
 
+	// url encode as necessary
+	char* fixedUrl = AllocateBuffer();
+	JSONUrlEncode(urlx, fixedUrl, curl);
+
+	if (trace & TRACE_JSON)
+	{
+		Log(STDTRACELOG, (char*)"\r\n");
+		Log(STDTRACETABLOG, (char*)"Json method/url: %s %s\r\n", raw_kind, fixedUrl);
+		if (bIsExtraHeaders)
+		{
+			Log(STDTRACELOG, (char*)"\r\n");
+			Log(STDTRACETABLOG, (char*)"Json header: %s\r\n", extraRequestHeadersRaw);
+			Log(STDTRACETABLOG, (char*)"");
+		}
+		if (kind == 'P' || kind == 'U')
+		{
+			Log(STDTRACELOG, (char*)"\r\n");
+			len = strlen(arg);
+			if (len < (size_t)(logsize - SAFE_BUFFER_MARGIN)) Log(STDTRACETABLOG, (char*)"Json  data %d bytes: %s\r\n ", len, arg);
+			else Log(STDTRACETABLOG, (char*)"Json  data %d bytes\r\n ", len);
+			Log(STDTRACETABLOG, (char*)"");
+		}
+	}
 	// Add the necessary headers for the request.
 	struct curl_slist *header = NULL;
 
@@ -733,7 +772,7 @@ FunctionResult JSONOpenCode(char* buffer)
 	val = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
 	val = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CurlWriteMemoryCallback); // callback for memory
 	val = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&output); // store output here
-	val = curl_easy_setopt(curl, CURLOPT_URL, url);
+	val = curl_easy_setopt(curl, CURLOPT_URL, fixedUrl);
 	curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, my_trace);
 	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, timelimit); // 300 second timeout to connect (once connected no effect)
 	curl_easy_setopt(curl, CURLOPT_TIMEOUT, timelimit);
@@ -746,15 +785,12 @@ FunctionResult JSONOpenCode(char* buffer)
 	curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &http_response);
 	char code[MAX_WORD_SIZE];
 	sprintf(code,(char*)"%ld",http_response);
-
-	if (header)  curl_slist_free_all(header);
-	curl_easy_cleanup(curl);
 	if (curlBufferBase) CompleteBindStack();
 	if (trace & TRACE_JSON && res != CURLE_OK)
 	{
 		char word[MAX_WORD_SIZE * 10];
 		char* at = word;
-		sprintf(at,"Json method/url: %s %s -- ",raw_kind, url);
+		sprintf(at,"Json method/url: %s %s -- ",raw_kind, fixedUrl);
 		at += strlen(at);
 		if (bIsExtraHeaders) 
 		{
@@ -776,8 +812,14 @@ FunctionResult JSONOpenCode(char* buffer)
 	}
 	if (timing & TIME_JSON) {
 		int diff = ElapsedMilliseconds() - start_time;
-		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Json open time: %d ms for %s %s\r\n", diff,raw_kind,url);
+		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMETABLOG, (char*)"Json open time: %d ms for %s %s\r\n", diff,raw_kind, fixedUrl);
 	}
+
+	// cleanup
+	FreeBuffer();
+	if (header)  curl_slist_free_all(header);
+	curl_easy_cleanup(curl);
+
 	if (res != CURLE_OK)
 	{
 		if (curlBufferBase) ReleaseStack(curlBufferBase);

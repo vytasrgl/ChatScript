@@ -384,18 +384,18 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 
 	unsigned int varthread = userVariableThreadList;
 	bool traceseen = false;
+	char word[MAX_WORD_SIZE];
 
 	if (modifiedTrace) trace = modifiedTraceVal; // script set the value
 	while (varthread)
 	{
 		unsigned int* cell = (unsigned int*)Index2Heap(varthread);
-		varthread = cell[0];
 		WORDP D = Index2Word(cell[1]);
+		varthread = cell[0];
 		if (shared && !sharefile && !strnicmp(D->word,(char*)"$share_",7)) continue;
   		else if (shared && sharefile && strnicmp(D->word,(char*)"$share_",7)) continue;
 		else if ( D->word[1] !=  TRANSIENTVAR_PREFIX && (D->w.userValue || (D->internalBits & MACRO_TRACE))) // transients not dumped, nor are NULL values
 		{
-			char word[100];
 			char* val = D->w.userValue;
 			// track json structures referred to
 //			if (val[0] == 'j' && (val[1] == 'o' || val[1] == 'a') && val[2] == '-' && val[3] != 't')
@@ -421,6 +421,7 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled)
 				sprintf(ptr,(char*)"%s=`%s\r\n",D->word,SafeLine(val));
 			}
 			else sprintf(ptr,(char*)"%s=%s\r\n",D->word,SafeLine(val));
+			
 			ptr += strlen(ptr);
 			if (!compiled)
 			{
@@ -551,7 +552,6 @@ static char* GatherUserData(char* ptr,time_t curr,bool sharefile)
 //		D->internalBits ^= JSON_REFERENCE;
 //	}
 
-	trace = 0;
 	echo = false;
 	if (verifyUserFacts) CheckUserFacts();	// verify they are good for now
 	ptr = WriteUserFacts(ptr,sharefile,count);  // json safe
@@ -685,7 +685,7 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
 	}
 	else
 	{
-		if (trace & TRACE_USER) Log(STDTRACELOG,(char*)"loading user\r\n");
+		if (trace & TRACE_USER) Log(STDTRACELOG,(char*)"\r\nLoading user %s bot %s\r\n",loginID, bot);
 		if (!ReadUserTopics()) 
 		{
 			ReportBug((char*)"User data file TOPICS inconsistent\r\n");
@@ -742,6 +742,7 @@ void ReadUserData() // passed  buffer with file content (where feasible)
 		int diff = ElapsedMilliseconds() - start_time;
 		if (timing & TIME_ALWAYS || diff > 0) Log(STDTIMELOG, (char*)"Read user data time: %d ms\r\n", diff);
 	}
+	if (server && servertrace) trace = -1; // complete server trace
 }
 
 void KillShare()

@@ -2,7 +2,7 @@
 
 > Copyright Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
 
-> Revision 3/4/2017 cs7.3
+<br>Revision 4/24/2017 cs7.4
 
 # Command Line Parameters
 
@@ -306,7 +306,24 @@ Serverretry
 Allows `:retry` to work from a server - don't use this except for testing a single-person 
 on a server as it slows down the server.
 
+```
+servertrace
+```
+when present, forces all users to have tracing turned on. Traces go to the user logs.
 
+```
+erasename=myname
+```
+:reset, when called from running script, is unable to fully reset the system.
+Facts that have already been created are not destroyed and user variables that have been
+defined are not erased, only ones in the bot definition are changed back to their default
+settings.  The erasename parameter is used to perform a full reset prior to loading th
+user topic file. The incoming input is scanned for the text given, and if found the
+system bypasses loading the topic file and instead just initializes a fresh bot.
+The actual erasename seen in input will be converted to all blanks, so it will not disturb
+normal behavior, either in OOB input or user input.
+
+The default value for this is: `csuser_erase` which you can change to anything else you want.
 
 ## No such bot-specific - nosuchbotrestart=true
 

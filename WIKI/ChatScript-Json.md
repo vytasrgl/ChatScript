@@ -1,6 +1,6 @@
 # ChatScript JSON Manual
 © Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 4/8/2017 cs7.31
+<br>Revision 4/24/2017 cs7.4
 
 # Real World JSON
 
@@ -14,7 +14,7 @@ A JSON array is a list of JSON entities separated by commas and placed within `[
 Indices of an array start at 0, so the above has as values:
 [0] = A [1] = 2 [2] = an array of 2 values [3] = an empty array
 
-Note that arrays can hold values of different types. The JSON types are array, object, number, string
+Note that arrays can hold values of different types (since really everything internally is a text type). The JSON types are array, object, number, string
 (enclosed in doublequotes), and primitives (text without doublequotes that cannot contain any
 whitespace). Array values are ordered and always retain that order.
 A JSON object is a list of key-value pairs separated by commas and placed within {}, e.g.,
@@ -67,7 +67,7 @@ to create facts to represent the structure and to access pieces of it.
 }
 ```
 
-Note that JSON has no mechanism for sharing JSON subtrees. Hence anytime you create a json fact
+Note that JSON has no mechanism for sharing JSON subtrees. Hence anytime you create a JSON fact
 structure in CS, the facts will all be unique.
 
 ## JSONFLAGS - Optional 1st arg to some JSON routines
@@ -259,7 +259,7 @@ You may omit the leading . of a path and CS will by default assume it
 ^jsonpath("st. helen".data $tmp)
 ```
 
-## Direct access via JSON variables `$myvar.field`
+## Direct access via JSON variables `$myvar.field` and `$myvar[]
 
 If a variable holds a JSON object value, you can directly set and get from fields of that object
 using dotted notation. This can be a fixed static fieldname you give or a variable value:
@@ -283,6 +283,18 @@ $x = $$array[5]
 $x = $$array[$_tmp]
 $$obj.name[4] += 3
 ```
+
+```
+$x.foo[] = Bruce
+```
+If foo is currently undefined, the system will create a JSON array for you,
+with permanency that matches the JSON object of $x. You cannot do $x[]  and have this 
+happen because at the top level the system does not know what permanency to use.
+Once there is a JSON array in $x.foo, assignments with `foo[]` will add
+elements to the array. You cannot designate the index, it will be the next index
+in succession.
+
+
 
 The only restriction on arrays is that you cannot add a new array index value without using ^jsonarrayinsert
 as you are not allowed to create discontiguous indices.
@@ -530,6 +542,8 @@ If you call `^jsonopen(direct ...` then the result will not be facts, but the te
 back as the answer. Be wary of doing this if the result will be large (>30K?) since you will overflow your
 buffer without being checked.
 
+
+^JSONopen automatically url-encodes headers and urls
 
 ## JSON & Out-of-band output data
 

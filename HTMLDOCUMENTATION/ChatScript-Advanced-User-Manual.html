@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-advanced-users-manual">ChatScript Advanced User's Manual</h1>
-<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/8/2017 cs7.31 <br><br></p>
+<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com &gt; Revision 4/24/2017 cs7.4 <br><br></p>
 <ul>
 <li><a href="ChatScript-Advanced-User-Manual.html#review-overview-of-how-cs-works">Review</a></li>
 <li><a href="ChatScript-Advanced-User-Manual.html#advanced-concepts">Advanced Concepts</a></li>
@@ -477,7 +477,7 @@ if ($_response == %response) {...}</code></pre>
 $_response = %response
 ...
 if ($_response == %response) {...}</code></pre>
-<p>^flushoutput will commit pending output.</p>
+<p><code>^flushoutput</code> will commit pending output.</p>
 <h2 id="output-cannot-have-rules-in-it">Output cannot have rules in it</h2>
 <p>Output script cannot emed another rule inside it. Output is executed during the current volley whereas rules (like rejoinder rules) may be executed in a different volley. Therefore this is illegal:</p>
 <pre><code>u: GREETING (~emohello)
@@ -618,6 +618,7 @@ u: ( &lt;&lt; what time &gt;&gt; ) $test = ^mymac() join(ok $test)</code></pre>
 <blockquote>
 <p><strong>Note - calls to macros use &quot;pass by reference&quot;, so the actual value of the ^variable is the name of what was passed in, and it is generally (but not always) evaluated on use.</strong></p>
 </blockquote>
+<p>You may make references to outputmacros before they are defined, EXCEPT when the Function is directly or indirectly referenced from a table. Tables immediately execute as they are compiled, and you will get an error if a function it tries to use is not defined.</p>
 <h2 id="sharing-function-definitions">Sharing function definitions</h2>
 <p>ChatScript requires that a function be defined before use. When you use that function from multiple files, you may have trouble ordering the files for compilation if you merely name the folder in <code>filesxxx.txt</code> since you cannot guarantee compilation order unless you explicitly name the files. But you can also just put your functions in a top level file and then have your other files in folders, and name it and then them in your <code>filesxxx.txt</code> file.</p>
 <h2 id="save-restore-locals">Save-Restore locals</h2>
