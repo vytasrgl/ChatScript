@@ -1,13 +1,14 @@
-Version 7.4 4/24/2017
+# Version 7.4 4/24/2017
 1. $x.y[] = 1  autogenerates a json array
 2. $cs_fullfloat & 64bit float & e-notation means the system gives you full precision, not 2 digit
-3. JSONOPen now performs urlencoding automatically
+3. JSONOpen now performs urlencoding automatically
 4. servertrace command line param - forces all users to trace
 5. erasename command parameter - full user reset if found in input
 6. compile outputmacros in any order (but must already be defined if used by a table)
-7. ^pos(IsModelNumber x) and ^isInteger and ^isFloat# Version 7.31 
+7. ^pos(IsModelNumber x) and ^isInteger and ^isFloat
 
- 4/8/2017 --- NEED TO RECOMPILE YOUR BOT! format has changed in TOPIC folder
+# Version 7.31 4/8/2017 
+**--- NEED TO RECOMPILE YOUR BOT! format has changed in TOPIC folder**
 1. ^wordAtIndex({original, canonical} n) retrieves word at index either original or canonical
 2. ^cs_reboot and ^reboot
 3. $x.y = 1  autogenerates
