@@ -1,7 +1,6 @@
 # ChatScript Advanced User's Manual
-© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
-> Revision 4/24/2017 cs7.4
-<br><br>
+© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com<br>
+Revision 4/24/2017 cs7.4<br>
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -23,25 +22,32 @@
 
 # Review: Overview of how CS works
 
-CS is a scripting language for interactivity. Each time CS communicates with the user,
-this is called a volley. Volleys are always asynchronous. In CS, each volley actually
-consists of accepting an incoming input from an arbitrary user, loading data about the
-user and their state, computing a response, writing out a new state, and sending a
-response to the user.
+CS is a scripting language for interactivity. 
+Each time CS communicates with the user, this is called a _volley_. 
+
+**Volleys are always asynchronous**. 
+In CS, each volley actually consists of accepting an incoming input from an arbitrary user, 
+loading data about the user and their state, computing a response, writing out a new state, 
+and sending a response to the user.
 
 
 ### Topics and Rules
 
-The fundamental code mechanism of ChatScript is the topic, which is
-a collection of rules. Rules have pattern and code components. Within a topic each rule is
-considered in turn by matching its pattern component. Patterns can access global data and
-the user's input, can perform comparisons, and can memorize sections of input data. If
-the pattern fails, the next rule in the topic is considered. If a pattern succeeds, the rule's
-code section is then executed to completion (barring error conditions).
+The fundamental code mechanism of ChatScript is the topic, which is a collection of rules. 
 
-A rule's code can be a mixture of CS script to execute and words to say to the user. 
-Code can invoke other topics or directly request execution of a specific rule. When the rule
-code completes, if user output has been generated, then by default no more rules are
+Rules have pattern and code components. 
+
+Within a topic each rule is considered in turn by matching its pattern component. 
+Patterns can access global data and the user's input, can perform comparisons, 
+and can memorize sections of input data. 
+
+If the pattern fails, the next rule in the topic is considered. 
+If a pattern succeeds, the rule's code section is then executed to completion (barring error conditions).
+
+A rule's code can be a mixture of CS script to execute and words to say to the user.
+
+Code can invoke other topics or directly request execution of a specific rule. 
+When the rule code completes, if user output has been generated, then by default no more rules are
 initiated anywhere in the system. Rules currently in progress complete their code. 
 If no output was generated, the topic continues onto the next rule, trying to match its pattern.
 When a topic completes without generating output, it merely returns to its caller code, 
@@ -50,19 +56,22 @@ which continues executing normally.
 
 ### Rejoinders 
 
-So how is it that CS handles returning input from the user? A rule that
-generates user output may have rules called rejoinders that immediately follow the rule.
+So how is it that CS handles returning input from the user? 
+A rule that generates user output may have rules called rejoinders that immediately follow the rule.
+
 Rejoinders are intended to analyze the specific next input from the user to see if certain
 expectations are met and decide what to do. If, for example, we output a yes or no
 question, one rejoinder rule might look for a yes answer, while another rejoinder hunts
 for a no answer. 
 
-When CS outputs text to the user, if the rule has rejoinders, CS notes the
-rule. When new user input arrives, CS will try executing the rejoinder rules immediately,
+When CS outputs text to the user, if the rule has rejoinders, CS notes the rule. 
+When new user input arrives, CS will try executing the rejoinder rules immediately,
 to see if they match the user's input. All previous stack-based functions are gone, all
-previous stack-based calls from other topics are gone. CS is just in the here and now of
-this topic and the rejoinders of that rule. If CS finds a matching rejoinder rule, it
-continues in this topic. If it doesn't, CS reverts to globally using whatever the control
+previous stack-based calls from other topics are gone. 
+
+CS is just in the here and now of this topic and the rejoinders of that rule. 
+If CS finds a matching rejoinder rule, it continues in this topic. 
+If it doesn't, CS reverts to globally using whatever the control
 script dictates it try for any user input.
 
 
@@ -73,24 +82,27 @@ variables whose names always start with `$`, e.g., `$tmp`. Global means they are
 everywhere. You don't have to pre-declare them. You can directly use one and you can
 just summon one into existence by assigning into it:
 
-```
-$myvariable = 1 + $yourvariable
-```
+    $myvariable = 1 + $yourvariable
+
 
 `$myvariable` is created if it doesn't already exist. And if `$yourvariable` hasn't been
-created, it will be interpreted as 0 or null depending on context (here it is 0).
+created, it will be interpreted as 0 or `null` depending on context (here it is 0).
 
-User variables always hold text strings as values. Numbers are represented as digit text
-strings, which are converted into binary formats internally as needed. Text comes in
-three flavors. First are simple words (arbitrary contiguous characters with no spaces).
+User variables always hold text strings as values. 
+
+Numbers are represented as digit text strings, 
+which are converted into binary formats internally as needed. 
+
+Text comes in three flavors. 
+
+First are simple words (arbitrary contiguous characters with no spaces).
 
 Second are passive strings like _meat-loving plants_. 
 
 Third are active strings (which you haven't read about yet) like:
 
-```
-^"I like $value"
-``` 
+    ^"I like $value"
+
 
 Active strings involve references to functions or data inside them and execute when used to convert 
 their results into a passive string with appropriate value substitutions. 
@@ -102,31 +114,28 @@ the active string implicitly invokes the equivalent of sprintf.
 
 User variables also come in permanent and transient forms. 
 
-- **Permanent variables**
-  start with a single `$` and are preserved across user interactions  (are saved and restored from disk). You can see and alter their value from anywhere.
-
-- **Transient variables**
-  start with `$$` and completely disappear when a user interaction happens (are not saved to disk). You can see and alter their value from anywhere.
-
-- **Local variables** 
-  (described later) start with `$_` and completely disappear when a user interaction happens (are not saved to disk). You can see and alter their value only within the topic or outputmacro they are used.
+|Variable scope| syntax example   | description
+|--------------|------------------|-----------------------------------------
+| permanent    | `$permvar`       | start with a single `$` and are preserved across user interactions  (are saved and restored from disk). You can see and alter their value from anywhere.
+| transient    | `$$transientvar` | start with `$$` and completely disappear when a user interaction happens (are not saved to disk). You can see and alter their value from anywhere.
+| local        | `$_localvar`     |  (described later) start with `$_` and completely disappear when a user interaction happens (are not saved to disk). You can see and alter their value only within the topic or outputmacro they are used.
 
 
 ### Facts 
 
-ChatScript supports structured triples of data called facts, which can be found by
-querying for them. The 3 fields of a fact are either text strings or fact references to other
-facts. So you might have a fact like 
-```
-(I eat "meat-loving plants")
-``` 
+ChatScript supports structured triples of data called facts, which can be found by querying for them. 
+The 3 fields of a fact are either text strings or fact references to other facts. 
+So you might have a fact like 
+
+    (I eat "meat-loving plants")
 
 and you could query CS to find what eats meat-loving plants or what do I eat. 
 Or even more generally what do I ingest (using relationship properties of words). 
+
 JSON data returned from website calls are all represented using facts 
 so you can query them to find the bits of data you seek.
 
-Like user variables, facts can be created as transient or permanent. 
+Like user variables, facts can be created as _transient_ or _permanent_. 
 
 Permanent facts are saved across user interactions, transient ones disappear automatically. 
 When you want to point a user variable at a fact, 
@@ -135,17 +144,21 @@ the index of the fact is stored as a text number on the variable.
 ### Output 
 
 Some of the text in rule output code is intended for the user. There is pending
-output and committed output. Pending output consists of whatever isolated words that are
-not part of executing code exist in the code. They accumulate in a pending output stream,
-and when the rule finishes successfully, the output is committed. If the rule fails, the
-pending output is canceled. You can also make function calls that directly commit output
+output and committed output. 
+
+Pending output consists of whatever isolated words that are not part of executing code exist in the code. 
+They accumulate in a pending output stream, and when the rule finishes successfully, 
+the output is committed. If the rule fails, the pending output is canceled. 
+
+You can also make function calls that directly commit output
 regardless of whether the rule subsequently fails.
 
 
 ### Marking
 
-When CS receives user input, it tokenizes it into sentences and analyzes each
-sentence in turn. It "marks" each word of the sentence with what concepts it belongs to.
+When CS receives user input, it tokenizes it into sentences and analyzes each sentence in turn. 
+It "marks" each word of the sentence with what concepts it belongs to.
+
 Concepts always begin with `~`. 
 
 Usually concepts are explicit enumerations of words, like `~animals` is a list of all known animals 
@@ -153,168 +166,165 @@ or `~ingest` is a list of all verbs that imply ingestion.
 
 Sometimes concepts are implicit collections handled directly by the engine, like `~number`
 is the implied set of all numbers (we wouldn't want to actually enumerate them all) or
-`~noun` is the set of all nouns or `~mainsubject` is the current subject of the sentence. After
-this marking analysis, patterns can efficiently find whether or not some particular concept
+`~noun` is the set of all nouns or `~mainsubject` is the current subject of the sentence. 
+
+After this marking analysis, patterns can efficiently find whether or not some particular concept
 is matched at a particular position in the sentence. 
 
-CS actually analyzes two streams of input, the original input of the user and a canonical form of it. 
+CS actually analyzes two streams of input, the _original_ input of the user and a _canonical_ form of it. 
 So the system marks an input sentence of _my cat eats mice_ and also marks the parallel sentence _I cat eat
-mouse_, so patterns can be written to catch general meanings of words as well as specific
-ones.
+mouse_, so patterns can be written to catch general meanings of words as well as specific ones.
 
 
 ### Memorizing 
 
-Rule patterns can dictate memorizing part of the input that matches a
-pattern element. The memorized data goes onto "match variables", which are numbered
-`_0`, `_1`, … in the order in which the data is captured. CS memorizes both the original input
-and the canonical form of it. The pattern can use match variables in comparisons and the
-output can also access the data captured from the input.
+Rule patterns can dictate memorizing part of the input that matches a pattern element. 
+The memorized data goes onto "match variables", which are numbered `_0`, `_1`, ... 
+in the order in which the data is captured. 
 
-Things you don't know yet...
+CS memorizes both the original input and the canonical form of it. 
+The pattern can use match variables in comparisons and the
+output can also access the data captured from the input.
 
 
 ### Control flow & errors
 
 CS scripts execute everything as a call and return (no GOTO).
 
-The return values are the current pending output stream and a code that indicates a
-control result. That result in part affects how additional rules in the calling topics or
-functions execute, in that you can make a rule return a failure or success code that
+The return values are the current pending output stream and a code that indicates a control result. 
+That result in part affects how additional rules in the calling topics or functions execute, 
+in that you can make a rule return a failure or success code that
 propagates and affects the current function, or rule, or topic, or sentence, or input. 
 
 So a failure or success down deep can, if desired, end all further script execution by sending
-the right code back up the calling sequence. When code returns the "noproblem" value,
-all callers will complete what they are doing, but if user output was created will likely not
-initiate any new rules.
+the right code back up the calling sequence. 
 
+When code returns the "noproblem" value, all callers will complete what they are doing, 
+but if user output was created will likely not initiate any new rules.
 
 ### Functions
 
 Topics are not functions and do not take arguments. CS provides system
-functions and you can write user functions in ChatScript. Function names always start
-with `^`, like `^match(argument1 argument2)` and **no commas are used to separate the
-arguments** (since commas themselves might be legal arguments). 
+functions and you can write user functions in ChatScript. 
+
+Function names always start with `^`, like `^match(argument1 argument2)` 
+and **no commas are used to separate the arguments** 
+(since commas themselves might be legal arguments). 
 
 These are classic functions in that they have arguments and a collection of code to execute. 
 Their code can generate output and/or make calls to other functions, 
-including invoking topics and rules.
-Functions are a convenient way to abstract and share code. 
+including invoking topics and rules. Functions are a convenient way to abstract and share code. 
 
 ### Function variables
 
 ChatScript also has function argument variables, whose names
 always start with `^` and have local (lexical) visibility. 
 
-Here is a sample user function
-header:
-```
-patternmacro: ^myfunction( ^argument1 ^argument2)
-```
+#### Call by reference
+Here is a sample user function header:
 
-For outputmacros, 
+    patternmacro: ^myfunction(^argument1 ^argument2)
 
-```
-outputmacro: ^myfunction( ^argument1 ^argument2)
-    ^argument1 += 1
-```
+For outputmacros:
+
+    outputmacro: ^myfunction(^argument1 ^argument2)
+        ^argument1 += 1
 
 An alternate format allows you to put the output code within {}, which is more nicely visualized by some editors.
-```
-outputmacro: ^myfunction( ^argument1 ^argument2)
-{
-    ^argument1 += 1
-}
-```
 
-Whenever you see a function variable, you
-can imagine it is as though the script had its argument immediately substituted in. This is a call by
-reference. So if the script call
-was this
-```
-    ^myfunction( $myvar 1)
-```
+    outputmacro: ^myfunction(^argument1 ^argument2)
+    {
+    ^argument1 += 1
+    }
+
+Whenever you see a function variable, 
+you can imagine it is as though the script had its argument immediately substituted in. 
+This is a call by reference. So if the script call  was this
+
+    ^myfunction($myvar 1)
+
 then the effect of `^argument1 += 1` is as though `$myvar += 1` were done and `$myvar` would now be one higher. 
 
 Of course, had you tried to do `^argument2 += 1` then that would be the illegal `1 += 1` and the assignment would fail.
 
-```
-outputmacro: ^myfunction( $_argument1 $_argument2)
-    $_argument1 += 1
-```
 
-Use of `$_` variables in the function definition is a call by value. All `$_` variables are purely local and cannot
-be seen outside of the function (or topic) they are used in. You can also mix call by reference and call by
-value arguments.
+#### Call by value
+
+    outputmacro: ^myfunction($_argument1 $_argument2)
+        $_argument1 += 1
+
+Use of `$_` variables in the function definition is a call by value. 
+
+All `$_` variables are purely local and cannot be seen outside of the function (or topic) they are used in. 
+You can also mix call by reference and call by value arguments.
 
 # ADVANCED CONCEPTS
 
 Concepts can have part of speech information attached to them (using `dictionarysystem.h` values). Eg.
-```
-concept: ~mynouns NOUN NOUN_SINGULAR (boxdead foxtrot)
-concept: ~myadjectives ADJECTIVE ADJECTIVE_BASIC (moony dizcious)
-```
+
+    concept: ~mynouns NOUN NOUN_SINGULAR (boxdead foxtrot)
+    concept: ~myadjectives ADJECTIVE ADJECTIVE_BASIC (moony dizcious)
 
 Since the script compile issues warning messages on words it doesn't recognize, in case
 you misspelled them, you can also add `IGNORESPELLING` as a flag on the concept:
-```
-concept: ~unknownwords IGNORESPELLING (asl daghh)
-```
+
+    concept: ~unknownwords IGNORESPELLING (asl daghh)
 
 and you can combine pos declarations and ignorespelling. This is applied recursively to
-any concepts that are members of this concept.
+any concepts that are members of this concept. That may be a bit excessive. 
 
-That may be a bit excessive. Rather than assigning parts of speech you can recursively
-limit a concept's words to a part of speech using `ONLY_NOUNS`, `ONLY_VERBS`,
-`ONLY_ADJECTIVES`, or `ONLY_ADVERBS`.
-```
-Concept: ~verbs ONLY_VERBS (sit sleep)
-```
+Rather than assigning parts of speech you can recursively limit a concept's words 
+to a part of speech using `ONLY_NOUNS`, `ONLY_VERBS`, `ONLY_ADJECTIVES`, or `ONLY_ADVERBS`.
+
+    Concept: ~verbs ONLY_VERBS (sit sleep)
 
 This will not react to noun meanings of sleep. The current ontology files for verbs,
-adverbs, and adjectives all have the appropriate `ONLY` marked on them. When you don't
-want a member concept marked as a consequence, you can use `ONLY_NONE` to block
-propogate. Thus:
-```
-concept: ~verbs ONLY_VERBS (~active_verbs sit)
-concept: ~active_verbs ONLY_NONE (sleep)
-```
+adverbs, and adjectives all have the appropriate `ONLY` marked on them. 
+
+When you don't want a member concept marked as a consequence, 
+you can use `ONLY_NONE` to block propogate. Thus:
+
+    concept: ~verbs ONLY_VERBS (~active_verbs sit)
+    concept: ~active_verbs ONLY_NONE (sleep)
+
 will prevent sleep from being required to be a verb form. Note that verb forms do not
 include verbs used as nouns (ie gerunds).
 
 Normally if you declare a concept a second time, the system considers that an error. If
 you add the marker `MORE` to its definition, it will allow you to augment an existing list.
-```
-concept: ~city MORE (Tokyo)
-```
+
+    concept: ~city MORE (Tokyo)
+
 Normally concepts (and topics) discard repeated keywords. For concepts, you can force it
 to allow repeats using `DUPLICATE`
-```
-concept: ~mapword DUPLICATE (year month day year month day) # the concept
-has 6 members
-```
-Concepts can be built from other concepts that do not have specific words.
-```
-Concept: ~myconcept (!thisword ~otherconcept)
-```
 
-Note: the system has two kinds of concepts. Enumerated concepts are ones formed from an explicit list of members. Stuff in definitions of `concept: ~xxx()` are that. 
-There are also internal concepts marked by the system. These include part of speech of a word (requires using the pos-tagger to decide from the input what part of speech it was of possibly several), grammatical roles, words from infinite sets like `~number` and `~placenumber` and `~weburl`, and so forth.  
+    concept: ~mapword DUPLICATE (year month day year month day) # the concept has 6 members
+
+Concepts can be built from other concepts that do not have specific words.
+
+    Concept: ~myconcept (!thisword ~otherconcept)
+
+Note: the system has two kinds of concepts. 
+
+* _Enumerated_ concepts are ones formed from an explicit list of members. Stuff in definitions of `concept: ~xxx()` are that. 
+
+* There are also _internal_ concepts marked by the system. These include part of speech of a word (requires using the pos-tagger to decide from the input what part of speech it was of possibly several), grammatical roles, words from infinite sets like `~number` and `~placenumber` and `~weburl`, and so forth.  
 
 In a pattern of some kind, if you are referencing a sentence location using a match variable, you can match both kinds of concepts. But if you are not tied to a location in  a sentence, you can't match internally computed ones. So something like
-```
-if (pattern 23?~number)
-```
+
+    if ( pattern 23?~number )
+
 will fail. Even
-```
-if (pattern practical?~adjective)
-```
+
+    if ( pattern practical?~adjective )
+
 will fail given that deciding practical is an adjective (it could also be a noun) hasn't been performed by pos-tagging.
 
 All internal concepts are members of the concept `~internal_concepts`.
 
-# ADVANCED TOPICS
 
+
+# ADVANCED TOPICS
 
 There are several things to know about advanced topics.
 
@@ -332,17 +342,16 @@ u: ( love ) Glad to hear it
 
 u: ( dog ) I hate dogs
 ```
-and given _I love dogs_, the system will set $userloves and $animal and output glad to
-hear it.
+and given _I love dogs_, the system will set $userloves and $animal and output _glad to hear it_.
 
 
 ## Topic Control Flags
 
 The first are topic flags, that control a topic's overall behavior. These are placed between
-the topic name and the ( keywords list). You may have multiple flags. E.g.
-```
-topic: ~rust keep random [rust iron oxide]
-```
+the topic name and the (keywords list). You may have multiple flags. E.g.
+
+    topic: ~rust keep random [rust iron oxide]
+
 The flags and their meanings are:
 
 |flag              |  description 
@@ -383,9 +392,9 @@ marked keep (but gambits still will).
 
 Responders that generate output erase themselves. Responders that cause others to
 generate output will not normally erase themselves (unless...):
-```
-u: (*) respond(~reactor)
-```
+
+    u: ( * ) respond(~reactor)
+
 If the above rule causes output to be generated, this rule won't erase itself, the rule
 invoked from the `~reactor` topic that actually generated the output will erase itself. But, if
 the rule generating the output is marked keep, then since someone has to pay the price for
@@ -410,8 +419,7 @@ script.
 The second thing to know about topics is what makes a topic pending. Control flow
 passes through various topics, some of which become pending, meaning one wants to
 continue in those topics when talking to the user. Topics that can never be pending are:
-system topics, blocked topics (you can block a topic so it won't execute), and nostay
-topics.
+system topics, blocked topics (you can block a topic so it won't execute), and nostay topics.
 
 What makes a remaining topic pending is one of two things. Either the system is
 currently executing rules in the topic or the system previously generated a user response
@@ -419,16 +427,20 @@ from the topic. When the system leaves a topic that didn't say anything to the u
 no longer pending. But once a topic has said something, the system expects to continue in
 that topic or resume that topic.
 
-The system has an ordered list of pending topics. The order is: 1st- being within that topic
-executing rules now, 2nd- the most recently added topic (or revived topic) is the most
-pending.. You can get the name of the current most pending topic` (%topic)`, add pending
+The system has an ordered list of pending topics. The order is: 
+
+* 1st- being within that topic executing rules now, 
+* 2nd- the most recently added topic (or revived topic) is the most pending. 
+
+You can get the name of the current most pending topic` (%topic)`, add pending
 topics yourself `(^addtopic())`, and remove a topic off the list `(^poptopic())`.
 
 
 ## Random Gambit
 
 The third thing about topics is that they introduce another type, the random gambit, `r:`.
-The topic gambit t: executes in sequence forming in effect one big story for the duration
+
+The topic gambit `t:` executes in sequence forming in effect one big story for the duration
 of the topic. You can force them to be dished randomly by setting the random flag on the
 topic, but that will also randomize the responders. And sometimes what you want is
 semirandomness in gambits. 
@@ -473,6 +485,7 @@ how the user will respond.
 
 Unlike responders and gambits, the engine will keep trying rejoinders below a rule 
 until the pattern of one matches and the output doesn't fail. 
+
 Not failing does not require that it generate user output. Merely that it doesn't return a fail code. 
 Whereas responders and gambits are tried until user output is generated 
 (or you run out of them in a topic).
@@ -509,31 +522,34 @@ You cannot make a concept out with a member whose string includes starting or tr
 blanks, like " X ". Such a word could never match as a pattern, since spaces are skipped
 over. But you can make it respond to idiomatic phrases and multiple words. Just put them
 in quotes. E.g. 
-```
-concept: ~remove ( "take away" remove )
-```
+
+    concept: ~remove ( "take away" remove )
 
 Normally in patterns you can write
-```
-?: ( do you take away cheese)
-```
 
-and the system will match sentences with those words in order. In WordNet, some words
-are actually composite words like : _TV_show_. When you do `:prepare` on what is your
-favorite TV show you will discover that the engine has merged _TV_show_ into one
-composite word. The system has no trouble matching inputs where the words are split
-apart
-```
-?: (what is your favorite TV show )
-```
+    ?: ( do you take away cheese )
+
+and the system will match sentences with those words in order. 
+
+In WordNet, some words are actually composite words like : _TV_show_. 
+When you do `:prepare` on _what is your favorite TV show_ 
+you will discover that the engine has merged _TV_show_ into one composite word. 
+The system has no trouble matching inputs where the words are split apart
+
+    ?: ( what is your favorite TV show )
 
 But if you tried a word memorize like
-```
-?: (what is your favorite *1 *1)
-```
+
+    ?: ( what is your favorite *1 *1 )
+
 that would fail because the first `*1` memorizes _TV_show_ and there is therefore no second
-word to memorize. Likewise when you write `concept: ~viewing ("TV show")` the
-system can match that concept readily also. 
+word to memorize. 
+
+Likewise when you write 
+
+    concept: ~viewing ("TV show")` 
+    
+the system can match that concept readily also. 
 In fact, whenever you write the quoted keyword phrase, 
 if all its words are canonical, you can match canonical and noncanonincal forms. 
 _"TV show"_ matchs _TV shows_ as well as _TV show_.
@@ -541,11 +557,10 @@ _"TV show"_ matchs _TV shows_ as well as _TV show_.
 
 ## Dictionary Keyword sets
 
-In ChatScript, WordNet ontologies are invoked by naming the word, a ~, and the index of
+In ChatScript, WordNet ontologies are invoked by naming the word, a `~`, and the index of
 the meaning you want.
-```
-concept: ~buildings [ shelter~1 living_accomodations~1 building~3 ]
-```
+
+    concept: ~buildings [ shelter~1 living_accomodations~1 building~3 ]
 
 The concept `~buildings` represents 760 general and specific building words found in the
 WordNet dictionary – any word which is a child of: definition 1 of shelter, definition 1 of
@@ -557,47 +572,51 @@ This is described under `:up` in Word Commands later.
 `Building~3` and `building~3n` are equivalent. 
 
 The first is what you might say to refer to the 3rd meaning of building. 
-Internally `building~3n` denotes the 3rd meaning and its a noun meaning. 
+Internally `building~3n` denotes the 3rd meaning and its a _noun_ meaning. 
 
 You may see that in printouts from Chatscript. 
-If you write 3n yourself, the system will strip off the n marker as superfluous.
+If you write 3n yourself, the system will strip off the `n` marker as superfluous.
 
-Similarly you can invoke parts of speech classes on words. By default you get all of
-them. If you write: 
-```
-concept: ~beings [snake mother]
-```
-then a sentence like _I like mothering my baby_ would trigger this concept, as would He
-snaked his way through the grass. But the engine has a dictionary and a part-of-speech
+Similarly you can invoke parts of speech classes on words. 
+By default you get all of them. If you write: 
+
+    concept: ~beings [snake mother]
+
+then a sentence like _I like mothering my baby_ would trigger this concept, as would _He
+snaked his way through the grass_. But the engine has a dictionary and a part-of-speech
 tagger, so it often knows what part of speech a word in the sentence is. 
 
 You can use that to help prevent false matches to concepts by adding 
 `~n` `~v` `~a` or `~b` (adverb) after a word.
-```
-concept: ~beings [snake~n mother~n]
-```
-If the system isn't sure something is only a noun, it would let the verb match still. 
-Thus a user single-word reply of snakes would be considered both noun and verb.
 
-The notation run~46 exists to represent a meaning. There is mild inherent danger that I
-might kill off some word meaning that is problematic (eg if `run~23` turned out mark the
-`~curses` set and I didn't want the resulting confusion), said kill off might strand your
-meaning by renumbering into either non-existence (in which case the script compiler will
-warn you) or into a different pos set (because your meaning was on the boundary of
-meanings of a different pos type). 
+    concept: ~beings [snake~n mother~n]
+    
+If the system isn't sure something is only a noun, it would let the verb match still. 
+Thus a user single-word reply of snakes would be considered both _noun_ and _verb_.
+
+The notation `run~46` exists to represent a meaning. 
+
+There is mild inherent danger that I might kill off some word meaning that is problematic 
+(eg if `run~23` turned out mark the `~curses` set and I didn't want the resulting confusion), 
+said kill off might strand your meaning by renumbering into either non-existence 
+(in which case the script compiler will warn you) or into a different pos set 
+(because your meaning was on the boundary of meanings of a different pos type). 
 
 Use of the specific meaning is handy in defining concepts when the meaning is a noun, 
 because Wordnet has a good noun ontology. 
+
 Use of the specific meaning of other parts of speech is more questionable, as Wordnet does not
 have much ontology for them.
 
-The broader scope meaning restriction by part-of-speech (eg `run~v`) has much more
-utility. It has its risks in that it depends on the parser getting it right (as you have seen),
+The broader scope meaning restriction by part-of-speech (eg `run~v`) has much more utility. 
+It has its risks in that it depends on the parser getting it right (as you have seen), 
 which over time will get better and better. 
 
-In MOST cases, you are better off with the full fledged unadorned word, which is parse-independent. 
+In MOST cases, you are better off with the full fledged unadorned word, which is parse-independent.
+
 This is particularly true when you are pattern matching adjacent words and so context is firm. 
 < run `~app` is a pretty clean context which does not need pos-certification. 
+
 The topic on `~drugs` would want in its keyword list `clean~a` to allow 
 _I've been clean for months_ to target it, but not _I clean my house_.
 
@@ -614,13 +633,17 @@ behavior on the pattern side is unpredictable.
 
 ## Macros
 
-Just as you can use sets to "share" data across rules, you can also write macros to share
-code. A `patternmacro` is a top-level declaration that declares a name, arguments that can
+Just as you can use sets to "share" data across rules, you can also write macros to share code. 
+
+### Pattern macros
+
+A `patternmacro` is a top-level declaration that declares a name, arguments that can
 be passed, and a set of script to be executed "as though the script code were in place of
 the original call". 
 
 Macro names can be ordinary names or have a `^` in front of them. 
 The arguments must always begin with `^`. 
+
 The definition ends with the start of a new top-level declaration or end of file. E.g.
 ```
 patternmacro: ^ISHAIRCOLOR(^who)
@@ -630,7 +653,7 @@ patternmacro: ^ISHAIRCOLOR(^who)
         ( << what ^who hair color >> )
     ]
 
-?: (^ISHAIRCOLOR(I)) How would I know your hair color?
+?: ( ^ISHAIRCOLOR(I) ) How would I know your hair color?
 ```
 
 The above patternmacro takes one argument (who we are talking about). After checking
@@ -649,9 +672,8 @@ otherwise.
 Whereas most programming language separate their arguments with commas because
 they are reserved tokens in their language, in ChatScript a comma is a normal word. So
 you separate arguments to functions just with spaces.
-```
-?: ( ^FiveArgFunction( 1 3 my , word))
-```
+
+    ?: ( ^FiveArgFunction(1 3 my , word) )
 
 When a patternmacro takes a single argument and you want to pass in several, you can
 wrap them in parens to make them a single argument. Or sometimes brackets. E.g.,
@@ -669,80 +691,79 @@ Quoted strings to output macros are treated differently and left in string form 
 You can declare a patternmacro to accept a variable number of arguments. You define the
 macro with the maximum and then put "variable" before the argument list. All missing
 arguments will be set to null on the call.
-```
-patternmacro: ^myfn variable (^arg1 ^arg2 ^arg3 ^arg4)
-```
+
+    patternmacro: ^myfn variable (^arg1 ^arg2 ^arg3 ^arg4)
+
+### Dual macros
+
 You can also declare something dualmacro: which means it can be used in both pattern
 and output contexts.
 
 Patternmacro cannot be passed a factset name. These are not legal calls:
-```
-^mymacro(@0)
-^mymacro(@0subject)
-```
+
+    ^mymacro(@0)
+    ^mymacro(@0subject)
+
 Do not write code in a pattern macro as though it is an output code. You can't do
-```
-if (…) {}
-```
+
+    if (...) {}
+
 Use patterns, not output script.
 
 
 ## Literal Next `\`
 
-If you need to test a character that is normally reserved, like `(` or `[`, you can put a
-backslash in front of it.
-```
-s: ( \( * \) ) Why are you saying that aside?
-```
+If you need to test a character that is normally reserved, like `(` or `[`, 
+you can put a backslash in front of it.
+
+    s: ( \( * \) ) Why are you saying that aside?
 
 This also works with entire tokens like:
-```
-u: ( \test=fort )
-```
+
+    u: ( \test=fort )
 
 Normally the above without `\` would be considered a comparison. But the `\` at the start of
 it says treat `=` as just an ordinary part of the token. You can even put `_` in front of it:
-```
-u: (_\test=fort)
-```
+
+    u: ( _\test=fort )
+    
 Note that `\` does not block a word with an `*` in it from performing wildcard spelling.
 
 
 ## Question and exclamation - `?` `!`
 
-Normally you already know that an input was a question because you used the rule
-type `?:` . But rejoinders do not have rule types, so if you want to know if something was a
-question or not, you need to use the `?` keyword. It doesn't change the match position
+Normally you already know that an input was a question because you used the rule type `?:` . 
+
+But rejoinders do not have rule types, so if you want to know if something was a question or not, 
+you need to use the `?` keyword. It doesn't change the match position
 ```
 t: Do you like germs?
-    a: (?) Why are you asking a question instead of answering me?
-    a: (!?) I appreciate your statement.
+    a: ( ? ) Why are you asking a question instead of answering me?
+    a: ( !? ) I appreciate your statement.
 ```
 
 If you want to know if an exclamation ended his sentence, just backslash a `!` so it won't
 be treated as a not request. This doesn't change the match position.
-```
-s: (I like \!) Why so much excitement
-```
+
+    s: ( I like \! ) Why so much excitement
+
 
 ## More comparison tests - `&` `?`
 
 You can use the logical and bit-relation to test numbers. Any non-zero value passes.
-```
-s: ( _~number _0&1) Your number is odd.
-```
+
+    s: ( _~number _0&1 ) Your number is odd.
 
 `?` can be used in two ways. As a comparison operator, it allows you to see if the item on
 the left side is a member of a set on the right. E.g.
-```
-u: (_~propername?~bands)
-```
+
+    u: ( _~propername?~bands )
 
 As a standalone, it allows you to ask if a wildcard or variable is in the sentence. E.g.
-```
-u: ( _1? )
-u: ( $bot? )
-```
+
+    u: ( _1? )
+    u: ( $bot? )
+
 Note that when `_1` is a normal word, that is simple for CS to handle. 
 If `_1` is a phrase, then generally CS cannot match it. 
 This is because for phrases, CS needs to know in advance that a phrase can be matched. 
@@ -759,9 +780,9 @@ the phrase and so `_1?` will not work for it.
 
 You can name a constant from that file as the right hand side of a comparison test by
 prefixing its name with `#`. E.g.,
-```
-s: ( _~number _0=#NOUN)
-```
+
+    s: ( _~number _0=#NOUN )
+
 Such constants can be done anywhere, not just in a pattern.
 
 
@@ -774,20 +795,19 @@ it is not necessarily a topic that was in use recently.
 
 You can ask if the system is currently in a topic (meaning was there last volley) via `~`. 
 if the topic is currently on the pending list, then the system will match the `~`. E.g.,
-```
-u: ( chocolate ~ ) I love chocolate ice cream.
-```
+
+    u: ( chocolate ~ ) I love chocolate ice cream.
+
 The above does not match any use of chocolate, only one where we are already in this topic 
 (like topic: `~ice_cream`) or we were recently in this topic and are reconsidering it now.
 
 A useful idiom is `[~topicname ~]`. This allows you to match if EITHER the user gave
 keywords of the topic OR you are already in the topic. So:
-```
-u: (<< chocolate [~ice_cream ~] >>)
-```
+
+    u: ( << chocolate [~ice_cream ~] >> )
+
 would match if you only said _chocolate_ while inside the topic, or if you said _chocolate
 ice cream_ while outside the topic.
-
 
 
 ## Prefix Wildcard Spelling and Postfix Wildcard Spelling
@@ -797,26 +817,32 @@ Some words you just know people will get wrong, like _Schrodinger's cat_ or _Sag
 You can request a partial match by using an `*` to represent any number of letters (including 0). 
 For example
 ```
-u: ( Sag*) # This matches "Sagittarius" in a variety of misspellings.
+u: ( Sag* ) # This matches "Sagittarius" in a variety of misspellings.
 
-u: (*tor) # this matches "reactor".
+u: ( *tor ) # this matches "reactor".
 ```
-The `*` can occur in one or more positions and means 0 or more letters match. A period can
-be used to match a single letter (but may not start a wildcardprefix). E.g.,
-```
-u: ( p.t*)
-```
+The `*` can occur in one or more positions and means 0 or more letters match. 
+
+A period can be used to match a single letter (but may not start a wildcardprefix). E.g.,
+
+    u: ( p.t* )
+
 can match pituitary or merely pit or pat. You cannot use a wildcard on the first letter of
 the pattern.
-`u: (.p*)` is not legal because it may not start with a period.
+    
+    u: ( .p* )
+    
+is not legal because it may not start with a period.
 
 
 
 ## Indirect pattern elements
 
 Most patterns are easy to understand because what words they look at is usually staring
-you in the face. With indirection, you can pass patterndata from other topics, at a cost of
-obscurity. Declaring a macro does this. 
+you in the face. 
+
+With indirection, you can pass patterndata from other topics, at a cost of obscurity. 
+Declaring a macro does this. 
 A `^` normally means a macro call (if what follows it is arguments in parens), or a macro argument. 
 The contents of the macro argument are used in the pattern in its place. 
 Macro arguments only exist inside of macros. But macros don't let you write rules, only pieces of rules.
@@ -824,9 +850,9 @@ Macro arguments only exist inside of macros. But macros don't let you write rule
 Normally you use a variable directly. `$$tmp = nil` clears the `$$tmp` variable, for
 instance, while `u: ( ) $$tmp` goes home will output the value into the output stream.
 The functional user argument lets you pass pattern data from one topic to another.
-```
-s: ( are you a _^$var )
-```
+
+    s: ( are you a _^$var )
+
 The contents of `$var` are used at that point in the pattern. Maybe it is a set being named.
 Maybe it's a word. You can also do whole expressions, but if you do you will be at risk
 because you won't have the script compiler protecting you and properly formatting your data. 
@@ -837,16 +863,16 @@ See also Advanced Variables.
 
 You can "back up" and continue matching from a prior match position using `@` followed
 by a match variable previously set. E.g.
-```
-u: (_~pronoun * go @_0+ often)
-```
+
+    u: ( _~pronoun * go @_0+ often )
+
 This matches _I often go_ but not _I go_
 Just as `<` sets the position pointer to the start, `@_0+` makes the pattern think it just
 matched that wildcard at that location in the sentence going forward.
-```
-s: ( _is _~she ) # for input: is mother going this sets _0 to is and _1 to mother
-s: ( @_1+ going ) # this completes the match of is mother going
-```
+
+    s: ( _is _~she ) # for input: is mother going this sets _0 to is and _1 to mother
+    s: ( @_1+ going ) # this completes the match of is mother going
+
 OK. Setting positional context is really obscure and probably not for you. So why does it
 exist? It supports shared code for pseudo parsing.
 
@@ -858,9 +884,11 @@ Note when using backwards matching, `<` and `>` flip meanings. `>` means start a
 (since you are moving backwards) and `<` means confirm we are at start.
 
 `@_3` is a special positional matching called an anchor. It not only makes the position that given and matching forward
-thereafter, but it also acts as an item that must itself be matched. E.g., for this pattern
-`( @_3 is my @_4 life)`
-The position pointer moves to @_3 because as the opening element it can match anywhere in a sentence, just
+thereafter, but it also acts as an item that must itself be matched. 
+
+E.g., for this pattern `( @_3 is my @_4 life)`
+
+The position pointer moves to `@_3` because as the opening element it can match anywhere in a sentence, just
 like a word would. But after it matches (example at word 2) then `is` must be word 3 and `my` must be word 4
 and `@_4` must start at word 5 and after it completes then `life` must be the next word. Whereas
 `(< @_3 is)` implies that `@_3` is at position 1, since `<` says this is sentence start.
@@ -869,9 +897,8 @@ and `@_4` must start at word 5 and after it completes then `life` must be the ne
 ## Backward Wildcards
 
 You can request n words before the current position using `*-n`. For example
-```
-u: (I love * > _*-1 ) capture last word of sentence
-```
+
+    u: ( I love * > _*-1 ) capture last word of sentence
 
 
 ## Gory details about strings
@@ -879,21 +906,22 @@ u: (I love * > _*-1 ) capture last word of sentence
 'Strings in Output'
 
 A double quoted string in output retains its quotes.
-```
-u: () I love "rabbits"
-```
+
+    u: () I love "rabbits"
+
 will print that out literally, including the double quotes.
 
 And you cannot run the string across multiple lines.
 
-An active string interprets variable references inside. It does not show the containing quotes around the whole thing. And it can be extended across multiple lines (treating line breaks as a single space in the string created).
+An active string interprets variable references inside. 
+It does not show the containing quotes around the whole thing. 
+And it can be extended across multiple lines (treating line breaks as a single space in the string created).
 
+    u: ( I "take charge" ) OK.
 
-```
-u: ( I "take charge" ) OK.
-```
 When you use "take charge" it can match taking charges, take charge, etc. When you use
 _"taking charge"_ it can only match that, not _"taking charges"_. 
+
 If all words in the string are canonical, it can cover all forms. 
 If any are not, it can only literally match.
 
@@ -902,8 +930,8 @@ The quote notation is typically used in several situations...
 * you are matching a recognized phrase so quoting it emphasizes that
 * what you are matching contains embedded punctuation and you don't want to think
 
-About how to tokenize it e.g., _"Mrs. Watson's"_ -- is the period part of Mrs, is the `'` part of
-_Watson_, etc. Easier just to use quotes and let the system handle it.
+About how to tokenize it e.g., _"Mrs. Watson's"_ -- is the period part of Mrs, 
+is the `'` part of _Watson_, etc. Easier just to use quotes and let the system handle it.
 
 * You want to use a phrase inside `[]` or `{}` choices. Like `[ like live "really enjoy" ]`
 
@@ -918,13 +946,13 @@ where that can match _go back_ or _go almost back_.
 So there is that limitation when using a string inside `[ ]` or `{ }`. 
 But, one can write a pattern for that.  While `[ ]` means a choice of words and `{ }` 
 means a choice of optional words, `( )` means these things in sequence. So you could write:
-```
-u: ( [ next before (go {almost really} back) ] )
-```
+
+    u: ( [ next before (go {almost really} back) ] )
 
 and that will be a more complex pattern. One almost never has a real use for that
 capability, but you use `( )` notation all the time, of course. In fact, all rules have an
 implied `< *` in front of the `()`. 
+
 That's what allows them to find a sequence of words starting anywhere in the input. 
 But when you nest `( )` inside, unless you write `< *` yourself, 
 you are committed to remaining in the sequence set up.
@@ -934,11 +962,11 @@ the cost of matching is linear in the number of items to test. And a quoted expr
 the `_` equivalent) is a single item, whereas ( take charge) is 4 items. 
 
 So the first rule will below will match faster than the second rule:
-```
-u: ("I love you today when")
 
-u: (I love you today when)
-```
+    u: ( "I love you today when" )
+
+    u: ( I love you today when )
+
 
 But quoted expressions only work up to 5 words in the expression (one rarely has a need
 for more) whereas `()` notation takes any number. And using quotes when it isn't a
@@ -949,6 +977,7 @@ common phrase is obscure and not worth doing.
 
 When you want to generalize a word, a handy thing to do is type :concepts word and see
 what concepts it belongs to, picking a concept that most broadly expresses your meaning.
+
 The system will show you both concepts and topics that encompass the word. Because
 topics are more unreliable (contain or may in the future contain words not appropriate to
 your generalization, topics are always shown a `T~` rather than the mere `~name`.
@@ -970,8 +999,7 @@ how the system detects phrases as keywords, idioms from the parser like I am a l
 crazy (where a little bit is an adverb covering 3 sentence locations) and contiguous
 phrasal verbs.
 
-And there are functions you can call to set or erase marks on your own (`^mark` and
-`^unmark`).
+And there are functions you can call to set or erase marks on your own (`^mark` and `^unmark`).
 
 Pattern matching involves looking at tokens while having a current sentence location
 index. Unless you are using a wildcard, your tokens must occur in contiguous order to
@@ -988,15 +1016,16 @@ through the sentence. Really, the actual capabilities of pattern matching are qu
 outrageous.
 
 Pattern matching operates token by token. If you have a pattern:
-```
-u: ({blue} sky is blue)
-```
+
+    u: ( {blue} sky is blue )
+
 and you input _the sky is blue_, this pattern will fail, 
 even though the initial `{blue}` is optional. 
 
 Optional should not lead a pattern, it is used for word alignment. The first blue
 is found and so the system locks itself at that point. It then looks to see if the next word is sky. 
 It's not. Pattern fails. 
+
 It then unlocks itself and allows trying to match from the start of the pattern one later. 
 So `{blue}` matches blue at the end of the sentence. It locks itself.
 The next word is not sky. Pattern fails. There is nothing left to try.
@@ -1008,30 +1037,37 @@ Unlike user variables, which are saved with users, match variables (like `_0`) a
 ChatScript. 
 
 They are initialized on startup and never destroyed. They are overwritten by a
-rule that forces a match value onto them and by things like `_0 = ^burst(..)` or `_3 =
-^first(@0all)`. 
+rule that forces a match value onto them and by things like 
+
+    _0 = ^burst(...)
+
+or 
+
+    _3 = ^first(@0all)
+
 And those may overrun the needed number of variables by 1 to indicate the
 end of a sequence. But this means typically `_10` and above are easily available as
 permanent variables that can hold values across all users etc. 
+
 This might be handy in a server context and is definitely handy in `:document` mode 
 where user memory can be very transient. 
 Of course remembering what `_10` means as a holding variable is harder,
 unlike the ones bound to matches from input. So you can use
-```
-rename: _bettername _12
-```
+
+    rename: _bettername _12
+
 in a script before any uses of `_bettername`, which now mean `_12`.
 
 
-## Precautionary note about [ ] and pattern matching retries
+## Precautionary note about `[` `]` and pattern matching retries
 
 When you list a collection of words or concepts within a `[ ]` in a pattern, 
 the system does not try each in turn to find the earliest match. 
 Instead it tries each in turn until it finds a match. 
 Then `[ ]` quits. So if you have a pattern like:
-```
- u: ( the * [bear raccoon] ate)
-```
+
+    u: ( the * [bear raccoon] ate )
+
 and an input like _the raccoon at the bear_, then matching would proceed as
 
 * find the word the (position 1 in sentence)
@@ -1040,12 +1076,14 @@ and an input like _the raccoon at the bear_, then matching would proceed as
 
 The system is allowed to backtrack and see if the first match can be made later. So it will
 try to find the later than position one. It would succeed in relocating it to position 4. 
+
 It would then try to find the word bear afterwards, and succeed at position 5. It would then
 try to find the word ate after that and fail. It would retry trying to reset the pattern to
 find the after position 4 and fail. The match fails.
 
 You can fix this ordering problem by making a concept set of the contents of the `[ ]`, and
 replacing the `[ ]` with the name of the concept set. 
+
 A concept set being matched in a pattern will always find the earliest matching word. 
 The number of elements in a concept set is immaterial both to the order 
 of finding things and to the speed of matching. 
@@ -1083,9 +1121,9 @@ the output is also discarded and the rule "fails".
 Actually, it's a bit more complicated than that. Let's imagine a stream is being built up.
 And then suddenly the rule calls another rule (`^reuse`, `^gambit`, `^repond`). What happens?
 E.g.
-```
-u: (some test) I like fruit and vegetables. ^reuse(COMMON) And so do you.
-```
+
+    u: ( some test ) I like fruit and vegetables. ^reuse(COMMON) And so do you.
+
 
 What happens is this- when the system detects the transfer of control (the `^reuse` call), if
 there is output pending it is finished off (committed) and packaged for the user. The current stream is
@@ -1120,12 +1158,15 @@ if ($_response == %response) {...}
 ```
 `^flushoutput` will commit pending output.
 
+
 ## Output cannot have rules in it
-Output script cannot emed another rule inside it. Output is executed during the current volley whereas rules 
+
+Output script cannot emed another rule inside it. 
+Output is executed during the current volley whereas rules 
 (like rejoinder rules) may be executed in a different volley. 
 Therefore this is illegal:
 ```
-u: GREETING (~emohello)
+u: GREETING ( ~emohello )
    if ($username)
    {
      Hi  $username!
@@ -1140,7 +1181,7 @@ u: GREETING (~emohello)
 and needs to be written like this:
 
 ```
-u: GREETING (~emohello)
+u: GREETING ( ~emohello )
    if ($username)
    {
      Hi  $username!
@@ -1152,8 +1193,9 @@ u: GREETING (~emohello)
   a: (_*) So your name is '_0?
 ```
 
-Of course you don't want the rejoinder triggered if you can from the `if` side, so you'd also need to add
-a call to `^setnorejoinder` from inside it.
+Of course you don't want the rejoinder triggered if you can from the `if` side, 
+so you'd also need to add a call to `^setnorejoinder` from inside it.
+
 
 ## Formatted double quotes (Active/Format String)
 
@@ -1166,79 +1208,81 @@ The system will remove the `^` and the quotes and put it out exactly as you have
 except, it will substitute variables (which you learn about shortly) 
 with their values and it will accept `[ ]` `[ ]` choice blocks. 
 And will allow function calls. You can't do assignment statements or loops or if statements.
-```
-t: ^"I like you."
-```
+
+    t: ^"I like you."
+
 puts out I like you.
 
 When you want special characters in the format string like `"`, you need to
 backslash them, which the format string removes when it executes. For example:
-```
-u: () $tmp = [ hi ^"there \"john\"" ]
-```
+
+    u: () $tmp = [ hi ^"there \"john\"" ]
+
 the quote inside the format string need protecting using `\"`. 
+
 You can write `\n`, `\r`, `\t` and those will be translated into newline, carriage return, and tab.
 However, you should avoid `\r` because on LINUX it is not needed and in Windows the system will change
 `\n` to carriage-return and newline.
 
 Format strings evaluate themselves as soon as they can. If you write:
-```
-u: () $tmp = ^" This is $var output"
-```
+
+    u: () $tmp = ^" This is $var output"
+
 then `$tmp` will be set to the result of evaluating the format string. Similarly, if you write:
-```
-u: () $tmp = ^myfunc(^" This is $var output")
-```
+
+    u: () $tmp = ^myfunc(^" This is $var output")
+
 then the format string is evaluated before being sent to `^myfunc`.
 
 You can continue a format string across multiple source lines. It will always have a single
 space representing the line change, regardless of how many spaces were before or after
 the line break. E.g
-```
-^"this is my life" # -> ^"this is my life"
-```
+
+    ^"this is my life" # -> ^"this is my life"
+
 regardless of whether there were no spaces after is or 100 spaces after is. 
 You may not have comments at the ends of such lines (they would be absorbed into the string).
 
 While an active string tries to detect and substitute variables, 
 it can't succeed if you have letters immediately after the variable name. E.g.
-```
-^"T$$time_computed_hrs:$$time_computed_mins:$$time_computed_secsZ"
-```
+
+    ^"T$$time_computed_hrs:$$time_computed_mins:$$time_computed_secsZ"
+
 The Z at the end of the `$$time_computed_secs` will make that variable hard to detect,
 since it will look like the variable is `$$time_computed_secsZ`. 
 
 You can fix that by escaping the next character not part of the name. `$$time_computed_secs\Z`.
 
+
 ## Json Active Strings
 
-`^' xxxxxx '` is another kind of active string. It is intended for writing easy json, 
+`^' xxxxxx '` is another kind of active string. It is intended for writing easy JSON, 
 because you don't have to escape doublequotes unless json would need to. 
 
 It will converting `\n`,`\t`, `\r` into their control characters, convert `\\` into just `\`, 
 and leave all other characters alone. Eg 
-```
-^'{ "test" : "my \"value\" \x" }
-```
+
+    ^'{ "test" : "my \"value\" \x" }
+
 will become
-```
-^'{ "test" : "my \"value\" \x" }
-```
+
+    ^'{ "test" : "my \"value\" \x" }
 
 
 ## Functional Strings
 
 Whenever format strings are placed in tables, they become a slightly different flavor,
 called functional strings. They are like regular output- they are literally output script.
+
 Formatting is automatic and you get to make them do any kind of executable thing, as
 though you were staring at actual output script. So you lose the ability to control spacing,
 but gain full other output execution abilities.
 
 They have to be different because there is no user context when compiling a table. As a
 consequence, if you have table code that looks like this:
-```
-^createfact( x y ^" This is $var output")
-```
+
+    ^createfact( x y ^" This is $var output")
+    
 the functional string does NOT evaluate itself before going to createfact. It gets stored as
 its original self.
 
@@ -1256,7 +1300,7 @@ until a `FAIL` or `END` code of some kind is issued.
 
 * `Fail(LOOP)` will terminate both loop and rule enclosing. All other return codes have their usual effect. 
 
-> **Deprecated is `fail(rule)` and `end(rule)` which merely terminated the loop.**
+**Deprecated is `fail(rule)` and `end(rule)` which merely terminated the loop.**
 
 ```
 t: Hello. ^loop (5) { me }
@@ -1275,9 +1319,8 @@ override this if you define `$cs_looplimit` to have some value you prefer.
 
 Loop can be given a count. This can be either a number, or you can use a factset id to
 loop through each item of the factset via
-```
-^loop (@0)
-```
+
+   ^loop (@0)
 
 
 ## If Construct - `if` or `^if`
@@ -1325,6 +1368,7 @@ Comparison tests between two text strings is case insensitive.
 A word of warning on the `?` (in set) relation test. It only works for actual concepts that
 have enumerated values. A number of sets marked by the engine for patterns do not
 consist of enumerated members. 
+
 All of the pos-tagging and parse-related concepts are like this, 
 so you cannot use `~number`, `~noun`, `~verb`, etc here. 
 
@@ -1336,9 +1380,9 @@ because that has access to knowing all the marked concepts of that particular wo
 
 An alternative If test condition is the pattern If. You write the test using the word pattern at the start, 
 and then you write exactly what you can write when you write a rule pattern. Eg.
-```
-if (pattern bingo _*1 ~helo) { ... }
-```
+
+    if (pattern bingo _*1 ~helo) { ... }
+
 This gives you the full power of the pattern matcher, including the ability to match and
 memorize from the current input.
 
@@ -1363,9 +1407,12 @@ Again, you can suppress with using `'^name` to force it to only print its conten
 ## Outputting underscores
 
 Normal English sentences do not contain underscores. Wordnet uses underscores in
-composite words involving spaces. ChatScript, therefore has a special use for underscores
-internally and if you put underscores in your output text, when they are shipped to the
-user they are converted to spaces. 
+composite words involving spaces. 
+
+ChatScript, therefore has a special use for underscores
+internally and if you put underscores in your output text, 
+when they are shipped to the user they are converted to spaces.
+
 This doesn't apply to internal uses like storing on variables. 
 So normally you cannot output an underscore to a user. But a web address
 might legitimately contain underscores. So, if you put two underscores in a row,
@@ -1386,9 +1433,8 @@ which controls automatically up-casing the first letter of output, removing spac
 commas, and converting underscores to spaces (and also removing `~` from concept names). 
 
 Equivalently 
-```
-$cs_response = #ALL_RESPONSES
-``` 
+
+    $cs_response = #ALL_RESPONSES
 
 which if you want all is what you should use in case new ones are added in the system later.
 
@@ -1397,18 +1443,18 @@ which if you want all is what you should use in case new ones are added in the s
 
 Just as you can write your own common routines (functions) for handling pattern code with
 patternmacro:, you can do the same for output code. 
-```
-Outputmacro: name (^arg1 ^arg2 ...)
-```
+
+    Outputmacro: name (^arg1 ^arg2 ...)
+
 and then your code. Only now you use output script instead of pattern stuff. Again,
 when calling the macro, arguments are separated with spaces and not commas.
 
 Whereas most programming language separate their arguments with commas because
 they are reserved tokens in their language, in ChatScript a comma is a normal word. So
 you separate arguments to functions just with spaces.
-```
-?: ( hi) ^FiveArgFunction( 1 3 my , word)
-```
+
+   ?: ( hi) ^FiveArgFunction( 1 3 my , word)
+
 Outputmacros can return a value, just like a normal function. You just dump the text as
 you would a message to the user.
 ```
@@ -1425,13 +1471,13 @@ However, it is clearer and cleaner if you are returning data to be stored somewh
 (not to be merely immediately sent to the user), to use `^return("tested here")`. 
 This both creates the result, and ends the function immediately even if other code follows.
 
-> **Note - calls to macros use "pass by reference", so the actual value of the ^variable is the
+**Note - calls to macros use "pass by reference", so the actual value of the `^variable` is the
 name of what was passed in, and it is generally (but not always) evaluated on use.** 
 
 You may make references to outputmacros before they are defined, EXCEPT when the Function
 is directly or indirectly referenced from a table. Tables immediately execute as they
-are compiled, and you will get an error if a function it tries to use is
-not defined.
+are compiled, and you will get an error if a function it tries to use is not defined.
+
 
 ## Sharing function definitions
 
@@ -1441,9 +1487,11 @@ files, you may have trouble ordering the files for compilation if you merely nam
 But you can also just put your functions in a top level file and then have your other files in folders,
 and name it and then them in your `filesxxx.txt` file.
 
+
 ## Save-Restore locals
 
 `$$xxx` and `$xxx` variables are global, merely transient and permanent. 
+
 Function variables like `^myval` are restricted in use to the function declaring them, 
 so they are sort of local variables, but they are stand-ins for the arguments passed, which means 
 if you write indirectly the function variable you are changing something above you as well.  
@@ -1477,6 +1525,7 @@ one. Here is where save-restore variables come in.
 
 You can either use local variables, when you don't need to pass information between places except via function args. 
 Or you can use save-restore variables.  
+
 You can declare a list of variables whose contents will be memorized on entry to a function or a topic, 
 and restored to their former values on exit.  
 You can safely write all over them within the function or topic, without harming a caller. 
@@ -1495,9 +1544,7 @@ You can protect both transient and permanent variables, but usually you would ju
 And whenever you can, prefer local variables because then you don't have to remember to add them to the
 protected save-restore list. ChatScript does that automatically.
 
-```
-Outputmacro: ^myfunc(^arg1)($$tmp $global $$tmp2) # $$bestscore exported ... code
-```
+    Outputmacro: ^myfunc(^arg1)($$tmp $global $$tmp2) # $$bestscore exported ... code
 
 You can protect both transient and permanent variables, but usually you would just
 protect all of the transient variables you assign values to inside your function. 
@@ -1506,19 +1553,17 @@ The comment is what I would say if I intended a local variable be returned outsi
 to a primary return value. That way anyone reading the code would know `$$bestscore` 
 was not accidentally left off the save-restore list.
 
-```
-dualmacro: name(...) 
-```
-is exactly like outputmacro:, but the function can be called on then side or on the output side. 
+    dualmacro: name(...) 
+
+is exactly like `outputmacro:`, but the function can be called on then side or on the output side. 
 Typically this makes most sense for a function that performs a fixed `^query` which you can see 
 if it fails in pattern side or as a test on the output side or inside an if condition.
 
 Output macros can be passed system function names and output macro names, allowing
 you to indirectly call things. E.g.
-```
-outputmacro: ^indirect(^fn ^value)
-    $$tmp = ^fn(^value)
-```
+
+    outputmacro: ^indirect(^fn ^value)
+        $$tmp = ^fn(^value)
 
 The above will evaluate `^fn`, and if it finds that it is a function name, will use that in a
 call. The only tricky part is creating the name of the function to call in the first place. 
@@ -1532,29 +1577,27 @@ outputmacro: ^mycall()
     ^indirect( ^"\^func" 34)
 ```
 You can also store function names on user and match variables and then call them. E.g.
-```
-$$tmp = ^"\^func"
-$$tmp(34)
-```
+
+    $$tmp = ^"\^func"
+    $$tmp(34)
+
 You can declare an outputmacro to accept a variable number of arguments. 
 You define the macro with the maximum and then put "variable" before the argument list. 
 All missing arguments will be set to null on the call.
-```
-outputmacro: ^myfn variable (^arg1 ^arg2 ^arg3 ^arg4)
-```
+
+    outputmacro: ^myfn variable (^arg1 ^arg2 ^arg3 ^arg4)
 
 
 ## Output Macros vs `^reuse()`
 
 An outputmacro is a block of code, treated as a kind of function. But another way to
 make a block of code is create a rule and `^reuse` it. E.g.
-```
-s: MYCODE (?) here is a block of code that goes on and on
-```
+
+    s: MYCODE ( ? ) here is a block of code that goes on and on
 
 Code you write in an output macro could be code you write on the output side of a
-`^reused` rule. Notice that this rule can never trigger on its own (an input sentence cannot
-be a statement and a question simultaneously). 
+`^reused` rule. Notice that this rule can never trigger on its own 
+(an input sentence cannot be a statement and a question simultaneously). 
 
 So what are the distinctions between the two?
 The distinction is not in tracing. You can trace a single rule or an outputmacro equally.
@@ -1583,35 +1626,33 @@ There are many system functions to perform specific tasks. These are enumerated 
 ## Randomized Output Revisited `[ ]`
 
 Remember this construct:
-```
-?: (hi) [How are you feeling?][Why are you here?]
-```
+
+    ?: ( hi ) [How are you feeling?][Why are you here?]
 
 These choices are picked equally. But maybe you don't want some choices. You can put
 an existence test of a variable at the start of a choice to restrict it.
-```
-?: (hi) [$ready How are you feeling?][Why are you here?]
-```
+
+    ?: ( hi ) [$ready How are you feeling?][Why are you here?]
 
 In the above, the first choice is controlled by `$ready`. If it is undefined, the choice cannot be used. 
 You can also use negative tests.
-```
-?: (hi) [!$ready this is a][This is b]
-```
+
+    ?: ( hi ) [!$ready this is a][This is b]
+
 In the above only if `$ready` is undefined can you say _this is a_
+
 If you want the variable to be a lead item in the actual output of a choice, you can do this:
-```
-?: (hi) [^eval($ready) is part of the output]
-```
+
+    ?: (hi) [^eval($ready) is part of the output]
+
 or the more clunky:
-```
-?: (hi) _0 = $ready [ _0 is part of the output]
-```
+
+    ?: ( hi ) _0 = $ready [ _0 is part of the output]
 
 Choices lead to issues when you want rejoinders. You can label rejoinder branches of
 choices. Those without labels default to `a:`
 ```
-?: (what meat) [c: rabbit ] [e: steak] [ h: lamb] [pork]
+?: ( what meat ) [c: rabbit ] [e: steak] [ h: lamb] [pork]
     a: this rejoinders pork
     c: this rejoinders rabbit
     e: this rejoinders steak
@@ -1624,9 +1665,9 @@ allows the system to detect rejoinders on rejoinders from choice branches.
 
 If you do both variable control and rejoinder label, the control comes first and label after
 you have successful control.
-```
-?: (what meat) [$ready c: rabbit ] [e: steak] [ g: lamb] [pork]
-```
+
+    ?: ( what meat ) [$ready c: rabbit ] [e: steak] [ g: lamb] [pork]
+
 
 
 # Advanced Variables
@@ -1664,51 +1705,52 @@ By definition, local variables are transient and do not get saved in a user's to
 
 You can, of course, merely refer to a variable in a script to set or get its value. But
 suppose you wanted to associate a variable with every topic you have. 
+
 Maybe when the user says _I'm bored_ you want to leave a topic and not reopen it yourself 
-for any near future (say 200 volleys). 
+for any near future (say 200 volleys).  
 In that case, you don't have a variable but you need to create one dynamically.
-```
-$$topicname = substitute(character %topic ~ "")
-```
+
+    $$topicname = substitute(character %topic ~ "")
+
 The above gives you a topic name without the `~`. Pretend the current topic is `~washing`.
 Then you can create a dynamic variable name simply by using
-```
-$$tmp = ^join($ $$topicname)
-```
+
+    $$tmp = ^join($ $$topicname)
+
 which would create the name $washing.
 
 Now suppose you wanted to set that variable to some number representing the turn after
 which you might return.
-```
-$$tmp = 25
-```
+
+    $$tmp = 25
+
 doesn't work. It wipes out the $washing value of `$$tmp` and replaces it with `25`.
 
 You can set indirectly through `$$tmp` using function notation `^$$tmp`
 The above says take the value of `$$tmp`, treat it as the name of a variable, 
 and assign into it. Which means it does the equivalent of
-```
-$washing = 25
-```
+
+    $washing = 25
+
 If you want to an indirect value back, you can't do:
-```
-$$val = $$tmp
-```
+
+    $$val = $$tmp
+
 because that just passes the name of `$washing` over to `$$val`. Instead you do indirection
 again:
-```
-$$val = ^$$tmp # $$val becomes 25
-```
+
+    $$val = ^$$tmp # $$val becomes 25
+
 Indirection works with values that are user variables and with values that are match
 variables or quoted match variables.
 
 Many routines automatically evaluate a variable when using it as an argument, like
 `^gambit($$tmp)`. But if you want the value of the variable it represents, 
 then you need to evaluate it another time.
-```
-$$tmp1 = ^$$tmp
-^gambit($$tmp1)
-```
+
+    $$tmp1 = ^$$tmp
+    ^gambit($$tmp1)
+
 Equivalently `^gambit(^$$tmp1)` is legal.
 
 See also Indirect Pattern Elements in [ChatScript Pattern Redux](ChatScript-Pattern-Redux.md) manual.
@@ -1724,49 +1766,61 @@ but they will always refresh back to their original values at the start of the n
 
 
 ## Assigning match variables to user variables
-```
-$$stuff = _0
-```
-Match variables hold 3 pieces of data – original word(s), canonical word(s), and position
-range location of the word(s). User variables only have a single piece of data. So on
-assignment you lose 2 of the 3 pieces from the match variable. You can choose which
-words (original or canonical) when you assign.
-```
- $$stuff = '_0 - original words
-```
+
+    $$stuff = _0
+
+Match variables hold 3 pieces of data 
+
+* original word(s) 
+* canonical word(s) 
+* position, range location of the word(s). 
+
+User variables only have a single piece of data. 
+So onmassignment you lose 2 of the 3 pieces from the match variable. 
+You can choose which words (original or canonical) when you assign.
+
+    $$stuff = '_0 - original words
+    
 You can store positional data onto a different variable using `^position(start _0)` or
-```
-^position(end _0).
-_0 = $$stuff
-```
+
+    ^position(end _0).
+    _0 = $$stuff
+
 When you assign onto a match variable from a user variable, you make both original and
 canonical values of the match variable the same, and the positional data is set to 0.
-```
-_0 = _10
-```
+
+    _0 = _10
+
 This is a transfer from one match variable to another, so no data is lost
 
 
-## Json dotted notation for variables
-If a variable holds a JSON object value, you can directly set and get from fields of that object
-using dotted notation. This can be a fixed static fieldname or a variable value- `$myvar.$myfield` is legal.
-Dotted notation is cleaner and faster than `^jsonpath` and `jsonobjectinsert` and for get, has
-the advantage that it never fails, it only returns null if it can't find the field. 
-On the other hand, assignment fails if the path does not contain a json object at some level.
-```
-$x = $$$obj.name.value.data.side 
-$$$obj.name.value.data.side = 7
-```
+## JSON dotted notation for variables
 
-Assigning `null` will remove a JSON key entirely. Assigning `""` `^""` will set the field to the JSON literal
-`null`.
+If a variable holds a JSON object value, you can directly set and get from fields of that object
+using dotted notation. 
+
+This can be a fixed static fieldname or a variable value- `$myvar.$myfield` is legal.
+
+Dotted notation is cleaner and faster than `^jsonpath` and `jsonobjectinsert` and for get, 
+has the advantage that it never fails, it only returns null if it can't find the field. 
+On the other hand, assignment fails if the path does not contain a json object at some level.
+
+    $x = $$$obj.name.value.data.side 
+    $$$obj.name.value.data.side = 7
+
+
+Assigning `null` will remove a JSON key entirely. 
+Assigning `""` `^""` will set the field to the JSON literal `null`.
+
 
 ## Fact dotted notation for variables
+
 If `$$f` holds a fact id, then
-```$$f.subject
-$$f.verb
-$$f.object
-```
+
+    $$f.subject
+    $$f.verb
+    $$f.object
+
 will return those components. You may NOT, however, assign into them.
 
 
@@ -1779,25 +1833,25 @@ encased in `[ ]`.
 ChatScript does not attempt to postag and parse any input sentence which begins with
 `[` and has a closing `]`. It will automatically not try to spellcheck that part or perform 
 any kind of merge  (date, number, propername). 
-In fact, the `[…]` will be split off into its own sentence. 
+In fact, the `[...]` will be split off into its own sentence. 
 You can use normal CS rules to detect and react to incoming oob messaging.
 E.g, input like this
-```
-[ speed=10 rate: 50 ] User said this
-```
+
+    [ speed=10 rate: 50 ] User said this
 
 could be processed by your script. Although the 2 data oob items are inconsistently
-shown, the protocol you use is entirely up to you within the `[]v area.
+shown, the protocol you use is entirely up to you within the `[]` area.
 
 Here is a sample pattern to catch oob data.
 ```
-u: (< \[ * speed _*1 * \]) The speed is _0
+u: ( < \[ * speed _*1 * \] ) The speed is _0
 
-u: (< \[ * rate _*1 * \]) The rate is _0
+u: ( < \[ * rate _*1 * \] ) The rate is _0
 ```
 
 You need `*` in front of your data when you can have multiple forms of data and you need
 `* \]` after your data to insure you don't match words from user input.
+
 On output you need to do one of these
 ```
 u: () \[ oob data \] Here is user message
@@ -1807,9 +1861,9 @@ u: () ^"[oob data] Here is user message
 
 OOB output needs to be first, which means probably delaying to one of the last things
 you do on the last sentence of the input, and using `^preprint()`. E.g.
-```
-u: ($$outputgesture) ^preprint( \[ $$outputgesture \] )
-```
+
+    u: ( $$outputgesture ) ^preprint( \[ $$outputgesture \] )
+
 You can hand author gestures directly on your outputs, but then you have to be certain
 you only output one sentence at a time from your chatbot (lest a gesture command get
 sandwiched between two output sentence). You also have to be willing to hand author the
@@ -1821,30 +1875,30 @@ and have the system automatically generate gestures during postprocessing on its
 The stand-alone engine and the WEBINTERFACE/BETTER scripts automatically handle
 the following oob outputs:
 
-- **Callback**
-  The webpage or stand-alone engine will wait for the designated milliseconds and if the user has not begun typing will send in the oob message [callback] to CS. If user begins typing before the timeout, the callback is cancelled. e.g. `[callback=3000]` will wait 3 seconds.
-
-- **Loopback** 
-  The webpage or stand-alone engine will wait for the designated milliseconds after every output from CS and if the user has not begun typing will send in the oob message [loopback] to CS. If user begins typing before the timeout, the loopback is cancelled for this output only, and will resume counting on the next output. e.g. `[loopback=3000]` will wait 3 seconds after every output.
-
-- **Alarm**
-  The webpage or stand-alone engine will wait for the designated milliseconds and then send in the oob message [alarm] to CS. Input typing has no effect. e.g. `[alarm=3000]` will wait 3 seconds and then send in the alarm. CS can cancel any of these by sending an oob message with a milliseconds of 0. e.g. `[loopback=0 callback=0 alarm=0]` cancels any pending callbacks into the future.
+| OOB Output  | description 
+|-------------|-------------------------------------------------
+|**Callback** | The webpage or stand-alone engine will wait for the designated milliseconds and if the user has not begun typing will send in the oob message [callback] to CS. If user begins typing before the timeout, the callback is cancelled. e.g. `[callback=3000]` will wait 3 seconds.
+|**Loopback** | The webpage or stand-alone engine will wait for the designated milliseconds after every output from CS and if the user has not begun typing will send in the oob message [loopback] to CS. If user begins typing before the timeout, the loopback is cancelled for this output only, and will resume counting on the next output. e.g. `[loopback=3000]` will wait 3 seconds after every output.
+| **Alarm**   | The webpage or stand-alone engine will wait for the designated milliseconds and then send in the oob message [alarm] to CS. Input typing has no effect. e.g. `[alarm=3000]` will wait 3 seconds and then send in the alarm. CS can cancel any of these by sending an oob message with a milliseconds of 0. e.g. `[loopback=0 callback=0 alarm=0]` cancels any pending callbacks into the future.
 
 
 # System callback functions 
 
-```
-outputmacro: ^CSBOOT()
-```
+## `^CSBOOT()`
+
+    outputmacro: ^CSBOOT()
+
 This function, if defined by you, will be executed on startup of the ChatScript system. It
 is a way to dynamically add facts and user variables into the base system common to all
 users. And returned output will go to the console and if a server, into the server log
 Note that when a user alters a system `$variable`, it will be refreshed back to its original
 value for each user.
 
-```
-outputmacro: ^CS_REBOOT()
-```
+
+## `^CS_REBOOT()`
+
+    outputmacro: ^CS_REBOOT()
+
 This function, if defined by you, will be executed on every volley prior to loading user data.
 It is executed as a user-level program which means when it has completed all newly created facts and Variables
 just disappear. It is used in conjunction with a call to the system function ^reboot() to replace data from
@@ -1854,32 +1908,29 @@ nothing. If the boot layer is not current, then you call ^REBOOT() which erases 
 boot data and treats the remainder of the script as refilling the boot layer with new facts and
 variables.
 
-```
-outputmacro: ^CSSHUTDOWN()
-```
+## `^CSSHUTDOWN()`
 
-This function, if defined by you, will be executed on shutdown or restart of the
-ChatScript system.
+    outputmacro: ^CSSHUTDOWN()
 
-```
-outputmacro: ^cs_topic_enter(^topic ^mode)
-```
+
+This function, if defined by you, will be executed on shutdown or restart of the ChatScript system.
+
+    outputmacro: ^cs_topic_enter(^topic ^mode)
 
 When the system begins a topic and this function is defined by you, it will be invoked
 before the topic is processed. You will be given the name of the topic and a character
 representing the way it is being invoked. 
 Values of `^mode` are: `s`, `?`, `u`, `t`, which represent statements, questions, both, or gambits. 
 While your function is executing, neither `^cs_topic_enter` or `^cs_topic_exit` will be invoked.
-```
-outputmacro: ^cs_topic_exit(^topic ^result)
-```
+
+    outputmacro: ^cs_topic_exit(^topic ^result)
 
 When the system exits a topic and this function is defined by you, it will be invoked after
 the topic is processed. You will be given the name of the topic and the text value
 representing what it returned. E.g., NOPROBLEM. The range of names of these are
 defined in mainsystem.h (minus _BIT) but are your basic FAILTOPIC, etc.
 
-##AutoInitFile 
+## AutoInitFile 
 
 When a user is initialized for the first time, the system will attempt to read a top-level file named for 
 the user as `bruce-init.txt` (if user is bruce). If found, commands will be executed from there (analogous
@@ -1888,42 +1939,41 @@ to the `:source` command. This will be read after any `source=` command line par
 
 # Advanced `:build`
 
-
 ## Build warning messages
 
 Build will warn you of a number of situations which, not illegal, might be mistakes.
 It has several messages about words it doesn't recognize being used as keywords in
 patterns and concepts. You can suppress those messages by augmenting the dictionary
 OR just telling the system not to tell you
-```
-:build 0 nospell
-```
+
+    :build 0 nospell
+
 
 There is no problem with these words, presuming that you did in fact mean them and they
 do not represent a typo on your part.
 
 You can get extra spellchecking, on your output words, with this:
-```
-:build 0 outputspell
-``` 
+
+    :build 0 outputspell
+
 run spellchecking on text output of rules (see if typos exist).
 
 Build will also warn you about repeated keywords in a topic or concept. This means the
 same word is occurring under multiple forms. Again, the system will survive but it likely
 represents a waste of keywords. For example, if you write this:
-```
-topic: ~mytopic ( cheese !cheese)
-```
+
+    topic: ~mytopic ( cheese !cheese)
+
 you contradict yourself. You request a word be a keyword and then say it shouldn't be.
 The system will not use this keyword. Or if you write this
-```
-topic: ~mytopic (cheese cheese~1)
-```
+
+    topic: ~mytopic (cheese cheese~1)
+
 You are saying the word cheese or the wordnet path of cheese meaning #1, which
 includes the word _cheese_. You don't need _"cheese"_. Or consider:
-```
-topic: ~mytopic (cheese cheese~n)
-```
+
+    topic: ~mytopic (cheese cheese~n)
+
 Since you have accepted all forms of cheese, you don't need to name `cheese~n`.
 `:build` also warns you about various substitutions that might affect your patterns. You can
 suppress those messages with `:build filename nosubstitution`
@@ -1940,7 +1990,8 @@ common backup names from editors on Windows and Linux).
 Sometimes you might fail to place a paren properly, swallow a whole lot of input and
 crash. Finding where the problem is may be hard. You can therefore turn on a trace which
 will show you all the rules it successfully completes.
-`:build harry trace`
+
+    :build harry trace
 
 
 ## Reset User-defined
@@ -1950,12 +2001,15 @@ unchanged, except that topics you have changed will be reset for the bot (as tho
 not yet ever seen those topics). But if you want to start over with the new system as a new
 user, you can request this on the build command.
 
-`:build 0 reset` – reinit the current character from scratch (equivalent to `:reset user`).
+    :build 0 reset 
+    
+ reinit the current character from scratch (equivalent to `:reset user`).
 
 
 ## Build Layers
+
 The build system has two layers, 0 and 1. When you say :build 0, the system looks in the
-top level directory for a file `files0.txt`. Similarly when you say :build 1 it looks for `files1.txt`. 
+top level directory for a file `files0.txt`. Similarly when you say `:build 1` it looks for `files1.txt`. 
 Whatever files are listed inside a `filesxxx.txt` are what gets built. 
 
 And the last character of the file name (e.g., `files0`) is what is critical for deciding what level to build on. 
@@ -1971,9 +2025,11 @@ You can imagine:
 
 You can build layers in either order, and omit either.
 
-> **Note - Avoid something likes `files2.txt` and doing a `:build 2`. 
-> 2 specifies a level and normal bots are at level 1 (which requires no numbering). 
-> Name your file after your bot and it will default to level 1.**
+Note
+
+Avoid something likes `files2.txt` and doing a `:build 2`. 
+2 specifies a level and normal bots are at level 1 (which requires no numbering). 
+Name your file after your bot and it will default to level 1.
 
 
 ## Skipping a topic file
@@ -2000,24 +2056,24 @@ line "some junk" are also not seen.
 ## Renaming Variables, Sets, and Integer Constants
 
 A top level declaration in a script rename a match variable
-```
-rename: _bettername _12
-```
+
+    rename: _bettername _12
+
 before any uses of `_bettername`, which now mean `_12`. You can put multiple rename pairs
 in the same declaration.
-```
-rename: _bettername _12 _okname _14
-```
+
+    rename: _bettername _12 _okname _14
+
 and you can provide multiple names, so you can later also say
-```
-rename: _xname _12
-```
+
+    rename: _xname _12
+    
 and both _xname and `_bettername` refer to `_12`.
 
 Renames can also rename concept sets:
-```
-rename: @myset @1
-```
+
+    rename: @myset @1
+
 so you can do:
 ```
 @myset += createfact( 1 2 3)
@@ -2047,12 +2103,16 @@ describe: $myvar "used to store data"
 permanent variables (handy for finalizing a bot to show you have no spelling errors on
 variables).
 
+
 ## Conditional compilation
-You can have the system include or exclude lines on a line by line basis. To make a line conditional, put a comment left justified where a word is contiguous to the #, like this:
-```
-#german u: (test) this is conditionally compiled
-```
-This line is normally ignored because it is a comment line and not a named numeric constant. But if you put the `#german` as a tail parameter of the `:build` command, you enable it:
+
+You can have the system include or exclude lines on a line by line basis. 
+To make a line conditional, put a comment left justified where a word is contiguous to the #, like this:
+
+    #german u: (test) this is conditionally compiled
+
+This line is normally ignored because it is a comment line and not a named numeric constant. 
+But if you put the `#german` as a tail parameter of the `:build` command, you enable it:
 
 You can also handle blocks of code analogous to the block comment convention by appending a label to the <<## :
 ```
@@ -2060,18 +2120,18 @@ You can also handle blocks of code analogous to the block comment convention by 
 ... >>##
 ```
 
-```
-:build Harry #german
-```
-You may name up to 9 conditions on your build line. In fact,
-for language-related conditional lines, you don't have to declare anything on the `:build` command. The system will automatically accept lines that name the current language= command line parameter (English being the default).
+
+    :build Harry #german
+
+You may name up to 9 conditions on your build line. 
+In fact, for language-related conditional lines, you don't have to declare anything on the `:build` command. The system will automatically accept lines that name the current language= command line parameter (English being the default).
 
 Conditional compilation applies to script files and the filesxxx.txt files and LIVEDATA files.
+
 
 # Editing Non-topic Files
 
 Non-topic files include the contents of `DICT` and `LIVEDATA`.
-
 
 ## DICT files
 
@@ -2097,25 +2157,22 @@ list of words separated by spaces that must not follow this immediately.
 If one does, the match fails. You can also use `>` as a word, 
 to mean that this is NOT at the end of the sentence. The files include:
 
-* `interjections.txt` – remaps to `~` words standing for interjections or discourse acts
-* `contractions.txt` – remaps contractions to full formatting
-* `substitutes.txt` – (omittable) remaps idioms to other phrases or deletes them.
-* `british.txt` – (omittable) converts british spelling to us
-* `spellfix.txt` – (omittable) converts a bunch of common misspellings to correct
-* `texting.txt` (omittable) converts common texting into normal english.
-* `systemessentials.txt` – things needed to handle end punctuation
-* `expandabbreviations.txt` – does what its name suggests
+| file                      | description
+|---------------------------|--------------------------------------------------------
+| `interjections.txt`       | remaps to `~` words standing for interjections or discourse acts
+| `contractions.txt`        | remaps contractions to full formatting
+| `substitutes.txt`         | (omittable) remaps idioms to other phrases or deletes them.
+| `british.txt`             | (omittable) converts british spelling to us
+| `spellfix.txt`            | (omittable) converts a bunch of common misspellings to correct
+| `texting.txt`             | (omittable) converts common texting into normal english.
+| `systemessentials.txt`    | things needed to handle end punctuation
+| `expandabbreviations.txt` | does what its name suggests
+| `queries.txt`             | defines queries available to `^query`. A query is itself a script. See the file for more information.
+| `canonical.txt`           | is a list of words and override canonical values. When the word on the left is seen in raw input, the word on the right will be used as its canonical form.
+| `lowercasetitles.txt`     | is a list of lower-case words that can be accepted in a title. Normally lower case words would break up a title.
 
-Processing done by various of these files can be suppressed by setting `$cs_token`
-differently. See Control over Input.
-
-The `queries.txt` file defines queries available to `^query`. A query is itself a script. 
-See the file for more information.
-
-The `canonical.txt` file is a list of words and override canonical values. When the word on
-the left is seen in raw input, the word on the right will be used as its canonical form.
-The lowercasetitles.txt file is a list of lower-case words that can be accepted in a title.
-Normally lower case words would break up a title.
+Processing done by various of these files can be suppressed by setting `$cs_token` differently. 
+See Control over Input.
 
 
 # Common Script Idioms
@@ -2124,7 +2181,7 @@ Normally lower case words would break up a title.
 
 To be efficient in rule processing, I often catch a lot of things in a rule and then refine it.
 ```
-u: ( ~country) ^refine() # gets any reference to a country
+u: ( ~country ) ^refine() # gets any reference to a country
     a: (Turkey) I like Turkey
     a: (Sweden) I like Sweden
     a: (*) I've never been there.
@@ -2132,7 +2189,7 @@ u: ( ~country) ^refine() # gets any reference to a country
 Equivalently one could invoke a subtopic, though that makes it less obvious what is
 happening, unless you plan to share that subtopic among multiple responders.
 ```
-u: (~country) ^respond(~subcountry)
+u: ( ~country ) ^respond(~subcountry)
 
 topic: ~subcountry system[]
 
@@ -2153,8 +2210,8 @@ hundreds of specific quibbles.
 
 topic: ~quibblewho system []
 
-?: (<who knows) The shadow knows
-?: (<who can) I certainly can't.
+?: ( <who knows ) The shadow knows
+?: ( <who can ) I certainly can't.
 ```
 
 
@@ -2167,7 +2224,7 @@ same information may need to be given in response to a direct question by the us
 ```
 t: HOUSE () I live in a small house
 
-u: (where * you * live) ^reuse(HOUSE)
+u: ( where * you * live ) ^reuse(HOUSE)
 ```
 
 The rule on disabling a rule after use is that the rule that actually generates the output gets disabled. 
@@ -2175,9 +2232,10 @@ So the default behavior (if you don't set keep on the topic or the rule) is that
 it reuses HOUSE. 
 
 Since we have given the answer, we don't want to repetitiously volunteer it, HOUSE gets disabled. 
-But, if the user repetitiously asks the question (maybe he forgot the answer), we will answer it again because the responder
-didn't get disabled, just the gambit. And disabling applies to allowing a rule to try to
-match, not to what it does for output. So one can reuse that gambit's output any number of times. 
+But, if the user repetitiously asks the question (maybe he forgot the answer), 
+we will answer it again because the responder didn't get disabled, just the gambit. 
+And disabling applies to allowing a rule to try to match, not to what it does for output. 
+So one can reuse that gambit's output any number of times. 
 
 If you don't want that behavior you can either add a disable on the responder
 OR tell `^reuse` to skip used rules by giving it a second argument (anything). 
@@ -2192,7 +2250,7 @@ and the other way is:
 ```
 t: HOUSE () I live in a small house
 
-u: (where * you * live) ^reuse(HOUSE skip)
+u: ( where * you * live ) ^reuse(HOUSE skip)
 ```
 
 Meanwhile, in the original example, if the gambit executes first, it disables itself, 
@@ -2205,21 +2263,21 @@ One way to do that is to set a user variable from HOUSE and test it from the res
 ```
 t: HOUSE () I live in a small house $house = 1
 
-u: (where * you * live) [$house You forgot?] ^reuse(HOUSE)
+u: ( where * you * live ) [$house You forgot?] ^reuse(HOUSE)
 ```
 If you wanted to do that a lot, you might make an outputmacro of it:
 ```
 outputmacro: ^heforgot(^test) [^test You forgot?]
     t: HOUSE () I live in a small house $house = 1
 
-    u: (where * you * live) heforgot($house ) ^reuse(HOUSE)
+    u: ( where * you * live ) heforgot($house ) ^reuse(HOUSE)
 ```
 Or you could do it on the gambit itself in one neat package.
 ```
 outputmacro: ^heforgot(^test) [^test You forgot?] ^test = 1
     t: HOUSE () heforgot($house ) I live in a small house.
 
-    u: (where * you * live) ^reuse(HOUSE)
+    u: ( where * you * live ) ^reuse(HOUSE)
 ```
 
 
@@ -2277,14 +2335,13 @@ DATA:
 "Paris, France"
 ```
 and in patterns:
-```
-u: ("do you know" what )
-```
+
+    u: ( "do you know" what )
 
 In output context, it means print out this string with its double quotes literally. E.g.
-```
-u: (hello) "What say you? " # prints out "What say you? "
-```
+
+    u: ( hello ) "What say you? " # prints out "What say you? "
+
 There are also the functional interpretations of strings; 
 these are strings with `^` in front of them.
 
@@ -2295,9 +2352,9 @@ use the results of it in an `^eval` call.
 On the output side, a ^"string" means to interpret the contents inside the string as a
 format string, substituting any named variables with their content, preserving all internal
 spacing and punctuation, and stripping off the double quotes.
-```
-u: (test) ^"This $var is good." # if $var is kid the result is This kid is good.
-```
+
+    u: ( test ) ^"This $var is good." # if $var is kid the result is This kid is good.
+
 
 ___What really happens on the output side of a rule?___
 
@@ -2334,8 +2391,7 @@ This evaluation during output is in contrast to the behavior on the pattern side
 goal is presence, absence, and failure. Naming a word means finding it in the sentence.
 
 Naming a concept/topic means finding a word which inherits from that concept either
-directly or indirectly. Naming a variable means seeing if that variable has a non-null
-value. 
+directly or indirectly. Naming a variable means seeing if that variable has a non-null value. 
 
 Calling a function discards any output stream generated and aside from other side
 effects means did the function fail (return a fail code) or not.
@@ -2343,14 +2399,14 @@ effects means did the function fail (return a fail code) or not.
 ___How does the system tell a function call w/o ^ from English?___
 
 If like is defined as an output macro and if you write:
-```
-t: I like (somewhat) ice
-```
+
+    t: I like (somewhat) ice
+
 how does the system resolve this ambiguity? Here, white space actually matters. First, if
 the function is a builtin system function, it always uses that. So you can't write this:
-```
-t: I fail (sort of) at most things
-```
+
+    t: I fail (sort of) at most things
+
 When it is a user function, it looks to see if the 
 ( of the argument list is contiguous to the function name or spaced apart. 
 Contiguous is treated as a function call and apart is treated as English. 
@@ -2384,22 +2440,22 @@ These can never erase themselves directly, so the erasure will again rebound to 
 
 Note that a topic declared system NEVER erases its rules, neither gambits nor responders,
 even if you put ^erase() on a rule.
-```
-u: (~emogoodbye)
-```
+
+    u: (~emogoodbye)
+
 
 ___How can I get the original input when I have a pattern like `u: (~emogoodbye)` ?___
 
 To get the original input, you need to do the following:
 ```
-u: (~emogoodbye)
+u: ( ~emogoodbye )
     $tmptoken = $cs_token
     $cs_token = 0
     ^retry(SENTENCE)
 ```
 and at the beginning of your main program you need a rule like this:
 ```
-u: ($tmptoken _* )
+u: ( $tmptoken _* )
     $cs_token = $tmptoken
     $tmptoken = null
 ```
@@ -2439,9 +2495,9 @@ Normally you match words in a sentence. But the system sometimes merges multiple
 words into one, either as a proper name, or because some words are like that. 
 For example "here and there" is a single word adverb. 
 If you try to match _We go here and there about town_ with
-```
-u: (* here *) xxx
-```
+
+    u: (* here *) xxx
+
 you will succeed. The actual tokens are "we" "go" "here and there" "about" "town".
 but the pattern matcher is allowed to peek some into composite words. 
 
@@ -2450,14 +2506,14 @@ the position start is set to that word (e.g., position 3),
 and in order to allow to match other words later in the composite, 
 the position end is set to the word before (e.g., position 2). 
 This means if your pattern is
-```
-u: (* here and there *) xxx
-```
+
+    u: (* here and there *) xxx
+
 it will match, by matching the same composite word 3 times in a row. The anomaly
 comes when you try to memorize matches. If your pattern is
-```
-u: (_* and _* ) xxx
-```
+
+    u: (_* and _* ) xxx
+
 then `_0` is bound to words 1 & 2 "we go", and matches "here and there", and `_1` matches
 the rest, "about town". 
 
@@ -2466,53 +2522,53 @@ composite word. If it did, `_1` would be _here and there about town_. It's not.
 
 Also, if you try to memorize the match itself, you will get nothing because the system
 cannot represent a partial word. Hence
-```
-u: (* _and * ) xxx
-```
+
+    u: ( * _and * ) xxx
+
 would memorize the empty word for `_0`.
 If you don't want something within a word to match your word, you can always quote it.
-```
-u: (X * ‘and *) xxx
-```
+
+    u: ( X * ‘and * ) xxx
+
 does not match _here and there about town_.
+
 The more interesting case comes when a composite is a member of a set. Suppose:
-```
-concept: ~myjunk (and)
-u: (* _~myjunk * ) xxx
-```
+
+    concept: ~myjunk (and)
+    u: ( * _~myjunk * ) xxx
+
 What happens here? First, a match happens, because `~myjunk` can match and inside the
 composite. Second memorization cannot do that, so you memorize the empty word. If
 you want to not match at all, you can write:
-```
-u: (* _'~myjunk * ) xxx
-```
+
+    u: ( * _'~myjunk * ) xxx
+
 In this case, the result is not allowed to match a partial word, and fails to match.
 However, given " My brothers are rare." and these:
-```
-concept: ~myfamily (brother)
-u: (* _'~ myfamily * ) xxx
-```
+
+    concept: ~myfamily (brother)
+    u: ( * _'~ myfamily * ) xxx
+
 the system will match and store `_0 = brothers`. Quoting a set merely means no partial
 matches are allowed. The system is still free to canonicalize the word, so brothers and
 brother both match. If you wanted to ONLY match brother, you could have quoted it in
 the concept definition.
-```
-concept: ~myfamily (‘brother)
-```
+
+    concept: ~myfamily (‘brother)
 
 
 ## Blocking a topic from accidental access
 
 There may be a topic you don't want code like `^gambit()` to launch on its own, for
 example, a story. You can block a topic from accidental gambit access by starting it with
-```
-t: (!~) ^fail(topic)
-```
+
+    t: (!~) ^fail(topic)
+
 If you are not already in this topic, it cannot start. Of course you need a way to start it.
 There are two. First, you can make a responder react (enabling the topic). E.g.,
-```
-u: (talk about bees) ^gambit(~)
-```
+
+    u: ( talk about bees ) ^gambit(~)
+
 If the topic were bees and locked from accidental start, when this responder matches, you
 are immediately within the topic, so the gambit request does not get blocked.
 
@@ -2597,9 +2653,8 @@ contents within that. You can also create a batch file, probably within your fol
 does a "cd ChatScript" to be in the right directory, and then runs ChatScript with the
 following parameters:
 
-```
-ChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH system=LIVEDATA/SYSTEM
-```
+    ChatScript livedata=../LIVEDATA english=LIVEDATA/ENGLISH system=LIVEDATA/SYSTEM
+
 
 Normally while you might override various substitutes files, you would not override the
 `ENGLISH` and `SYSTEM` folders.
@@ -2612,10 +2667,9 @@ zip into your ChatScript folder, overwriting files already there.
 
 There is the GLOBAL dictionary in DICT and local dictionary per level in TOPIC.
 You can augment your dictionary locally by defining concepts with properties:
-```
-concept: ~morenouns NOUN NOUN_PROPER_SINGULAR (Potsdam Paris)
-concept: ~verbaugment VERB VERB_INFINITIVE (swalk smeazle)
-```
+
+    concept: ~morenouns NOUN NOUN_PROPER_SINGULAR (Potsdam Paris)
+    concept: ~verbaugment VERB VERB_INFINITIVE (swalk smeazle)
 
 One can also directly edit the dictionary txt files in DICT/ENGLISH observing how they
 seem to be formatted, doing nothing crazy, and being careful with consistency of
