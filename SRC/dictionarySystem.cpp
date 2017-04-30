@@ -381,7 +381,7 @@ MEANING Mburst;
 MEANING Mpending;
 MEANING Mkeywordtopics;
 MEANING Mconceptlist;
-MEANING Mmoney,Musd,Meur,Mgbp,Myen,Mcny,Minr,Mrup;
+MEANING Mmoney,Musd,Meur,Mgbp,Myen,Mcny,Minr,Mrup,Mcad,Mcent;
 MEANING Mintersect;
 MEANING MgambitTopics;
 MEANING MadjectiveNoun;
@@ -3303,6 +3303,8 @@ void ExtendDictionary()
 	Musd = MakeMeaning(BUILDCONCEPT((char*)"~usd"));
 	Myen = MakeMeaning(BUILDCONCEPT((char*)"~yen"));
 	Mcny = MakeMeaning(BUILDCONCEPT((char*)"~cny"));
+	Mcad = MakeMeaning(BUILDCONCEPT((char*)"~cad"));
+	Mcent = MakeMeaning(BUILDCONCEPT((char*)"~cent"));
 	Meur = MakeMeaning(BUILDCONCEPT((char*)"~eur"));
 	Minr = MakeMeaning(BUILDCONCEPT((char*)"~inr"));
 	Mgbp = MakeMeaning(BUILDCONCEPT((char*)"~gbp"));

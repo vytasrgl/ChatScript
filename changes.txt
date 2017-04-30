@@ -1,3 +1,11 @@
+Version 7.41 4/30/2017
+1. ^setposition now allows a wildcard id as the second and last argument
+2. the ? operator can now check for value in json array.
+3. ^format( integer/float  formatstring value) does format of doublefloat or int64 integer
+4. ^clearmatch() resets all match variables to unmatched
+5. ^wordatindex() now support ranges, allows optional 3 argument end. Or second argument can be "_0"
+6. $cs_numbers =  french, indian, american or other
+
 Version 7.4 4/24/2017
 1. $x.y[] = 1  autogenerates a json array
 2. $cs_fullfloat & 64bit float & e-notation means the system gives you full precision, not 2 digit
@@ -6,7 +14,6 @@ Version 7.4 4/24/2017
 5. erasename command parameter - full user reset if found in input
 6. compile outputmacros in any order (but must already be defined if used by a table)
 7. ^pos(IsModelNumber x) and ^isInteger and ^isFloat
-
 
 Version 7.31  4/8/2017 --- NEED TO RECOMPILE YOUR BOT! format has changed in TOPIC folder
 1. ^wordAtIndex({original, canonical} n) retrieves word at index either original or canonical

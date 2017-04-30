@@ -8034,13 +8034,12 @@ static void SortConcept(WORDP D,uint64 junk)
 		Sortit(D->word,(int)junk); // 1 will be for 1line, otherwise take multiline as needed
 }
 
-
 static void Translate(char* msg,char* to, char* apikey)
 {
 	char* url = AllocateBuffer();
 	size_t len = strlen(msg);
 #ifndef DISCARDJSONOPEN
-	char* tranurl = UrlEncodePiece(msg); // transient stack
+	char* tranurl = msg; // JSONOpenCode will do the url encoding
 #else
 	char* tranurl = "";
 #endif

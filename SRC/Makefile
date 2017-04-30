@@ -1,3 +1,6 @@
+.PHONY = all clean binary server debugserver standalone pgserver debugpgserver mongoserver debugmongoserver foreignserver mongotreetaggerserver 
+
+
 server: DEFINES+= -DLOCKUSERFILE=1  -DEVSERVER=1 -DEVSERVER_FORK=1  -DDISCARDPOSTGRES=1 -DDISCARDMONGO=1 -DDISCARDMYSQL=1 
 server: PGLOAD= -pthread
 server: INCLUDEDIRS=-Ievserver
@@ -78,7 +81,15 @@ LDFLAGS=-mmacosx-version-min=$(OSXRELEASE) -lcurl $(PGLOAD)
 CFLAGS=-mmacosx-version-min=$(OSXRELEASE) -c  -Wall  -funsigned-char -Wno-write-strings -Wno-char-subscripts 
 endif
 
-SOURCES=constructCode.cpp evserver.cpp csocket.cpp cs_ev.c dictionarySystem.cpp englishTagger.cpp factSystem.cpp json.cpp functionExecute.cpp english.cpp infer.cpp javascript.cpp jsmn.cpp markSystem.cpp mongodb.cpp os.cpp outputSystem.cpp patternSystem.cpp postgres.cpp privatesrc.cpp scriptCompile.cpp spellcheck.cpp secure.cpp systemVariables.cpp tagger.cpp testing.cpp textUtilities.cpp tokenSystem.cpp topicSystem.cpp userCache.cpp userSystem.cpp variableSystem.cpp mainSystem.cpp 
+ifeq ($(UNAME), FreeBSD)
+$(info ************ FREEBSD VERSION ************)
+DEFINES+= -DFREEBSD=1
+INCLUDEDIRS+= -I/usr/local/include
+LDFLAGS= -L/usr/local/lib -lrt -lcurl -lev  --verbose $(PGLOAD)
+mongoserver: LDFLAGS+= -lgcrypt -lsasl2 -lmongoc-1.0 -lbson-1.0 
+endif
+
+SOURCES=constructCode.cpp duktape/duktape.c evserver.cpp csocket.cpp cs_ev.c dictionarySystem.cpp englishTagger.cpp factSystem.cpp json.cpp functionExecute.cpp english.cpp infer.cpp javascript.cpp jsmn.cpp markSystem.cpp mongodb.cpp os.cpp outputSystem.cpp patternSystem.cpp postgres.cpp privatesrc.cpp scriptCompile.cpp spellcheck.cpp secure.cpp systemVariables.cpp tagger.cpp testing.cpp textUtilities.cpp tokenSystem.cpp topicSystem.cpp userCache.cpp userSystem.cpp variableSystem.cpp mainSystem.cpp 
 OBJECTS=$(SOURCES:.cpp=.o)
  
 all: $(SOURCES) binary

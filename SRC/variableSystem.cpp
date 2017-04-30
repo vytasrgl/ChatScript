@@ -450,7 +450,13 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 	// cs_float changes are noticed by the engine
 	if (!stricmp(var, (char*)"$cs_fullfloat")) 
 		fullfloat = (word && *word) ? true : false;
-	
+	// cs_numbers changes are noticed by the engine (india, french, other)
+	else if (!stricmp(var, (char*)"$cs_numbers"))
+	{
+		if (!stricmp(word, "indian")) numberStyle = INDIAN_NUMBERS;
+		else if (!stricmp(word, "french")) numberStyle = FRENCH_NUMBERS;
+		else numberStyle = AMERICAN_NUMBERS;
+	}
 	// trace
 	else if (!stricmp(var,(char*)"$cs_trace")) 
 	{

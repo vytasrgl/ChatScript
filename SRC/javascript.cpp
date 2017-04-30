@@ -1,7 +1,6 @@
 #ifndef DISCARDJAVASCRIPT
-#include "duktape/duktape.c"
-//#include "duktape/duk_config.h"
-//#include "duktape/duktape.h"
+#include "duktape/duktape.h"
+//#include "duktape/duktape.c"
 
 duk_context *ctxPermanent = NULL;
 duk_context *ctxTransient = NULL;

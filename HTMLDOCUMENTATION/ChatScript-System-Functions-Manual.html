@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-system-functions-manual">ChatScript System Functions Manual</h1>
-<p>© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/24/2017 cs7.4</p>
+<p>© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/30/2017 cs7.41</p>
 <ul>
 <li><a href="ChatScript-System-Functions-Manual.html#topic-functions">Topic Functions</a></li>
 <li><a href="ChatScript-System-Functions-Manual.html#marking-functions">Marking Functions</a></li>
@@ -182,6 +182,7 @@ It's the same if the current rule was a top level rule, but if the current rule 
 <p>returns <code>1</code> if word is marked, returns <code>FAILRULE_BIT</code> if the given word is not currently marked from the current sentence.</p>
 <h3 id="setposition-_var-start-end"><code>^setposition ( _var start end )</code></h3>
 <p>Sets the match location data of a match var to the number values given.</p>
+<p>Alternatively you can do <code>^setposition ( _var _var1 )</code>, which is redundant with just doing <code>_var = _var1</code>.</p>
 <h3 id="setcanon-wordindex-value"><code>^setcanon ( wordindex value )</code></h3>
 <p>Changes the canonical value for this word.</p>
 <h3 id="settag-wordindex-value"><code>^settag ( wordindex value )</code></h3>
@@ -516,6 +517,8 @@ $$val = eval($$tmp) # $$val = 1</code></pre>
 <p>You can write script that calls <code>^load</code>, naming the <code>xxx</code> part and they will be dynamically loaded, for that user only, and stay loaded for that user across all volleys until you call <code>^load</code> again. Calling load again with a different name will load that new name. Calling <code>^load(null)</code> will merely unload the dynamic layer previously loaded.</p>
 <p><strong>WARNING</strong></p>
 <p>It's erroneous (you get whatever happens to you), if you call <code>^load</code> from within topics you have loaded via <code>^load</code>.</p>
+<h3 id="clearmatch"><code>^clearmatch()</code></h3>
+<p>This clears all match variables to empty.</p>
 <h3 id="match-what"><code>^match ( what )</code></h3>
 <p>This does a pattern match using the contents of what (usually a variable reference). It fails if the match against current input fails. It operates on the current analyzed sentence which is usually the current input, but since you can call ^next(input) or <code>^analyze()</code> it is whatever the current analysis data is.</p>
 <pre><code>if (%more AND ^match(^&quot;(&lt; ![~emocurse ~emothanks] ~interjections &gt;)&quot; ) )
@@ -1097,6 +1100,8 @@ u: what&#39;s your first name?
 <p>would return <em>she</em></p>
 <h3 id="uppercase-word"><code>^uppercase ( word )</code></h3>
 <p>Is the given word starting with an uppercase letter? Match variable binds usually reflect how the user entered the word. This allows you to see what case they entered it in. Returns 1 if yes and 0 otherwise.</p>
+<h3 id="format-integerfloat-formatstring-value"><code>^format( integer/float  formatstring value)</code></h3>
+<p>This is a thin wrapper over sprintf. The first argument tells ChatScript what kind of argument you are passing (since everything is a string to ChatScript). The second argument is a string which is the format string for sprintf. The third argument is the number to convert. For floats, you will always be passing a double float so bear that in mind with your formatting. For integer, if you use a %d format, you will be using a 32-bit value. For ll formats you will be using 64-bit but it won't work well on Windows output because Windows uses their own sprintf notation.</p>
 <h3 id="addproperty-word-flag1-flagn"><code>^addproperty ( word flag1 … flagn )</code></h3>
 <p>given the word, the dictionary entry for it is marked with additional properties, the flags given which must match property flags or system flags in <em>dictionarySystem.h</em>. Typically used to mark up titles of books and things when building world data.</p>
 <p>In particular, however, if you are adding phrases or words not in the dictionary which will be used as patterns in match, you should mark them with <code>PATTERN_WORD</code>. To create a dynamic concept, mark the set name as CONCEPT.</p>
@@ -1144,6 +1149,8 @@ u: what&#39;s your first name?
    }</code></pre>
 <h3 id="wordatindex-original-canonical-n"><code>^wordAtIndex ( ({original, canonical} n))</code></h3>
 <p><code>^wordAtIndex</code> retrieves the word from the current sentence at the index given, as either the original word or as a canonical word (as a match variable sees it)</p>
+<p><code>^wordAtIndex ( canonical n n1)</code> gathers a range from n thru n1.</p>
+<p><code>^wordAtIndex ( original &quot;_0&quot;)</code> gathers a range from that which _0 represents (but uses the original data so it is not like merely saying _0, which may not have real data if you did an arbitrary assignment to it setting its position).</p>
 <h1 id="multipurpose-functions">Multipurpose Functions</h1>
 <h3 id="disable-what"><code>^disable ( what ? )</code></h3>
 <p>What can be <code>topic</code> or <code>rule</code> or <code>inputrejoinder</code> or <code>outputrejoinder</code> or <code>save</code> or <code>write @set</code>.</p>

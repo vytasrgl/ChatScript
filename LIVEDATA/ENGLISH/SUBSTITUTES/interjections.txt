@@ -607,9 +607,9 @@
  <there_is_no_reason_to_think_so ~no
  <thinks_not ~no
  <thumbs_up ~yes
- <til_another_time ~emogoodbye
- <til_next_time ~emogoodbye
- <til_we_meed_again ~emogoodbye
+ <till_another_time ~emogoodbye
+ <till_next_time ~emogoodbye
+ <till_we_meet_again ~emogoodbye
  <till_next_time ~emogoodbye
  <time_to_be ~emogoodbye
  <time_to_go ~emogoodbye
@@ -727,7 +727,7 @@
  <bring_it_on> ~yes
  byebye ~emogoodbye
  ca_va ~emohowzit
- call_it_a_night ~goodnight
+ call_it_a_night ~emogoodbye
  comment_ca_va ~emohowzit
  comment_est_vous ~emohowzit
  d'accord ~yes

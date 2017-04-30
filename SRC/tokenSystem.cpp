@@ -389,14 +389,14 @@ static char* HandleQuoter(char* ptr,char** words, int& count)
 	return  end + 1;
 }
 
-static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool nomodify, bool oobStart, bool oobJson)
+static char* FindWordEnd(char* ptr, char* priorToken, char** words, int &count, bool nomodify, bool oobStart, bool oobJson)
 {
 	char* start = ptr;
- 	char c = *ptr; 
+	char c = *ptr;
 	unsigned char kind = IsPunctuation(c);
-	char* end  = NULL;
+	char* end = NULL;
 	static bool quotepending = false;
-	
+
 	// OOB which has { or [ inside starter, must swallow all as one string lest reading JSON blow token limit on sentence. And we can do jsonparse.
 	if (oobStart && oobJson) // support JSON parsing
 	{
@@ -407,16 +407,16 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		bool quote = false;
 		while (*++ptr)
 		{
-			if (*ptr == '"' && *(ptr-1) != '\\') quote = !quote;
+			if (*ptr == '"' && *(ptr - 1) != '\\') quote = !quote;
 			if (quote) {} // ignore content for level counting
 			else if (*ptr == '{' || *ptr == '[')
 			{
-				if (*(ptr-1) != '\\') ++level;
+				if (*(ptr - 1) != '\\') ++level;
 			}
 			else if (*ptr == '}' || *ptr == ']')
 			{
-				if (*(ptr-1) != '\\') --level;
-				if (level == 0) 
+				if (*(ptr - 1) != '\\') --level;
+				if (level == 0)
 				{
 					if (tokenControl & JSON_DIRECT_FROM_OOB) // allow full json no tokenlimit
 					{
@@ -436,14 +436,14 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		return ptr;
 	}
 	// OOB only separates ( [ { ) ] }   - the rest remain joined as given
-	if (oobStart) 
+	if (oobStart)
 	{
-		if (*ptr == '(' || *ptr == ')' || *ptr == '[' || *ptr == ']' || *ptr == '{' || *ptr == '}'  || *ptr == ',' ) return ptr + 1;
+		if (*ptr == '(' || *ptr == ')' || *ptr == '[' || *ptr == ']' || *ptr == '{' || *ptr == '}' || *ptr == ',') return ptr + 1;
 		bool quote = false;
 		--ptr;
 		while (*++ptr)
 		{
-			if (*ptr == '"' && *(ptr-1) != '\\') quote = !quote;
+			if (*ptr == '"' && *(ptr - 1) != '\\') quote = !quote;
 			if (quote) continue;
 			if (*ptr != ' ' &&  *ptr != '(' && *ptr != ')' && *ptr != '[' && *ptr != ']'  && *ptr != '{' && *ptr != '}') continue;
 			break;
@@ -453,21 +453,21 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 
 	if (kind & QUOTERS) // quoted strings 
 	{
-		if (c == '\'' && ptr[1] == 's' && !IsAlphaUTF8(ptr[2])) return ptr+2;	// 's directly
-		if (c == '"') 
+		if (c == '\'' && ptr[1] == 's' && !IsAlphaUTF8(ptr[2])) return ptr + 2;	// 's directly
+		if (c == '"')
 		{
-			if (tokenControl & SPLIT_QUOTE) 
+			if (tokenControl & SPLIT_QUOTE)
 				return ptr + 1; // split up quote marks
 			else // see if merely highlighting a word
 			{
 				char word[MAX_WORD_SIZE];
-				char* tail = ReadCompiledWord(ptr,word);
-				char* close = strchr(word+1,'"');
-				if (close && !strchr(word,' ')) // we dont need quotes
+				char* tail = ReadCompiledWord(ptr, word);
+				char* close = strchr(word + 1, '"');
+				if (close && !strchr(word, ' ')) // we dont need quotes
 				{
 					if (tokenControl & LEAVE_QUOTE) return tail;
 					*ptr = ' ';			// kill off starting dq
-					ptr[close-word] = ' ';	// kill off closing dq
+					ptr[close - word] = ' ';	// kill off closing dq
 					return ptr;
 				}
 			}
@@ -475,69 +475,95 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 		if (c == '\'' && tokenControl & SPLIT_QUOTE) // 'enemies of the state'
 		{
 			if (quotepending) quotepending = false;
-			else if (strchr(ptr+1,'\'')) quotepending = true;
+			else if (strchr(ptr + 1, '\'')) quotepending = true;
 			return ptr + 1;
 		}
-		if (c == '\'' && !(tokenControl & TOKEN_AS_IS) && !IsAlphaUTF8(ptr[1])  && !IsDigit(ptr[1])) 	return ptr + 1; // is this quote or apostrophe - for penntag dont touch it - for 've  leave it alone also leave '82 alone
-		else if (c == '\''  && tokenControl & TOKEN_AS_IS) {;} // for penntag dont touch it - for 've  leave it alone also leave '82 alone
-		else if ( c == '"' && tokenControl & TOKEN_AS_IS) return ptr + 1;
+		if (c == '\'' && !(tokenControl & TOKEN_AS_IS) && !IsAlphaUTF8(ptr[1]) && !IsDigit(ptr[1])) 	return ptr + 1; // is this quote or apostrophe - for penntag dont touch it - for 've  leave it alone also leave '82 alone
+		else if (c == '\''  && tokenControl & TOKEN_AS_IS) { ; } // for penntag dont touch it - for 've  leave it alone also leave '82 alone
+		else if (c == '"' && tokenControl & TOKEN_AS_IS) return ptr + 1;
 		else
 		{
-			char* end = HandleQuoter(ptr,words,count);
+			char* end = HandleQuoter(ptr, words, count);
 			if (end)  return end;
 		}
 	}
 
 	// single letter abbreviaion period like H.
-	if (IsAlphaUTF8(*ptr) && ptr[1] == '.' && ptr[2] == ' ' && IsUpperCase(*ptr)) return ptr+2;
-	if (*ptr == '.' && ptr[1] == '.' && ptr[2] == '.' && ptr[3] != '.') return ptr+3;
+	if (IsAlphaUTF8(*ptr) && ptr[1] == '.' && ptr[2] == ' ' && IsUpperCase(*ptr)) return ptr + 2;
+	if (*ptr == '.' && ptr[1] == '.' && ptr[2] == '.' && ptr[3] != '.') return ptr + 3;
 	if (*ptr == '-' && ptr[1] == '-' && ptr[2] == '-') ptr[2] = ' ';	// change excess to space
-	if (*ptr == '-' && ptr[1] == '-' && (ptr[2] == ' ' || IsAlphaUTF8(ptr[2]) )) return ptr + 2; // the -- break
+	if (*ptr == '-' && ptr[1] == '-' && (ptr[2] == ' ' || IsAlphaUTF8(ptr[2]))) return ptr + 2; // the -- break
 	if (*ptr == ';' && ptr[1] != ')' && ptr[1] != '(') return ptr + 1; // semicolon not emoticon
 	if (*ptr == ',' && ptr[1] != ':') return ptr + 1; // comma not emoticon
-    if (*ptr == '|') return ptr + 1;
+	if (*ptr == '|') return ptr + 1;
 	if (*ptr == 0xc2 && ptr[1] == 0xbf) return ptr + 2; // inverted spanish ?
 	if (*ptr == 0xc2 && ptr[1] == 0xa1) return ptr + 2; // inverted spanish !
 	if (*ptr == '(' || *ptr == '[' || *ptr == '{') return ptr + 1;
 	char token[MAX_WORD_SIZE];
-	ReadCompiledWord(ptr,token);
-	
-	// find current token which has comma after it and separate it, like myba,atat,joha
-	char* comma = strchr(token+1,',');
-	if (comma) 
+	ReadCompiledWord(ptr, token);
+
+	// if this was 93302-42345 then we need to keep - separate, not as minus
+	if (*token == '-' && IsInteger(token + 1, false) && IsInteger(priorToken, false))
 	{
-		*comma = 0; // break apart token
-		comma = ptr + (comma - token);
+		return ptr + 1;
 	}
-    // find current token which has | after it and separate it, like myba,atat,joha
-    char* pipe = strchr(token + 1, '|');
-    if (pipe)
-    {
-        *pipe = 0; // break apart token
-    }
+
+	// find current token which has | after it and separate it, like myba,atat,joha
+	char* pipe = strchr(token + 1, '|');
+	if (pipe)
+	{
+		*pipe = 0; // break apart token
+	}
 
 	// check for float
-	if (strchr(token,'.') || strchr(token, 'e') || strchr(token, 'E'))
+	if (strchr(token, '.') || strchr(token, 'e') || strchr(token, 'E'))
 	{
 		char* at = token;
-		while (*++at && (IsDigit(*at) || *at == '.' || *at == 'e'  || *at == 'E' || *at == '-' || *at == '+')) { ; }
+		while (*++at && (IsDigit(*at) || *at == '.' || *at == 'e' || *at == 'E' || *at == '-' || *at == '+')) { ; }
 		if (IsFloat(token, at))
 		{
 			if (*at == '%') ++at;
+			if (*at == 'k' || *at == 'K' || *at == 'm' || *at == 'M' || *at == 'B' || *at == 'b')
+			{
+				if (!at[1]) ++at;
+			}
 			return ptr + (at - token);
 		}
+	}
+
+	// check for currency number tailing
+	if (IsDigit(*token))
+	{
+		char* at = token;
+		while (*++at && (IsDigit(*at) || *at == ',')) { ; }
+		if (IsSymbolCurrency(at)) return ptr + (at - token);
+	}
+	if (IsTextCurrency(token)) //leading currency as TEXT, not symbol
+	{
+		if (IsDigitWord(token + 3)) return ptr + 3;
 	}
 
 	// check for negative number
 	if (*token == '-' && IsDigit(token[1]))
 	{
 		char* at = token;
-		while (*++at && (IsDigit(*at) || *at == '.')){;}
+		while (*++at && (IsDigit(*at) || *at == '.')) { ; }
 		if (!*at) {
 			// might be at the year part of a date 10-1-1992
-			if (count > 2 && IsDigit(*priorToken) && *words[count-1] == '-' && IsDigit(*words[count-2])) {;}
+			if (count > 2 && IsDigit(*priorToken) && *words[count - 1] == '-' && IsDigit(*words[count - 2])) { ; }
 			else return ptr + strlen(token);
 		}
+	}
+
+	// check for ordinary integers whose commas may be confusing
+	if ((IsDigit(token[0])|| IsDigit(token[1])) && IsDigitWord(token, true)) return ptr + strlen(token);
+
+	// find current token which has comma after it and separate it, like myba,atat,joha
+	char* comma = strchr(token + 1, ',');
+	if (comma)
+	{
+		*comma = 0; // break apart token
+		comma = ptr + (comma - token);
 	}
 
 	// Things that are normally separated as single character tokens
@@ -595,8 +621,12 @@ static char* FindWordEnd(char* ptr,char* priorToken,char** words,int &count,bool
 	if (comma && IsDigit(*(comma-1)) && !IsDigit(comma[1])) return comma; // $7 99
 	if (comma && IsDigit(comma[1]) && IsDigit(comma[2]) && IsDigit(comma[3]) && IsDigit(comma[4])) return comma; // 25,2019 
 	if (comma && IsDigit(comma[1]) && !IsDigit(comma[2]) ) return comma; // 25,2
-	if (comma && IsDigit(comma[1]) && IsDigit(comma[2]) && !IsDigit(comma[3]) ) return comma; // 25,20 
-	
+	if (comma && IsDigit(comma[1]) && IsDigit(comma[2]) && !IsDigit(comma[3]))
+	{
+		// comma normally separates 3 digits, except for india where it can do 2's until last three
+		if (comma[3] == ',' && IsDigit(comma[4]) && IsDigit(comma[5])){}
+		else return comma; // 25,20 
+	}
 	if (kind & BRACKETS && ( (c != '>' && c != '<') || next != '=') ) 
 	{
 		if (c == '<' && next == '/') return ptr + 2; // keep html together  </
@@ -1062,8 +1092,8 @@ char* Tokenize(char* input,int &mycount,char** words,bool all,bool nomodify,bool
 			}
 			else if (startc == ':' && !paren)
 			{
-				if (!strstr(ptr,(char*)" and ") || strchr(ptr,',')) {;}	// guess : is a list - could be wrong guess
-				else if (!(tokenControl & NO_COLON_END)) 			// we dont want colon to end it anyway
+				if (strstr(ptr,(char*)" and ") || strchr(ptr,',')) {;}	// guess : is a list - could be wrong guess
+				else if (!(tokenControl & NO_COLON_END))			// we dont want colon to end it anyway
 				{
 					tokenFlags |= NO_COLON_END; 
 					break;

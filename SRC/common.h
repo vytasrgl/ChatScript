@@ -70,7 +70,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DISCARDPOSTGRES 1
 #define DISCARDMYSQL 1
 //#define DISCARDMONGO 1
-
 #else // GENERIC LINUX
 #ifndef EVSERVER
 #define SAFETIME 1  // protect server from time concurrency issues in C++ library.
@@ -135,6 +134,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #ifdef IOS
 #elif __MACH__
 #include <sys/malloc.h>
+#elif FREEBSD
+O// avoid requesting malloc.h
 #else
 #include <malloc.h>
 #endif

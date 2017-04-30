@@ -1938,7 +1938,7 @@ LOOP: // now we look at $x.key or $x[0]
 				JSONCreateCode(loc); // get new array name
 		
 				leftside = FindWord(loc);
-				unsigned int flags = JSON_ARRAY_FACT;
+				unsigned int flags = (priorLeftside->word[1] == 'o') ? JSON_OBJECT_FACT : JSON_ARRAY_FACT;
 				if (loc[3] == 't') flags |= FACTTRANSIENT;
 				MEANING valx = jsonValue(leftside->word, flags);
 				F = CreateFact(MakeMeaning(priorLeftside), MakeMeaning(keyname), valx, flags);
@@ -1962,13 +1962,22 @@ LOOP: // now we look at $x.key or $x[0]
 
 	MEANING object = MakeMeaning(leftside);
 	MEANING key = MakeMeaning(keyname);
+	MEANING valx = 0;
+	if (key && stricmp(value, "null")) valx = jsonValue(value, flags);// not deleting using json literal   ^"" or "" would be the literal null in json
 
-	// remove old value if it exists, do not allow multiple values
+	// remove old value if it exists and is different, do not allow multiple values
+	FACT* oldfact = NULL;
 	FACT* F = GetSubjectNondeadHead(leftside);
 	while (F)	// already there, delete it if not referenced elsewhere
 	{
 		if (F->verb == key)
 		{
+			if (F->object == valx) break; // already here
+			if (stricmp(value, "null") && !(F->flags & (JSON_OBJECT_VALUE | JSON_ARRAY_VALUE)))
+			{
+				oldfact = F;
+				break;	// not going to kill, going to substitute non-json value
+			}
 			FACT* G = GetObjectNondeadHead(Meaning2Word(F->object));
 			bool jsonkill = false;
 			if (!G) jsonkill = true; // should never be true, since this fact counts
@@ -1985,10 +1994,29 @@ LOOP: // now we look at $x.key or $x[0]
 		F = GetSubjectNondeadNext(F);
 	}
 
-	if (key && stricmp(value,"null")) // not deleting using json literal   ^"" or "" would be the literal null in json
+	if (key && stricmp(value, "null"))
 	{
-		MEANING valx = jsonValue(value,flags);
-		CreateFact(object, key,valx, flags);
+		if (!F || F->object != valx)
+		{
+			// do simple substition if not a json entity. otherwise would leave freestanding potentially unreferenced json
+			if (F && oldfact && !(F->flags & (JSON_OBJECT_VALUE | JSON_ARRAY_VALUE)))
+			{
+				WORDP oldObject = Meaning2Word(F->object);
+				WORDP newObject = Meaning2Word(valx);
+				flags = F->flags;
+				flags &= -1 ^ (JSON_PRIMITIVE_VALUE | JSON_STRING_VALUE | JSON_OBJECT_VALUE | JSON_ARRAY_VALUE);
+				valx = jsonValue(value, flags);
+				newObject = Meaning2Word(valx);
+
+				FACT* X = DeleteFromList(GetObjectHead(oldObject), F, GetObjectNext, SetObjectNext);  // dont use nondead
+				SetObjectHead(oldObject, X);
+				X = AddToList(GetObjectHead(newObject), F, GetObjectNext, SetObjectNext);  // dont use nondead
+				SetObjectHead(newObject, X);
+				F->object = valx;
+				F->flags = flags;	// revised for possible new object type
+			}
+			else CreateFact(object, key, valx, flags);// not deleting using json literal   ^"" or "" would be the literal null in json
+		}
 	}
 	else if (!key) // was [] notation to insert to array
 	{		
@@ -1996,7 +2024,7 @@ LOOP: // now we look at $x.key or $x[0]
 		unsigned int oldArgumentBase = callArgumentBase;
 		unsigned int oldArgumentIndex = callArgumentIndex;
 		callArgumentBases[callIndex++] = callArgumentIndex - 1; // call stack
-		ARGUMENT(1) = (leftside->word[3] == 't') ? (char*)"transient" : (char*)"permanent";
+		ARGUMENT(1) = (leftside->word[3] == 't') ? (char*)"transient unique" : (char*)"permanent unique";
 		ARGUMENT(2) = leftside->word;
 		ARGUMENT(3) = value;
 		char loc[100];
@@ -2005,6 +2033,7 @@ LOOP: // now we look at $x.key or $x[0]
 		callArgumentIndex = oldArgumentIndex;
 		callArgumentBase = oldArgumentBase;
 	}
+
 	if (trace & TRACE_VARIABLESET) Log(STDTRACELOG,(char*)"JsonVar: %s -> %s\r\n", fullpath,value);
 	
 	if (base->internalBits & MACRO_TRACE) 
@@ -2122,6 +2151,7 @@ FunctionResult JSONArrayInsertCode(char* buffer) //  objectfact objectvalue  BEF
 
 	// create fact
 	CreateFact(MakeMeaning(O), MakeMeaning(Idex),value, flags);
+
 	currentFact = NULL;	 // used up by putting into json
 	return NOPROBLEM_BIT;
 }

@@ -394,28 +394,15 @@ void StdNumber(char* word,char*& buffer,int controls) // text numbers may have s
 		return;
 	}
 
-    if (len < 5 || controls & OUTPUT_NOCOMMANUMBER) // no comma with <= 4 digit, e.g., year numbers
+    if (controls & OUTPUT_NOCOMMANUMBER) // no comma with <= 4 digit, e.g., year numbers
     {
         strcpy(buffer,word);  
         return;
     }
 
 	// add commas between number triples
-	ptr = word;
-    unsigned int offset = len % 3;
-    len = (len + 2 - offset) / 3; 
-    strncpy(buffer,ptr,offset); 
-    buffer += offset;
-    ptr += offset;
-    if (offset && len) *buffer++ = ','; 
-    while (len--)
-    {
-        *buffer++ = *ptr++;
-        *buffer++ = *ptr++;
-        *buffer++ = *ptr++;
-        if (len) *buffer++ = ',';
-    }
-	*buffer = 0;
+	// except india uses doubles until final triple
+	WriteInteger(word, buffer);
 }
 
 char* StdIntOutput(int n)
@@ -1179,7 +1166,7 @@ retry:
 			char hold1[100];
 			strncpy(hold1,currentOutputBase,80);
 			hold1[50] = 0;
-			ReportBug((char*)"Output overflowed on rule %s output: %s\r\n",hold,hold1);
+			ReportBug((char*)"Output overflowed %d > %d on rule %s output: %s\r\n", size, currentOutputLimit,hold,hold1);
 		}
         if (size >= (currentOutputLimit-200) && !(result  & FAILCODES)) 
 		{

@@ -1,6 +1,6 @@
 # ChatScript Advanced User's Manual
 © Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com<br>
-Revision 4/24/2017 cs7.4<br>
+<br>Revision 4/30/2017 cs7.41
 
 * [Review](ChatScript-Advanced-User-Manual.md#review-overview-of-how-cs-works)
 * [Advanced Concepts](ChatScript-Advanced-User-Manual.md#advanced-concepts)
@@ -755,7 +755,7 @@ You can use the logical and bit-relation to test numbers. Any non-zero value pas
     s: ( _~number _0&1 ) Your number is odd.
 
 `?` can be used in two ways. As a comparison operator, it allows you to see if the item on
-the left side is a member of a set on the right. E.g.
+the left side is a member of a set (or JSON array) on the right. E.g.
 
     u: ( _~propername?~bands )
 

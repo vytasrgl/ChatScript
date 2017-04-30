@@ -219,12 +219,14 @@ files without carriage returns.
 
 # Testing for server presence
 
-If you send the message: null 1 null (that’s the null string user id, the string of the
-character “1” as bot id, and the null string message, the server will send back the string of
-[you have no user id]with no logging done and minimal load on the server. This
-constitutes an echo-test to prove the server is running.
-
-
+To truly know if the server is alive, you actually need to send it a message that it responds to.
+This means implementing `something` in your bot that reacts rapidly to your message.
+The fastest messages are OOB ones, because they do not parse. So early in your control script
+you can do something like:
+```
+u: ( \[ ping \]) Pong.
+```
+and use that to prove the server is fully functional.
 
 # Server Crashes & cron
 

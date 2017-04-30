@@ -215,7 +215,7 @@ extern MEANING Musd;
 extern MEANING Meur,Minr;
 extern MEANING Mgbp;
 extern MEANING Myen;
-extern MEANING Mcny;
+extern MEANING Mcny,Mcad,Mcent;
 extern MEANING Mchatoutput;
 extern MEANING Mburst;
 extern MEANING Mpending;

@@ -1,6 +1,6 @@
 #include "common.h" 
 #include "evserver.h"
-char* version = "7.4";
+char* version = "7.41";
 char sourceInput[200];
 FILE* userInitFile;
 int externalTagger = 0;
@@ -247,6 +247,8 @@ void CreateSystem()
 	os = "IOS";
 #elif __MACH__
 	os = "MACH";
+#elif FREEBSD
+	os = "FreeBSD";
 #else
 	os = "LINUX";
 #endif
@@ -894,7 +896,9 @@ void CloseSystem()
 	CurlShutdown();
 #endif
 	if (logmainbuffer) free(logmainbuffer);
+	logmainbuffer = NULL;
 	if (ourMainOutputBuffer) free(ourMainOutputBuffer);
+	ourMainOutputBuffer = NULL;
 }
 
 ////////////////////////////////////////////////////////

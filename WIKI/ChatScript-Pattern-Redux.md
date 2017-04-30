@@ -1,6 +1,6 @@
 # ChatScript Pattern Redux
 © Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 4/24/2017 cs7.4
+<br>Revision 4/30/2017 cs7.41
 
 Pattern matching information was introduced in the Beginner manual and expanded in the 
 [Advanced User Manual](ChatScript-Advanced-User-Manual.md).
@@ -364,7 +364,7 @@ The relationship operators are:
 | `>`      | greater than
 | `>=`     | greater than or equal to
 | `&`      | bit anded results in non-zero
-| `?`      | is member of 2nd arg concept or topic.<br>if no argument occurs after, means is value found in sentence
+| `?`      | is member of 2nd arg concept or topic or JSON array.<br>if no argument occurs after, means is value found in sentence
 
 Comparing two text strings (not numbers) will do it based on case-independent alpha sorting.
 

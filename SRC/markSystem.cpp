@@ -805,7 +805,9 @@ void MarkAllImpliedWords()
 				else if ((*currency == 0xe2 && currency[1] == 0x82 && currency[2] == 0xac) || !strnicmp((char*)currency,(char*)"eur",3)) MarkFacts(ucase,Meur,i,i);
 				else if ((*currency == 0xc2 && currency[1] == 0xa5) || !strnicmp((char*)currency,(char*)"yen",3)) MarkFacts(ucase,Myen,i,i);
 				else if ((*currency == 0xc2 && currency[1] == 0xa3 ) || !strnicmp((char*)currency,(char*)"gbp",3)) MarkFacts(ucase,Mgbp,i,i);
+				else if ((*currency == 0xc2 && currency[1] == 0xA2)) MarkFacts(ucase, Mcent, i, i);
 				else if (!strnicmp((char*)currency,(char*)"cny",3) ) MarkFacts(ucase,Mcny,i,i);
+				else if (!strnicmp((char*)currency, (char*)"cad", 3)) MarkFacts(ucase, Mcad, i, i);
 			}
 		}
 		else if (IsNumber(wordStarts[i]) == WORD_NUMBER)

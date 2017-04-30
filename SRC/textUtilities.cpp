@@ -3,6 +3,7 @@
 int startSentence;
 int endSentence;
 bool fullfloat = false;	// 2 float digits or all
+int numberStyle = AMERICAN_NUMBERS;
 FILE* docOut = NULL;
 bool showBadUTF = false;			// log bad utf8 characer words
 static bool blockComment = false;
@@ -906,41 +907,37 @@ char GetTemperatureLetter(char* ptr)
 	}
 	return 0;
 }
-   
-unsigned char* GetCurrency(unsigned char* ptr,char* &number) // does this point to a currency token, return currency and point to number (NOT PROVEN its a number)
+
+bool IsTextCurrency(char* ptr)
 {
-	if (*ptr == '$') // dollar is prefix
-	{
-		number = ( char*)ptr+1;
-		return ptr;
-	}
-	else if (*ptr == 0xe2 && ptr[1] == 0x82 && ptr[2] == 0xac) // euro is prefix
-	{
-		number = ( char*)ptr + 3; 
-		return ptr;
-	}
+	if (!strnicmp((char*)ptr, (char*)"yen", 3) || !strnicmp((char*)ptr, (char*)"eur", 3) || !strnicmp((char*)ptr, (char*)"inr", 3)) return true;
+	if (!strnicmp((char*)ptr, (char*)"usd", 3) || !strnicmp((char*)ptr, (char*)"gbp", 3) || !strnicmp((char*)ptr, (char*)"cny", 3)) return true;
+	if (!strnicmp((char*)ptr, (char*)"INR", 3) || !strnicmp((char*)ptr, (char*)"cad", 3)) return true;
+	return false;
+}
+
+char* IsSymbolCurrency(char* ptr)
+{
+	if (*ptr == '$') return ptr + 1;// dollar is prefix
+	else if (*ptr == 0xe2 && ptr[1] == 0x82 && ptr[2] == 0xac) return ptr + 3;// euro is prefix
+	else if (*ptr == 0xC2 && ptr[1] == 0xA2) return ptr + 2; // cent sign
 	else if (*ptr == 0xc2) // yen is prefix
 	{
 		char c = ptr[1];
-		if ( c == 0xa2 || c == 0xa3 || c == 0xa4 || c == 0xa5) 
-		{
-			number = ( char*)ptr+2; 
-			return ptr;
-		}
+		if (c == 0xa2 || c == 0xa3 || c == 0xa4 || c == 0xa5) return ptr + 2;
 	}
-	else if (*ptr == 0xc3 && ptr[1] == 0xb1 ) // british pound
+	else if (*ptr == 0xc3 && ptr[1] == 0xb1) return ptr + 2; // british pound
+	else if (*ptr == 0xe2 && ptr[1] == 0x82 && ptr[2] == 0xb9) return ptr + 3; // rupee
+	else if (IsTextCurrency((char*)ptr)) return ptr + 3;
+	return NULL;
+}
+   
+unsigned char* GetCurrency(unsigned char* ptr,char* &number) // does this point to a currency token, return currency and point to number (NOT PROVEN its a number)
+{
+	char* prefixEnd = IsSymbolCurrency((char*)ptr);
+	if (prefixEnd)
 	{
-		number = ( char*)ptr+2; 
-		return ptr;
-	}
-	else if (*ptr == 0xe2 && ptr[1] == 0x82 && ptr[2] == 0xb9) // rupee
-	{
-		number = (char*)ptr + 3;
-		return ptr;
-	}
-	else if (!strnicmp((char*)ptr,(char*)"yen",3) || !strnicmp((char*)ptr,(char*)"eur",3) ||  !strnicmp((char*)ptr,(char*)"inr",3) ||!strnicmp((char*)ptr,(char*)"usd",3) || !strnicmp((char*)ptr,(char*)"gbp",3) || !strnicmp((char*)ptr,(char*)"cny",3) || !strnicmp((char*)ptr, (char*)"INR", 3))
-	{
-		number = ( char*)ptr + 3;
+		number = prefixEnd;
 		return ptr;
 	}
 
@@ -948,9 +945,8 @@ unsigned char* GetCurrency(unsigned char* ptr,char* &number) // does this point 
 	{
 		unsigned char* at = ptr;
 		while (IsDigit(*at) || *at == '.') ++at; // get end of number
-		if (*at == '$' ||   (*at == 0xe2 && at[1] == 0x82 && at[2] == 0xac)  || *at == 0xc2 || (*at == 0xc3 && at[1] == 0xb1 ) ||
-			(*at == 0xe2 && at[1] == 0x82 && at[2] == 0xb9) ||  // rupee
-			!strnicmp((char*)at,(char*)"yen",3) || !strnicmp((char*)at,(char*)"eur",3) || !strnicmp((char*)at,(char*)"usd",3) || !strnicmp((char*)at,(char*)"gbp",3) || !strnicmp((char*)at,(char*)"cny",3) || !strnicmp((char*)at, (char*)"inr", 3)) // currency suffix
+		prefixEnd = IsSymbolCurrency((char*)at);
+		if (prefixEnd)
 		{
 			number = ( char*)ptr;
 			return at;
@@ -1155,6 +1151,19 @@ unsigned int IsNumber(char* num,bool placeAllowed) // simple digit number or wor
     if (D && D->properties & NUMBER_BITS) 
 		return (D->systemFlags & ORDINAL) ? PLACETYPE_NUMBER : WORD_NUMBER;   // known number
 
+	// look up direct word numbers
+	if (numberValues) for (unsigned int i = 0; i < 1000; ++i)
+	{
+		size_t len = strlen(word);
+		int index = numberValues[i].word;
+		if (!index) break;
+		char* w = Index2Heap(index);
+		if (len == numberValues[i].length && !strnicmp(word, Index2Heap(index), len))
+		{
+			return numberValues[i].realNumber;  // a match 
+		}
+	}
+
     return (Convert2Integer(word) != NOT_A_NUMBER) ? WORD_NUMBER : 0;		//   try to read the number
 }
 
@@ -1196,12 +1205,34 @@ bool IsPlaceNumber(char* word) // place number and fraction numbers
 	return IsNumber(num,false) ? true : false; // show it is correctly a number - pass false to avoid recursion from IsNumber
 }
 
+void WriteInteger(char* word, char* buffer)
+{
+	char reverseFill[MAX_WORD_SIZE];
+	char* end = word + strlen(word);
+	char* at = reverseFill + 500;
+	*at = 0;
+	int counter = 0;
+	int limit = 3;
+	while (end != word)
+	{
+		*--at = *--end;
+		if (IsDigit(*at) && ++counter == limit)
+		{
+			*--at = (numberStyle == FRENCH_NUMBERS) ? '.' : ',';
+			counter = 0;
+			limit = (numberStyle == INDIAN_NUMBERS) ? 2 : 3;
+		}
+	}
+	strcpy(buffer, at);
+}
+
 char* WriteFloat(char* buffer, double value)
 {
+	char floatpart[MAX_WORD_SIZE];
 	if (!fullfloat) 
 	{
-		sprintf(buffer, (char*)"%1.2f", value);
-		char* at = strchr(buffer, '.');
+		sprintf(floatpart, (char*)"%1.2f", value);
+		char* at = strchr(floatpart, '.');
 		if (at)
 		{
 			char* loc = at;
@@ -1212,7 +1243,16 @@ char* WriteFloat(char* buffer, double value)
 			if (!*at) *loc = 0; // switch to integer
 		}
 	}
-	else sprintf(buffer, (char*)"%1.50g", value);
+	else sprintf(floatpart, (char*)"%1.50g", value);
+
+	char* dot = strchr(floatpart, '.');
+	if (dot) *dot = 0; 
+	char head[MAX_WORD_SIZE];
+	WriteInteger(floatpart, head); // leading float/int bit
+
+	strcpy(buffer, head);
+	if (dot && numberStyle == FRENCH_NUMBERS) *dot = ',';
+	if (dot) strcat(buffer, dot);
 	return buffer;
 }
 

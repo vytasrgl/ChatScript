@@ -41,6 +41,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define VALIDLOWER 4
 #define VALIDUTF8 6
 
+#define AMERICAN_NUMBERS 0
+#define INDIAN_NUMBERS 1
+#define FRENCH_NUMBERS 2
+
 #define UNINIT -1
 
 #define SHOUT 1
@@ -79,7 +83,7 @@ extern bool fullfloat;
 extern FILE* docOut;
 extern bool newline;
 #define MAX_CONDITIONALS 10
-
+extern int numberStyle;
 extern char conditionalCompile[MAX_CONDITIONALS+1][50];
 extern int conditionalCompiledIndex;
 
@@ -116,6 +120,8 @@ void RemoveTilde(char* output);
 double Convert2Float(char* original);
 char* RemoveEscapesWeAdded(char* at);
 void ConvertNL(char* ptr);
+bool IsTextCurrency(char* ptr);
+char* IsSymbolCurrency(char* ptr);
 void ComputeWordData(char* word, WORDINFO* info);
 char* CopyRemoveEscapes(char* to, char* at,int limit,bool all = false);
 char* AddEscapes(char* to, char* from,bool normal,int limit);
@@ -134,6 +140,7 @@ bool IsModelNumber(char* word);
 bool IsInteger(char* ptr, bool comma);
 char* IsUTF8(char* buffer,char* character);
 char* Purify(char* msg);
+void WriteInteger(char* word, char* buffer);
 void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine);
 size_t OutputLimit(unsigned char* data);
 extern int startSentence;

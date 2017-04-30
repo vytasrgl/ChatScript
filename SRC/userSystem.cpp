@@ -727,6 +727,7 @@ void ReadUserData() // passed  buffer with file content (where feasible)
 	// std defaults
 	tokenControl = (DO_SUBSTITUTE_SYSTEM | DO_INTERJECTION_SPLITTING | DO_PROPERNAME_MERGE | DO_NUMBER_MERGE | DO_SPELLCHECK );
 	if (!stricmp(language,"english")) tokenControl |= DO_PARSE;
+	numberStyle = AMERICAN_NUMBERS;
 	responseControl = ALL_RESPONSES;
 	*wildcardSeparator = ' ';
 

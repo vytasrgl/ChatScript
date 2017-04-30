@@ -1,6 +1,6 @@
 # ChatScript System Functions Manual
 © Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 4/24/2017 cs7.4
+<br>Revision 4/30/2017 cs7.41
 
 * [Topic Functions](ChatScript-System-Functions-Manual.md#topic-functions)
 * [Marking Functions](ChatScript-System-Functions-Manual.md#marking-functions)
@@ -470,10 +470,12 @@ returns `1` if word is marked, returns `FAILRULE_BIT` if the given
 word is not currently marked from the current sentence.
 
 
-### `^setposition ( _var start end )`
+### `^setposition ( _var start end )` 
 
 Sets the match location data of a match var to the number values given.
 
+Alternatively you can do `^setposition ( _var _var1 )`, which is redundant with
+just doing `_var = _var1`.
 
 ### `^setcanon ( wordindex value )`
 
@@ -910,6 +912,9 @@ Calling `^load(null)` will merely unload the dynamic layer previously loaded.
 It's erroneous (you get whatever happens to you), if you call `^load` from within
 topics you have loaded via `^load`.
 
+### `^clearmatch()`
+
+This clears all match variables to empty.
 
 ### `^match ( what )`
 
@@ -1823,6 +1828,17 @@ Is the given word starting with an uppercase letter? Match variable
 binds usually reflect how the user entered the word. This allows you to see what case they
 entered it in. Returns 1 if yes and 0 otherwise.
 
+### `^format( integer/float  formatstring value)`
+
+This is a thin wrapper over sprintf. The first argument tells ChatScript what
+kind of argument you are passing (since everything is a string to ChatScript).
+The second argument is a string which is the format string for sprintf.  The
+third argument is the number to convert. For floats, you will always be passing a double float
+so bear that in mind with your formatting. For integer, if you use a %d format, you will be using
+a 32-bit value. For ll formats you will be using 64-bit but it won't work well on Windows output because
+Windows uses their own sprintf notation.
+
+
 
 ### `^addproperty ( word flag1 … flagn )` 
 
@@ -1947,6 +1963,11 @@ loop () # unload every resource on board
 
 `^wordAtIndex`  retrieves the word from the current sentence at the index given, 
 as either the original word  or as a  canonical word (as a match variable sees it)
+
+`^wordAtIndex ( canonical n n1)` gathers a range from n thru n1. 
+
+`^wordAtIndex ( original "_0")` gathers a range from that which _0 represents (but uses the
+original data so it is not like merely saying _0, which may not have real data if you did an arbitrary assignment to it setting its position). 
 
 
 

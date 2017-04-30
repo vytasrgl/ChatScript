@@ -1,6 +1,6 @@
 # ChatScript Basic User Manual
 © Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
-<br>Revision 4/8/2017 cs7.31
+<br>Revision 4/30/2017 cs7.41
 
 * [Overview](ChatScript-Basic-User-Manual.md#overview)
 * [Simple Topics](ChatScript-Basic-User-Manual.md#simple-topics)

@@ -387,6 +387,10 @@ bool SpellCheckSentence()
 		// nor fractions
 		if (IsFraction(word))  continue; // fraction?
 
+		// nor model numbers
+		if (IsModelNumber(word))
+			continue;
+
 		char* number;
 		if (GetCurrency((unsigned char*)word, number)) continue; // currency
 

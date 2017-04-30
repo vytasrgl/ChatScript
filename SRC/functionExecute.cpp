@@ -2630,13 +2630,23 @@ static FunctionResult SetPositionCode(char* buffer)
 		FunctionResult result;
 		ptr = ReadShortCommandArg(ptr,startw,result); // what is being marked
 		if (result != NOPROBLEM_BIT) return result;
-		int start = atoi(startw);
+
+		int start, end;
+		if (*startw == '_') // set from other wildcard
+		{
+			start = WILDCARD_START(wildcardPosition[GetWildcardID(startw)]);
+			end = WILDCARD_END(wildcardPosition[GetWildcardID(startw)]);
+		}
+		else
+		{
+			start = atoi(startw);
+			char endw[MAX_WORD_SIZE];
+			ptr = ReadShortCommandArg(ptr, endw, result); // what is being marked
+			if (result != NOPROBLEM_BIT) return result;
+			end = atoi(endw);
+		}
 		if (start >= (wordCount+1)) start = wordCount + 1;
 		if (start <= 0) start = 0;
-		char endw[MAX_WORD_SIZE];
-		ptr = ReadShortCommandArg(ptr,endw,result); // what is being marked
-		if (result != NOPROBLEM_BIT) return result;
-		int end = atoi(endw);
 
 		if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(STDTRACETABLOG, "_%d = %d...%d ",n,start,end);
 
@@ -3054,10 +3064,38 @@ static FunctionResult SetTokenFlagsCode(char* buffer)
 static FunctionResult WordAtIndexCode(char* buffer)
 {
 	bool canonical = !stricmp(ARGUMENT(1), "canonical");
-	int position = atoi(ARGUMENT(2));
-	if (position < 1 || position > wordCount) return FAILRULE_BIT;
-	if (canonical) sprintf(buffer, "%s", wordStarts[position]);
-	else sprintf(buffer, "%s", wordCanonical[position]);
+	char* arg2 = ARGUMENT(2);
+	int start, end;
+	if (*arg2 == '"')
+	{
+		int index = GetWildcardID(arg2+1);
+		if (index == ILLEGAL_MATCHVARIABLE) return FAILRULE_BIT;
+		start = WILDCARD_START(wildcardPosition[index]);
+		end = WILDCARD_END(wildcardPosition[index]);
+	}
+	else
+	{
+		start = end = atoi(arg2);
+		char* arg3 = ARGUMENT(3);
+		if (*arg3) end = atoi(arg3);
+	}
+	if (start < 1 || start > wordCount) return FAILRULE_BIT;
+	bool started = false;
+	for (int i = start; i <= end; ++i)
+	{
+		if (i < 1 || i > wordCount) continue;	// ignore off end
+		if (unmarked[i]) continue; // ignore words masked
+		char* word = wordStarts[i];
+		if (started)
+		{
+			if (!canonical) strcat(buffer, wildcardSeparator);
+			else strcat(buffer, wildcardSeparator);
+		}
+		else started = true;
+		if (!canonical) strcat(buffer, word);
+		else if (wordCanonical[i]) strcat(buffer, wordCanonical[i]);
+		else strcat(buffer, word);
+	}
 	return NOPROBLEM_BIT;
 }
 
@@ -3447,6 +3485,37 @@ static FunctionResult LogCode(char* buffer)
 //////////////////////////////////////////////////////////
 /// OUTPUT FUNCTIONS
 //////////////////////////////////////////////////////////
+
+static FunctionResult FormatCode(char* buffer)
+{
+	char* arg1 = ARGUMENT(1); // int64 or double 
+	char* arg2 = ARGUMENT(2); // the format string
+	size_t len = strlen(arg2);
+	if (*arg2 == '"')
+	{
+		memmove(arg2, arg2 + 1, len);
+		arg2[len-2] = 0;
+	}
+	char* arg3 = ARGUMENT(3); // the value
+	
+	double fvalue;
+	int64 ivalue;
+	int value;
+	if (!stricmp(arg1, "float"))
+	{
+		fvalue = Convert2Float(arg3);
+		sprintf(buffer, arg2, fvalue);
+	}
+	else if (!stricmp(arg1, "integer"))
+	{
+		ivalue = Convert2Integer(arg3);
+		value = (int)ivalue;
+		if (strstr(arg2,"ll") ) sprintf(buffer, arg2, ivalue);
+		else sprintf(buffer, arg2, value);
+	}
+	else return FAILRULE_BIT;
+	return NOPROBLEM_BIT;
+}
 
 static FunctionResult FlushOutputCode(char* buffer)
 {
@@ -4529,6 +4598,18 @@ FunctionResult CallstackCode(char* buffer)
 	return NOPROBLEM_BIT;
 }
 
+static FunctionResult ClearMatchCode(char* buffer)
+{
+	for (int i = 0; i < MAX_WILDCARDS; ++i)
+	{
+		wildcardOriginalText[i][0] = 0;  //   spot wild cards can be stored
+		wildcardCanonicalText[i][0] = 0;  //   spot wild cards can be stored
+		wildcardPosition[i] = 0; //   spot it started and ended in sentence (16bit end 16bit start)
+	}
+
+	return NOPROBLEM_BIT;
+}
+
 //////////////////////////////////////////////////////////
 /// DATABASE FUNCTIONS
 //////////////////////////////////////////////////////////
@@ -4763,7 +4844,7 @@ static FunctionResult UppercaseCode(char* buffer)
 static FunctionResult PropertiesCode(char* buffer)
 {
 	char* arg1 = ARGUMENT(1);
-	WORDP D = FindWord(arg1);
+	WORDP D = FindWord(arg1,0,PRIMARY_CASE_ALLOWED);
 	if (!D) return FAILRULE_BIT;
 #ifdef WIN32
 	sprintf(buffer,(char*)"%I64d",D->properties); 
@@ -6049,7 +6130,6 @@ static FunctionResult AddPropertyCode(char* buffer)
 		arg3 = *GetSetType(arg1);
 	}
 	else  D = StoreWord(arg1,0); // add property to dictionary word
-
 	uint64 val = 0;
 	uint64 sysval = 0;
 	unsigned int internalBits = 0;
@@ -8344,7 +8424,7 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^settokenflags",SetTokenFlagsCode,1,SAMELINE,(char*)"add value to tokenflags"}, 
 	{ (char*)"^setwildcardindex",SetWildcardIndexCode,STREAM_ARG,SAMELINE,(char*)"resume wildcard allocation at this number"}, 
 	{ (char*)"^isnormalword",IsNormalWordCode,1,SAMELINE,(char*)"resume wildcard allocation at this number" },
-	{ (char*)"^wordAtIndex",WordAtIndexCode,2,SAMELINE,(char*)"1st arg original canonical, Get word at index" },
+	{ (char*)"^wordAtIndex",WordAtIndexCode,VARIABLE_ARG_COUNT,SAMELINE,(char*)"1st arg original canonical, Get word at index or possible range" },
 	{ (char*)"\r\n---- Numbers",0,0,0,(char*)""},
 	{ (char*)"^compute",ComputeCode,3,SAMELINE,(char*)"perform a numerical computation"}, 
 	{ (char*)"^isnumber",IsNumberCode,1,SAMELINE,(char*)"is this an integer or double number or currency"}, 
@@ -8359,6 +8439,7 @@ SystemFunctionInfo systemFunctionSet[] =
 
 	{ (char*)"\r\n---- Output Generation - not legal in post processing",0,0,0,(char*)""},
 	{ (char*)"^flushoutput",FlushOutputCode,0,SAMELINE,(char*)"force existing output out"}, 
+	{ (char*)"^format",FormatCode,3,SAMELINE,(char*)"sprintf equiv: int64/doublefloat formatstring value" },
 	{ (char*)"^insertprint",InsertPrintCode,STREAM_ARG,0,(char*)"add output before named responseIndex"},
 	{ (char*)"^keephistory",KeepHistoryCode,2,SAMELINE,(char*)"trim history of USER or BOT to number of entries given -- see also $cs_userhistorylimit"}, 
 	{ (char*)"^print",PrintCode,STREAM_ARG,0,(char*)"isolated output message from current stream"}, 
@@ -8382,7 +8463,8 @@ SystemFunctionInfo systemFunctionSet[] =
 	{ (char*)"^clearcontext",ClearContextCode,2,0,(char*)"clear all context"},
 	{ (char*)"^argument",ArgumentCode,VARIABLE_ARG_COUNT,0,(char*)"returns the calling scope's nth argument (given n and possible fn name)"},
 	{ (char*)"^callstack",CallstackCode,1,0,(char*)"return callstack facts in named factset"}, 
-	{ (char*)"^command",CommandCode,STREAM_ARG,0,(char*)"execute a : command"}, 
+	{ (char*)"^clearmatch",ClearMatchCode,0,0,(char*)"erase all match variables" },
+	{ (char*)"^command",CommandCode,STREAM_ARG,0,(char*)"execute a : command"},
 	{ (char*)"^end",EndCode,1,SAMELINE,(char*)"cease current processing thru this level"}, 
 	{ (char*)"^eval",EvalCode,STREAM_ARG,0,(char*)"evaluate stream"}, 
 	{ (char*)"^fail",FailCode,1,SAMELINE,(char*)"return a return code of some kind - allowed to erase facts on sentence fail"}, 
