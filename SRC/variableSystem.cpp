@@ -453,7 +453,8 @@ void SetUserVariable(const char* var, char* word, bool assignment)
 	// cs_numbers changes are noticed by the engine (india, french, other)
 	else if (!stricmp(var, (char*)"$cs_numbers"))
 	{
-		if (!stricmp(word, "indian")) numberStyle = INDIAN_NUMBERS;
+		if (!word) numberStyle = AMERICAN_NUMBERS;
+		else if (!stricmp(word, "indian")) numberStyle = INDIAN_NUMBERS;
 		else if (!stricmp(word, "french")) numberStyle = FRENCH_NUMBERS;
 		else numberStyle = AMERICAN_NUMBERS;
 	}

@@ -1,3 +1,6 @@
+Version 7.411
+1. fixing numeric bugs
+
 Version 7.41 4/30/2017
 1. ^setposition now allows a wildcard id as the second and last argument
 2. the ? operator can now check for value in json array.

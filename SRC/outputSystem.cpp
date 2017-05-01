@@ -381,28 +381,39 @@ void StdNumber(char* word,char*& buffer,int controls) // text numbers may have s
         return;
     }
 
-	if (IsFloat(word,word+len))
+	// capture any percentage symbol
+	char* end = word + len;
+	bool percent = false;
+	if (*(end - 1) == '%')
+	{
+		*--end = 0;
+		percent = true;
+	}
+
+	int useNumberStyle = numberStyle;
+	if (controls & OUTPUT_NOCOMMANUMBER) useNumberStyle = NOSTYLE_NUMBERS;
+
+	if (IsFloat(word,end))
 	{
 		if (!fullfloat) // insure is not full
 		{
 			char c = word[len];
 			word[len] = 0;
-			WriteFloat(buffer, atof(word));
+			WriteFloat(buffer, atof(word), useNumberStyle);
 			word[len] = c;
 		}
-		else strcpy(buffer, word); // is best we can get
-		return;
+		else // write out what we have, don't redo the formatting
+		{
+			FormatFloat(word, buffer, useNumberStyle);
+		}
 	}
-
-    if (controls & OUTPUT_NOCOMMANUMBER) // no comma with <= 4 digit, e.g., year numbers
-    {
-        strcpy(buffer,word);  
-        return;
-    }
-
-	// add commas between number triples
-	// except india uses doubles until final triple
-	WriteInteger(word, buffer);
+	else
+	{
+		// add commas between number triples, unless not needed
+		// except india uses doubles until final triple
+		WriteInteger(word, buffer, useNumberStyle);
+	}
+	if (percent) strcat(buffer, "%");
 }
 
 char* StdIntOutput(int n)

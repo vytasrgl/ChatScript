@@ -1205,8 +1205,13 @@ bool IsPlaceNumber(char* word) // place number and fraction numbers
 	return IsNumber(num,false) ? true : false; // show it is correctly a number - pass false to avoid recursion from IsNumber
 }
 
-void WriteInteger(char* word, char* buffer)
+void WriteInteger(char* word, char* buffer, int useNumberStyle)
 {
+	if (useNumberStyle == NOSTYLE_NUMBERS)
+	{
+		strcpy(buffer, word);
+		return;
+	}
 	char reverseFill[MAX_WORD_SIZE];
 	char* end = word + strlen(word);
 	char* at = reverseFill + 500;
@@ -1216,17 +1221,31 @@ void WriteInteger(char* word, char* buffer)
 	while (end != word)
 	{
 		*--at = *--end;
-		if (IsDigit(*at) && ++counter == limit)
+		if (IsDigit(*at) && ++counter == limit && end != word)
 		{
-			*--at = (numberStyle == FRENCH_NUMBERS) ? '.' : ',';
+			*--at = (useNumberStyle == FRENCH_NUMBERS) ? '.' : ',';
 			counter = 0;
-			limit = (numberStyle == INDIAN_NUMBERS) ? 2 : 3;
+			limit = (useNumberStyle == INDIAN_NUMBERS) ? 2 : 3;
 		}
 	}
 	strcpy(buffer, at);
 }
 
-char* WriteFloat(char* buffer, double value)
+void FormatFloat(char* word, char* buffer, int useNumberStyle)
+{
+	char* dot = strchr(word, '.');
+	if (dot) *dot = 0;
+	WriteInteger(word, buffer, useNumberStyle); // leading float/int bit
+
+	// Localise the decimal point
+	if (dot)
+	{
+		*dot = (useNumberStyle == FRENCH_NUMBERS) ? ',' : '.';
+		strcat(buffer, dot);
+	}
+}
+
+char* WriteFloat(char* buffer, double value, int useNumberStyle)
 {
 	char floatpart[MAX_WORD_SIZE];
 	if (!fullfloat) 
@@ -1245,14 +1264,7 @@ char* WriteFloat(char* buffer, double value)
 	}
 	else sprintf(floatpart, (char*)"%1.50g", value);
 
-	char* dot = strchr(floatpart, '.');
-	if (dot) *dot = 0; 
-	char head[MAX_WORD_SIZE];
-	WriteInteger(floatpart, head); // leading float/int bit
-
-	strcpy(buffer, head);
-	if (dot && numberStyle == FRENCH_NUMBERS) *dot = ',';
-	if (dot) strcat(buffer, dot);
+	FormatFloat(floatpart, buffer, useNumberStyle);
 	return buffer;
 }
 

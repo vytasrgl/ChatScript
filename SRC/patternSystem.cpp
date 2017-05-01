@@ -309,6 +309,7 @@ bool Match(char* buffer,char* ptr, unsigned int depth, int startposition, char* 
 	unsigned int startNest = functionNest;
 	int wildcardBase = wildcardIndex;
 	unsigned int result;
+	int bidirectional = 0;
     WORDP D;
 	unsigned int oldtrace = trace;
 	int beginmatch = -1; // for ( ) where did we actually start matching

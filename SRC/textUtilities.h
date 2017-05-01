@@ -41,6 +41,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define VALIDLOWER 4
 #define VALIDUTF8 6
 
+#define NOSTYLE_NUMBERS -1
 #define AMERICAN_NUMBERS 0
 #define INDIAN_NUMBERS 1
 #define FRENCH_NUMBERS 2
@@ -140,7 +141,7 @@ bool IsModelNumber(char* word);
 bool IsInteger(char* ptr, bool comma);
 char* IsUTF8(char* buffer,char* character);
 char* Purify(char* msg);
-void WriteInteger(char* word, char* buffer);
+void WriteInteger(char* word, char* buffer, int useNumberStyle = NOSTYLE_NUMBERS);
 void BOMAccess(int &BOMvalue, char &oldc, int &oldCurrentLine);
 size_t OutputLimit(unsigned char* data);
 extern int startSentence;
@@ -161,7 +162,7 @@ char GetTemperatureLetter (char* ptr);
 bool IsLegalName(char* name);
 unsigned char* GetCurrency(unsigned char* ptr,char* &number);
 bool IsRomanNumeral(char* word, uint64& val);
-char* WriteFloat(char* buffer, double value);
+char* WriteFloat(char* buffer, double value, int useNumberStyle = NOSTYLE_NUMBERS);
 
 // conversion reoutines
 void MakeLowerCase(char* ptr);
@@ -176,6 +177,7 @@ char* TrimSpaces(char* msg,bool start = true);
 char* UTF2ExtendedAscii(char* bufferfrom);
 void RemoveImpure(char* buffer);
 void ChangeSpecial(char* buffer);
+void FormatFloat(char* word, char* buffer, int useNumberStyle = NOSTYLE_NUMBERS);
 
 // startup
 void InitTextUtilities();
