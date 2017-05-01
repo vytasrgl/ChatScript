@@ -546,21 +546,34 @@ She worried who was listening, why you asked the questions you did, and if thing
 verbally speculating to herself how she might kill you. She tracked these states as a result of what the
 user said and what she said. And had additional emotional topics that could add extra sentences in front
 of the normally generated conversation. So if you asked her do you have any pets, you get her normal
-answer with any emotional spice occasionally added in a sentence in front. Here is some of her hostile
-spice topic, which gets progressively worse during the conversation:
+answer with any emotional spice occasionally added in a sentence in front. 
+
+Here is some of her hostile spice topic, which gets progressively worse during the conversation:
 
     ?: () ^preprint(Why should I tell you? )
     ?: () ^preprint(Go figure it out on your own. )
+    
     ...
+    ...
+    
     u: () ^preprint(Do you actually have any friends? )
     u: () ^preprint(I'm sorry. I didn't mean to speak above your abilities to understand. )
+
     ...
+    ...
+
     u: () ^preprint(They all whisper behind your back. )
     u: () ^preprint(Tell me about your weaknesses. )
+
     ...
+    ...
+
     u: () ^preprint(This isn't worth my time. )
     u: () ^preprint(You're a waste of space. )
+
     ...
+    ...
+
     u: () ^preprint(I dream of ways to torture you. )
     u: () ^preprint(I want to wipe your existence off the face of the planet. )
 
