@@ -749,7 +749,7 @@ Flags you can set for yourself include:
 
 | flag          | description
 |---------------|---------------------------------
-|`USER_FLAG1`<br>...<br>`USER_FLAG8` | user defined
+|`USER_FLAG1`<br>`USER_FLAG2`<br>`USER_FLAG3`<br>`USER_FLAG4`<br>`USER_FLAG5`<br>`USER_FLAG6`<br>`USER_FLAG1`<br>`USER_FLAG8` | user defined
 
 Facts created by JSON code have user markings also, renamed as
 
