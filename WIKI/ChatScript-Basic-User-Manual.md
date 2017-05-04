@@ -39,9 +39,16 @@ in the documentation.
 ## Input and output sentences
 
 ChatScript take one or more _input sentences_ from the user.
-A _sentence_ in CS nominally means the sequence of words up until some sentence _terminal token_ chars. Default charcters: `.`,  `?`,  `!`, `;` and `-` end sentences. E.g. the following user phrase is split in three sentences:
+A _sentence_ in CS nominally means the sequence of words up until some sentence _terminal token_ chars. 
+By default these characters end sentences:
 
-    What's your name? My is Alfred ; I'm from London. 
+| dot | question<br>mark | exclamation<br>point | semi<br>colon  | colon | hyphen |     
+|:---:|:----:|:---:|:---:|:---:|:---:|
+| `.` |  `?` | `!` | `;` | `:` | `-` |
+
+E.g. the following user phrase is split in three sentences:
+
+    What's your name? My is Alfred; I'm from London. 
 
 One can also disable sentence ending. 
 

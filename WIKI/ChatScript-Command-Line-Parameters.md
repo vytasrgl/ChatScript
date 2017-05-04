@@ -1,8 +1,6 @@
 # ChatScript Command Line Parameters
-
-> Copyright Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com 
-
-<br>Revision 4/24/2017 cs7.4
+Copyright Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com<br>
+Revision 4/24/2017 cs7.4
 
 # Command Line Parameters
 
@@ -68,14 +66,15 @@ to have enough normal working room.
 | option             | description
 |--------------------|-----------------------------------------------------------------------------
 | `output=nnn`       | limits output line length for a bot to that amount (forcing crnl as needed). 0 is unlimited.
-| `outputsize=80000` | is the maximum output that can be shipped by a volley from the bot without getting truncated.
-Actually the value is somewhat less, because routines generating partial data for later incorporation into
-the output also use the buffer and need some usually small amount of clearance. You can find out how close
-you have approached the max in a session by typing `:memstats`. If you need to ship a lot of data around,
-you can raise this into the megabyte range and expect CS will continue to function. 80K is the default.
+| `outputsize=80000` | is the maximum output that can be shipped by a volley from the bot without getting truncated. 
 
-For normal operation, when you change `outputsize` you should also change `logsize` to be at least as much, so that 
-the system can do complete logs. You are welcome to set log size lots smaller if you don't care about the log.
+
+Actually the `outputsize` value is somewhat less, because routines generating partial data 
+for later incorporation into the output also use the buffer and need some usually small amount of clearance. 
+You can find out how close you have approached the max in a session by typing `:memstats`. 
+If you need to ship a lot of data around, you can raise this into the megabyte range and expect CS will continue to function. 
+80K is the default. For normal operation, when you change `outputsize` you should also change `logsize` to be at least as much, 
+so that the system can do complete logs. You are welcome to set log size lots smaller if you don't care about the log.
 
 
 ## File options

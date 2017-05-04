@@ -114,7 +114,7 @@ the active string implicitly invokes the equivalent of sprintf.
 
 User variables also come in permanent and transient forms. 
 
-|Variable scope| syntax example   | description
+|variable scope| syntax<br>example| description
 |--------------|------------------|-----------------------------------------
 | permanent    | `$permvar`       | start with a single `$` and are preserved across user interactions  (are saved and restored from disk). You can see and alter their value from anywhere.
 | transient    | `$$transientvar` | start with `$$` and completely disappear when a user interaction happens (are not saved to disk). You can see and alter their value from anywhere.
@@ -354,27 +354,27 @@ the topic name and the (keywords list). You may have multiple flags. E.g.
 
 The flags and their meanings are:
 
-|flag              |  description 
-|:----------------:|-------------- 
-|__`random`__      |    search rules randomly instead of linearly
-|__`norandom`__    |    (default) search rules linearly
-|__`keep`__        |    do not erase responders ever. Gambits (and rejoinders) are not affected by this
-|__`erase`__       |    (default) erase responders that successfully generate output.<br>Gambits automatically erase unless you suppress them specifically.
-|__`nostay`__      |    do not consider this a topic to remain in, leave it (except for rejoinders)
-|__`stay`__        |   (default) make this a pending topic when it generates output
-|__`repeat`__      |    allow rules to generate output which has been output recently
-|__`norepeat`__    |    (default) do not generate output if it matches output made recently
-|__`priority`__    |    raise the priority of this topic when matching keywords
-|__`normal`__      |    (default) give this topic normal priority when matching keywords
-|__`deprioritize`__|   lower the priority of this topic when matching keywords
-|__`system`__      |   this is a system topic. It is automatically `nostay`, `keep`.<br>`keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files.
-|__`user`__        |   (default) this is a normal topic
-|__`noblocking`__  |   should not perform any blocking tests on this topic in `:verify`
-|__`nopatterns`__  |   should not perform any pattern tests on this topic in `:verify`
-|__`nosamples`__   |   should not perform any sample tests on this topic in `:verify`
-|__`nokeys`__      |   should not perform any keyword tests on this topic in `:verify`
-|__`more`__        |   normally if you try to redeclare a concept, you get an error. `more` tells CS you intend to extend the concept and allows additional keywords.
-|__`bot=name`__    |   if this is given, only named bots are allowed to use this topic. See [ChatScript Multiple Bots](ChatScript-Multiple-Bots.md) manual.
+| flag         |  description 
+|--------------|-------------- 
+|`random`      |    search rules randomly instead of linearly
+|`norandom`    |    (default) search rules linearly
+|`keep`        |    do not erase responders ever. Gambits (and rejoinders) are not affected by this
+|`erase`       |    (default) erase responders that successfully generate output.<br>Gambits automatically erase unless you suppress them specifically.
+|`nostay`      |    do not consider this a topic to remain in, leave it (except for rejoinders)
+|`stay`        |   (default) make this a pending topic when it generates output
+|`repeat`      |    allow rules to generate output which has been output recently
+|`norepeat`    |    (default) do not generate output if it matches output made recently
+|`priority`    |    raise the priority of this topic when matching keywords
+|`normal`      |    (default) give this topic normal priority when matching keywords
+|`deprioritize`|   lower the priority of this topic when matching keywords
+|`system`      |   this is a system topic. It is automatically `nostay`, `keep`.<br>`keep` automatically applies to gambits as well. The system never looks to these topics for gambits. System topics can never be considered pending (defined shortly). They can not have themselves or their rules be enabled or disabled. Their status/data is never saved to user files.
+|`user`        |   (default) this is a normal topic
+|`noblocking`  |   should not perform any blocking tests on this topic in `:verify`
+|`nopatterns`  |   should not perform any pattern tests on this topic in `:verify`
+|`nosamples`   |   should not perform any sample tests on this topic in `:verify`
+|`nokeys`      |   should not perform any keyword tests on this topic in `:verify`
+|`more`        |   normally if you try to redeclare a concept, you get an error. `more` tells CS you intend to extend the concept and allows additional keywords.
+|`bot=name`    |   if this is given, only named bots are allowed to use this topic. See [ChatScript Multiple Bots](ChatScript-Multiple-Bots.md) manual.
 
 
 ## Rules that erase and repeat
@@ -1453,7 +1453,7 @@ Whereas most programming language separate their arguments with commas because
 they are reserved tokens in their language, in ChatScript a comma is a normal word. So
 you separate arguments to functions just with spaces.
 
-   ?: ( hi) ^FiveArgFunction( 1 3 my , word)
+    ?: ( hi) ^FiveArgFunction( 1 3 my , word)
 
 Outputmacros can return a value, just like a normal function. You just dump the text as
 you would a message to the user.
@@ -1908,12 +1908,16 @@ nothing. If the boot layer is not current, then you call ^REBOOT() which erases 
 boot data and treats the remainder of the script as refilling the boot layer with new facts and
 variables.
 
+
 ## `^CSSHUTDOWN()`
 
     outputmacro: ^CSSHUTDOWN()
 
 
 This function, if defined by you, will be executed on shutdown or restart of the ChatScript system.
+
+
+## `^cs_topic_enter()`
 
     outputmacro: ^cs_topic_enter(^topic ^mode)
 
@@ -1922,6 +1926,8 @@ before the topic is processed. You will be given the name of the topic and a cha
 representing the way it is being invoked. 
 Values of `^mode` are: `s`, `?`, `u`, `t`, which represent statements, questions, both, or gambits. 
 While your function is executing, neither `^cs_topic_enter` or `^cs_topic_exit` will be invoked.
+
+## `^cs_topic_exit()`
 
     outputmacro: ^cs_topic_exit(^topic ^result)
 

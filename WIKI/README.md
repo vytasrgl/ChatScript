@@ -150,7 +150,7 @@ never be complete because you will want to keep improving it.
 * [Paper - Pattern Matching for Natural Language](PAPERS/Paper-Pattern-Matching-for-Natural-Language-Applications.md)
 <br>Compares CS, AIML, and Facade
 
-* [Paper - Suzette The Most Human Computer](../PAPERS/Paper%20-%20Suzette_The_Most_Human_Computer.pdf)
+* [Paper - Suzette The Most Human Computer](PAPERS/Suzette-The-Most-Human-Computer.md)
 <br>How our first chatbot came about, won the Loebner's, and differed from AIML.
 
 * [Paper - Speaker for the Dead](../PAPERS/Paper-%20Speaker%20for%20theDead.pdf)
